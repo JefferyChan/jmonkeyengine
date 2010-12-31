@@ -40,7 +40,6 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Matrix3f;
 import com.jme3.math.Matrix4f;
 import com.jme3.math.Quaternion;
-import com.jme3.math.Quaternion;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.util.BufferUtils;
@@ -256,70 +255,82 @@ public class Uniform extends ShaderVariable {
                 Matrix3f m3 = (Matrix3f) value;
                 if (multiData == null)
                     multiData = BufferUtils.createFloatBuffer(9);
-                else{
-                    m3.fillFloatBuffer(multiData, true);
-                    multiData.clear();
-                }
+                
+                m3.fillFloatBuffer(multiData, true);
+                multiData.clear();
                 break;
             case Matrix4:
                 Matrix4f m4 = (Matrix4f) value;
                 if (multiData == null)
                     multiData = BufferUtils.createFloatBuffer(16);
-                else{
-                    m4.fillFloatBuffer(multiData, true);
-                    multiData.clear();
-                }
+                
+                m4.fillFloatBuffer(multiData, true);
+                multiData.clear();
                 break;
             case FloatArray:
                 float[] fa = (float[]) value;
-                if (multiData == null)
+                if (multiData == null){
                     multiData = BufferUtils.createFloatBuffer(fa);
-                else{
+                }else{
                     multiData = BufferUtils.ensureLargeEnough(multiData, fa.length);
-                    multiData.clear();
-                    multiData.put(fa).clear();
                 }
+                
+                multiData.put(fa);
+                multiData.clear();
                 break;
             case Vector2Array:
                 Vector2f[] v2a = (Vector2f[]) value;
-                if (multiData == null)
+                if (multiData == null){
                     multiData = BufferUtils.createFloatBuffer(v2a);
-                else{
+                } else {
                     multiData = BufferUtils.ensureLargeEnough(multiData, v2a.length * 2);
-                    multiData.clear();
-                    for (int i = 0; i < v2a.length; i++)
-                        BufferUtils.setInBuffer(v2a[i], multiData, i);
-                    multiData.clear();
                 }
+
+                for (int i = 0; i < v2a.length; i++)
+                    BufferUtils.setInBuffer(v2a[i], multiData, i);
+                
+                multiData.clear();
                 break;
             case Vector3Array:
                 Vector3f[] v3a = (Vector3f[]) value;
-                if (multiData == null)
+                if (multiData == null){
                     multiData = BufferUtils.createFloatBuffer(v3a);
-                else{
+                } else{
                     multiData = BufferUtils.ensureLargeEnough(multiData, v3a.length * 3);
-                    multiData.clear();
-                    for (int i = 0; i < v3a.length; i++)
-                        BufferUtils.setInBuffer(v3a[i], multiData, i);
-                    multiData.clear();
                 }
+                
+                for (int i = 0; i < v3a.length; i++)
+                    BufferUtils.setInBuffer(v3a[i], multiData, i);
+
+                multiData.clear();
                 break;
             case Vector4Array:
                 Quaternion[] v4a = (Quaternion[]) value;
-                if (multiData == null)
+                if (multiData == null){
                     multiData = BufferUtils.createFloatBuffer(v4a);
-                else{
+                } else {
                     multiData = BufferUtils.ensureLargeEnough(multiData, v4a.length * 4);
-                    multiData.clear();
-                    for (int i = 0; i < v4a.length; i++)
-                        BufferUtils.setInBuffer(v4a[i], multiData, i);
-                    multiData.clear();
                 }
+                
+                for (int i = 0; i < v4a.length; i++)
+                    BufferUtils.setInBuffer(v4a[i], multiData, i);
+
+                multiData.clear();
                 break;
             case Matrix3Array:
                 Matrix3f[] m3a = (Matrix3f[]) value;
-                throw new UnsupportedOperationException();
-//                break;
+
+                if (multiData == null)
+                    multiData = BufferUtils.createFloatBuffer(m3a.length * 9);
+                else{
+                    multiData = BufferUtils.ensureLargeEnough(multiData, m3a.length * 9);
+                }
+
+                for (int i = 0; i < m3a.length; i++)
+                    m3a[i].fillFloatBuffer(multiData, true);
+                
+                multiData.clear();
+                break;
             case Matrix4Array:
                 Matrix4f[] m4a = (Matrix4f[]) value;
 
@@ -329,7 +340,6 @@ public class Uniform extends ShaderVariable {
                     multiData = BufferUtils.ensureLargeEnough(multiData, m4a.length * 16);
                 }
 
-                multiData.clear();
                 for (int i = 0; i < m4a.length; i++)
                     m4a[i].fillFloatBuffer(multiData, true);
                 
