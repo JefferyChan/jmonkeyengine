@@ -33,7 +33,6 @@
 package jme3test.texture;
 
 import com.jme3.app.SimpleApplication;
-import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
 import com.jme3.texture.Texture;
 import com.jme3.util.SkyFactory;
@@ -53,7 +52,7 @@ public class TestSkyLoading extends SimpleApplication {
         Texture up = assetManager.loadTexture("Textures/Sky/Lagoon/lagoon_up.png");
         Texture down = assetManager.loadTexture("Textures/Sky/Lagoon/lagoon_down.png");
 
-        Spatial sky = SkyFactory.createSky(assetManager, west, east, north, south, up, down, Vector3f.UNIT_XYZ);
+        Spatial sky = SkyFactory.createSky(assetManager, west, east, north, south, up, down);
         rootNode.attachChild(sky);
     }
 

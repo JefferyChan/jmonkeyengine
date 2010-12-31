@@ -70,6 +70,10 @@ public class SkyFactory {
         return sky;
     }
 
+    public static Spatial createSky(AssetManager assetManager, Texture west, Texture east, Texture north, Texture south, Texture up, Texture down){
+        return createSky(assetManager, west, east, north, south, up, down, Vector3f.UNIT_XYZ);
+    }
+
     public static Spatial createSky(AssetManager assetManager, Texture texture, boolean sphereMap){
         return createSky(assetManager, texture, Vector3f.UNIT_XYZ, sphereMap);
     }
