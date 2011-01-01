@@ -170,40 +170,46 @@ public class PhysicsRigidBody extends PhysicsCollisionObject {
     }
 
     /**
-     * This is normally only needed when using detached physics
+     * Sets the physics object location
      * @param location the location of the actual physics object
      */
     public void setPhysicsLocation(Vector3f location) {
-        rBody.getWorldTransform(tempTrans);
+        rBody.getCenterOfMassTransform(tempTrans);
         Converter.convert(location, tempTrans.origin);
-        rBody.setWorldTransform(tempTrans);
+        rBody.setCenterOfMassTransform(tempTrans);
     }
 
     /**
-     * This is normally only needed when using detached physics
+     * Sets the physics object rotation
      * @param rotation the rotation of the actual physics object
      */
     public void setPhysicsRotation(Matrix3f rotation) {
-        rBody.getWorldTransform(tempTrans);
+        rBody.getCenterOfMassTransform(tempTrans);
         Converter.convert(rotation, tempTrans.basis);
-        rBody.setWorldTransform(tempTrans);
+        rBody.setCenterOfMassTransform(tempTrans);
     }
 
     /**
-     * This is normally only needed when using detached physics
+     * Gets the physics object location
      * @param location the location of the actual physics object is stored in this Vector3f
      */
     public Vector3f getPhysicsLocation(Vector3f location) {
-        rBody.getWorldTransform(tempTrans);
+        if (location == null) {
+            location = new Vector3f();
+        }
+        rBody.getCenterOfMassTransform(tempTrans);
         return Converter.convert(tempTrans.origin, location);
     }
 
     /**
-     * This is normally only needed when using detached physics
+     * Gets the physics object rotation
      * @param rotation the rotation of the actual physics object is stored in this Matrix3f
      */
     public Matrix3f getPhysicsRotation(Matrix3f rotation) {
-        rBody.getWorldTransform(tempTrans);
+        if (rotation == null) {
+            rotation = new Matrix3f();
+        }
+        rBody.getCenterOfMassTransform(tempTrans);
         return Converter.convert(tempTrans.basis, rotation);
     }
 
@@ -686,14 +692,14 @@ public class PhysicsRigidBody extends PhysicsCollisionObject {
         }
         for (Iterator<PhysicsJoint> it = joints.iterator(); it.hasNext();) {
             PhysicsJoint physicsJoint = it.next();
-            Vector3f pivot=null;
-            if(physicsJoint.getBodyA()==this){
-                pivot=physicsJoint.getPivotA();
-            }else{
-                pivot=physicsJoint.getPivotB();
+            Vector3f pivot = null;
+            if (physicsJoint.getBodyA() == this) {
+                pivot = physicsJoint.getPivotA();
+            } else {
+                pivot = physicsJoint.getPivotB();
             }
-            Arrow arrow=new Arrow(pivot);
-            Geometry geom=new Geometry("DebugBone",arrow);
+            Arrow arrow = new Arrow(pivot);
+            Geometry geom = new Geometry("DebugBone", arrow);
             geom.setMaterial(debugMaterialGreen);
             node.attachChild(geom);
         }
@@ -757,10 +763,9 @@ public class PhysicsRigidBody extends PhysicsCollisionObject {
         continuousTorque = (Vector3f) capsule.readSavable("continuousTorque", Vector3f.ZERO.clone());
         applyTorque = capsule.readBoolean("applyTorque", false);
 
-        setPhysicsLocation((Vector3f)capsule.readSavable("physicsLocation", new Vector3f()));
-        setPhysicsRotation((Matrix3f)capsule.readSavable("physicsRotation", new Matrix3f()));
+        setPhysicsLocation((Vector3f) capsule.readSavable("physicsLocation", new Vector3f()));
+        setPhysicsRotation((Matrix3f) capsule.readSavable("physicsRotation", new Matrix3f()));
 
         joints = capsule.readSavableArrayList("joints", null);
     }
-
 }
