@@ -36,7 +36,7 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.asset.plugins.ZipLocator;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
-import com.jme3.bullet.collision.shapes.CompoundCollisionShape;
+import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.nodes.PhysicsCharacterNode;
 import com.jme3.bullet.nodes.PhysicsNode;
 import com.jme3.bullet.util.CollisionShapeFactory;
@@ -92,8 +92,8 @@ public class HelloCollision extends SimpleApplication
 
     // We set up collision detection for the scene by creating a
     // compound collision shape and a physics node.
-    CompoundCollisionShape sceneShape =
-      CollisionShapeFactory.createMeshCompoundShape((Node) sceneModel);
+    CollisionShape sceneShape =
+    CollisionShapeFactory.createMeshShape((Node) sceneModel);
     landscape = new PhysicsNode(sceneModel, sceneShape, 0);
     
     // We set up collision detection for the player by creating

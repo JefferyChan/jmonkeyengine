@@ -37,10 +37,9 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.asset.plugins.HttpZipLocator;
 import com.jme3.asset.plugins.ZipLocator;
 import com.jme3.bullet.PhysicsSpace;
-import com.jme3.bullet.collision.shapes.CompoundCollisionShape;
+import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.nodes.PhysicsCharacterNode;
-import com.jme3.bullet.objects.PhysicsCharacter;
 import com.jme3.bullet.nodes.PhysicsNode;
 import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.input.KeyInput;
@@ -99,7 +98,7 @@ public class TestQ3 extends SimpleApplication implements ActionListener {
         gameLevel = (Spatial) assetManager.loadAsset(key);
         gameLevel.setLocalScale(0.1f);
 
-        CompoundCollisionShape levelShape = CollisionShapeFactory.createMeshCompoundShape((Node) gameLevel);
+        CollisionShape levelShape = CollisionShapeFactory.createMeshShape((Node) gameLevel);
 
         PhysicsNode levelNode = new PhysicsNode(gameLevel, levelShape, 0);
         player = new PhysicsCharacterNode(new SphereCollisionShape(5), .01f);
