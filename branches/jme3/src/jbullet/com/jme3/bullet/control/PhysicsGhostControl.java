@@ -76,7 +76,8 @@ public class PhysicsGhostControl extends PhysicsGhostObject implements PhysicsCo
 
     public void render(RenderManager rm, ViewPort vp) {
         if (debugShape != null && enabled) {
-            debugShape.setLocalTransform(spatial.getWorldTransform());
+            debugShape.setLocalTranslation(getPhysicsLocation());
+            debugShape.setLocalRotation(getPhysicsRotation());
             debugShape.updateLogicalState(0);
             debugShape.updateGeometricState();
             rm.renderScene(debugShape, vp);
