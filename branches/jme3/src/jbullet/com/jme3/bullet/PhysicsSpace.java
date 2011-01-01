@@ -408,22 +408,26 @@ public class PhysicsSpace {
      * @param obj the PhyiscsNode, PhysicsGhostNode or PhysicsJoint to add
      */
     public void add(Object obj) {
-        if (obj instanceof Spatial) {
+        if (obj instanceof PhysicsControl) {
+            ((PhysicsControl) obj).setPhysicsSpace(this);
+        } else if (obj instanceof Spatial) {
             Spatial node = (Spatial) obj;
             PhysicsControl control = node.getControl(PhysicsControl.class);
             control.setPhysicsSpace(this);
-        } else if (obj instanceof PhysicsGhostObject) {
+        } else if (obj instanceof PhysicsCollisionObject) {
+            addCollisionObject((PhysicsCollisionObject) obj);
+        } else {
+            throw (new UnsupportedOperationException("Cannot add this kind of object to the physics space."));
+        }
+    }
+
+    public void addCollisionObject(PhysicsCollisionObject obj) {
+        if (obj instanceof PhysicsGhostObject) {
             addGhostNode((PhysicsGhostObject) obj);
         } else if (obj instanceof PhysicsRigidBody) {
             addNode((PhysicsRigidBody) obj);
-        } else if (obj instanceof PhysicsJoint) {
-            addJoint((PhysicsJoint) obj);
         } else if (obj instanceof PhysicsVehicle) {
             addNode((PhysicsVehicle) obj);
-        } else if (obj instanceof PhysicsControl) {
-            ((PhysicsControl)obj).setPhysicsSpace(this);
-        } else {
-            throw (new UnsupportedOperationException("Cannot add this kind of object to the physics space."));
         }
     }
 
@@ -432,22 +436,24 @@ public class PhysicsSpace {
      * @param obj the PhyiscsNode, PhysicsGhostNode or PhysicsJoint to remove
      */
     public void remove(Object obj) {
-        if (obj instanceof Spatial) {
+        if (obj instanceof PhysicsControl) {
+            ((PhysicsControl) obj).setPhysicsSpace(null);
+        } else if (obj instanceof Spatial) {
             Spatial node = (Spatial) obj;
             PhysicsControl control = node.getControl(PhysicsControl.class);
             control.setPhysicsSpace(null);
-        } else if (obj instanceof GhostObject) {
+        } else if (obj instanceof PhysicsCollisionObject) {
+            removeCollisionObject((PhysicsCollisionObject) obj);
+        } else {
+            throw (new UnsupportedOperationException("Cannot remove this kind of object from the physics space."));
+        }
+    }
+
+    public void removeCollisionObject(PhysicsCollisionObject obj) {
+        if (obj instanceof PhysicsGhostObject) {
             removeGhostNode((PhysicsGhostObject) obj);
         } else if (obj instanceof PhysicsRigidBody) {
             removeNode((PhysicsRigidBody) obj);
-        } else if (obj instanceof PhysicsJoint) {
-            removeJoint((PhysicsJoint) obj);
-        } else if (obj instanceof PhysicsVehicle) {
-            removeNode((PhysicsVehicle) obj);
-        } else if (obj instanceof PhysicsControl) {
-            ((PhysicsControl)obj).setPhysicsSpace(null);
-        } else {
-            throw (new UnsupportedOperationException("Cannot remove this kind of object from the physics space."));
         }
     }
 

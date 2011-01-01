@@ -92,10 +92,10 @@ public class PhysicsCharacterControl extends PhysicsCharacter implements Physics
     public void setPhysicsSpace(PhysicsSpace space) {
         if (space == null) {
             if (this.space != null) {
-                this.space.remove(this);
+                this.space.removeCollisionObject(this);
             }
         } else {
-            space.add(this);
+            space.addCollisionObject(this);
         }
         this.space = space;
     }

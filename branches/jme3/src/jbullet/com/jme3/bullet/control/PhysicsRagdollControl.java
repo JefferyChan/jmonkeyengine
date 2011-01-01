@@ -94,6 +94,10 @@ public class PhysicsRagdollControl implements PhysicsControl {
         logger.log(Level.INFO, "Create physics ragdoll for skeleton {0}", skeleton);
     }
 
+    public void addBoneName(String name) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
     private void scanSpatial(Spatial model) {
         AnimControl animControl = model.getControl(AnimControl.class);
 
