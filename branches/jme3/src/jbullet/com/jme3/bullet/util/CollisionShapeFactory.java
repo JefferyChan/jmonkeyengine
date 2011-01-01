@@ -94,7 +94,7 @@ public class CollisionShapeFactory {
      * Examples include terrain, houses or whole shooter levels.<br>
      * Objects with "mesh" type collision shape will not collide with each other.
      */
-    public static CompoundCollisionShape createMeshCompoundShape(Node rootNode) {
+    private static CompoundCollisionShape createMeshCompoundShape(Node rootNode) {
         return createCompoundShape(rootNode, new CompoundCollisionShape(), true);
     }
 
@@ -104,7 +104,7 @@ public class CollisionShapeFactory {
      * @param rootNode
      * @return
      */
-    public static CompoundCollisionShape createBoxCompoundShape(Node rootNode) {
+    private static CompoundCollisionShape createBoxCompoundShape(Node rootNode) {
         return createCompoundShape(rootNode, new CompoundCollisionShape(), false);
     }
 

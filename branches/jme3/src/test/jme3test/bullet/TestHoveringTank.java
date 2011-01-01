@@ -173,17 +173,13 @@ public class TestHoveringTank extends SimpleApplication implements AnalogListene
         physMissile.setLocalTranslation(pos.addLocal(0, extent.y * 4.5f, 0));
 
         physMissile.clearForces();
-        physMissile.applyForce(dir.mult(50000), Vector3f.ZERO);
-        physMissile.setRestitution(0); // do not bounce
-        physMissile.setLinearDamping(0);
-        physMissile.setAngularDamping(1); // prevent rotation
+        physMissile.setLinearVelocity(dir.mult(100));
         physMissile.setCollisionGroup(PhysicsCollisionObject.COLLISION_GROUP_03);
 
         physMissile.setShadowMode(ShadowMode.CastAndReceive);
 
         rootNode.attachChild(physMissile);
         getPhysicsSpace().add(physMissile);
-        physMissile.setGravity(Vector3f.ZERO);
     }
 
     public void onAnalog(String binding, float value, float tpf) {
