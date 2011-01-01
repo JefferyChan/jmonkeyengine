@@ -255,7 +255,7 @@ void main(void){
                     vec3 mirrorEye = (2.0 * dot(eyeVecNorm, normal) * normal - eyeVecNorm);
                     float dotSpec = saturate(dot(mirrorEye.xyz, -lightDir) * 0.5 + 0.5);
                     specular = vec3((1.0 - fresnel) * saturate(-lightDir.y) * ((pow(dotSpec, 512.0)) * (m_Shininess * 1.8 + 0.2)));
-                    specular += specular * 25 * saturate(m_Shininess - 0.05);
+                    specular += specular * 25.0 * saturate(m_Shininess - 0.05);
                     //foam does not shine
                     specular=specular * m_LightColor.rgb - (5.0 * foam);
 
