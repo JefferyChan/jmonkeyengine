@@ -73,6 +73,7 @@ public abstract class AbstractCinematicEvent implements CinematicEvent, Savable 
     public AbstractCinematicEvent(float initialDuration, LoopMode loopMode) {
         this.initialDuration = initialDuration;
         this.loopMode = loopMode;
+        duration = initialDuration / speed;
     }
 
     public void play() {

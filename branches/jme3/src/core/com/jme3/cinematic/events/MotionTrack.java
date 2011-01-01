@@ -120,11 +120,10 @@ public class MotionTrack extends AbstractCinematicEvent implements Control {
      * @param path
      */
     public MotionTrack(Spatial spatial, MotionPath path, float initialDuration) {
-        super();
+        super(initialDuration);
         this.spatial = spatial;
         spatial.addControl(this);
-        this.path = path;
-        this.initialDuration = initialDuration;
+        this.path = path;        
     }
 
     /**
@@ -146,11 +145,10 @@ public class MotionTrack extends AbstractCinematicEvent implements Control {
      * @param path
      */
     public MotionTrack(Spatial spatial, MotionPath path, float initialDuration, LoopMode loopMode) {
-        super();
+        super(initialDuration);
         this.spatial = spatial;
         spatial.addControl(this);
-        this.path = path;
-        this.initialDuration = initialDuration;
+        this.path = path;       
         this.loopMode = loopMode;
     }
 
