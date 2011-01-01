@@ -45,10 +45,25 @@ const float visibility = 3.0;
 
 varying vec2 texCoord;
 
+mat3 mat3Transpose(mat3 mat){
+  float tmp = mat[1].x;
+        mat[1].x = mat[0].y;
+        mat[0].y = tmp;
+
+        tmp = mat[2].x;
+        mat[2].x = mat[0].z;
+        mat[0].z = tmp;
+
+        tmp = mat[2].y;
+        mat[2].y = mat[1].z;
+        mat[1].z = tmp;
+        return mat;
+}
+
 mat3 MatrixInverse(in mat3 inMatrix)
 {  
    float det = dot(cross(inMatrix[0], inMatrix[1]), inMatrix[2]);
-   mat3 T = transpose(inMatrix);
+   mat3 T = mat3Transpose(inMatrix);
    return mat3(cross(T[1], T[2]),
                cross(T[2], T[0]),
                cross(T[0], T[1])) / det;
@@ -170,7 +185,7 @@ void main(void){
 
                     texC = surfacePoint.xz * 0.8 + m_WindDirection * m_Time* 1.6;
                     mat3 tangentFrame = computeTangentFrame(myNormal, eyeVecNorm, texC);
-                    vec3 normal0a = normalize(tangentFrame*(2.0f * texture2D(m_NormalMap, texC).xyz - 1.0));
+                    vec3 normal0a = normalize(tangentFrame*(2.0 * texture2D(m_NormalMap, texC).xyz - 1.0));
 
                     texC = surfacePoint.xz * 0.4 + m_WindDirection * m_Time* 0.8;
                     tangentFrame = computeTangentFrame(myNormal, eyeVecNorm, texC);
