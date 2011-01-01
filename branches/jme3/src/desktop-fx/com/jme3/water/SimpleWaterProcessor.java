@@ -91,7 +91,7 @@ public class SimpleWaterProcessor implements SceneProcessor {
     private Picture dispDepth;
     private Plane reflectionClipPlane;
     private Plane refractionClipPlane;
-    private float refractionClippingOffset = -0.3f;
+    private float refractionClippingOffset = 0.3f;
     private float reflectionClippingOffset = -5f;
 
     public SimpleWaterProcessor(AssetManager manager) {
@@ -212,8 +212,8 @@ public class SimpleWaterProcessor implements SceneProcessor {
     }
 
     protected void loadTextures(AssetManager manager) {
-        normalTexture = (Texture2D) manager.loadTexture("Textures/Water/gradient_map.jpg");
-        dudvTexture = (Texture2D) manager.loadTexture("Textures/Water/dudv_map.jpg");
+        normalTexture = (Texture2D) manager.loadTexture("Common/MatDefs/Water/Textures/gradient_map.jpg");
+        dudvTexture = (Texture2D) manager.loadTexture("Common/MatDefs/Water/Textures/dudv_map.jpg");
         normalTexture.setWrap(WrapMode.Repeat);
         dudvTexture.setWrap(WrapMode.Repeat);
     }
@@ -248,7 +248,7 @@ public class SimpleWaterProcessor implements SceneProcessor {
 
         //set viewport to render to offscreen framebuffer
         reflectionView.setOutputFrameBuffer(reflectionBuffer);
-        reflectionView.addProcessor(new ReflectionProcessor());
+        reflectionView.addProcessor(new ReflectionProcessor(reflectionCam, reflectionBuffer, reflectionClipPlane));
         // attach the scene to the viewport to be rendered
         reflectionView.attachScene(reflectionScene);
 
@@ -450,6 +450,7 @@ public class SimpleWaterProcessor implements SceneProcessor {
      */
     public void setReflectionClippingOffset(float reflectionClippingOffset) {
         this.reflectionClippingOffset = reflectionClippingOffset;
+        updateClipPlanes();
     }
 
     /**
@@ -467,56 +468,12 @@ public class SimpleWaterProcessor implements SceneProcessor {
      */
     public void setRefractionClippingOffset(float refractionClippingOffset) {
         this.refractionClippingOffset = refractionClippingOffset;
+        updateClipPlanes();
     }
 
 
 
-    /**
-     * Reflection Processor
-     */
-    public class ReflectionProcessor implements SceneProcessor {
-
-        RenderManager rm;
-        ViewPort vp;
-
-        public void initialize(RenderManager rm, ViewPort vp) {
-            this.rm = rm;
-            this.vp = vp;
-        }
-
-        public void reshape(ViewPort vp, int w, int h) {
-        }
-
-        public boolean isInitialized() {
-            return rm != null;
-        }
-
-        public void preFrame(float tpf) {
-        }
-
-        public void postQueue(RenderQueue rq) {
-            //we need special treatement for the sky because it must not be clipped
-            rm.getRenderer().setFrameBuffer(reflectionBuffer);
-            reflectionCam.setProjectionMatrix(null);
-            rm.setCamera(reflectionCam, false);
-            rm.getRenderer().clearBuffers(true, true, true);
-            //Rendering the sky whithout clipping
-            rm.getRenderer().setDepthRange(1, 1);
-            vp.getQueue().renderQueue(RenderQueue.Bucket.Sky, rm, reflectionCam, true);
-            rm.getRenderer().setDepthRange(0, 1);
-            //setting the clip plane to the cam
-            reflectionCam.setClipPlane(reflectionClipPlane, Plane.Side.Positive);//,1
-            rm.setCamera(reflectionCam, false);
-
-        }
-
-        public void postFrame(FrameBuffer out) {
-        }
-
-        public void cleanup() {
-        }
-    }
-
+  
     /**
      * Refraction Processor
      */
