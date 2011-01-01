@@ -79,12 +79,7 @@ public class PhysicsVehicle extends PhysicsRigidBody {
 
     public PhysicsVehicle(CollisionShape shape) {
         super(shape);
-    }
-
-    @Override
-    public void updatePhysicsState() {
-        super.updatePhysicsState();
-        updateWheels();
+        motionState.setVehicle(this);
     }
 
     /**
@@ -534,6 +529,7 @@ public class PhysicsVehicle extends PhysicsRigidBody {
         tuning.suspensionCompression = capsule.readFloat("suspensionCompression", 0.83f);
         tuning.suspensionDamping = capsule.readFloat("suspensionDamping", 0.88f);
         tuning.suspensionStiffness = capsule.readFloat("suspensionStiffness", 5.88f);
+        motionState.setVehicle(this);
         super.read(im);
     }
 

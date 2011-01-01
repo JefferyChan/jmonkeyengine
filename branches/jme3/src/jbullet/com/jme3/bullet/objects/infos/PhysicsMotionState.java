@@ -34,6 +34,7 @@ package com.jme3.bullet.objects.infos;
 import com.bulletphysics.linearmath.MotionState;
 import com.bulletphysics.linearmath.Transform;
 import com.jme3.bullet.nodes.PhysicsBaseNode;
+import com.jme3.bullet.objects.PhysicsVehicle;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.bullet.util.Converter;
@@ -59,6 +60,7 @@ public class PhysicsMotionState extends MotionState {
     private boolean jmeLocationDirty = false;
     //temp variable for conversion
     private Quaternion tmp_inverseWorldRotation = new Quaternion();
+    protected PhysicsVehicle vehicle;
 
     public PhysicsMotionState() {
     }
@@ -86,6 +88,9 @@ public class PhysicsMotionState extends MotionState {
         Converter.convert(worldTrans.basis, worldRotation);
         worldRotationQuat.fromRotationMatrix(worldRotation);
         physicsLocationDirty = true;
+        if (vehicle != null) {
+            vehicle.updateWheels();
+        }
     }
 
     /**
@@ -96,11 +101,10 @@ public class PhysicsMotionState extends MotionState {
         if (!physicsLocationDirty) {
             return false;
         }
-        if(spatial instanceof PhysicsBaseNode){
-            ((PhysicsBaseNode)spatial).setWorldRotation(worldRotationQuat);
-            ((PhysicsBaseNode)spatial).setWorldTranslation(worldLocation);
-        }
-        else if(spatial.getParent() != null) {
+        if (spatial instanceof PhysicsBaseNode) {
+            ((PhysicsBaseNode) spatial).setWorldRotation(worldRotationQuat);
+            ((PhysicsBaseNode) spatial).setWorldTranslation(worldLocation);
+        } else if (spatial.getParent() != null) {
             localLocation.set(worldLocation).subtractLocal(spatial.getParent().getWorldTranslation());
             localLocation.divideLocal(spatial.getParent().getWorldScale());
             tmp_inverseWorldRotation.set(spatial.getParent().getWorldRotation()).inverseLocal().multLocal(localLocation);
@@ -139,6 +143,12 @@ public class PhysicsMotionState extends MotionState {
         return worldRotationQuat;
     }
 
+    /**
+     * @param vehicle the vehicle to set
+     */
+    public void setVehicle(PhysicsVehicle vehicle) {
+        this.vehicle = vehicle;
+    }
 //    public synchronized boolean applyTransform(com.jme3.math.Transform trans) {
 //        if (!physicsLocationDirty) {
 //            return false;
@@ -176,5 +186,4 @@ public class PhysicsMotionState extends MotionState {
 //        rBody.activate();
 //        jmeLocationDirty = false;
 //    }
-
 }

@@ -81,9 +81,6 @@ public abstract class PhysicsCollisionObject implements Savable {
     protected int collisionGroupsMask = 0x00000001;
     private Object userObject;
 
-    public void updatePhysicsState() {
-    }
-
     /**
      * Sets a CollisionShape to this physics object, note that the object should
      * not be in the physics space when adding a new collision shape as it is rebuilt
