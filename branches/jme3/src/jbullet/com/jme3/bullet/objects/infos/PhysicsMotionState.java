@@ -149,6 +149,7 @@ public class PhysicsMotionState extends MotionState {
     public void setVehicle(PhysicsVehicle vehicle) {
         this.vehicle = vehicle;
     }
+
 //    public synchronized boolean applyTransform(com.jme3.math.Transform trans) {
 //        if (!physicsLocationDirty) {
 //            return false;
@@ -159,19 +160,19 @@ public class PhysicsMotionState extends MotionState {
 //        return true;
 //    }
 //    
-    /**
-     * called from jme when the location of the jme Node changes
-     * @param location
-     * @param rotation
-     */
-    public synchronized void setWorldTransform(Vector3f location, Quaternion rotation) {
-        worldLocation.set(location);
-        worldRotationQuat.set(rotation);
-        worldRotation.set(rotation.toRotationMatrix());
-        Converter.convert(worldLocation, motionStateTrans.origin);
-        Converter.convert(worldRotation, motionStateTrans.basis);
+//    /**
+//     * called from jme when the location of the jme Node changes
+//     * @param location
+//     * @param rotation
+//     */
+//    public synchronized void setWorldTransform(Vector3f location, Quaternion rotation) {
+//        worldLocation.set(location);
+//        worldRotationQuat.set(rotation);
+//        worldRotation.set(rotation.toRotationMatrix());
+//        Converter.convert(worldLocation, motionStateTrans.origin);
+//        Converter.convert(worldRotation, motionStateTrans.basis);
 //        jmeLocationDirty = true;
-    }
+//    }
 //
 //    /**
 //     * applies the current transform to the given RigidBody if the value has been changed on the jme side

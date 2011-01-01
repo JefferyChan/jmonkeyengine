@@ -1,7 +1,10 @@
 package com.jme3.bullet.control;
 
+import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.Bone;
+import com.jme3.animation.BoneAnimation;
+import com.jme3.animation.BoneTrack;
 import com.jme3.animation.Skeleton;
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.PhysicsSpace;
@@ -93,31 +96,37 @@ public class PhysicsRagdollControl implements PhysicsControl {
 
     private void scanSpatial(Spatial model) {
         AnimControl animControl = model.getControl(AnimControl.class);
+
         skeleton = animControl.getSkeleton();
         skeleton.resetAndUpdate();
         for (int i = 0; i < skeleton.getBoneCount(); i++) {
             Bone childBone = skeleton.getBone(i);
             childBone.setUserControl(true);
             if (childBone.getParent() == null) {
-                Vector3f parentPos = childBone.getModelSpacePosition();
+                Vector3f parentPos = childBone.getModelSpacePosition().add(model.getWorldTranslation());
                 logger.log(Level.INFO, "Found root bone in skeleton {0}", skeleton);
-                baseRigidBody = new PhysicsRigidBody(new BoxCollisionShape(Vector3f.UNIT_XYZ.multLocal(.1f)), 1);
+                baseRigidBody = new PhysicsRigidBody(new BoxCollisionShape(Vector3f.UNIT_XYZ.mult(.1f)), 1);
                 baseRigidBody.setPhysicsLocation(parentPos);
-                boneLinks = boneRecursion(childBone, baseRigidBody, boneLinks, 1);
+                boneLinks = boneRecursion(model, childBone, baseRigidBody, boneLinks, 1);
                 return;
             }
 
         }
+        BoneAnimation myAnimation=new BoneAnimation("boneAnimation",1000000);
+        myAnimation.setTracks(new BoneTrack[0]);
+        animControl.addAnim(myAnimation);
+        animControl.createChannel().setAnim("boneAnimation");
+
     }
 
-    private List<PhysicsBoneLink> boneRecursion(Bone bone, PhysicsRigidBody parent, List<PhysicsBoneLink> list, int reccount) {
+    private List<PhysicsBoneLink> boneRecursion(Spatial model, Bone bone, PhysicsRigidBody parent, List<PhysicsBoneLink> list, int reccount) {
         ArrayList<Bone> children = bone.getChildren();
         bone.setUserControl(true);
         for (Iterator<Bone> it = children.iterator(); it.hasNext();) {
             Bone childBone = it.next();
             Bone parentBone = bone;
-            Vector3f parentPos = parentBone.getModelSpacePosition();
-            Vector3f childPos = childBone.getModelSpacePosition();
+            Vector3f parentPos = parentBone.getModelSpacePosition().add(model.getWorldTranslation());
+            Vector3f childPos = childBone.getModelSpacePosition().add(model.getWorldTranslation());
             //get location between the two bones (physicscapsule center)
             Vector3f jointCenter = parentPos.add(childPos).multLocal(0.5f);
             tmp_jointRotation.lookAt(childPos.subtract(parentPos), Vector3f.UNIT_Y);
@@ -125,7 +134,7 @@ public class PhysicsRagdollControl implements PhysicsControl {
             float height = parentPos.distance(childPos);
 
             // TODO: joints act funny when bone is too thin??
-            CapsuleCollisionShape shape = new CapsuleCollisionShape(0.4f, height * .5f, 2);
+            CapsuleCollisionShape shape = new CapsuleCollisionShape(height>2f?0.4f:height*.2f, height * .5f, 2);
 
             PhysicsRigidBody shapeNode = new PhysicsRigidBody(shape, 10.0f / (float) reccount);
             shapeNode.setPhysicsLocation(jointCenter);
@@ -142,7 +151,7 @@ public class PhysicsRagdollControl implements PhysicsControl {
                 //get length of parent
                 float parentHeight = 0.0f;
                 if (bone.getParent() != null) {
-                    parentHeight = bone.getParent().getLocalPosition().distance(parentPos);
+                    parentHeight = bone.getParent().getModelSpacePosition().add(model.getWorldTranslation()).distance(parentPos);
                 }
                 //local position from parent
                 link.pivotA = new Vector3f(0, 0, (parentHeight * .5f));
@@ -156,7 +165,7 @@ public class PhysicsRagdollControl implements PhysicsControl {
                 joint.setCollisionBetweenLinkedBodys(false);
             }
             list.add(link);
-            boneRecursion(childBone, shapeNode, list, reccount++);
+            boneRecursion(model, childBone, shapeNode, list, reccount++);
         }
         return list;
     }
@@ -204,11 +213,6 @@ public class PhysicsRagdollControl implements PhysicsControl {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
-        if (!enabled) {
-            removeFromPhysicsSpace();
-        } else {
-            addToPhysicsSpace();
-        }
     }
 
     public boolean isEnabled() {
