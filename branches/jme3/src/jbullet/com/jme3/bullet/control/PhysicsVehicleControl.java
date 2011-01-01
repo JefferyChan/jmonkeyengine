@@ -53,6 +53,11 @@ public class PhysicsVehicleControl extends PhysicsVehicle implements PhysicsCont
     public void setSpatial(Spatial spatial) {
         this.spatial = spatial;
         setUserObject(spatial);
+        if (spatial == null) {
+            return;
+        }
+        setPhysicsLocation(spatial.getWorldTranslation());
+        setPhysicsRotation(spatial.getWorldRotation().toRotationMatrix());
     }
 
     public void setEnabled(boolean enabled) {

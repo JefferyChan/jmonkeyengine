@@ -73,14 +73,8 @@ public class PhysicsRigidBody extends PhysicsCollisionObject {
     protected javax.vecmath.Vector3f tempVec2 = new javax.vecmath.Vector3f();
     protected Transform tempTrans = new Transform(new javax.vecmath.Matrix3f());
     protected javax.vecmath.Matrix3f tempMatrix = new javax.vecmath.Matrix3f();
-    //jme-specific
-    protected Vector3f continuousForce = new Vector3f();
-    protected Vector3f continuousForceLocation = new Vector3f();
-    protected Vector3f continuousTorque = new Vector3f();
     //TEMP VARIABLES
     protected javax.vecmath.Vector3f localInertia = new javax.vecmath.Vector3f();
-    protected boolean applyForce = false;
-    protected boolean applyTorque = false;
     protected ArrayList<PhysicsJoint> joints = new ArrayList<PhysicsJoint>();
 
     public PhysicsRigidBody() {
@@ -140,25 +134,6 @@ public class PhysicsRigidBody extends PhysicsCollisionObject {
             rBody.setCollisionFlags(rBody.getCollisionFlags() | CollisionFlags.STATIC_OBJECT);
         } else {
             rBody.setCollisionFlags(rBody.getCollisionFlags() & ~CollisionFlags.STATIC_OBJECT);
-        }
-    }
-
-    /**
-     * Only to be called from physics thread!!
-     */
-    @Override
-    public void updatePhysicsState() {
-        if (rebuildBody) {
-            rebuildRigidBody();
-        }
-        motionState.applyTransform(rBody);
-        synchronized (this) {
-            if (applyForce) {
-                rBody.applyForce(Converter.convert(continuousForce, tempVec), Converter.convert(continuousForceLocation, tempVec2));
-            }
-            if (applyTorque) {
-                rBody.applyTorque(Converter.convert(continuousTorque, tempVec));
-            }
         }
     }
 
@@ -405,132 +380,6 @@ public class PhysicsRigidBody extends PhysicsCollisionObject {
     }
 
     /**
-     * Get the currently applied continuous force
-     * @param vec the vector to store the continuous force in
-     * @return null if no force is applied
-     */
-    public synchronized Vector3f getContinuousForce(Vector3f vec) {
-        if (applyForce) {
-            return vec.set(continuousForce);
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * get the currently applied continuous force
-     * @return null if no force is applied
-     */
-    public synchronized Vector3f getContinuousForce() {
-        if (applyForce) {
-            return continuousForce;
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * Get the currently applied continuous force location
-     * @return null if no force is applied
-     */
-    public synchronized Vector3f getContinuousForceLocation() {
-        if (applyForce) {
-            return continuousForceLocation;
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * Apply a continuous force to this PhysicsNode, the force is updated automatically each
-     * tick so you only need to set it once and then set it to false to stop applying
-     * the force.
-     * @param apply true if the force should be applied each physics tick
-     * @param force the vector of the force to apply
-     */
-    public synchronized void applyContinuousForce(boolean apply, Vector3f force) {
-        if (force != null) {
-            continuousForce.set(force);
-        }
-        continuousForceLocation.set(0, 0, 0);
-        applyForce = apply;
-
-    }
-
-    /**
-     * Apply a continuous force to this PhysicsNode, the force is updated automatically each
-     * tick so you only need to set it once and then set it to false to stop applying
-     * the force.
-     * @param apply true if the force should be applied each physics tick
-     * @param force the offset of the force
-     */
-    public synchronized void applyContinuousForce(boolean apply, Vector3f force, Vector3f location) {
-        if (force != null) {
-            continuousForce.set(force);
-        }
-        if (location != null) {
-            continuousForceLocation.set(location);
-        }
-        applyForce = apply;
-
-    }
-
-    /**
-     * Use to enable/disable continuous force
-     * @param apply set to false to disable
-     */
-    public synchronized void applyContinuousForce(boolean apply) {
-        applyForce = apply;
-    }
-
-    /**
-     * Get the currently applied continuous torque
-     * @return null if no torque is applied
-     */
-    public synchronized Vector3f getContinuousTorque() {
-        if (applyTorque) {
-            return continuousTorque;
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * Get the currently applied continuous torque
-     * @param vec the vector to store the continuous torque in
-     * @return null if no torque is applied
-     */
-    public synchronized Vector3f getContinuousTorque(Vector3f vec) {
-        if (applyTorque) {
-            return vec.set(continuousTorque);
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * Apply a continuous torque to this PhysicsNode. The torque is updated automatically each
-     * tick so you only need to set it once and then set it to false to stop applying
-     * the torque.
-     * @param apply true if the force should be applied each physics tick
-     * @param vec the vector of the force to apply
-     */
-    public synchronized void applyContinuousTorque(boolean apply, Vector3f vec) {
-        if (vec != null) {
-            continuousTorque.set(vec);
-        }
-        applyTorque = apply;
-    }
-
-    /**
-     * Use to enable/disable continuous torque
-     * @param apply set to false to disable
-     */
-    public synchronized void applyContinuousTorque(boolean apply) {
-        applyTorque = apply;
-    }
-
-    /**
      * Apply a force to the PhysicsNode, only applies force if the next physics update call
      * updates the physics space.<br>
      * To apply an impulse, use applyImpulse, use applyContinuousForce to apply continuous force.
@@ -725,11 +574,11 @@ public class PhysicsRigidBody extends PhysicsCollisionObject {
         capsule.write(constructionInfo.linearSleepingThreshold, "linearSleepingThreshold", 0.8f);
         capsule.write(constructionInfo.angularSleepingThreshold, "angularSleepingThreshold", 1.0f);
 
-        capsule.write(continuousForce, "continuousForce", Vector3f.ZERO);
-        capsule.write(continuousForceLocation, "continuousForceLocation", Vector3f.ZERO);
-        capsule.write(continuousTorque, "continuousTorque", Vector3f.ZERO);
-        capsule.write(applyForce, "applyForce", false);
-        capsule.write(applyTorque, "applyTorque", false);
+//        capsule.write(continuousForce, "continuousForce", Vector3f.ZERO);
+//        capsule.write(continuousForceLocation, "continuousForceLocation", Vector3f.ZERO);
+//        capsule.write(continuousTorque, "continuousTorque", Vector3f.ZERO);
+//        capsule.write(applyForce, "applyForce", false);
+//        capsule.write(applyTorque, "applyTorque", false);
 
         capsule.write(getPhysicsLocation(new Vector3f()), "physicsLocation", new Vector3f());
         capsule.write(getPhysicsRotation(new Matrix3f()), "physicsRotation", new Matrix3f());
@@ -756,12 +605,12 @@ public class PhysicsRigidBody extends PhysicsCollisionObject {
         setSleepingThresholds(capsule.readFloat("linearSleepingThreshold", 0.8f), capsule.readFloat("angularSleepingThreshold", 1.0f));
 
 
-        continuousForce = (Vector3f) capsule.readSavable("continuousForce", Vector3f.ZERO.clone());
-        continuousForceLocation = (Vector3f) capsule.readSavable("continuousForceLocation", Vector3f.ZERO.clone());
-        applyForce = capsule.readBoolean("applyForce", false);
-
-        continuousTorque = (Vector3f) capsule.readSavable("continuousTorque", Vector3f.ZERO.clone());
-        applyTorque = capsule.readBoolean("applyTorque", false);
+//        continuousForce = (Vector3f) capsule.readSavable("continuousForce", Vector3f.ZERO.clone());
+//        continuousForceLocation = (Vector3f) capsule.readSavable("continuousForceLocation", Vector3f.ZERO.clone());
+//        applyForce = capsule.readBoolean("applyForce", false);
+//
+//        continuousTorque = (Vector3f) capsule.readSavable("continuousTorque", Vector3f.ZERO.clone());
+//        applyTorque = capsule.readBoolean("applyTorque", false);
 
         setPhysicsLocation((Vector3f) capsule.readSavable("physicsLocation", new Vector3f()));
         setPhysicsRotation((Matrix3f) capsule.readSavable("physicsRotation", new Matrix3f()));

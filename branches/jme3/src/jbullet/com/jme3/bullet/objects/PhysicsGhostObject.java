@@ -97,10 +97,6 @@ public class PhysicsGhostObject extends PhysicsCollisionObject {
         buildObject();
     }
 
-    @Override
-    public void updatePhysicsState() {
-    }
-
     /**
      * This is normally only needed when using detached physics
      * @param location the location of the actual physics object

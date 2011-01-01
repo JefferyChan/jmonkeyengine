@@ -55,6 +55,12 @@ import java.util.List;
  */
 public class PhysicsNode extends PhysicsBaseNode {
 
+    protected Vector3f continuousForce = new Vector3f();
+    protected Vector3f continuousForceLocation = new Vector3f();
+    protected Vector3f continuousTorque = new Vector3f();
+    protected boolean applyForce = false;
+    protected boolean applyTorque = false;
+
     public PhysicsNode() {
     }
 
@@ -319,13 +325,28 @@ public class PhysicsNode extends PhysicsBaseNode {
         ((PhysicsRigidBody)collisionObject).setLinearVelocity(vec);
     }
 
+    @Override
+    public void updateLogicalState(float tpf) {
+        super.updateLogicalState(tpf);
+        if (applyForce) {
+            ((PhysicsRigidBody)collisionObject).applyForce(continuousForce,continuousForceLocation);
+        }
+        if (applyTorque) {
+            ((PhysicsRigidBody)collisionObject).applyTorque(continuousTorque);
+        }
+    }
+
     /**
      * Get the currently applied continuous force
      * @param vec the vector to store the continuous force in
      * @return null if no force is applied
      */
     public synchronized Vector3f getContinuousForce(Vector3f vec) {
-        return ((PhysicsRigidBody)collisionObject).getContinuousForce(vec);
+        if (applyForce) {
+            return vec.set(continuousForce);
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -333,7 +354,11 @@ public class PhysicsNode extends PhysicsBaseNode {
      * @return null if no force is applied
      */
     public synchronized Vector3f getContinuousForce() {
-        return ((PhysicsRigidBody)collisionObject).getContinuousForce();
+        if (applyForce) {
+            return continuousForce;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -341,7 +366,11 @@ public class PhysicsNode extends PhysicsBaseNode {
      * @return null if no force is applied
      */
     public synchronized Vector3f getContinuousForceLocation() {
-        return ((PhysicsRigidBody)collisionObject).getContinuousForceLocation();
+        if (applyForce) {
+            return continuousForceLocation;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -352,7 +381,12 @@ public class PhysicsNode extends PhysicsBaseNode {
      * @param force the vector of the force to apply
      */
     public synchronized void applyContinuousForce(boolean apply, Vector3f force) {
-        ((PhysicsRigidBody)collisionObject).applyContinuousForce(apply, force);
+        if (force != null) {
+            continuousForce.set(force);
+        }
+        continuousForceLocation.set(0, 0, 0);
+        applyForce = apply;
+
     }
 
     /**
@@ -363,7 +397,14 @@ public class PhysicsNode extends PhysicsBaseNode {
      * @param force the offset of the force
      */
     public synchronized void applyContinuousForce(boolean apply, Vector3f force, Vector3f location) {
-        ((PhysicsRigidBody)collisionObject).applyContinuousForce(apply, force, location);
+        if (force != null) {
+            continuousForce.set(force);
+        }
+        if (location != null) {
+            continuousForceLocation.set(location);
+        }
+        applyForce = apply;
+
     }
 
     /**
@@ -371,7 +412,7 @@ public class PhysicsNode extends PhysicsBaseNode {
      * @param apply set to false to disable
      */
     public synchronized void applyContinuousForce(boolean apply) {
-        ((PhysicsRigidBody)collisionObject).applyContinuousForce(apply);
+        applyForce = apply;
     }
 
     /**
@@ -379,7 +420,11 @@ public class PhysicsNode extends PhysicsBaseNode {
      * @return null if no torque is applied
      */
     public synchronized Vector3f getContinuousTorque() {
-        return ((PhysicsRigidBody)collisionObject).getContinuousTorque();
+        if (applyTorque) {
+            return continuousTorque;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -388,7 +433,11 @@ public class PhysicsNode extends PhysicsBaseNode {
      * @return null if no torque is applied
      */
     public synchronized Vector3f getContinuousTorque(Vector3f vec) {
-        return ((PhysicsRigidBody)collisionObject).getContinuousTorque(vec);
+        if (applyTorque) {
+            return vec.set(continuousTorque);
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -399,7 +448,10 @@ public class PhysicsNode extends PhysicsBaseNode {
      * @param vec the vector of the force to apply
      */
     public synchronized void applyContinuousTorque(boolean apply, Vector3f vec) {
-        ((PhysicsRigidBody)collisionObject).applyContinuousTorque(apply, vec);
+        if (vec != null) {
+            continuousTorque.set(vec);
+        }
+        applyTorque = apply;
     }
 
     /**
@@ -407,8 +459,10 @@ public class PhysicsNode extends PhysicsBaseNode {
      * @param apply set to false to disable
      */
     public synchronized void applyContinuousTorque(boolean apply) {
-        ((PhysicsRigidBody)collisionObject).applyContinuousForce(apply);
+        applyTorque = apply;
     }
+
+
 
     /**
      * Apply a force to the PhysicsNode, only applies force if the next physics update call

@@ -31,7 +31,6 @@
  */
 package com.jme3.bullet.objects.infos;
 
-import com.bulletphysics.dynamics.RigidBody;
 import com.bulletphysics.linearmath.MotionState;
 import com.bulletphysics.linearmath.Transform;
 import com.jme3.bullet.nodes.PhysicsBaseNode;
@@ -50,10 +49,9 @@ public class PhysicsMotionState extends MotionState {
     //stores the bullet transform
 
     private Transform motionStateTrans = new Transform(Converter.convert(new Matrix3f()));
-    //stores jme transform info
-    private Vector3f worldLocation = new Vector3f();
-    private Matrix3f worldRotation = new Matrix3f();
-    private Quaternion worldRotationQuat = new Quaternion();
+    protected Vector3f worldLocation = new Vector3f();
+    protected Matrix3f worldRotation = new Matrix3f();
+    protected Quaternion worldRotationQuat = new Quaternion();
     private Vector3f localLocation = new Vector3f();
     private Quaternion localRotationQuat = new Quaternion();
     //keep track of transform changes
@@ -91,34 +89,6 @@ public class PhysicsMotionState extends MotionState {
     }
 
     /**
-     * called from jme when the location of the jme Node changes
-     * @param location
-     * @param rotation
-     */
-    public synchronized void setWorldTransform(Vector3f location, Quaternion rotation) {
-        worldLocation.set(location);
-        worldRotationQuat.set(rotation);
-        worldRotation.set(rotation.toRotationMatrix());
-        Converter.convert(worldLocation, motionStateTrans.origin);
-        Converter.convert(worldRotation, motionStateTrans.basis);
-        jmeLocationDirty = true;
-    }
-
-    /**
-     * applies the current transform to the given RigidBody if the value has been changed on the jme side
-     * @param rBody
-     */
-    public synchronized void applyTransform(RigidBody rBody) {
-        if (!jmeLocationDirty) {
-            return;
-        }
-        assert (rBody != null);
-        rBody.setWorldTransform(motionStateTrans);
-        rBody.activate();
-        jmeLocationDirty = false;
-    }
-
-    /**
      * applies the current transform to the given jme Node if the location has been updated on the physics side
      * @param spatial
      */
@@ -148,13 +118,63 @@ public class PhysicsMotionState extends MotionState {
         return true;
     }
 
-    public synchronized boolean applyTransform(com.jme3.math.Transform trans) {
-        if (!physicsLocationDirty) {
-            return false;
-        }
-        trans.setTranslation(worldLocation);
-        trans.setRotation(worldRotationQuat);
-        physicsLocationDirty = false;
-        return true;
+    /**
+     * @return the worldLocation
+     */
+    public Vector3f getWorldLocation() {
+        return worldLocation;
     }
+
+    /**
+     * @return the worldRotation
+     */
+    public Matrix3f getWorldRotation() {
+        return worldRotation;
+    }
+
+    /**
+     * @return the worldRotationQuat
+     */
+    public Quaternion getWorldRotationQuat() {
+        return worldRotationQuat;
+    }
+
+//    public synchronized boolean applyTransform(com.jme3.math.Transform trans) {
+//        if (!physicsLocationDirty) {
+//            return false;
+//        }
+//        trans.setTranslation(worldLocation);
+//        trans.setRotation(worldRotationQuat);
+//        physicsLocationDirty = false;
+//        return true;
+//    }
+//    
+//    /**
+//     * called from jme when the location of the jme Node changes
+//     * @param location
+//     * @param rotation
+//     */
+//    public synchronized void setWorldTransform(Vector3f location, Quaternion rotation) {
+//        worldLocation.set(location);
+//        worldRotationQuat.set(rotation);
+//        worldRotation.set(rotation.toRotationMatrix());
+//        Converter.convert(worldLocation, motionStateTrans.origin);
+//        Converter.convert(worldRotation, motionStateTrans.basis);
+//        jmeLocationDirty = true;
+//    }
+//
+//    /**
+//     * applies the current transform to the given RigidBody if the value has been changed on the jme side
+//     * @param rBody
+//     */
+//    public synchronized void applyTransform(RigidBody rBody) {
+//        if (!jmeLocationDirty) {
+//            return;
+//        }
+//        assert (rBody != null);
+//        rBody.setWorldTransform(motionStateTrans);
+//        rBody.activate();
+//        jmeLocationDirty = false;
+//    }
+
 }
