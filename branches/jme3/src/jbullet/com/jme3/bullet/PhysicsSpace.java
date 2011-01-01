@@ -432,6 +432,8 @@ public class PhysicsSpace {
             addJoint((PhysicsJoint) obj);
         } else if (obj instanceof PhysicsVehicle) {
             addNode((PhysicsVehicle) obj);
+        } else if (obj instanceof PhysicsControl) {
+            ((PhysicsControl)obj).setPhysicsSpace(this);
         } else {
             throw (new UnsupportedOperationException("Cannot add this kind of object to the physics space."));
         }
@@ -454,6 +456,8 @@ public class PhysicsSpace {
             removeJoint((PhysicsJoint) obj);
         } else if (obj instanceof PhysicsVehicle) {
             removeNode((PhysicsVehicle) obj);
+        } else if (obj instanceof PhysicsControl) {
+            ((PhysicsControl)obj).setPhysicsSpace(null);
         } else {
             throw (new UnsupportedOperationException("Cannot remove this kind of object from the physics space."));
         }

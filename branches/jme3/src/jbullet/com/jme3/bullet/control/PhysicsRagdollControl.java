@@ -87,7 +87,6 @@ public class PhysicsRagdollControl implements PhysicsControl {
         // put into bind pose and compute bone transforms in model space
         // maybe dont reset to ragdoll out of animations?
         scanSpatial(model);
-        addToPhysicsSpace();
 
         logger.log(Level.INFO, "Create physics ragdoll for skeleton {0}", skeleton);
     }
@@ -249,11 +248,12 @@ public class PhysicsRagdollControl implements PhysicsControl {
 
     public void setPhysicsSpace(PhysicsSpace space) {
         if (space == null) {
-            this.space.remove(this);
+            removeFromPhysicsSpace();
+            this.space = space;
         } else {
-            space.add(this);
+            this.space = space;
+            addToPhysicsSpace();
         }
-        this.space = space;
     }
 
     public void write(JmeExporter ex) throws IOException {

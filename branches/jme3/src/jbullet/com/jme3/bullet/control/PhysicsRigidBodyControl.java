@@ -80,7 +80,9 @@ public class PhysicsRigidBodyControl extends PhysicsRigidBody implements Physics
 
     public void setPhysicsSpace(PhysicsSpace space) {
         if (space == null) {
-            this.space.remove(this);
+            if (this.space != null) {
+                this.space.remove(this);
+            }
         } else {
             space.add(this);
         }

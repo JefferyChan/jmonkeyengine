@@ -85,7 +85,9 @@ public class PhysicsVehicleControl extends PhysicsVehicle implements PhysicsCont
 
     public void setPhysicsSpace(PhysicsSpace space) {
         if (space == null) {
-            this.space.remove(this);
+            if (this.space != null) {
+                this.space.remove(this);
+            }
         } else {
             space.add(this);
         }

@@ -82,11 +82,11 @@ public class TestBoneRagdoll  extends SimpleApplication {
         skeletonDebug.setMaterial(mat2);
 
         //Note: PhysicsRagdollControl is still TODO, constructor will change
-        PhysicsRagdollControl ragdoll = new PhysicsRagdollControl(getPhysicsSpace());
+        PhysicsRagdollControl ragdoll = new PhysicsRagdollControl();
         
         model.addControl(ragdoll);
         ragdoll.attachDebugShape(assetManager);
-
+        getPhysicsSpace().add(ragdoll);
         speed = .2f;
 
         rootNode.attachChild(model);
