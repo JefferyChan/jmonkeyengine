@@ -1,0 +1,27 @@
+MaterialDef Plain Texture {
+
+    MaterialParameters {
+        Texture2D m_ColorMap
+        Texture2D m_LightMap
+        Color m_Color
+        Boolean m_SeperateTexCoord
+    }
+
+    Technique {
+        VertexShader GLSL100:   Common/MatDefs/Misc/Unshaded.vert
+        FragmentShader GLSL100: Common/MatDefs/Misc/Unshaded.frag
+
+        WorldParameters {
+            WorldViewProjectionMatrix
+        }
+
+        Defines {
+            SEPERATE_TEXCOORD : m_SeperateTexCoord
+            HAS_LIGHTMAP : m_LightMap
+        }
+    }
+
+    Technique FixedFunc {
+    }
+
+}

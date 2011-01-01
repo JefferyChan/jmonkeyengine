@@ -98,10 +98,12 @@ public class TestFancyCar extends SimpleApplication implements ActionListener {
             bsr.setDirection(new Vector3f(-0.5f, -0.3f, -0.3f).normalizeLocal());
             viewPort.addProcessor(bsr);
         }
-        cam.setFrustumFar(50f);
+        cam.setFrustumFar(150f);
+        flyCam.setMoveSpeed(10);
 
         setupKeys();
         setupFloor();
+        setupRamp();
         buildPlayer();
 
         DirectionalLight dl = new DirectionalLight();
@@ -115,6 +117,22 @@ public class TestFancyCar extends SimpleApplication implements ActionListener {
 
     private PhysicsSpace getPhysicsSpace(){
         return bulletAppState.getPhysicsSpace();
+    }
+
+    public void setupRamp(){
+        Box ramp = new Box(5,10,1);
+        Geometry rampGeom = new Geometry("Floor", ramp);
+        rampGeom.setShadowMode(ShadowMode.Receive);
+
+        Material mat = assetManager.loadMaterial("Textures/Terrain/BrickWall/BrickWall.j3m");
+        rampGeom.setMaterial(mat);
+
+        PhysicsNode tb = new PhysicsNode(rampGeom, new MeshCollisionShape(rampGeom.getMesh()), 0);
+        tb.move(0, -5, -10);
+        tb.rotate(-FastMath.HALF_PI, 0, 0);
+        tb.rotate(FastMath.HALF_PI / 4f, 0, 0);
+        rootNode.attachChild(tb);
+        getPhysicsSpace().add(tb);
     }
 
     public void setupFloor() {
@@ -167,8 +185,8 @@ public class TestFancyCar extends SimpleApplication implements ActionListener {
         // put chasis in center, so that physics box matches up with it
         // also remove from parent to avoid transform issues
         chasis.removeFromParent();
-//        chasis.setLocalTranslation(Vector3f.UNIT_Y);
         chasis.setShadowMode(ShadowMode.Cast);
+
 
         HullCollisionShape carHull=new HullCollisionShape(chasis.getMesh());
 

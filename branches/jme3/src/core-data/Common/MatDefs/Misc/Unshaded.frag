@@ -1,0 +1,25 @@
+uniform vec4 m_Color;
+uniform sampler2D m_ColorMap;
+varying vec2 texCoord1;
+
+#ifdef HAS_LIGHTMAP
+    uniform sampler2D m_LightMap;
+    #ifdef SEPERATE_TEXCOORD
+        varying vec2 texCoord2;
+    #endif
+#endif
+
+void main(){
+
+    vec4 color = texture2D(m_ColorMap, texCoord1) * m_Color;
+
+    #ifdef HAS_LIGHTMAP
+        #ifdef SEPERATE_TEXCOORD
+            color.rgb *= texture2D(m_LightMap, texCoord2).rgb;
+        #else
+            color.rgb *= texture2D(m_LightMap, texCoord1).rgb;
+        #endif
+    #endif
+
+    gl_FragColor = color;
+}
