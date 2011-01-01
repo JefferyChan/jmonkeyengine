@@ -36,12 +36,11 @@ import com.jme3.bullet.BulletAppState;
 import com.jme3.app.SimpleApplication;
 import com.jme3.bounding.BoundingBox;
 import com.jme3.bullet.PhysicsSpace;
-import com.jme3.bullet.collision.shapes.CompoundCollisionShape;
 import com.jme3.bullet.collision.shapes.HullCollisionShape;
 import com.jme3.bullet.collision.shapes.MeshCollisionShape;
 import com.jme3.bullet.nodes.PhysicsNode;
 import com.jme3.bullet.nodes.PhysicsVehicleNode;
-import com.jme3.bullet.nodes.PhysicsVehicleWheel;
+import com.jme3.bullet.objects.PhysicsVehicleWheel;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
@@ -103,7 +102,7 @@ public class TestFancyCar extends SimpleApplication implements ActionListener {
 
         setupKeys();
         setupFloor();
-        setupRamp();
+//        setupRamp();
         buildPlayer();
 
         DirectionalLight dl = new DirectionalLight();
@@ -131,6 +130,7 @@ public class TestFancyCar extends SimpleApplication implements ActionListener {
         tb.move(0, -5, -10);
         tb.rotate(-FastMath.HALF_PI, 0, 0);
         tb.rotate(FastMath.HALF_PI / 4f, 0, 0);
+        tb.attachDebugShape(assetManager);
         rootNode.attachChild(tb);
         getPhysicsSpace().add(tb);
     }
@@ -139,9 +139,9 @@ public class TestFancyCar extends SimpleApplication implements ActionListener {
         Material mat = assetManager.loadMaterial("Textures/Terrain/BrickWall/BrickWall.j3m");
         mat.getTextureParam("m_DiffuseMap").getTextureValue().setWrap(WrapMode.Repeat);
         mat.getTextureParam("m_NormalMap").getTextureValue().setWrap(WrapMode.Repeat);
-        mat.getTextureParam("m_ParallaxMap").getTextureValue().setWrap(WrapMode.Repeat);
+//        mat.getTextureParam("m_ParallaxMap").getTextureValue().setWrap(WrapMode.Repeat);
         
-        Box floor = new Box(Vector3f.ZERO, 40, 1f, 40);
+        Box floor = new Box(Vector3f.ZERO, 140, 1f, 140);
         floor.scaleTextureCoordinates(new Vector2f(12.0f, 12.0f));
         Geometry floorGeom = new Geometry("Floor", floor);
         floorGeom.setShadowMode(ShadowMode.Receive);
@@ -149,6 +149,7 @@ public class TestFancyCar extends SimpleApplication implements ActionListener {
 
         PhysicsNode tb=new PhysicsNode(floorGeom,new MeshCollisionShape(floorGeom.getMesh()),0);
         tb.setLocalTranslation(new Vector3f(0f,-6,0f));
+        tb.attachDebugShape(assetManager);
         rootNode.attachChild(tb);
         getPhysicsSpace().add(tb);
     }
@@ -187,7 +188,7 @@ public class TestFancyCar extends SimpleApplication implements ActionListener {
         chasis.removeFromParent();
         chasis.setShadowMode(ShadowMode.Cast);
 
-
+        //Create a hull collision shape for the chassis
         HullCollisionShape carHull=new HullCollisionShape(chasis.getMesh());
 
         player = new PhysicsVehicleNode(chasis, carHull, mass);

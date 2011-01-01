@@ -35,6 +35,7 @@ package jme3test.bullet;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.PhysicsSpace;
+import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.collision.shapes.MeshCollisionShape;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.nodes.PhysicsNode;
@@ -78,7 +79,7 @@ public class TestCollisionGroups extends SimpleApplication{
         PhysicsNode physicsSphere2=new PhysicsNode(physicsSphere.getCollisionShape(),1);
         physicsSphere2.setLocalTranslation(new Vector3f(4,8,0));
         physicsSphere2.attachDebugShape(mat2);
-        physicsSphere2.addCollideWithGroup(PhysicsNode.COLLISION_GROUP_02);
+        physicsSphere2.addCollideWithGroup(PhysicsCollisionObject.COLLISION_GROUP_02);
         rootNode.attachChild(physicsSphere2);
         getPhysicsSpace().add(physicsSphere2);
 
@@ -86,8 +87,8 @@ public class TestCollisionGroups extends SimpleApplication{
         PhysicsNode node2=new PhysicsNode(new MeshCollisionShape(new Sphere(16,16,1.2f)),0);
         node2.setLocalTranslation(new Vector3f(2.5f,-4,0f));
         node2.attachDebugShape(mat);
-        node2.setCollisionGroup(PhysicsNode.COLLISION_GROUP_02);
-        node2.setCollideWithGroups(PhysicsNode.COLLISION_GROUP_02);
+        node2.setCollisionGroup(PhysicsCollisionObject.COLLISION_GROUP_02);
+        node2.setCollideWithGroups(PhysicsCollisionObject.COLLISION_GROUP_02);
         rootNode.attachChild(node2);
         getPhysicsSpace().add(node2);
 

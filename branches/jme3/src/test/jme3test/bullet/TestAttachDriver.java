@@ -42,6 +42,7 @@ import com.jme3.bullet.collision.shapes.MeshCollisionShape;
 import com.jme3.bullet.joints.PhysicsSliderJoint;
 import com.jme3.bullet.nodes.PhysicsNode;
 import com.jme3.bullet.nodes.PhysicsVehicleNode;
+import com.jme3.bullet.objects.PhysicsVehicle;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
@@ -204,7 +205,7 @@ public class TestAttachDriver extends SimpleApplication implements ActionListene
         getPhysicsSpace().add(driver);
 
         //joint
-        slider=new PhysicsSliderJoint(driver, vehicle, Vector3f.UNIT_Y.negate(), Vector3f.UNIT_Y, true);
+        slider=new PhysicsSliderJoint(driver.getRigidBody(), vehicle.getVehicle(), Vector3f.UNIT_Y.negate(), Vector3f.UNIT_Y, true);
         slider.setUpperLinLimit(.1f);
         slider.setLowerLinLimit(-.1f);
 

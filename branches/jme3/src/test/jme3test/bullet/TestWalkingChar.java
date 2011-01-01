@@ -37,7 +37,6 @@ import com.jme3.animation.AnimEventListener;
 import com.jme3.animation.LoopMode;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.app.SimpleApplication;
-import com.jme3.asset.TextureKey;
 import com.jme3.bounding.BoundingBox;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.PhysicsCollisionEvent;
@@ -47,6 +46,7 @@ import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.nodes.PhysicsCharacterNode;
 import com.jme3.bullet.nodes.PhysicsNode;
+import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.effect.EmitterSphereShape;
 import com.jme3.effect.ParticleEmitter;
 import com.jme3.effect.ParticleMesh.Type;
@@ -62,10 +62,10 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
-import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 import com.jme3.scene.Spatial.CullHint;
 import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Sphere;
@@ -74,13 +74,11 @@ import com.jme3.terrain.geomipmap.TerrainLodControl;
 import com.jme3.terrain.geomipmap.TerrainQuad;
 import com.jme3.terrain.heightmap.AbstractHeightMap;
 import com.jme3.terrain.heightmap.ImageBasedHeightMap;
-import com.jme3.terrain.jbullet.TerrainPhysicsShapeFactory;
 import com.jme3.texture.Texture;
 import com.jme3.texture.Texture.WrapMode;
 import com.jme3.util.SkyFactory;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
 import jme3tools.converters.ImageToAwt;
 
 /**
@@ -280,9 +278,8 @@ public class TestWalkingChar extends SimpleApplication implements ActionListener
         terrain.updateModelBound();
         terrain.setLocalScale(new Vector3f(2, 2, 2));
 
-        TerrainPhysicsShapeFactory factory = new TerrainPhysicsShapeFactory();
-        terrainPhysicsNode = factory.createPhysicsMesh(terrain);
-        terrainPhysicsNode.attachChild(terrain);
+        terrainPhysicsNode = new PhysicsNode(CollisionShapeFactory.createMeshShape(terrain),0);
+        rootNode.attachChild(terrain);
         rootNode.attachChild(terrainPhysicsNode);
         getPhysicsSpace().add(terrainPhysicsNode);
     }
@@ -294,6 +291,7 @@ public class TestWalkingChar extends SimpleApplication implements ActionListener
         model.setLocalScale(0.5f);
         character.attachChild(model);
         character.setLocalTranslation(new Vector3f(-140, 10, -10));
+        character.attachDebugShape(assetManager);
         rootNode.attachChild(character);
         getPhysicsSpace().add(character);
     }
@@ -409,14 +407,14 @@ public class TestWalkingChar extends SimpleApplication implements ActionListener
 
     public void collision(PhysicsCollisionEvent event) {
         if ("bullet".equals(event.getNodeA().getName())) {
-            final Node node = event.getNodeA();
+            final Spatial node = event.getNodeA();
             getPhysicsSpace().remove(node);
             node.removeFromParent();
             effect.killAllParticles();
             effect.setLocalTranslation(node.getLocalTranslation());
             effect.emitAllParticles();
         } else if ("bullet".equals(event.getNodeB().getName())) {
-            final Node node = event.getNodeB();
+            final Spatial node = event.getNodeB();
             getPhysicsSpace().remove(node);
             node.removeFromParent();
             effect.killAllParticles();

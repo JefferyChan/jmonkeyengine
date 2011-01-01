@@ -46,6 +46,7 @@ import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.nodes.PhysicsCharacterNode;
 import com.jme3.bullet.nodes.PhysicsNode;
+import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.effect.EmitterSphereShape;
 import com.jme3.effect.ParticleEmitter;
 import com.jme3.effect.ParticleMesh.Type;
@@ -54,7 +55,6 @@ import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.light.DirectionalLight;
-import com.jme3.light.PointLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
@@ -65,6 +65,7 @@ import com.jme3.renderer.Camera;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 import com.jme3.scene.Spatial.CullHint;
 import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Sphere;
@@ -74,13 +75,11 @@ import com.jme3.terrain.geomipmap.TerrainLodControl;
 import com.jme3.terrain.geomipmap.TerrainQuad;
 import com.jme3.terrain.heightmap.AbstractHeightMap;
 import com.jme3.terrain.heightmap.ImageBasedHeightMap;
-import com.jme3.terrain.jbullet.TerrainPhysicsShapeFactory;
 import com.jme3.texture.Texture;
 import com.jme3.texture.Texture.WrapMode;
 import com.jme3.util.SkyFactory;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
 import jme3tools.converters.ImageToAwt;
 
 /**
@@ -319,8 +318,7 @@ public class Golem extends SimpleApplication
         terrain.updateModelBound();
         terrain.setLocalScale(new Vector3f(1, 1, 1));
 
-        TerrainPhysicsShapeFactory factory = new TerrainPhysicsShapeFactory();
-        terrainNode = factory.createPhysicsMesh(terrain);
+        terrainNode = new PhysicsNode(CollisionShapeFactory.createMeshShape(terrain),0);
         terrainNode.attachChild(terrain);
         rootNode.attachChild(terrainNode);
         getPhysicsSpace().add(terrainNode);
@@ -464,24 +462,24 @@ public class Golem extends SimpleApplication
 
     public void collision(PhysicsCollisionEvent event) {
         if ("bullet".equals(event.getNodeA().getName())) {
-            Node node = event.getNodeA();
+            Spatial node = event.getNodeA();
             bulletHitSomething(node);
         } else if ("bullet".equals(event.getNodeB().getName())) {
-            Node node = event.getNodeB();
+            Spatial node = event.getNodeB();
             bulletHitSomething(node);
         }
         if ("bomb".equals(event.getNodeA().getName())) {
-            Node agent = event.getNodeA();
-            Node target = event.getNodeB();
+            Spatial agent = event.getNodeA();
+            Spatial target = event.getNodeB();
             bombHitSomething(agent, target);
         } else if ("bomb".equals(event.getNodeB().getName())) {
-            Node agent = event.getNodeB();
-            Node target = event.getNodeA();
+            Spatial agent = event.getNodeB();
+            Spatial target = event.getNodeA();
             bombHitSomething(agent, target);
         }
     }
 
-    private void bombHitSomething(Node a, Node t) {
+    private void bombHitSomething(Spatial a, Spatial t) {
         getPhysicsSpace().remove(a);
         a.removeFromParent();
         effect.killAllParticles();
@@ -492,7 +490,7 @@ public class Golem extends SimpleApplication
         }
     }
 
-    private void bulletHitSomething(Node node) {
+    private void bulletHitSomething(Spatial node) {
         getPhysicsSpace().remove(node);
         if (!node.getName().equals("terrain")) {
             node.removeFromParent();

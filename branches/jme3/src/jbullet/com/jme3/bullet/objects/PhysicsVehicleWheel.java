@@ -29,7 +29,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.jme3.bullet.nodes;
+package com.jme3.bullet.objects;
 
 import com.bulletphysics.dynamics.RigidBody;
 import com.jme3.math.Quaternion;
@@ -41,33 +41,34 @@ import com.jme3.export.InputCapsule;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
 import com.jme3.export.OutputCapsule;
-import com.jme3.scene.Node;
+import com.jme3.export.Savable;
 import java.io.IOException;
 
 /**
- * Stores info about one wheel of a PhysicsVehicleNode
+ * Stores info about one wheel of a PhysicsVehicle
  * @author normenhansen
  */
-public class PhysicsVehicleWheel extends Node {
+public class PhysicsVehicleWheel implements Savable {
 
-    private com.bulletphysics.dynamics.vehicle.WheelInfo wheelInfo;
-    private boolean frontWheel;
-    private Vector3f location = new Vector3f();
-    private Vector3f direction = new Vector3f();
-    private Vector3f axle = new Vector3f();
-    private float suspensionStiffness = 20.0f;
-    private float wheelsDampingRelaxation = 2.3f;
-    private float wheelsDampingCompression = 4.4f;
-    private float frictionSlip = 10.5f;
-    private float rollInfluence = 1.0f;
-    private float maxSuspensionTravelCm = 500f;
-    private float maxSuspensionForce = 6000f;
-    private float radius = 0.5f;
-    private float restLength = 1f;
-    private Vector3f wheelWorldLocation = new Vector3f();
-    private Quaternion wheelWorldRotation = new Quaternion();
-    private com.jme3.math.Quaternion tempRotation = new com.jme3.math.Quaternion();
-    private com.jme3.math.Matrix3f tempMatrix = new com.jme3.math.Matrix3f();
+    protected com.bulletphysics.dynamics.vehicle.WheelInfo wheelInfo;
+    protected boolean frontWheel;
+    protected Vector3f location = new Vector3f();
+    protected Vector3f direction = new Vector3f();
+    protected Vector3f axle = new Vector3f();
+    protected float suspensionStiffness = 20.0f;
+    protected float wheelsDampingRelaxation = 2.3f;
+    protected float wheelsDampingCompression = 4.4f;
+    protected float frictionSlip = 10.5f;
+    protected float rollInfluence = 1.0f;
+    protected float maxSuspensionTravelCm = 500f;
+    protected float maxSuspensionForce = 6000f;
+    protected float radius = 0.5f;
+    protected float restLength = 1f;
+    protected Vector3f wheelWorldLocation = new Vector3f();
+    protected Quaternion wheelWorldRotation = new Quaternion();
+    protected Spatial wheelSpatial;
+    protected com.jme3.math.Matrix3f tmp_Matrix = new com.jme3.math.Matrix3f();
+    protected final Quaternion tmp_inverseWorldRotation = new Quaternion();
 
     public PhysicsVehicleWheel() {
     }
@@ -75,7 +76,7 @@ public class PhysicsVehicleWheel extends Node {
     public PhysicsVehicleWheel(Spatial spat, Vector3f location, Vector3f direction, Vector3f axle,
             float restLength, float radius, boolean frontWheel) {
         this(location, direction, axle, restLength, radius, frontWheel);
-        this.attachChild(spat);
+        wheelSpatial = spat;
     }
 
     public PhysicsVehicleWheel(Vector3f location, Vector3f direction, Vector3f axle,
@@ -88,38 +89,32 @@ public class PhysicsVehicleWheel extends Node {
         this.radius = radius;
     }
 
-    @Override
-    public synchronized void updateGeometricState() {
-        if ((refreshFlags & RF_LIGHTLIST) != 0) {
-            updateWorldLightList();
-        }
-
-        getLocalTranslation().set(wheelWorldLocation).subtractLocal(parent.getWorldTranslation());
-        getLocalTranslation().divideLocal(parent.getWorldScale());
-        tempRotation.set(parent.getWorldRotation()).inverseLocal().multLocal(getLocalTranslation());
-
-        tempRotation.set(parent.getWorldRotation()).inverseLocal().mult(wheelWorldRotation, getLocalRotation());
-
-        updateWorldTransforms();
-
-        // the important part- make sure child geometric state is refreshed
-        // first before updating own world bound. This saves
-        // a round-trip later on.
-        for (int i = 0, cSize = children.size(); i < cSize; i++) {
-            Spatial child = children.get(i);
-            child.updateGeometricState();
-        }
-
-        if ((refreshFlags & RF_BOUND) != 0) {
-            updateWorldBound();
-        }
-
-    }
-
     public synchronized void updatePhysicsState() {
         Converter.convert(wheelInfo.worldTransform.origin, wheelWorldLocation);
-        Converter.convert(wheelInfo.worldTransform.basis, tempMatrix);
-        wheelWorldRotation.fromRotationMatrix(tempMatrix);
+        Converter.convert(wheelInfo.worldTransform.basis, tmp_Matrix);
+        wheelWorldRotation.fromRotationMatrix(tmp_Matrix);
+    }
+
+    public synchronized void applyWheelTransform() {
+        if (wheelSpatial == null) {
+            return;
+        }
+        Quaternion localRotationQuat = wheelSpatial.getLocalRotation();
+        Vector3f localLocation = wheelSpatial.getLocalTranslation();
+        if (wheelSpatial.getParent() != null) {
+            localLocation.set(wheelWorldLocation).subtractLocal(wheelSpatial.getParent().getWorldTranslation());
+            localLocation.divideLocal(wheelSpatial.getParent().getWorldScale());
+            tmp_inverseWorldRotation.set(wheelSpatial.getParent().getWorldRotation()).inverseLocal().multLocal(localLocation);
+
+            localRotationQuat.set(wheelWorldRotation);
+            tmp_inverseWorldRotation.set(wheelSpatial.getParent().getWorldRotation()).inverseLocal().mult(localRotationQuat, localRotationQuat);
+
+            wheelSpatial.setLocalTranslation(localLocation);
+            wheelSpatial.setLocalRotation(localRotationQuat);
+        } else {
+            wheelSpatial.setLocalTranslation(wheelWorldLocation);
+            wheelSpatial.setLocalRotation(wheelWorldRotation);
+        }
     }
 
     public com.bulletphysics.dynamics.vehicle.WheelInfo getWheelInfo() {
@@ -292,7 +287,7 @@ public class PhysicsVehicleWheel extends Node {
             return null;
         } else if (wheelInfo.raycastInfo.groundObject instanceof RigidBody) {
             System.out.println("RigidBody");
-            return (PhysicsNode) ((RigidBody) wheelInfo.raycastInfo.groundObject).getUserPointer();
+            return (PhysicsRigidBody) ((RigidBody) wheelInfo.raycastInfo.groundObject).getUserPointer();
         } else {
             return null;
         }
@@ -338,8 +333,8 @@ public class PhysicsVehicleWheel extends Node {
 
     @Override
     public void read(JmeImporter im) throws IOException {
-        super.read(im);
         InputCapsule capsule = im.getCapsule(this);
+        wheelSpatial = (Spatial) capsule.readSavable("wheelSpatial", null);
         frontWheel = capsule.readBoolean("frontWheel", false);
         location = (Vector3f) capsule.readSavable("wheelLocation", new Vector3f());
         direction = (Vector3f) capsule.readSavable("wheelDirection", new Vector3f());
@@ -357,8 +352,8 @@ public class PhysicsVehicleWheel extends Node {
 
     @Override
     public void write(JmeExporter ex) throws IOException {
-        super.write(ex);
         OutputCapsule capsule = ex.getCapsule(this);
+        capsule.write(wheelSpatial, "wheelSpatial", null);
         capsule.write(frontWheel, "frontWheel", false);
         capsule.write(location, "wheelLocation", new Vector3f());
         capsule.write(direction, "wheelDirection", new Vector3f());
@@ -372,5 +367,19 @@ public class PhysicsVehicleWheel extends Node {
         capsule.write(maxSuspensionForce, "maxSuspensionForce", 6000f);
         capsule.write(radius, "wheelRadius", 0.5f);
         capsule.write(restLength, "restLength", 1f);
+    }
+
+    /**
+     * @return the wheelSpatial
+     */
+    public Spatial getWheelSpatial() {
+        return wheelSpatial;
+    }
+
+    /**
+     * @param wheelSpatial the wheelSpatial to set
+     */
+    public void setWheelSpatial(Spatial wheelSpatial) {
+        this.wheelSpatial = wheelSpatial;
     }
 }

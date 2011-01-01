@@ -49,6 +49,9 @@ public class Arrow extends Mesh {
                     0,  -0.05f,  0.9f, // tip buttom
     };
 
+    public Arrow() {
+    }
+
     public Arrow(Vector3f extent){
         float len = extent.length();
         Vector3f dir = extent.normalize();

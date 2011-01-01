@@ -33,28 +33,26 @@ package com.jme3.bullet.collision;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.collision.shapes.CollisionShape;
-import com.jme3.bullet.util.CollisionShapeFactory;
+import com.jme3.bullet.util.DebugShapeFactory;
 import com.jme3.export.InputCapsule;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
 import com.jme3.export.OutputCapsule;
+import com.jme3.export.Savable;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
-import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Base class for collision objects (PhysicsNode, PhysicsGhostNode)
  * @author normenhansen
  */
-public abstract class PhysicsCollisionObject extends Node {
+public abstract class PhysicsCollisionObject implements Savable {
 
     protected Spatial debugShape;
     protected Material debugMaterialBlue;
@@ -81,12 +79,7 @@ public abstract class PhysicsCollisionObject extends Node {
     public static final int COLLISION_GROUP_16 = 0x00008000;
     protected int collisionGroup = 0x00000001;
     protected int collisionGroupsMask = 0x00000001;
-    protected static final int RF_PHYSICS = 0x10; // changes in translation
-
-    @Override
-    public void updateGeometricState() {
-        //important! nothing happening here, not calling Node.updateGeometric!
-    }
+    private Object userObject;
 
     public void updatePhysicsState() {
     }
@@ -165,50 +158,11 @@ public abstract class PhysicsCollisionObject extends Node {
     }
 
     /**
-     * Should only be called from updateGeometricState().
-     * In most cases should not be subclassed.
-     */
-    protected void updateWorldTransforms() {
-        super.updateWorldTransforms();
-        //hack to avoid scaling of PhysicsNodes thru parent..
-        if (parent != null) {
-            worldTransform.setScale(localTransform.getScale());
-        }
-    }
-
-    /**
-     * WARNING: Physics objects cannot be scaled, scale the collision shape and/or attached geometry!<br>
-     * The CollisionShape might be used by another physics object, so scaling is disabled.
-     */
-    @Override
-    public void setLocalScale(Vector3f localScale) {
-        Logger.getLogger(this.getClass().getName()).log(Level.WARNING, "PhysicsNodes cannot be scaled");
-    }
-
-    /**
-     * WARNING: Physics objects cannot be scaled, scale the collision shape and/or attached geometry!<br>
-     * The CollisionShape might be used by another physics object, so scaling is disabled.
-     */
-    @Override
-    public void setLocalScale(float localScale) {
-        Logger.getLogger(this.getClass().getName()).log(Level.WARNING, "PhysicsNodes cannot be scaled");
-    }
-
-    /**
-     * WARNING: Physics objects cannot be scaled, scale the collision shape and/or attached geometry!<br>
-     * The CollisionShape might be used by another physics object, so scaling is disabled.
-     */
-    @Override
-    public void setLocalScale(float x, float y, float z) {
-        Logger.getLogger(this.getClass().getName()).log(Level.WARNING, "PhysicsNodes cannot be scaled");
-    }
-
-    /**
-     * Attaches a visual debug shape of the current collision shape to this physics object<br/>
+     * Creates a visual debug shape of the current collision shape of this physics object<br/>
      * <b>Does not work with detached physics, please switch to PARALLEL or SEQUENTIAL for debugging</b>
      * @param manager AssetManager to load the default wireframe material for the debug shape
      */
-    public void attachDebugShape(AssetManager manager) {
+    public Spatial attachDebugShape(AssetManager manager) {
         debugMaterialBlue = new Material(manager, "Common/MatDefs/Misc/WireColor.j3md");
         debugMaterialBlue.setColor("m_Color", ColorRGBA.Blue);
         debugMaterialGreen = new Material(manager, "Common/MatDefs/Misc/WireColor.j3md");
@@ -217,28 +171,33 @@ public abstract class PhysicsCollisionObject extends Node {
         debugMaterialRed.setColor("m_Color", ColorRGBA.Red);
         debugMaterialYellow = new Material(manager, "Common/MatDefs/Misc/WireColor.j3md");
         debugMaterialYellow.setColor("m_Color", ColorRGBA.Yellow);
-        attachDebugShape();
+        return attachDebugShape();
     }
 
-    public void attachDebugShape(Material material) {
+    public Spatial attachDebugShape(Material material) {
         debugMaterialBlue = material;
         debugMaterialGreen = material;
         debugMaterialRed = material;
         debugMaterialYellow = material;
-        attachDebugShape();
+        return attachDebugShape();
     }
+
+    public Spatial debugShape() {
+        return debugShape;
+    }
+
     /**
-     * Attaches a visual debug shape of the current collision shape to this physics object<br/>
+     * Creates a visual debug shape of the current collision shape of this physics object<br/>
      * <b>Does not work with detached physics, please switch to PARALLEL or SEQUENTIAL for debugging</b>
      * @param material Material to use for the debug shape
      */
-    protected void attachDebugShape() {
+    protected Spatial attachDebugShape() {
         if (debugShape != null) {
             detachDebugShape();
         }
         Spatial spatial = getDebugShape();
-        this.attachChild(spatial);
         this.debugShape = spatial;
+        return debugShape;
     }
 
     protected void updateDebugShape() {
@@ -249,7 +208,7 @@ public abstract class PhysicsCollisionObject extends Node {
     }
 
     protected Spatial getDebugShape() {
-        Spatial spatial=CollisionShapeFactory.getDebugShape(collisionShape);
+        Spatial spatial = DebugShapeFactory.getDebugShape(collisionShape);
         if (spatial == null) {
             return new Node("nullnode");
         }
@@ -269,29 +228,39 @@ public abstract class PhysicsCollisionObject extends Node {
     }
 
     /**
-     * Detaches the debug shape
+     * Removes the debug shape
      */
     public void detachDebugShape() {
-        if (debugShape != null) {
-            this.detachChild(debugShape);
-        }
         debugShape = null;
+    }
+
+    /**
+     * @return the userObject
+     */
+    public Object getUserObject() {
+        return userObject;
+    }
+
+    /**
+     * @param userObject the userObject to set
+     */
+    public void setUserObject(Object userObject) {
+        this.userObject = userObject;
     }
 
     @Override
     public void write(JmeExporter e) throws IOException {
-        super.write(e);
         OutputCapsule capsule = e.getCapsule(this);
         capsule.write(collisionGroup, "collisionGroup", 0x00000001);
         capsule.write(collisionGroupsMask, "collisionGroupsMask", 0x00000001);
-
+        capsule.write(debugShape, "debugShape", null);
     }
 
     @Override
     public void read(JmeImporter e) throws IOException {
-        super.read(e);
         InputCapsule capsule = e.getCapsule(this);
         collisionGroup = capsule.readInt("collisionGroup", 0x00000001);
         collisionGroupsMask = capsule.readInt("collisionGroupsMask", 0x00000001);
+        debugShape = (Spatial) capsule.readSavable("debugShape", null);
     }
 }

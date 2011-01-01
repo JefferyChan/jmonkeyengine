@@ -127,7 +127,7 @@ public class TestAttachGhostObject extends SimpleApplication implements AnalogLi
         hammerNode.attachChild(gNode);
         getPhysicsSpace().add(gNode);
 
-        joint = new PhysicsHingeJoint(holderNode, hammerNode, Vector3f.ZERO, new Vector3f(0f, -1, 0f), Vector3f.UNIT_Z, Vector3f.UNIT_Z);
+        joint = new PhysicsHingeJoint(holderNode.getRigidBody(), hammerNode.getRigidBody(), Vector3f.ZERO, new Vector3f(0f, -1, 0f), Vector3f.UNIT_Z, Vector3f.UNIT_Z);
         getPhysicsSpace().add(joint);
     }
 

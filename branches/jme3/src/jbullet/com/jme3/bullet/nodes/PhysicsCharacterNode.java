@@ -31,64 +31,74 @@
  */
 package com.jme3.bullet.nodes;
 
-import com.bulletphysics.collision.dispatch.CollisionFlags;
-import com.bulletphysics.collision.shapes.ConvexShape;
-import com.bulletphysics.dynamics.character.KinematicCharacterController;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
 import com.jme3.bullet.collision.shapes.CollisionShape;
-import com.jme3.bullet.util.Converter;
+import com.jme3.bullet.control.PhysicsCharacterControl;
+import com.jme3.bullet.objects.PhysicsCharacter;
+import com.jme3.bullet.objects.PhysicsGhostObject;
 import com.jme3.export.InputCapsule;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
 import com.jme3.export.OutputCapsule;
+import com.jme3.math.Matrix3f;
+import com.jme3.math.Quaternion;
+import com.jme3.math.Transform;
 import java.io.IOException;
 
 /**
  *
  * @author normenhansen
  */
-public class PhysicsCharacterNode extends PhysicsGhostNode {
-
-    private KinematicCharacterController character;
-    private float stepHeight;
-    private Vector3f walkDirection = new Vector3f();
-    private float fallSpeed = 55.0f;
-    private float jumpSpeed = 10.0f;
-    private int upAxis = 1;
-
-    private javax.vecmath.Vector3f tempVec=new javax.vecmath.Vector3f();
+public class PhysicsCharacterNode extends PhysicsBaseNode {
 
     public PhysicsCharacterNode() {
     }
 
     public PhysicsCharacterNode(CollisionShape shape, float stepHeight) {
-        super(shape);
-        if (!(shape.getCShape() instanceof ConvexShape)) {
-            throw (new UnsupportedOperationException("Kinematic character nodes cannot have mesh collision shapes"));
-        }
-        this.stepHeight = stepHeight;
-        character = new KinematicCharacterController(gObject, (ConvexShape) collisionShape.getCShape(), stepHeight);
+        collisionObject = new PhysicsCharacterControl(shape, stepHeight);
+        addControl((PhysicsCharacterControl)collisionObject);
     }
 
     public PhysicsCharacterNode(Spatial spat, CollisionShape shape, float stepHeight) {
-        super(spat, shape);
-        if (!(shape.getCShape() instanceof ConvexShape)) {
-            throw (new UnsupportedOperationException("Kinematic character nodes cannot have mesh collision shapes"));
-        }
-        this.stepHeight = stepHeight;
-        character = new KinematicCharacterController(gObject, (ConvexShape) collisionShape.getCShape(), stepHeight);
-    }
-
-    @Override
-    protected void buildObject() {
-        super.buildObject();
-        gObject.setCollisionFlags(gObject.getCollisionFlags() & ~CollisionFlags.NO_CONTACT_RESPONSE);
-        gObject.setCollisionFlags(gObject.getCollisionFlags() | CollisionFlags.CHARACTER_OBJECT);
+        collisionObject = new PhysicsCharacterControl(shape, stepHeight);
+        addControl((PhysicsCharacterControl)collisionObject);
+        attachChild(spat);
     }
 
     public void warp(Vector3f location) {
-        character.warp(Converter.convert(location, tempVec));
+        ((PhysicsCharacter)collisionObject).warp(location);
+    }
+
+    @Override
+    public void setLocalTransform(Transform t) {
+        super.setLocalTransform(t);
+        ((PhysicsGhostObject)collisionObject).setPhysicsLocation(getWorldTranslation());
+        ((PhysicsGhostObject)collisionObject).setPhysicsRotation(getWorldRotation().toRotationMatrix());
+    }
+
+    @Override
+    public void setLocalTranslation(Vector3f localTranslation) {
+        super.setLocalTranslation(localTranslation);
+        ((PhysicsGhostObject)collisionObject).setPhysicsLocation(getWorldTranslation());
+    }
+
+    @Override
+    public void setLocalTranslation(float x, float y, float z) {
+        super.setLocalTranslation(x, y, z);
+        ((PhysicsGhostObject)collisionObject).setPhysicsLocation(getWorldTranslation());
+    }
+
+    @Override
+    public void setLocalRotation(Matrix3f rotation) {
+        super.setLocalRotation(rotation);
+        ((PhysicsGhostObject)collisionObject).setPhysicsRotation(getWorldRotation().toRotationMatrix());
+    }
+
+    @Override
+    public void setLocalRotation(Quaternion quaternion) {
+        super.setLocalRotation(quaternion);
+        ((PhysicsGhostObject)collisionObject).setPhysicsRotation(getWorldRotation().toRotationMatrix());
     }
 
     /**
@@ -96,108 +106,78 @@ public class PhysicsCharacterNode extends PhysicsGhostNode {
      * @param vec the walk direction to set
      */
     public void setWalkDirection(Vector3f vec) {
-        walkDirection.set(vec);
-        character.setWalkDirection(Converter.convert(walkDirection, tempVec));
+        ((PhysicsCharacter)collisionObject).setWalkDirection(vec);
     }
 
     public void setUpAxis(int axis) {
-        upAxis = axis;
-        character.setUpAxis(axis);
+        ((PhysicsCharacter)collisionObject).setUpAxis(axis);
     }
 
     public int getUpAxis() {
-        return upAxis;
+        return ((PhysicsCharacter)collisionObject).getUpAxis();
     }
 
     public void setFallSpeed(float fallSpeed) {
-        this.fallSpeed = fallSpeed;
-        character.setFallSpeed(fallSpeed);
+        ((PhysicsCharacter)collisionObject).setFallSpeed(fallSpeed);
     }
 
     public float getFallSpeed() {
-        return fallSpeed;
+        return ((PhysicsCharacter)collisionObject).getFallSpeed();
     }
 
     public void setJumpSpeed(float jumpSpeed) {
-        this.jumpSpeed = fallSpeed;
-        character.setJumpSpeed(jumpSpeed);
+        ((PhysicsCharacter)collisionObject).setJumpSpeed(jumpSpeed);
     }
 
     public float getJumpSpeed() {
-        return jumpSpeed;
+        return ((PhysicsCharacter)collisionObject).getJumpSpeed();
     }
 
-    //does nothing..
-//    public void setMaxJumpHeight(float height) {
-//        character.setMaxJumpHeight(height);
-//    }
     public void setGravity(float value) {
-        character.setGravity(value);
+        ((PhysicsCharacter)collisionObject).setGravity(value);
     }
 
     public float getGravity() {
-        return character.getGravity();
+        return ((PhysicsCharacter)collisionObject).getGravity();
     }
 
     public void setMaxSlope(float slopeRadians) {
-        character.setMaxSlope(slopeRadians);
+        ((PhysicsCharacter)collisionObject).setMaxSlope(slopeRadians);
     }
 
     public float getMaxSlope() {
-        return character.getMaxSlope();
+        return ((PhysicsCharacter)collisionObject).getMaxSlope();
     }
 
     public boolean onGround() {
-        return character.onGround();
+        return ((PhysicsCharacter)collisionObject).onGround();
     }
 
     public void jump() {
-        character.jump();
+        ((PhysicsCharacter)collisionObject).jump();
     }
 
-    @Override
     public void setCollisionShape(CollisionShape collisionShape) {
-        if (!(collisionShape.getCShape() instanceof ConvexShape)) {
-            throw (new UnsupportedOperationException("Kinematic character nodes cannot have mesh collision shapes"));
-        }
-        super.setCollisionShape(collisionShape);
-        character = new KinematicCharacterController(gObject, (ConvexShape) collisionShape.getCShape(), stepHeight);
+        ((PhysicsCharacter)collisionObject).setCollisionShape(collisionShape);
     }
 
-    /**
-     * used internally
-     */
-    public KinematicCharacterController getCharacterController() {
-        return character;
+    public PhysicsCharacter getPhysicsCharacter() {
+        return ((PhysicsCharacter)collisionObject);
     }
 
-    @Override
     public void destroy() {
-        super.destroy();
+        ((PhysicsCharacter)collisionObject).destroy();
     }
 
     @Override
     public void write(JmeExporter e) throws IOException {
         super.write(e);
         OutputCapsule capsule = e.getCapsule(this);
-        capsule.write(stepHeight, "stepHeight", 1.0f);
-        capsule.write(getGravity(), "gravity", 9.8f);
-        capsule.write(getMaxSlope(), "maxSlope", 1.0f);
-        capsule.write(fallSpeed, "fallSpeed", 55.0f);
-        capsule.write(jumpSpeed, "jumpSpeed", 10.0f);
-        capsule.write(upAxis, "upAxis", 1);
     }
 
     @Override
     public void read(JmeImporter e) throws IOException {
         super.read(e);
         InputCapsule capsule = e.getCapsule(this);
-        stepHeight = capsule.readFloat("stepHeight", 1.0f);
-        character = new KinematicCharacterController(gObject, (ConvexShape) collisionShape.getCShape(), stepHeight);
-        setGravity(capsule.readFloat("gravity", 9.8f));
-        setMaxSlope(capsule.readFloat("maxSlope", 1.0f));
-        setFallSpeed(capsule.readFloat("fallSpeed", 1.0f));
-        setJumpSpeed(capsule.readFloat("jumpSpeed", 1.0f));
-        setUpAxis(capsule.readInt("upAxis", 1));
     }
 }

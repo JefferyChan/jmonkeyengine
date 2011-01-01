@@ -41,6 +41,7 @@ import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.nodes.PhysicsCharacterNode;
 import com.jme3.bullet.nodes.PhysicsNode;
 import com.jme3.bullet.nodes.PhysicsVehicleNode;
+import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
 import com.jme3.font.BitmapText;
@@ -67,7 +68,6 @@ import com.jme3.terrain.geomipmap.TerrainLodControl;
 import com.jme3.terrain.heightmap.AbstractHeightMap;
 import com.jme3.terrain.heightmap.ImageBasedHeightMap;
 import com.jme3.terrain.geomipmap.TerrainQuad;
-import com.jme3.terrain.jbullet.TerrainPhysicsShapeFactory;
 import com.jme3.texture.Texture;
 import com.jme3.texture.Texture.WrapMode;
 import java.util.ArrayList;
@@ -186,8 +186,7 @@ public class TerrainTestCollision extends SimpleBulletApplication {
          * Now we use the TerrainPhysicsShapeFactory to generate a heightfield
          * collision shape for us, and then add it to the physics node.
          */
-        TerrainPhysicsShapeFactory factory = new TerrainPhysicsShapeFactory();
-        terrainPhysicsNode = factory.createPhysicsMesh(terrain);
+        terrainPhysicsNode = new PhysicsNode(CollisionShapeFactory.createMeshShape(terrain),0);
         rootNode.attachChild(terrainPhysicsNode);
         getPhysicsSpace().addAll(terrainPhysicsNode);
 

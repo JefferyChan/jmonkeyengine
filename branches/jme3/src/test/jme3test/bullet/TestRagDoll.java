@@ -106,7 +106,7 @@ public class TestRagDoll extends SimpleApplication implements ActionListener {
     private PhysicsJoint join(PhysicsNode A, PhysicsNode B, Vector3f connectionPoint) {
         Vector3f pivotA = A.worldToLocal(connectionPoint, new Vector3f());
         Vector3f pivotB = B.worldToLocal(connectionPoint, new Vector3f());
-        PhysicsConeJoint joint = new PhysicsConeJoint(A, B, pivotA, pivotB);
+        PhysicsConeJoint joint = new PhysicsConeJoint(A.getRigidBody(), B.getRigidBody(), pivotA, pivotB);
         joint.setLimit(1f, 1f, 0);
         return joint;
     }

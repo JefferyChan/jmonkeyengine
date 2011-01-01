@@ -4,30 +4,22 @@ import com.jme3.animation.AnimControl;
 import com.jme3.animation.Bone;
 import com.jme3.animation.Skeleton;
 import com.jme3.asset.AssetManager;
-import com.jme3.asset.DesktopAssetManager;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
-import com.jme3.bullet.collision.shapes.CylinderCollisionShape;
 import com.jme3.bullet.joints.PhysicsConeJoint;
 import com.jme3.bullet.joints.PhysicsJoint;
-import com.jme3.bullet.nodes.PhysicsNode;
+import com.jme3.bullet.objects.PhysicsRigidBody;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
-import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
+import com.jme3.math.Matrix3f;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
-import com.jme3.renderer.Camera;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
-import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.Control;
-import com.jme3.texture.FrameBuffer;
-import com.jme3.texture.Image.Format;
-import com.jme3.texture.Texture2D;
-import com.jme3.ui.Picture;
 import com.jme3.util.TempVars;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -37,111 +29,35 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class PhysicsRagdollControl implements Control {
+public class PhysicsRagdollControl implements PhysicsControl {
 
-    private static final Logger logger = Logger.getLogger(PhysicsRagdollControl.class.getName());
-    private List<PhysicsBoneLink> boneLinks;
-    private Skeleton skeleton;
-    private PhysicsSpace space;
-    protected boolean enabled = false;
-    //TODO:remove after testing
-    private AssetManager manager = new DesktopAssetManager(true);
-    private Camera offCamera = new Camera(512, 512);
-    private Picture debugPic;
-    private Node boneRoot = new Node("ragdolldebugnode");
-    protected boolean physicsActive = true;
+    protected static final Logger logger = Logger.getLogger(PhysicsRagdollControl.class.getName());
+    protected List<PhysicsBoneLink> boneLinks = new LinkedList<PhysicsBoneLink>();
+    protected Skeleton skeleton;
+    protected PhysicsSpace space;
+    protected boolean enabled = true;
+    protected boolean debug = false;
+    protected Quaternion tmp_jointRotation = new Quaternion();
+    protected PhysicsRigidBody baseRigidBody;
+
+    public PhysicsRagdollControl() {
+    }
 
     public PhysicsRagdollControl(PhysicsSpace space) {
         this.space = space;
-    }
-
-    private List<PhysicsBoneLink> boneRecursion(Bone bone, PhysicsNode parent, List<PhysicsBoneLink> list , int reccount) {
-        ArrayList<Bone> children = bone.getChildren();
-        bone.setUserControl(true);
-        for (Iterator<Bone> it = children.iterator(); it.hasNext();) {
-            Bone childBone = it.next();
-            Bone parentBone = bone;
-            Vector3f parentPos = parentBone.getModelSpacePosition();
-            Vector3f childPos = childBone.getModelSpacePosition();
-            //get location between the two bones (physicscapsule center)
-            Vector3f jointCenter = parentPos.add(childPos).multLocal(0.5f);
-//            Quaternion jointRotation = parentBone.getModelSpaceRotation();
-            Quaternion jointRotation = new Quaternion();
-            jointRotation.lookAt(childPos.subtract(parentPos), Vector3f.UNIT_Y);
-//            jointRotation.lookAt(Vector3f.UNIT_Z, childPos.subtract(parentPos));
-            // length of the joint
-            float height = parentPos.distance(childPos);
-
-            // TODO: joints act funny when bone is too thin??
-            CapsuleCollisionShape shape = new CapsuleCollisionShape(height*.18f, height*0.5f,2);
-//            BoxCollisionShape shape = new BoxCollisionShape(new Vector3f(height * 0.2f, height * 0.2f, height * 0.5f));
-//            CylinderCollisionShape shape = new CylinderCollisionShape(new Vector3f(height * .2f, height * .2f, height * 0.5f),2);
-
-            PhysicsNode shapeNode = new PhysicsNode(shape, 10.0f/(float)reccount);
-            shapeNode.setLocalTranslation(jointCenter);
-            shapeNode.setLocalRotation(jointRotation);
-            //TODO: only called to sync physics location with jme location
-            shapeNode.updateGeometricState();
-            shapeNode.attachDebugShape(manager);
-//            shapeNode.getChild(0).setLocalScale(1, 1, 5);
-            boneRoot.attachChild(shapeNode);
-
-            if (physicsActive) {
-                space.addQueued(shapeNode);
-            }
-
-            PhysicsBoneLink link = new PhysicsBoneLink();
-            link.parentBone = parentBone;
-            link.childBone = childBone;
-            link.shapeNode = shapeNode;
-            link.length = height;
-
-            //TODO: ragdoll mass 1
-            if (parent != null) {
-                //get length of parent
-                float parentHeight = 0.0f;
-                if (bone.getParent() != null) {
-                    parentHeight = bone.getParent().getLocalPosition().distance(parentPos);
-                }
-                //local position from parent
-                link.pivotA = new Vector3f(0, 0, (parentHeight * .5f));
-                //local position from child
-                link.pivotB = new Vector3f(0, 0, -(height * .5f));
-
-                PhysicsConeJoint joint = new PhysicsConeJoint(parent, shapeNode, link.pivotA, link.pivotB);
-                joint.setLimit(FastMath.HALF_PI, FastMath.HALF_PI, 0.01f);
-//                PhysicsPoint2PointJoint joint=new PhysicsPoint2PointJoint(parent, shapeNode, link.pivotA, link.pivotB);
-//                Physics6DofJoint joint = new Physics6DofJoint(parent, shapeNode, link.pivotA, link.pivotB, true);
-//                joint.getRotationalLimitMotor(0).setHiLimit(0.1f);
-//                joint.getRotationalLimitMotor(0).setLoLimit(-0.1f);
-//                joint.getTranslationalLimitMotor().setUpperLimit(Vector3f.ZERO);
-//                joint.getTranslationalLimitMotor().setLowerLimit(Vector3f.ZERO);
-
-                link.joint = joint;
-                joint.setCollisionBetweenLinkedBodys(false);
-                if (physicsActive) {
-                    space.addQueued(joint);
-                }
-            }
-            list.add(link);
-            boneRecursion(childBone, shapeNode, list, reccount++);
-        }
-        return list;
     }
 
     public void update(float tpf) {
         if (!enabled) {
             return;
         }
-        boneRoot.updateGeometricState();
         TempVars vars = TempVars.get();
         assert vars.lock();
 
         skeleton.reset();
         for (PhysicsBoneLink link : boneLinks) {
-//            link.shapeNode.updateGeometricState();
-            Vector3f p = link.shapeNode.getWorldTranslation();
-            Quaternion q = link.shapeNode.getWorldRotation();
+            Vector3f p = link.rigidBody.getPhysicsLocation(new Vector3f());
+            Quaternion q = new Quaternion().fromRotationMatrix(link.rigidBody.getPhysicsRotation(new Matrix3f()));
 
             q.toAxes(vars.tri);
 
@@ -162,9 +78,7 @@ public class PhysicsRagdollControl implements Control {
                 link.childBone.setUserTransformsWorld(childPos, q2.clone());
             }
         }
-
         assert vars.unlock();
-//        skeleton.updateWorldVectors();
     }
 
     public Control cloneForSpatial(Spatial spatial) {
@@ -172,60 +86,164 @@ public class PhysicsRagdollControl implements Control {
     }
 
     public void setSpatial(Spatial model) {
-        space.removeAll(boneRoot);
-        enabled = true;
-        //TODO: cleanup when adding new
-        AnimControl animControl = model.getControl(AnimControl.class);
-        skeleton = animControl.getSkeleton();
-
+        removeFromPhysicsSpace();
+        clearData();
         // put into bind pose and compute bone transforms in model space
         // maybe dont reset to ragdoll out of animations?
-        skeleton.resetAndUpdate();
+        scanSpatial(model);
+        addToPhysicsSpace();
 
         logger.log(Level.INFO, "Create physics ragdoll for skeleton {0}", skeleton);
-        List<PhysicsBoneLink> list = new LinkedList<PhysicsBoneLink>();
+    }
+
+    private void scanSpatial(Spatial model) {
+        AnimControl animControl = model.getControl(AnimControl.class);
+        skeleton = animControl.getSkeleton();
+        skeleton.resetAndUpdate();
         for (int i = 0; i < skeleton.getBoneCount(); i++) {
             Bone childBone = skeleton.getBone(i);
             childBone.setUserControl(true);
             if (childBone.getParent() == null) {
                 Vector3f parentPos = childBone.getModelSpacePosition();
                 logger.log(Level.INFO, "Found root bone in skeleton {0}", skeleton);
-                PhysicsNode shapeNode = new PhysicsNode(new BoxCollisionShape(Vector3f.UNIT_XYZ.multLocal(.1f)), 1);
-                shapeNode.setLocalTranslation(parentPos);
-                shapeNode.updateGeometricState();
-                boneRoot.attachChild(shapeNode);
-                if (physicsActive) {
-                    space.addQueued(shapeNode);
-                }
-                boneLinks = boneRecursion(childBone, shapeNode, list,1);
+                baseRigidBody = new PhysicsRigidBody(new BoxCollisionShape(Vector3f.UNIT_XYZ.multLocal(.1f)), 1);
+                baseRigidBody.setPhysicsLocation(parentPos);
+                boneLinks = boneRecursion(childBone, baseRigidBody, boneLinks, 1);
                 return;
             }
 
         }
     }
 
+    private List<PhysicsBoneLink> boneRecursion(Bone bone, PhysicsRigidBody parent, List<PhysicsBoneLink> list, int reccount) {
+        ArrayList<Bone> children = bone.getChildren();
+        bone.setUserControl(true);
+        for (Iterator<Bone> it = children.iterator(); it.hasNext();) {
+            Bone childBone = it.next();
+            Bone parentBone = bone;
+            Vector3f parentPos = parentBone.getModelSpacePosition();
+            Vector3f childPos = childBone.getModelSpacePosition();
+            //get location between the two bones (physicscapsule center)
+            Vector3f jointCenter = parentPos.add(childPos).multLocal(0.5f);
+            tmp_jointRotation.lookAt(childPos.subtract(parentPos), Vector3f.UNIT_Y);
+            // length of the joint
+            float height = parentPos.distance(childPos);
+
+            // TODO: joints act funny when bone is too thin??
+            CapsuleCollisionShape shape = new CapsuleCollisionShape(0.4f, height * .5f, 2);
+
+            PhysicsRigidBody shapeNode = new PhysicsRigidBody(shape, 10.0f / (float) reccount);
+            shapeNode.setPhysicsLocation(jointCenter);
+            shapeNode.setPhysicsRotation(tmp_jointRotation.toRotationMatrix());
+
+            PhysicsBoneLink link = new PhysicsBoneLink();
+            link.parentBone = parentBone;
+            link.childBone = childBone;
+            link.rigidBody = shapeNode;
+            link.length = height;
+
+            //TODO: ragdoll mass 1
+            if (parent != null) {
+                //get length of parent
+                float parentHeight = 0.0f;
+                if (bone.getParent() != null) {
+                    parentHeight = bone.getParent().getLocalPosition().distance(parentPos);
+                }
+                //local position from parent
+                link.pivotA = new Vector3f(0, 0, (parentHeight * .5f));
+                //local position from child
+                link.pivotB = new Vector3f(0, 0, -(height * .5f));
+
+                PhysicsConeJoint joint = new PhysicsConeJoint(parent, shapeNode, link.pivotA, link.pivotB);
+                joint.setLimit(FastMath.HALF_PI, FastMath.HALF_PI, 0.01f);
+
+                link.joint = joint;
+                joint.setCollisionBetweenLinkedBodys(false);
+            }
+            list.add(link);
+            boneRecursion(childBone, shapeNode, list, reccount++);
+        }
+        return list;
+    }
+
+    private void clearData() {
+        boneLinks.clear();
+        baseRigidBody=null;
+    }
+
+    private void addToPhysicsSpace() {
+        if(baseRigidBody!=null){
+            space.add(baseRigidBody);
+        }
+        for (Iterator<PhysicsBoneLink> it = boneLinks.iterator(); it.hasNext();) {
+            PhysicsBoneLink physicsBoneLink = it.next();
+            if(physicsBoneLink.rigidBody!=null)
+            space.add(physicsBoneLink.rigidBody);
+        }
+        for (Iterator<PhysicsBoneLink> it = boneLinks.iterator(); it.hasNext();) {
+            PhysicsBoneLink physicsBoneLink = it.next();
+            if(physicsBoneLink.joint!=null)
+            space.add(physicsBoneLink.joint);
+        }
+    }
+
+    private void removeFromPhysicsSpace() {
+        if(baseRigidBody!=null){
+            space.remove(baseRigidBody);
+        }
+        for (Iterator<PhysicsBoneLink> it = boneLinks.iterator(); it.hasNext();) {
+            PhysicsBoneLink physicsBoneLink = it.next();
+            if(physicsBoneLink.joint!=null)
+            space.remove(physicsBoneLink.joint);
+        }
+        for (Iterator<PhysicsBoneLink> it = boneLinks.iterator(); it.hasNext();) {
+            PhysicsBoneLink physicsBoneLink = it.next();
+            if(physicsBoneLink.rigidBody!=null)
+            space.remove(physicsBoneLink.rigidBody);
+        }
+    }
+
     public void setEnabled(boolean enabled) {
-//        throw new UnsupportedOperationException("Not supported yet.");
+        this.enabled = enabled;
+        if (!enabled) {
+            removeFromPhysicsSpace();
+        } else {
+            addToPhysicsSpace();
+        }
     }
 
     public boolean isEnabled() {
-        return true;
+        return enabled;
+    }
+
+    public void attachDebugShape(AssetManager manager) {
+        for (Iterator<PhysicsBoneLink> it = boneLinks.iterator(); it.hasNext();) {
+            PhysicsBoneLink physicsBoneLink = it.next();
+            physicsBoneLink.rigidBody.attachDebugShape(manager);
+        }
+        debug = true;
+    }
+
+    public void detachDebugShape() {
+        for (Iterator<PhysicsBoneLink> it = boneLinks.iterator(); it.hasNext();) {
+            PhysicsBoneLink physicsBoneLink = it.next();
+            physicsBoneLink.rigidBody.detachDebugShape();
+        }
+        debug = false;
     }
 
     public void render(RenderManager rm, ViewPort vp) {
-        if (debugPic != null) {
-            Camera cam = vp.getCamera();
-            offCamera.setLocation(cam.getLocation());
-            offCamera.setRotation(cam.getRotation());
-            rm.setCamera(cam, true);
-            int h = cam.getHeight();
-            int w = cam.getWidth();
-            debugPic.setPosition(w - 256, h / 20f);
-            debugPic.setWidth(256);
-            debugPic.setHeight(256);
-            debugPic.updateGeometricState();
-            rm.renderGeometry(debugPic);
-            rm.setCamera(cam, false);
+        if (debug) {
+            for (Iterator<PhysicsBoneLink> it = boneLinks.iterator(); it.hasNext();) {
+                PhysicsBoneLink physicsBoneLink = it.next();
+                Spatial debugShape = physicsBoneLink.rigidBody.debugShape();
+                if (debugShape != null) {
+                    debugShape.setLocalTranslation(physicsBoneLink.rigidBody.getPhysicsLocation(new Vector3f()));
+                    debugShape.setLocalRotation(physicsBoneLink.rigidBody.getPhysicsRotation(new Matrix3f()));
+                    debugShape.updateGeometricState();
+                    rm.renderScene(debugShape, vp);
+                }
+            }
         }
     }
 
@@ -237,51 +255,12 @@ public class PhysicsRagdollControl implements Control {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public void createDebugView(RenderManager renderManager, AssetManager assetManager) {
-
-        // create a pre-view. a view that is rendered before the main view
-        ViewPort offView = renderManager.createPreView("Offscreen View", offCamera);
-        offView.setClearEnabled(true);
-        offView.setBackgroundColor(ColorRGBA.DarkGray);
-
-        // create offscreen framebuffer
-        FrameBuffer offBuffer = new FrameBuffer(512, 512, 0);
-
-        //setup framebuffer's cam
-        offCamera.setFrustumPerspective(45f, 1f, 1f, 1000f);
-        offCamera.setLocation(new Vector3f(0f, 0f, -5f));
-        offCamera.lookAt(new Vector3f(0f, 0f, 0f), Vector3f.UNIT_Y);
-
-        //setup framebuffer's texture
-        Texture2D offTex = new Texture2D(512, 512, Format.RGB8);
-
-        //setup framebuffer to use texture
-        offBuffer.setDepthBuffer(Format.Depth);
-        offBuffer.setColorTexture(offTex);
-
-        //set viewport to render to offscreen framebuffer
-        offView.setOutputFrameBuffer(offBuffer);
-
-        // attach the scene to the viewport to be rendered
-        offView.attachScene(boneRoot);
-
-        debugPic = new Picture("pic");
-        debugPic.setTexture(assetManager, offTex, false);
-    }
-
-    /**
-     * @param physicsActive the physicsActive to set
-     */
-    public void setPhysicsActive(boolean physicsActive) {
-        this.physicsActive = physicsActive;
-    }
-
     private static class PhysicsBoneLink {
 
         Bone childBone;
         Bone parentBone;
         PhysicsJoint joint;
-        PhysicsNode shapeNode;
+        PhysicsRigidBody rigidBody;
         Vector3f pivotA;
         Vector3f pivotB;
         float length;

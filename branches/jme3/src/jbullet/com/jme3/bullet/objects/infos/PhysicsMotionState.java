@@ -29,24 +29,24 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.jme3.bullet.nodes.infos;
+package com.jme3.bullet.objects.infos;
 
 import com.bulletphysics.dynamics.RigidBody;
 import com.bulletphysics.linearmath.MotionState;
 import com.bulletphysics.linearmath.Transform;
+import com.jme3.bullet.nodes.PhysicsBaseNode;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
-import com.jme3.bullet.nodes.PhysicsNode;
-import com.jme3.bullet.nodes.PhysicsVehicleNode;
 import com.jme3.bullet.util.Converter;
 import com.jme3.math.Matrix3f;
+import com.jme3.scene.Spatial;
 
 /**
  * stores transform info of a PhysicsNode in a threadsafe manner to
  * allow multithreaded access from the jme scenegraph and the bullet physicsspace
  * @author normenhansen
  */
-public class PhysicsNodeState extends MotionState {
+public class PhysicsMotionState extends MotionState {
     //stores the bullet transform
 
     private Transform motionStateTrans = new Transform(Converter.convert(new Matrix3f()));
@@ -58,11 +58,11 @@ public class PhysicsNodeState extends MotionState {
     private Quaternion localRotationQuat = new Quaternion();
     //keep track of transform changes
     private boolean physicsLocationDirty = false;
-    private boolean jmeLocationDirty = true;
+    private boolean jmeLocationDirty = false;
     //temp variable for conversion
     private Quaternion tmp_inverseWorldRotation = new Quaternion();
 
-    public PhysicsNodeState() {
+    public PhysicsMotionState() {
     }
 
     /**
@@ -122,11 +122,15 @@ public class PhysicsNodeState extends MotionState {
      * applies the current transform to the given jme Node if the location has been updated on the physics side
      * @param spatial
      */
-    public synchronized boolean applyTransform(PhysicsNode spatial) {
+    public synchronized boolean applyTransform(Spatial spatial) {
         if (!physicsLocationDirty) {
             return false;
         }
-        if (spatial.getParent() != null) {
+        if(spatial instanceof PhysicsBaseNode){
+            ((PhysicsBaseNode)spatial).setWorldRotation(worldRotationQuat);
+            ((PhysicsBaseNode)spatial).setWorldTranslation(worldLocation);
+        }
+        else if(spatial.getParent() != null) {
             localLocation.set(worldLocation).subtractLocal(spatial.getParent().getWorldTranslation());
             localLocation.divideLocal(spatial.getParent().getWorldScale());
             tmp_inverseWorldRotation.set(spatial.getParent().getWorldRotation()).inverseLocal().multLocal(localLocation);
@@ -139,9 +143,6 @@ public class PhysicsNodeState extends MotionState {
         } else {
             spatial.setLocalTranslation(worldLocation);
             spatial.setLocalRotation(worldRotationQuat);
-        }
-        if(spatial instanceof PhysicsVehicleNode){
-            ((PhysicsVehicleNode)spatial).updateWheels();
         }
         physicsLocationDirty = false;
         return true;

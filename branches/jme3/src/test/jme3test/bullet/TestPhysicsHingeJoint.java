@@ -73,12 +73,6 @@ public class TestPhysicsHingeJoint extends SimpleApplication implements AnalogLi
         }
     }
 
-    public void onPreUpdate(float tpf) {
-    }
-
-    public void onPostUpdate(float tpf) {
-    }
-
     @Override
     public void simpleInitApp() {
         bulletAppState = new BulletAppState();
@@ -108,7 +102,7 @@ public class TestPhysicsHingeJoint extends SimpleApplication implements AnalogLi
         rootNode.attachChild(hammerNode);
         getPhysicsSpace().add(hammerNode);
 
-        joint=new PhysicsHingeJoint(holderNode, hammerNode, Vector3f.ZERO, new Vector3f(0f,-1,0f), Vector3f.UNIT_Z, Vector3f.UNIT_Z);
+        joint=new PhysicsHingeJoint(holderNode.getRigidBody(), hammerNode.getRigidBody(), Vector3f.ZERO, new Vector3f(0f,-1,0f), Vector3f.UNIT_Z, Vector3f.UNIT_Z);
         getPhysicsSpace().add(joint);
     }
 

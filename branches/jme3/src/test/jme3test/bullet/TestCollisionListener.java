@@ -107,7 +107,7 @@ public class TestCollisionListener extends SimpleApplication implements ActionLi
         node2.setLocalTranslation(new Vector3f(2.5f, -4, 0f));
         node2.attachDebugShape(assetManager);
         //setting collision group to group 2, collide with groups is still 1!
-        node2.setCollisionGroup(PhysicsNode.COLLISION_GROUP_02);
+        node2.setCollisionGroup(PhysicsCollisionObject.COLLISION_GROUP_02);
         rootNode.attachChild(node2);
         getPhysicsSpace().add(node2);
 
@@ -121,7 +121,7 @@ public class TestCollisionListener extends SimpleApplication implements ActionLi
         // add ourselves as collision listener
         getPhysicsSpace().addCollisionListener(this);
         // add ourselves as group collision listener for group 2
-        getPhysicsSpace().addCollisionGroupListener(this, PhysicsNode.COLLISION_GROUP_02);
+        getPhysicsSpace().addCollisionGroupListener(this, PhysicsCollisionObject.COLLISION_GROUP_02);
     }
 
     private PhysicsSpace getPhysicsSpace(){
