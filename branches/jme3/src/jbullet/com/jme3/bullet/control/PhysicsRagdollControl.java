@@ -43,10 +43,6 @@ public class PhysicsRagdollControl implements PhysicsControl {
     public PhysicsRagdollControl() {
     }
 
-    public PhysicsRagdollControl(PhysicsSpace space) {
-        this.space = space;
-    }
-
     public void update(float tpf) {
         if (!enabled) {
             return;
@@ -168,38 +164,42 @@ public class PhysicsRagdollControl implements PhysicsControl {
 
     private void clearData() {
         boneLinks.clear();
-        baseRigidBody=null;
+        baseRigidBody = null;
     }
 
     private void addToPhysicsSpace() {
-        if(baseRigidBody!=null){
+        if (baseRigidBody != null) {
             space.add(baseRigidBody);
         }
         for (Iterator<PhysicsBoneLink> it = boneLinks.iterator(); it.hasNext();) {
             PhysicsBoneLink physicsBoneLink = it.next();
-            if(physicsBoneLink.rigidBody!=null)
-            space.add(physicsBoneLink.rigidBody);
+            if (physicsBoneLink.rigidBody != null) {
+                space.add(physicsBoneLink.rigidBody);
+            }
         }
         for (Iterator<PhysicsBoneLink> it = boneLinks.iterator(); it.hasNext();) {
             PhysicsBoneLink physicsBoneLink = it.next();
-            if(physicsBoneLink.joint!=null)
-            space.add(physicsBoneLink.joint);
+            if (physicsBoneLink.joint != null) {
+                space.add(physicsBoneLink.joint);
+            }
         }
     }
 
     private void removeFromPhysicsSpace() {
-        if(baseRigidBody!=null){
+        if (baseRigidBody != null) {
             space.remove(baseRigidBody);
         }
         for (Iterator<PhysicsBoneLink> it = boneLinks.iterator(); it.hasNext();) {
             PhysicsBoneLink physicsBoneLink = it.next();
-            if(physicsBoneLink.joint!=null)
-            space.remove(physicsBoneLink.joint);
+            if (physicsBoneLink.joint != null) {
+                space.remove(physicsBoneLink.joint);
+            }
         }
         for (Iterator<PhysicsBoneLink> it = boneLinks.iterator(); it.hasNext();) {
             PhysicsBoneLink physicsBoneLink = it.next();
-            if(physicsBoneLink.rigidBody!=null)
-            space.remove(physicsBoneLink.rigidBody);
+            if (physicsBoneLink.rigidBody != null) {
+                space.remove(physicsBoneLink.rigidBody);
+            }
         }
     }
 
@@ -245,6 +245,15 @@ public class PhysicsRagdollControl implements PhysicsControl {
                 }
             }
         }
+    }
+
+    public void setPhysicsSpace(PhysicsSpace space) {
+        if (space == null) {
+            this.space.remove(this);
+        } else {
+            space.add(this);
+        }
+        this.space = space;
     }
 
     public void write(JmeExporter ex) throws IOException {

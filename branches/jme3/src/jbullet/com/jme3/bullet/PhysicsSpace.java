@@ -417,60 +417,14 @@ public class PhysicsSpace {
 
     /**
      * adds an object to the physics space
-     * <br>this is normally only needed for detached physics
-     * @param obj the PhyiscsNode, PhysicsGhostNode or PhysicsJoint to add
-     */
-    public void addQueued(final Object obj) {
-        enqueue(new Callable() {
-
-            public Object call() throws Exception {
-                if (obj instanceof PhysicsGhostObject) {
-                    addGhostNode((PhysicsGhostObject) obj);
-                } else if (obj instanceof PhysicsRigidBody) {
-                    addNode((PhysicsRigidBody) obj);
-                } else if (obj instanceof PhysicsJoint) {
-                    addJoint((PhysicsJoint) obj);
-                } else {
-                    throw (new UnsupportedOperationException("Cannot add this kind of object to the physics space."));
-                }
-                return null;
-            }
-        });
-    }
-
-    /**
-     * adds an object to the physics space
-     * <br>this is normally only needed for detached physics
-     * @param obj the PhyiscsNode, PhysicsGhostNode or PhysicsJoint to remove
-     */
-    public void removeQueued(final Object obj) {
-        enqueue(new Callable() {
-
-            public Object call() throws Exception {
-                if (obj instanceof PhysicsGhostObject) {
-                    removeGhostNode((PhysicsGhostObject) obj);
-                } else if (obj instanceof PhysicsRigidBody) {
-                    removeNode((PhysicsRigidBody) obj);
-                } else if (obj instanceof PhysicsJoint) {
-                    removeJoint((PhysicsJoint) obj);
-                } else {
-                    throw (new UnsupportedOperationException("Cannot remove this kind of object from the physics space."));
-                }
-                return null;
-            }
-        });
-    }
-
-    /**
-     * adds an object to the physics space
      * @param obj the PhyiscsNode, PhysicsGhostNode or PhysicsJoint to add
      */
     public void add(Object obj) {
-        if (obj instanceof Node) {
-            Node node = (Node) obj;
-            obj = node.getControl(PhysicsControl.class);
-        }
-        if (obj instanceof PhysicsGhostObject) {
+        if (obj instanceof Spatial) {
+            Spatial node = (Spatial) obj;
+            PhysicsControl control = node.getControl(PhysicsControl.class);
+            control.setPhysicsSpace(this);
+        } else if (obj instanceof PhysicsGhostObject) {
             addGhostNode((PhysicsGhostObject) obj);
         } else if (obj instanceof PhysicsRigidBody) {
             addNode((PhysicsRigidBody) obj);
@@ -488,11 +442,11 @@ public class PhysicsSpace {
      * @param obj the PhyiscsNode, PhysicsGhostNode or PhysicsJoint to remove
      */
     public void remove(Object obj) {
-        if (obj instanceof Node) {
-            Node node = (Node) obj;
-            obj = node.getControl(PhysicsControl.class);
-        }
-        if (obj instanceof GhostObject) {
+        if (obj instanceof Spatial) {
+            Spatial node = (Spatial) obj;
+            PhysicsControl control = node.getControl(PhysicsControl.class);
+            control.setPhysicsSpace(null);
+        } else if (obj instanceof GhostObject) {
             removeGhostNode((PhysicsGhostObject) obj);
         } else if (obj instanceof PhysicsRigidBody) {
             removeNode((PhysicsRigidBody) obj);
@@ -512,9 +466,9 @@ public class PhysicsSpace {
      */
     public void addAll(Node node) {
         if (node.getControl(PhysicsRigidBodyControl.class) != null) {
-            PhysicsRigidBody physicsNode = node.getControl(PhysicsRigidBodyControl.class);
+            PhysicsRigidBodyControl physicsNode = node.getControl(PhysicsRigidBodyControl.class);
             if (!physicsNodes.containsValue(physicsNode)) {
-                addNode(physicsNode);
+                physicsNode.setPhysicsSpace(this);
             }
             //add joints
             List<PhysicsJoint> joints = physicsNode.getJoints();
@@ -529,9 +483,8 @@ public class PhysicsSpace {
                 }
                 addJoint(physicsJoint);
             }
-        }
-        if (node.getControl(PhysicsGhostControl.class) != null) {
-            addGhostNode(node.getControl(PhysicsGhostControl.class));
+        } else if (node.getControl(PhysicsControl.class) != null) {
+            node.getControl(PhysicsControl.class).setPhysicsSpace(this);
         }
         //recursion
         List<Spatial> children = node.getChildren();
@@ -550,9 +503,9 @@ public class PhysicsSpace {
      */
     public void removeAll(Node node) {
         if (node.getControl(PhysicsRigidBodyControl.class) != null) {
-            PhysicsRigidBody physicsNode = node.getControl(PhysicsRigidBodyControl.class);
+            PhysicsRigidBodyControl physicsNode = node.getControl(PhysicsRigidBodyControl.class);
             if (physicsNodes.containsValue(physicsNode)) {
-                removeNode(physicsNode);
+                physicsNode.setPhysicsSpace(null);
             }
             //remove joints
             List<PhysicsJoint> joints = physicsNode.getJoints();
@@ -567,9 +520,8 @@ public class PhysicsSpace {
                 }
                 removeJoint(physicsJoint);
             }
-        }
-        if (node.getControl(PhysicsGhostControl.class) != null) {
-            removeGhostNode(node.getControl(PhysicsGhostControl.class));
+        } else if (node.getControl(PhysicsControl.class) != null) {
+            node.getControl(PhysicsControl.class).setPhysicsSpace(null);
         }
         //recursion
         List<Spatial> children = node.getChildren();

@@ -4,6 +4,7 @@
  */
 package com.jme3.bullet.control;
 
+import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.objects.PhysicsRigidBody;
 import com.jme3.export.InputCapsule;
@@ -24,6 +25,7 @@ public class PhysicsRigidBodyControl extends PhysicsRigidBody implements Physics
 
     protected Spatial spatial;
     private boolean enabled = true;
+    protected PhysicsSpace space = null;
 
     public PhysicsRigidBodyControl() {
     }
@@ -71,6 +73,15 @@ public class PhysicsRigidBodyControl extends PhysicsRigidBody implements Physics
             debugShape.updateGeometricState();
             rm.renderScene(debugShape, vp);
         }
+    }
+
+    public void setPhysicsSpace(PhysicsSpace space) {
+        if (space == null) {
+            this.space.remove(this);
+        } else {
+            space.add(this);
+        }
+        this.space = space;
     }
 
     @Override
