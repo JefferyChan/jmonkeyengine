@@ -34,7 +34,7 @@ MaterialDef SimpleWater {
     }
 
     Technique {
-        VertexShader GLSL100:   Common/MatDefs/Post/post.vert
+        VertexShader GLSL100:   Common/MatDefs/Post/Post.vert
         FragmentShader GLSL100: Common/MatDefs/Water/water.frag
 
         WorldParameters {
