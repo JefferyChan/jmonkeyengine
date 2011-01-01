@@ -55,8 +55,8 @@ public class PhysicsRagdollControl implements PhysicsControl {
 
         skeleton.reset();
         for (PhysicsBoneLink link : boneLinks) {
-            Vector3f p = link.rigidBody.getPhysicsLocation(new Vector3f());
-            Quaternion q = new Quaternion().fromRotationMatrix(link.rigidBody.getPhysicsRotation(new Matrix3f()));
+            Vector3f p = link.rigidBody.getMotionState().getWorldLocation();
+            Quaternion q = link.rigidBody.getMotionState().getWorldRotationQuat();
 
             q.toAxes(vars.tri);
 
@@ -245,8 +245,8 @@ public class PhysicsRagdollControl implements PhysicsControl {
                 PhysicsBoneLink physicsBoneLink = it.next();
                 Spatial debugShape = physicsBoneLink.rigidBody.debugShape();
                 if (debugShape != null) {
-                    debugShape.setLocalTranslation(physicsBoneLink.rigidBody.getPhysicsLocation(new Vector3f()));
-                    debugShape.setLocalRotation(physicsBoneLink.rigidBody.getPhysicsRotation(new Matrix3f()));
+                    debugShape.setLocalTranslation(physicsBoneLink.rigidBody.getMotionState().getWorldLocation());
+                    debugShape.setLocalRotation(physicsBoneLink.rigidBody.getMotionState().getWorldRotationQuat());
                     debugShape.updateGeometricState();
                     rm.renderScene(debugShape, vp);
                 }

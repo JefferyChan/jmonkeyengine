@@ -416,6 +416,8 @@ public class PhysicsSpace {
             control.setPhysicsSpace(this);
         } else if (obj instanceof PhysicsCollisionObject) {
             addCollisionObject((PhysicsCollisionObject) obj);
+        } else if (obj instanceof PhysicsJoint) {
+            addJoint((PhysicsJoint) obj);
         } else {
             throw (new UnsupportedOperationException("Cannot add this kind of object to the physics space."));
         }
@@ -444,6 +446,8 @@ public class PhysicsSpace {
             control.setPhysicsSpace(null);
         } else if (obj instanceof PhysicsCollisionObject) {
             removeCollisionObject((PhysicsCollisionObject) obj);
+        } else if (obj instanceof PhysicsJoint) {
+            removeJoint((PhysicsJoint) obj);
         } else {
             throw (new UnsupportedOperationException("Cannot remove this kind of object from the physics space."));
         }
