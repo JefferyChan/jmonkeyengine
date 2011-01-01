@@ -176,16 +176,16 @@ public class ChaseCamera implements ActionListener, AnalogListener, Control {
 
         this.inputManager = inputManager;
         if(!invertYaxis){
-            inputManager.addMapping("Down", new MouseAxisTrigger(1, true));
-            inputManager.addMapping("Up", new MouseAxisTrigger(1, false));
+            inputManager.addMapping("Down", new MouseAxisTrigger(MouseInput.AXIS_Y, true));
+            inputManager.addMapping("Up", new MouseAxisTrigger(MouseInput.AXIS_Y, false));
         }else{
-            inputManager.addMapping("Down", new MouseAxisTrigger(1, false));
-            inputManager.addMapping("Up", new MouseAxisTrigger(1, true));
+            inputManager.addMapping("Down", new MouseAxisTrigger(MouseInput.AXIS_Y, false));
+            inputManager.addMapping("Up", new MouseAxisTrigger(MouseInput.AXIS_Y, true));
         }
-        inputManager.addMapping("ZoomIn", new MouseAxisTrigger(2, true));
-        inputManager.addMapping("ZoomOut", new MouseAxisTrigger(2, false));
-        inputManager.addMapping("mouseLeft", new MouseAxisTrigger(0, true));
-        inputManager.addMapping("mouseRight", new MouseAxisTrigger(0, false));
+        inputManager.addMapping("ZoomIn", new MouseAxisTrigger(MouseInput.AXIS_WHEEL, true));
+        inputManager.addMapping("ZoomOut", new MouseAxisTrigger(MouseInput.AXIS_WHEEL, false));
+        inputManager.addMapping("mouseLeft", new MouseAxisTrigger(MouseInput.AXIS_X, true));
+        inputManager.addMapping("mouseRight", new MouseAxisTrigger(MouseInput.AXIS_X, false));
         inputManager.addMapping("toggleRotate", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
         inputManager.addMapping("toggleRotate", new MouseButtonTrigger(MouseInput.BUTTON_RIGHT));
 
@@ -781,11 +781,11 @@ public class ChaseCamera implements ActionListener, AnalogListener, Control {
         inputManager.deleteMapping("Down");
         inputManager.deleteMapping("Up");
         if(!invertYaxis){
-            inputManager.addMapping("Down", new MouseAxisTrigger(1, true));
-            inputManager.addMapping("Up", new MouseAxisTrigger(1, false));
+            inputManager.addMapping("Down", new MouseAxisTrigger(MouseInput.AXIS_Y, true));
+            inputManager.addMapping("Up", new MouseAxisTrigger(MouseInput.AXIS_Y, false));
         }else{
-            inputManager.addMapping("Down", new MouseAxisTrigger(1, false));
-            inputManager.addMapping("Up", new MouseAxisTrigger(1, true));
+            inputManager.addMapping("Down", new MouseAxisTrigger(MouseInput.AXIS_Y, false));
+            inputManager.addMapping("Up", new MouseAxisTrigger(MouseInput.AXIS_Y, true));
         }
         inputManager.addListener(this, "Down","Up");
     }

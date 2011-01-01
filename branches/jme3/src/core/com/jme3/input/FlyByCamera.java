@@ -174,21 +174,21 @@ public class FlyByCamera implements AnalogListener, ActionListener {
         };
 
         // both mouse and button - rotation of cam
-        inputManager.addMapping("FLYCAM_Left", new MouseAxisTrigger(0, true),
+        inputManager.addMapping("FLYCAM_Left", new MouseAxisTrigger(MouseInput.AXIS_X, true),
                                                new KeyTrigger(KeyInput.KEY_LEFT));
 
-        inputManager.addMapping("FLYCAM_Right", new MouseAxisTrigger(0, false),
+        inputManager.addMapping("FLYCAM_Right", new MouseAxisTrigger(MouseInput.AXIS_X, false),
                                                 new KeyTrigger(KeyInput.KEY_RIGHT));
 
-        inputManager.addMapping("FLYCAM_Up", new MouseAxisTrigger(1, false),
+        inputManager.addMapping("FLYCAM_Up", new MouseAxisTrigger(MouseInput.AXIS_Y, false),
                                              new KeyTrigger(KeyInput.KEY_UP));
 
-        inputManager.addMapping("FLYCAM_Down", new MouseAxisTrigger(1, true),
+        inputManager.addMapping("FLYCAM_Down", new MouseAxisTrigger(MouseInput.AXIS_Y, true),
                                                new KeyTrigger(KeyInput.KEY_DOWN));
 
         // mouse only - zoom in/out with wheel, and rotate drag
-        inputManager.addMapping("FLYCAM_ZoomIn", new MouseAxisTrigger(2, false));
-        inputManager.addMapping("FLYCAM_ZoomOut", new MouseAxisTrigger(2, true));
+        inputManager.addMapping("FLYCAM_ZoomIn", new MouseAxisTrigger(MouseInput.AXIS_WHEEL, false));
+        inputManager.addMapping("FLYCAM_ZoomOut", new MouseAxisTrigger(MouseInput.AXIS_WHEEL, true));
         inputManager.addMapping("FLYCAM_RotateDrag", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
 
         // keyboard only WASD for movement and WZ for rise/lower height
