@@ -42,7 +42,7 @@ import org.openide.util.ImageUtilities;
  * @author normenhansen
  */
 @org.openide.util.lookup.ServiceProvider(service=SceneExplorerNode.class)
-public class JmePhysicsCharacterNode extends JmePhysicsGhostNode {
+public class JmePhysicsCharacterNode extends JmePhysicsBaseNode {
 
     private static Image smallImage =
             ImageUtilities.loadImage("com/jme3/gde/core/sceneexplorer/nodes/icons/player.gif");

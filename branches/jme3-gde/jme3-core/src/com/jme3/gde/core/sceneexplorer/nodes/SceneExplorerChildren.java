@@ -31,12 +31,11 @@
  */
 package com.jme3.gde.core.sceneexplorer.nodes;
 
-import com.jme3.bullet.collision.PhysicsCollisionObject;
+import com.jme3.bullet.nodes.PhysicsBaseNode;
 import com.jme3.bullet.nodes.PhysicsCharacterNode;
 import com.jme3.bullet.nodes.PhysicsGhostNode;
 import com.jme3.bullet.nodes.PhysicsNode;
 import com.jme3.bullet.nodes.PhysicsVehicleNode;
-import com.jme3.bullet.nodes.PhysicsVehicleWheel;
 import com.jme3.effect.ParticleEmitter;
 import com.jme3.font.BitmapText;
 import com.jme3.gde.core.scene.SceneApplication;
@@ -158,11 +157,8 @@ public class SceneExplorerChildren extends Children.Keys<Object> {
             if (key instanceof PhysicsGhostNode) {
                 return new Node[]{new JmePhysicsGhostNode((PhysicsGhostNode) key, children).setReadOnly(readOnly)};
             }
-            if (key instanceof PhysicsCollisionObject) {
-                return new Node[]{new JmePhysicsCollisionObject((PhysicsCollisionObject) key, children).setReadOnly(readOnly)};
-            }
-            if (key instanceof PhysicsVehicleWheel) {
-                return new Node[]{new JmePhysicsVehicleWheel((PhysicsVehicleWheel) key, children).setReadOnly(readOnly)};
+            if (key instanceof PhysicsBaseNode) {
+                return new Node[]{new JmePhysicsBaseNode((PhysicsBaseNode) key, children).setReadOnly(readOnly)};
             }
             if (key instanceof com.jme3.audio.AudioNode) {
                 return new Node[]{new JmeAudioNode((com.jme3.audio.AudioNode) key, children).setReadOnly(readOnly)};

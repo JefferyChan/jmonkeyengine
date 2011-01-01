@@ -4,12 +4,11 @@
  */
 package com.jme3.gde.scenecomposer;
 
-import com.jme3.asset.AssetKey;
 import com.jme3.asset.AssetManager;
 import com.jme3.asset.DesktopAssetManager;
 import com.jme3.asset.ModelKey;
 import com.jme3.audio.AudioNode;
-import com.jme3.bullet.collision.PhysicsCollisionObject;
+import com.jme3.bullet.nodes.PhysicsBaseNode;
 import com.jme3.bullet.nodes.PhysicsNode;
 import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.effect.EmitterSphereShape;
@@ -311,8 +310,8 @@ public class SceneEditorController implements PropertyChangeListener, NodeListen
 
     public void doCreatePhysicsMesh(Spatial selected) {
         Node parent = selected.getParent();
-        if (selected instanceof PhysicsCollisionObject) {
-            PhysicsCollisionObject collObj = (PhysicsCollisionObject) selected;
+        if (selected instanceof PhysicsBaseNode) {
+            PhysicsBaseNode collObj = (PhysicsBaseNode) selected;
             collObj.removeFromParent();
             collObj.setCollisionShape(CollisionShapeFactory.createMeshShape(selected));
             if (parent != null) {
@@ -499,44 +498,12 @@ public class SceneEditorController implements PropertyChangeListener, NodeListen
     }
 
     public void saveScene() {
-//        final Node node = jmeRootNode.getLookup().lookup(Node.class);
-//        if (node != null && file != null) {
-//            setNeedsSave(false);
-//            SceneApplication.getApplication().enqueue(new Callable() {
-//
-//                public Object call() throws Exception {
-//                    doSaveScene(node, file);
-//                    return null;
-//                }
-//        }
-//        }
         try {
             currentFileObject.getLookup().lookup(SaveCookie.class).save();
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
         }
     }
-//
-//    public void doSaveScene(Node node, FileObject currentFileObject) {
-//        ProgressHandle progressHandle = ProgressHandleFactory.createHandle("Saving File..");
-//        progressHandle.start();
-//        BinaryExporter exp = BinaryExporter.getInstance();
-//        FileLock lock = null;
-//        try {
-//            lock = currentFileObject.lock();
-//            exp.save(node, FileUtil.toFile(currentFileObject));
-//        } catch (Exception ex) {
-//            Exceptions.printStackTrace(ex);
-//        } finally {
-//            if (lock != null) {
-//                lock.releaseLock();
-//            }
-//        }
-//        progressHandle.finish();
-//        StatusDisplayer.getDefault().setStatusText(currentFileObject.getNameExt() + " saved.");
-//        //try make NetBeans update the tree.. :/
-//
-//    }
 
     private void refreshSelected(final JmeSpatial spat) {
         java.awt.EventQueue.invokeLater(new Runnable() {

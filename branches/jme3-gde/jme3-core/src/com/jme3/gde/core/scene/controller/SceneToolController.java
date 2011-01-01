@@ -7,8 +7,8 @@ package com.jme3.gde.core.scene.controller;
 import com.jme3.asset.AssetManager;
 import com.jme3.bounding.BoundingBox;
 import com.jme3.bounding.BoundingVolume;
-import com.jme3.bullet.collision.PhysicsCollisionObject;
-import com.jme3.bullet.util.CollisionShapeFactory;
+import com.jme3.bullet.nodes.PhysicsBaseNode;
+import com.jme3.bullet.util.DebugShapeFactory;
 import com.jme3.gde.core.scene.SceneApplication;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
@@ -143,8 +143,8 @@ public class SceneToolController {
         }
         if (spat instanceof Geometry) {
             attachGeometrySelection((Geometry) spat);
-        } else if(spat instanceof PhysicsCollisionObject){
-            attachPhysicsSelection((PhysicsCollisionObject)spat);
+        } else if(spat instanceof PhysicsBaseNode){
+            attachPhysicsSelection((PhysicsBaseNode)spat);
         }
         else {
             attachBoxSelection(spat);
@@ -181,10 +181,10 @@ public class SceneToolController {
         }
     }
 
-    protected void attachPhysicsSelection(PhysicsCollisionObject geom) {
+    protected void attachPhysicsSelection(PhysicsBaseNode geom) {
         Material mat = new Material(SceneApplication.getApplication().getAssetManager(), "Common/MatDefs/Misc/WireColor.j3md");
         mat.setColor("m_Color", ColorRGBA.Blue);
-        Spatial selectionGeometry=CollisionShapeFactory.getDebugShape(geom.getCollisionShape());
+        Spatial selectionGeometry=DebugShapeFactory.getDebugShape(geom.getCollisionShape());
         if (selectionGeometry !=null) {
             selectionGeometry.setMaterial(mat);
             selectionGeometry.setLocalTransform(geom.getWorldTransform());
@@ -211,9 +211,6 @@ public class SceneToolController {
         return cursor.getLocalTranslation();
     }
 
-//    public boolean isShowSelection() {
-//        return showSelection;
-//    }
     public void setShowSelection(final boolean showSelection) {
         SceneApplication.getApplication().enqueue(new Callable<Object>() {
 

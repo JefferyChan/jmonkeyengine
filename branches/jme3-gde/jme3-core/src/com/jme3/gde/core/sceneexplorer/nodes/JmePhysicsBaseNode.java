@@ -33,6 +33,7 @@ package com.jme3.gde.core.sceneexplorer.nodes;
 
 import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.collision.shapes.CollisionShape;
+import com.jme3.bullet.nodes.PhysicsBaseNode;
 import java.awt.Image;
 import org.openide.loaders.DataObject;
 import org.openide.nodes.Sheet;
@@ -43,16 +44,16 @@ import org.openide.util.ImageUtilities;
  * @author normenhansen
  */
 @org.openide.util.lookup.ServiceProvider(service=SceneExplorerNode.class)
-public class JmePhysicsCollisionObject extends JmeNode {
+public class JmePhysicsBaseNode extends JmeNode {
 
     private static Image smallImage =
             ImageUtilities.loadImage("com/jme3/gde/core/sceneexplorer/nodes/icons/node.gif");
-    private PhysicsCollisionObject geom;
+    private PhysicsBaseNode geom;
 
-    public JmePhysicsCollisionObject() {
+    public JmePhysicsBaseNode() {
     }
 
-    public JmePhysicsCollisionObject(PhysicsCollisionObject spatial, SceneExplorerChildren children) {
+    public JmePhysicsBaseNode(PhysicsBaseNode spatial, SceneExplorerChildren children) {
         super(spatial, children);
         getLookupContents().add(spatial);
         this.geom = spatial;
@@ -72,9 +73,9 @@ public class JmePhysicsCollisionObject extends JmeNode {
     protected Sheet createSheet() {
         Sheet sheet = super.createSheet();
         Sheet.Set set = Sheet.createPropertiesSet();
-        set.setDisplayName("PhysicsCollisionObject");
+        set.setDisplayName("PhysicsBaseNode");
         set.setName(PhysicsCollisionObject.class.getName());
-        PhysicsCollisionObject obj = geom;//getLookup().lookup(Spatial.class);
+        PhysicsBaseNode obj = geom;//getLookup().lookup(Spatial.class);
         if (obj == null) {
             return sheet;
         }
@@ -89,17 +90,17 @@ public class JmePhysicsCollisionObject extends JmeNode {
     }
 
     public Class getExplorerObjectClass() {
-        return PhysicsCollisionObject.class;
+        return PhysicsBaseNode.class;
     }
 
     public Class getExplorerNodeClass() {
-        return JmePhysicsCollisionObject.class;
+        return JmePhysicsBaseNode.class;
     }
 
     public org.openide.nodes.Node[] createNodes(Object key, DataObject key2, boolean cookie) {
         SceneExplorerChildren children=new SceneExplorerChildren((com.jme3.scene.Spatial)key);
         children.setReadOnly(cookie);
         children.setDataObject(key2);
-        return new org.openide.nodes.Node[]{new JmePhysicsCollisionObject((PhysicsCollisionObject) key, children).setReadOnly(cookie)};
+        return new org.openide.nodes.Node[]{new JmePhysicsBaseNode((PhysicsBaseNode) key, children).setReadOnly(cookie)};
     }
 }
