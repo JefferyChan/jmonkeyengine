@@ -189,20 +189,20 @@ void main(void){
 
                     texC = surfacePoint.xz * 0.4 + m_WindDirection * m_Time* 0.8;
                     tangentFrame = computeTangentFrame(myNormal, eyeVecNorm, texC);
-                    vec3 normal1a = normalize(tangentFrame*(2.0f * texture2D(m_NormalMap, texC).xyz - 1.0));
+                    vec3 normal1a = normalize(tangentFrame*(2.0 * texture2D(m_NormalMap, texC).xyz - 1.0));
 
                     texC = surfacePoint.xz * 0.2 + m_WindDirection * m_Time * 0.4;
                     tangentFrame = computeTangentFrame(myNormal, eyeVecNorm, texC);
-                    vec3 normal2a = normalize(tangentFrame*(2.0f * texture2D(m_NormalMap, texC).xyz - 1.0));
+                    vec3 normal2a = normalize(tangentFrame*(2.0 * texture2D(m_NormalMap, texC).xyz - 1.0));
 
                     texC = surfacePoint.xz * 0.1 + m_WindDirection * m_Time * 0.2;
                     tangentFrame = computeTangentFrame(myNormal, eyeVecNorm, texC);
-                    vec3 normal3a = normalize(tangentFrame*(2.0f * texture2D(m_NormalMap, texC).xyz - 1.0));
+                    vec3 normal3a = normalize(tangentFrame*(2.0 * texture2D(m_NormalMap, texC).xyz - 1.0));
 
                     vec3 normal = normalize(normal0a * normalModifier.x + normal1a * normalModifier.y +normal2a * normalModifier.z + normal3a * normalModifier.w);
 
                     texC = texCoord.xy;
-                    texC += sin(m_Time*1.8  + 3.0f * abs(position.y)) * (refractionScale * min(depth2, 1.0));
+                    texC += sin(m_Time*1.8  + 3.0 * abs(position.y)) * (refractionScale * min(depth2, 1.0));
  
                     vec3 refraction = texture2D(m_Texture, texC).rgb;
                     if(getPosition(texC).y > level)
@@ -229,9 +229,9 @@ void main(void){
 
                     vec3 foam = vec3(0.0);
                 
-                    texC = (surfacePoint.xz + eyeVecNorm.xz * 0.1) * 0.05 + m_Time * 0.05f * m_WindDirection + sin(m_Time * 0.001 + position.x) * 0.005;
+                    texC = (surfacePoint.xz + eyeVecNorm.xz * 0.1) * 0.05 + m_Time * 0.05 * m_WindDirection + sin(m_Time * 0.001 + position.x) * 0.005;
                    
-                    vec2 texCoord2 = (surfacePoint.xz + eyeVecNorm.xz * 0.1) * 0.05 + m_Time * 0.1f * m_WindDirection + sin(m_Time * 0.001 + position.z) * 0.005;
+                    vec2 texCoord2 = (surfacePoint.xz + eyeVecNorm.xz * 0.1) * 0.05 + m_Time * 0.1 * m_WindDirection + sin(m_Time * 0.001 + position.z) * 0.005;
                    
                     if(depth2 < m_FoamExistence.x)
                             foam = (texture2D(m_FoamMap, texC).r + texture2D(m_FoamMap, texCoord2)).rgb * 0.4;
@@ -252,7 +252,7 @@ void main(void){
 
                     vec3 specular =vec3(0.0);
                     vec3 lightDir=normalize(m_LightDir);
-                    vec3 mirrorEye = (2.0f * dot(eyeVecNorm, normal) * normal - eyeVecNorm);
+                    vec3 mirrorEye = (2.0 * dot(eyeVecNorm, normal) * normal - eyeVecNorm);
                     float dotSpec = saturate(dot(mirrorEye.xyz, -lightDir) * 0.5 + 0.5);
                     specular = vec3((1.0 - fresnel) * saturate(-lightDir.y) * ((pow(dotSpec, 512.0)) * (m_Shininess * 1.8 + 0.2)));
                     specular += specular * 25 * saturate(m_Shininess - 0.05);
