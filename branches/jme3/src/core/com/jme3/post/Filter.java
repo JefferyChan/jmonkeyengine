@@ -127,10 +127,10 @@ public abstract class Filter implements Savable {
         this("filter");
     }
 
-    public void init(AssetManager manager, ViewPort vp) {
+    public void init(AssetManager manager, RenderManager renderManager, ViewPort vp) {
         defaultPass = new Pass();
         defaultPass.init(vp.getCamera().getWidth(), vp.getCamera().getHeight(), getDefaultPassTextureFormat(), getDefaultPassDepthFormat());
-        initFilter(manager, vp);
+        initFilter(manager, renderManager,vp);
         //TODO delete this once the deprecated method will be removed
         viewPort = vp;
     }
@@ -145,11 +145,11 @@ public abstract class Filter implements Savable {
     //TODO delete this once the deprecated method will be removed
     private ViewPort viewPort;
     /**
-     * @deprecated use initFilter(AssetManager manager,ViewPort vp) method instead
+     * @deprecated use initFilter(AssetManager manager,RanderManager renderManager ViewPort vp) method instead
      */
     @Deprecated
     public void initMaterial(AssetManager manager) {
-        initFilter(manager, viewPort);
+        initFilter(manager, null,viewPort);
     }    
 
     /**
@@ -157,7 +157,7 @@ public abstract class Filter implements Savable {
      * It should contain Maerial initializations and extra passes initialization
      * @param manager
      */
-    public abstract void initFilter(AssetManager manager, ViewPort vp);
+    public abstract void initFilter(AssetManager manager,RenderManager renderManager, ViewPort vp);
 
     /**
      * this method should return the material used for this filter.

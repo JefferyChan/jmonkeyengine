@@ -145,7 +145,7 @@ public class BloomFilter extends Filter {
     }
 
     @Override
-    public void initFilter(AssetManager manager, ViewPort vp) {
+    public void initFilter(AssetManager manager, RenderManager renderManager,ViewPort vp) {
         screenWidth = (int) (vp.getCamera().getWidth() / downSamplingFactor);
         screenHeight = (int) (vp.getCamera().getHeight() / downSamplingFactor);
         if (glowMode != GlowMode.Scene) {

@@ -75,7 +75,7 @@ public class FadeFilter extends Filter {
     }
 
     @Override
-    public void initFilter(AssetManager manager, ViewPort vp) {
+    public void initFilter(AssetManager manager,RenderManager renderManager, ViewPort vp) {
         material = new Material(manager, "Common/MatDefs/Post/Fade.j3md");
     }
 

@@ -88,7 +88,7 @@ public class FilterPostProcessor implements SceneProcessor, Savable {
     public void addFilter(Filter filter) {
         filters.add(filter);
         if (isInitialized()) {
-            filter.init(assetManager, viewPort);
+            filter.init(assetManager,renderManager, viewPort);
         }
     }
 
@@ -208,7 +208,7 @@ public class FilterPostProcessor implements SceneProcessor, Savable {
     public void reshape(ViewPort vp, int w, int h) {
         for (Iterator<Filter> it = filters.iterator(); it.hasNext();) {
             Filter filter = it.next();
-            filter.init(assetManager, vp);
+            filter.init(assetManager,renderManager, vp);
             computeDepth = filter.isRequiresDepthTexture();
 
         }

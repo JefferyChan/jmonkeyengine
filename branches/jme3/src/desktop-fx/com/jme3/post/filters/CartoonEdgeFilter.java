@@ -78,7 +78,7 @@ public class CartoonEdgeFilter extends Filter {
     }
 
     @Override
-    public void initFilter(AssetManager manager,ViewPort vp) {
+    public void initFilter(AssetManager manager,RenderManager renderManager,ViewPort vp) {
         normalPass = new Pass();
         normalPass.init(vp.getCamera().getWidth(), vp.getCamera().getHeight(), Format.RGB8, Format.Depth);
         material = new Material(manager, "Common/MatDefs/Post/CartoonEdge.j3md");

@@ -80,7 +80,7 @@ public class ColorOverlayFilter extends Filter {
     }
 
     @Override
-    public void initFilter(AssetManager manager, ViewPort vp) {
+    public void initFilter(AssetManager manager,RenderManager renderManager,ViewPort vp) {
         material = new Material(manager, "Common/MatDefs/Gui/Gui.j3md");
     }
 

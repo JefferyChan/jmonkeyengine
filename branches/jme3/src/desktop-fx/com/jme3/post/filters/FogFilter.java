@@ -70,7 +70,7 @@ public class FogFilter extends Filter {
     }
 
     @Override
-    public void initFilter(AssetManager manager, ViewPort vp) {
+    public void initFilter(AssetManager manager,RenderManager renderManager, ViewPort vp) {
         material = new Material(manager, "Common/MatDefs/Post/Fog.j3md");
         material.setColor("m_FogColor", fogColor);
         material.setFloat("m_FogDensity", fogDensity);
