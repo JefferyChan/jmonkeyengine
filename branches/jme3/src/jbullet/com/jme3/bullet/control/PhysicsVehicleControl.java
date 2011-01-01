@@ -66,6 +66,7 @@ public class PhysicsVehicleControl extends PhysicsVehicle implements PhysicsCont
     public void update(float tpf) {
         if (enabled && spatial != null) {
             if (getMotionState().applyTransform(spatial)) {
+                spatial.getWorldTransform();
                 applyWheelTransforms();
             }
         } else if (enabled) {
