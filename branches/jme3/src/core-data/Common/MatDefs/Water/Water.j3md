@@ -1,0 +1,47 @@
+MaterialDef SimpleWater {
+
+    MaterialParameters {     
+        Texture2D m_FoamMap
+        Texture2D m_NormalMap
+        Texture2D m_ReflectionMap
+        Texture2D m_HeightMap
+        Texture2D m_Texture
+        Texture2D m_DepthTexture
+        Texture2D m_PositionBuffer
+        Vector3 m_CameraPosition
+        Float m_Time
+        Vector3 frustumCorner
+        Matrix4 m_TextureProjMatrix
+        Matrix4 m_ViewProjectionMatrixInverse
+        Float m_WaterHeight
+        Vector3 m_LightDir
+        Float m_WaterTransparency
+        Float m_NormalScale
+        Float m_R0
+        Float m_MaxAmplitude
+        Color m_LightColor
+        Float m_ShoreHardness
+        Float m_FoamHardness
+        Float m_RefractionStrength
+        Float m_WaveScale
+        Vector3 m_FoamExistence
+        Float m_SunScale
+        Vector3 m_ColorExtinction
+        Float m_Shininess
+        Color m_WaterColor
+        Color m_DeepWaterColor
+        Vector2 m_WindDirection
+    }
+
+    Technique {
+        VertexShader GLSL100:   Common/MatDefs/Post/post.vert
+        FragmentShader GLSL100: Common/MatDefs/Water/water.frag
+
+        WorldParameters {
+            WorldViewProjectionMatrix
+        }
+    }
+
+    Technique FixedFunc {
+    }
+}
