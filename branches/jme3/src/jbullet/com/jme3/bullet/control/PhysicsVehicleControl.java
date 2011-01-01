@@ -11,8 +11,6 @@ import com.jme3.export.InputCapsule;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
 import com.jme3.export.OutputCapsule;
-import com.jme3.math.Matrix3f;
-import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Spatial;
@@ -81,8 +79,8 @@ public class PhysicsVehicleControl extends PhysicsVehicle implements PhysicsCont
 
     public void render(RenderManager rm, ViewPort vp) {
         if (debugShape != null && enabled) {
-            debugShape.setLocalTranslation(getPhysicsLocation(new Vector3f()));
-            debugShape.setLocalRotation(getPhysicsRotation(new Matrix3f()));
+            debugShape.setLocalTranslation(motionState.getWorldLocation());
+            debugShape.setLocalRotation(motionState.getWorldRotation());
             debugShape.updateLogicalState(0);
             debugShape.updateGeometricState();
             rm.renderScene(debugShape, vp);

@@ -75,8 +75,8 @@ public class PhysicsRigidBodyControl extends PhysicsRigidBody implements Physics
 
     public void render(RenderManager rm, ViewPort vp) {
         if (debugShape != null && enabled) {
-            debugShape.setLocalTranslation(getPhysicsLocation(new Vector3f()));
-            debugShape.setLocalRotation(getPhysicsRotation(new Matrix3f()));
+            debugShape.setLocalTranslation(motionState.getWorldLocation());
+            debugShape.setLocalRotation(motionState.getWorldRotation());
             debugShape.updateLogicalState(0);
             debugShape.updateGeometricState();
             rm.renderScene(debugShape, vp);

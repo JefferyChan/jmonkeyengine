@@ -49,6 +49,7 @@ import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
 import com.jme3.export.OutputCapsule;
 import com.jme3.math.Matrix3f;
+import com.jme3.math.Quaternion;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.debug.Arrow;
@@ -152,6 +153,7 @@ public class PhysicsRigidBody extends PhysicsCollisionObject {
         rBody.getCenterOfMassTransform(tempTrans);
         Converter.convert(location, tempTrans.origin);
         rBody.setCenterOfMassTransform(tempTrans);
+        motionState.setWorldTransform(tempTrans);
     }
 
     /**
@@ -185,6 +187,30 @@ public class PhysicsRigidBody extends PhysicsCollisionObject {
             rotation = new Matrix3f();
         }
         rBody.getCenterOfMassTransform(tempTrans);
+        return Converter.convert(tempTrans.basis, rotation);
+    }
+
+    /**
+     * Gets the physics object location
+     * @param location the location of the actual physics object is stored in this Vector3f
+     */
+    public Vector3f getInterpolatedPhysicsLocation(Vector3f location) {
+        if (location == null) {
+            location = new Vector3f();
+        }
+        rBody.getInterpolationWorldTransform(tempTrans);
+        return Converter.convert(tempTrans.origin, location);
+    }
+
+    /**
+     * Gets the physics object rotation
+     * @param rotation the rotation of the actual physics object is stored in this Matrix3f
+     */
+    public Matrix3f getInterpolatedPhysicsRotation(Matrix3f rotation) {
+        if (rotation == null) {
+            rotation = new Matrix3f();
+        }
+        rBody.getInterpolationWorldTransform(tempTrans);
         return Converter.convert(tempTrans.basis, rotation);
     }
 
