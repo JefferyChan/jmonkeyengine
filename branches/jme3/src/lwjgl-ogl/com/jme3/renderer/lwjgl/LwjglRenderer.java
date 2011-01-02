@@ -768,14 +768,21 @@ public class LwjglRenderer implements Renderer {
 
         // upload shader source
         // merge the defines and source code
-        byte[] versionData = new byte[]{};//"#version 140\n".getBytes();
-//        versionData = "#define INSTANCING 1\n".getBytes();
+
+        stringBuf.setLength(0);
+        if (language.startsWith("GLSL")){
+            stringBuf.append("#version ");
+            stringBuf.append(language.substring(4));
+            stringBuf.append("\n");
+        }
+        updateNameBuffer();
+
         byte[] definesCodeData = source.getDefines().getBytes();
         byte[] sourceCodeData = source.getSource().getBytes();
-        ByteBuffer codeBuf = BufferUtils.createByteBuffer(versionData.length
+        ByteBuffer codeBuf = BufferUtils.createByteBuffer(nameBuf.limit()
                                                         + definesCodeData.length
                                                         + sourceCodeData.length);
-        codeBuf.put(versionData);
+        codeBuf.put(nameBuf);
         codeBuf.put(definesCodeData);
         codeBuf.put(sourceCodeData);
         codeBuf.flip();

@@ -155,9 +155,9 @@ public class RenderManager {
         for (int i = 0; i < postViewPorts.size(); i++) {
             if (postViewPorts.get(i).getName().equals(viewName)) {
                 postViewPorts.remove(i);
-				return true;
+
+                return true;
             }
-            
         }
         return false;
     }
