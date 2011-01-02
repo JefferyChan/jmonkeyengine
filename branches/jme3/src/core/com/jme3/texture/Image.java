@@ -105,6 +105,7 @@ public class Image extends GLObject implements Savable /*, Cloneable*/ {
         RGB16F(48,true),
         RGBA16F(64,true),
         RGB32F(96,true),
+        RGBA32F(128,true),
 
         LTC(4, false, true, false);
 

@@ -312,6 +312,11 @@ public class TextureUtil {
                 format = GL_RGB;
                 dataType = GL_FLOAT;
                 break;
+            case RGBA32F:
+                internalFormat = ARBTextureFloat.GL_RGBA32F_ARB;
+                format = GL_RGBA;
+                dataType = GL_FLOAT;
+                break;
             case RGB5A1:
                 internalFormat = GL_RGB5_A1;
                 format = GL_RGBA;
