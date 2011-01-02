@@ -62,15 +62,15 @@ import java.io.IOException;
  */
 public class WaterFilter extends Filter {
 
-    private Pass positionPass;
+    // private Pass positionPass;
     private Pass reflectionPass;
     protected Spatial reflectionScene;
     protected ViewPort reflectionView;
-    private Material positionMaterial;
+//    private Material positionMaterial;
     private Texture2D normalTexture;
     private Texture2D foamTexture;
     private Texture2D heightTexture;
-    private Plane plane;    
+    private Plane plane;
     private Camera reflectionCam;
     private float speed = 1;
     protected Ray ray = new Ray();
@@ -127,7 +127,7 @@ public class WaterFilter extends Filter {
 
     @Override
     public void preFrame(float tpf) {
-        time = time + (tpf * speed);       
+        time = time + (tpf * speed);
         material.setFloat("m_Time", time);
     }
 
@@ -139,15 +139,15 @@ public class WaterFilter extends Filter {
         material.setVector3("m_CameraPosition", sceneCam.getLocation());
         material.setMatrix4("m_ViewProjectionMatrixInverse", sceneCam.getViewProjectionMatrix().invert());
 
-        Renderer r = renderManager.getRenderer();
-        r.setFrameBuffer(positionPass.getRenderFrameBuffer());
-        renderManager.getRenderer().clearBuffers(true, true, true);
-        renderManager.setForcedMaterial(positionMaterial);
-        renderManager.renderViewPortQueues(viewPort, false);
-        renderManager.setForcedMaterial(null);
+//        Renderer r = renderManager.getRenderer();
+//        r.setFrameBuffer(positionPass.getRenderFrameBuffer());
+//        renderManager.getRenderer().clearBuffers(true, true, true);
+//        renderManager.setForcedMaterial(positionMaterial);
+//        renderManager.renderViewPortQueues(viewPort, false);
+//        renderManager.setForcedMaterial(null);
 
 
-        material.setTexture("m_PositionBuffer", positionPass.getRenderedTexture());
+        //     material.setTexture("m_PositionBuffer", positionPass.getRenderedTexture());
         material.setFloat("m_WaterHeight", waterHeight);
 
         //update reflection cam
@@ -188,9 +188,9 @@ public class WaterFilter extends Filter {
     @Override
     public void initFilter(AssetManager manager, RenderManager renderManager, ViewPort vp) {
 
-        positionPass = new Pass();
-        positionPass.init(vp.getCamera().getWidth(), vp.getCamera().getHeight(), Format.RGB32F, Format.Depth);
-        positionMaterial = new Material(manager, "Common/MatDefs/Misc/ShowPos.j3md");
+//        positionPass = new Pass();
+//        positionPass.init(vp.getCamera().getWidth(), vp.getCamera().getHeight(), Format.RGBA32F, Format.Depth);
+//        positionMaterial = new Material(manager, "Common/MatDefs/Misc/ShowPos.j3md");
         reflectionPass = new Pass();
         reflectionPass.init(reflectionMapSize, reflectionMapSize, Format.RGBA8, Format.Depth);
         reflectionCam = new Camera(reflectionMapSize, reflectionMapSize);
@@ -301,7 +301,9 @@ public class WaterFilter extends Filter {
      */
     public void setWaterTransparency(float waterTransparency) {
         this.waterTransparency = waterTransparency;
-        material.setFloat("m_WaterTransparency", waterTransparency);
+        if (material != null) {
+            material.setFloat("m_WaterTransparency", waterTransparency);
+        }
     }
 
     /**
@@ -320,7 +322,9 @@ public class WaterFilter extends Filter {
      */
     public void setNormalScale(float normalScale) {
         this.normalScale = normalScale;
-        material.setFloat("m_NormalScale", normalScale);
+        if (material != null) {
+            material.setFloat("m_NormalScale", normalScale);
+        }
     }
 
     public float getRefractionConstant() {
@@ -338,7 +342,9 @@ public class WaterFilter extends Filter {
      */
     public void setRefractionConstant(float refractionConstant) {
         this.refractionConstant = refractionConstant;
-        material.setFloat("m_R0", refractionConstant);
+        if (material != null) {
+            material.setFloat("m_R0", refractionConstant);
+        }
     }
 
     public float getMaxAmplitude() {
@@ -352,7 +358,9 @@ public class WaterFilter extends Filter {
      */
     public void setMaxAmplitude(float maxAmplitude) {
         this.maxAmplitude = maxAmplitude;
-        material.setFloat("m_MaxAmplitude", maxAmplitude);
+        if (material != null) {
+            material.setFloat("m_MaxAmplitude", maxAmplitude);
+        }
     }
 
     /**
@@ -369,7 +377,9 @@ public class WaterFilter extends Filter {
      */
     public void setLightDirection(Vector3f lightDirection) {
         this.lightDirection = lightDirection;
-        material.setVector3("m_LightDir", lightDirection);
+        if (material != null) {
+            material.setVector3("m_LightDir", lightDirection);
+        }
     }
 
     /**
@@ -387,7 +397,9 @@ public class WaterFilter extends Filter {
      */
     public void setLightColor(ColorRGBA lightColor) {
         this.lightColor = lightColor;
-        material.setColor("m_LightColor", lightColor);
+        if (material != null) {
+            material.setColor("m_LightColor", lightColor);
+        }
     }
 
     /**
@@ -406,7 +418,9 @@ public class WaterFilter extends Filter {
      */
     public void setShoreHardness(float shoreHardness) {
         this.shoreHardness = shoreHardness;
-        material.setFloat("m_ShoreHardness", shoreHardness);
+        if (material != null) {
+            material.setFloat("m_ShoreHardness", shoreHardness);
+        }
     }
 
     /**
@@ -424,7 +438,9 @@ public class WaterFilter extends Filter {
      */
     public void setFoamHardness(float foamHardness) {
         this.foamHardness = foamHardness;
-        material.setFloat("m_FoamHardness", foamHardness);
+        if (material != null) {
+            material.setFloat("m_FoamHardness", foamHardness);
+        }
     }
 
     /**
@@ -443,7 +459,9 @@ public class WaterFilter extends Filter {
      */
     public void setRefractionStrength(float refractionStrength) {
         this.refractionStrength = refractionStrength;
-        material.setFloat("m_RefractionStrength", refractionStrength);
+        if (material != null) {
+            material.setFloat("m_RefractionStrength", refractionStrength);
+        }
     }
 
     /**
@@ -462,7 +480,9 @@ public class WaterFilter extends Filter {
      */
     public void setWaveScale(float waveScale) {
         this.waveScale = waveScale;
-        material.setFloat("m_WaveScale", waveScale);
+        if (material != null) {
+            material.setFloat("m_WaveScale", waveScale);
+        }
     }
 
     /**
@@ -482,7 +502,9 @@ public class WaterFilter extends Filter {
      */
     public void setFoamExistence(Vector3f foamExistence) {
         this.foamExistence = foamExistence;
-        material.setVector3("m_FoamExistence", foamExistence);
+        if (material != null) {
+            material.setVector3("m_FoamExistence", foamExistence);
+        }
     }
 
     /**
@@ -499,7 +521,9 @@ public class WaterFilter extends Filter {
      */
     public void setSunScale(float sunScale) {
         this.sunScale = sunScale;
-        material.setFloat("m_SunScale", sunScale);
+        if (material != null) {
+            material.setFloat("m_SunScale", sunScale);
+        }
     }
 
     /**
@@ -521,7 +545,9 @@ public class WaterFilter extends Filter {
      */
     public void setColorExtinction(Vector3f colorExtinction) {
         this.colorExtinction = colorExtinction;
-        material.setVector3("m_ColorExtinction", colorExtinction);
+        if (material != null) {
+            material.setVector3("m_ColorExtinction", colorExtinction);
+        }
     }
 
     /**
@@ -566,7 +592,9 @@ public class WaterFilter extends Filter {
      */
     public void setShininess(float shininess) {
         this.shininess = shininess;
-        material.setFloat("m_Shininess", shininess);
+        if (material != null) {
+            material.setFloat("m_Shininess", shininess);
+        }
     }
 
     /**
@@ -602,7 +630,9 @@ public class WaterFilter extends Filter {
      */
     public void setWaterColor(ColorRGBA waterColor) {
         this.waterColor = waterColor;
-        material.setColor("m_WaterColor", waterColor);
+        if (material != null) {
+            material.setColor("m_WaterColor", waterColor);
+        }
     }
 
     /**
@@ -621,7 +651,9 @@ public class WaterFilter extends Filter {
      */
     public void setDeepWaterColor(ColorRGBA deepWaterColor) {
         this.deepWaterColor = deepWaterColor;
-        material.setColor("m_DeepWaterColor", deepWaterColor);
+        if (material != null) {
+            material.setColor("m_DeepWaterColor", deepWaterColor);
+        }
     }
 
     /**
@@ -640,7 +672,9 @@ public class WaterFilter extends Filter {
      */
     public void setWindDirection(Vector2f windDirection) {
         this.windDirection = windDirection;
-        material.setVector2("m_WindDirection", windDirection);
+        if (material != null) {
+            material.setVector2("m_WindDirection", windDirection);
+        }
     }
 
     /**

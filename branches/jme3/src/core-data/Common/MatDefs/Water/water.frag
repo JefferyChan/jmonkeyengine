@@ -103,21 +103,15 @@ vec3 saturate(in vec3 val){
 }
 
 
-vec3 getPosition(in vec2 uv){
-/*  float depth = texture2D(m_DepthTexture, uv).r;
+vec3 getPosition(in float depth,in vec2 uv){
+//  float depth = texture2D(m_PositionBuffer, uv).r;
+  vec4 pos=vec4(uv,depth,1.0) * 2.0 - 1.0;
+  pos = m_ViewProjectionMatrixInverse * pos;  
+  return pos.xyz/pos.w;
 
-  vec4 pos;
-  pos.xy = (uv * vec2(2.0)) - vec2(1.0);
-  
-  pos.z  = depth;
-  pos.w  = 1.0;
-  pos = m_ViewProjectionMatrixInverse * pos;
-  pos/=pos.w;
-
-  return pos.xyz;
-*/
-return texture2D(m_PositionBuffer,uv).rgb;
-
+//vec4 pos= m_ViewProjectionMatrixInverse*texture2D(m_PositionBuffer,uv);
+//pos/=pos.w;
+//return pos.rgb;
 }
 
 // Function calculating fresnel term.
@@ -133,11 +127,13 @@ float fresnelTerm(in vec3 normal,in vec3 eyeVec){
 
 void main(void){
 
+        float sceneDepth = texture2D(m_DepthTexture, texCoord).r;
+
 	vec3 color2 = texture2D(m_Texture, texCoord).rgb;
 	vec3 color = color2;
         
 	
-	vec3 position = getPosition(texCoord);
+	vec3 position = getPosition(sceneDepth,texCoord);
 
 	float level = m_WaterHeight;
 	float depth = 0.0;
@@ -204,9 +200,9 @@ void main(void){
                     texC = texCoord.xy;
                     texC += sin(m_Time*1.8  + 3.0 * abs(position.y)) * (refractionScale * min(depth2, 1.0));
  
-                    vec3 refraction = texture2D(m_Texture, texC).rgb;
-                    if(getPosition(texC).y > level)
-                            refraction = color2;
+                    vec3 refraction =color2;//texture2D(m_Texture, texC).rgb;
+               //     if(getPosition(texture2D(m_DepthTexture, texC).r,texC).y > level)
+                 //           refraction = color2;
                     
 
                     vec3 waterPosition = surfacePoint.xyz;
@@ -227,6 +223,7 @@ void main(void){
                     refraction = mix(mix(refraction, m_WaterColor.rgb * waterCol, saturate(depthN / visibility)),
                                                       m_DeepWaterColor.rgb * waterCol, saturate(depth2 / m_ColorExtinction));
 
+                   
                     vec3 foam = vec3(0.0);
                 
                     texC = (surfacePoint.xz + eyeVecNorm.xz * 0.1) * 0.05 + m_Time * 0.05 * m_WindDirection + sin(m_Time * 0.001 + position.x) * 0.005;
@@ -262,10 +259,10 @@ void main(void){
                     color = mix(refraction, reflection, fresnel);
                     color = mix(refraction, color, saturate(depth * m_ShoreHardness));
                     color = saturate(color + max(specular, foam ));
-                    color = mix(refraction, color, saturate(depth* m_FoamHardness));
+                   color = mix(refraction, color, saturate(depth* m_FoamHardness));
                   
             }
-
+            
             if(position.y > level){
                     color = color2;
             }
@@ -280,5 +277,7 @@ void main(void){
         gl_FragColor = vec4(0.0,0.0,1.0,1.0);
     }
 */
-//gl_FragColor = texture2D(m_ReflectionMap, texCoord);
+//gl_FragColor =  vec4(position,1.0) ;
+//gl_FragColor = texture2D(m_PositionBuffer, texCoord);
+//gl_FragColor =(texture2D(m_DepthTexture, texCoord)*2.0-1.0)/3;
 }
