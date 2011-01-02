@@ -211,10 +211,10 @@
             <arg value="private" />
         </exec>
         <exec executable="echo" dir="." output="./nbproject/private/platform-private.properties">
-            <arg value="nbplatform.default.netbeans.dest.dir=/var/lib/hudson/.netbeans/6.9/NetBeans 6.9.app/Contents/Resources/NetBeans"/>
+            <arg value="nbplatform.default.netbeans.dest.dir=/var/lib/hudson/.netbeans/6.9.1/netbeans"/>
         </exec>
         <exec executable="echo" dir="." output="./nbproject/private/platform-private.properties" append="true">
-            <arg value="nbplatform.default.harness.dir=/var/lib/hudson/.netbeans/6.9/NetBeans 6.9.app/Contents/Resources/NetBeans/harness"/>
+            <arg value="nbplatform.default.harness.dir=/var/lib/hudson/.netbeans/6.9.1/netbeans/harness"/>
         </exec>
     </target>
     
