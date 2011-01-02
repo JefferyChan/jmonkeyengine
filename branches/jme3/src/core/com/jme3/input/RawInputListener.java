@@ -42,6 +42,10 @@ import com.jme3.input.event.MouseMotionEvent;
  * An interface used for receiving raw input from devices.
  */
 public interface RawInputListener {
+
+    public void beginInput();
+    public void endInput();
+
     public void onJoyAxisEvent(JoyAxisEvent evt);
     public void onJoyButtonEvent(JoyButtonEvent evt);
     public void onMouseMotionEvent(MouseMotionEvent evt);

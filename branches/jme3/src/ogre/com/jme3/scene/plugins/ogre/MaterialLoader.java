@@ -33,12 +33,9 @@
 package com.jme3.scene.plugins.ogre;
 
 import com.jme3.asset.AssetInfo;
-import com.jme3.asset.AssetKey;
 import com.jme3.asset.AssetLoader;
 import com.jme3.asset.AssetManager;
-import com.jme3.asset.DesktopAssetManager;
 import com.jme3.asset.TextureKey;
-import com.jme3.asset.plugins.FileLocator;
 import com.jme3.material.Material;
 import com.jme3.material.MaterialList;
 import com.jme3.material.RenderState;
@@ -72,11 +69,6 @@ public class MaterialLoader implements AssetLoader {
     private boolean blend = false;
     private boolean twoSide = false;
 
-    public static void main(String[] args){
-        DesktopAssetManager ass  = new DesktopAssetManager(true);
-        ass.registerLocator("C:\\", FileLocator.class);
-        ass.loadAsset(new AssetKey<MaterialList>("imp1.material"));
-    }
 
     private String readString(String end){
         scan.useDelimiter(end);

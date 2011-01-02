@@ -34,11 +34,13 @@ package com.jme3.niftygui;
 
 import com.jme3.input.KeyInput;
 import com.jme3.input.RawInputListener;
+import com.jme3.input.event.InputEvent;
 import com.jme3.input.event.JoyAxisEvent;
 import com.jme3.input.event.JoyButtonEvent;
 import com.jme3.input.event.KeyInputEvent;
 import com.jme3.input.event.MouseButtonEvent;
 import com.jme3.input.event.MouseMotionEvent;
+import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.NiftyInputConsumer;
 import de.lessvoid.nifty.input.keyboard.KeyboardInputEvent;
 import de.lessvoid.nifty.input.mouse.MouseInputEvent;
@@ -47,8 +49,8 @@ import java.util.ArrayList;
 
 public class InputSystemJme implements InputSystem, RawInputListener {
 
-    private final ArrayList<MouseInputEvent> mouseEvents = new ArrayList<MouseInputEvent>();
-    private final ArrayList<KeyboardInputEvent> keyEvents     = new ArrayList<KeyboardInputEvent>();
+    private final ArrayList<InputEvent> inputQueue = new ArrayList<InputEvent>();
+
 
     private boolean pressed = false;
     private int x, y;
@@ -57,7 +59,13 @@ public class InputSystemJme implements InputSystem, RawInputListener {
     private boolean shiftDown = false;
     private boolean ctrlDown  = false;
 
+    private Nifty nifty;
+
     public InputSystemJme(){
+    }
+
+    public void setNifty(Nifty nifty) {
+        this.nifty = nifty;
     }
 
     /**
@@ -68,61 +76,89 @@ public class InputSystemJme implements InputSystem, RawInputListener {
         this.height = height;
     }
 
+    public void setMousePosition(int x, int y){
+    }
+
+    public void beginInput(){
+
+    }
+
+    public void endInput(){
+		//requires nifty1.3
+        //boolean result = nifty.update();
+    }
+
     public void onJoyAxisEvent(JoyAxisEvent evt) {
     }
 
     public void onJoyButtonEvent(JoyButtonEvent evt) {
     }
 
+    private void onMouseMotionEventQueued(MouseMotionEvent evt, NiftyInputConsumer nic) {
+        x = evt.getX();
+        y = height - evt.getY();
+        MouseInputEvent niftyEvt = new MouseInputEvent(x, y, pressed);
+        if (nic.processMouseEvent(niftyEvt)){
+            evt.setConsumed();
+        }
+    }
+
     public void onMouseMotionEvent(MouseMotionEvent evt) {
-        synchronized (mouseEvents){
-            x = evt.getX();
-            y = height - evt.getY();
-            mouseEvents.add(new MouseInputEvent(x, y, pressed));
+        inputQueue.add(evt);
+    }
+
+    private void onMouseButtonEventQueued(MouseButtonEvent evt, NiftyInputConsumer nic) {
+        if (evt.getButtonIndex() == 0){
+            pressed = evt.isPressed();
+            MouseInputEvent niftyEvt = new MouseInputEvent(x, y, pressed);
+            if (nic.processMouseEvent(niftyEvt)){
+                evt.setConsumed();
+            }
         }
     }
 
     public void onMouseButtonEvent(MouseButtonEvent evt) {
-        if (evt.getButtonIndex() == 0){
-            synchronized (mouseEvents){
-                pressed = evt.isPressed();
-                mouseEvents.add(new MouseInputEvent(x, y, pressed));
-            }
+        inputQueue.add(evt);
+    }
+
+    private void onKeyEventQueued(KeyInputEvent evt, NiftyInputConsumer nic) {
+        int code = evt.getKeyCode();
+
+        if (code == KeyInput.KEY_LSHIFT || code == KeyInput.KEY_RSHIFT) {
+            shiftDown = evt.isPressed();
+        } else if (code == KeyInput.KEY_LCONTROL || code == KeyInput.KEY_RCONTROL) {
+            ctrlDown = evt.isPressed();
+        }
+        
+        KeyboardInputEvent keyEvt = new KeyboardInputEvent(code,
+                                                           evt.getKeyChar(),
+                                                           evt.isPressed(),
+                                                           shiftDown,
+                                                           ctrlDown);
+
+        if (nic.processKeyboardEvent(keyEvt)){
+            evt.setConsumed();
         }
     }
 
     public void onKeyEvent(KeyInputEvent evt) {
-        int code = evt.getKeyCode();
-       
-        synchronized (keyEvents){
-            if (code == KeyInput.KEY_LSHIFT || code == KeyInput.KEY_RSHIFT) {
-                shiftDown = evt.isPressed();
-            } else if (code == KeyInput.KEY_LCONTROL || code == KeyInput.KEY_RCONTROL) {
-                ctrlDown = evt.isPressed();
-            }
-            KeyboardInputEvent keyEvt = new KeyboardInputEvent(code,
-                                                               evt.getKeyChar(),
-                                                               evt.isPressed(),
-                                                               shiftDown,
-                                                               ctrlDown);
-
-
-            keyEvents.add(keyEvt);
-        }
+        inputQueue.add(evt);
     }
 
     public void forwardEvents(NiftyInputConsumer nic) {
-        synchronized (mouseEvents){
-            for (MouseInputEvent evt : mouseEvents){
-                nic.processMouseEvent(evt);
+        int queueSize = inputQueue.size();
+
+        for (int i = 0; i < queueSize; i++){
+            InputEvent evt = inputQueue.get(i);
+            if (evt instanceof MouseMotionEvent){
+                onMouseMotionEventQueued( (MouseMotionEvent)evt, nic);
+            }else if (evt instanceof MouseButtonEvent){
+                onMouseButtonEventQueued( (MouseButtonEvent)evt, nic);
+            }else if (evt instanceof KeyInputEvent){
+                onKeyEventQueued( (KeyInputEvent)evt, nic);
             }
-            mouseEvents.clear();
         }
-        synchronized (keyEvents){
-            for (KeyboardInputEvent evt : keyEvents){
-                nic.processKeyboardEvent(evt);
-            }
-            keyEvents.clear();
-        }
+
+        inputQueue.clear();
     }
 }

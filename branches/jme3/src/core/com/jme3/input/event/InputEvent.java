@@ -42,12 +42,26 @@ public abstract class InputEvent {
      */
     protected long time;
 
+    /**
+     * If the input event has been consumed, meaning it is no longer valid
+     * and should not be forwarded to input listeners.
+     */
+    protected boolean consumed = false;
+
     public long getTime(){
         return time;
     }
 
     public void setTime(long time){
         this.time = time;
+    }
+
+    public boolean isConsumed() {
+        return consumed;
+    }
+
+    public void setConsumed() {
+        this.consumed = true;
     }
     
 }

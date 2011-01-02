@@ -41,6 +41,7 @@ import com.jme3.input.controls.KeyTrigger;
 import com.jme3.input.controls.MouseAxisTrigger;
 import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.input.controls.Trigger;
+import com.jme3.input.event.InputEvent;
 import com.jme3.input.event.JoyAxisEvent;
 import com.jme3.input.event.JoyButtonEvent;
 import com.jme3.input.event.KeyInputEvent;
@@ -91,6 +92,7 @@ public class InputManager implements RawInputListener {
     private final IntMap<Float> axisValues = new IntMap<Float>();
 
     private ArrayList<RawInputListener> rawListeners = new ArrayList<RawInputListener>();
+    private ArrayList<InputEvent> inputQueue = new ArrayList<InputEvent>();
 
     private static class Mapping {
 
@@ -250,13 +252,16 @@ public class InputManager implements RawInputListener {
         }
     }
 
-    public void onJoyAxisEvent(JoyAxisEvent evt) {
-        if (!eventsPermitted)
-            throw new UnsupportedOperationException("JoyInput has raised an event at an illegal time.");
+    public void beginInput(){
+    }
 
-        for (int i = 0; i < rawListeners.size(); i++){
-            rawListeners.get(i).onJoyAxisEvent(evt);
-        }
+    public void endInput(){
+    }
+
+    private void onJoyAxisEventQueued(JoyAxisEvent evt){
+//        for (int i = 0; i < rawListeners.size(); i++){
+//            rawListeners.get(i).onJoyAxisEvent(evt);
+//        }
 
         int joyId   = evt.getJoyIndex();
         int axis    = evt.getAxisIndex();
@@ -289,27 +294,34 @@ public class InputManager implements RawInputListener {
         }
     }
 
-    public void onJoyButtonEvent(JoyButtonEvent evt) {
+    public void onJoyAxisEvent(JoyAxisEvent evt) {
         if (!eventsPermitted)
             throw new UnsupportedOperationException("JoyInput has raised an event at an illegal time.");
 
-        for (int i = 0; i < rawListeners.size(); i++){
-            rawListeners.get(i).onJoyButtonEvent(evt);
-        }
+        inputQueue.add(evt);
+    }
+
+    private void onJoyButtonEventQueued(JoyButtonEvent evt){
+//        for (int i = 0; i < rawListeners.size(); i++){
+//            rawListeners.get(i).onJoyButtonEvent(evt);
+//        }
 
         int hash = JoyButtonTrigger.joyButtonHash(evt.getJoyIndex(), evt.getButtonIndex());
         invokeActions(hash, evt.isPressed());
         invokeTimedActions(hash, evt.getTime(), evt.isPressed());
     }
 
-    public void onMouseMotionEvent(MouseMotionEvent evt) {
+    public void onJoyButtonEvent(JoyButtonEvent evt) {
         if (!eventsPermitted)
-            throw new UnsupportedOperationException("MouseInput has raised an event at an illegal time.");
+            throw new UnsupportedOperationException("JoyInput has raised an event at an illegal time.");
 
-        cursorPos.set(evt.getX(), evt.getY());
-        for (int i = 0; i < rawListeners.size(); i++){
-            rawListeners.get(i).onMouseMotionEvent(evt);
-        }
+        inputQueue.add(evt);
+    }
+
+    private void onMouseMotionEventQueued(MouseMotionEvent evt){
+//        for (int i = 0; i < rawListeners.size(); i++){
+//            rawListeners.get(i).onMouseMotionEvent(evt);
+//        }
 
         if (evt.getDX() != 0){
             float val = Math.abs(evt.getDX()) / 1024f;
@@ -325,15 +337,40 @@ public class InputManager implements RawInputListener {
         }
     }
 
+    public void onMouseMotionEvent(MouseMotionEvent evt) {
+        if (!eventsPermitted)
+            throw new UnsupportedOperationException("MouseInput has raised an event at an illegal time.");
+
+        cursorPos.set(evt.getX(), evt.getY());
+        inputQueue.add(evt);
+    }
+
+    private void onMouseButtonEventQueued(MouseButtonEvent evt){
+//        for (int i = 0; i < rawListeners.size(); i++){
+//            rawListeners.get(i).onMouseButtonEvent(evt);
+//        }
+
+        int hash = MouseButtonTrigger.mouseButtonHash(evt.getButtonIndex());
+        invokeActions(hash, evt.isPressed());
+        invokeTimedActions(hash, evt.getTime(), evt.isPressed());
+    }
+    
     public void onMouseButtonEvent(MouseButtonEvent evt) {
         if (!eventsPermitted)
             throw new UnsupportedOperationException("MouseInput has raised an event at an illegal time.");
 
-        for (int i = 0; i < rawListeners.size(); i++){
-            rawListeners.get(i).onMouseButtonEvent(evt);
-        }
+        inputQueue.add(evt);
+    }
 
-        int hash = MouseButtonTrigger.mouseButtonHash(evt.getButtonIndex());
+    private void onKeyEventQueued(KeyInputEvent evt){
+//        for (int i = 0; i < rawListeners.size(); i++){
+//            rawListeners.get(i).onKeyEvent(evt);
+//        }
+
+        if (evt.isRepeating())
+            return; // repeat events not used for bindings
+
+        int hash = KeyTrigger.keyHash(evt.getKeyCode());
         invokeActions(hash, evt.isPressed());
         invokeTimedActions(hash, evt.getTime(), evt.isPressed());
     }
@@ -342,16 +379,7 @@ public class InputManager implements RawInputListener {
         if (!eventsPermitted)
             throw new UnsupportedOperationException("KeyInput has raised an event at an illegal time.");
 
-        for (int i = 0; i < rawListeners.size(); i++){
-            rawListeners.get(i).onKeyEvent(evt);
-        }
-
-        if (evt.isRepeating())
-            return; // repeat events not used for bindings
-
-        int hash = KeyTrigger.keyHash(evt.getKeyCode());
-        invokeActions(hash, evt.isPressed());
-        invokeTimedActions(hash, evt.getTime(), evt.isPressed());
+        inputQueue.add(evt);
     }
 
     public void setAxisDeadZone(float deadZone){
@@ -468,6 +496,60 @@ public class InputManager implements RawInputListener {
         rawListeners.clear();
     }
 
+    private void processQueue(){
+        int queueSize = inputQueue.size();
+        int numRawListeners = rawListeners.size();
+
+        for (int i = 0; i < numRawListeners; i++){
+            RawInputListener listener = rawListeners.get(i);
+            listener.beginInput();
+
+            for (int j = 0; j < queueSize; j++){
+                InputEvent event = inputQueue.get(j);
+                if (event.isConsumed())
+                    continue;
+
+                if (event instanceof MouseMotionEvent){
+                    listener.onMouseMotionEvent( (MouseMotionEvent)event );
+                }else if (event instanceof KeyInputEvent){
+                    listener.onKeyEvent( (KeyInputEvent)event );
+                }else if (event instanceof MouseButtonEvent){
+                    listener.onMouseButtonEvent( (MouseButtonEvent)event );
+                }else if (event instanceof JoyAxisEvent){
+                    listener.onJoyAxisEvent( (JoyAxisEvent)event );
+                }else if (event instanceof JoyButtonEvent){
+                    listener.onJoyButtonEvent( (JoyButtonEvent)event );
+                }else{
+                    assert false;
+                }
+            }
+            
+            listener.endInput();
+        }
+
+        for (int i = 0; i < queueSize; i++){
+            InputEvent event = inputQueue.get(i);
+            if (event.isConsumed())
+                continue;
+
+            if (event instanceof MouseMotionEvent){
+                onMouseMotionEventQueued( (MouseMotionEvent)event );
+            }else if (event instanceof KeyInputEvent){
+                onKeyEventQueued( (KeyInputEvent)event );
+            }else if (event instanceof MouseButtonEvent){
+                onMouseButtonEventQueued( (MouseButtonEvent)event );
+            }else if (event instanceof JoyAxisEvent){
+                onJoyAxisEventQueued( (JoyAxisEvent)event );
+            }else if (event instanceof JoyButtonEvent){
+                onJoyButtonEventQueued( (JoyButtonEvent)event );
+            }else{
+                assert false;
+            }
+        }
+        
+        inputQueue.clear();
+    }
+
     /**
      * Updates the Dispatcher. This will query current input devices and send
      * appropriate events to registered listeners.
@@ -488,6 +570,7 @@ public class InputManager implements RawInputListener {
 
         eventsPermitted = false;
 
+        processQueue();
         invokeUpdateActions();
 
         lastLastUpdateTime = lastUpdateTime;

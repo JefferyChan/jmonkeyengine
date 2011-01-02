@@ -49,6 +49,7 @@ import com.jme3.texture.Texture2D;
 import com.jme3.util.BufferUtils;
 import de.lessvoid.nifty.elements.render.TextRenderer.RenderFontNull;
 import de.lessvoid.nifty.render.BlendMode;
+//import de.lessvoid.nifty.spi.render.MouseCursor;
 import de.lessvoid.nifty.spi.render.RenderDevice;
 import de.lessvoid.nifty.spi.render.RenderFont;
 import de.lessvoid.nifty.spi.render.RenderImage;
@@ -99,6 +100,21 @@ public class RenderDeviceJme implements RenderDevice {
         this.rm = rm;
         this.r = rm.getRenderer();
     }
+
+/*
+    public MouseCursor createMouseCursor(String str, int x, int y){
+        return new MouseCursor() {
+            public void dispose() {
+            }
+        };
+    }
+
+    public void enableMouseCursor(MouseCursor cursor){
+    }
+
+    public void disableMouseCursor(){
+    }
+*/
 
     public RenderImage createImage(String filename, boolean linear) {
         return new RenderImageJme(filename, linear, display);
@@ -275,8 +291,6 @@ public class RenderDeviceJme implements RenderDevice {
         ByteBuffer buf = (ByteBuffer) colors.getData();
         buf.rewind();
         
-        
-
         buf.putInt(convertColor(topRight).asIntABGR());
         buf.putInt(convertColor(topLeft).asIntABGR());
 
