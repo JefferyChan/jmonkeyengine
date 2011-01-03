@@ -130,7 +130,7 @@ public class SSAOFilter extends Filter {
     @Override
     public void preRender(RenderManager renderManager, ViewPort viewPort) {
         Renderer r = renderManager.getRenderer();
-        r.setFrameBuffer(normalPass.getRenderFrameBuffer());
+        r.setFrameBuffer(normalPass.getRenderFrameBuffer());        
         renderManager.getRenderer().clearBuffers(true, true, true);
         renderManager.setForcedMaterial(normalMaterial);
         renderManager.renderViewPortQueues(viewPort, false);
@@ -154,15 +154,14 @@ public class SSAOFilter extends Filter {
     }
 
     @Override
-    public void initFilter(AssetManager manager,RenderManager renderManager, ViewPort vp) {
-        int screenWidth = vp.getCamera().getWidth();
-        int screenHeight = vp.getCamera().getHeight();
+    public void initFilter(AssetManager manager, RenderManager renderManager, ViewPort vp, int w, int h) {
+        int screenWidth = w;
+        int screenHeight = h;
         normalPass = new Pass();
-        normalPass.init(screenWidth, screenHeight, Format.RGBA8, Format.Depth);
+        normalPass.init(screenWidth, screenHeight, Format.RGB8, Format.Depth);
         frustumNearFar = new Vector2f();
-
-        //Need to fix this for the moment only works for 45° FOV
-        float farY = FastMath.tan((float) (FastMath.DEG_TO_RAD * 45.0 / 2.0)) * vp.getCamera().getFrustumFar();
+               
+        float farY = (vp.getCamera().getFrustumTop()/vp.getCamera().getFrustumNear()) * vp.getCamera().getFrustumFar();
         float farX = farY * (screenWidth / screenHeight);
         frustumCorner = new Vector3f(farX, farY, vp.getCamera().getFrustumFar());
         frustumNearFar.x = vp.getCamera().getFrustumNear();
@@ -258,5 +257,12 @@ public class SSAOFilter extends Filter {
         intensity = ic.readFloat("intensity", 1.5f);
         scale = ic.readFloat("scale", 0.2f);
         bias = ic.readFloat("bias", 0.1f);
+    }
+
+    @Override
+    public void cleanUpFilter(Renderer r) {
+       if(normalPass!=null){
+           normalPass.cleanup(r);           
+       }
     }
 }

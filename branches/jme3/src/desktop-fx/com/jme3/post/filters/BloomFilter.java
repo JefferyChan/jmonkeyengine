@@ -40,6 +40,7 @@ import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.post.Filter;
 import com.jme3.renderer.RenderManager;
+import com.jme3.renderer.Renderer;
 import com.jme3.renderer.ViewPort;
 import com.jme3.texture.Image.Format;
 import java.io.IOException;
@@ -145,9 +146,10 @@ public class BloomFilter extends Filter {
     }
 
     @Override
-    public void initFilter(AssetManager manager, RenderManager renderManager,ViewPort vp) {
-        screenWidth = (int) (vp.getCamera().getWidth() / downSamplingFactor);
-        screenHeight = (int) (vp.getCamera().getHeight() / downSamplingFactor);
+    public void initFilter(AssetManager manager, RenderManager renderManager, ViewPort vp, int w, int h) {
+        screenWidth = (int) (w / downSamplingFactor);
+        screenHeight = (int) (h / downSamplingFactor);
+    //    System.out.println(screenWidth + " " + screenHeight);
         if (glowMode != GlowMode.Scene) {
             preGlowPass = new Pass();
             preGlowPass.init(screenWidth, screenHeight, Format.RGBA8, Format.Depth);
@@ -211,6 +213,23 @@ public class BloomFilter extends Filter {
         //final material
         material = new Material(manager, "Common/MatDefs/Post/BloomFinal.j3md");
         material.setTexture("m_BloomTex", verticalalBlur.getRenderedTexture());
+    }
+
+    @Override
+    public void cleanUpFilter(Renderer r) {
+
+        if (preGlowPass != null) {
+            preGlowPass.cleanup(r);
+        }
+        if (extractPass != null) {
+            extractPass.cleanup(r);
+        }
+        if (horizontalBlur != null) {
+            horizontalBlur.cleanup(r);
+        }
+        if (verticalalBlur != null) {
+            verticalalBlur.cleanup(r);
+        }
     }
 
     @Override

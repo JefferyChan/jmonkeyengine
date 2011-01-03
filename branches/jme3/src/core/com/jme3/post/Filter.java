@@ -45,6 +45,7 @@ import com.jme3.texture.FrameBuffer;
 import com.jme3.texture.Image.Format;
 import com.jme3.texture.Texture2D;
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -71,10 +72,10 @@ public abstract class Filter implements Savable {
         protected Texture2D renderedTexture;
         protected Material passMaterial;
 
-        public void init(int width, int height, Format textureFormat, Format depthBurfferFormat) {
+        public void init(int width, int height, Format textureFormat, Format depthBufferFormat) {
             renderFrameBuffer = new FrameBuffer(width, height, 0);
             renderedTexture = new Texture2D(width, height, textureFormat);
-            renderFrameBuffer.setDepthBuffer(depthBurfferFormat);
+            renderFrameBuffer.setDepthBuffer(depthBufferFormat);
             renderFrameBuffer.setColorTexture(renderedTexture);
         }
 
@@ -113,6 +114,15 @@ public abstract class Filter implements Savable {
         public void setPassMaterial(Material passMaterial) {
             this.passMaterial = passMaterial;
         }
+
+        public void cleanup(Renderer r) {
+            if (renderedTexture != null) {
+                r.deleteImage(renderedTexture.getImage());
+            }
+            if (renderFrameBuffer != null) {
+                r.deleteFrameBuffer(renderFrameBuffer);
+            }
+        }
     }
 
     protected Format getDefaultPassTextureFormat() {
@@ -127,37 +137,35 @@ public abstract class Filter implements Savable {
         this("filter");
     }
 
-    public void init(AssetManager manager, RenderManager renderManager, ViewPort vp) {
+    public void init(AssetManager manager, RenderManager renderManager, ViewPort vp, int w, int h) {
+        cleanup(renderManager.getRenderer());
+
         defaultPass = new Pass();
-        defaultPass.init(vp.getCamera().getWidth(), vp.getCamera().getHeight(), getDefaultPassTextureFormat(), getDefaultPassDepthFormat());
-        initFilter(manager, renderManager,vp);
-        //TODO delete this once the deprecated method will be removed
-        viewPort = vp;
+        defaultPass.init(w, h, getDefaultPassTextureFormat(), getDefaultPassDepthFormat());
+        initFilter(manager, renderManager, vp, w, h);
     }
 
     public void cleanup(Renderer r) {
-        if (defaultPass.renderFrameBuffer != null) {
-            r.deleteFrameBuffer(defaultPass.renderFrameBuffer);
-//            r.deleteTexture(defaultPass.renderedTexture);
+        if (defaultPass != null) {
+            defaultPass.cleanup(r);
         }
+        if(postRenderPasses!=null){
+            for (Iterator<Pass> it = postRenderPasses.iterator(); it.hasNext();) {
+                Pass pass = it.next();
+                pass.cleanup(r);
+            }
+        }
+        cleanUpFilter(r);
     }
-
-    //TODO delete this once the deprecated method will be removed
-    private ViewPort viewPort;
-    /**
-     * @deprecated use initFilter(AssetManager manager,RanderManager renderManager ViewPort vp) method instead
-     */
-    @Deprecated
-    public void initMaterial(AssetManager manager) {
-        initFilter(manager, null,viewPort);
-    }    
 
     /**
      * This method is called once xhen the filter is added to the FilterPostProcessor
      * It should contain Maerial initializations and extra passes initialization
      * @param manager
      */
-    public abstract void initFilter(AssetManager manager,RenderManager renderManager, ViewPort vp);
+    public abstract void initFilter(AssetManager manager, RenderManager renderManager, ViewPort vp, int w, int h);
+
+    public abstract void cleanUpFilter(Renderer r);
 
     /**
      * this method should return the material used for this filter.

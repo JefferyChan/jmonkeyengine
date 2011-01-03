@@ -29,7 +29,6 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package com.jme3.post.filters;
 
 import com.jme3.asset.AssetManager;
@@ -78,11 +77,17 @@ public class CartoonEdgeFilter extends Filter {
     }
 
     @Override
-    public void initFilter(AssetManager manager,RenderManager renderManager,ViewPort vp) {
+    public void initFilter(AssetManager manager, RenderManager renderManager, ViewPort vp, int w, int h) {
         normalPass = new Pass();
-        normalPass.init(vp.getCamera().getWidth(), vp.getCamera().getHeight(), Format.RGB8, Format.Depth);
+        normalPass.init(w, h, Format.RGB8, Format.Depth);
         material = new Material(manager, "Common/MatDefs/Post/CartoonEdge.j3md");
         normalMaterial = new Material(manager, "Common/MatDefs/SSAO/normal.j3md");
     }
 
+    @Override
+    public void cleanUpFilter(Renderer r) {
+        if (normalPass != null) {
+            normalPass.cleanup(r);
+        }
+    }
 }

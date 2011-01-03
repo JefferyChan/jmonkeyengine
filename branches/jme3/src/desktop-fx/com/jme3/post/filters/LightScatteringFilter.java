@@ -41,6 +41,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.post.Filter;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.RenderManager;
+import com.jme3.renderer.Renderer;
 import com.jme3.renderer.ViewPort;
 import java.io.IOException;
 
@@ -116,7 +117,7 @@ public class LightScatteringFilter extends Filter {
     }
 
     @Override
-    public void initFilter(AssetManager manager,RenderManager renderManager, ViewPort vp) {
+    public void initFilter(AssetManager manager, RenderManager renderManager, ViewPort vp, int w, int h) {
         material = new Material(manager, "Common/MatDefs/Light/LightScattering.j3md");
     }
 
@@ -182,5 +183,9 @@ public class LightScatteringFilter extends Filter {
         blurWidth = ic.readFloat("blurWidth", 0.9f);
         lightDensity = ic.readFloat("lightDensity", 1.4f);
         adaptative = ic.readBoolean("adaptative", true);
+    }
+
+    @Override
+    public void cleanUpFilter(Renderer r) {
     }
 }

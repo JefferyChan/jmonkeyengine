@@ -33,7 +33,7 @@ attribute vec3 inNormal;
 #endif
 
 #ifndef VERTEX_LIGHTING
-  attribute vec3 inTangent;
+  attribute vec4 inTangent;
 
   #ifndef NORMALMAP
     varying vec3 vNormal;
@@ -103,9 +103,14 @@ void main(){
    vec4 lightColor = g_LightColor;
 
    #if defined(NORMALMAP) && !defined(VERTEX_LIGHTING)
-     vec3 wvTangent = normalize(g_NormalMatrix * inTangent);
+     vec3 wvTangent = normalize(g_NormalMatrix * inTangent.xyz);
      vec3 wvBinormal = cross(wvNormal, wvTangent);
-     mat3 tbnMat = mat3(wvTangent, wvBinormal, wvNormal);
+     vec3 test=cross(wvTangent,wvBinormal );
+     mat3 tbnMat;
+     
+    tbnMat = mat3(wvTangent,-inTangent.w*wvBinormal ,wvNormal);
+     
+    
 
      vPosition = wvPosition * tbnMat;
      vViewDir  = viewDir * tbnMat;

@@ -70,6 +70,8 @@ public class FilterPostProcessor implements SceneProcessor, Savable {
     private Picture fsQuad;
     private boolean computeDepth = false;
     private FrameBuffer outputBuffer;
+    private int width;
+    private int height;
 
     /**
      * Create a FilterProcessor constructor
@@ -88,7 +90,7 @@ public class FilterPostProcessor implements SceneProcessor, Savable {
     public void addFilter(Filter filter) {
         filters.add(filter);
         if (isInitialized()) {
-            filter.init(assetManager,renderManager, viewPort);
+            filter.init(assetManager, renderManager, viewPort, width, height);
         }
     }
 
@@ -106,24 +108,21 @@ public class FilterPostProcessor implements SceneProcessor, Savable {
         viewPort = vp;
         fsQuad = new Picture("filter full screen quad");
 
-        int w = vp.getCamera().getWidth();
-        int h = vp.getCamera().getHeight();
-
-        reshape(vp, w, h);
+        reshape(vp, vp.getCamera().getWidth(), vp.getCamera().getHeight());
     }
 
     private void renderProcessing(Renderer r, FrameBuffer buff, Material mat) {
         if (buff == null) {
-            fsQuad.setWidth(renderFrameBuffer.getWidth());
-            fsQuad.setHeight(renderFrameBuffer.getHeight());
-            filterCam.resize(renderFrameBuffer.getWidth(), renderFrameBuffer.getHeight(), true);
+            fsQuad.setWidth(width);
+            fsQuad.setHeight(height);
+            filterCam.resize(width, height, true);
         } else {
             fsQuad.setWidth(buff.getWidth());
             fsQuad.setHeight(buff.getHeight());
             filterCam.resize(buff.getWidth(), buff.getHeight(), true);
         }
         fsQuad.setMaterial(mat);
-        fsQuad.updateGeometricState();
+        fsQuad.updateGeometricState();        
         renderManager.setCamera(filterCam, true);
         r.setFrameBuffer(buff);
         r.clearBuffers(true, true, true);
@@ -206,36 +205,44 @@ public class FilterPostProcessor implements SceneProcessor, Savable {
     }
 
     public void reshape(ViewPort vp, int w, int h) {
+
+        width = Math.max(1, w);
+        height = Math.max(1, h);
+        vp.getCamera().resize(width, height,true);
         for (Iterator<Filter> it = filters.iterator(); it.hasNext();) {
             Filter filter = it.next();
-            filter.init(assetManager,renderManager, vp);
+            filter.init(assetManager, renderManager, vp, width, height);
             computeDepth = filter.isRequiresDepthTexture();
-
         }
 
         if (renderFrameBufferMS != null) {
             renderer.deleteFrameBuffer(renderFrameBufferMS);
         }
-
-
-        if (renderFrameBuffer == null) {
-            renderFrameBuffer = new FrameBuffer(w, h, 0);
-            renderFrameBuffer.setDepthBuffer(Format.Depth);
-            filterTexture = new Texture2D(w, h, Format.RGBA8);
-            renderFrameBuffer.setColorTexture(filterTexture);
-            if (computeDepth) {
-                depthTexture = new Texture2D(w, h, Format.Depth);
-                renderFrameBuffer.setDepthTexture(depthTexture);
+        if (renderFrameBuffer != null) {
+            renderer.deleteImage(filterTexture.getImage());
+            if(depthTexture!=null){
+                renderer.deleteImage(depthTexture.getImage());
             }
+            renderer.deleteFrameBuffer(renderFrameBuffer);
+        } else {
+            outputBuffer = viewPort.getOutputFrameBuffer();
         }
 
-        outputBuffer = viewPort.getOutputFrameBuffer();
 
+        renderFrameBuffer = new FrameBuffer(width, height, 0);
+        renderFrameBuffer.setDepthBuffer(Format.Depth);
+        filterTexture = new Texture2D(width, height, Format.RGBA8);
+        renderFrameBuffer.setColorTexture(filterTexture);
+        if (computeDepth) {
+
+            depthTexture = new Texture2D(width, height, Format.Depth24);
+            renderFrameBuffer.setDepthTexture(depthTexture);
+        }
 
         Collection<Caps> caps = renderer.getCaps();
         //antialiasing on filters only supported in opengl 3 due to depth read problem
         if (numSamples > 1 && caps.contains(Caps.FrameBufferMultisample) && caps.contains(Caps.OpenGL30)) {
-            renderFrameBufferMS = new FrameBuffer(w, h, numSamples);
+            renderFrameBufferMS = new FrameBuffer(width, height, numSamples);
             renderFrameBufferMS.setDepthBuffer(Format.Depth);
             renderFrameBufferMS.setColorBuffer(Format.RGBA8);
             viewPort.setOutputFrameBuffer(renderFrameBufferMS);

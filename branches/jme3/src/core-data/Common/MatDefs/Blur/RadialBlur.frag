@@ -1,4 +1,3 @@
-#version 120
 uniform sampler2D m_Texture;
 uniform float m_SampleDist;
 uniform float m_SampleStrength;

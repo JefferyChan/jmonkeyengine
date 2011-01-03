@@ -1,4 +1,3 @@
-#version 120
 uniform sampler2D m_Texture;
 uniform sampler2D m_DepthTexture;
 uniform int m_NbSamples;

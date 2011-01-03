@@ -40,6 +40,7 @@ import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.post.Filter;
 import com.jme3.renderer.RenderManager;
+import com.jme3.renderer.Renderer;
 import com.jme3.renderer.ViewPort;
 import java.io.IOException;
 
@@ -70,7 +71,7 @@ public class FogFilter extends Filter {
     }
 
     @Override
-    public void initFilter(AssetManager manager,RenderManager renderManager, ViewPort vp) {
+    public void initFilter(AssetManager manager, RenderManager renderManager, ViewPort vp, int w, int h) {
         material = new Material(manager, "Common/MatDefs/Post/Fog.j3md");
         material.setColor("m_FogColor", fogColor);
         material.setFloat("m_FogDensity", fogDensity);
@@ -160,5 +161,9 @@ public class FogFilter extends Filter {
         fogColor = (ColorRGBA) ic.readSavable("fogColor", ColorRGBA.White.clone());
         fogDensity = ic.readFloat("fogDensity", 0.7f);
         fogDistance = ic.readFloat("fogDistance", 1000);
+    }
+
+    @Override
+    public void cleanUpFilter(Renderer r) {
     }
 }

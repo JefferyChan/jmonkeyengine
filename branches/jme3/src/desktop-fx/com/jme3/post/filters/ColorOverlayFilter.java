@@ -40,6 +40,7 @@ import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.post.Filter;
 import com.jme3.renderer.RenderManager;
+import com.jme3.renderer.Renderer;
 import com.jme3.renderer.ViewPort;
 import java.io.IOException;
 
@@ -80,23 +81,25 @@ public class ColorOverlayFilter extends Filter {
     }
 
     @Override
-    public void initFilter(AssetManager manager,RenderManager renderManager,ViewPort vp) {
+    public void initFilter(AssetManager manager, RenderManager renderManager, ViewPort vp, int w, int h) {
         material = new Material(manager, "Common/MatDefs/Gui/Gui.j3md");
     }
 
     @Override
     public void write(JmeExporter ex) throws IOException {
         super.write(ex);
-        OutputCapsule oc=ex.getCapsule(this);
+        OutputCapsule oc = ex.getCapsule(this);
         oc.write(color, "color", ColorRGBA.White);
     }
 
     @Override
     public void read(JmeImporter im) throws IOException {
         super.read(im);
-        InputCapsule ic=im.getCapsule(this);
-        color=(ColorRGBA)ic.readSavable("color", ColorRGBA.White);
+        InputCapsule ic = im.getCapsule(this);
+        color = (ColorRGBA) ic.readSavable("color", ColorRGBA.White);
     }
 
-
+    @Override
+    public void cleanUpFilter(Renderer r) {
+    }
 }

@@ -39,6 +39,7 @@ import com.jme3.export.OutputCapsule;
 import com.jme3.material.Material;
 import com.jme3.post.Filter;
 import com.jme3.renderer.RenderManager;
+import com.jme3.renderer.Renderer;
 import com.jme3.renderer.ViewPort;
 import com.jme3.shader.VarType;
 import java.io.IOException;
@@ -94,7 +95,7 @@ public class RadialBlurFilter extends Filter {
     }
 
     @Override
-    public void initFilter(AssetManager manager,RenderManager renderManager, ViewPort vp) {
+    public void initFilter(AssetManager manager, RenderManager renderManager, ViewPort vp, int w, int h) {
         material = new Material(manager, "Common/MatDefs/Blur/RadialBlur.j3md");
     }
 
@@ -112,5 +113,9 @@ public class RadialBlurFilter extends Filter {
         InputCapsule ic = im.getCapsule(this);
         sampleDist = ic.readFloat("sampleDist", 1.0f);
         sampleStrength = ic.readFloat("sampleStrength", 2.2f);
+    }
+
+    @Override
+    public void cleanUpFilter(Renderer r) {
     }
 }

@@ -39,6 +39,7 @@ import com.jme3.export.OutputCapsule;
 import com.jme3.material.Material;
 import com.jme3.post.Filter;
 import com.jme3.renderer.RenderManager;
+import com.jme3.renderer.Renderer;
 import com.jme3.renderer.ViewPort;
 import java.io.IOException;
 
@@ -75,7 +76,7 @@ public class FadeFilter extends Filter {
     }
 
     @Override
-    public void initFilter(AssetManager manager,RenderManager renderManager, ViewPort vp) {
+    public void initFilter(AssetManager manager, RenderManager renderManager, ViewPort vp, int w, int h) {
         material = new Material(manager, "Common/MatDefs/Post/Fade.j3md");
     }
 
@@ -135,6 +136,8 @@ public class FadeFilter extends Filter {
     public void setValue(float value) {
         this.value = value;
     }
-    
 
+    @Override
+    public void cleanUpFilter(Renderer r) {
+    }
 }

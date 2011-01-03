@@ -146,7 +146,7 @@ public class WaterFilter extends Filter {
 //        renderManager.renderViewPortQueues(viewPort, false);
 //        renderManager.setForcedMaterial(null);
 //        material.setTexture("m_PositionBuffer", positionPass.getRenderedTexture());
-        
+
         material.setFloat("m_WaterHeight", waterHeight);
 
         //update reflection cam
@@ -183,11 +183,8 @@ public class WaterFilter extends Filter {
     }
 
     @Override
-    public void initFilter(AssetManager manager, RenderManager renderManager, ViewPort vp) {
+    public void initFilter(AssetManager manager, RenderManager renderManager, ViewPort vp, int w, int h) {
 
-//        positionPass = new Pass();
-//        positionPass.init(vp.getCamera().getWidth(), vp.getCamera().getHeight(), Format.RGBA32F, Format.Depth);
-//        positionMaterial = new Material(manager, "Common/MatDefs/Misc/ShowPos.j3md");
         reflectionPass = new Pass();
         reflectionPass.init(reflectionMapSize, reflectionMapSize, Format.RGB8, Format.Depth);
         reflectionCam = new Camera(reflectionMapSize, reflectionMapSize);
@@ -687,5 +684,12 @@ public class WaterFilter extends Filter {
      */
     public void setReflectionMapSize(int reflectionMapSize) {
         this.reflectionMapSize = reflectionMapSize;
+    }
+
+    @Override
+    public void cleanUpFilter(Renderer r) {
+        if (reflectionPass != null) {
+            reflectionPass.cleanup(r);
+        }
     }
 }

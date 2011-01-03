@@ -1,4 +1,3 @@
-#version 120
 uniform vec2 g_Resolution;
 uniform vec2 m_FrustumNearFar;
 uniform sampler2D m_Texture;
@@ -99,5 +98,6 @@ void main(){
    ao /= float(iterations) * 4.0;
    result = 1.0-ao;
 
-   gl_FragColor=getColor(result);
+ //  gl_FragColor=getColor(result);
+gl_FragColor=vec4(normal,1.0);
 }
