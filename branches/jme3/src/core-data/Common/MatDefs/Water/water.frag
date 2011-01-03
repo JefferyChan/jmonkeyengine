@@ -56,6 +56,12 @@ mat3 MatrixInverse(in mat3 inMatrix){
         cross(T[0], T[1])) / det;
 }
 
+#define ENABLE_RIPPLES
+#define ENABLE_HQ_SHORELINE
+#define ENABLE_SPECULAR
+#define ENABLE_FOAM
+#define ENABLE_REFRACTION
+
 mat3 computeTangentFrame(in vec3 N, in vec3 P, in vec2 UV) {
     vec3 dp1 = dFdx(P);
     vec3 dp2 = dFdy(P);
@@ -63,10 +69,16 @@ mat3 computeTangentFrame(in vec3 N, in vec3 P, in vec2 UV) {
     vec2 duv2 = dFdy(UV);
 
     // solve the linear system
-    mat3 M = mat3(dp1, dp2, cross(dp1, dp2));
-    mat3 inverseM = MatrixInverse(M);
-    vec3 T = inverseM * vec3(duv1.x, duv2.x, 0.0);
-    vec3 B = inverseM * vec3(duv1.y, duv2.y, 0.0);
+    //mat3 M = mat3(dp1, dp2, cross(dp1, dp2));
+    vec3 dp1xdp2 = cross(dp1, dp2);
+    //mat3 inverseM = MatrixInverse(M);
+    mat2x3 inverseM = mat2x3(cross(dp2, dp1xdp2), cross(dp1xdp2, dp1));
+
+    //vec3 T = inverseM * vec3(duv1.x, duv2.x, 0.0);
+    //vec3 B = inverseM * vec3(duv1.y, duv2.y, 0.0);
+
+    vec3 T = inverseM * vec2(duv1.x, duv2.x);
+    vec3 B = inverseM * vec2(duv1.y, duv2.y);
 
     // construct tangent frame
     float maxLength = max(length(T), length(B));
@@ -89,14 +101,9 @@ vec3 saturate(in vec3 val){
 
 
 vec3 getPosition(in float depth, in vec2 uv){
-    //  float depth = texture2D(m_PositionBuffer, uv).r;
     vec4 pos = vec4(uv, depth, 1.0) * 2.0 - 1.0;
     pos = m_ViewProjectionMatrixInverse * pos;
     return pos.xyz / pos.w;
-
-    //vec4 pos= m_ViewProjectionMatrixInverse*texture2D(m_PositionBuffer,uv);
-    //pos/=pos.w;
-    //return pos.rgb;
 }
 
 // Function calculating fresnel term.
@@ -111,8 +118,8 @@ float fresnelTerm(in vec3 normal,in vec3 eyeVec){
 }
 
 void main(){
-
     float sceneDepth = texture2D(m_DepthTexture, texCoord).r;
+    float isAtFarPlane = step(0.99998, sceneDepth);
 
     vec3 color2 = texture2D(m_Texture, texCoord).rgb;
     vec3 color = color2;
@@ -120,7 +127,6 @@ void main(){
     vec3 position = getPosition(sceneDepth,texCoord);
 
     float level = m_WaterHeight;
-    float depth = 0.0;
 
     // If we are underwater let's leave out complex computations
     if(level >= m_CameraPosition.y){
@@ -128,130 +134,156 @@ void main(){
         return;
     }
 
-    //}else{
-        //if(position.y <= level + m_MaxAmplitude){
-            vec3 eyeVec = position - m_CameraPosition;
-            float diff = level - position.y;
-            float cameraDepth = m_CameraPosition.y - position.y;
+    //#ifndef ENABLE_RIPPLES
+    // This optimization won't work on NVIDIA cards if ripples are enabled
+    if(position.y > level + m_MaxAmplitude + isAtFarPlane * 100.0){
+        gl_FragColor = vec4(color2, 1.0);
+        return;
+    }
+    //#endif
 
-            // Find intersection with water surface
-            vec3 eyeVecNorm = normalize(eyeVec);
-            float t = (level - m_CameraPosition.y) / eyeVecNorm.y;
-            vec3 surfacePoint = m_CameraPosition + eyeVecNorm * t;
+    vec3 eyeVec = position - m_CameraPosition;
+    float diff = level - position.y;
+    float cameraDepth = m_CameraPosition.y - position.y;
 
-            vec2 texC;
-            for(int i = 0; i < 10; ++i){
-                texC = (surfacePoint.xz + eyeVecNorm.xz * 0.1) * scale + m_Time * 0.03 * m_WindDirection;
+    // Find intersection with water surface
+    vec3 eyeVecNorm = normalize(eyeVec);
+    float t = (level - m_CameraPosition.y) / eyeVecNorm.y;
+    vec3 surfacePoint = m_CameraPosition + eyeVecNorm * t;
 
-                float bias = texture2D(m_HeightMap, texC).r;
+    vec2 texC;
+    int samples = 1;
+    #ifdef ENABLE_HQ_SHORELINE
+        samples = 10;
+    #endif
+    float biasFactor = 1.0/samples;
+    for (int i = 0; i < samples; i++){
+        texC = (surfacePoint.xz + eyeVecNorm.xz * biasFactor) * scale + m_Time * 0.03 * m_WindDirection;
 
-                bias *= 0.1;
-                level += bias * m_MaxAmplitude;
-                t = (level - m_CameraPosition.y) / eyeVecNorm.y;
-                surfacePoint = m_CameraPosition + eyeVecNorm * t;
-            }
+        float bias = texture2D(m_HeightMap, texC).r;
 
-            depth = length(position - surfacePoint);
-            float depth2 = surfacePoint.y - position.y;
+        bias *= biasFactor;
+        level += bias * m_MaxAmplitude;
+        t = (level - m_CameraPosition.y) / eyeVecNorm.y;
+        surfacePoint = m_CameraPosition + eyeVecNorm * t;
+    }
 
-            eyeVecNorm = normalize(m_CameraPosition - surfacePoint);
+    float depth = length(position - surfacePoint);
+    float depth2 = surfacePoint.y - position.y;
 
-            float normal1 = texture2D(m_HeightMap, (texC + vec2(-1.0, 0.0) / 256.0)).r;
-            float normal2 = texture2D(m_HeightMap, (texC + vec2(1.0, 0.0) / 256.0)).r;
-            float normal3 = texture2D(m_HeightMap, (texC + vec2(0.0, -1.0) / 256.0)).r;
-            float normal4 = texture2D(m_HeightMap, (texC + vec2(0.0, 1.0) / 256.0)).r;
+    // XXX: HACK ALERT: Increase water depth to infinity if at far plane
+    // Prevents "foam on horizon" issue
+    // For best results, replace the "100.0" below with the
+    // highest value in the m_ColorExtinction vec3
+    depth  += isAtFarPlane * 100.0;
+    depth2 += isAtFarPlane * 100.0;
 
-            vec3 myNormal = normalize(vec3((normal1 - normal2) * m_MaxAmplitude,m_NormalScale,(normal3 - normal4) * m_MaxAmplitude));
+    eyeVecNorm = normalize(m_CameraPosition - surfacePoint);
 
-            texC = surfacePoint.xz * 0.8 + m_WindDirection * m_Time* 1.6;
-            mat3 tangentFrame = computeTangentFrame(myNormal, eyeVecNorm, texC);
-            vec3 normal0a = normalize(tangentFrame*(2.0 * texture2D(m_NormalMap, texC).xyz - 1.0));
+    // Find normal of water surface
+    float normal1 = texture2D(m_HeightMap, (texC + vec2(-1.0, 0.0) / 256.0)).r;
+    float normal2 = texture2D(m_HeightMap, (texC + vec2(1.0, 0.0) / 256.0)).r;
+    float normal3 = texture2D(m_HeightMap, (texC + vec2(0.0, -1.0) / 256.0)).r;
+    float normal4 = texture2D(m_HeightMap, (texC + vec2(0.0, 1.0) / 256.0)).r;
 
-            texC = surfacePoint.xz * 0.4 + m_WindDirection * m_Time* 0.8;
-            tangentFrame = computeTangentFrame(myNormal, eyeVecNorm, texC);
-            vec3 normal1a = normalize(tangentFrame*(2.0 * texture2D(m_NormalMap, texC).xyz - 1.0));
+    vec3 myNormal = normalize(vec3((normal1 - normal2) * m_MaxAmplitude,m_NormalScale,(normal3 - normal4) * m_MaxAmplitude));
+    vec3 normal = vec3(0.0);
 
-            texC = surfacePoint.xz * 0.2 + m_WindDirection * m_Time * 0.4;
-            tangentFrame = computeTangentFrame(myNormal, eyeVecNorm, texC);
-            vec3 normal2a = normalize(tangentFrame*(2.0 * texture2D(m_NormalMap, texC).xyz - 1.0));
+    #ifdef ENABLE_RIPPLES
+        texC = surfacePoint.xz * 0.8 + m_WindDirection * m_Time* 1.6;
+        mat3 tangentFrame = computeTangentFrame(myNormal, eyeVecNorm, texC);
+        vec3 normal0a = normalize(tangentFrame*(2.0 * texture2D(m_NormalMap, texC).xyz - 1.0));
 
-            texC = surfacePoint.xz * 0.1 + m_WindDirection * m_Time * 0.2;
-            tangentFrame = computeTangentFrame(myNormal, eyeVecNorm, texC);
-            vec3 normal3a = normalize(tangentFrame*(2.0 * texture2D(m_NormalMap, texC).xyz - 1.0));
+        texC = surfacePoint.xz * 0.4 + m_WindDirection * m_Time* 0.8;
+        tangentFrame = computeTangentFrame(myNormal, eyeVecNorm, texC);
+        vec3 normal1a = normalize(tangentFrame*(2.0 * texture2D(m_NormalMap, texC).xyz - 1.0));
 
-            vec3 normal = normalize(normal0a * normalModifier.x + normal1a * normalModifier.y +normal2a * normalModifier.z + normal3a * normalModifier.w);
-            // XXX: Here's another way to fix the terrain edge issue,
-            // But it requires GLSL 1.3 and still looks kinda incorrect
-            // around edges
-            //normal = isnan(normal.x) ? myNormal : normal;
+        texC = surfacePoint.xz * 0.2 + m_WindDirection * m_Time * 0.4;
+        tangentFrame = computeTangentFrame(myNormal, eyeVecNorm, texC);
+        vec3 normal2a = normalize(tangentFrame*(2.0 * texture2D(m_NormalMap, texC).xyz - 1.0));
 
-            texC = texCoord.xy;
-            texC += sin(m_Time*1.8  + 3.0 * abs(position.y)) * (refractionScale * min(depth2, 1.0));
+        texC = surfacePoint.xz * 0.1 + m_WindDirection * m_Time * 0.2;
+        tangentFrame = computeTangentFrame(myNormal, eyeVecNorm, texC);
+        vec3 normal3a = normalize(tangentFrame*(2.0 * texture2D(m_NormalMap, texC).xyz - 1.0));
 
-            vec3 refraction = color2;//texture2D(m_Texture, texC).rgb;
-            //     if(getPosition(texture2D(m_DepthTexture, texC).r,texC).y > level)
-            //           refraction = color2;
-
-            vec3 waterPosition = surfacePoint.xyz;
-            waterPosition.y -= (level - m_WaterHeight);
-            vec4 texCoordProj =m_TextureProjMatrix* vec4(waterPosition, 1.0);
-
-            texCoordProj.x = texCoordProj.x + displace * normal.x;
-            texCoordProj.z = texCoordProj.z + displace * normal.z;
-            texCoordProj/=texCoordProj.w;
-            texCoordProj.y=1.0-texCoordProj.y;
-
-            vec3 reflection =texture2D(m_ReflectionMap, texCoordProj.xy).rgb;
-
-            float fresnel = fresnelTerm(normal, eyeVecNorm);
-
-            float depthN = depth * m_WaterTransparency;
-            float waterCol = saturate(length(m_LightColor.rgb) / m_SunScale);
-            refraction = mix(mix(refraction, m_WaterColor.rgb * waterCol, saturate(depthN / visibility)),
-                m_DeepWaterColor.rgb * waterCol, saturate(depth2 / m_ColorExtinction));
-
-            vec3 foam = vec3(0.0);
-            texC = (surfacePoint.xz + eyeVecNorm.xz * 0.1) * 0.05 + m_Time * 0.05 * m_WindDirection + sin(m_Time * 0.001 + position.x) * 0.005;
-            vec2 texCoord2 = (surfacePoint.xz + eyeVecNorm.xz * 0.1) * 0.05 + m_Time * 0.1 * m_WindDirection + sin(m_Time * 0.001 + position.z) * 0.005;
-
-            if(depth2 < m_FoamExistence.x){
-                foam = (texture2D(m_FoamMap, texC).r + texture2D(m_FoamMap, texCoord2)).rgb * 0.4;
-            }else if(depth2 < m_FoamExistence.y){
-                foam = mix((texture2D(m_FoamMap, texC) + texture2D(m_FoamMap, texCoord2)) * 0.4, vec4(0.0),
-                    (depth2 - m_FoamExistence.x) / (m_FoamExistence.y - m_FoamExistence.x)).rgb;
-            }
-
-            if(m_MaxAmplitude - m_FoamExistence.z > 0.0001){
-                foam += ((texture2D(m_FoamMap, texC) + texture2D(m_FoamMap, texCoord2)) * 0.4 *
-                    saturate((level - (m_WaterHeight + m_FoamExistence.z)) / (m_MaxAmplitude - m_FoamExistence.z))).rgb;
-            }
-            foam *= m_LightColor.rgb;
-
-
-            vec3 specular =vec3(0.0);
-            vec3 lightDir=normalize(m_LightDir);
-            vec3 mirrorEye = (2.0 * dot(eyeVecNorm, normal) * normal - eyeVecNorm);
-            float dotSpec = saturate(dot(mirrorEye.xyz, -lightDir) * 0.5 + 0.5);
-            specular = vec3((1.0 - fresnel) * saturate(-lightDir.y) * ((pow(dotSpec, 512.0)) * (m_Shininess * 1.8 + 0.2)));
-            specular += specular * 25.0 * saturate(m_Shininess - 0.05);
-            //foam does not shine
-            specular=specular * m_LightColor.rgb - (5.0 * foam);
-
-            color = mix(refraction, reflection, fresnel);
-            color = mix(refraction, color, saturate(depth * m_ShoreHardness));
-            color = saturate(color + max(specular, foam ));
-            color = mix(refraction, color, saturate(depth* m_FoamHardness));
+        normal = normalize(normal0a * normalModifier.x + normal1a * normalModifier.y +normal2a * normalModifier.z + normal3a * normalModifier.w);
+        // XXX: Here's another way to fix the terrain edge issue,
+        // But it requires GLSL 1.3 and still looks kinda incorrect
+        // around edges
+        normal = isnan(normal.x) ? myNormal : normal;
+        //if (position.y > level){
+        //    gl_FragColor = vec4(color2 + normal*0.0001, 1.0);
+        //    return;
         //}
+    #else
+        normal = myNormal;
+    #endif
+    
+    vec3 refraction = color2;
+    #ifdef ENABLE_REFRACTION
+        texC = texCoord.xy;
+        texC += sin(m_Time*1.8  + 3.0 * abs(position.y)) * (refractionScale * min(depth2, 1.0));
+        refraction = texture2D(m_Texture, texC).rgb;
+    #endif
 
-        //if(position.y > level){
-        //    color = color2;
-        //}
+    vec3 waterPosition = surfacePoint.xyz;
+    waterPosition.y -= (level - m_WaterHeight);
+    vec4 texCoordProj = m_TextureProjMatrix * vec4(waterPosition, 1.0);
 
-        // XXX: HACK ALERT:
-        // We trick the GeForces to think they have
-        // to calculate the derivatives for all these pixels by using step()!
-        // That way we won't get pixels around the edges of the terrain,
-        // Where the derivatives are undefined
-        gl_FragColor = vec4(mix(color, color2, step(level, position.y)), 1.0);
-    //}
+    texCoordProj.x = texCoordProj.x + displace * normal.x;
+    texCoordProj.z = texCoordProj.z + displace * normal.z;
+    texCoordProj /= texCoordProj.w;
+    texCoordProj.y = 1.0 - texCoordProj.y;
+
+    vec3 reflection = texture2D(m_ReflectionMap, texCoordProj.xy).rgb;
+
+    float fresnel = fresnelTerm(normal, eyeVecNorm);
+
+    float depthN = depth * m_WaterTransparency;
+    float waterCol = saturate(length(m_LightColor.rgb) / m_SunScale);
+    refraction = mix(mix(refraction, m_WaterColor.rgb * waterCol, saturate(depthN / visibility)),
+        m_DeepWaterColor.rgb * waterCol, saturate(depth2 / m_ColorExtinction));
+
+    vec3 foam = vec3(0.0);
+    #ifdef ENABLE_FOAM
+        texC = (surfacePoint.xz + eyeVecNorm.xz * 0.1) * 0.05 + m_Time * 0.05 * m_WindDirection + sin(m_Time * 0.001 + position.x) * 0.005;
+        vec2 texCoord2 = (surfacePoint.xz + eyeVecNorm.xz * 0.1) * 0.05 + m_Time * 0.1 * m_WindDirection + sin(m_Time * 0.001 + position.z) * 0.005;
+
+        if(depth2 < m_FoamExistence.x){
+            foam = (texture2D(m_FoamMap, texC).r + texture2D(m_FoamMap, texCoord2)).rgb * 0.4;
+        }else if(depth2 < m_FoamExistence.y){
+            foam = mix((texture2D(m_FoamMap, texC) + texture2D(m_FoamMap, texCoord2)) * 0.4, vec4(0.0),
+                (depth2 - m_FoamExistence.x) / (m_FoamExistence.y - m_FoamExistence.x)).rgb;
+        }
+
+        if(m_MaxAmplitude - m_FoamExistence.z > 0.0001){
+            foam += ((texture2D(m_FoamMap, texC) + texture2D(m_FoamMap, texCoord2)) * 0.4 *
+                saturate((level - (m_WaterHeight + m_FoamExistence.z)) / (m_MaxAmplitude - m_FoamExistence.z))).rgb;
+        }
+        foam *= m_LightColor.rgb;
+    #endif
+
+    vec3 specular =vec3(0.0);
+    #ifdef ENABLE_SPECULAR
+        vec3 lightDir=normalize(m_LightDir);
+        vec3 mirrorEye = (2.0 * dot(eyeVecNorm, normal) * normal - eyeVecNorm);
+        float dotSpec = saturate(dot(mirrorEye.xyz, -lightDir) * 0.5 + 0.5);
+        specular = vec3((1.0 - fresnel) * saturate(-lightDir.y) * ((pow(dotSpec, 512.0)) * (m_Shininess * 1.8 + 0.2)));
+        specular += specular * 25.0 * saturate(m_Shininess - 0.05);
+        //foam does not shine
+        specular=specular * m_LightColor.rgb - (5.0 * foam);
+    #endif
+
+    color = mix(refraction, reflection, fresnel);
+    color = mix(refraction, color, saturate(depth * m_ShoreHardness));
+    color = saturate(color + max(specular, foam ));
+    color = mix(refraction, color, saturate(depth* m_FoamHardness));
+        
+
+    // XXX: HACK ALERT:
+    // We trick the GeForces to think they have
+    // to calculate the derivatives for all these pixels by using step()!
+    // That way we won't get pixels around the edges of the terrain,
+    // Where the derivatives are undefined
+    gl_FragColor = vec4(mix(color, color2, step(level, position.y)), 1.0);
 }

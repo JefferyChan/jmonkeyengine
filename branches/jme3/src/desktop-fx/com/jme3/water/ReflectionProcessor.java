@@ -14,7 +14,7 @@ import com.jme3.texture.FrameBuffer;
 
 /**
  * Reflection Processor
- * Used to render te reflected scene in an off view port
+ * Used to render the reflected scene in an off view port
  */
 public class ReflectionProcessor implements SceneProcessor {
 
@@ -29,8 +29,6 @@ public class ReflectionProcessor implements SceneProcessor {
         this.reflectionBuffer = reflectionBuffer;
         this.reflectionClipPlane = reflectionClipPlane;
     }
-
-
 
     public void initialize(RenderManager rm, ViewPort vp) {
         this.rm = rm;
