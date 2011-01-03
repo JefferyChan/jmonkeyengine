@@ -228,6 +228,8 @@ public class DesktopAssetManager implements AssetManager {
             if (o == null){
                 logger.log(Level.WARNING, "Error occured while loading resource {0} using {1}",
                         new Object[]{key, loader.getClass().getSimpleName()});
+                
+                return null;
             }else{
                 if (logger.isLoggable(Level.FINER)){
                     logger.log(Level.FINER, "Loaded {0} with {1}",
