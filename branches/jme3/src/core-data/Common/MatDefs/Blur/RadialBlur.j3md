@@ -9,8 +9,8 @@ MaterialDef Radial Blur {
     }
 
     Technique {
-        VertexShader GLSL100:   Common/MatDefs/Blur/RadialBlur.vert
-        FragmentShader GLSL100: Common/MatDefs/Blur/RadialBlur.frag
+        VertexShader GLSL120:   Common/MatDefs/Blur/RadialBlur.vert
+        FragmentShader GLSL120: Common/MatDefs/Blur/RadialBlur.frag
 
         WorldParameters {
             WorldViewProjectionMatrix

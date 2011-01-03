@@ -11,8 +11,8 @@ MaterialDef Light Scattering {
     }
 
     Technique {
-        VertexShader GLSL100:   Common/MatDefs/Light/LightScattering.vert
-        FragmentShader GLSL100: Common/MatDefs/Light/LightScattering.frag
+        VertexShader GLSL120:   Common/MatDefs/Light/LightScattering.vert
+        FragmentShader GLSL120: Common/MatDefs/Light/LightScattering.frag
 
         WorldParameters {
             WorldViewProjectionMatrix
