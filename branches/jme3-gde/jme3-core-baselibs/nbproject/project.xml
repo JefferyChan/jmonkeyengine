@@ -24,7 +24,6 @@
                 <package>com.jme3.asset.pack</package>
                 <package>com.jme3.asset.plugins</package>
                 <package>com.jme3.audio</package>
-                <package>com.jme3.audio.joal</package>
                 <package>com.jme3.audio.lwjgl</package>
                 <package>com.jme3.audio.plugins</package>
                 <package>com.jme3.bounding</package>
@@ -36,8 +35,11 @@
                 <package>com.jme3.bullet.joints</package>
                 <package>com.jme3.bullet.joints.motors</package>
                 <package>com.jme3.bullet.nodes</package>
-                <package>com.jme3.bullet.nodes.infos</package>
+                <package>com.jme3.bullet.objects</package>
+                <package>com.jme3.bullet.objects.infos</package>
                 <package>com.jme3.bullet.util</package>
+                <package>com.jme3.cinematic</package>
+                <package>com.jme3.cinematic.events</package>
                 <package>com.jme3.collision</package>
                 <package>com.jme3.collision.bih</package>
                 <package>com.jme3.effect</package>
@@ -59,11 +61,13 @@
                 <package>com.jme3.network.connection</package>
                 <package>com.jme3.network.events</package>
                 <package>com.jme3.network.message</package>
+                <package>com.jme3.network.queue</package>
                 <package>com.jme3.network.rmi</package>
                 <package>com.jme3.network.serializing</package>
                 <package>com.jme3.network.serializing.serializers</package>
                 <package>com.jme3.network.service</package>
                 <package>com.jme3.network.streaming</package>
+                <package>com.jme3.network.sync</package>
                 <package>com.jme3.niftygui</package>
                 <package>com.jme3.post</package>
                 <package>com.jme3.post.filters</package>
@@ -88,7 +92,8 @@
                 <package>com.jme3.system.lwjgl</package>
                 <package>com.jme3.terrain</package>
                 <package>com.jme3.terrain.geomipmap</package>
-                <package>com.jme3.terrain.geomipmap.LodCalc</package>
+                <package>com.jme3.terrain.geomipmap.lodcalc</package>
+                <package>com.jme3.terrain.geomipmap.picking</package>
                 <package>com.jme3.terrain.heightmap</package>
                 <package>com.jme3.texture</package>
                 <package>com.jme3.texture.plugins</package>
@@ -98,13 +103,12 @@
                 <package>com.jme3.video</package>
                 <package>com.jme3.video.plugins.jheora</package>
                 <package>com.jme3.water</package>
-                <package>jme3game.cubefield</package>
                 <package>jme3tools.converters</package>
                 <package>jme3tools.converters.model</package>
                 <package>jme3tools.converters.model.strip</package>
+                <package>jme3tools.navigation</package>
                 <package>jme3tools.nvtex</package>
                 <package>jme3tools.optimize</package>
-                <package>jme3tools.preview</package>
             </public-packages>
             <class-path-extension>
                 <runtime-relative-path>ext/jMonkeyEngine3.jar</runtime-relative-path>
