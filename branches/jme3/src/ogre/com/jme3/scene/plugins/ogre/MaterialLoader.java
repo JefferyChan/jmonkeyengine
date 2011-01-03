@@ -40,6 +40,9 @@ import com.jme3.material.Material;
 import com.jme3.material.MaterialList;
 import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
+import com.jme3.scene.plugins.ogre.matext.MaterialExtensionLoader;
+import com.jme3.scene.plugins.ogre.matext.MaterialExtensionSet;
+import com.jme3.scene.plugins.ogre.matext.OgreMaterialKey;
 import com.jme3.texture.Image;
 import com.jme3.texture.Image.Format;
 import com.jme3.texture.Texture;
@@ -378,13 +381,29 @@ public class MaterialLoader implements AssetLoader {
         folderName = info.getKey().getFolder();
         assetManager = info.getManager();
 
-        MaterialList list = new MaterialList();
+        MaterialList list;
+        
         scan = new Scanner(info.openStream());
         scan.useLocale(Locale.US);
-        while (scan.hasNext("material")){
-            readMaterial();
-            Material mat = compileMaterial();
-            list.put(matName, mat);
+        if (scan.hasNext("import")){
+            MaterialExtensionSet matExts = null;
+            if (info.getKey() instanceof OgreMaterialKey){
+                 matExts = ((OgreMaterialKey)info.getKey()).getMaterialExtensionSet();
+            }
+            
+            if (matExts == null){
+                throw new IOException("Must specify MaterialExtensionSet when loading\n"+
+                                      "Ogre3D materials with extended materials");
+            }
+
+            list = new MaterialExtensionLoader().load(assetManager, matExts, scan);
+        }else{
+            list = new MaterialList();
+            while (scan.hasNext("material")){
+                readMaterial();
+                Material mat = compileMaterial();
+                list.put(matName, mat);
+            }
         }
         scan.close();
         return list;
