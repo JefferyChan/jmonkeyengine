@@ -100,6 +100,7 @@ public class FilterPostProcessor implements SceneProcessor, Savable {
                 it.remove();
             }
         }
+        filter.cleanup(renderer);
     }
 
     public void initialize(RenderManager rm, ViewPort vp) {
@@ -122,7 +123,7 @@ public class FilterPostProcessor implements SceneProcessor, Savable {
             filterCam.resize(buff.getWidth(), buff.getHeight(), true);
         }
         fsQuad.setMaterial(mat);
-        fsQuad.updateGeometricState();        
+        fsQuad.updateGeometricState();
         renderManager.setCamera(filterCam, true);
         r.setFrameBuffer(buff);
         r.clearBuffers(true, true, true);
@@ -202,13 +203,19 @@ public class FilterPostProcessor implements SceneProcessor, Savable {
             Filter filter = it.next();
             filter.cleanup(renderer);
         }
+
+        renderer.deleteImage(filterTexture.getImage());
+        if (depthTexture != null) {
+            renderer.deleteImage(depthTexture.getImage());
+        }
+        renderer.deleteFrameBuffer(renderFrameBuffer);
     }
 
     public void reshape(ViewPort vp, int w, int h) {
 
         width = Math.max(1, w);
         height = Math.max(1, h);
-        vp.getCamera().resize(width, height,true);
+        vp.getCamera().resize(width, height, true);
         for (Iterator<Filter> it = filters.iterator(); it.hasNext();) {
             Filter filter = it.next();
             filter.init(assetManager, renderManager, vp, width, height);
@@ -220,7 +227,7 @@ public class FilterPostProcessor implements SceneProcessor, Savable {
         }
         if (renderFrameBuffer != null) {
             renderer.deleteImage(filterTexture.getImage());
-            if(depthTexture!=null){
+            if (depthTexture != null) {
                 renderer.deleteImage(depthTexture.getImage());
             }
             renderer.deleteFrameBuffer(renderFrameBuffer);
@@ -234,7 +241,6 @@ public class FilterPostProcessor implements SceneProcessor, Savable {
         filterTexture = new Texture2D(width, height, Format.RGBA8);
         renderFrameBuffer.setColorTexture(filterTexture);
         if (computeDepth) {
-
             depthTexture = new Texture2D(width, height, Format.Depth24);
             renderFrameBuffer.setDepthTexture(depthTexture);
         }
