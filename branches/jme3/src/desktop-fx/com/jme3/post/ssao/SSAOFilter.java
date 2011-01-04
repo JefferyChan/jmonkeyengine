@@ -123,12 +123,8 @@ public class SSAOFilter extends Filter {
     }
 
     @Override
-    protected Format getDefaultPassDepthFormat() {
-        return Format.Depth;
-    }
-
-    @Override
     public void preRender(RenderManager renderManager, ViewPort viewPort) {
+        
         Renderer r = renderManager.getRenderer();
         r.setFrameBuffer(normalPass.getRenderFrameBuffer());        
         renderManager.getRenderer().clearBuffers(true, true, true);
@@ -136,11 +132,12 @@ public class SSAOFilter extends Filter {
         renderManager.renderViewPortQueues(viewPort, false);
         renderManager.setForcedMaterial(null);
         renderManager.getRenderer().setFrameBuffer(viewPort.getOutputFrameBuffer());
+       
     }
 
     @Override
     public Material getMaterial() {
-        material.setTexture("m_Normals", normalPass.getRenderedTexture());
+             
         material.setVector3("frustumCorner", frustumCorner);
         material.setFloat("m_SampleRadius", sampleRadius);
         material.setFloat("m_Intensity", intensity);
@@ -159,15 +156,17 @@ public class SSAOFilter extends Filter {
         int screenHeight = h;
         normalPass = new Pass();
         normalPass.init(screenWidth, screenHeight, Format.RGB8, Format.Depth);
+        
         frustumNearFar = new Vector2f();
                
         float farY = (vp.getCamera().getFrustumTop()/vp.getCamera().getFrustumNear()) * vp.getCamera().getFrustumFar();
-        float farX = farY * (screenWidth / screenHeight);
+        float farX = farY * ((float)screenWidth / (float)screenHeight);
         frustumCorner = new Vector3f(farX, farY, vp.getCamera().getFrustumFar());
         frustumNearFar.x = vp.getCamera().getFrustumNear();
         frustumNearFar.y = vp.getCamera().getFrustumFar();
         material = new Material(manager, "Common/MatDefs/SSAO/ssao.j3md");
         normalMaterial = new Material(manager, "Common/MatDefs/SSAO/normal.j3md");
+        material.setTexture("m_Normals", normalPass.getRenderedTexture());
     }
 
     /**
@@ -262,7 +261,7 @@ public class SSAOFilter extends Filter {
     @Override
     public void cleanUpFilter(Renderer r) {
        if(normalPass!=null){
-           normalPass.cleanup(r);           
+           normalPass.cleanup(r);        
        }
     }
 }

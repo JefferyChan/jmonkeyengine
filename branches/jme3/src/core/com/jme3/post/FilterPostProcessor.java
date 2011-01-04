@@ -72,6 +72,7 @@ public class FilterPostProcessor implements SceneProcessor, Savable {
     private FrameBuffer outputBuffer;
     private int width;
     private int height;
+    private int lastFilterIndex = -1;
 
     /**
      * Create a FilterProcessor constructor
@@ -89,9 +90,11 @@ public class FilterPostProcessor implements SceneProcessor, Savable {
 
     public void addFilter(Filter filter) {
         filters.add(filter);
+        filter.enabled = true;
         if (isInitialized()) {
-            filter.init(assetManager, renderManager, viewPort, width, height);
+            initFilter(filter, viewPort);
         }
+        lastFilterIndex = filters.size() - 1;
     }
 
     public void removeFilter(Filter filter) {
@@ -101,6 +104,7 @@ public class FilterPostProcessor implements SceneProcessor, Savable {
             }
         }
         filter.cleanup(renderer);
+        updateLastFilterIndex();
     }
 
     public void initialize(RenderManager rm, ViewPort vp) {
@@ -110,6 +114,18 @@ public class FilterPostProcessor implements SceneProcessor, Savable {
         fsQuad = new Picture("filter full screen quad");
 
         reshape(vp, vp.getCamera().getWidth(), vp.getCamera().getHeight());
+    }
+
+    private void initFilter(Filter filter, ViewPort vp) {
+        filter.init(assetManager, renderManager, vp, width, height);
+        if (filter.isRequiresDepthTexture()) {
+            computeDepth = true;
+            if (depthTexture == null) {
+                depthTexture = new Texture2D(width, height, Format.Depth24);
+                renderFrameBuffer.setDepthTexture(depthTexture);
+            }
+            filter.getMaterial().setTexture("m_DepthTexture", depthTexture);
+        }
     }
 
     private void renderProcessing(Renderer r, FrameBuffer buff, Material mat) {
@@ -137,38 +153,38 @@ public class FilterPostProcessor implements SceneProcessor, Savable {
     public void postQueue(RenderQueue rq) {
         for (Iterator<Filter> it = filters.iterator(); it.hasNext();) {
             Filter filter = it.next();
-            filter.preRender(renderManager, viewPort);
+            if (filter.enabled) {
+                filter.preRender(renderManager, viewPort);
+            }
         }
     }
 
     public void renderFilterChain(Renderer r) {
         Texture2D tex = filterTexture;
-        for (Iterator<Filter> it = filters.iterator(); it.hasNext();) {
-            Filter filter = it.next();
-
-            if (filter.getPostRenderPasses() != null) {
-                for (Iterator<Filter.Pass> it1 = filter.getPostRenderPasses().iterator(); it1.hasNext();) {
-                    Filter.Pass pass = it1.next();
-                    pass.beforeRender();
-                    if (pass.requiresSceneAsTexture()) {
-                        pass.getPassMaterial().setTexture("m_Texture", tex);
+        for (int i = 0; i < filters.size(); i++) {
+            Filter filter = filters.get(i);
+            if (filter.enabled) {
+                if (filter.getPostRenderPasses() != null) {
+                    for (Iterator<Filter.Pass> it1 = filter.getPostRenderPasses().iterator(); it1.hasNext();) {
+                        Filter.Pass pass = it1.next();
+                        pass.beforeRender();
+                        if (pass.requiresSceneAsTexture()) {
+                            pass.getPassMaterial().setTexture("m_Texture", tex);
+                        }
+                        renderProcessing(r, pass.getRenderFrameBuffer(), pass.getPassMaterial());
                     }
-                    renderProcessing(r, pass.getRenderFrameBuffer(), pass.getPassMaterial());
                 }
-            }
 
-            Material mat = filter.getMaterial();
-            if (computeDepth && filter.isRequiresDepthTexture()) {
-                mat.setTexture("m_DepthTexture", depthTexture);
-            }
+                Material mat = filter.getMaterial();
 
-            mat.setTexture("m_Texture", tex);
-            FrameBuffer buff = outputBuffer;
-            if (it.hasNext()) {
-                buff = filter.getRenderFrameBuffer();
-                tex = filter.getRenderedTexture();
+                mat.setTexture("m_Texture", tex);
+                FrameBuffer buff = outputBuffer;
+                if (i != lastFilterIndex) {
+                    buff = filter.getRenderFrameBuffer();
+                    tex = filter.getRenderedTexture();
+                }
+                renderProcessing(r, buff, mat);
             }
-            renderProcessing(r, buff, mat);
         }
     }
 
@@ -181,13 +197,49 @@ public class FilterPostProcessor implements SceneProcessor, Savable {
     }
 
     public void preFrame(float tpf) {
-        if (filters.isEmpty()) {
+        if (filters.isEmpty() || lastFilterIndex == -1) {
             viewPort.setOutputFrameBuffer(outputBuffer);
+        } else {
+            viewPort.setOutputFrameBuffer(renderFrameBuffer);
         }
         for (Iterator<Filter> it = filters.iterator(); it.hasNext();) {
             Filter filter = it.next();
-            filter.preFrame(tpf);
+            if (filter.enabled) {
+                filter.preFrame(tpf);
+            }
         }
+    }
+
+    /**
+     * Enable or disable a filter
+     * @param filter the filter
+     * @param enabled true to enable
+     */
+    public void setFilterEnabled(Filter filter, boolean enabled) {
+        if (filters.contains(filter)) {
+            filter.enabled = enabled;
+            updateLastFilterIndex();
+        }
+    }
+
+    private void updateLastFilterIndex() {
+        lastFilterIndex = -1;
+        for (int i = filters.size() - 1; i >= 0 && lastFilterIndex == -1; i--) {
+            if (filters.get(i).enabled) {
+                lastFilterIndex = i;
+                return;
+            }
+        }
+
+    }
+
+    /**
+     * return tru if the filter is enabled
+     * @param filter
+     * @return
+     */
+    public boolean isFilterEnabled(Filter filter) {
+        return filter.enabled;
     }
 
     public void cleanup() {
@@ -204,11 +256,15 @@ public class FilterPostProcessor implements SceneProcessor, Savable {
             filter.cleanup(renderer);
         }
 
-        renderer.deleteImage(filterTexture.getImage());
+        if (filterTexture != null) {
+            renderer.deleteImage(filterTexture.getImage());
+        }
         if (depthTexture != null) {
             renderer.deleteImage(depthTexture.getImage());
         }
-        renderer.deleteFrameBuffer(renderFrameBuffer);
+        if (renderFrameBuffer != null) {
+            renderer.deleteFrameBuffer(renderFrameBuffer);
+        }
     }
 
     public void reshape(ViewPort vp, int w, int h) {
@@ -216,11 +272,7 @@ public class FilterPostProcessor implements SceneProcessor, Savable {
         width = Math.max(1, w);
         height = Math.max(1, h);
         vp.getCamera().resize(width, height, true);
-        for (Iterator<Filter> it = filters.iterator(); it.hasNext();) {
-            Filter filter = it.next();
-            filter.init(assetManager, renderManager, vp, width, height);
-            computeDepth = filter.isRequiresDepthTexture();
-        }
+
 
         if (renderFrameBufferMS != null) {
             renderer.deleteFrameBuffer(renderFrameBufferMS);
@@ -240,9 +292,10 @@ public class FilterPostProcessor implements SceneProcessor, Savable {
         renderFrameBuffer.setDepthBuffer(Format.Depth);
         filterTexture = new Texture2D(width, height, Format.RGBA8);
         renderFrameBuffer.setColorTexture(filterTexture);
-        if (computeDepth) {
-            depthTexture = new Texture2D(width, height, Format.Depth24);
-            renderFrameBuffer.setDepthTexture(depthTexture);
+
+        for (Iterator<Filter> it = filters.iterator(); it.hasNext();) {
+            Filter filter = it.next();
+            initFilter(filter, vp);
         }
 
         Collection<Caps> caps = renderer.getCaps();

@@ -139,7 +139,6 @@ public abstract class Filter implements Savable {
 
     public void init(AssetManager manager, RenderManager renderManager, ViewPort vp, int w, int h) {
         cleanup(renderManager.getRenderer());
-
         defaultPass = new Pass();
         defaultPass.init(w, h, getDefaultPassTextureFormat(), getDefaultPassDepthFormat());
         initFilter(manager, renderManager, vp, w, h);
