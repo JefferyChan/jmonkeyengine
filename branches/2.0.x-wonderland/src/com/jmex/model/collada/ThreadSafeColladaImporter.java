@@ -1394,7 +1394,24 @@ public class ThreadSafeColladaImporter {
                                 transx = transX;
                                 transy = transY;
                                 transz = transZ;
-                            } else {
+   // Morris Ford - Blender exporter  reports translate info in one clump - without the underscore but with -output
+                            } else if (animation.getsamplerAt(j).getinputAt(i)
+                                    .getsource().toString().contains(
+                                            "translate-output")) {
+                                float[] floatArray = (float[]) object;
+                                float[] transX = new float[floatArray.length / 3];
+                                float[] transY = new float[floatArray.length / 3];
+                                float[] transZ = new float[floatArray.length / 3];
+                                for(int k = 0; k < floatArray.length / 3; k++)
+                                    {
+                                    transX[k] = floatArray[0 + (3 * k)];
+                                    transY[k] = floatArray[1 + (3 * k)];
+                                    transZ[k] = floatArray[2 + (3 * k)];
+                                    }
+                                transx = transX;
+                                transy = transY;
+                                transz = transZ;
+                         } else {
                                 if (!squelch) {
                                     logger
                                             .warning("Not sure what this sampler is.");
