@@ -133,35 +133,39 @@ public class BoundingSphere extends BoundingVolume {
     }
 
     private void fixedComputeFromPoints(FloatBuffer points) {
-	int i;
-        Vector3f point = new Vector3f();
-	float dis,dis_sq,rad_sq,oldc_to_new_c;
+	// a port of the averagePoints() optimized to read directly from
+        // a FloatBuffer
         points.rewind();
 
         center.x = points.get();
         center.y = points.get();
         center.z = points.get();
-        radius = 0.0f;
 
-	for(i=1;i<points.limit()/3;i++) {
-            point.set(points.get(), points.get(), points.get());
-	    rad_sq = radius * radius;
-	    dis_sq =  (point.x - center.x)*(point.x - center.x) +
-		(point.y - center.y)*(point.y - center.y) +
-		(point.z - center.z)*(point.z - center.z);
+        int count = 0;
+        while (points.remaining() >= 3) {
+            center.addLocal(points.get(), points.get(), points.get());
+            count++;
+        }
 
-	    // change sphere so one side passes through the point and
-	    // other passes through the old sphere
-	    if( dis_sq > rad_sq) {
-		dis = (float)Math.sqrt( dis_sq);
-		radius = (radius + dis)*.5f;
-		oldc_to_new_c = dis - radius;
-                center.x = (radius*center.x + oldc_to_new_c*point.x)/dis;
-                center.y = (radius*center.y + oldc_to_new_c*point.y)/dis;
-                center.z = (radius*center.z + oldc_to_new_c*point.z)/dis;
-	    }
-	}
+        float quantity = 1.0f / count;
+        center.multLocal(quantity);
 
+        float maxRadiusSqr = 0;
+        Vector3f point = new Vector3f();
+        points.rewind();
+        while (points.remaining() >= 3) {
+            point.x = points.get();
+            point.y = points.get();
+            point.z = points.get();
+
+            Vector3f diff = point.subtract(center);
+            float radiusSqr = diff.lengthSquared();
+            if (radiusSqr > maxRadiusSqr) {
+                maxRadiusSqr = radiusSqr;
+            }
+        }
+
+        radius = (float) Math.sqrt(maxRadiusSqr) + radiusEpsilon - 1f;
     }
 
     /**
