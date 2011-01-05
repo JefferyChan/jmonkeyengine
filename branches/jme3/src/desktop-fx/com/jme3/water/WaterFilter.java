@@ -84,15 +84,15 @@ public class WaterFilter extends Filter {
     private Matrix4f textureProjMatrix;
     private float waterHeight = 0.0f;
     private float waterTransparency = 0.1f;
-    private float normalScale = 1.0f;
+    private float normalScale = 3.0f;
     private float refractionConstant = 0.5f;
-    private float maxAmplitude = 1.0f;
+    private float maxAmplitude = 1.5f;
     private ColorRGBA lightColor = ColorRGBA.White;
     private float shoreHardness = 0.1f;
     private float foamHardness = 1.0f;
     private float refractionStrength = 0.0f;
     private float waveScale = 0.005f;
-    private Vector3f foamExistence = new Vector3f(0.45f, 4.35f, 1.0f);
+    private Vector3f foamExistence = new Vector3f(0.45f, 4.35f, 1.5f);
     private Vector3f colorExtinction = new Vector3f(5.0f, 20.0f, 30.0f);
     private float sunScale = 3.0f;
     private float shininess = 0.7f;
@@ -100,9 +100,14 @@ public class WaterFilter extends Filter {
     private ColorRGBA deepWaterColor = new ColorRGBA(0.0039f, 0.00196f, 0.145f, 1.0f);
     private Vector2f windDirection = new Vector2f(0.0f, -1.0f);
     private int reflectionMapSize = 512;
+    private boolean useRipples = true;
+    private boolean useHQShoreline = true;
+    private boolean useSpecular = true;
+    private boolean useFoam = true;
+    private boolean useRefraction = true;
 
     /**
-     * Create a Screen Space Ambiant Occlusion Filter
+     * Create a Water Filter
      */
     public WaterFilter() {
         super("WaterFilter");
@@ -232,6 +237,11 @@ public class WaterFilter extends Filter {
         material.setColor("m_DeepWaterColor", deepWaterColor);
         material.setVector2("m_WindDirection", windDirection);
         material.setFloat("m_FoamHardness", foamHardness);
+        material.setBoolean("m_UseRipples", useRipples);
+        material.setBoolean("m_UseHQShoreline", useHQShoreline);
+        material.setBoolean("m_UseSpecular", useSpecular);
+        material.setBoolean("m_UseFoam", useFoam);
+        material.setBoolean("m_UseRefraction", useRefraction);
 
     }
 
@@ -690,6 +700,78 @@ public class WaterFilter extends Filter {
     public void cleanUpFilter(Renderer r) {
         if (reflectionPass != null) {
             reflectionPass.cleanup(r);
+        }
+    }
+
+    /**
+     * returns true if the water uses foam
+     * @return
+     */
+    public boolean isUseFoam() {
+        return useFoam;
+    }
+
+    /**
+     * set to true to use foam with water
+     * default true
+     * @param useFoam
+     */
+    public void setUseFoam(boolean useFoam) {
+        this.useFoam = useFoam;
+        if (material != null) {
+            material.setBoolean("m_UseFoam", useFoam);
+        }
+
+    }
+
+    /**
+     * 
+     * @return
+     */
+    public boolean isUseHQShoreline() {
+        return useHQShoreline;
+    }
+
+    public void setUseHQShoreline(boolean useHQShoreline) {
+        this.useHQShoreline = useHQShoreline;
+        if (material != null) {
+            material.setBoolean("m_UseHQShoreline", useHQShoreline);
+        }
+
+    }
+
+    public boolean isUseRefraction() {
+        return useRefraction;
+    }
+
+    public void setUseRefraction(boolean useRefraction) {
+        this.useRefraction = useRefraction;
+        if (material != null) {
+            material.setBoolean("m_UseRefraction", useRefraction);
+        }
+
+    }
+
+    public boolean isUseRipples() {
+        return useRipples;
+    }
+
+    public void setUseRipples(boolean useRipples) {
+        this.useRipples = useRipples;
+        if (material != null) {
+            material.setBoolean("m_UseRipples", useRipples);
+        }
+
+    }
+
+    public boolean isUseSpecular() {
+        return useSpecular;
+    }
+
+    public void setUseSpecular(boolean useSpecular) {
+        this.useSpecular = useSpecular;
+        if (material != null) {
+            material.setBoolean("m_UseSpecular", useSpecular);
         }
     }
 }

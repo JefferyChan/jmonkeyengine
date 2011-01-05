@@ -31,12 +31,23 @@ public class TestPostWater extends SimpleApplication {
     private WaterFilter water;
 
     public static void main(String[] args) {
-        TestPostWater app = new TestPostWater();
+        TestPostWater app = new TestPostWater();        
         app.start();
     }
 
     @Override
     public void simpleInitApp() {
+
+
+//        Material mat = assetManager.loadMaterial("Textures/Terrain/Rocky/Rocky.j3m");
+//        Spatial scene = assetManager.loadModel("Models/Terrain/Terrain.mesh.xml");
+//        TangentBinormalGenerator.generate(((Geometry)((Node)scene).getChild(0)).getMesh());
+//        scene.setMaterial(mat);
+//        scene.setShadowMode(ShadowMode.CastAndReceive);
+//        scene.setLocalScale(400);
+//        scene.setLocalTranslation(0, -10, -120);
+//        Node mainScene =new Node();
+//        mainScene.attachChild(scene);
 
         Node mainScene = (Node) assetManager.loadModel("/Scenes/Beach/Beach2.mesh.j3o");
         Geometry beach = (Geometry) mainScene.getChild("Beach2-geom-1");
@@ -74,7 +85,7 @@ public class TestPostWater extends SimpleApplication {
         sky.setLocalScale(350);
         mainScene.attachChild(sky);
         cam.setFrustumFar(4000);
-
+        //cam.setFrustumNear(100);
         AudioNode waves = new AudioNode(assetManager, "Sound/Environment/Ocean Waves.ogg", false);
         waves.setLooping(true);
         audioRenderer.playSource(waves);
@@ -82,6 +93,7 @@ public class TestPostWater extends SimpleApplication {
 
         fpp = new FilterPostProcessor(assetManager);
         water = new WaterFilter(rootNode, lightDir);
+ 
         water.setWaterHeight(initialWaterHeight);
         fpp.addFilter(water);
         viewPort.addProcessor(fpp);

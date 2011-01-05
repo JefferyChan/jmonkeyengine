@@ -6,8 +6,7 @@ MaterialDef SimpleWater {
         Texture2D m_ReflectionMap
         Texture2D m_HeightMap
         Texture2D m_Texture
-        Texture2D m_DepthTexture
-        Texture2D m_PositionBuffer
+        Texture2D m_DepthTexture        
         Vector3 m_CameraPosition
         Float m_Time
         Vector3 frustumCorner
@@ -31,6 +30,11 @@ MaterialDef SimpleWater {
         Color m_WaterColor
         Color m_DeepWaterColor
         Vector2 m_WindDirection
+        Boolean m_UseRipples
+        Boolean m_UseHQShoreline
+        Boolean m_UseSpecular
+        Boolean m_UseFoam
+        Boolean m_UseRefraction
     }
 
     Technique {
@@ -39,6 +43,13 @@ MaterialDef SimpleWater {
 
         WorldParameters {
             WorldViewProjectionMatrix
+        }
+        Defines {
+            ENABLE_RIPPLES : m_UseRipples
+            ENABLE_HQ_SHORELINE : m_UseHQShoreline
+            ENABLE_SPECULAR : m_UseSpecular
+            ENABLE_FOAM : m_UseFoam
+            ENABLE_REFRACTION : m_UseRefraction
         }
     }
 

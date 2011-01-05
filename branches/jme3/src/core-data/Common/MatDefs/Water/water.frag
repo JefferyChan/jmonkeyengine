@@ -6,7 +6,6 @@
 uniform sampler2D m_HeightMap;
 uniform sampler2D m_Texture;
 uniform sampler2D m_DepthTexture;
-uniform sampler2D m_PositionBuffer;
 uniform sampler2D m_NormalMap;
 uniform sampler2D m_FoamMap;
 uniform sampler2D m_ReflectionMap;
@@ -56,11 +55,6 @@ mat3 MatrixInverse(in mat3 inMatrix){
         cross(T[0], T[1])) / det;
 }
 
-#define ENABLE_RIPPLES
-#define ENABLE_HQ_SHORELINE
-#define ENABLE_SPECULAR
-#define ENABLE_FOAM
-#define ENABLE_REFRACTION
 
 mat3 computeTangentFrame(in vec3 N, in vec3 P, in vec2 UV) {
     vec3 dp1 = dFdx(P);
