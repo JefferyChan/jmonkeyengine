@@ -37,7 +37,6 @@ import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
-import com.jme3.math.FastMath;
 import com.jme3.math.Matrix4f;
 import com.jme3.math.Plane;
 import com.jme3.math.Ray;
@@ -62,11 +61,9 @@ import java.io.IOException;
  */
 public class WaterFilter extends Filter {
 
-    // private Pass positionPass;
     private Pass reflectionPass;
     protected Spatial reflectionScene;
     protected ViewPort reflectionView;
-//    private Material positionMaterial;
     private Texture2D normalTexture;
     private Texture2D foamTexture;
     private Texture2D heightTexture;
@@ -105,6 +102,8 @@ public class WaterFilter extends Filter {
     private boolean useSpecular = true;
     private boolean useFoam = true;
     private boolean useRefraction = true;
+    private float time = 0;
+    private float savedTpf = 0;
 
     /**
      * Create a Water Filter
@@ -128,12 +127,12 @@ public class WaterFilter extends Filter {
     protected Format getDefaultPassDepthFormat() {
         return Format.Depth;
     }
-    float time = 0;
 
     @Override
     public void preFrame(float tpf) {
         time = time + (tpf * speed);
         material.setFloat("m_Time", time);
+        savedTpf = tpf;
     }
 
     @Override
@@ -144,21 +143,13 @@ public class WaterFilter extends Filter {
         material.setVector3("m_CameraPosition", sceneCam.getLocation());
         material.setMatrix4("m_ViewProjectionMatrixInverse", sceneCam.getViewProjectionMatrix().invert());
 
-//        Renderer r = renderManager.getRenderer();
-//        r.setFrameBuffer(positionPass.getRenderFrameBuffer());
-//        renderManager.getRenderer().clearBuffers(true, true, true);
-//        renderManager.setForcedMaterial(positionMaterial);
-//        renderManager.renderViewPortQueues(viewPort, false);
-//        renderManager.setForcedMaterial(null);
-//        material.setTexture("m_PositionBuffer", positionPass.getRenderedTexture());
-
         material.setFloat("m_WaterHeight", waterHeight);
 
         //update reflection cam
         ray.setOrigin(sceneCam.getLocation());
         ray.setDirection(sceneCam.getDirection());
         plane = new Plane(Vector3f.UNIT_Y, new Vector3f(0, waterHeight, 0).dot(Vector3f.UNIT_Y));
-
+        reflectionProcessor.setReflectionClipPlane(plane);
         boolean inv = false;
         if (!ray.intersectsWherePlane(plane, targetLocation)) {
             ray.setDirection(ray.getDirection().negateLocal());
@@ -177,9 +168,10 @@ public class WaterFilter extends Filter {
         if (inv) {
             reflectionCam.setAxes(reflectionCam.getLeft().negateLocal(), reflectionCam.getUp(), reflectionCam.getDirection().negateLocal());
         }
-        reflectionProcessor.setReflectionClipPlane(plane);
 
-        //renderManager.getRenderer().setFrameBuffer(viewPort.getOutputFrameBuffer());
+        renderManager.renderViewPort(reflectionView, savedTpf);
+        renderManager.getRenderer().setFrameBuffer(viewPort.getOutputFrameBuffer());
+        renderManager.setCamera(sceneCam, false);
     }
 
     @Override
@@ -193,18 +185,13 @@ public class WaterFilter extends Filter {
         reflectionPass = new Pass();
         reflectionPass.init(reflectionMapSize, reflectionMapSize, Format.RGB8, Format.Depth);
         reflectionCam = new Camera(reflectionMapSize, reflectionMapSize);
-
-        // create a pre-view. a view that is rendered before the main view
-        reflectionView = renderManager.createPreView("Reflection View", reflectionCam);
+        reflectionView = new ViewPort("reflectionView", reflectionCam);
         reflectionView.setClearEnabled(true);
-        reflectionView.setBackgroundColor(ColorRGBA.Black);
-
-        //set viewport to render to offscreen framebuffer
+        reflectionView.attachScene(reflectionScene);
+        reflectionView.setOutputFrameBuffer(reflectionPass.getRenderFrameBuffer());
         plane = new Plane(Vector3f.UNIT_Y, new Vector3f(0, waterHeight, 0).dot(Vector3f.UNIT_Y));
         reflectionProcessor = new ReflectionProcessor(reflectionCam, reflectionPass.getRenderFrameBuffer(), plane);
         reflectionView.addProcessor(reflectionProcessor);
-        // attach the scene to the viewport to be rendered
-        reflectionView.attachScene(reflectionScene);
 
         normalTexture = (Texture2D) manager.loadTexture("Common/MatDefs/Water/Textures/gradient_map.jpg");
         foamTexture = (Texture2D) manager.loadTexture("Common/MatDefs/Water/Textures/foam.png");
