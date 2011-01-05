@@ -138,7 +138,7 @@ public abstract class Filter implements Savable {
     }
 
     public void init(AssetManager manager, RenderManager renderManager, ViewPort vp, int w, int h) {
-        cleanup(renderManager.getRenderer());
+      //  cleanup(renderManager.getRenderer());
         defaultPass = new Pass();
         defaultPass.init(w, h, getDefaultPassTextureFormat(), getDefaultPassDepthFormat());
         initFilter(manager, renderManager, vp, w, h);
@@ -148,7 +148,7 @@ public abstract class Filter implements Savable {
         if (defaultPass != null) {
             defaultPass.cleanup(r);
         }
-        if(postRenderPasses!=null){
+        if (postRenderPasses != null) {
             for (Iterator<Pass> it = postRenderPasses.iterator(); it.hasNext();) {
                 Pass pass = it.next();
                 pass.cleanup(r);

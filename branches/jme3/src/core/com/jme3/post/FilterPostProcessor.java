@@ -119,11 +119,11 @@ public class FilterPostProcessor implements SceneProcessor, Savable {
     private void initFilter(Filter filter, ViewPort vp) {
         filter.init(assetManager, renderManager, vp, width, height);
         if (filter.isRequiresDepthTexture()) {
-            computeDepth = true;
-            if (depthTexture == null) {
+            if (!computeDepth) {
                 depthTexture = new Texture2D(width, height, Format.Depth24);
                 renderFrameBuffer.setDepthTexture(depthTexture);
             }
+            computeDepth = true;
             filter.getMaterial().setTexture("m_DepthTexture", depthTexture);
         }
     }
@@ -248,23 +248,23 @@ public class FilterPostProcessor implements SceneProcessor, Savable {
             viewPort = null;
         }
 
-        if (renderFrameBufferMS != null) {
-            renderer.deleteFrameBuffer(renderFrameBufferMS);
-        }
-        for (Iterator<Filter> it = filters.iterator(); it.hasNext();) {
-            Filter filter = it.next();
-            filter.cleanup(renderer);
-        }
+//        if (renderFrameBufferMS != null) {
+//            renderer.deleteFrameBuffer(renderFrameBufferMS);
+//        }
+//        for (Iterator<Filter> it = filters.iterator(); it.hasNext();) {
+//            Filter filter = it.next();
+//            filter.cleanup(renderer);
+//        }
 
-        if (filterTexture != null) {
-            renderer.deleteImage(filterTexture.getImage());
-        }
-        if (depthTexture != null) {
-            renderer.deleteImage(depthTexture.getImage());
-        }
-        if (renderFrameBuffer != null) {
-            renderer.deleteFrameBuffer(renderFrameBuffer);
-        }
+//        if (filterTexture != null) {
+//            renderer.deleteImage(filterTexture.getImage());
+//        }
+//        if (depthTexture != null) {
+//            renderer.deleteImage(depthTexture.getImage());
+//        }
+//        if (renderFrameBuffer != null) {
+//            renderer.deleteFrameBuffer(renderFrameBuffer);
+//        }
     }
 
     public void reshape(ViewPort vp, int w, int h) {
@@ -272,21 +272,24 @@ public class FilterPostProcessor implements SceneProcessor, Savable {
         width = Math.max(1, w);
         height = Math.max(1, h);
         vp.getCamera().resize(width, height, true);
+        computeDepth=false;
 
 
-        if (renderFrameBufferMS != null) {
-            renderer.deleteFrameBuffer(renderFrameBufferMS);
-        }
-        if (renderFrameBuffer != null) {
-            renderer.deleteImage(filterTexture.getImage());
-            if (depthTexture != null) {
-                renderer.deleteImage(depthTexture.getImage());
-            }
-            renderer.deleteFrameBuffer(renderFrameBuffer);
-        } else {
+//        if (renderFrameBufferMS != null) {
+//            renderer.deleteFrameBuffer(renderFrameBufferMS);
+//        }
+//        if (renderFrameBuffer != null) {
+//            renderer.deleteImage(filterTexture.getImage());
+//            if (depthTexture != null) {
+//                renderer.deleteImage(depthTexture.getImage());
+//            }
+//            renderer.deleteFrameBuffer(renderFrameBuffer);
+//        } else {
+//            outputBuffer = viewPort.getOutputFrameBuffer();
+//        }
+        if (renderFrameBuffer == null) {
             outputBuffer = viewPort.getOutputFrameBuffer();
         }
-
 
         renderFrameBuffer = new FrameBuffer(width, height, 0);
         renderFrameBuffer.setDepthBuffer(Format.Depth);
@@ -308,7 +311,6 @@ public class FilterPostProcessor implements SceneProcessor, Savable {
         } else {
             viewPort.setOutputFrameBuffer(renderFrameBuffer);
         }
-        // viewPort.setOutputFrameBuffer(renderFrameBuffer);
     }
 
     /**
