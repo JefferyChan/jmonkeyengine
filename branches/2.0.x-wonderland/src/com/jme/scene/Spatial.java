@@ -1642,6 +1642,9 @@ public abstract class Spatial implements Serializable, Savable {
     @SuppressWarnings("unchecked")
 
     protected void updateRenderState(Stack[] parentStateStack) {
+        if (isLive())
+            DisplaySystem.checkForRenderThread();
+
         boolean initiator = (parentStateStack == null);
 
         // first we need to get all the states from parent to us.
@@ -1699,6 +1702,9 @@ public abstract class Spatial implements Serializable, Savable {
      * @return the old render state.
      */
     public RenderState setRenderState(RenderState rs) {
+        if (isLive())
+            DisplaySystem.checkForRenderThread();
+
         if (rs == null) {
             return null;
         }
@@ -1748,6 +1754,9 @@ public abstract class Spatial implements Serializable, Savable {
      * @deprecated As of 2.0, use {@link #clearRenderState(com.jme.scene.state.RenderState.StateType)} instead.
      */
     public void clearRenderState(int renderStateType) {
+        if (isLive())
+            DisplaySystem.checkForRenderThread();
+
         if (renderStateList != null) {
             renderStateList[renderStateType] = null;
         }
@@ -1761,6 +1770,9 @@ public abstract class Spatial implements Serializable, Savable {
      * @see com.jme.scene.state.RenderState#getType()
      */
     public void clearRenderState(RenderState.StateType type) {
+        if (isLive())
+            DisplaySystem.checkForRenderThread();
+
         if (renderStateList != null) {
             renderStateList[type.ordinal()] = null;
         }
