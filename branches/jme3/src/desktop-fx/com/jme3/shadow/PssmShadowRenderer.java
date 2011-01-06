@@ -118,7 +118,7 @@ public class PssmShadowRenderer implements SceneProcessor {
         splits = new float[nbSplits + 1];
 
         //DO NOT COMMENT THIS (it prevent the OSX incomplete read buffer crash)
-        dummyTex= new Texture2D(size, size, Format.RGB8);
+        dummyTex= new Texture2D(size, size, Format.RGBA8);
 
         preshadowMat = new Material(manager, "Common/MatDefs/Shadow/PreShadow.j3md");
         postshadowMat = new Material(manager, "Common/MatDefs/Shadow/PostShadowPSSM.j3md");

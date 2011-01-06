@@ -67,7 +67,7 @@ public class TestNiftyToMesh extends SimpleApplication{
 
         FrameBuffer fb = new FrameBuffer(1024, 768, 0);
         fb.setDepthBuffer(Format.Depth);
-        Texture2D tex = new Texture2D(1024, 768, Format.RGB8);
+        Texture2D tex = new Texture2D(1024, 768, Format.RGBA8);
         fb.setColorTexture(tex);
         niftyView.setClearEnabled(true);
         niftyView.setOutputFrameBuffer(fb);

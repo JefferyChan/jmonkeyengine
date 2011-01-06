@@ -76,6 +76,7 @@ public abstract class Filter implements Savable {
             renderFrameBuffer = new FrameBuffer(width, height, 0);
             renderedTexture = new Texture2D(width, height, textureFormat);
             renderFrameBuffer.setDepthBuffer(depthBufferFormat);
+            renderFrameBuffer.setColorBuffer(textureFormat);
             renderFrameBuffer.setColorTexture(renderedTexture);
         }
 
@@ -126,7 +127,7 @@ public abstract class Filter implements Savable {
     }
 
     protected Format getDefaultPassTextureFormat() {
-        return Format.RGB8;
+        return Format.RGBA8;
     }
 
     protected Format getDefaultPassDepthFormat() {

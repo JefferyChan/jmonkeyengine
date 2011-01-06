@@ -292,6 +292,7 @@ public class FilterPostProcessor implements SceneProcessor, Savable {
         }
 
         renderFrameBuffer = new FrameBuffer(width, height, 0);
+        renderFrameBuffer.setColorBuffer(Format.RGBA8);
         renderFrameBuffer.setDepthBuffer(Format.Depth);
         filterTexture = new Texture2D(width, height, Format.RGBA8);
         renderFrameBuffer.setColorTexture(filterTexture);

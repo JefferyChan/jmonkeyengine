@@ -69,7 +69,7 @@ public class TestFBOPassthrough extends SimpleApplication {
         //setup framebuffer
         fb = new FrameBuffer(w, h, 0);
 
-        Texture2D fbTex = new Texture2D(w, h, Format.RGB8);
+        Texture2D fbTex = new Texture2D(w, h, Format.RGBA8);
         fb.setDepthBuffer(Format.Depth);
         fb.setColorTexture(fbTex);
 

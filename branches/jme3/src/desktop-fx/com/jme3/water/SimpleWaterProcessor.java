@@ -219,8 +219,8 @@ public class SimpleWaterProcessor implements SceneProcessor {
     }
 
     protected void createTextures() {
-        reflectionTexture = new Texture2D(renderWidth, renderHeight, Format.RGB8);
-        refractionTexture = new Texture2D(renderWidth, renderHeight, Format.RGB8);
+        reflectionTexture = new Texture2D(renderWidth, renderHeight, Format.RGBA8);
+        refractionTexture = new Texture2D(renderWidth, renderHeight, Format.RGBA8);
         depthTexture = new Texture2D(renderWidth, renderHeight, Format.Depth);
     }
 

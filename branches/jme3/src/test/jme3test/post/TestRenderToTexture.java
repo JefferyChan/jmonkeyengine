@@ -77,7 +77,7 @@ public class TestRenderToTexture extends SimpleApplication {
         offCamera.lookAt(new Vector3f(0f, 0f, 0f), Vector3f.UNIT_Y);
 
         //setup framebuffer's texture
-        Texture2D offTex = new Texture2D(512, 512, Format.RGB8);
+        Texture2D offTex = new Texture2D(512, 512, Format.RGBA8);
         offTex.setMinFilter(Texture.MinFilter.Trilinear);
 
         //setup framebuffer to use texture
