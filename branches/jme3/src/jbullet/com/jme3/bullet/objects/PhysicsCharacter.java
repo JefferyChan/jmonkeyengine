@@ -49,12 +49,12 @@ import java.io.IOException;
  */
 public class PhysicsCharacter extends PhysicsGhostObject {
 
-    private KinematicCharacterController character;
-    private float stepHeight;
-    private Vector3f walkDirection = new Vector3f();
-    private float fallSpeed = 55.0f;
-    private float jumpSpeed = 10.0f;
-    private int upAxis = 1;
+    protected KinematicCharacterController character;
+    protected float stepHeight;
+    protected Vector3f walkDirection = new Vector3f();
+    protected float fallSpeed = 55.0f;
+    protected float jumpSpeed = 10.0f;
+    protected int upAxis = 1;
 
     private javax.vecmath.Vector3f tempVec=new javax.vecmath.Vector3f();
 

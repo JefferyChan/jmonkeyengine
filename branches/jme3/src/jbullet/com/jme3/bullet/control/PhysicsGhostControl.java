@@ -37,7 +37,16 @@ public class PhysicsGhostControl extends PhysicsGhostObject implements PhysicsCo
     }
 
     public Control cloneForSpatial(Spatial spatial) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        PhysicsGhostControl control = new PhysicsGhostControl(collisionShape);
+        control.setCcdMotionThreshold(getCcdMotionThreshold());
+        control.setCcdSweptSphereRadius(getCcdSweptSphereRadius());
+        control.setCollideWithGroups(getCollideWithGroups());
+        control.setCollisionGroup(getCollisionGroup());
+        control.setPhysicsLocation(getPhysicsLocation());
+        control.setPhysicsRotation(getPhysicsRotation().toRotationMatrix());
+
+        control.setSpatial(spatial);
+        return control;
     }
 
     public void setSpatial(Spatial spatial) {

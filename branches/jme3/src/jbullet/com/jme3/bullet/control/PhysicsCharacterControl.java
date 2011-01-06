@@ -37,7 +37,21 @@ public class PhysicsCharacterControl extends PhysicsCharacter implements Physics
     }
 
     public Control cloneForSpatial(Spatial spatial) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        PhysicsCharacterControl control = new PhysicsCharacterControl(collisionShape, stepHeight);
+        control.setCcdMotionThreshold(getCcdMotionThreshold());
+        control.setCcdSweptSphereRadius(getCcdSweptSphereRadius());
+        control.setCollideWithGroups(getCollideWithGroups());
+        control.setCollisionGroup(getCollisionGroup());
+        control.setFallSpeed(getFallSpeed());
+        control.setGravity(getGravity());
+        control.setJumpSpeed(getJumpSpeed());
+        control.setMaxSlope(getMaxSlope());
+        control.setPhysicsLocation(getPhysicsLocation());
+        control.setPhysicsRotation(getPhysicsRotation().toRotationMatrix());
+        control.setUpAxis(getUpAxis());
+
+        control.setSpatial(spatial);
+        return control;
     }
 
     public void setSpatial(Spatial spatial) {

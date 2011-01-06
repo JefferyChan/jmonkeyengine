@@ -116,10 +116,10 @@ public class PhysicsRagdollControl implements PhysicsControl {
             }
 
         }
-        BoneAnimation myAnimation=new BoneAnimation("boneAnimation",1000000);
-        myAnimation.setTracks(new BoneTrack[0]);
-        animControl.addAnim(myAnimation);
-        animControl.createChannel().setAnim("boneAnimation");
+//        BoneAnimation myAnimation = new BoneAnimation("boneAnimation", 1000000);
+//        myAnimation.setTracks(new BoneTrack[0]);
+//        animControl.addAnim(myAnimation);
+//        animControl.createChannel().setAnim("boneAnimation");
 
     }
 
@@ -138,7 +138,8 @@ public class PhysicsRagdollControl implements PhysicsControl {
             float height = parentPos.distance(childPos);
 
             // TODO: joints act funny when bone is too thin??
-            CapsuleCollisionShape shape = new CapsuleCollisionShape(height>2f?0.4f:height*.2f, height * .5f, 2);
+            float radius = height > 2f ? 0.4f : height * .2f;
+            CapsuleCollisionShape shape = new CapsuleCollisionShape(radius, height - (radius ), 2);
 
             PhysicsRigidBody shapeNode = new PhysicsRigidBody(shape, 10.0f / (float) reccount);
             shapeNode.setPhysicsLocation(jointCenter);

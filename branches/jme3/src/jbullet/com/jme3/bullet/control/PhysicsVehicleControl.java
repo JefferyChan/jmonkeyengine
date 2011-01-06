@@ -45,7 +45,26 @@ public class PhysicsVehicleControl extends PhysicsVehicle implements PhysicsCont
     }
 
     public Control cloneForSpatial(Spatial spatial) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        PhysicsVehicleControl control = new PhysicsVehicleControl(collisionShape, mass);
+        control.setAngularSleepingThreshold(getAngularSleepingThreshold());
+        control.setAngularVelocity(getAngularVelocity());
+        control.setCcdMotionThreshold(getCcdMotionThreshold());
+        control.setCcdSweptSphereRadius(getCcdSweptSphereRadius());
+        control.setCollideWithGroups(getCollideWithGroups());
+        control.setCollisionGroup(getCollisionGroup());
+        control.setDamping(getLinearDamping(), getAngularDamping());
+        control.setFriction(getFriction());
+        control.setGravity(getGravity());
+        control.setKinematic(isKinematic());
+        control.setLinearSleepingThreshold(getLinearSleepingThreshold());
+        control.setLinearVelocity(getLinearVelocity());
+        control.setPhysicsLocation(getPhysicsLocation(null));
+        control.setPhysicsRotation(getPhysicsRotation(null));
+        control.setRestitution(getRestitution());
+        //TODO!
+
+        control.setSpatial(spatial);
+        return control;
     }
 
     public void setSpatial(Spatial spatial) {
