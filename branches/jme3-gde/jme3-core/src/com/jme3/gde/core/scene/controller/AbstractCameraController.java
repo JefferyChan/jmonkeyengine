@@ -281,4 +281,11 @@ public abstract class AbstractCameraController extends AbstractAppState implemen
 
     public void cleanup() {
     }
+
+    public void beginInput() {
+    }
+
+    public void endInput() {
+    }
+
 }
