@@ -164,6 +164,7 @@ public class PhysicsRigidBody extends PhysicsCollisionObject {
         rBody.getCenterOfMassTransform(tempTrans);
         Converter.convert(rotation, tempTrans.basis);
         rBody.setCenterOfMassTransform(tempTrans);
+        motionState.setWorldTransform(tempTrans);
     }
 
     /**
