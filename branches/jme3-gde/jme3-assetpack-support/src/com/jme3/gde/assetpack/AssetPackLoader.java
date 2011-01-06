@@ -17,6 +17,9 @@ import com.jme3.material.MaterialList;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.plugins.ogre.OgreMeshKey;
+import com.jme3.scene.plugins.ogre.matext.MaterialExtension;
+import com.jme3.scene.plugins.ogre.matext.MaterialExtensionSet;
+import com.jme3.scene.plugins.ogre.matext.OgreMaterialKey;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
@@ -124,6 +127,33 @@ public class AssetPackLoader {
             materialName = null;
         }
 
+        //PREPARE MATEXT
+        MaterialExtensionSet matExts = new MaterialExtensionSet();
+        /**
+         * /base/simple
+         * /base/normalmap
+         */
+        MaterialExtension baseLightExt = new MaterialExtension("/base/normalmap/specular",
+                "Common/MatDefs/Light/Lighting.j3md");
+        baseLightExt.setTextureMapping("DiffuseMap", "m_DiffuseMap");
+        baseLightExt.setTextureMapping("NormalHeightMap", "m_NormalMap");
+        baseLightExt.setTextureMapping("SpecularMap", "m_SpecularMap");
+        matExts.addMaterialExtension(baseLightExt);
+        
+        MaterialExtension baseLightExt2 = new MaterialExtension("/base/normalmap",
+                "Common/MatDefs/Light/Lighting.j3md");
+        baseLightExt2.setTextureMapping("DiffuseMap", "m_DiffuseMap");
+        baseLightExt2.setTextureMapping("NormalHeightMap", "m_NormalMap");
+        baseLightExt2.setTextureMapping("SpecularMap", "m_SpecularMap");
+        matExts.addMaterialExtension(baseLightExt2);
+
+        MaterialExtension baseLightExt3 = new MaterialExtension("/base/simple",
+                "Common/MatDefs/Light/Lighting.j3md");
+        baseLightExt3.setTextureMapping("DiffuseMap", "m_DiffuseMap");
+        baseLightExt3.setTextureMapping("NormalHeightMap", "m_NormalMap");
+        baseLightExt3.setTextureMapping("SpecularMap", "m_SpecularMap");
+        matExts.addMaterialExtension(baseLightExt3);
+
         //TODO: mesh.xml!!
         if (hasExtension(name, "xml") || hasExtension(name, "scene")) {
             for (int i = 0; i < fileNodeList.getLength(); i++) {
@@ -136,11 +166,15 @@ public class AssetPackLoader {
                     } else if (hasExtension(path, "material")) {
                         if (matList == null) {
                             Logger.getLogger(AssetPackLoader.class.getName()).log(Level.INFO, "Load Ogre Material");
-                            matList = (MaterialList) pm.getManager().loadAsset(path);
+                            OgreMaterialKey matKey = new OgreMaterialKey(path);
+                            matKey.setMaterialExtensionSet(matExts);
+                            matList = pm.getManager().loadAsset(matKey);
                             key = new OgreMeshKey(name, matList);
                         } else {
                             Logger.getLogger(AssetPackLoader.class.getName()).log(Level.INFO, "Add Ogre Material");
-                            MaterialList newMatList = (MaterialList) pm.getManager().loadAsset(path);
+                            OgreMaterialKey matKey = new OgreMaterialKey(path);
+                            matKey.setMaterialExtensionSet(matExts);
+                            MaterialList newMatList = pm.getManager().loadAsset(matKey);
                             matList.putAll(newMatList);
                         }
                     }

@@ -83,6 +83,7 @@
                 <package>com.jme3.scene.mesh</package>
                 <package>com.jme3.scene.plugins</package>
                 <package>com.jme3.scene.plugins.ogre</package>
+                <package>com.jme3.scene.plugins.ogre.matext</package>
                 <package>com.jme3.scene.shape</package>
                 <package>com.jme3.shader</package>
                 <package>com.jme3.shader.plugins</package>
