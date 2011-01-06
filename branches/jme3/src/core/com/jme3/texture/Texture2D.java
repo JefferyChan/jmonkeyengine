@@ -61,6 +61,16 @@ public class Texture2D extends Texture {
     public Texture2D(Image img){
         super();
         setImage(img);
+        switch (img.getFormat()){
+            case Depth:
+            case Depth16:
+            case Depth24:
+            case Depth32:
+            case Depth32F:
+                setMagFilter(MagFilter.Nearest);
+                setMinFilter(MinFilter.NearestNoMipMaps);
+                break;
+        }
     }
 
     /**
