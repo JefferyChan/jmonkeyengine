@@ -46,6 +46,7 @@ import com.jme3.light.PointLight;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.control.Control;
 import com.jme3.ui.Picture;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -116,6 +117,10 @@ public class SceneExplorerChildren extends Children.Keys<Object> {
                         if (light != null) {
                             keys.add(new LightSpatialPair(light, spatial));
                         }
+                    }
+                    for (int i = 0; i < spatial.getNumControls(); i++) {
+                        Control control = spatial.getControl(i);
+                        keys.add(control);
                     }
                     return keys;
                 }
