@@ -1498,6 +1498,8 @@ public class LwjglRenderer implements Renderer {
         if (context.boundTextures[unit] != img) {
             glBindTexture(target, texId);
             context.boundTextures[unit] = img;
+
+            statistics.onTextureUse(img, true);
         }
 
         if (!img.hasMipmaps() && mips) {
@@ -1556,13 +1558,13 @@ public class LwjglRenderer implements Renderer {
         Image[] textures = context.boundTextures;
 
         int type = convertTextureType(tex.getType());
-        if (!context.textureIndexList.moveToNew(unit)) {
+//        if (!context.textureIndexList.moveToNew(unit)) {
 //             if (context.boundTextureUnit != unit){
 //                glActiveTexture(GL_TEXTURE0 + unit);
 //                context.boundTextureUnit = unit;
 //             }
 //             glEnable(type);
-        }
+//        }
 
         if (context.boundTextureUnit != unit) {
             glActiveTexture(GL_TEXTURE0 + unit);
@@ -1572,27 +1574,27 @@ public class LwjglRenderer implements Renderer {
             glBindTexture(type, texId);
             textures[unit] = image;
 
-            statistics.onTextureUse(tex, true);
+            statistics.onTextureUse(image, true);
         } else {
-            statistics.onTextureUse(tex, false);
+            statistics.onTextureUse(image, false);
         }
 
         setupTextureParams(tex);
     }
 
     public void clearTextureUnits() {
-        IDList textureList = context.textureIndexList;
-        Image[] textures = context.boundTextures;
-        for (int i = 0; i < textureList.oldLen; i++) {
-            int idx = textureList.oldList[i];
+//        IDList textureList = context.textureIndexList;
+//        Image[] textures = context.boundTextures;
+//        for (int i = 0; i < textureList.oldLen; i++) {
+//            int idx = textureList.oldList[i];
 //            if (context.boundTextureUnit != idx){
 //                glActiveTexture(GL_TEXTURE0 + idx);
 //                context.boundTextureUnit = idx;
 //            }
 //            glDisable(convertTextureType(textures[idx].getType()));
-            textures[idx] = null;
-        }
-        context.textureIndexList.copyNewToOld();
+//            textures[idx] = null;
+//        }
+//        context.textureIndexList.copyNewToOld();
     }
 
     public void deleteImage(Image image) {

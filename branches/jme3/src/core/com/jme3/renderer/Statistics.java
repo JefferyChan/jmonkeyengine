@@ -36,7 +36,6 @@ import com.jme3.scene.Mesh;
 import com.jme3.shader.Shader;
 import com.jme3.texture.FrameBuffer;
 import com.jme3.texture.Image;
-import com.jme3.texture.Texture;
 import java.util.HashSet;
 
 public class Statistics {
@@ -117,9 +116,7 @@ public class Statistics {
         numUniformsSet ++;
     }
 
-    public void onTextureUse(Texture texture, boolean wasSwitched){
-        Image image = texture.getImage();
-
+    public void onTextureUse(Image image, boolean wasSwitched){
         assert image.id >= 1;
 
         if (!texturesUsed.contains(image.id))
