@@ -797,17 +797,24 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
         transparent = ic.readBoolean("is_transparent", false);
 
         HashMap<String, MatParam> params = (HashMap<String, MatParam>) ic.readStringSavableMap("parameters", null);
-        paramValues.putAll(params);
-//        paramValues = (HashMap<String, MatParam>)
+//        paramValues.putAll(params);
+        paramValues = new ListMap<String, MatParam>();
 
         // load the textures and update nextTexUnit
-        for (MatParam param : paramValues.values()){
+        for (Map.Entry<String, MatParam> entry : params.entrySet()){
+            MatParam param = entry.getValue();
             if (param instanceof MatParamTexture){
                 MatParamTexture texVal = (MatParamTexture) param;
                 if (nextTexUnit < texVal.getUnit()+1){
                     nextTexUnit = texVal.getUnit()+1;
                 }
+
+                // the texture failed to load for this param
+                // do not add to param values
+                if (texVal.texture == null || texVal.texture.getImage() == null)
+                    continue;
             }
+            paramValues.put(entry.getKey(), entry.getValue());
         }
     }
 
