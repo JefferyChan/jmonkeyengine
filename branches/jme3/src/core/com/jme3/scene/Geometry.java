@@ -194,6 +194,17 @@ public class Geometry extends Spatial {
     protected void updateWorldTransforms(){
         super.updateWorldTransforms();
 
+        computeWorldMatrix();
+
+        // geometry requires lights to be sorted
+        worldLights.sort(true);
+    }
+
+    private void computeWorldMatrix(){
+        // Force a local update of the geometry's transform
+        checkDoTransformUpdate();
+
+        // Compute the cached world matrix
         cachedWorldMat.loadIdentity();
         cachedWorldMat.setRotationQuaternion(worldTransform.getRotation());
         cachedWorldMat.setTranslation(worldTransform.getTranslation());
@@ -204,9 +215,6 @@ public class Geometry extends Spatial {
         scaleMat.scale(worldTransform.getScale());
         cachedWorldMat.multLocal(scaleMat);
         assert TempVars.get().unlock();
-
-        // geometry requires lights to be sorted
-        worldLights.sort(true);
     }
 
     public Matrix4f getWorldMatrix(){
@@ -221,9 +229,12 @@ public class Geometry extends Spatial {
     }
 
     public int collideWith(Collidable other, CollisionResults results){
-        if (refreshFlags != 0)
-            throw new IllegalStateException("Scene graph must be updated" +
-                                            " before checking collision");
+        // Force bound to update
+        checkDoBoundUpdate();
+        // Update transform, and compute cached world matrix
+        computeWorldMatrix();
+        
+        assert (refreshFlags & (RF_BOUND | RF_TRANSFORM)) == 0;
 
         if (mesh != null){
             // NOTE: BIHTree in mesh already checks collision with the
