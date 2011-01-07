@@ -45,6 +45,6 @@ public interface SceneExplorerNode {
 
     public Class<?> getExplorerObjectClass();
 
-    public abstract Node[] createNodes(Object key, DataObject key2, boolean readOnly);
+    public abstract Node[] createNodes(Object key, DataObject dataObject, boolean readOnly);
 
 }

@@ -31,10 +31,13 @@
  */
 package com.jme3.gde.core.sceneexplorer.nodes;
 
-import com.jme3.bullet.nodes.PhysicsNode;
+import com.jme3.bullet.collision.shapes.CollisionShape;
+import com.jme3.bullet.control.PhysicsRigidBodyControl;
+import com.jme3.math.Matrix3f;
 import com.jme3.math.Vector3f;
 import java.awt.Image;
 import org.openide.loaders.DataObject;
+import org.openide.nodes.Children;
 import org.openide.nodes.Sheet;
 import org.openide.util.ImageUtilities;
 
@@ -43,19 +46,20 @@ import org.openide.util.ImageUtilities;
  * @author normenhansen
  */
 @org.openide.util.lookup.ServiceProvider(service=SceneExplorerNode.class)
-public class JmePhysicsNode extends JmePhysicsBaseNode {
+public class JmePhysicsRigidBodyControl extends AbstractSceneExplorerNode {
 
     private static Image smallImage =
             ImageUtilities.loadImage("com/jme3/gde/core/sceneexplorer/nodes/icons/physicsnode.gif");
-    private PhysicsNode geom;
+    private PhysicsRigidBodyControl geom;
 
-    public JmePhysicsNode() {
+    public JmePhysicsRigidBodyControl() {
     }
 
-    public JmePhysicsNode(PhysicsNode spatial, SceneExplorerChildren children) {
-        super(spatial, children);
+    public JmePhysicsRigidBodyControl(PhysicsRigidBodyControl spatial) {
+        super(Children.LEAF);
         getLookupContents().add(spatial);
         this.geom = spatial;
+        setName("PhysicsControl");
     }
 
     @Override
@@ -72,13 +76,20 @@ public class JmePhysicsNode extends JmePhysicsBaseNode {
     protected Sheet createSheet() {
         Sheet sheet = super.createSheet();
         Sheet.Set set = Sheet.createPropertiesSet();
-        set.setDisplayName("PhysicsNode");
-        set.setName(PhysicsNode.class.getName());
-        PhysicsNode obj = geom;//getLookup().lookup(Spatial.class);
+        set.setDisplayName("PhysicsRigidBodyControl");
+        set.setName(PhysicsRigidBodyControl.class.getName());
+        PhysicsRigidBodyControl obj = geom;//getLookup().lookup(Spatial.class);
         if (obj == null) {
             return sheet;
         }
 
+        set.put(makeProperty(obj, Vector3f.class, "getPhysicsLocation", "setPhysicsLocation", "Physics Location"));
+        set.put(makeProperty(obj, Matrix3f.class, "getPhysicsRotation", "setPhysicsRotation", "Physics Rotation"));
+
+        set.put(makeProperty(obj, CollisionShape.class, "getCollisionShape", "setCollisionShape", "Collision Shape"));
+        set.put(makeProperty(obj, int.class, "getCollisionGroup", "setCollisionGroup", "Collision Group"));
+        set.put(makeProperty(obj, int.class, "getCollideWithGroups", "setCollideWithGroups", "Collide With Groups"));
+        
         set.put(makeProperty(obj, float.class, "getFriction", "setFriction", "Friction"));
         set.put(makeProperty(obj, float.class, "getMass", "setMass", "Mass"));
         set.put(makeProperty(obj, boolean.class, "isKinematic", "setKinematic", "Kinematic"));
@@ -96,17 +107,14 @@ public class JmePhysicsNode extends JmePhysicsBaseNode {
     }
 
     public Class getExplorerObjectClass() {
-        return PhysicsNode.class;
+        return PhysicsRigidBodyControl.class;
     }
 
     public Class getExplorerNodeClass() {
-        return JmePhysicsNode.class;
+        return JmePhysicsRigidBodyControl.class;
     }
 
     public org.openide.nodes.Node[] createNodes(Object key, DataObject key2, boolean cookie) {
-        SceneExplorerChildren children=new SceneExplorerChildren((com.jme3.scene.Spatial)key);
-        children.setReadOnly(cookie);
-        children.setDataObject(key2);
-        return new org.openide.nodes.Node[]{new JmePhysicsNode((PhysicsNode) key, children).setReadOnly(cookie)};
+        return new org.openide.nodes.Node[]{new JmePhysicsRigidBodyControl((PhysicsRigidBodyControl) key).setReadOnly(cookie)};
     }
 }

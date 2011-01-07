@@ -138,7 +138,7 @@ public abstract class AbstractSceneExplorerNode extends AbstractNode implements 
 
     public abstract Class getExplorerObjectClass();
 
-    public Node[] createNodes(Object key, DataObject key2, boolean cookie) {
+    public Node[] createNodes(Object key, DataObject dataObject, boolean readOnly) {
         return new Node[]{Node.EMPTY};
     }
 }

@@ -306,8 +306,6 @@ public class JmeSpatial extends AbstractSceneExplorerNode {
 
         set.put(makeProperty(obj, RenderQueue.Bucket.class, "getQueueBucket", "setQueueBucket", "Queue Bucket"));
 
-        set.put(new AnimationProperty(obj.getControl(AnimControl.class)));
-
         sheet.put(set);
         return sheet;
 

@@ -151,21 +151,6 @@ public class SceneExplorerChildren extends Children.Keys<Object> {
             SceneExplorerChildren children = new SceneExplorerChildren((Spatial) key);
             children.setReadOnly(readOnly);
             children.setDataObject(dataObject);
-            if (key instanceof PhysicsVehicleNode) {
-                return new Node[]{new JmePhysicsVehicleNode((PhysicsVehicleNode) key, children).setReadOnly(readOnly)};
-            }
-            if (key instanceof PhysicsNode) {
-                return new Node[]{new JmePhysicsNode((PhysicsNode) key, children).setReadOnly(readOnly)};
-            }
-            if (key instanceof PhysicsCharacterNode) {
-                return new Node[]{new JmePhysicsGhostNode((PhysicsGhostNode) key, children).setReadOnly(readOnly)};
-            }
-            if (key instanceof PhysicsGhostNode) {
-                return new Node[]{new JmePhysicsGhostNode((PhysicsGhostNode) key, children).setReadOnly(readOnly)};
-            }
-            if (key instanceof PhysicsBaseNode) {
-                return new Node[]{new JmePhysicsBaseNode((PhysicsBaseNode) key, children).setReadOnly(readOnly)};
-            }
             if (key instanceof com.jme3.audio.AudioNode) {
                 return new Node[]{new JmeAudioNode((com.jme3.audio.AudioNode) key, children).setReadOnly(readOnly)};
             }

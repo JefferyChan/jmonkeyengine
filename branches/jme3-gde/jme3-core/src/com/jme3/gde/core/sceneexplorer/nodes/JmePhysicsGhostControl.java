@@ -31,9 +31,13 @@
  */
 package com.jme3.gde.core.sceneexplorer.nodes;
 
-import com.jme3.bullet.nodes.PhysicsVehicleNode;
+import com.jme3.bullet.collision.shapes.CollisionShape;
+import com.jme3.bullet.control.PhysicsGhostControl;
+import com.jme3.math.Matrix3f;
+import com.jme3.math.Vector3f;
 import java.awt.Image;
 import org.openide.loaders.DataObject;
+import org.openide.nodes.Children;
 import org.openide.nodes.Sheet;
 import org.openide.util.ImageUtilities;
 
@@ -42,19 +46,20 @@ import org.openide.util.ImageUtilities;
  * @author normenhansen
  */
 @org.openide.util.lookup.ServiceProvider(service=SceneExplorerNode.class)
-public class JmePhysicsVehicleNode extends JmePhysicsNode {
+public class JmePhysicsGhostControl extends AbstractSceneExplorerNode {
 
     private static Image smallImage =
-            ImageUtilities.loadImage("com/jme3/gde/core/sceneexplorer/nodes/icons/vehicle.png");
-    private PhysicsVehicleNode geom;
+            ImageUtilities.loadImage("com/jme3/gde/core/sceneexplorer/nodes/icons/ghostnode.gif");
+    private PhysicsGhostControl geom;
 
-    public JmePhysicsVehicleNode() {
+    public JmePhysicsGhostControl() {
     }
 
-    public JmePhysicsVehicleNode(PhysicsVehicleNode spatial, SceneExplorerChildren children) {
-        super(spatial, children);
+    public JmePhysicsGhostControl(PhysicsGhostControl spatial) {
+        super(Children.LEAF);
         getLookupContents().add(spatial);
         this.geom = spatial;
+        setName("GhostControl");
     }
 
     @Override
@@ -71,19 +76,19 @@ public class JmePhysicsVehicleNode extends JmePhysicsNode {
     protected Sheet createSheet() {
         Sheet sheet = super.createSheet();
         Sheet.Set set = Sheet.createPropertiesSet();
-        set.setDisplayName("PhysicsVehicleNode");
-        set.setName(PhysicsVehicleNode.class.getName());
-        PhysicsVehicleNode obj = geom;//getLookup().lookup(Spatial.class);
+        set.setDisplayName("PhysicsGhostControl");
+        set.setName(PhysicsGhostControl.class.getName());
+        PhysicsGhostControl obj = geom;//getLookup().lookup(Spatial.class);
         if (obj == null) {
             return sheet;
         }
 
-        set.put(makeProperty(obj, float.class, "getFrictionSlip", "setFrictionSlip", "Friction Slip"));
-        set.put(makeProperty(obj, float.class, "getMaxSuspensionTravelCm", "setMaxSuspensionTravelCm", "Max Suspension Travel Cm"));
-        set.put(makeProperty(obj, float.class, "getMaxSuspensionForce", "setMaxSuspensionForce", "Max Suspension Force"));
-        set.put(makeProperty(obj, float.class, "getSuspensionCompression", "setSuspensionCompression", "Suspension Compression"));
-        set.put(makeProperty(obj, float.class, "getSuspensionDamping", "setSuspensionDamping", "Suspension Damping"));
-        set.put(makeProperty(obj, float.class, "getSuspensionStiffness", "setSuspensionStiffness", "Suspension Stiffness"));
+        set.put(makeProperty(obj, Vector3f.class, "getPhysicsLocation", "setPhysicsLocation", "Physics Location"));
+        set.put(makeProperty(obj, Matrix3f.class, "getPhysicsRotation", "setPhysicsRotation", "Physics Rotation"));
+        
+        set.put(makeProperty(obj, CollisionShape.class, "getCollisionShape", "setCollisionShape", "Collision Shape"));
+        set.put(makeProperty(obj, int.class, "getCollisionGroup", "setCollisionGroup", "Collision Group"));
+        set.put(makeProperty(obj, int.class, "getCollideWithGroups", "setCollideWithGroups", "Collide With Groups"));
 
         sheet.put(set);
         return sheet;
@@ -91,17 +96,14 @@ public class JmePhysicsVehicleNode extends JmePhysicsNode {
     }
 
     public Class getExplorerObjectClass() {
-        return PhysicsVehicleNode.class;
+        return PhysicsGhostControl.class;
     }
 
     public Class getExplorerNodeClass() {
-        return JmePhysicsVehicleNode.class;
+        return JmePhysicsGhostControl.class;
     }
 
     public org.openide.nodes.Node[] createNodes(Object key, DataObject key2, boolean cookie) {
-        SceneExplorerChildren children=new SceneExplorerChildren((com.jme3.scene.Spatial)key);
-        children.setReadOnly(cookie);
-        children.setDataObject(key2);
-        return new org.openide.nodes.Node[]{new JmePhysicsVehicleNode((PhysicsVehicleNode) key, children).setReadOnly(cookie)};
+        return new org.openide.nodes.Node[]{new JmePhysicsGhostControl((PhysicsGhostControl) key).setReadOnly(cookie)};
     }
 }
