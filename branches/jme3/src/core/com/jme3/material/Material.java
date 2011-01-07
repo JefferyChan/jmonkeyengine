@@ -37,7 +37,6 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Matrix4f;
 import com.jme3.math.Vector2f;
 import com.jme3.asset.AssetManager;
-import com.jme3.asset.TextureKey;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
 import com.jme3.export.InputCapsule;
@@ -53,6 +52,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.Caps;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.Renderer;
+import com.jme3.renderer.RendererException;
 import com.jme3.scene.Geometry;
 import com.jme3.shader.Shader;
 import com.jme3.shader.Uniform;
@@ -172,7 +172,9 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
                 MatParam param = paramValues.getValue(i);
                 if (param instanceof MatParamTexture){
                     MatParamTexture tex = (MatParamTexture) param;
-                    texId = tex.getTextureValue().getImage().getId();
+                    if (tex.getTextureValue() != null && tex.getTextureValue().getImage() != null){
+                        texId = tex.getTextureValue().getImage().getId();
+                    }
                 }
             }
             sortingId = texId;
@@ -584,13 +586,24 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
 
             if (name.equals("Default")){
                 List<TechniqueDef> techDefs = def.getDefaultTechniques();
+                if (techDefs == null || techDefs.size() == 0)
+                    throw new IllegalStateException("No default techniques are available on material '" + def.getName() + "'");
+                
+                TechniqueDef lastTech = null;
                 for (TechniqueDef techDef : techDefs){
                     if (rendererCaps.containsAll(techDef.getRequiredCaps())){
                         // use the first one that supports all the caps
                         tech = new Technique(this, techDef);
                         techniques.put(name, tech);
+                        break;
                     }
+                    lastTech = techDef;
                 }
+                if (tech == null)
+                    throw new UnsupportedOperationException("No default technique on material '" + def.getName() + "'\n" +
+                                                            " is supported by the video hardware. The caps " +
+                                                            lastTech.getRequiredCaps() + " are required.");
+
             }else{
                 // create "special" technique instance
                 TechniqueDef techDef = def.getTechniqueDef(name);

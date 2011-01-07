@@ -1,4 +1,4 @@
-MaterialDef SimpleWater {
+MaterialDef Advanced Water {
 
     MaterialParameters {     
         Texture2D m_FoamMap
