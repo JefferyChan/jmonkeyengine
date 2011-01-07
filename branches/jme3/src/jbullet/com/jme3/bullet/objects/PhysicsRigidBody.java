@@ -171,6 +171,22 @@ public class PhysicsRigidBody extends PhysicsCollisionObject {
      * Gets the physics object location
      * @param location the location of the actual physics object is stored in this Vector3f
      */
+    public Vector3f getPhysicsLocation() {
+        return getPhysicsLocation(null);
+    }
+
+    /**
+     * Gets the physics object rotation
+     * @param rotation the rotation of the actual physics object is stored in this Matrix3f
+     */
+    public Matrix3f getPhysicsRotation() {
+        return getPhysicsRotation(null);
+    }
+
+    /**
+     * Gets the physics object location
+     * @param location the location of the actual physics object is stored in this Vector3f
+     */
     public Vector3f getPhysicsLocation(Vector3f location) {
         if (location == null) {
             location = new Vector3f();

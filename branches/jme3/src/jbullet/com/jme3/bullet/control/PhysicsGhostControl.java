@@ -43,7 +43,7 @@ public class PhysicsGhostControl extends PhysicsGhostObject implements PhysicsCo
         control.setCollideWithGroups(getCollideWithGroups());
         control.setCollisionGroup(getCollisionGroup());
         control.setPhysicsLocation(getPhysicsLocation());
-        control.setPhysicsRotation(getPhysicsRotation().toRotationMatrix());
+        control.setPhysicsRotation(getPhysicsRotation());
 
         control.setSpatial(spatial);
         return control;
@@ -72,11 +72,12 @@ public class PhysicsGhostControl extends PhysicsGhostObject implements PhysicsCo
             Quaternion localRotationQuat = spatial.getLocalRotation();
             Vector3f localLocation = spatial.getLocalTranslation();
             if (spatial.getParent() != null) {
-                localLocation.set(getPhysicsLocation()).subtractLocal(spatial.getParent().getWorldTranslation());
+                getPhysicsLocation(localLocation);
+                localLocation.subtractLocal(spatial.getParent().getWorldTranslation());
                 localLocation.divideLocal(spatial.getParent().getWorldScale());
                 tmp_inverseWorldRotation.set(spatial.getParent().getWorldRotation()).inverseLocal().multLocal(localLocation);
 
-                localRotationQuat.set(getPhysicsRotation());
+                getPhysicsRotationQuat(localRotationQuat);
                 tmp_inverseWorldRotation.set(spatial.getParent().getWorldRotation()).inverseLocal().mult(localRotationQuat, localRotationQuat);
 
                 spatial.setLocalTranslation(localLocation);

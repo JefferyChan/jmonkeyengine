@@ -47,7 +47,7 @@ public class PhysicsCharacterControl extends PhysicsCharacter implements Physics
         control.setJumpSpeed(getJumpSpeed());
         control.setMaxSlope(getMaxSlope());
         control.setPhysicsLocation(getPhysicsLocation());
-        control.setPhysicsRotation(getPhysicsRotation().toRotationMatrix());
+        control.setPhysicsRotation(getPhysicsRotation());
         control.setUpAxis(getUpAxis());
 
         control.setSpatial(spatial);
@@ -77,11 +77,12 @@ public class PhysicsCharacterControl extends PhysicsCharacter implements Physics
             Quaternion localRotationQuat = spatial.getLocalRotation();
             Vector3f localLocation = spatial.getLocalTranslation();
             if (spatial.getParent() != null) {
-                localLocation.set(getPhysicsLocation()).subtractLocal(spatial.getParent().getWorldTranslation());
+                getPhysicsLocation(localLocation);
+                localLocation.subtractLocal(spatial.getParent().getWorldTranslation());
                 localLocation.divideLocal(spatial.getParent().getWorldScale());
                 tmp_inverseWorldRotation.set(spatial.getParent().getWorldRotation()).inverseLocal().multLocal(localLocation);
 
-                localRotationQuat.set(getPhysicsRotation());
+                getPhysicsRotationQuat(localRotationQuat);
                 tmp_inverseWorldRotation.set(spatial.getParent().getWorldRotation()).inverseLocal().mult(localRotationQuat, localRotationQuat);
 
                 spatial.setLocalTranslation(localLocation);

@@ -128,6 +128,9 @@ public class PhysicsGhostObject extends PhysicsCollisionObject {
      * @return the physicsLocation
      */
     public Vector3f getPhysicsLocation(Vector3f trans) {
+        if (trans == null) {
+            trans = new Vector3f();
+        }
         gObject.getWorldTransform(tempTrans);
         Converter.convert(tempTrans.origin, physicsLocation.getTranslation());
         return trans.set(physicsLocation.getTranslation());
@@ -136,7 +139,22 @@ public class PhysicsGhostObject extends PhysicsCollisionObject {
     /**
      * @return the physicsLocation
      */
-    public Quaternion getPhysicsRotation(Quaternion rot) {
+    public Quaternion getPhysicsRotationQuat(Quaternion rot) {
+        if (rot == null) {
+            rot = new Quaternion();
+        }
+        gObject.getWorldTransform(tempTrans);
+        Converter.convert(tempTrans.getRotation(tempRot), physicsLocation.getRotation());
+        return rot.set(physicsLocation.getRotation());
+    }
+
+    /**
+     * @return the physicsLocation
+     */
+    public Matrix3f getPhysicsRotation(Matrix3f rot) {
+        if (rot == null) {
+            rot = new Matrix3f();
+        }
         gObject.getWorldTransform(tempTrans);
         Converter.convert(tempTrans.getRotation(tempRot), physicsLocation.getRotation());
         return rot.set(physicsLocation.getRotation());
@@ -154,10 +172,16 @@ public class PhysicsGhostObject extends PhysicsCollisionObject {
     /**
      * @return the physicsLocation
      */
-    public Quaternion getPhysicsRotation() {
+    public Quaternion getPhysicsRotationQuat() {
         gObject.getWorldTransform(tempTrans);
         Converter.convert(tempTrans.getRotation(tempRot), physicsLocation.getRotation());
         return physicsLocation.getRotation();
+    }
+
+    public Matrix3f getPhysicsRotation() {
+        gObject.getWorldTransform(tempTrans);
+        Converter.convert(tempTrans.getRotation(tempRot), physicsLocation.getRotation());
+        return physicsLocation.getRotation().toRotationMatrix();
     }
 
     /**
@@ -182,7 +206,7 @@ public class PhysicsGhostObject extends PhysicsCollisionObject {
     public List<PhysicsCollisionObject> getOverlappingObjects() {
         overlappingObjects.clear();
         for (com.bulletphysics.collision.dispatch.CollisionObject collObj : gObject.getOverlappingPairs()) {
-            overlappingObjects.add((PhysicsCollisionObject)collObj.getUserPointer());
+            overlappingObjects.add((PhysicsCollisionObject) collObj.getUserPointer());
         }
         return overlappingObjects;
     }
@@ -230,7 +254,7 @@ public class PhysicsGhostObject extends PhysicsCollisionObject {
         OutputCapsule capsule = e.getCapsule(this);
         capsule.write(collisionShape, "collisionShape", null);
         capsule.write(getPhysicsLocation(new Vector3f()), "physicsLocation", new Vector3f());
-        capsule.write(getPhysicsRotation(new Quaternion()), "physicsRotation", new Quaternion());
+        capsule.write(getPhysicsRotation(new Matrix3f()), "physicsRotation", new Matrix3f());
     }
 
     @Override
@@ -240,8 +264,7 @@ public class PhysicsGhostObject extends PhysicsCollisionObject {
         CollisionShape shape = (CollisionShape) capsule.readSavable("collisionShape", new SphereCollisionShape(1));
         collisionShape = shape;
         buildObject();
-        setPhysicsLocation((Vector3f)capsule.readSavable("physicsLocation", new Vector3f()));
-        setPhysicsRotation(((Quaternion)capsule.readSavable("physicsRotation", new Quaternion())).toRotationMatrix());
+        setPhysicsLocation((Vector3f) capsule.readSavable("physicsLocation", new Vector3f()));
+        setPhysicsRotation(((Matrix3f) capsule.readSavable("physicsRotation", new Matrix3f())));
     }
-
 }

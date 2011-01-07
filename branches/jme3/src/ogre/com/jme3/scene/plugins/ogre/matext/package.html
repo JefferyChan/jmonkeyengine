@@ -26,7 +26,7 @@ material MyMaterial : BaseLightingMaterial
 Example code of loading the above material:<br/>
 <code>
 MaterialExtensionSet matExts = new MaterialExtensionSet();<br/>
-MaterialExtension baseLightExt = new MaterialExtension("materials/baselighting.material", <br/>
+MaterialExtension baseLightExt = new MaterialExtension("BaseLightingMaterial", <br/>
                                                        "Common/MatDefs/Light/Lighting.j3md");<br/>
 baseLightExt.setTextureMapping("MyTexture", "m_DiffuseMap");<br/>
 matExts.addMaterialExtension(baseLightExt);<br/>
