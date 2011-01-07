@@ -55,6 +55,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.media.j3d.Leaf;
 import org.openide.loaders.DataObject;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
@@ -197,7 +198,7 @@ public class SceneExplorerChildren extends Children.Keys<Object> {
             MeshGeometryPair pair = (MeshGeometryPair) key;
             return new Node[]{new JmeMesh(pair.getGeometry(), pair.getMesh()).setReadOnly(readOnly)};
         }
-        return null;
+        return new Node[]{Node.EMPTY};
     }
 
     public DataObject getDataObject() {
