@@ -76,8 +76,6 @@ public class TestMousePick extends SimpleApplication {
 
     @Override
     public void simpleUpdate(float tpf){
-        rootNode.updateGeometricState();
-
         Vector3f origin    = cam.getWorldCoordinates(inputManager.getCursorPosition(), 0.0f);
         Vector3f direction = cam.getWorldCoordinates(inputManager.getCursorPosition(), 0.3f);
         direction.subtractLocal(origin).normalizeLocal();

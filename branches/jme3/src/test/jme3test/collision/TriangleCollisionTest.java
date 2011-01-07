@@ -113,8 +113,6 @@ public class TriangleCollisionTest extends SimpleApplication {
 
     @Override
     public void simpleUpdate(float tpf) {
-        rootNode.updateGeometricState();
-
         CollisionResults results = new CollisionResults();
         BoundingVolume bv = geom1.getWorldBound();
         golem.collideWith(bv, results);
