@@ -82,6 +82,11 @@ public class PhysicsVehicle extends PhysicsRigidBody {
         motionState.setVehicle(this);
     }
 
+    public PhysicsVehicle(CollisionShape shape, float mass) {
+        super(shape, mass);
+        motionState.setVehicle(this);
+    }
+
     /**
      * used internally
      */

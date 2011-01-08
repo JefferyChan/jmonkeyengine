@@ -49,7 +49,6 @@ import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
 import com.jme3.export.OutputCapsule;
 import com.jme3.math.Matrix3f;
-import com.jme3.math.Quaternion;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.debug.Arrow;
@@ -617,12 +616,6 @@ public class PhysicsRigidBody extends PhysicsCollisionObject {
         capsule.write(constructionInfo.linearSleepingThreshold, "linearSleepingThreshold", 0.8f);
         capsule.write(constructionInfo.angularSleepingThreshold, "angularSleepingThreshold", 1.0f);
 
-//        capsule.write(continuousForce, "continuousForce", Vector3f.ZERO);
-//        capsule.write(continuousForceLocation, "continuousForceLocation", Vector3f.ZERO);
-//        capsule.write(continuousTorque, "continuousTorque", Vector3f.ZERO);
-//        capsule.write(applyForce, "applyForce", false);
-//        capsule.write(applyTorque, "applyTorque", false);
-
         capsule.write(getPhysicsLocation(new Vector3f()), "physicsLocation", new Vector3f());
         capsule.write(getPhysicsRotation(new Matrix3f()), "physicsRotation", new Matrix3f());
 
@@ -646,14 +639,6 @@ public class PhysicsRigidBody extends PhysicsCollisionObject {
         setRestitution(capsule.readFloat("restitution", 0));
         setDamping(capsule.readFloat("linearDamping", 0), capsule.readFloat("angularDamping", 0));
         setSleepingThresholds(capsule.readFloat("linearSleepingThreshold", 0.8f), capsule.readFloat("angularSleepingThreshold", 1.0f));
-
-
-//        continuousForce = (Vector3f) capsule.readSavable("continuousForce", Vector3f.ZERO.clone());
-//        continuousForceLocation = (Vector3f) capsule.readSavable("continuousForceLocation", Vector3f.ZERO.clone());
-//        applyForce = capsule.readBoolean("applyForce", false);
-//
-//        continuousTorque = (Vector3f) capsule.readSavable("continuousTorque", Vector3f.ZERO.clone());
-//        applyTorque = capsule.readBoolean("applyTorque", false);
 
         setPhysicsLocation((Vector3f) capsule.readSavable("physicsLocation", new Vector3f()));
         setPhysicsRotation((Matrix3f) capsule.readSavable("physicsRotation", new Matrix3f()));

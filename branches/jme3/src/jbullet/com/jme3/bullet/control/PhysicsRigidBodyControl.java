@@ -7,14 +7,14 @@ package com.jme3.bullet.control;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.objects.PhysicsRigidBody;
+import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.export.InputCapsule;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
 import com.jme3.export.OutputCapsule;
-import com.jme3.math.Matrix3f;
-import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
+import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.Control;
 import java.io.IOException;
@@ -26,10 +26,19 @@ import java.io.IOException;
 public class PhysicsRigidBodyControl extends PhysicsRigidBody implements PhysicsControl {
 
     protected Spatial spatial;
-    private boolean enabled = true;
+    protected boolean enabled = true;
     protected PhysicsSpace space = null;
 
     public PhysicsRigidBodyControl() {
+    }
+
+    /**
+     * When using this constructor, the CollisionShape for the RigidBody is generated
+     * automatically when the Control is added to a Spatial.
+     * @param mass When not 0, a HullCollisionShape is generated, otherwise a MeshCollisionShape is used.
+     */
+    public PhysicsRigidBodyControl(float mass) {
+        this.mass = mass;
     }
 
     /**
@@ -73,8 +82,37 @@ public class PhysicsRigidBodyControl extends PhysicsRigidBody implements Physics
         if (spatial == null) {
             return;
         }
+        if (collisionShape == null) {
+            createCollisionShape();
+            rebuildRigidBody();
+        }
         setPhysicsLocation(spatial.getWorldTranslation());
         setPhysicsRotation(spatial.getWorldRotation().toRotationMatrix());
+    }
+
+    protected void createCollisionShape(){
+        if (spatial == null) {
+            return;
+        }
+        if (mass > 0) {
+            Node parent = spatial.getParent();
+            if (parent != null) {
+                spatial.removeFromParent();
+            }
+            collisionShape = CollisionShapeFactory.createDynamicMeshShape(spatial);
+            if (parent != null) {
+                parent.attachChild(spatial);
+            }
+        } else {
+            Node parent = spatial.getParent();
+            if (parent != null) {
+                spatial.removeFromParent();
+            }
+            collisionShape = CollisionShapeFactory.createMeshShape(spatial);
+            if (parent != null) {
+                parent.attachChild(spatial);
+            }
+        }
     }
 
     public void setEnabled(boolean enabled) {
