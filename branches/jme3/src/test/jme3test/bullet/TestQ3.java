@@ -37,11 +37,9 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.asset.plugins.HttpZipLocator;
 import com.jme3.asset.plugins.ZipLocator;
 import com.jme3.bullet.PhysicsSpace;
-import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
+import com.jme3.bullet.control.PhysicsRigidBodyControl;
 import com.jme3.bullet.nodes.PhysicsCharacterNode;
-import com.jme3.bullet.nodes.PhysicsNode;
-import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
@@ -50,14 +48,13 @@ import com.jme3.material.MaterialList;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
-import com.jme3.scene.Spatial;
 import com.jme3.scene.plugins.ogre.OgreMeshKey;
 import java.io.File;
 
 public class TestQ3 extends SimpleApplication implements ActionListener {
 
     private BulletAppState bulletAppState;
-    private Spatial gameLevel;
+    private Node gameLevel;
     private PhysicsCharacterNode player;
     private Vector3f walkDirection = new Vector3f();
     private static boolean useHttp = false;
@@ -95,12 +92,12 @@ public class TestQ3 extends SimpleApplication implements ActionListener {
         // create the geometry and attach it
         MaterialList matList = (MaterialList) assetManager.loadAsset("Scene.material");
         OgreMeshKey key = new OgreMeshKey("main.meshxml", matList);
-        gameLevel = (Spatial) assetManager.loadAsset(key);
+        gameLevel = (Node) assetManager.loadAsset(key);
         gameLevel.setLocalScale(0.1f);
 
-        CollisionShape levelShape = CollisionShapeFactory.createMeshShape((Node) gameLevel);
+        // add a physics control, it will generate a MeshCollisionShape based on the gameLevel
+        gameLevel.addControl(new PhysicsRigidBodyControl(0));
 
-        PhysicsNode levelNode = new PhysicsNode(gameLevel, levelShape, 0);
         player = new PhysicsCharacterNode(new SphereCollisionShape(5), .01f);
         player.setJumpSpeed(20);
         player.setFallSpeed(30);
@@ -108,10 +105,10 @@ public class TestQ3 extends SimpleApplication implements ActionListener {
 
         player.setLocalTranslation(new Vector3f(60, 10, -60));
 
-        rootNode.attachChild(levelNode);
+        rootNode.attachChild(gameLevel);
         rootNode.attachChild(player);
 
-        getPhysicsSpace().add(levelNode);
+        getPhysicsSpace().addAll(gameLevel);
         getPhysicsSpace().add(player);
     }
 
