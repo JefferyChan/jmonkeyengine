@@ -40,8 +40,7 @@ public class PhysicsVehicleControl extends PhysicsVehicle implements PhysicsCont
     }
 
     public PhysicsVehicleControl(CollisionShape shape, float mass) {
-        super(shape);
-        setMass(mass);
+        super(shape, mass);
     }
 
     public Control cloneForSpatial(Spatial spatial) {
