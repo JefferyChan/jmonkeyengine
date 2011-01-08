@@ -34,7 +34,6 @@ package com.jme3.bullet.collision;
 import com.bulletphysics.collision.narrowphase.ManifoldPoint;
 import com.jme3.math.Vector3f;
 import com.jme3.bullet.util.Converter;
-import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import java.util.EventObject;
 
@@ -93,7 +92,7 @@ public class PhysicsCollisionEvent extends EventObject {
      */
     public Spatial getNodeA() {
         if (nodeA.getUserObject() instanceof Spatial) {
-            return (Node) nodeA.getUserObject();
+            return (Spatial) nodeA.getUserObject();
         }
         return null;
     }
@@ -103,7 +102,7 @@ public class PhysicsCollisionEvent extends EventObject {
      */
     public Spatial getNodeB() {
         if (nodeB.getUserObject() instanceof Spatial) {
-            return (Node) nodeB.getUserObject();
+            return (Spatial) nodeB.getUserObject();
         }
         return null;
     }
