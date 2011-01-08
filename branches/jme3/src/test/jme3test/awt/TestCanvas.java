@@ -56,10 +56,10 @@ public class TestCanvas {
     private static Canvas canvas;
     private static Application app;
     private static JFrame frame;
+    private static final String appClass = "jme3test.model.shape.TestBox";
 
     private static void createFrame(){
         frame = new JFrame("Test");
-        frame.setResizable(false);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.addWindowListener(new WindowAdapter(){
             @Override
@@ -91,7 +91,6 @@ public class TestCanvas {
                     itemRemoveCanvas.setText("Add Canvas");
                 }else if (itemRemoveCanvas.getText().equals("Add Canvas")){
                     frame.getContentPane().add(canvas);
-                    
                     itemRemoveCanvas.setText("Remove Canvas");
                 }
             }
@@ -104,7 +103,6 @@ public class TestCanvas {
                 frame.getContentPane().remove(canvas);
                 app.stop(true);
 
-                String appClass = "jme3test.model.shape.TestBox";
                 createCanvas(appClass);
                 frame.getContentPane().add(canvas);
                 frame.pack();
@@ -137,8 +135,8 @@ public class TestCanvas {
 
     public static void createCanvas(String appClass){
         AppSettings settings = new AppSettings(true);
-        settings.setWidth(640);
-        settings.setHeight(480);
+        settings.setWidth( Math.max(640, frame.getContentPane().getWidth()) );
+        settings.setHeight( Math.max(480, frame.getContentPane().getHeight()) );
 
         JmeSystem.setLowPermissions(true);
 
@@ -181,9 +179,9 @@ public class TestCanvas {
             public void run(){
                 JPopupMenu.setDefaultLightWeightPopupEnabled(false);
 
-                String appClass = "jme3test.model.shape.TestBox";
-                createCanvas(appClass);
                 createFrame();
+                createCanvas(appClass);
+                
                 frame.getContentPane().add(canvas);
                 frame.pack();
                 startApp();

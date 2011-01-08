@@ -419,7 +419,8 @@ public final class Shader extends GLObject implements Savable {
         this.id = -1;
         this.usable = false;
         setUpdateNeeded();
-        resetLocations();
+        // Already done by the call above
+        //resetLocations();
     }
 
     @Override

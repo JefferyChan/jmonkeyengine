@@ -104,6 +104,12 @@ public class TangentBinormalGenerator {
                 generate(child);
             }
         } else if (scene instanceof Geometry) {
+            // XXX: Hack alert:
+            // Do not generate tangents for OgreXML
+            // shared geometry "dummies"
+            if (scene.getName().endsWith("sharedgeom"))
+                return;
+
             Geometry geom = (Geometry) scene;
             generate(geom.getMesh());
         }

@@ -70,8 +70,10 @@ public class GLObjectManager {
 
         public GLObjectRef(GLObject obj){
             super(obj.handleRef, refQueue);
+            assert obj.handleRef != null;
+
             this.realObj = new WeakReference<GLObject>(obj);
-            this.objClone = obj.createDestructableClone();
+            this.objClone = obj.createDestructableClone();       
         }
     }
 

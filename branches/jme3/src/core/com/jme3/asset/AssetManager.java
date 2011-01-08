@@ -55,9 +55,14 @@ public interface AssetManager {
     public void registerLoader(String loaderClassName, String ... extensions);
 
     /**
+     * Registers an {@link AssetLocator} by using a class name, instead of 
+     * a class instance. See the {@link AssetManager#registerLocator(java.lang.String, java.lang.Class) }
+     * method for more information.
      *
-     * @param rootPath
-     * @param locatorClassName
+     * @param rootPath The root path from which to locate assets, implementation
+     * dependent.
+     * @param locatorClassName The full class name of the {@link AssetLocator}
+     * implementation.
      */
     public void registerLocator(String rootPath, String locatorClassName);
 
@@ -69,9 +74,19 @@ public interface AssetManager {
     public void registerLoader(Class<? extends AssetLoader> loaderClass, String ... extensions);
 
     /**
+     * Registers the given locator class for locating assets with this
+     * <code>AssetManager</code>. {@link AssetLocator}s are invoked in the order
+     * they were registered, to locate the asset by the {@link AssetKey}.
+     * Once an {@link AssetLocator} returns a non-null AssetInfo, it is sent
+     * to the {@link AssetLoader} to load the asset.
      *
-     * @param rootPath
-     * @param locatorClass
+     * @param rootPath Specifies the root path from which to locate assets
+     * for the given {@link AssetLocator}. The purpose of this parameter
+     * depends on the type of the {@link AssetLocator}.
+     * @param locatorClass The class type of the {@link AssetLocator} to register.
+     *
+     * @see AssetLocator#setRootPath(java.lang.String)
+     * @see AssetLocator#locate(com.jme3.asset.AssetManager, com.jme3.asset.AssetKey) 
      */
     public void registerLocator(String rootPath, Class<? extends AssetLocator> locatorClass);
 

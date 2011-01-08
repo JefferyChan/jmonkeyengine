@@ -165,11 +165,16 @@ public abstract class LwjglAbstractDisplay extends LwjglContext implements Runna
      * De-initialize in the OpenGL thread.
      */
     protected void deinitInThread(){
-        listener.destroy();
         if (Display.isCreated()){
             renderer.cleanup();
             Display.destroy();
+        }else{
+            // If using canvas temporary closing, the display would
+            // be closed at this point
+            renderer.resetGLObjects();
         }
+
+        listener.destroy();
         logger.info("Display destroyed.");
         super.internalDestroy();
     }

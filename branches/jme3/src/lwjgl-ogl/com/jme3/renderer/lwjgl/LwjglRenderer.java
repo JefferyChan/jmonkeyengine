@@ -99,6 +99,7 @@ import static org.lwjgl.opengl.GL20.*;
 
 import static org.lwjgl.opengl.EXTFramebufferObject.*;
 import static org.lwjgl.opengl.EXTFramebufferMultisample.*;
+import static org.lwjgl.opengl.ARBTextureMultisample.*;
 import static org.lwjgl.opengl.EXTFramebufferBlit.*;
 import org.lwjgl.opengl.ARBShaderObjects.*;
 import org.lwjgl.opengl.ARBVertexArrayObject;
@@ -132,6 +133,10 @@ public class LwjglRenderer implements Renderer {
     private int maxCubeTexSize;
     private int maxVertCount;
     private int maxTriCount;
+
+    private int maxColorTexSamples;
+    private int maxDepthTexSamples;
+
     private boolean tdc;
     private FrameBuffer lastFb = null;
     private final Statistics statistics = new Statistics();
@@ -221,7 +226,7 @@ public class LwjglRenderer implements Renderer {
         }
 
         if (!caps.contains(Caps.GLSL100)) {
-            logger.log(Level.WARNING, "Force-adding GLSL100 support, since OpenGL is supported.");
+            logger.log(Level.WARNING, "Force-adding GLSL100 support, since OpenGL2 is supported.");
             caps.add(Caps.GLSL100);
         }
 
@@ -348,6 +353,25 @@ public class LwjglRenderer implements Renderer {
                 glGetInteger(GL_MAX_SAMPLES_EXT, intBuf16);
                 maxFBOSamples = intBuf16.get(0);
                 logger.log(Level.FINER, "FBO Max Samples: {0}", maxFBOSamples);
+            }
+
+            if (ctxCaps.GL_ARB_texture_multisample){
+                glGetInteger(GL_MAX_COLOR_TEXTURE_SAMPLES, intBuf16);
+                maxColorTexSamples = intBuf16.get(0);
+                logger.log(Level.FINER, "Texture Multisample Color Samples: {0}", maxColorTexSamples);
+
+                glGetInteger(GL_MAX_DEPTH_TEXTURE_SAMPLES, intBuf16);
+                maxDepthTexSamples = intBuf16.get(0);
+                logger.log(Level.FINER, "Texture Multisample Depth Samples: {0}", maxDepthTexSamples);
+
+                FloatBuffer samplePos = BufferUtils.createFloatBuffer(2);
+                
+                for (int i = 0; i < maxColorTexSamples; i++){
+                    glGetMultisample(GL_SAMPLE_POSITION, i, samplePos);
+                    samplePos.clear();
+                    float x = samplePos.get(0);
+                    float y = samplePos.get(1);
+                }
             }
 
             if (ctxCaps.GL_ARB_draw_buffers) {

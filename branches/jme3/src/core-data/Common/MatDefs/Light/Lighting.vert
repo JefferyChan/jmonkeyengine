@@ -105,13 +105,9 @@ void main(){
    #if defined(NORMALMAP) && !defined(VERTEX_LIGHTING)
      vec3 wvTangent = normalize(g_NormalMatrix * inTangent.xyz);
      vec3 wvBinormal = cross(wvNormal, wvTangent);
-     vec3 test=cross(wvTangent,wvBinormal );
-     mat3 tbnMat;
-     
-    tbnMat = mat3(wvTangent,-inTangent.w*wvBinormal ,wvNormal);
-     
-    
 
+     mat3 tbnMat = mat3(wvTangent, wvBinormal * -inTangent.w,wvNormal);
+     
      vPosition = wvPosition * tbnMat;
      vViewDir  = viewDir * tbnMat;
      lightComputeDir(wvPosition, lightColor, wvLightPos, vLightDir);

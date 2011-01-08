@@ -369,9 +369,10 @@ public class MeshLoader extends DefaultHandler implements AssetLoader {
             mesh.setBuffer(vb);
         }
         if (parseBool(attribs.getValue("tangents"), false)){
+            int dimensions = parseInt(attribs.getValue("tangent_dimensions"), 3);
             vb = new VertexBuffer(Type.Tangent);
-            fb = BufferUtils.createFloatBuffer(mesh.getVertexCount() * 3);
-            vb.setupData(Usage.Static, 3, Format.Float, fb);
+            fb = BufferUtils.createFloatBuffer(mesh.getVertexCount() * dimensions);
+            vb.setupData(Usage.Static, dimensions, Format.Float, fb);
             mesh.setBuffer(vb);
         }
         if (parseBool(attribs.getValue("binormals"), false)){
@@ -380,7 +381,6 @@ public class MeshLoader extends DefaultHandler implements AssetLoader {
             vb.setupData(Usage.Static, 3, Format.Float, fb);
             mesh.setBuffer(vb);
         }
-
 
         int texCoords = parseInt(attribs.getValue("texture_coords"), 0);
         if (texCoords >= 1){
@@ -405,6 +405,21 @@ public class MeshLoader extends DefaultHandler implements AssetLoader {
             buf.put(parseFloat(attribs.getValue("x")))
            .put(parseFloat(attribs.getValue("y")))
            .put(parseFloat(attribs.getValue("z")));
+        } catch (Exception ex){
+           throw new SAXException("Failed to push attrib", ex);
+        }
+    }
+
+    private void pushTangent(Attributes attribs) throws SAXException{
+        try {
+            VertexBuffer tangentBuf = mesh.getBuffer(Type.Tangent);
+            FloatBuffer buf = (FloatBuffer) tangentBuf.getData();
+            buf.put(parseFloat(attribs.getValue("x")))
+           .put(parseFloat(attribs.getValue("y")))
+           .put(parseFloat(attribs.getValue("z")));
+            if (tangentBuf.getNumComponents() == 4){
+                buf.put(parseFloat(attribs.getValue("w")));
+            }
         } catch (Exception ex){
            throw new SAXException("Failed to push attrib", ex);
         }
@@ -541,7 +556,7 @@ public class MeshLoader extends DefaultHandler implements AssetLoader {
         }else if (qName.equals("normal")){
             pushAttrib(Type.Normal, attribs);
         }else if (qName.equals("tangent")){
-            pushAttrib(Type.Tangent, attribs);
+            pushTangent(attribs);
         }else if (qName.equals("binormal")){
             pushAttrib(Type.Binormal, attribs);
         }else if (qName.equals("colour_diffuse")){

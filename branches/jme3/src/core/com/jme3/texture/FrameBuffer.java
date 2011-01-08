@@ -81,6 +81,16 @@ public class FrameBuffer extends GLObject {
             id = -1;
         }
 
+        public RenderBuffer createDestructableClone(){
+            if (tex != null){
+                return null;
+            }else{
+                RenderBuffer destructClone =  new RenderBuffer();
+                destructClone.id = id;
+                return destructClone;
+            }
+        }
+
         @Override
         public String toString(){
             if (tex != null){
@@ -103,8 +113,15 @@ public class FrameBuffer extends GLObject {
 
     protected FrameBuffer(FrameBuffer src){
         super(Type.FrameBuffer, src.id);
-        this.colorBufs.addAll(src.colorBufs);
-        this.depthBuf = src.depthBuf;
+        /*
+        for (RenderBuffer renderBuf : src.colorBufs){
+            RenderBuffer clone = renderBuf.createDestructableClone();
+            if (clone != null)
+                this.colorBufs.add(clone);
+        }
+
+        this.depthBuf = src.depthBuf.createDestructableClone();
+         */
     }
 
     public void setDepthBuffer(Image.Format format){

@@ -415,7 +415,7 @@ public class RenderManager {
                 g.getMaterial().render(g, this);
                 g.getMaterial().selectTechnique(tmpTech, this);
                 //Revert this part from revision 6197
-                //If forcedTechnique does not exists, and frocedMaterial is not set, hte geom MUST NOT be rendered
+                //If forcedTechnique does not exists, and frocedMaterial is not set, the geom MUST NOT be rendered
             } else if (forcedMaterial != null) {
                 // use forced material
                 forcedMaterial.render(g, this);
