@@ -194,8 +194,8 @@ public class WaterFilter extends Filter {
         reflectionView.addProcessor(reflectionProcessor);
 
         normalTexture = (Texture2D) manager.loadTexture("Common/MatDefs/Water/Textures/gradient_map.jpg");
-        foamTexture = (Texture2D) manager.loadTexture("Common/MatDefs/Water/Textures/foam.png");
-        heightTexture = (Texture2D) manager.loadTexture("Common/MatDefs/Water/Textures/heightmap.png");
+        foamTexture = (Texture2D) manager.loadTexture("Common/MatDefs/Water/Textures/foam.jpg");
+        heightTexture = (Texture2D) manager.loadTexture("Common/MatDefs/Water/Textures/heightmap.jpg");
 
         normalTexture.setWrap(WrapMode.Repeat);
         foamTexture.setWrap(WrapMode.Repeat);
