@@ -29,7 +29,7 @@ public class ScreenshotAppState extends AbstractAppState implements ActionListen
     private Renderer renderer;
     private ByteBuffer outBuf;
     private String appName;
-    private int shotIndex = 1;
+    private int shotIndex = 0;
     private BufferedImage awtImage;
 
     @Override
@@ -40,7 +40,7 @@ public class ScreenshotAppState extends AbstractAppState implements ActionListen
         inputManager.addMapping("ScreenShot", new KeyTrigger(KeyInput.KEY_SYSRQ));
         inputManager.addListener(this, "ScreenShot");
 
-        List<ViewPort> vps = app.getRenderManager().getMainViews();
+        List<ViewPort> vps = app.getRenderManager().getPostViews();
         ViewPort last = vps.get(vps.size()-1);
         last.addProcessor(this);
 

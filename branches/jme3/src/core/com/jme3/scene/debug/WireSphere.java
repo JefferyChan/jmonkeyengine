@@ -113,7 +113,7 @@ public class WireSphere extends Mesh {
         for (int i = 0; i < samples; i++){
             float x = FastMath.cos(angle);
             float y = FastMath.sin(angle);
-            pb.put(x).put(y).put(0);
+            pb.put(x * radius).put(y * radius).put(0);
             angle += rate;
         }
 
@@ -121,7 +121,7 @@ public class WireSphere extends Mesh {
         for (int i = 0; i < samples; i++){
             float x = FastMath.cos(angle);
             float y = FastMath.sin(angle);
-            pb.put(0).put(x).put(y);
+            pb.put(0).put(x * radius).put(y * radius);
             angle += rate;
         }
 
@@ -139,7 +139,7 @@ public class WireSphere extends Mesh {
                 float x = FastMath.cos(angle);
                 float y = FastMath.sin(angle);
                 
-                pb.put(x * scale).put(zHeight).put(y * scale);
+                pb.put(x * scale * radius).put(zHeight).put(y * scale * radius);
                 
                 angle += rate;
             }

@@ -26,15 +26,25 @@ public final class Screenshots {
                 int inPtr  = (y * width + x) * 4;
                 int outPtr = ((height-y-1) * width + x) * 4;
 
-                byte b = cpuArray[inPtr+0];
-                byte g = cpuArray[inPtr+1];
-                byte r = cpuArray[inPtr+2];
-                byte a = cpuArray[inPtr+3];
+                byte b1 = cpuArray[inPtr+0];
+                byte g1 = cpuArray[inPtr+1];
+                byte r1 = cpuArray[inPtr+2];
+                byte a1 = cpuArray[inPtr+3];
 
-                cpuArray[outPtr+0] = a;
-                cpuArray[outPtr+1] = b;
-                cpuArray[outPtr+2] = g;
-                cpuArray[outPtr+3] = r;
+                byte b2 = cpuArray[outPtr+0];
+                byte g2 = cpuArray[outPtr+1];
+                byte r2 = cpuArray[outPtr+2];
+                byte a2 = cpuArray[outPtr+3];
+
+                cpuArray[outPtr+0] = a1;
+                cpuArray[outPtr+1] = b1;
+                cpuArray[outPtr+2] = g1;
+                cpuArray[outPtr+3] = r1;
+
+                cpuArray[inPtr+0] = a2;
+                cpuArray[inPtr+1] = b2;
+                cpuArray[inPtr+2] = g2;
+                cpuArray[inPtr+3] = r2;
             }
         }
     }
