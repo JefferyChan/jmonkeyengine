@@ -31,11 +31,6 @@
  */
 package com.jme3.gde.core.sceneexplorer.nodes;
 
-import com.jme3.bullet.nodes.PhysicsBaseNode;
-import com.jme3.bullet.nodes.PhysicsCharacterNode;
-import com.jme3.bullet.nodes.PhysicsGhostNode;
-import com.jme3.bullet.nodes.PhysicsNode;
-import com.jme3.bullet.nodes.PhysicsVehicleNode;
 import com.jme3.effect.ParticleEmitter;
 import com.jme3.font.BitmapText;
 import com.jme3.gde.core.scene.SceneApplication;
@@ -55,7 +50,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.media.j3d.Leaf;
 import org.openide.loaders.DataObject;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
