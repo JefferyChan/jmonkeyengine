@@ -40,15 +40,15 @@ public class PhysicsHoverControl extends PhysicsRigidBody implements PhysicsCont
     protected int xw = 4;
     protected int zw = 6;
     protected int yw = 4;
-    protected Vector3f HOVER_HEIGHT_LF_START = new Vector3f(xw, 1, zw);
-    protected Vector3f HOVER_HEIGHT_RF_START = new Vector3f(-xw, 1, zw);
-    protected Vector3f HOVER_HEIGHT_LR_START = new Vector3f(xw, 1, -zw);
-    protected Vector3f HOVER_HEIGHT_RR_START = new Vector3f(-xw, 1, -zw);
+    protected Vector3f HOVER_HEIGHT_LF_START = new Vector3f(xw, 2, zw);
+    protected Vector3f HOVER_HEIGHT_RF_START = new Vector3f(-xw, 2, zw);
+    protected Vector3f HOVER_HEIGHT_LR_START = new Vector3f(xw, 2, -zw);
+    protected Vector3f HOVER_HEIGHT_RR_START = new Vector3f(-xw, 2, -zw);
     protected Vector3f HOVER_HEIGHT_LF = new Vector3f(xw, -yw, zw);
     protected Vector3f HOVER_HEIGHT_RF = new Vector3f(-xw, -yw, zw);
     protected Vector3f HOVER_HEIGHT_LR = new Vector3f(xw, -yw, -zw);
     protected Vector3f HOVER_HEIGHT_RR = new Vector3f(-xw, -yw, -zw);
-    protected Vector3f HOVER_FORCE = new Vector3f(0, 3000f, 0);
+    protected Vector3f HOVER_FORCE = new Vector3f(0, 6000f, 0);
 
     public PhysicsHoverControl() {
     }

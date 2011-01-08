@@ -37,7 +37,9 @@ import com.jme3.asset.TextureKey;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
+import com.jme3.bullet.control.PhysicsRigidBodyControl;
 import com.jme3.bullet.nodes.PhysicsNode;
+import com.jme3.bullet.objects.PhysicsRigidBody;
 import com.jme3.font.BitmapText;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.ActionListener;
@@ -116,12 +118,13 @@ public class TestBrickWall extends SimpleApplication {
             if (name.equals("shoot") && !keyPressed) {
                 Geometry bulletg = new Geometry("bullet", bullet);
                 bulletg.setMaterial(mat2);
-                PhysicsNode bulletNode = new PhysicsNode(bulletg, bulletCollisionShape, 1);
-                bulletNode.setLocalTranslation(cam.getLocation());
-                bulletNode.setShadowMode(ShadowMode.CastAndReceive);
+                bulletg.setShadowMode(ShadowMode.CastAndReceive);
+                bulletg.setLocalTranslation(cam.getLocation());
 
+                PhysicsRigidBodyControl bulletNode = new PhysicsRigidBodyControl(bulletCollisionShape, 1);
                 bulletNode.setLinearVelocity(cam.getDirection().mult(25));
-                rootNode.attachChild(bulletNode);
+                bulletg.addControl(bulletNode);
+                rootNode.attachChild(bulletg);
                 getPhysicsSpace().add(bulletNode);
             }
         }
