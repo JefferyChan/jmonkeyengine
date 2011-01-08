@@ -47,6 +47,7 @@ public class AssetPackLoader {
         Spatial model = null;
         Node node = null;
         while (fileElement != null) {
+            Logger.getLogger(AssetPackLoader.class.getName()).log(Level.INFO, "Load main file {0}",fileElement.getAttribute("path"));
             if (model != null && node == null) {
                 node = new Node(assetElement.getAttribute("name"));
                 node.attachChild(model);

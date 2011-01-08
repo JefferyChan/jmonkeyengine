@@ -48,8 +48,8 @@ public final class AddAssetAction implements Action {
     }
 
     private void addModelToScene(Element assetElement, ProjectAssetManager pm) {
-        Element fileElement = XmlHelper.findChildElementWithAttribute(assetElement, "file", "main", "true");
-        Spatial model = AssetPackLoader.loadAssetPackModel(fileElement, pm);
+//        Element fileElement = XmlHelper.findChildElementWithAttribute(assetElement, "file", "main", "true");
+        Spatial model = AssetPackLoader.loadAssetPackModel(assetElement, pm);
         if (model != null) {
             SceneComposerTopComponent.findInstance().addModel(model);
         } else {
