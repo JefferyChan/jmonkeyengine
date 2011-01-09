@@ -57,7 +57,6 @@ public class PhysicsRigidBodyControl extends PhysicsRigidBody implements Physics
     public Control cloneForSpatial(Spatial spatial) {
         PhysicsRigidBodyControl control = new PhysicsRigidBodyControl(collisionShape, mass);
         control.setAngularSleepingThreshold(getAngularSleepingThreshold());
-        control.setAngularVelocity(getAngularVelocity());
         control.setCcdMotionThreshold(getCcdMotionThreshold());
         control.setCcdSweptSphereRadius(getCcdSweptSphereRadius());
         control.setCollideWithGroups(getCollideWithGroups());
@@ -67,10 +66,14 @@ public class PhysicsRigidBodyControl extends PhysicsRigidBody implements Physics
         control.setGravity(getGravity());
         control.setKinematic(isKinematic());
         control.setLinearSleepingThreshold(getLinearSleepingThreshold());
-        control.setLinearVelocity(getLinearVelocity());
         control.setPhysicsLocation(getPhysicsLocation(null));
         control.setPhysicsRotation(getPhysicsRotation(null));
         control.setRestitution(getRestitution());
+
+        if(mass>0){
+            control.setAngularVelocity(getAngularVelocity());
+            control.setLinearVelocity(getLinearVelocity());
+        }
 
         control.setSpatial(spatial);
         return control;
