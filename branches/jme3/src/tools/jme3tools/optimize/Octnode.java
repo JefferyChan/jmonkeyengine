@@ -174,16 +174,43 @@ public class Octnode {
         subdivide(0, minTrisPerNode);
     }
 
-    public void makeFastOctnode(List<Geometry> globalGeomList){
-        Collection<Geometry> geomsColl = Arrays.asList(geoms);
-        List<Geometry> myOptimizedList = GeometryBatchFactory.makeBatches(geomsColl);
-        
-        int startIndex = globalGeomList.size();
-        globalGeomList.addAll(myOptimizedList);
-
+    public void createFastOctnode(List<Geometry> globalGeomList){
         fastNode = new FastOctnode();
-        fastNode.setOffset(startIndex);
-        fastNode.length = myOptimizedList.size();
+
+        if (geoms != null){
+            Collection<Geometry> geomsColl = Arrays.asList(geoms);
+            List<Geometry> myOptimizedList = GeometryBatchFactory.makeBatches(geomsColl);
+
+            int startIndex = globalGeomList.size();
+            globalGeomList.addAll(myOptimizedList);
+
+            fastNode.setOffset(startIndex);
+            fastNode.length = myOptimizedList.size();
+        }else{
+            fastNode.setOffset(0);
+            fastNode.length = 0;
+        }
+
+        for (int i = 0; i < 8; i++){
+            if (children[i] != null){
+                children[i].createFastOctnode(globalGeomList);
+            }
+        }
+    }
+
+    public void generateFastOctnodeLinks(Octnode parent, Octnode nextSibling, int side){
+        fastNode.setSide(side);
+        fastNode.next = nextSibling != null ? nextSibling.fastNode : null;
+
+        // We set the next sibling property by going in reverse order
+        Octnode prev = null;
+        for (int i = 7; i >= 0; i--){
+            if (children[i] != null){
+                children[i].generateFastOctnodeLinks(this, prev, i);
+                prev = children[i];
+            }
+        }
+        fastNode.child = prev != null ? prev.fastNode : null;
     }
 
     private void generateRenderSetNoCheck(Set<Geometry> renderSet, Camera cam){

@@ -141,8 +141,8 @@ public class GeometryBatchFactory {
                     
                     for (int tri = 0; tri < geomTriCount; tri++){
                         for (int comp = 0; comp < components; comp++){
-                            int idx = inIdx.get(tri*3+comp) + globalVertIndex;
-                            outIdx.put((globalTriIndex + tri) * 3 + comp, idx);
+                            int idx = inIdx.get(tri*components+comp) + globalVertIndex;
+                            outIdx.put((globalTriIndex + tri) * components + comp, idx);
                         }
                     }
                 }else if (Type.Position.ordinal() == bufType){

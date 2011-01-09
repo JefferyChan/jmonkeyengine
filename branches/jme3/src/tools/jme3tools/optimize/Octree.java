@@ -122,6 +122,22 @@ public class Octree {
         root.subdivide(minTrisPerNode);
         root.collectTriangles(geoms);
     }
+
+    public void createFastOctnodes(List<Geometry> globalGeomList){
+        root.createFastOctnode(globalGeomList);
+    }
+
+    public BoundingBox getBound(){
+        return bbox;
+    }
+
+    public FastOctnode getFastRoot(){
+        return root.fastNode;
+    }
+
+    public void generateFastOctnodeLinks(){
+        root.generateFastOctnodeLinks(null, null, 0);
+    }
     
     public void generateRenderSet(Set<Geometry> renderSet, Camera cam){
         root.generateRenderSet(renderSet, cam);

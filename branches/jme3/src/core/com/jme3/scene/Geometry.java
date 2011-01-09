@@ -270,15 +270,20 @@ public class Geometry extends Spatial {
      * @return
      */
     @Override
-    public Geometry clone(){
-        Geometry geomClone = (Geometry) super.clone();
+    public Geometry clone(boolean cloneMaterial){
+        Geometry geomClone = (Geometry) super.clone(cloneMaterial);
         geomClone.cachedWorldMat = cachedWorldMat.clone();
-        if (material != null)
-            geomClone.material = material.clone();
+        if (material != null){
+            if (cloneMaterial)
+                geomClone.material = material.clone();
+            else
+                geomClone.material = material;
+        }
         
         if (mesh.getBuffer(Type.BindPosePosition) != null){
             geomClone.mesh = mesh.cloneForAnim();
         }
+        
         return geomClone;
     }
 
@@ -290,7 +295,7 @@ public class Geometry extends Spatial {
      */
     @Override
     public Spatial deepClone(){
-        Geometry geomClone = clone();
+        Geometry geomClone = clone(true);
         geomClone.mesh = mesh.deepClone();
         return geomClone;
     }

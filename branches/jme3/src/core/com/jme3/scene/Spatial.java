@@ -1075,7 +1075,7 @@ public abstract class Spatial implements Savable, Cloneable, Collidable {
      * @return A clone of this Spatial, the scene graph in its entirety
      * is cloned and can be altered independently of the original scene graph.
      *
-     * Note that meshes of geometries are not cloned explicetly, they
+     * Note that meshes of geometries are not cloned explicitly, they
      * are shared if static, or specially cloned if animated.
      *
      * All controls will be cloned using the Control.cloneForSpatial method
@@ -1083,8 +1083,7 @@ public abstract class Spatial implements Savable, Cloneable, Collidable {
      *
      * @see Mesh#cloneForAnim() 
      */
-    @Override
-    public Spatial clone(){
+    public Spatial clone(boolean cloneMaterial){
         try{
             Spatial clone = (Spatial) super.clone();
             if (worldBound != null)
@@ -1104,7 +1103,7 @@ public abstract class Spatial implements Savable, Cloneable, Collidable {
                 Node nodeClone = (Node) clone;
                 nodeClone.children = new ArrayList<Spatial>();
                 for (Spatial child : node.children){
-                    Spatial childClone = child.clone();
+                    Spatial childClone = child.clone(cloneMaterial);
                     childClone.parent = nodeClone;
                     nodeClone.children.add(childClone);
                 }
@@ -1128,6 +1127,23 @@ public abstract class Spatial implements Savable, Cloneable, Collidable {
         }catch (CloneNotSupportedException ex){
             throw new AssertionError();
         }
+    }
+
+    /**
+     * @return A clone of this Spatial, the scene graph in its entirety
+     * is cloned and can be altered independently of the original scene graph.
+     *
+     * Note that meshes of geometries are not cloned explicitly, they
+     * are shared if static, or specially cloned if animated.
+     *
+     * All controls will be cloned using the Control.cloneForSpatial method
+     * on the clone.
+     *
+     * @see Mesh#cloneForAnim() 
+     */
+    @Override
+    public Spatial clone(){
+        return clone(true);
     }
 
     /**

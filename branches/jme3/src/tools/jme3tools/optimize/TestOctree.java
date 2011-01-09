@@ -33,6 +33,7 @@
 package jme3tools.optimize;
 
 import com.jme3.app.SimpleApplication;
+import com.jme3.bounding.BoundingBox;
 import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
 import com.jme3.material.MaterialList;
@@ -43,12 +44,12 @@ import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
-import com.jme3.scene.Mesh;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.debug.WireBox;
 import com.jme3.scene.plugins.ogre.MeshLoader;
 import com.jme3.scene.plugins.ogre.OgreMeshKey;
 import com.jme3.texture.FrameBuffer;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -56,6 +57,10 @@ import java.util.Set;
 public class TestOctree extends SimpleApplication implements SceneProcessor {
 
     private Octree tree;
+    private FastOctnode fastRoot;
+    private Geometry[] globalGeoms;
+    private BoundingBox octBox;
+
     private Set<Geometry> renderSet = new HashSet<Geometry>(300);
     private Material mat, mat2;
     private WireBox box = new WireBox(1,1,1);
@@ -66,8 +71,8 @@ public class TestOctree extends SimpleApplication implements SceneProcessor {
     }
 
     public void simpleInitApp() {
-        this.flyCam.setMoveSpeed(2000);
-        this.cam.setFrustumFar(10000);
+//        this.flyCam.setMoveSpeed(2000);
+//        this.cam.setFrustumFar(10000);
         MeshLoader.AUTO_INTERLEAVE = false;
 
 //        mat = new Material(assetManager, "Common/MatDefs/Misc/WireColor.j3md");
@@ -80,27 +85,37 @@ public class TestOctree extends SimpleApplication implements SceneProcessor {
         OgreMeshKey key = new OgreMeshKey("main.meshxml", matList);
         Spatial scene = assetManager.loadModel(key);
 
+//        Spatial scene = assetManager.loadModel("Models/Teapot/teapot.obj");
+//        scene.scale(3);
 
         DirectionalLight dl = new DirectionalLight();
         dl.setColor(ColorRGBA.White);
         dl.setDirection(new Vector3f(-1, -1, -1).normalize());
-        scene.addLight(dl);
+        rootNode.addLight(dl);
 
-        dl = new DirectionalLight();
-        dl.setColor(ColorRGBA.White);
-        dl.setDirection(new Vector3f(1, -1, 1).normalize());
-        scene.addLight(dl);
-
-//        scene.setMaterial(mat2);
-//        scene.setLocalScale(0.2f);
-//        Spatial scene = manager.loadModel("models/teapot.obj");
-//        Material mat = new Material(manager, "Common/MatDefs/Misc/ShowNormals.j3md");
-//        scene.setMaterial(mat);
+        DirectionalLight dl2 = new DirectionalLight();
+        dl2.setColor(ColorRGBA.White);
+        dl2.setDirection(new Vector3f(1, -1, 1).normalize());
+        rootNode.addLight(dl2);
 
         // generate octree
-        tree = new Octree(scene, 20000);
-//        tree = new Octree(scene, 50);
+//        tree = new Octree(scene, 20000);
+        tree = new Octree(scene, 50);
         tree.construct();
+        
+        ArrayList<Geometry> globalGeomList = new ArrayList<Geometry>();
+        tree.createFastOctnodes(globalGeomList);
+        tree.generateFastOctnodeLinks();
+
+        for (Geometry geom : globalGeomList){
+            geom.addLight(dl);
+            geom.addLight(dl2);
+            geom.updateGeometricState();
+        }
+        
+        globalGeoms = globalGeomList.toArray(new Geometry[0]);
+        fastRoot = tree.getFastRoot();
+        octBox = tree.getBound();
 
         viewPort.addProcessor(this);
     }
@@ -120,7 +135,8 @@ public class TestOctree extends SimpleApplication implements SceneProcessor {
 
     public void postQueue(RenderQueue rq) {
         renderSet.clear();
-        tree.generateRenderSet(renderSet, cam);
+        //tree.generateRenderSet(renderSet, cam);
+        fastRoot.generateRenderSet(globalGeoms, renderSet, cam, octBox, true);
 //        System.out.println("Geoms: "+renderSet.size());
         int tris = 0;
 

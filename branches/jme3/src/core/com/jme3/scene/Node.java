@@ -569,8 +569,8 @@ public class Node extends Spatial implements Savable {
     }
 
     @Override
-    public Node clone(){
-        Node nodeClone = (Node) super.clone();
+    public Node clone(boolean cloneMaterials){
+        Node nodeClone = (Node) super.clone(cloneMaterials);
 //        nodeClone.children = new ArrayList<Spatial>();
 //        for (Spatial child : children){
 //            Spatial childClone = child.clone();
