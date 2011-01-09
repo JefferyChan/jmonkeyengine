@@ -7,7 +7,12 @@ package com.jme3.gde.core.scene.controller;
 import com.jme3.asset.AssetManager;
 import com.jme3.bounding.BoundingBox;
 import com.jme3.bounding.BoundingVolume;
-import com.jme3.bullet.nodes.PhysicsBaseNode;
+import com.jme3.bullet.collision.PhysicsCollisionObject;
+import com.jme3.bullet.control.PhysicsCharacterControl;
+import com.jme3.bullet.control.PhysicsControl;
+import com.jme3.bullet.control.PhysicsGhostControl;
+import com.jme3.bullet.control.PhysicsRigidBodyControl;
+import com.jme3.bullet.control.PhysicsVehicleControl;
 import com.jme3.bullet.util.DebugShapeFactory;
 import com.jme3.gde.core.scene.SceneApplication;
 import com.jme3.material.Material;
@@ -143,10 +148,9 @@ public class SceneToolController {
         }
         if (spat instanceof Geometry) {
             attachGeometrySelection((Geometry) spat);
-        } else if(spat instanceof PhysicsBaseNode){
-            attachPhysicsSelection((PhysicsBaseNode)spat);
-        }
-        else {
+        } else if (spat.getControl(PhysicsControl.class) != null) {
+            attachPhysicsSelection(spat);
+        } else {
             attachBoxSelection(spat);
         }
     }
@@ -181,11 +185,24 @@ public class SceneToolController {
         }
     }
 
-    protected void attachPhysicsSelection(PhysicsBaseNode geom) {
+    protected void attachPhysicsSelection(Spatial geom) {
+        PhysicsCollisionObject control = geom.getControl(PhysicsRigidBodyControl.class);
+        if (control == null) {
+            control = geom.getControl(PhysicsVehicleControl.class);
+        }
+        if (control == null) {
+            control = geom.getControl(PhysicsGhostControl.class);
+        }
+        if (control == null) {
+            control = geom.getControl(PhysicsCharacterControl.class);
+        }
+        if (control == null) {
+            return;
+        }
         Material mat = new Material(SceneApplication.getApplication().getAssetManager(), "Common/MatDefs/Misc/WireColor.j3md");
         mat.setColor("m_Color", ColorRGBA.Blue);
-        Spatial selectionGeometry=DebugShapeFactory.getDebugShape(geom.getCollisionShape());
-        if (selectionGeometry !=null) {
+        Spatial selectionGeometry = DebugShapeFactory.getDebugShape(control.getCollisionShape());
+        if (selectionGeometry != null) {
             selectionGeometry.setMaterial(mat);
             selectionGeometry.setLocalTransform(geom.getWorldTransform());
             toolsNode.attachChild(selectionGeometry);

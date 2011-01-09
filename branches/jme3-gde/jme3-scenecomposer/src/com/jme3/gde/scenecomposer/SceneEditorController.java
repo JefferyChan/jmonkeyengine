@@ -8,6 +8,7 @@ import com.jme3.asset.AssetManager;
 import com.jme3.asset.DesktopAssetManager;
 import com.jme3.asset.ModelKey;
 import com.jme3.audio.AudioNode;
+import com.jme3.bullet.control.PhysicsRigidBodyControl;
 import com.jme3.bullet.nodes.PhysicsBaseNode;
 import com.jme3.bullet.nodes.PhysicsNode;
 import com.jme3.bullet.util.CollisionShapeFactory;
@@ -309,23 +310,57 @@ public class SceneEditorController implements PropertyChangeListener, NodeListen
     }
 
     public void doCreatePhysicsMesh(Spatial selected) {
+        PhysicsRigidBodyControl control=selected.getControl(PhysicsRigidBodyControl.class);
+        if(control!=null){
+            selected.removeControl(control);
+        }
         Node parent = selected.getParent();
-        if (selected instanceof PhysicsBaseNode) {
-            PhysicsBaseNode collObj = (PhysicsBaseNode) selected;
-            collObj.removeFromParent();
-            collObj.setCollisionShape(CollisionShapeFactory.createMeshShape(selected));
-            if (parent != null) {
-                parent.attachChild(selected);
-            }
+        selected.removeFromParent();
+        selected.addControl(new PhysicsRigidBodyControl(0));
+        if (parent != null) {
+            parent.attachChild(selected);
+        }
+        refreshSelected();
+    }
+
+    public void createDynamicPhysicsMeshForSelectedSpatial(final float weight) {
+        if (selectedSpat == null) {
             return;
         }
-        selected.removeFromParent();
-        PhysicsNode node = new PhysicsNode(selected, CollisionShapeFactory.createMeshShape(selected), 0);
-        node.setName(selected.getName() + "-PhysicsNode");
-        if (parent != null) {
-            parent.attachChild(node);
+        if (selectedSpat != jmeRootNode) {
+            try {
+                final Spatial node = selectedSpat.getLookup().lookup(Spatial.class);
+                setNeedsSave(true);
+                if (node != null) {
+                    SceneApplication.getApplication().enqueue(new Callable() {
+
+                        public Object call() throws Exception {
+                            doCreateDynamicPhysicsMesh(node,weight);
+                            return null;
+
+                        }
+                    }).get();
+                }
+            } catch (InterruptedException ex) {
+                Exceptions.printStackTrace(ex);
+            } catch (ExecutionException ex) {
+                Exceptions.printStackTrace(ex);
+            }
         }
-        refreshSelectedParent();
+    }
+
+    public void doCreateDynamicPhysicsMesh(Spatial selected, float weight) {
+        PhysicsRigidBodyControl control=selected.getControl(PhysicsRigidBodyControl.class);
+        if(control!=null){
+            selected.removeControl(control);
+        }
+        Node parent = selected.getParent();
+        selected.removeFromParent();
+        selected.addControl(new PhysicsRigidBodyControl(weight));
+        if (parent != null) {
+            parent.attachChild(selected);
+        }
+        refreshSelected();
     }
 
     public void addModel(final SpatialAssetDataObject file, final Vector3f location) {
