@@ -241,7 +241,7 @@ public class SimpleWaterProcessor implements SceneProcessor {
         reflectionView.setClearEnabled(true);
         reflectionView.setBackgroundColor(ColorRGBA.Black);
         // create offscreen framebuffer
-        reflectionBuffer = new FrameBuffer(renderWidth, renderHeight, 0);
+        reflectionBuffer = new FrameBuffer(renderWidth, renderHeight, 1);
         //setup framebuffer to use texture
         reflectionBuffer.setDepthBuffer(Format.Depth);
         reflectionBuffer.setColorTexture(reflectionTexture);
@@ -257,7 +257,7 @@ public class SimpleWaterProcessor implements SceneProcessor {
         refractionView.setClearEnabled(true);
         refractionView.setBackgroundColor(ColorRGBA.Black);
         // create offscreen framebuffer
-        refractionBuffer = new FrameBuffer(renderWidth, renderHeight, 0);
+        refractionBuffer = new FrameBuffer(renderWidth, renderHeight, 1);
         //setup framebuffer to use texture
         refractionBuffer.setDepthBuffer(Format.Depth);
         refractionBuffer.setColorTexture(refractionTexture);

@@ -179,7 +179,6 @@ public class FilterPostProcessor implements SceneProcessor, Savable {
                             pass.getPassMaterial().setTexture("m_Texture", tex);
                             if (tex.getImage().getMultiSamples() > 1){
                                 pass.getPassMaterial().setInt("m_NumSamples", tex.getImage().getMultiSamples());
-                                pass.getPassMaterial().setParam("m_SamplePositions", VarType.Vector2Array, samplePositions);
                             }
                         }
                         renderProcessing(r, pass.getRenderFrameBuffer(), pass.getPassMaterial());
@@ -191,7 +190,6 @@ public class FilterPostProcessor implements SceneProcessor, Savable {
                 mat.setTexture("m_Texture", tex);
                 if (tex.getImage().getMultiSamples() > 1){
                     mat.setInt("m_NumSamples", tex.getImage().getMultiSamples());
-                    mat.setParam("m_SamplePositions", VarType.Vector2Array, samplePositions);
                 }
 
                 FrameBuffer buff = outputBuffer;
@@ -209,7 +207,6 @@ public class FilterPostProcessor implements SceneProcessor, Savable {
             renderer.copyFrameBuffer(renderFrameBufferMS, renderFrameBuffer);
         }
         renderFilterChain(renderer);
-
     }
 
     public void preFrame(float tpf) {
@@ -267,24 +264,6 @@ public class FilterPostProcessor implements SceneProcessor, Savable {
             viewPort.setOutputFrameBuffer(outputBuffer);
             viewPort = null;
         }
-
-//        if (renderFrameBufferMS != null) {
-//            renderer.deleteFrameBuffer(renderFrameBufferMS);
-//        }
-//        for (Iterator<Filter> it = filters.iterator(); it.hasNext();) {
-//            Filter filter = it.next();
-//            filter.cleanup(renderer);
-//        }
-
-//        if (filterTexture != null) {
-//            renderer.deleteImage(filterTexture.getImage());
-//        }
-//        if (depthTexture != null) {
-//            renderer.deleteImage(depthTexture.getImage());
-//        }
-//        if (renderFrameBuffer != null) {
-//            renderer.deleteFrameBuffer(renderFrameBuffer);
-//        }
     }
 
     public void reshape(ViewPort vp, int w, int h) {
@@ -294,18 +273,6 @@ public class FilterPostProcessor implements SceneProcessor, Savable {
         vp.getCamera().resize(width, height, true);
         computeDepth=false;
 
-//        if (renderFrameBufferMS != null) {
-//            renderer.deleteFrameBuffer(renderFrameBufferMS);
-//        }
-//        if (renderFrameBuffer != null) {
-//            renderer.deleteImage(filterTexture.getImage());
-//            if (depthTexture != null) {
-//                renderer.deleteImage(depthTexture.getImage());
-//            }
-//            renderer.deleteFrameBuffer(renderFrameBuffer);
-//        } else {
-//            outputBuffer = viewPort.getOutputFrameBuffer();
-//        }
         if (renderFrameBuffer == null) {
             outputBuffer = viewPort.getOutputFrameBuffer();
         }
@@ -330,8 +297,7 @@ public class FilterPostProcessor implements SceneProcessor, Savable {
         }
 
         if (numSamples <= 1 || !caps.contains(Caps.OpenGL31)){
-            renderFrameBuffer = new FrameBuffer(width, height, 0);
-            renderFrameBuffer.setColorBuffer(Format.RGBA8);
+            renderFrameBuffer = new FrameBuffer(width, height, 1);
             renderFrameBuffer.setDepthBuffer(Format.Depth);
             filterTexture = new Texture2D(width, height, Format.RGBA8);
             renderFrameBuffer.setColorTexture(filterTexture);

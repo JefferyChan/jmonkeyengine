@@ -73,10 +73,9 @@ public abstract class Filter implements Savable {
         protected Material passMaterial;
 
         public void init(int width, int height, Format textureFormat, Format depthBufferFormat) {
-            renderFrameBuffer = new FrameBuffer(width, height, 0);
+            renderFrameBuffer = new FrameBuffer(width, height, 1);
             renderedTexture = new Texture2D(width, height, textureFormat);
             renderFrameBuffer.setDepthBuffer(depthBufferFormat);
-            renderFrameBuffer.setColorBuffer(textureFormat);
             renderFrameBuffer.setColorTexture(renderedTexture);
         }
 

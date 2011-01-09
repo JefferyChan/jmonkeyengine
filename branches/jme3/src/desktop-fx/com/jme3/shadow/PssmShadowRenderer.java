@@ -127,7 +127,7 @@ public class PssmShadowRenderer implements SceneProcessor {
 
         for (int i = 0; i < nbSplits; i++) {
             lightViewProjectionsMatrices[i] = new Matrix4f();
-            shadowFB[i] = new FrameBuffer(size, size, 0);
+            shadowFB[i] = new FrameBuffer(size, size, 1);
             shadowMaps[i] = new Texture2D(size, size, Format.Depth16);
 
             shadowFB[i].setDepthTexture(shadowMaps[i]);

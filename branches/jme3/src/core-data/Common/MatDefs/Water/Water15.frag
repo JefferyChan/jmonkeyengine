@@ -6,13 +6,13 @@
 // original HLSL version by Wojciech Toman 2009
 
 #ifdef RESOLVE_MS
-uniform sampler2DMS m_Texture;
-uniform sampler2DMS m_DepthTexture;
-uniform int m_NumSamples;
-uniform vec2 m_SamplePositions[16];
+    uniform sampler2DMS m_Texture;
+    uniform sampler2DMS m_DepthTexture;
+    uniform int m_NumSamples;
+    uniform vec2 m_SamplePositions[16];
 #else
-uniform sampler2D m_Texture;
-uniform sampler2D m_DepthTexture;
+    uniform sampler2D m_Texture;
+    uniform sampler2D m_DepthTexture;
 #endif
 
 uniform sampler2D m_HeightMap;
@@ -44,6 +44,12 @@ uniform vec2 m_WindDirection;
 uniform float m_SunScale;
 uniform float m_WaveScale;
 
+uniform bool m_UseRipples,
+             m_UseHQShoreline,
+             m_UseSpecular,
+             m_UseFoam,
+             m_UseRefraction;
+
 vec2 scale = vec2(m_WaveScale, m_WaveScale);
 float refractionScale = m_WaveScale;
 
@@ -73,13 +79,8 @@ mat3 computeTangentFrame(in vec3 N, in vec3 P, in vec2 UV) {
     vec2 duv2 = dFdy(UV);
 
     // solve the linear system
-    //mat3 M = mat3(dp1, dp2, cross(dp1, dp2));
     vec3 dp1xdp2 = cross(dp1, dp2);
-    //mat3 inverseM = MatrixInverse(M);
     mat2x3 inverseM = mat2x3(cross(dp2, dp1xdp2), cross(dp1xdp2, dp1));
-
-    //vec3 T = inverseM * vec3(duv1.x, duv2.x, 0.0);
-    //vec3 B = inverseM * vec3(duv1.y, duv2.y, 0.0);
 
     vec3 T = inverseM * vec2(duv1.x, duv2.x);
     vec3 B = inverseM * vec2(duv1.y, duv2.y);
@@ -88,9 +89,6 @@ mat3 computeTangentFrame(in vec3 N, in vec3 P, in vec2 UV) {
     float maxLength = max(length(T), length(B));
     T = T / maxLength;
     B = B / maxLength;
-
-    //vec3 tangent = normalize(T);
-    //vec3 binormal = normalize(B);
 
     return mat3(T, B, N);
 }
@@ -113,7 +111,7 @@ vec3 getPosition(in float depth, in vec2 uv){
 // - normal - normalized normal vector
 // - eyeVec - normalized eye vector
 float fresnelTerm(in vec3 normal,in vec3 eyeVec){
-    float angle = 1.0 - saturate(dot(normal, eyeVec));
+    float angle = 1.0 - max(0.0, dot(normal, eyeVec));
     float fresnel = angle * angle;
     fresnel = fresnel * fresnel;
     fresnel = fresnel * angle;
@@ -123,13 +121,13 @@ float fresnelTerm(in vec3 normal,in vec3 eyeVec){
 // NOTE: This will be called even for single-sampling
 vec4 main_multiSample(int sampleNum){
     #ifdef RESOLVE_MS
-    ivec2 iTexCoord = ivec2(texCoord * textureSize(m_DepthTexture));
-    float sceneDepth = texelFetch(m_DepthTexture, iTexCoord, sampleNum).r;
-    vec3 color2 = texelFetch(m_Texture, iTexCoord, sampleNum).rgb;
+        ivec2 iTexCoord = ivec2(texCoord * textureSize(m_DepthTexture));
+        float sceneDepth = texelFetch(m_DepthTexture, iTexCoord, sampleNum).r;
+        vec3 color2 = texelFetch(m_Texture, iTexCoord, sampleNum).rgb;
     #else
-    ivec2 iTexCoord = ivec2(texCoord * textureSize(m_DepthTexture, 0));
-    float sceneDepth = texelFetch(m_DepthTexture, iTexCoord, 0).r;
-    vec3 color2 = texelFetch(m_Texture, iTexCoord, 0).rgb;
+        ivec2 iTexCoord = ivec2(texCoord * textureSize(m_DepthTexture, 0));
+        float sceneDepth = texelFetch(m_DepthTexture, iTexCoord, 0).r;
+        vec3 color2 = texelFetch(m_Texture, iTexCoord, 0).rgb;
     #endif
 
     vec3 color = color2;
@@ -161,10 +159,11 @@ vec4 main_multiSample(int sampleNum){
 
     vec2 texC;
     int samples = 1;
-    #ifdef ENABLE_HQ_SHORELINE
+    if (m_UseHQShoreline){
         samples = 10;
-    #endif
-    float biasFactor = 1.0/samples;
+    }
+
+    float biasFactor = 1.0 / samples;
     for (int i = 0; i < samples; i++){
         texC = (surfacePoint.xz + eyeVecNorm.xz * biasFactor) * scale + m_Time * 0.03 * m_WindDirection;
 
@@ -197,7 +196,7 @@ vec4 main_multiSample(int sampleNum){
     vec3 myNormal = normalize(vec3((normal1 - normal2) * m_MaxAmplitude,m_NormalScale,(normal3 - normal4) * m_MaxAmplitude));
     vec3 normal = vec3(0.0);
 
-    #ifdef ENABLE_RIPPLES
+    if (m_UseRipples){
         texC = surfacePoint.xz * 0.8 + m_WindDirection * m_Time* 1.6;
         mat3 tangentFrame = computeTangentFrame(myNormal, eyeVecNorm, texC);
         vec3 normal0a = normalize(tangentFrame*(2.0 * texture2D(m_NormalMap, texC).xyz - 1.0));
@@ -223,12 +222,12 @@ vec4 main_multiSample(int sampleNum){
         //    gl_FragColor = vec4(color2 + normal*0.0001, 1.0);
         //    return;
         //}
-    #else
+    }else{
         normal = myNormal;
-    #endif
+    }
     
     vec3 refraction = color2;
-    #ifdef ENABLE_REFRACTION
+    if (m_UseRefraction){
         texC = texCoord.xy;
         texC += sin(m_Time*1.8  + 3.0 * abs(position.y)) * (refractionScale * min(depth2, 1.0));
         #ifdef RESOLVE_MS
@@ -238,7 +237,7 @@ vec4 main_multiSample(int sampleNum){
             ivec2 iTexC = ivec2(texC * textureSize(m_Texture, 0));
             refraction = texelFetch(m_Texture, iTexC, 0).rgb;
         #endif
-    #endif
+    }
 
     vec3 waterPosition = surfacePoint.xyz;
     waterPosition.y -= (level - m_WaterHeight);
@@ -259,12 +258,12 @@ vec4 main_multiSample(int sampleNum){
         m_DeepWaterColor.rgb * waterCol, saturate(depth2 / m_ColorExtinction));
 
     vec3 foam = vec3(0.0);
-    #ifdef ENABLE_FOAM
+    if (m_UseFoam){
         texC = (surfacePoint.xz + eyeVecNorm.xz * 0.1) * 0.05 + m_Time * 0.05 * m_WindDirection + sin(m_Time * 0.001 + position.x) * 0.005;
         vec2 texCoord2 = (surfacePoint.xz + eyeVecNorm.xz * 0.1) * 0.05 + m_Time * 0.1 * m_WindDirection + sin(m_Time * 0.001 + position.z) * 0.005;
 
         if(depth2 < m_FoamExistence.x){
-            foam = (texture2D(m_FoamMap, texC).r + texture2D(m_FoamMap, texCoord2)).rgb * 0.4;
+            foam = (texture2D(m_FoamMap, texC).r + texture2D(m_FoamMap, texCoord2)).rgb * vec3(0.4);
         }else if(depth2 < m_FoamExistence.y){
             foam = mix((texture2D(m_FoamMap, texC) + texture2D(m_FoamMap, texCoord2)) * 0.4, vec4(0.0),
                 (depth2 - m_FoamExistence.x) / (m_FoamExistence.y - m_FoamExistence.x)).rgb;
@@ -275,10 +274,10 @@ vec4 main_multiSample(int sampleNum){
                 saturate((level - (m_WaterHeight + m_FoamExistence.z)) / (m_MaxAmplitude - m_FoamExistence.z))).rgb;
         }
         foam *= m_LightColor.rgb;
-    #endif
+    }
 
     vec3 specular = vec3(0.0);
-    #ifdef ENABLE_SPECULAR
+    if (m_UseSpecular){
         vec3 lightDir=normalize(m_LightDir);
         vec3 mirrorEye = (2.0 * dot(eyeVecNorm, normal) * normal - eyeVecNorm);
         float dotSpec = saturate(dot(mirrorEye.xyz, -lightDir) * 0.5 + 0.5);
@@ -286,7 +285,7 @@ vec4 main_multiSample(int sampleNum){
         specular += specular * 25.0 * saturate(m_Shininess - 0.05);
         //foam does not shine
         specular=specular * m_LightColor.rgb - (5.0 * foam);
-    #endif
+    }
 
     color = mix(refraction, reflection, fresnel);
     color = mix(refraction, color, saturate(depth * m_ShoreHardness));
@@ -305,13 +304,10 @@ vec4 main_multiSample(int sampleNum){
 void main(){
     #ifdef RESOLVE_MS
         vec4 color = vec4(0.0);
-        float totalWeights = 0.0;
         for (int i = 0; i < m_NumSamples; i++){
-            float weight = length(m_SamplePositions[i] - vec2(1.0));
-            color += main_multiSample(i) * weight;
-            totalWeights += weight;
+            color += main_multiSample(i);
         }
-        gl_FragColor = color / totalWeights;
+        gl_FragColor = color / m_NumSamples;
     #else
         gl_FragColor = main_multiSample(0);
     #endif

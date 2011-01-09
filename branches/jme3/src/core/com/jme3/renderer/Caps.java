@@ -43,9 +43,25 @@ import java.util.Collection;
 public enum Caps {
 
     /// Framebuffer features
+    /**
+     * Supports FrameBuffer Objects (FBO)
+     */
     FrameBuffer,
+
+    /**
+     * Supports framebuffer Multiple Render Targets (MRT)
+     */
     FrameBufferMRT,
+
+    /**
+     * Supports framebuffer multi-sampling
+     */
     FrameBufferMultisample,
+
+    /**
+     * Supports texture multi-sampling
+     */
+    TextureMultisample,
 
     /// API Version
     OpenGL20,

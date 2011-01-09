@@ -67,7 +67,7 @@ public class BasicShadowRenderer implements SceneProcessor {
     private Vector3f direction = new Vector3f();
 
     public BasicShadowRenderer(AssetManager manager, int size){
-        shadowFB =  new FrameBuffer(size,size,0);
+        shadowFB =  new FrameBuffer(size,size,1);
         shadowMap = new Texture2D(size,size,Format.Depth);
         shadowFB.setDepthTexture(shadowMap);
         shadowCam = new Camera(size,size);

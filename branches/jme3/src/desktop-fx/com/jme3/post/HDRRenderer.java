@@ -262,7 +262,7 @@ public class HDRRenderer implements SceneProcessor {
             renderer.deleteFrameBuffer(mainSceneFB);
         }
 
-        mainSceneFB = new FrameBuffer(w, h, 0);
+        mainSceneFB = new FrameBuffer(w, h, 1);
         mainScene = new Texture2D(w, h, bufFormat);
         mainSceneFB.setDepthBuffer(Format.Depth);
         mainSceneFB.setColorTexture(mainScene);
@@ -303,23 +303,23 @@ public class HDRRenderer implements SceneProcessor {
         fsQuad = new Picture("HDR Fullscreen Quad");
 
         Format lumFmt = Format.Luminance8;
-        scene64FB = new FrameBuffer(64, 64, 0);
+        scene64FB = new FrameBuffer(64, 64, 1);
         scene64 = new Texture2D(64, 64, lumFmt);
         scene64FB.setColorTexture(scene64);
         scene64.setMagFilter(fbMagFilter);
         scene64.setMinFilter(fbMinFilter);
 
-        scene8FB = new FrameBuffer(8, 8, 0);
+        scene8FB = new FrameBuffer(8, 8, 1);
         scene8 = new Texture2D(8, 8, lumFmt);
         scene8FB.setColorTexture(scene8);
         scene8.setMagFilter(fbMagFilter);
         scene8.setMinFilter(fbMinFilter);
 
-        scene1FB[0] = new FrameBuffer(1, 1, 0);
+        scene1FB[0] = new FrameBuffer(1, 1, 1);
         scene1[0] = new Texture2D(1, 1, lumFmt);
         scene1FB[0].setColorTexture(scene1[0]);
 
-        scene1FB[1] = new FrameBuffer(1, 1, 0);
+        scene1FB[1] = new FrameBuffer(1, 1, 1);
         scene1[1] = new Texture2D(1, 1, lumFmt);
         scene1FB[1].setColorTexture(scene1[1]);
 

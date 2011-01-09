@@ -78,7 +78,7 @@ public class WaterFilter extends Filter {
             0.0f, 0.5f, 0.0f, 0.5f,
             0.0f, 0.0f, 0.0f, 0.5f,
             0.0f, 0.0f, 0.0f, 1.0f);
-    private Matrix4f textureProjMatrix;
+    private Matrix4f textureProjMatrix = new Matrix4f();
     private float waterHeight = 0.0f;
     private float waterTransparency = 0.1f;
     private float normalScale = 3.0f;
@@ -138,7 +138,7 @@ public class WaterFilter extends Filter {
     @Override
     public void preRender(RenderManager renderManager, ViewPort viewPort) {
         Camera sceneCam = viewPort.getCamera();
-        textureProjMatrix = biasMatrix.mult(sceneCam.getViewProjectionMatrix());
+        biasMatrix.mult(sceneCam.getViewProjectionMatrix(), textureProjMatrix);
         material.setMatrix4("m_TextureProjMatrix", textureProjMatrix);
         material.setVector3("m_CameraPosition", sceneCam.getLocation());
         material.setMatrix4("m_ViewProjectionMatrixInverse", sceneCam.getViewProjectionMatrix().invert());

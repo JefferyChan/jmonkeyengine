@@ -365,6 +365,8 @@ public class LwjglRenderer implements Renderer {
             }
 
             if (ctxCaps.GL_ARB_texture_multisample){
+                caps.add(Caps.TextureMultisample);
+
                 glGetInteger(GL_MAX_COLOR_TEXTURE_SAMPLES, intBuf16);
                 maxColorTexSamples = intBuf16.get(0);
                 logger.log(Level.FINER, "Texture Multisample Color Samples: {0}", maxColorTexSamples);
@@ -1567,6 +1569,13 @@ public class LwjglRenderer implements Renderer {
             }
         }
 
+        int imageSamples = img.getMultiSamples();
+        if (imageSamples > 1){
+            if (img.getFormat().isDepthFormat())
+                img.setMultiSamples( Math.min(maxDepthTexSamples, imageSamples) );
+            else
+                img.setMultiSamples( Math.min(maxColorTexSamples, imageSamples) );
+        }
 
         if (target == GL_TEXTURE_CUBE_MAP) {
             List<ByteBuffer> data = img.getData();
@@ -1590,6 +1599,9 @@ public class LwjglRenderer implements Renderer {
         } else {
             TextureUtil.uploadTexture(img, target, 0, 0, tdc);
         }
+
+        if (img.getMultiSamples() != imageSamples)
+            img.setMultiSamples(imageSamples);
 
 //            if (GLContext.getCapabilities().GL_EXT_framebuffer_multisample){
 //                glGenerateMipmapEXT(target);
