@@ -40,5 +40,6 @@ public class BinaryModelDataObject extends SpatialAssetDataObject {
 
     public BinaryModelDataObject(FileObject pf, MultiFileLoader loader) throws DataObjectExistsException, IOException {
         super(pf, loader);
+        getLookup().lookup(AssetData.class).setExtension(BinaryModelFileLoader.INFO_EXTENSION);
     }
 }
