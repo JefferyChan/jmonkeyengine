@@ -45,6 +45,7 @@ import com.jme3.math.Matrix4f;
 import com.jme3.post.SceneProcessor;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
+import com.jme3.renderer.queue.OpaqueComparator;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.debug.WireFrustum;
@@ -219,13 +220,17 @@ public class PssmShadowRenderer implements SceneProcessor {
         this.direction.set(direction).normalizeLocal();
     }
 
+    GeometryList splitOccluders=new GeometryList(new OpaqueComparator());
+
     public void postQueue(RenderQueue rq) {
         
-        GeometryList occluders = rq.getShadowQueueContent(ShadowMode.Cast);
-        noOccluders = occluders.size() == 0;
-        if (noOccluders) {
+        GeometryList occluders = rq.getShadowQueueContent(ShadowMode.Cast);        
+        if (occluders.size() == 0) {
             return;
-        }        
+        }
+        if (rq.getShadowQueueContent(ShadowMode.Receive).size()==0) {
+            return;
+        }
 
         GeometryList receivers = rq.getShadowQueueContent(ShadowMode.Receive);
         Camera viewCam = viewPort.getCamera();
@@ -259,12 +264,11 @@ public class PssmShadowRenderer implements SceneProcessor {
             ShadowUtil.updateFrustumPoints(viewCam, splits[i], splits[i + 1], 1.0f, points);
 
             //Updating shadow cam with curent split frustra
-            if(cropShadows){
-                ShadowUtil.updateShadowCamera(occluders, receivers, shadowCam, points);
-            }else{
-                ShadowUtil.updateShadowCamera(shadowCam, points);  
-            }
-            
+         //   if(cropShadows){
+                ShadowUtil.updateShadowCamera(occluders, receivers, shadowCam, points,splitOccluders);
+//            }else{
+//                ShadowUtil.updateShadowCamera(shadowCam, points);
+//            }           
             //displaying the current splitted frustrum and the associated croped light frustrums in wireframe.
             //only for debuging purpose
             if (debug) {
@@ -288,10 +292,11 @@ public class PssmShadowRenderer implements SceneProcessor {
             r.clearBuffers(false, true, false);
 
             // render shadow casters to shadow map
-            viewPort.getQueue().renderShadowQueue(ShadowMode.Cast, renderManager, shadowCam, i == nbSplits - 1);
-
+            viewPort.getQueue().renderShadowQueue(splitOccluders, renderManager,  shadowCam, true);
+            //viewPort.getQueue().renderShadowQueue(ShadowMode.Cast, renderManager, shadowCam, i == nbSplits - 1);
+            
         }
-
+occluders.clear();
         //restore setting for future rendering
         r.setFrameBuffer(viewPort.getOutputFrameBuffer());
         renderManager.setForcedMaterial(null);

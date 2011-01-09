@@ -295,7 +295,7 @@ public class ShadowUtil {
      * Updates the shadow camera to properly contain the given
      * points (which contain the eye camera frustum corners) and the
      * shadow occluder objects.
-     * 
+     *
      * @param occluders
      * @param lightCam
      * @param points
@@ -304,6 +304,22 @@ public class ShadowUtil {
                                           GeometryList receivers,
                                           Camera shadowCam,
                                           Vector3f[] points){
+        updateShadowCamera(occluders, receivers, shadowCam, points, null);
+    }
+
+    /**
+     * Updates the shadow camera to properly contain the given
+     * points (which contain the eye camera frustum corners) and the
+     * shadow occluder objects.
+     * 
+     * @param occluders
+     * @param lightCam
+     * @param points
+     */
+    public static void updateShadowCamera(GeometryList occluders,
+                                          GeometryList receivers,
+                                          Camera shadowCam,
+                                          Vector3f[] points,GeometryList splitOccluders){
 
         boolean ortho = shadowCam.isParallelProjection();
 
@@ -344,6 +360,9 @@ public class ShadowUtil {
 
             if (splitBB.intersects(occBox)){
                 visOccList.add(occBox);
+                if(splitOccluders!=null){
+                    splitOccluders.add(occluder);
+                }
             }
         }
 

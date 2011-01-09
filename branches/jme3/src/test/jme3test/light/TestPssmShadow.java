@@ -108,13 +108,13 @@ public class TestPssmShadow extends SimpleApplication {
         }
 
 
-        pssmRenderer = new PssmShadowRenderer(assetManager, 1024,4,PssmShadowRenderer.EDGE_FILTERING_PCF);
+        pssmRenderer = new PssmShadowRenderer(assetManager, 1024,2,PssmShadowRenderer.EDGE_FILTERING_PCF);
         pssmRenderer.setDirection(new Vector3f(-1, -1, -1).normalizeLocal());
         pssmRenderer.setLambda(0.3f);
         pssmRenderer.setShadowIntensity(0.6f);
-        pssmRenderer.setCropShadows(false);
-        pssmRenderer.setPcfFilter(PssmShadowRenderer.FILTERING.PCF16X16);
-        pssmRenderer.setEdgesThickness(5);
+        //pssmRenderer.setCropShadows(false);
+        pssmRenderer.setPcfFilter(PssmShadowRenderer.FILTERING.PCF8X8);
+        //pssmRenderer.setEdgesThickness(5);
         viewPort.addProcessor(pssmRenderer);
         initInputs();
     }

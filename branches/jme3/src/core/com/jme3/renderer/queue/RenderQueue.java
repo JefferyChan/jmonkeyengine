@@ -140,6 +140,10 @@ public class RenderQueue {
             list.clear();
     }
 
+    public void renderShadowQueue(GeometryList list, RenderManager rm, Camera cam, boolean clear){
+          renderGeometryList(list, rm, cam, clear);
+    }
+
     public void renderShadowQueue(ShadowMode shadBucket, RenderManager rm, Camera cam, boolean clear){
         switch (shadBucket){
             case Cast:
