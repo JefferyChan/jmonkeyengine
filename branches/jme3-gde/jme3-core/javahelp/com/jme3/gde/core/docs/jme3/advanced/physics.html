@@ -8,10 +8,46 @@
 
 The jMonkeyEngine3 has built-in support for <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://jbullet.advel.cz"><param name="text" value="<html><u>jBullet physics</u></html>"><param name="textColor" value="blue"></object> via the <code>com.jme3.bullet</code> package.
 Game Physics are used in applications that simulate mass/gravity, collisions, and friction. Think of pool billiard or car racing simulations.
+
 </p>
 
 </div>
-<!-- SECTION "Physics: Gravity, Collisions, Forces" [1-320] -->
+<!-- SECTION "Physics: Gravity, Collisions, Forces" [1-319] -->
+<h2><a name="technical_overview" id="technical_overview">Technical Overview</a></h2>
+<div class="level2">
+
+<p>
+
+Bullet physics runs internally at 60fps by default. This rate is not dependent on the actual framerate and it does not lock the framerate at 60fps. Instead, when the actual fps is higher than the physics framerate the system will display interpolated positions for the physics objects. When the framerate is lower than the physics framerate the physics space will be stepped multiple times per frame to make up for the missing calculations.
+</p>
+
+<p>
+A bullet physics space can be created with a BulletAppState. The updating and syncing of the actual physics objects happens in the following way:
+</p>
+
+<p>
+A “normal” update loop with physics looks like this:
+</p>
+<ol>
+<li class="level1"><div class="li"> collision callbacks (BulletAppState.update())</div>
+</li>
+<li class="level1"><div class="li"> user update (simpleUpdate / update)</div>
+</li>
+<li class="level1"><div class="li"> physics to scenegraph syncing/applying (updateLogicalState())</div>
+</li>
+<li class="level1"><div class="li"> applying scenegraph locations to physics (PhysicsSpace.update())</div>
+</li>
+<li class="level1"><div class="li"> stepping physics (before / in parallel to Application.render())</div>
+</li>
+</ol>
+
+<p>
+
+When you use physics, 1 unit (1.0f) equals 1 meter, weight is expressed in kilograms, most torque and rotation values are expressed in radians.
+</p>
+
+</div>
+<!-- SECTION "Technical Overview" [320-1432] -->
 <h2><a name="sample_code" id="sample_code">Sample Code</a></h2>
 <div class="level2">
 
@@ -32,7 +68,7 @@ Full code samples are here:
 </ul>
 
 </div>
-<!-- SECTION "Sample Code" [321-935] -->
+<!-- SECTION "Sample Code" [1433-2047] -->
 <h2><a name="physics_application" id="physics_application">Physics Application</a></h2>
 <div class="level2">
 <ul>
@@ -54,7 +90,7 @@ Full code samples are here:
 </ul>
 
 </div>
-<!-- SECTION "Physics Application" [936-1504] -->
+<!-- SECTION "Physics Application" [2048-2616] -->
 <h3><a name="collision_shapes" id="collision_shapes">Collision Shapes</a></h3>
 <div class="level3">
 
@@ -104,7 +140,7 @@ Pick the right shape for the mesh for what you want to achieve: If you give a bo
 </p>
 
 </div>
-<!-- SECTION "Collision Shapes" [1505-3413] -->
+<!-- SECTION "Collision Shapes" [2617-4525] -->
 <h3><a name="collision_shape_code_samples" id="collision_shape_code_samples">Collision Shape Code Samples</a></h3>
 <div class="level3">
 
@@ -131,38 +167,76 @@ SphereCollisionShape, BoxCollisionShape, CapsuleCollisionShape are also not mesh
     <span class="kw1">new</span> BoxCollisionShape<span class="br0">&#40;</span><span class="kw1">new</span> Vector3f<span class="br0">&#40;</span>1f,2f,3f<span class="br0">&#41;</span><span class="br0">&#41;</span>, 1.5f<span class="br0">&#41;</span></pre><pre class="code java">CapsuleCollisionShape capsuleShape <span class="sy0">=</span> 
     <span class="kw1">new</span> CapsuleCollisionShape<span class="br0">&#40;</span>1f,2f<span class="br0">&#41;</span>;</pre>
 </div>
-<!-- SECTION "Collision Shape Code Samples" [3414-4628] -->
-<h2><a name="physics_nodes" id="physics_nodes">Physics Nodes</a></h2>
+<!-- SECTION "Collision Shape Code Samples" [4526-5738] -->
+<h2><a name="physics_objects" id="physics_objects">Physics Objects</a></h2>
 <div class="level2">
+
+<p>
+Bullet physics objects are available in jME3 through a variety of classes.
+</p>
+
+</div>
+
+<h4><a name="bullet_objects" id="bullet_objects">Bullet Objects</a></h4>
+<div class="level4">
+
+<p>
+These are mostly standard bullet classes like RigidBody, GhostObject etc. and can be used to create new physics functions. Users will mostly use the next two types which internally use these objects.
+</p>
+
+</div>
+
+<h4><a name="bullet_controls" id="bullet_controls">Bullet Controls</a></h4>
+<div class="level4">
+
+<p>
+This is the new recommended way to do physics, these Controls can be applied to a Spatial to make it move according to the physics. These control classes directly extend the Bullet Objects. Controls present a flexible way to use physics in an Application.
+</p>
+
+</div>
+
+<h4><a name="bullet_nodes" id="bullet_nodes">Bullet Nodes</a></h4>
+<div class="level4">
+
+<p>
+These Nodes have Bullet Controllers attached and wrap their methods to “simulate” the old physics nodes that were available before alpha-4. The setLocalTranslation/Rotation() info is transferred to the Bullet Objects for simplicity.
+</p>
+
+<p>
+The bullet objects themselves devivide up into:
+</p>
 <ul>
-<li class="level1"><div class="li"> Use <code>com.jme3.bullet.nodes.PhysicsNode</code> for physical parts of the scene, projectiles, and obstacles – things that are freely affected by physical forcs, be it by collision or by falling.</div>
+<li class="level1"><div class="li"> Use <code>PhysicsRigidBodyControl</code> for physical parts of the scene, projectiles, and obstacles – things that are freely affected by physical forcs, be it by collision or by falling.</div>
 </li>
-<li class="level1"><div class="li"> Use <code>com.jme3.bullet.nodes.PhysicsCharacterNode</code> for characters (persons, animals) that stand upright, orthogonally to the X/Z plane. When directional forces are applied to this type of node, it does not tip over (like a physical object would), but it moves in a stable manner (like a walking character would).</div>
+<li class="level1"><div class="li"> Use <code>PhysicsCharacterControl</code> for characters (persons, animals) that stand upright, orthogonally to the X/Z plane. When directional forces are applied to this type of node, it does not tip over (like a physical object would), but it moves in a stable manner (like a walking character would).</div>
 </li>
-<li class="level1"><div class="li"> Use <code>PhysicsVehicleNode</code> and <code>PhysicsVehicleWheel</code> to create <a href="/com/jme3/gde/core/docs/jme3/advanced/vehicles.html" class="wikilink1" title="jme3:advanced:vehicles">Vehicles</a>.</div>
+<li class="level1"><div class="li"> Use <code>PhysicsGhostControl</code> to e.g. check for collisions.</div>
+</li>
+<li class="level1"><div class="li"> Use <code>PhysicsVehicleControl</code> and <code>PhysicsVehicleWheel</code> to create <a href="/com/jme3/gde/core/docs/jme3/advanced/vehicles.html" class="wikilink1" title="jme3:advanced:vehicles">Vehicles</a>.</div>
 </li>
 </ul>
 
 </div>
-<!-- SECTION "Physics Nodes" [4629-5265] -->
+<!-- SECTION "Physics Objects" [5739-7299] -->
 <h3><a name="physics_nodes_code_samples" id="physics_nodes_code_samples">Physics Nodes Code Samples</a></h3>
 <div class="level3">
 
 <p>
 
-The standard PhysicsNode constructors expect a Geometry, a Collision Shape, and a mass.
+The standard PhysicsNode constructors expect a Collision Shape and a mass.
 </p>
-<pre class="code java">PhysicsNode myThing<span class="sy0">=</span><span class="kw1">new</span> PhysicsNode<span class="br0">&#40;</span> thingGeo , thingShape , 1f<span class="br0">&#41;</span>;</pre>
+<pre class="code java">PhysicsRigidBodyControl myConrol<span class="sy0">=</span><span class="kw1">new</span> PhysicsControl<span class="br0">&#40;</span> thingShape , 1f<span class="br0">&#41;</span>;
+mySpatial.<span class="me1">addContol</span><span class="br0">&#40;</span>myControl<span class="br0">&#41;</span>;</pre>
 <p>
 The second PhysicsNode constructor only expects a collision shape and mass. To make this physical object visible in the scene, you must attach a Node with Geometric properties (e.g. a model) to the physical node:
 </p>
-<pre class="code java">PhysicsCharacterNode character <span class="sy0">=</span> <span class="kw1">new</span> PhysicsCharacterNode<span class="br0">&#40;</span>capsuleShape, 0.01f<span class="br0">&#41;</span>;
+<pre class="code java">PhysicsCharacterControl characterControl <span class="sy0">=</span> <span class="kw1">new</span> PhysicsCharacterControl<span class="br0">&#40;</span>capsuleShape, 0.01f<span class="br0">&#41;</span>;
 Node model <span class="sy0">=</span> <span class="br0">&#40;</span>Node<span class="br0">&#41;</span> assetManager.<span class="me1">loadModel</span><span class="br0">&#40;</span><span class="st0">&quot;Models/myCharacterModel.mesh.xml&quot;</span><span class="br0">&#41;</span>;
-character.<span class="me1">attachChild</span><span class="br0">&#40;</span>model<span class="br0">&#41;</span>;      <span class="co1">// making the physical node visible </span>
+model.<span class="me1">addControl</span><span class="br0">&#40;</span>characterControl<span class="br0">&#41;</span>;      <span class="co1">// making the physical node visible </span>
 bulletAppState.<span class="me1">getPhysicsSpace</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">add</span><span class="br0">&#40;</span>character<span class="br0">&#41;</span>;  <span class="co1">// making the PhysicsNode physical</span>
-rootNode.<span class="me1">attachChild</span><span class="br0">&#40;</span>character<span class="br0">&#41;</span>;   <span class="co1">// making the whole thing appear in the scene</span></pre>
+rootNode.<span class="me1">attachChild</span><span class="br0">&#40;</span>model<span class="br0">&#41;</span>;   <span class="co1">// making the whole thing appear in the scene</span></pre>
 </div>
-<!-- SECTION "Physics Nodes Code Samples" [5266-6112] -->
+<!-- SECTION "Physics Nodes Code Samples" [7300-8185] -->
 <h2><a name="physics_space" id="physics_space">Physics Space</a></h2>
 <div class="level2">
 
@@ -184,7 +258,7 @@ physicalNode.<span class="me1">removeFromParent</span><span class="br0">&#40;</s
 </ol>
 
 </div>
-<!-- SECTION "Physics Space" [6113-6831] -->
+<!-- SECTION "Physics Space" [8186-8904] -->
 <h2><a name="properties_of_physical_objects" id="properties_of_physical_objects">Properties of Physical Objects</a></h2>
 <div class="level2">
 
@@ -239,7 +313,7 @@ On a PhysicsNode, you can set the following physical properties.
 </table>
 
 </div>
-<!-- SECTION "Properties of Physical Objects" [6832-8049] -->
+<!-- SECTION "Properties of Physical Objects" [8905-10122] -->
 <h3><a name="kinematic_vs_dynamic_vs_static" id="kinematic_vs_dynamic_vs_static">Kinematic vs Dynamic vs Static</a></h3>
 <div class="level3">
 
@@ -250,10 +324,11 @@ All PhysicsNodes respond to collisions, and they cannot overlap. But you can cre
 <pre class="code java">airhook.<span class="me1">setKinematic</span><span class="br0">&#40;</span><span class="kw2">true</span><span class="br0">&#41;</span>;</pre>
 <p>
 Kinematic nodes are not affected by gravity, and they are not moved by other physical objects colliding with them. Colliding non-kinematic nodes will deflect from the kinematic node as expected. Kinematic nodes can be positioned, e.g. using setLocalTranslation() in the update() loop. You can basically hang them up in mid-air, and can attach other PhysicsNodes to them using <a href="/com/jme3/gde/core/docs/jme3/advanced/hinges_and_joints.html" class="wikilink1" title="jme3:advanced:hinges_and_joints">hinges and joints</a>. 
+
 </p>
 
 </div>
-<!-- SECTION "Kinematic vs Dynamic vs Static" [8050-8813] -->
+<!-- SECTION "Kinematic vs Dynamic vs Static" [10123-10885] -->
 <h2><a name="forcesmoving_physical_objects" id="forcesmoving_physical_objects">Forces: Moving Physical Objects</a></h2>
 <div class="level2">
 
@@ -267,13 +342,13 @@ Use the following methods to move physics nodes.
 		<th class="col0"> Method </th><th class="col1"> Property </th>
 	</tr>
 	<tr class="row1">
-		<td class="col0"> setAngularVelocity(new Vector3f(0f,0f,1f)) </td><td class="col1"> Move an object to the side with constant speed </td>
+		<td class="col0"> setAngularVelocity(new Vector3f(0f,0f,1f)) </td><td class="col1"> Set the current rotational speed of the object </td>
 	</tr>
 	<tr class="row2">
-		<td class="col0"> setLinearVelocity(new Vector3f(0f,0f,1f)) </td><td class="col1"> Move an object forward with constant speed </td>
+		<td class="col0"> setLinearVelocity(new Vector3f(0f,0f,1f)) </td><td class="col1"> Set the current linear speed of this object </td>
 	</tr>
 	<tr class="row3">
-		<td class="col0"> setWalkDirection(new Vector3f(0f,0f,0.1f))</td><td class="col1"> Make a physical character walk (characters are locked to prevent falling over) </td>
+		<td class="col0"> setWalkDirection(new Vector3f(0f,0f,0.1f))</td><td class="col1"> Make a physical character walk (characters are locked to prevent falling over and use a simple physics simulation) </td>
 	</tr>
 	<tr class="row4">
 		<td class="col0"> applyCentralForce(…) </td><td class="col1 leftalign"> Move (push) the object once with a certain moment, expressed as a Vector3f.  </td>
@@ -308,7 +383,7 @@ Use <code>applyContinuousTorque(false)</code> and <code>applyContinuousForce(fal
 </p>
 
 </div>
-<!-- SECTION "Forces: Moving Physical Objects" [8814-10704] -->
+<!-- SECTION "Forces: Moving Physical Objects" [10886-12813] -->
 <h2><a name="responding_to_a_physicscollisionevent" id="responding_to_a_physicscollisionevent">Responding to a PhysicsCollisionEvent</a></h2>
 <div class="level2">
 
@@ -334,7 +409,7 @@ If you want to respond to a collision event with a custom action however, then y
 </ul>
 
 </div>
-<!-- SECTION "Responding to a PhysicsCollisionEvent" [10705-11340] -->
+<!-- SECTION "Responding to a PhysicsCollisionEvent" [12814-13448] -->
 <h3><a name="overriding_the_collision_method" id="overriding_the_collision_method">Overriding the Collision() Method</a></h3>
 <div class="level3">
 
@@ -349,24 +424,19 @@ After you identify the colliding nodes, specify the action to trigger when this 
 <pre class="code java">    <span class="kw1">public</span> <span class="kw4">void</span> collision<span class="br0">&#40;</span>PhysicsCollisionEvent event<span class="br0">&#41;</span> <span class="br0">&#123;</span>
         <span class="kw1">if</span> <span class="br0">&#40;</span> event.<span class="me1">getNodeA</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">getName</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">equals</span><span class="br0">&#40;</span><span class="st0">&quot;player&quot;</span><span class="br0">&#41;</span> <span class="br0">&#41;</span> <span class="br0">&#123;</span>
             <span class="kw1">final</span> Node node <span class="sy0">=</span> event.<span class="me1">getNodeA</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
-            enqueue<span class="br0">&#40;</span><span class="kw1">new</span> Callable<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-                <span class="kw1">public</span> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Aobject+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object> <span class="br0">&#123;</span>
-                    <span class="co3">/** ... do something with the node ... */</span>
-                    <span class="kw1">return</span> <span class="kw2">null</span>;
-                <span class="br0">&#125;</span>
-            <span class="br0">&#125;</span><span class="br0">&#41;</span>;
+            <span class="co3">/** ... do something with the node ... */</span>
         <span class="br0">&#125;</span> <span class="kw1">else</span> <span class="kw1">if</span> <span class="br0">&#40;</span> event.<span class="me1">getNodeB</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">getName</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">equals</span><span class="br0">&#40;</span><span class="st0">&quot;player&quot;</span><span class="br0">&#41;</span> <span class="br0">&#41;</span> <span class="br0">&#123;</span>
             <span class="kw1">final</span> Node node <span class="sy0">=</span> event.<span class="me1">getNodeB</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
-            enqueue<span class="br0">&#40;</span><span class="kw1">new</span> Callable<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-                <span class="kw1">public</span> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Aobject+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object> <span class="br0">&#123;</span>
-                    <span class="co3">/** ... do something with the node ... */</span>
-                    <span class="kw1">return</span> <span class="kw2">null</span>;
-                <span class="br0">&#125;</span>
-            <span class="br0">&#125;</span><span class="br0">&#41;</span>;
+            <span class="co3">/** ... do something with the node ... */</span>
         <span class="br0">&#125;</span>
     <span class="br0">&#125;</span></pre>
+<p>
+<p><div class="noteimportant">Note that after the collide method has finished the PhysicsCollisionEvent is cleared, so you should get all objects and values you need within the collide method.
+</div></p>
+</p>
+
 </div>
-<!-- SECTION "Overriding the Collision() Method" [11341-12602] -->
+<!-- SECTION "Overriding the Collision() Method" [13449-14561] -->
 <h3><a name="reading_details_from_a_physicscollisionevent" id="reading_details_from_a_physicscollisionevent">Reading Details From a PhysicsCollisionEvent</a></h3>
 <div class="level3">
 
@@ -406,7 +476,7 @@ Note that after the collision method has been called the object is not valid any
 </p>
 
 </div>
-<!-- SECTION "Reading Details From a PhysicsCollisionEvent" [12603-13705] -->
+<!-- SECTION "Reading Details From a PhysicsCollisionEvent" [14562-15664] -->
 <h2><a name="best_practices" id="best_practices">Best Practices</a></h2>
 <div class="level2">
 
@@ -425,5 +495,5 @@ If you get weird behaviour, such as physical nodes jittering wildy and being eje
 </p>
 
 </div>
-<!-- SECTION "Best Practices" [13706-] -->
+<!-- SECTION "Best Practices" [15665-] -->
 <p><em><a href="http://jmonkeyengine.org/wiki/doku.php/jme3:advanced:physics?do=export_xhtmlbody">view online version</a></em></p>

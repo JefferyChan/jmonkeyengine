@@ -448,8 +448,12 @@ Alpha and Beta Testing means that you ask someone to try to install and run your
 A Java Debugger is included in the jMonkeyPlatform. It allows you to set a break point in your code near the point where an exception happens. Then you step through the execution line by line and watch object and variable states to detect where the bug starts.
 </p>
 
+<p>
+Use the <a href="/com/jme3/gde/core/docs/jme3/advanced/logging.html" class="wikilink1" title="jme3:advanced:logging">Logger</a> to print status messages during the development and debugging phase, instead of System.out.println().
+</p>
+
 </div>
-<!-- SECTION "Debug" [13381-13659] -->
+<!-- SECTION "Debug" [13381-13803] -->
 <h3><a name="enhance_performance" id="enhance_performance">Enhance Performance</a></h3>
 <div class="level3">
 
@@ -459,21 +463,41 @@ A Java Profiler can be added to the jMonkeyPlatform via Tools → Plugins → Av
 </p>
 
 </div>
-<!-- SECTION "Enhance Performance" [13660-14052] -->
+<!-- SECTION "Enhance Performance" [13804-14196] -->
 <h2><a name="release_phase" id="release_phase">Release Phase</a></h2>
 <div class="level2">
 
 <p>
 
-Release requirements: When do I consider my game complete? 
+<strong>Pre-Release To-Do List</strong>
+
+</p>
+<ul>
+<li class="level1"><div class="li"> Verify that all assets are up-to-date and converted to .j3o.</div>
+</li>
+<li class="level1"><div class="li"> Switch off fine <a href="/com/jme3/gde/core/docs/jme3/advanced/logging.html" class="wikilink1" title="jme3:advanced:logging">logging</a> output.</div>
+</li>
+<li class="level1"><div class="li"> Prepare a web page</div>
+</li>
+<li class="level1"><div class="li"> Prepare a readme.txt file, installation guide, or handbook – if applicable.</div>
+</li>
+<li class="level1"><div class="li"> Prepare promotional art: Cool screenshots (in thumbnail, square, vertical, horizontal, and fullscreen formats) and video clips. Include name, contact info, slogan, etc.</div>
+</li>
+<li class="level1"><div class="li"> Get a certificate if it is required for your distribution method (see below).</div>
+</li>
+<li class="level1"><div class="li"> Specify a classification rating.</div>
+</li>
+<li class="level1"><div class="li"> …</div>
+</li>
+</ul>
+
+<p>
+
+<strong>Distributable Executable</strong> 
 </p>
 
 <p>
-…
-</p>
-
-<p>
-Distributable Executable: WebStart, Desktop JAR, or Applet? Each has its pros and cons.
+Do you release your game as WebStart, Desktop JAR, or Applet? Each has its pros and cons.
 
 </p>
 <table class="inline">
@@ -495,5 +519,5 @@ Distributable Executable: WebStart, Desktop JAR, or Applet? Each has its pros an
 </table>
 
 </div>
-<!-- SECTION "Release Phase" [14053-] -->
+<!-- SECTION "Release Phase" [14197-] -->
 <p><em><a href="http://jmonkeyengine.org/wiki/doku.php/jme3:intermediate:best_practices?do=export_xhtmlbody">view online version</a></em></p>

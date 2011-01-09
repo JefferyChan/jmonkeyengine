@@ -55,7 +55,7 @@ public class JmeAnimControl extends AbstractSceneExplorerNode{
 
     private AnimControl animControl;
     private static Image smallImage =
-            ImageUtilities.loadImage("com/jme3/gde/core/sceneexplorer/nodes/icons/light.gif");
+            ImageUtilities.loadImage("com/jme3/gde/core/sceneexplorer/nodes/icons/animationcontrol.gif");
 
     public JmeAnimControl() {
     }
@@ -67,15 +67,15 @@ public class JmeAnimControl extends AbstractSceneExplorerNode{
         setName("AnimControl");
     }
 
-//    @Override
-//    public Image getIcon(int type) {
-//        return smallImage;
-//    }
-//
-//    @Override
-//    public Image getOpenedIcon(int type) {
-//        return smallImage;
-//    }
+    @Override
+    public Image getIcon(int type) {
+        return smallImage;
+    }
+
+    @Override
+    public Image getOpenedIcon(int type) {
+        return smallImage;
+    }
 
     @Override
     protected Sheet createSheet() {

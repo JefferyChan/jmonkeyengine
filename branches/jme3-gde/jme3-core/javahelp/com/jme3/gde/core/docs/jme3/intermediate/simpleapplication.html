@@ -50,37 +50,38 @@ The com.jme3.app.Application class represents an instance of a real-time 3D rend
 		<th class="col0">Class field or method</th><th class="col1">Purpose</th>
 	</tr>
 	<tr class="row1">
-		<td class="col0">context</td><td class="col1">The application context contains renderer, <a href="/com/jme3/gde/core/docs/jme3/intermediate/appsettings.html" class="wikilink1" title="jme3:intermediate:appsettings">AppSettings</a>, timer, etc. The context type can be Display, Canvas, Headless, or OffscreenSurface. Default is Display (i.e. run jME in a window of its own. Not usually directly accessed by users.)</td>
+		<td class="col0">context</td><td class="col1">The application context contains renderer, <a href="/com/jme3/gde/core/docs/jme3/intermediate/appsettings.html" class="wikilink1" title="jme3:intermediate:appsettings">AppSettings</a>, timer, etc.  The context object is not usually directly accessed by users.</td>
 	</tr>
 	<tr class="row2">
 		<td class="col0">getRenderManager() <br/>
  getRenderer();</td><td class="col1">Low-level and high-level rendering interface.</td>
 	</tr>
 	<tr class="row3">
-		<td class="col0">getStateManager()</td><td class="col1">Application state manager is used to activate physics.</td>
+		<td class="col0">getStateManager()</td><td class="col1">The Application state manager is used to activate <a href="/com/jme3/gde/core/docs/jme3/advanced/physics.html" class="wikilink1" title="jme3:advanced:physics">physics</a>.</td>
 	</tr>
 	<tr class="row4">
-		<td class="col0">viewPort</td><td class="col1">The main object view for the default cam. </td>
+		<td class="col0">viewPort</td><td class="col1">The view object for the default camera.</td>
 	</tr>
 	<tr class="row5">
-		<td class="col0">guiViewPort</td><td class="col1">The main object view for the orthogonal <acronym title="Graphical User Interface">GUI</acronym> view. (Used for HUDs.) </td>
+		<td class="col0">guiViewPort</td><td class="col1">The view object for the orthogonal <acronym title="Graphical User Interface">GUI</acronym> view. Used internally for <a href="/com/jme3/gde/core/docs/jme3/advanced/hud.html" class="wikilink1" title="jme3:advanced:hud">HUD</a>s. </td>
 	</tr>
 	<tr class="row6">
 		<td class="col0">settings <br/>
- setSettings()</td><td class="col1"><a href="/com/jme3/gde/core/docs/jme3/intermediate/appsettings.html" class="wikilink1" title="jme3:intermediate:appsettings">AppSettings</a>: Display width and height (by default 640&times;480), color bit depth, z-buffer bits, anti-aliasing samples, and update frequency, video and audio renderer, asset manager.</td>
+ setSettings()</td><td class="col1">The <a href="/com/jme3/gde/core/docs/jme3/intermediate/appsettings.html" class="wikilink1" title="jme3:intermediate:appsettings">AppSettings</a> let you specify the display width and height (by default 640&times;480), color bit depth, z-buffer bits, anti-aliasing samples, and update frequency, video and audio renderer, asset manager.</td>
 	</tr>
 	<tr class="row7">
-		<td class="col0">timer</td><td class="col1">Internal update loop timer.</td>
+		<td class="col0">timer</td><td class="col1">Internal update loop timer. Users have access to the tpf float variable in the simpleUpdate() loop to time actions.</td>
 	</tr>
 	<tr class="row8">
-		<td class="col0">cam</td><td class="col1">The default camera: Perspective projection, 45° field of view, near plan=1 wu, far plane=1000 wu.</td>
+		<td class="col0">cam</td><td class="col1">The default <a href="/com/jme3/gde/core/docs/jme3/advanced/camera.html" class="wikilink1" title="jme3:advanced:camera">camera</a> with perspective projection, 45° field of view, near plane = 1 wu, far plane = 1000 wu.</td>
 	</tr>
 	<tr class="row9">
-		<td class="col0">getAssetManager()</td><td class="col1">An object that manages paths for loading models, textures, materials, sounds, etc.</td>
+		<td class="col0">assetManager <br/>
+ getAssetManager()</td><td class="col1">An object that manages paths for loading models, textures, materials, sounds, etc. By default the <a href="/com/jme3/gde/core/docs/jme3/advanced/assetmanager.html" class="wikilink2" title="jme3:advanced:assetmanager" rel="nofollow">AssetManager</a> paths are relative to your projects root directory.</td>
 	</tr>
 	<tr class="row10">
 		<td class="col0">getAudioRenderer() <br/>
- getListener()</td><td class="col1">The audio system.</td>
+ getListener()</td><td class="col1">The <a href="/com/jme3/gde/core/docs/jme3/advanced/audio.html" class="wikilink1" title="jme3:advanced:audio">audio</a> system.</td>
 	</tr>
 	<tr class="row11">
 		<td class="col0">keyInput <br/>
@@ -88,19 +89,20 @@ The com.jme3.app.Application class represents an instance of a real-time 3D rend
  joyInput</td><td class="col1">Default input contexts for keyboard, mouse, and joystick</td>
 	</tr>
 	<tr class="row12">
-		<td class="col0">getInputManager()</td><td class="col1">Use the inputManager to configure your custom inputs.</td>
+		<td class="col0">getInputManager()</td><td class="col1">Use the <a href="/com/jme3/gde/core/docs/jme3/advanced/input_handling.html" class="wikilink1" title="jme3:advanced:input_handling">inputManager</a> to configure your custom inputs.</td>
 	</tr>
 	<tr class="row13">
-		<td class="col0">setPauseOnLostFocus()</td><td class="col1">Set this boolean whether the game should pause when it loses focus.</td>
+		<td class="col0">inputEnabled</td><td class="col1">Set this boolean whether the system should listen for user inputs (or instead just play a non-interactive scene).</td>
 	</tr>
 	<tr class="row14">
-		<td class="col0">inputEnabled</td><td class="col1">Set this boolean whether the system should listen for user inputs (or, for instance, just play a pre-configured scene).</td>
+		<td class="col0">setPauseOnLostFocus()</td><td class="col1">Set this boolean whether the game should pause when ever the window loses focus.</td>
 	</tr>
 	<tr class="row15">
 		<td class="col0">paused</td><td class="col1">Set this boolean during runtime to pause/unpause a game.</td>
 	</tr>
 	<tr class="row16">
-		<td class="col0">start()</td><td class="col1">Call this to start an jME3 game. Opens a new jME3 window, initializes the scene, and starts the event loop.</td>
+		<td class="col0">start() <br/>
+ start(jMEContextType)</td><td class="col1">Call this method to start a jME3 game. By default this opens a new jME3 window, initializes the scene, and starts the event loop. Can optionally accept com.​jme3.​system.​JmeContext.Type.* as argument to run headless or embedded. (See below.)</td>
 	</tr>
 	<tr class="row17">
 		<td class="col0">restart()</td><td class="col1">Reloads the <a href="/com/jme3/gde/core/docs/jme3/intermediate/appsettings.html" class="wikilink1" title="jme3:intermediate:appsettings">AppSettings</a> into the current application context.</td>
@@ -112,11 +114,29 @@ The com.jme3.app.Application class represents an instance of a real-time 3D rend
 
 <p>
 
+The jME Context Type (com.​jme3.​system.​JmeContext.Type.*) is one of the following:
+</p>
+<ul>
+<li class="level1"><div class="li"> Display – jME application runs in a window of its own. This is the Default.</div>
+</li>
+<li class="level1"><div class="li"> Canvas – jME application is embedded in a <a href="/com/jme3/gde/core/docs/jme3/advanced/swing_canvas.html" class="wikilink1" title="jme3:advanced:swing_canvas">Swing Canvas</a>)</div>
+</li>
+<li class="level1"><div class="li"> Headless – jME application runs its event loop without calculating any view and without opening any window. Can be used for a <a href="/com/jme3/gde/core/docs/jme3/intermediate/headlessserver.html" class="wikilink1" title="jme3:intermediate:headlessserver">Headless Server</a> application.</div>
+</li>
+<li class="level1"><div class="li"> OffscreenSurface – jME application view is not shown, but calculated and cached as bitmap (back buffer).</div>
+</li>
+</ul>
+
+<p>
+You can switch Context Types when starting the application, for example: <code>app.start(JmeContext.Type.Headless);</code>
+</p>
+
+<p>
 See also: <a href="/com/jme3/gde/core/docs/jme3/intermediate/appsettings.html" class="wikilink1" title="jme3:intermediate:appsettings">AppSettings</a>
 </p>
 
 </div>
-<!-- SECTION "Application Class" [1078-3150] -->
+<!-- SECTION "Application Class" [1078-4221] -->
 <h2><a name="simpleapplication_class" id="simpleapplication_class">SimpleApplication Class</a></h2>
 <div class="level2">
 
@@ -126,11 +146,11 @@ The com.jme3.app.SimpleApplication class extends the com.jme3.app.Application cl
 </p>
 
 <p>
-By default, SimpleApplication will display a statistics view on-screen (using the com.jme3.app.StatsView class). The statistics show the current frames-per-second value and triangle/vertices statistics. You deactivate it by calling <code>getGuiNode().detachAllChildren();</code>.
+By default, a SimpleApplication displays statistics (such as frames per second) on-screen, using the com.jme3.app.StatsView class. You deactivate the statistics view by calling <code>getGuiNode().detachAllChildren();</code>. 
 </p>
 
 <p>
-Several input keys are pre-configured: Escape closes the application, C prints the camera position and rotation to the console, and M prints memory usage to the console. The default camera is controlled by the arrow and WASD keys.
+Some input keys are pre-configured by default: You quit the application by pressing the Escape key, and you can control the camera using the mouse, the arrow keys, and WASD keys. (More details below.)
 </p>
 
 <p>
@@ -142,25 +162,28 @@ Additional to what Application offers, SimpleApplication offers:
 		<th class="col0">SimpleApplication Feature</th><th class="col1">Purpose</th>
 	</tr>
 	<tr class="row1">
-		<td class="col0">getRootNode() or rootNode</td><td class="col1">The root node of the scene graph. A Spatial that you attach to the rooNode appears in the 3D scene.</td>
+		<td class="col0">getRootNode() <br/>
+ rootNode</td><td class="col1">The root node of the scene graph. A Spatial that you attach to the rootNode appears in the 3D scene.</td>
 	</tr>
 	<tr class="row2">
-		<td class="col0">getGuiNode() or guiNode</td><td class="col1">Attach flat <acronym title="Graphical User Interface">GUI</acronym> elements (like simple HUD images and text) to this orthogonal <acronym title="Graphical User Interface">GUI</acronym> node.</td>
+		<td class="col0">getGuiNode() <br/>
+ guiNode</td><td class="col1">Attach flat <acronym title="Graphical User Interface">GUI</acronym> elements (such as <a href="/com/jme3/gde/core/docs/jme3/advanced/hud.html" class="wikilink1" title="jme3:advanced:hud">HUD</a> images and text) to this orthogonal <acronym title="Graphical User Interface">GUI</acronym> node.</td>
 	</tr>
 	<tr class="row3">
-		<td class="col0">loadStatsView()</td><td class="col1">Call this method to print live statistic information to the screen, e.g. frames per second.</td>
+		<td class="col0">loadStatsView()</td><td class="col1">Call this method to print live statistic information to the screen, such as current frames-per-second and triangles/vertices counts. You deactivate this statistics view by calling <code>getGuiNode().detachAllChildren();</code>. </td>
 	</tr>
 	<tr class="row4">
-		<td class="col0">getFlyByCamera()</td><td class="col1">The default fly-by camera, controlled by the WASD and arrow keys.</td>
+		<td class="col0">getFlyByCamera() <br/>
+ flyCam</td><td class="col1">The default fly-by camera object, controlled by the WASD and arrow keys.</td>
 	</tr>
 	<tr class="row5">
-		<td class="col0">setShowSettings(true)</td><td class="col1">Whether the user should be presented with a splashscreen and display settings dialog when starting the game. Set this before calling start() on the SimpleApplication.</td>
+		<td class="col0">setShowSettings(true)</td><td class="col1">Whether the user should be presented with a splashscreen and display settings dialog when starting the game. Set this boolean before calling start() on the SimpleApplication.</td>
 	</tr>
 	<tr class="row6">
 		<td class="col0">simpleInitApp()</td><td class="col1">Override this method to initialize the game scene. Here you load and create objects, attach Spatials to the rootNode, and bring everything in its starts position.</td>
 	</tr>
 	<tr class="row7">
-		<td class="col0">simpleUpdate()</td><td class="col1">Override this method to have access to the main event loop. Use this loop to poll the current game state and respond to changes, or to initiate state changes and to generate encounters. </td>
+		<td class="col0">simpleUpdate(float tpf)</td><td class="col1">Override this method to have access to the main event loop. Use this loop to poll the current game state and respond to changes, or to initiate state changes and to generate encounters.</td>
 	</tr>
 	<tr class="row8">
 		<td class="col0">simpleRender()</td><td class="col1">Optionally, override this method to do advanced customizations to the frameBuffer and scene graph.</td>
@@ -168,7 +191,7 @@ Additional to what Application offers, SimpleApplication offers:
 </table>
 
 </div>
-<!-- SECTION "SimpleApplication Class" [3151-5151] -->
+<!-- SECTION "SimpleApplication Class" [4222-6315] -->
 <h3><a name="input_defaults" id="input_defaults">Input Defaults</a></h3>
 <div class="level3">
 
@@ -220,16 +243,16 @@ If useInput() is true, the default Flyby Cam is active. Then the following so-ca
 		<td class="col0">Move Vertical Downward</td><td class="col1">KEY_Z</td>
 	</tr>
 	<tr class="row7">
-		<td class="col0">Rotate Left</td><td class="col1">Move mouse horizontally left (-x), or KEY_LEFT</td>
+		<td class="col0">Rotate Left</td><td class="col1">KEY_LEFT, or move mouse horizontally left (-x)</td>
 	</tr>
 	<tr class="row8">
-		<td class="col0">Rotate Right</td><td class="col1">Move mouse horizontally right (+x), or KEY_RIGHT</td>
+		<td class="col0">Rotate Right</td><td class="col1">KEY_RIGHT, or move mouse horizontally right (+x)</td>
 	</tr>
 	<tr class="row9">
-		<td class="col0">Rotate Up</td><td class="col1">Move mouse vertically forward (+y), or KEY_UP</td>
+		<td class="col0">Rotate Up</td><td class="col1">KEY_UP, or move mouse vertically forward (+y)</td>
 	</tr>
 	<tr class="row10">
-		<td class="col0">Rotate Down</td><td class="col1">Move mouse vertically backward (-y), or KEY_DOWN</td>
+		<td class="col0">Rotate Down</td><td class="col1">KEY_DOWN, or move mouse vertically backward (-y)</td>
 	</tr>
 	<tr class="row11">
 		<td class="col0">Zoom In</td><td class="col1">Scroll mouse wheel backward</td>
@@ -238,10 +261,10 @@ If useInput() is true, the default Flyby Cam is active. Then the following so-ca
 		<td class="col0">Zoom Out</td><td class="col1">Scroll mouse wheel forward</td>
 	</tr>
 	<tr class="row13">
-		<td class="col0">Rotate drag</td><td class="col1">Hold left mouse button</td>
+		<td class="col0">Rotate drag</td><td class="col1">Hold left mouse button and move</td>
 	</tr>
 </table>
 
 </div>
-<!-- SECTION "Input Defaults" [5152-] -->
+<!-- SECTION "Input Defaults" [6316-] -->
 <p><em><a href="http://jmonkeyengine.org/wiki/doku.php/jme3:intermediate:simpleapplication?do=export_xhtmlbody">view online version</a></em></p>

@@ -49,7 +49,7 @@ import org.openide.util.ImageUtilities;
 public class JmePhysicsRigidBodyControl extends AbstractSceneExplorerNode {
 
     private static Image smallImage =
-            ImageUtilities.loadImage("com/jme3/gde/core/sceneexplorer/nodes/icons/physicsnode.gif");
+            ImageUtilities.loadImage("com/jme3/gde/core/sceneexplorer/nodes/icons/physicscontrol.gif");
     private PhysicsRigidBodyControl geom;
 
     public JmePhysicsRigidBodyControl() {

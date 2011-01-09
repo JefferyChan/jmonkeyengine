@@ -49,7 +49,7 @@ import org.openide.util.ImageUtilities;
 public class JmePhysicsGhostControl extends AbstractSceneExplorerNode {
 
     private static Image smallImage =
-            ImageUtilities.loadImage("com/jme3/gde/core/sceneexplorer/nodes/icons/ghostnode.gif");
+            ImageUtilities.loadImage("com/jme3/gde/core/sceneexplorer/nodes/icons/ghostcontrol.gif");
     private PhysicsGhostControl geom;
 
     public JmePhysicsGhostControl() {

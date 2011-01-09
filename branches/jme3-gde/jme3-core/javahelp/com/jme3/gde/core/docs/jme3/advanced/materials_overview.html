@@ -44,8 +44,8 @@ Also note that many other parameters are optional, even if they are not explicit
 		<td class="col0"> Common/MatDefs/Misc/SimpleTextured.j3md </td><td class="col1"> Standard textured Material. </td><td class="col2"> m_ColorMap : Texture <br/>
  m_ShowAlpha : Boolean (optional) <br/>
  m_Normalize : Boolean (optional) <br/>
- m_YCoCg : Boolean  (optional) <br/>
- m_LATC : Boolean (optional) </td>
+ m_YCoCg<sup><a href="#fn__1" name="fnt__1" id="fnt__1" class="fn_top">1)</a></sup> : Boolean  (optional) <br/>
+ m_LATC<sup><a href="#fn__2" name="fnt__2" id="fnt__2" class="fn_top">2)</a></sup> : Boolean (optional) </td>
 	</tr>
 	<tr class="row2">
 		<td class="col0 leftalign"> Common/MatDefs/Misc/SolidColor.j3md     </td><td class="col1"> Standard solid colored material. Supports an optional glow colored effect.</td><td class="col2"> m_Color : Color <br/>
@@ -73,7 +73,9 @@ Also note that many other parameters are optional, even if they are not explicit
  Alpha : Texture </td>
 	</tr>
 	<tr class="row6">
-		<td class="col0 leftalign"> Common/MatDefs/Misc/Particle.j3md       </td><td class="col1"> Used with texture masks for particle effects, or for point sprites. Quadratic? Does support an optional colored glow effect. <br/>
+		<td class="col0 leftalign"> Common/MatDefs/Misc/Particle.j3md       </td><td class="col1"> Used with texture masks for particle effects, or for point sprites. <br/>
+ Quadratic? <br/>
+ Does support an optional colored glow effect. <br/>
  See also: <a href="/com/jme3/gde/core/docs/jme3/beginner/hello_effects.html" class="wikilink1" title="jme3:beginner:hello_effects">Hello Effects</a> </td><td class="col2"> m_Texture : Texture <br/>
  m_GlowMap : Texture <br/>
  m_GlowColor : Color <br/>
@@ -83,7 +85,7 @@ Also note that many other parameters are optional, even if they are not explicit
 </table>
 
 </div>
-<!-- SECTION "Coloring and Standard Textures" [1196-2743] -->
+<!-- SECTION "Coloring and Standard Textures" [1196-2830] -->
 <h3><a name="light_and_shadow" id="light_and_shadow">Light and Shadow</a></h3>
 <div class="level3">
 <table class="inline">
@@ -93,9 +95,9 @@ Also note that many other parameters are optional, even if they are not explicit
 	<tr class="row1">
 		<td class="col0 leftalign"> Common/MatDefs/Light/Lighting.j3md      </td><td class="col1"> Standard lit material with Phong Lighting. Use with SpecularMap, BumpMap, NormalMaps textures, Shininess, etc. <br/>
  Requires light source! </td><td class="col2"> m_DiffuseMap : Texture <br/>
- m_UseAlpha : Boolean <sup><a href="#fn__1" name="fnt__1" id="fnt__1" class="fn_top">1)</a></sup> <br/>
+ m_UseAlpha<sup><a href="#fn__3" name="fnt__3" id="fnt__3" class="fn_top">3)</a></sup> : Boolean <br/>
  m_NormalMap : Texture <br/>
- m_LATC : Boolean <sup><a href="#fn__2" name="fnt__2" id="fnt__2" class="fn_top">2)</a></sup> <br/>
+ m_LATC<sup><a href="#fn__4" name="fnt__4" id="fnt__4" class="fn_top">4)</a></sup> : Boolean  <br/>
  m_SpecularMap : Texture <br/>
  m_Shininess : Float <br/>
  m_ParallaxMap : Texture <br/>
@@ -116,8 +118,8 @@ Also note that many other parameters are optional, even if they are not explicit
  m_Specular : Color <br/>
  <strong>Tangent shading (optional):</strong> <br/>
  m_VTangent : Boolean <br/>
- m_Minnaert : Boolean <br/>
- m_WardIso : Boolean </td>
+ m_Minnaert<sup><a href="#fn__5" name="fnt__5" id="fnt__5" class="fn_top">5)</a></sup> : Boolean <br/>
+ m_WardIso<sup><a href="#fn__6" name="fnt__6" id="fnt__6" class="fn_top">6)</a></sup> : Boolean </td>
 	</tr>
 	<tr class="row2">
 		<td class="col0 leftalign"> Common/MatDefs/Light/Reflection.j3md    </td><td class="col1"> Reflective glass material with environment map (CubeMap/SphereMap). <br/>
@@ -128,7 +130,7 @@ Also note that many other parameters are optional, even if they are not explicit
 </table>
 
 </div>
-<!-- SECTION "Light and Shadow" [2744-4179] -->
+<!-- SECTION "Light and Shadow" [2831-4324] -->
 <h3><a name="testing_and_debugging" id="testing_and_debugging">Testing and Debugging</a></h3>
 <div class="level3">
 <table class="inline">
@@ -147,7 +149,7 @@ Also note that many other parameters are optional, even if they are not explicit
 </table>
 
 </div>
-<!-- SECTION "Testing and Debugging" [4180-4598] -->
+<!-- SECTION "Testing and Debugging" [4325-4743] -->
 <h3><a name="internal_use_only" id="internal_use_only">Internal Use Only</a></h3>
 <div class="level3">
 
@@ -164,12 +166,12 @@ Common/MatDefs/Gui/Gui.j3md
 Common/MatDefs/Hdr/LogLum.j3md, ToneMap.j3md</pre>
 
 </div>
-<!-- SECTION "Internal Use Only" [4599-5088] -->
+<!-- SECTION "Internal Use Only" [4744-5233] -->
 <h2><a name="how_to_use_material_definitions_.j3md" id="how_to_use_material_definitions_.j3md">How to Use Material Definitions (.j3md)</a></h2>
 <div class="level2">
 
 </div>
-<!-- SECTION "How to Use Material Definitions (.j3md)" [5089-5141] -->
+<!-- SECTION "How to Use Material Definitions (.j3md)" [5234-5286] -->
 <h3><a name="preparing_a_material" id="preparing_a_material">Preparing a Material</a></h3>
 <div class="level3">
 <ol>
@@ -198,7 +200,7 @@ Common/MatDefs/Hdr/LogLum.j3md, ToneMap.j3md</pre>
 </ol>
 
 </div>
-<!-- SECTION "Preparing a Material" [5142-5644] -->
+<!-- SECTION "Preparing a Material" [5287-5789] -->
 <h3><a name="using_a_material" id="using_a_material">Using a Material</a></h3>
 <div class="level3">
 <ol>
@@ -206,9 +208,9 @@ Common/MatDefs/Hdr/LogLum.j3md, ToneMap.j3md</pre>
 </li>
 <li class="level1"><div class="li"> Configure your Material by setting the appropriate values. Here are examples how to set the different data types:</div>
 <ul>
-<li class="level2"><div class="li"> <code>mat.setColor(   “m_Color”,     RGBAColor.White );</code></div>
+<li class="level2"><div class="li"> <code>mat.setColor(   “m_Color”,     ColorRGBA.White );</code></div>
 </li>
-<li class="level2"><div class="li"> <code>mat.setTexture( “m_ColorMap”,  assetManager.loadTexture(“Interface/Logo/Monkey.png” );</code></div>
+<li class="level2"><div class="li"> <code>mat.setTexture( “m_ColorMap”,  assetManager.loadTexture(“Interface/Logo/Monkey.png” ));</code></div>
 </li>
 <li class="level2"><div class="li"> <code>mat.setFloat(   “m_Shininess”, 5f);</code></div>
 </li>
@@ -230,7 +232,7 @@ Typically, you prepare a set of custom materials in the <code>initSimpleApp()</c
 </p>
 
 </div>
-<!-- SECTION "Using a Material" [5645-6618] -->
+<!-- SECTION "Using a Material" [5790-6764] -->
 <h2><a name="how_to_create_.j3m_material_files" id="how_to_create_.j3m_material_files">How to Create .j3m Material files</a></h2>
 <div class="level2">
 
@@ -280,6 +282,12 @@ How to write this file:
 </li>
 </ul>
 </li>
+<li class="level1"><div class="li"> A texture can be flipped using the following syntax <code>m_NormalMap: Flip Textures/bump_rock_normal.png</code></div>
+</li>
+<li class="level1"><div class="li"> A texture can be set to repeat using the following syntax <code>m_NormalMap: Repeat Textures/bump_rock_normal.png</code></div>
+</li>
+<li class="level1"><div class="li"> If a texture is set to both being flipped and repeated, Flip must come before Repeat</div>
+</li>
 <li class="level1"><div class="li"> Make sure to get the paths to the Textures and Material Definitions (.j3md) right. </div>
 <ul>
 <li class="level2"><div class="li"> The .j3md path is relative to jME3&#039;s Core Data directory <br/>
@@ -293,7 +301,7 @@ How to write this file:
 </ul>
 
 </div>
-<!-- SECTION "How to Create .j3m Material files" [6619-8270] -->
+<!-- SECTION "How to Create .j3m Material files" [6765-8729] -->
 <h3><a name="how_to_use_.j3m_materials" id="how_to_use_.j3m_materials">How to Use .j3m Materials</a></h3>
 <div class="level3">
 
@@ -303,7 +311,7 @@ This is how you use the prepared .j3m Material on a Spatial:
 </p>
 <pre class="code java">thing.<span class="me1">setMaterial</span><span class="br0">&#40;</span>assetManager.<span class="me1">loadAsset</span><span class="br0">&#40;</span><span class="st0">&quot;Materials/SimpleBump.j3m&quot;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;</pre>
 </div>
-<!-- SECTION "How to Use .j3m Materials" [8271-8459] -->
+<!-- SECTION "How to Use .j3m Materials" [8730-8918] -->
 <h3><a name="referencedata_types_in_.j3m_files" id="referencedata_types_in_.j3m_files">Reference: Data Types in .j3m Files</a></h3>
 <div class="level3">
 
@@ -379,7 +387,7 @@ All data types(without Color) are fixed in com.jme3.shader.VarType.
 </table>
 
 </div>
-<!-- SECTION "Reference: Data Types in .j3m Files" [8460-9304] -->
+<!-- SECTION "Reference: Data Types in .j3m Files" [8919-9763] -->
 <h2><a name="transparency" id="transparency">Transparency</a></h2>
 <div class="level2">
 
@@ -433,7 +441,7 @@ Additionally, specify a blendmode.
 </table>
 
 </div>
-<!-- SECTION "Transparency" [9305-10726] -->
+<!-- SECTION "Transparency" [9764-11185] -->
 <h2><a name="material_options" id="material_options">Material Options</a></h2>
 <div class="level2">
 <table class="inline">
@@ -451,15 +459,23 @@ Additionally, specify a blendmode.
 		<td class="col0">mat.getAdditionalRenderState().setPolyOffset();</td><td class="col1">?</td>
 	</tr>
 	<tr class="row4">
-		<td class="col0">mat.getAdditionalRenderState().setWireFrame(true);</td><td class="col1">Switch to showing the (textured) Material in wireframe mode</td>
+		<td class="col0">mat.getAdditionalRenderState().setWireframe(true);</td><td class="col1">Switch to showing the (textured) Material in wireframe mode</td>
 	</tr>
 </table>
 
 </div>
-<!-- SECTION "Material Options" [10727-] --><div class="footnotes">
+<!-- SECTION "Material Options" [11186-] --><div class="footnotes">
 <div class="fn"><sup><a href="#fnt__1" id="fn__1" name="fn__1" class="fn_bot">1)</a></sup> 
-m_UseAlpha specifies whether m_DiffuseMap uses the alpha channel</div>
+YCoCg is an image compression format.</div>
 <div class="fn"><sup><a href="#fnt__2" id="fn__2" name="fn__2" class="fn_bot">2)</a></sup> 
+LATC is an image compression format.</div>
+<div class="fn"><sup><a href="#fnt__3" id="fn__3" name="fn__3" class="fn_bot">3)</a></sup> 
+m_UseAlpha specifies whether m_DiffuseMap uses the alpha channel</div>
+<div class="fn"><sup><a href="#fnt__4" id="fn__4" name="fn__4" class="fn_bot">4)</a></sup> 
 m_LATC Specifies whether m_NormalMap is BC5/ATI2n/LATC/3Dc-compressed</div>
+<div class="fn"><sup><a href="#fnt__5" id="fn__5" name="fn__5" class="fn_bot">5)</a></sup> 
+Minnaert is a shader type.</div>
+<div class="fn"><sup><a href="#fnt__6" id="fn__6" name="fn__6" class="fn_bot">6)</a></sup> 
+WardIso is a shader type.</div>
 </div>
 <p><em><a href="http://jmonkeyengine.org/wiki/doku.php/jme3:advanced:materials_overview?do=export_xhtmlbody">view online version</a></em></p>

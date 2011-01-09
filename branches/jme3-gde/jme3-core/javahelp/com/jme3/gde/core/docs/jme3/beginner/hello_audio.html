@@ -66,14 +66,16 @@ This tutorial explains how to add 3D sound to a game, and how to trigger when so
     <span class="coMULTI">/* gun shot sound is to be triggered by a mouse click. */</span>
     audio_gun <span class="sy0">=</span> <span class="kw1">new</span> AudioNode<span class="br0">&#40;</span>assetManager, <span class="st0">&quot;Sound/Effects/Gun.wav&quot;</span>, <span class="kw2">false</span><span class="br0">&#41;</span>;
     audio_gun.<span class="me1">setLooping</span><span class="br0">&#40;</span><span class="kw2">false</span><span class="br0">&#41;</span>;
-    audio_gun.<span class="me1">setVolume</span><span class="br0">&#40;</span><span class="nu0">2</span><span class="br0">&#41;</span>;
+    <span class="co1">// Volume goes from 0.1f to 1.0f. At 0 it's muted.</span>
+    audio_gun.<span class="me1">setVolume</span><span class="br0">&#40;</span>0.2f<span class="br0">&#41;</span>;
 &nbsp;
     <span class="coMULTI">/* nature sound - keeps playing in a loop. */</span>
     audio_nature <span class="sy0">=</span> <span class="kw1">new</span> AudioNode<span class="br0">&#40;</span>assetManager, <span class="st0">&quot;Sound/Environment/Nature.ogg&quot;</span>, <span class="kw2">false</span><span class="br0">&#41;</span>;
     audio_nature.<span class="me1">setLooping</span><span class="br0">&#40;</span><span class="kw2">true</span><span class="br0">&#41;</span>;
     audio_nature.<span class="me1">setPositional</span><span class="br0">&#40;</span><span class="kw2">true</span><span class="br0">&#41;</span>;
     audio_nature.<span class="me1">setLocalTranslation</span><span class="br0">&#40;</span>Vector3f.<span class="me1">ZERO</span>.<span class="me1">clone</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
-    audio_nature.<span class="me1">setVolume</span><span class="br0">&#40;</span><span class="nu0">3</span><span class="br0">&#41;</span>;
+    <span class="co1">// Volume goes from 0.1f to 1.0f. At 0 it's muted.</span>
+    audio_nature.<span class="me1">setVolume</span><span class="br0">&#40;</span>0.3f<span class="br0">&#41;</span>;
     audioRenderer.<span class="me1">playSource</span><span class="br0">&#40;</span>audio_nature<span class="br0">&#41;</span>; <span class="co1">// play continuously!</span>
   <span class="br0">&#125;</span>
 &nbsp;
@@ -107,7 +109,7 @@ When you run the sample, you should see a blue cube, and hear nature ambient sou
 </p>
 
 </div>
-<!-- SECTION "Sample Code" [253-2986] -->
+<!-- SECTION "Sample Code" [253-3102] -->
 <h2><a name="understanding_the_code_sample" id="understanding_the_code_sample">Understanding the Code Sample</a></h2>
 <div class="level2">
 
@@ -150,7 +152,7 @@ Next we have a closer look at <code>initAudio()</code> to learn how to use the <
 </p>
 
 </div>
-<!-- SECTION "Understanding the Code Sample" [2987-4733] -->
+<!-- SECTION "Understanding the Code Sample" [3103-4849] -->
 <h2><a name="audionodes" id="audionodes">AudioNodes</a></h2>
 <div class="level2">
 
@@ -175,20 +177,20 @@ These two lines create new sound nodes from the given audio files in the assetMa
 </p>
 
 <p>
-In the next lines we specify that we want the gunshot sound to play only <em>once</em> (do not loop) and we specify its volume on a scale of 1 to 10.
+In the next lines we specify that we want the gunshot sound to play only <em>once</em> (do not loop) and we specify its volume on a scale of 0.1 to 1.0. At 0, it is muted.
 </p>
 <pre class="code java">    audio_gun.<span class="me1">setLooping</span><span class="br0">&#40;</span><span class="kw2">false</span><span class="br0">&#41;</span>;
-    audio_gun.<span class="me1">setVolume</span><span class="br0">&#40;</span><span class="nu0">4</span><span class="br0">&#41;</span>;</pre>
+    audio_gun.<span class="me1">setVolume</span><span class="br0">&#40;</span>0.4f<span class="br0">&#41;</span>;</pre>
 <p>
 The nature sound is different: We want it to loop <em>continuously</em> as background sound. We also make it a positional sound and give the node an explicit translation (Vector3f.ZERO stands for <code>0.0f,0.0f,0.0f</code>). Since jME supports 3D audio, you will be able to hear this sound coming from a particular direction. 
 </p>
 <pre class="code java">    audio_nature.<span class="me1">setLooping</span><span class="br0">&#40;</span><span class="kw2">true</span><span class="br0">&#41;</span>;
     audio_nature.<span class="me1">setPositional</span><span class="br0">&#40;</span><span class="kw2">true</span><span class="br0">&#41;</span>;
     audio_nature.<span class="me1">setLocalTranslation</span><span class="br0">&#40;</span><span class="kw1">new</span> Vector3f.<span class="me1">ZERO</span>.<span class="me1">clone</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
-    audio_nature.<span class="me1">setVolume</span><span class="br0">&#40;</span><span class="nu0">3</span><span class="br0">&#41;</span>;
+    audio_nature.<span class="me1">setVolume</span><span class="br0">&#40;</span>0.3f<span class="br0">&#41;</span>;
   <span class="br0">&#125;</span></pre>
 </div>
-<!-- SECTION "AudioNodes" [4734-6417] -->
+<!-- SECTION "AudioNodes" [4850-6561] -->
 <h2><a name="triggering_audio" id="triggering_audio">Triggering Audio</a></h2>
 <div class="level2">
 
@@ -229,7 +231,7 @@ The only difference is where they are called:
 </ul>
 
 </div>
-<!-- SECTION "Triggering Audio" [6418-7269] -->
+<!-- SECTION "Triggering Audio" [6562-7413] -->
 <h2><a name="d_audio_listener" id="d_audio_listener">3D Audio Listener</a></h2>
 <div class="level2">
 
@@ -254,7 +256,7 @@ In short, you must choose in every situation whether you want a sound to be glob
 </p>
 
 </div>
-<!-- SECTION "3D Audio Listener" [7270-8359] -->
+<!-- SECTION "3D Audio Listener" [7414-8503] -->
 <h2><a name="conclusion" id="conclusion">Conclusion</a></h2>
 <div class="level2">
 
@@ -273,5 +275,5 @@ Want some fire and explosions to go with your sounds? Read on to learn more abou
 </p>
 
 </div>
-<!-- SECTION "Conclusion" [8360-] -->
+<!-- SECTION "Conclusion" [8504-] -->
 <p><em><a href="http://jmonkeyengine.org/wiki/doku.php/jme3:beginner:hello_audio?do=export_xhtmlbody">view online version</a></em></p>

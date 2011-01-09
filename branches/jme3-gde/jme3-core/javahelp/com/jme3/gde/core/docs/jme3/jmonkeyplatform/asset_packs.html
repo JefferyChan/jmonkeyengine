@@ -115,7 +115,7 @@ The global asset type can be “model”, “scene”, “texture”, “sound�
 </p>
 
 <p>
-With the “model” or “scene” types, the AssetPack browser will try to load and add a model file from the selected assets when the user selects “Add to SceneComposer”. Specify the “main” flag for the model file that should be loaded via the AssetManager, you can also specify multiple mesh or scene files to be loaded. All texture and other needed files will be copied to the users project folder.
+With the “model” or “scene” types, the AssetPack browser will try to load and add a model file from the selected assets when the user selects “Add to SceneComposer”. Specify the “load this model with material” flag for the model file that should be loaded via the AssetManager, you can also specify multiple mesh or scene files to be loaded. All texture and other needed files will be copied to the users project folder.
 </p>
 
 <p>
@@ -131,7 +131,11 @@ With the “add files” button you can open a file browser to select files from
 </p>
 
 <p>
-If a file has the “material” type it will be used for the loaded “main” model. If the material file is an Ogre material file (.material) it will be used for loading the contained Ogre scene or mesh file. If it is a jMonkeyEngine3 material file (.j3m), it will be applied to the model regardless of model type. Note that for j3o models you don&#039;t need material files as the material is stored inside the j3o file.
+You can specify a specific material to be used for the single mesh/scene files, just select it in the dropdown below the mesh or scene file. If you don&#039;t select a material file here, the first found material file is used or none if none is found.
+</p>
+
+<p>
+If the material file is an Ogre material file (.material) it will be used for loading an Ogre scene or mesh file. If it is a jMonkeyEngine3 material file (.j3m), it will be applied to the mesh regardless of model type. Note that for j3o models you don&#039;t need material files as the material is stored inside the j3o file.
 </p>
 
 <p>
@@ -155,7 +159,7 @@ Supported formats for models are:
 </ol>
 
 </div>
-<!-- SECTION "Adding Assets" [2595-5267] -->
+<!-- SECTION "Adding Assets" [2595-5450] -->
 <h3><a name="assetpack_publishing" id="assetpack_publishing">AssetPack Publishing</a></h3>
 <div class="level3">
 
@@ -181,5 +185,5 @@ To make sure you can upload, you have to be registered on jmonkeyengine.org and 
 </ol>
 
 </div>
-<!-- SECTION "AssetPack Publishing" [5268-] -->
+<!-- SECTION "AssetPack Publishing" [5451-] -->
 <p><em><a href="http://jmonkeyengine.org/wiki/doku.php/jme3:jmonkeyplatform:asset_packs?do=export_xhtmlbody">view online version</a></em></p>

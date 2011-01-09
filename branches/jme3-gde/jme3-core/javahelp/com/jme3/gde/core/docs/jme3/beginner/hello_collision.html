@@ -399,10 +399,11 @@ Note that no actual walking happens here – not yet!
 
 <p>
 The only movement that you do not have to implement yourself is the jumping action. The call <code>player.jump()</code> is a special method that handles a correct jumping motion for your <code>PhysicsCharacterNode</code>.
+
 </p>
 
 </div>
-<!-- SECTION "2. onAction()" [13846-15126] -->
+<!-- SECTION "2. onAction()" [13846-15125] -->
 <h3><a name="setwalkdirection" id="setwalkdirection">3. setWalkDirection()</a></h3>
 <div class="level3">
 
@@ -424,7 +425,7 @@ Reset the variable <code>walkDirection</code> to zero. Then add to it all latest
 </p>
 <pre class="code java">player.<span class="me1">setWalkDirection</span><span class="br0">&#40;</span>walkDirection<span class="br0">&#41;</span>;</pre>
 <p>
-This one line does the “walking” magic: Always use <code>setWalkDirection()</code> to make a physics-controlled object move, and the <code>SimpleBulletApplication</code> automatically handles collision detection for you! 
+This one line does the “walking” magic: Always use <code>setWalkDirection()</code> to make a physics-controlled object move, and the physics engine automatically handles collision detection for you! 
 </p>
 
 <p>
@@ -440,7 +441,7 @@ That&#039;s it!
 </p>
 
 </div>
-<!-- SECTION "3. setWalkDirection()" [15127-16870] -->
+<!-- SECTION "3. setWalkDirection()" [15126-16856] -->
 <h2><a name="conclusion" id="conclusion">Conclusion</a></h2>
 <div class="level2">
 
@@ -467,5 +468,5 @@ Do you want to hear your player say “ouch!” when he bumps into a wall? Conti
 </p>
 
 </div>
-<!-- SECTION "Conclusion" [16871-] -->
+<!-- SECTION "Conclusion" [16857-] -->
 <p><em><a href="http://jmonkeyengine.org/wiki/doku.php/jme3:beginner:hello_collision?do=export_xhtmlbody">view online version</a></em></p>
