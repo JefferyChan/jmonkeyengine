@@ -226,7 +226,7 @@ public class TestWalkingChar extends SimpleApplication implements ActionListener
         effect.setMaterial(mat);
         effect.setLocalScale(100);
         effect.setCullHint(CullHint.Never);
-//        rootNode.attachChild(effect);
+        rootNode.attachChild(effect);
     }
 
     private void createLight() {

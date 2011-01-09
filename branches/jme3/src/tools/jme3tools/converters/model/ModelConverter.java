@@ -92,8 +92,6 @@ public class ModelConverter {
         original.updateData(buf);
         ib = mesh.getIndexBuffer();
 
-        mesh.setMode(Mode.Hybrid);
-
         int curIndex = 0;
         int[] modeStart = new int[]{ -1, -1, -1 };
         int[] elementLengths = new int[groups.length];
@@ -113,8 +111,15 @@ public class ModelConverter {
             curIndex += group.numIndices;
         }
 
-        mesh.setElementLengths(elementLengths);
-        mesh.setModeStart(modeStart);
+        if (modeStart[0] == -1 && modeStart[1] == 0 && modeStart[2] == -1 &&
+                elementLengths.length == 1){
+            original.compact(elementLengths[0]);
+            mesh.setMode(Mode.TriangleStrip);
+        }else{
+            mesh.setElementLengths(elementLengths);
+            mesh.setModeStart(modeStart);
+            mesh.setMode(Mode.Hybrid);
+        }
     }
 
     public static void optimize(Mesh mesh, boolean toFixed){
