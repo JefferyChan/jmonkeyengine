@@ -39,7 +39,9 @@ public abstract class ParticleMesh extends Mesh {
 
     public static enum Type {
         Point,
+        /*
         Line,
+         */
         Triangle
     }
 

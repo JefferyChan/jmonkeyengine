@@ -36,7 +36,6 @@ import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
 import com.jme3.export.InputCapsule;
 import com.jme3.export.OutputCapsule;
-import com.jme3.renderer.GLObject;
 import java.io.IOException;
 
 /**
@@ -61,15 +60,9 @@ public class Texture2D extends Texture {
     public Texture2D(Image img){
         super();
         setImage(img);
-        switch (img.getFormat()){
-            case Depth:
-            case Depth16:
-            case Depth24:
-            case Depth32:
-            case Depth32F:
-                setMagFilter(MagFilter.Nearest);
-                setMinFilter(MinFilter.NearestNoMipMaps);
-                break;
+        if (img.getFormat().isDepthFormat()){
+            setMagFilter(MagFilter.Nearest);
+            setMinFilter(MinFilter.NearestNoMipMaps);
         }
     }
 
@@ -85,6 +78,22 @@ public class Texture2D extends Texture {
      */
     public Texture2D(int width, int height, Image.Format format){
         this(new Image(format, width, height, null));
+    }
+
+    /**
+     * Creates a new two-dimensional texture for the purpose of offscreen
+     * rendering.
+     *
+     * @see com.jme3.texture.FrameBuffer
+     *
+     * @param width
+     * @param height
+     * @param format
+     * @param numSamples
+     */
+    public Texture2D(int width, int height, int numSamples, Image.Format format){
+        this(new Image(format, width, height, null));
+        getImage().setMultiSamples(numSamples);
     }
 
     @Override

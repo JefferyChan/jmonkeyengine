@@ -41,7 +41,7 @@ public class FrameBuffer extends GLObject {
 
     private int width = 0;
     private int height = 0;
-    private int samples = 0;
+    private int samples = 1;
     private ArrayList<RenderBuffer> colorBufs = new ArrayList<RenderBuffer>();
     private RenderBuffer depthBuf = null;
     private int colorBufIndex = 0;
@@ -108,7 +108,7 @@ public class FrameBuffer extends GLObject {
 
         this.width = width;
         this.height = height;
-        this.samples = samples;
+        this.samples = samples == 0 ? 1 : samples;
     }
 
     protected FrameBuffer(FrameBuffer src){
@@ -166,8 +166,8 @@ public class FrameBuffer extends GLObject {
             throw new IllegalArgumentException("Texture image resolution " +
                                                "must match FB resolution");
 
-        if (samples > 1)
-            throw new IllegalStateException("Cannot attach texture to multisampled FB");
+        if (samples != tex.getImage().getMultiSamples())
+            throw new IllegalStateException("Texture samples must match framebuffer samples");
     }
 
     public void setMultiTarget(boolean enabled){

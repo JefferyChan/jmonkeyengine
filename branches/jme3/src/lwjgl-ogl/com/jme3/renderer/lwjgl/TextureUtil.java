@@ -39,6 +39,7 @@ import java.nio.ByteBuffer;
 import org.lwjgl.opengl.ARBDepthBufferFloat;
 import org.lwjgl.opengl.ARBHalfFloatPixel;
 import org.lwjgl.opengl.ARBTextureFloat;
+import org.lwjgl.opengl.ARBTextureMultisample;
 import org.lwjgl.opengl.EXTPackedFloat;
 import org.lwjgl.opengl.EXTTextureArray;
 import org.lwjgl.opengl.EXTTextureSharedExponent;
@@ -365,6 +366,7 @@ public class TextureUtil {
         }
 
         boolean subtex = false;
+        int samples = img.getMultiSamples();
 
         for (int i = 0; i < mipSizes.length; i++){
             int mipWidth =  Math.max(1, width  >> i);
@@ -437,6 +439,9 @@ public class TextureUtil {
                     }
                 }else{
                     if (subtex){
+                        if (samples > 1)
+                            throw new IllegalStateException("Cannot update multisample textures");
+
                         glTexSubImage2D(target,
                                         i,
                                         0, 0,
@@ -445,15 +450,24 @@ public class TextureUtil {
                                         dataType,
                                         data);
                     }else{
-                        glTexImage2D(target,
-                                     i,
-                                     internalFormat,
-                                     mipWidth,
-                                     mipHeight,
-                                     border,
-                                     format,
-                                     dataType,
-                                     data);
+                        if (samples > 1){
+                            ARBTextureMultisample.glTexImage2DMultisample(target,
+                                                                          samples,
+                                                                          internalFormat,
+                                                                          mipWidth,
+                                                                          mipHeight,
+                                                                          true);
+                        }else{
+                            glTexImage2D(target,
+                                         i,
+                                         internalFormat,
+                                         mipWidth,
+                                         mipHeight,
+                                         border,
+                                         format,
+                                         dataType,
+                                         data);
+                        }
                     }
                 }
             }

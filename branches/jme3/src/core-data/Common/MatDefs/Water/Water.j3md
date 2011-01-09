@@ -1,6 +1,9 @@
 MaterialDef Advanced Water {
 
-    MaterialParameters {     
+    MaterialParameters {
+        Int m_NumSamples
+        Vector2Array m_SamplePositions;
+
         Texture2D m_FoamMap
         Texture2D m_NormalMap
         Texture2D m_ReflectionMap
@@ -35,6 +38,24 @@ MaterialDef Advanced Water {
         Boolean m_UseSpecular
         Boolean m_UseFoam
         Boolean m_UseRefraction
+    }
+
+    Technique {
+        VertexShader   GLSL150 : Common/MatDefs/Post/Post31.vert
+        FragmentShader GLSL150 : Common/MatDefs/Water/Water31.frag
+
+        WorldParameters {
+            WorldViewProjectionMatrix
+        }
+
+        Defines {
+            ENABLE_RIPPLES : m_UseRipples
+            ENABLE_HQ_SHORELINE : m_UseHQShoreline
+            ENABLE_SPECULAR : m_UseSpecular
+            ENABLE_FOAM : m_UseFoam
+            ENABLE_REFRACTION : m_UseRefraction
+            RESOLVE_MS : m_NumSamples
+        }
     }
 
     Technique {

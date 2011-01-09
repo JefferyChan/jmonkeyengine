@@ -102,7 +102,9 @@ import static org.lwjgl.opengl.EXTFramebufferMultisample.*;
 import static org.lwjgl.opengl.ARBTextureMultisample.*;
 import static org.lwjgl.opengl.EXTFramebufferBlit.*;
 import org.lwjgl.opengl.ARBShaderObjects.*;
+import org.lwjgl.opengl.ARBTextureMultisample;
 import org.lwjgl.opengl.ARBVertexArrayObject;
+import org.lwjgl.opengl.GL30;
 //import static org.lwjgl.opengl.ARBDrawInstanced.*;
 
 public class LwjglRenderer implements Renderer {
@@ -170,13 +172,20 @@ public class LwjglRenderer implements Renderer {
         ContextCapabilities ctxCaps = GLContext.getCapabilities();
         if (ctxCaps.OpenGL20) {
             caps.add(Caps.OpenGL20);
+            if (ctxCaps.OpenGL21) {
+                caps.add(Caps.OpenGL21);
+                if (ctxCaps.OpenGL30) {
+                    caps.add(Caps.OpenGL30);
+                    if (ctxCaps.OpenGL31) {
+                        caps.add(Caps.OpenGL31);
+                        if (ctxCaps.OpenGL32) {
+                            caps.add(Caps.OpenGL32);
+                        }
+                    }
+                }
+            }
         }
-        if (ctxCaps.OpenGL21) {
-            caps.add(Caps.OpenGL21);
-        }
-        if (ctxCaps.OpenGL30) {
-            caps.add(Caps.OpenGL30);
-        }
+        
 
         String versionStr = glGetString(GL_SHADING_LANGUAGE_VERSION);
         if (versionStr == null || versionStr.equals("")) {
@@ -363,15 +372,6 @@ public class LwjglRenderer implements Renderer {
                 glGetInteger(GL_MAX_DEPTH_TEXTURE_SAMPLES, intBuf16);
                 maxDepthTexSamples = intBuf16.get(0);
                 logger.log(Level.FINER, "Texture Multisample Depth Samples: {0}", maxDepthTexSamples);
-
-                FloatBuffer samplePos = BufferUtils.createFloatBuffer(2);
-                
-                for (int i = 0; i < maxColorTexSamples; i++){
-                    glGetMultisample(GL_SAMPLE_POSITION, i, samplePos);
-                    samplePos.clear();
-                    float x = samplePos.get(0);
-                    float y = samplePos.get(1);
-                }
             }
 
             if (ctxCaps.GL_ARB_draw_buffers) {
@@ -909,9 +909,13 @@ public class LwjglRenderer implements Renderer {
             }
             glAttachShader(id, source.getId());
         }
+
+        if (caps.contains(Caps.OpenGL30)){
+            GL30.glBindFragDataLocation(id, 0, "gl_FragColor");
+        }
+
         // link shaders to program
         glLinkProgram(id);
-
         glGetProgram(id, GL_LINK_STATUS, intBuf1);
         boolean linkOK = intBuf1.get(0) == GL_TRUE;
         String infoLog = null;
@@ -1146,7 +1150,7 @@ public class LwjglRenderer implements Renderer {
                     + ":" + fb.getHeight() + " is not supported.");
         }
 
-        if (fb.getSamples() > 0 && GLContext.getCapabilities().GL_EXT_framebuffer_multisample) {
+        if (fb.getSamples() > 1 && GLContext.getCapabilities().GL_EXT_framebuffer_multisample) {
             int samples = fb.getSamples();
             if (maxFBOSamples < samples) {
                 samples = maxFBOSamples;
@@ -1184,7 +1188,7 @@ public class LwjglRenderer implements Renderer {
 
         glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT,
                 convertAttachmentSlot(rb.getSlot()),
-                convertTextureType(tex.getType()),
+                convertTextureType(tex.getType(), image.getMultiSamples()),
                 image.getId(),
                 0);
     }
@@ -1239,6 +1243,23 @@ public class LwjglRenderer implements Renderer {
         fb.clearUpdateNeeded();
     }
 
+    public Vector2f[] getFrameBufferSamplePositions(FrameBuffer fb){
+        if (fb.getSamples() <= 1)
+            throw new IllegalArgumentException("Framebuffer must be multisampled");
+
+        setFrameBuffer(fb);
+
+        Vector2f[] samplePositions = new Vector2f[fb.getSamples()];
+        FloatBuffer samplePos = BufferUtils.createFloatBuffer(2);
+        for (int i = 0; i < samplePositions.length; i++){
+            glGetMultisample(GL_SAMPLE_POSITION, i, samplePos);
+            samplePos.clear();
+            samplePositions[i] = new Vector2f(samplePos.get(0) - 0.5f,
+                                              samplePos.get(1) - 0.5f);
+        }
+        return samplePositions;
+    }
+
     public void setFrameBuffer(FrameBuffer fb) {
         if (lastFb == fb) {
             return;
@@ -1252,7 +1273,7 @@ public class LwjglRenderer implements Renderer {
                 if (tex != null
                         && tex.getMinFilter().usesMipMapLevels()) {
                     setTexture(0, rb.getTexture());
-                    glGenerateMipmapEXT(convertTextureType(tex.getType()));
+                    glGenerateMipmapEXT(convertTextureType(tex.getType(), tex.getImage().getMultiSamples()));
                 }
             }
         }
@@ -1395,12 +1416,18 @@ public class LwjglRenderer implements Renderer {
     /*********************************************************************\
     |* Textures                                                          *|
     \*********************************************************************/
-    private int convertTextureType(Texture.Type type) {
+    private int convertTextureType(Texture.Type type, int samples) {
         switch (type) {
             case TwoDimensional:
-                return GL_TEXTURE_2D;
+                if (samples > 1)
+                    return ARBTextureMultisample.GL_TEXTURE_2D_MULTISAMPLE;
+                else
+                    return GL_TEXTURE_2D;
             case TwoDimensionalArray:
-                return EXTTextureArray.GL_TEXTURE_2D_ARRAY_EXT;
+                if (samples > 1)
+                    return ARBTextureMultisample.GL_TEXTURE_2D_MULTISAMPLE_ARRAY;
+                else
+                    return EXTTextureArray.GL_TEXTURE_2D_ARRAY_EXT;
             case ThreeDimensional:
                 return GL_TEXTURE_3D;
             case CubeMap:
@@ -1458,7 +1485,8 @@ public class LwjglRenderer implements Renderer {
     }
 
     private void setupTextureParams(Texture tex) {
-        int target = convertTextureType(tex.getType());
+        Image image = tex.getImage();
+        int target = convertTextureType(tex.getType(), image != null ? image.getMultiSamples() : 1);
 
         // filter things
         int minFilter = convertMinFilter(tex.getMinFilter());
@@ -1514,7 +1542,7 @@ public class LwjglRenderer implements Renderer {
         }
 
         // bind texture
-        int target = convertTextureType(type);
+        int target = convertTextureType(type, img.getMultiSamples());
         if (context.boundTextureUnit != unit) {
             glActiveTexture(GL_TEXTURE0 + unit);
             context.boundTextureUnit = unit;
@@ -1581,7 +1609,7 @@ public class LwjglRenderer implements Renderer {
 
         Image[] textures = context.boundTextures;
 
-        int type = convertTextureType(tex.getType());
+        int type = convertTextureType(tex.getType(), image.getMultiSamples());
 //        if (!context.textureIndexList.moveToNew(unit)) {
 //             if (context.boundTextureUnit != unit){
 //                glActiveTexture(GL_TEXTURE0 + unit);

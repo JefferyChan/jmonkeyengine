@@ -40,10 +40,13 @@ import com.jme3.export.InputCapsule;
 import com.jme3.export.OutputCapsule;
 import com.jme3.export.Savable;
 import com.jme3.material.Material;
+import com.jme3.math.Vector2f;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.Caps;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
+import com.jme3.renderer.lwjgl.LwjglRenderer;
+import com.jme3.shader.VarType;
 import com.jme3.texture.FrameBuffer;
 import com.jme3.texture.Image.Format;
 import com.jme3.texture.Texture2D;
@@ -59,11 +62,15 @@ public class FilterPostProcessor implements SceneProcessor, Savable {
     private RenderManager renderManager;
     private Renderer renderer;
     private ViewPort viewPort;
+
     private FrameBuffer renderFrameBufferMS;
-    private int numSamples = 0;
+    private int numSamples = 1;
+    private Vector2f[] samplePositions;
+
     private FrameBuffer renderFrameBuffer;
     private Texture2D filterTexture;
     private Texture2D depthTexture;
+
     private List<Filter> filters = new ArrayList<Filter>();
     private AssetManager assetManager;
     private Camera filterCam = new Camera(1, 1);
@@ -119,7 +126,7 @@ public class FilterPostProcessor implements SceneProcessor, Savable {
     private void initFilter(Filter filter, ViewPort vp) {
         filter.init(assetManager, renderManager, vp, width, height);
         if (filter.isRequiresDepthTexture()) {
-            if (!computeDepth) {
+            if (!computeDepth && renderFrameBuffer != null) {
                 depthTexture = new Texture2D(width, height, Format.Depth24);
                 renderFrameBuffer.setDepthTexture(depthTexture);
             }
@@ -170,6 +177,10 @@ public class FilterPostProcessor implements SceneProcessor, Savable {
                         pass.beforeRender();
                         if (pass.requiresSceneAsTexture()) {
                             pass.getPassMaterial().setTexture("m_Texture", tex);
+                            if (tex.getImage().getMultiSamples() > 1){
+                                pass.getPassMaterial().setInt("m_NumSamples", tex.getImage().getMultiSamples());
+                                pass.getPassMaterial().setParam("m_SamplePositions", VarType.Vector2Array, samplePositions);
+                            }
                         }
                         renderProcessing(r, pass.getRenderFrameBuffer(), pass.getPassMaterial());
                     }
@@ -178,6 +189,11 @@ public class FilterPostProcessor implements SceneProcessor, Savable {
                 Material mat = filter.getMaterial();
 
                 mat.setTexture("m_Texture", tex);
+                if (tex.getImage().getMultiSamples() > 1){
+                    mat.setInt("m_NumSamples", tex.getImage().getMultiSamples());
+                    mat.setParam("m_SamplePositions", VarType.Vector2Array, samplePositions);
+                }
+
                 FrameBuffer buff = outputBuffer;
                 if (i != lastFilterIndex) {
                     buff = filter.getRenderFrameBuffer();
@@ -189,7 +205,7 @@ public class FilterPostProcessor implements SceneProcessor, Savable {
     }
 
     public void postFrame(FrameBuffer out) {
-        if (renderFrameBufferMS != null) {
+        if (renderFrameBufferMS != null && !renderer.getCaps().contains(Caps.OpenGL31)) {
             renderer.copyFrameBuffer(renderFrameBufferMS, renderFrameBuffer);
         }
         renderFilterChain(renderer);
@@ -200,7 +216,11 @@ public class FilterPostProcessor implements SceneProcessor, Savable {
         if (filters.isEmpty() || lastFilterIndex == -1) {
             viewPort.setOutputFrameBuffer(outputBuffer);
         } else {
-            viewPort.setOutputFrameBuffer(renderFrameBuffer);
+            if (renderFrameBufferMS != null){
+                viewPort.setOutputFrameBuffer(renderFrameBufferMS);
+            }else{
+                viewPort.setOutputFrameBuffer(renderFrameBuffer);
+            }
         }
         for (Iterator<Filter> it = filters.iterator(); it.hasNext();) {
             Filter filter = it.next();
@@ -274,7 +294,6 @@ public class FilterPostProcessor implements SceneProcessor, Savable {
         vp.getCamera().resize(width, height, true);
         computeDepth=false;
 
-
 //        if (renderFrameBufferMS != null) {
 //            renderer.deleteFrameBuffer(renderFrameBufferMS);
 //        }
@@ -291,25 +310,41 @@ public class FilterPostProcessor implements SceneProcessor, Savable {
             outputBuffer = viewPort.getOutputFrameBuffer();
         }
 
-        renderFrameBuffer = new FrameBuffer(width, height, 0);
-        renderFrameBuffer.setColorBuffer(Format.RGBA8);
-        renderFrameBuffer.setDepthBuffer(Format.Depth);
-        filterTexture = new Texture2D(width, height, Format.RGBA8);
-        renderFrameBuffer.setColorTexture(filterTexture);
+        Collection<Caps> caps = renderer.getCaps();
+
+        //antialiasing on filters only supported in opengl 3 due to depth read problem
+        if (numSamples > 1 && caps.contains(Caps.FrameBufferMultisample)) {
+            renderFrameBufferMS = new FrameBuffer(width, height, numSamples);
+            if (caps.contains(Caps.OpenGL31)){
+                Texture2D msColor = new Texture2D(width, height, numSamples, Format.RGBA8);
+                Texture2D msDepth = new Texture2D(width, height, numSamples, Format.Depth);
+                renderFrameBufferMS.setDepthTexture(msDepth);
+                renderFrameBufferMS.setColorTexture(msColor);
+                filterTexture = msColor;
+                depthTexture  = msDepth;
+                samplePositions = ((LwjglRenderer)renderer).getFrameBufferSamplePositions(renderFrameBufferMS);
+            }else{
+                renderFrameBufferMS.setDepthBuffer(Format.Depth);
+                renderFrameBufferMS.setColorBuffer(Format.RGBA8);
+            }
+        }
+
+        if (numSamples <= 1 || !caps.contains(Caps.OpenGL31)){
+            renderFrameBuffer = new FrameBuffer(width, height, 0);
+            renderFrameBuffer.setColorBuffer(Format.RGBA8);
+            renderFrameBuffer.setDepthBuffer(Format.Depth);
+            filterTexture = new Texture2D(width, height, Format.RGBA8);
+            renderFrameBuffer.setColorTexture(filterTexture);
+        }
 
         for (Iterator<Filter> it = filters.iterator(); it.hasNext();) {
             Filter filter = it.next();
             initFilter(filter, vp);
         }
 
-        Collection<Caps> caps = renderer.getCaps();
-        //antialiasing on filters only supported in opengl 3 due to depth read problem
-        if (numSamples > 1 && caps.contains(Caps.FrameBufferMultisample) && caps.contains(Caps.OpenGL30)) {
-            renderFrameBufferMS = new FrameBuffer(width, height, numSamples);
-            renderFrameBufferMS.setDepthBuffer(Format.Depth);
-            renderFrameBufferMS.setColorBuffer(Format.RGBA8);
+        if (renderFrameBufferMS != null){
             viewPort.setOutputFrameBuffer(renderFrameBufferMS);
-        } else {
+        }else{
             viewPort.setOutputFrameBuffer(renderFrameBuffer);
         }
     }
@@ -327,6 +362,9 @@ public class FilterPostProcessor implements SceneProcessor, Savable {
      * @param numSamples the number of Samples
      */
     public void setNumSamples(int numSamples) {
+        if (numSamples <= 0)
+            throw new IllegalArgumentException("numSamples must be > 0");
+        
         this.numSamples = numSamples;
     }
 

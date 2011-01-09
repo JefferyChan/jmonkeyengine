@@ -153,6 +153,7 @@ public class Image extends GLObject implements Savable /*, Cloneable*/ {
     protected int[] mipMapSizes;
     protected ArrayList<ByteBuffer> data;
     protected transient Object efficentData;
+    protected int multiSamples = 1;
 //    protected int mipOffset = 0;
 
     @Override
@@ -290,6 +291,32 @@ public class Image extends GLObject implements Savable /*, Cloneable*/ {
      */
     public Image(Format format, int width, int height, ByteBuffer data) {
         this(format, width, height, data, null);
+    }
+
+    /**
+     * @return The number of samples (for multisampled textures).
+     * @see Image#setMultiSamples(int)
+     */
+    public int getMultiSamples() {
+        return multiSamples;
+    }
+
+    /**
+     * @param multiSamples Set the number of samples to use for this image,
+     * setting this to a value higher than 1 turns this image/texture
+     * into a multisample texture (on OpenGL3.1 and higher).
+     */
+    public void setMultiSamples(int multiSamples) {
+        if (multiSamples <= 0)
+            throw new IllegalArgumentException("multiSamples must be > 0");
+
+        if (getData(0) != null)
+            throw new IllegalArgumentException("Cannot upload data as multisample texture");
+
+        if (hasMipmaps())
+            throw new IllegalArgumentException("Multisample textures do not support mipmaps");
+
+        this.multiSamples = multiSamples;
     }
 
     /**
@@ -530,7 +557,9 @@ public class Image extends GLObject implements Savable /*, Cloneable*/ {
             return false;
         if (this.getMipMapSizes() == null && that.getMipMapSizes() != null)
             return false;
-
+        if (this.getMultiSamples() != that.getMultiSamples())
+            return false;
+        
         return true;
     }
 
@@ -541,6 +570,7 @@ public class Image extends GLObject implements Savable /*, Cloneable*/ {
         capsule.write(height, "height", 0);
         capsule.write(depth, "depth", 0);
         capsule.write(mipMapSizes, "mipMapSizes", null);
+        capsule.write(multiSamples, "multiSamples", 1);
         capsule.writeByteBufferArrayList(data, "data", null);
     }
 
@@ -551,6 +581,7 @@ public class Image extends GLObject implements Savable /*, Cloneable*/ {
         height = capsule.readInt("height", 0);
         depth = capsule.readInt("depth", 0);
         mipMapSizes = capsule.readIntArray("mipMapSizes", null);
+        multiSamples = capsule.readInt("multiSamples", 1);
         data = (ArrayList<ByteBuffer>) capsule.readByteBufferArrayList("data", null);
     }
 
