@@ -1,11 +1,13 @@
 package jme3tools.optimize;
 
+import com.jme3.font.BitmapText;
 import com.jme3.material.Material;
 import com.jme3.math.FastMath;
 import com.jme3.math.Matrix4f;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
+import com.jme3.scene.Mesh.Mode;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.VertexBuffer;
@@ -75,6 +77,7 @@ public class GeometryBatchFactory {
     private static void mergeGeometries(Collection<Geometry> geometries, Mesh outMesh){
         int[] compsForBuf = new int[VertexBuffer.Type.values().length];
         Format[] formatForBuf = new Format[compsForBuf.length];
+        Mode mode = null;
 
         int totalVerts = 0;
         int totalTris  = 0;
@@ -82,12 +85,18 @@ public class GeometryBatchFactory {
         for (Geometry geom : geometries){
             totalVerts += geom.getVertexCount();
             totalTris  += geom.getTriangleCount();
+            if (mode != null && geom.getMesh().getMode() != mode)
+                throw new UnsupportedOperationException("All geometries must"
+                                                      + " have the same mode!");
+            mode = geom.getMesh().getMode();
 
             for (Entry<VertexBuffer> entry : geom.getMesh().getBuffers()){
                 compsForBuf[entry.getKey()] = entry.getValue().getNumComponents();
                 formatForBuf[entry.getKey()] = entry.getValue().getFormat();
             }
         }
+
+        outMesh.setMode(mode);
 
         // generate output buffers based on retrieved info
         for (int i = 0; i < compsForBuf.length; i++){
@@ -129,14 +138,12 @@ public class GeometryBatchFactory {
 
                     IndexBuffer inIdx = inMesh.getIndexBuffer();
                     IndexBuffer outIdx = outMesh.getIndexBuffer();
+                    
                     for (int tri = 0; tri < geomTriCount; tri++){
-
-                        int i1 = inIdx.get(tri*3+0) + globalVertIndex;
-                        int i2 = inIdx.get(tri*3+1) + globalVertIndex;
-                        int i3 = inIdx.get(tri*3+2) + globalVertIndex;
-                        outIdx.put((globalTriIndex + tri) * 3 + 0, i1);
-                        outIdx.put((globalTriIndex + tri) * 3 + 1, i2);
-                        outIdx.put((globalTriIndex + tri) * 3 + 2, i3);
+                        for (int comp = 0; comp < components; comp++){
+                            int idx = inIdx.get(tri*3+comp) + globalVertIndex;
+                            outIdx.put((globalTriIndex + tri) * 3 + comp, idx);
+                        }
                     }
                 }else if (Type.Position.ordinal() == bufType){
                     FloatBuffer inPos = (FloatBuffer) inBuf.getData();
@@ -160,7 +167,7 @@ public class GeometryBatchFactory {
     }
 
 
-    public static List<Geometry> makeBatches(List<Geometry> geometries){
+    public static List<Geometry> makeBatches(Collection<Geometry> geometries){
         ArrayList<Geometry> retVal = new ArrayList<Geometry>();
         HashMap<Material, List<Geometry>> matToGeom = new HashMap<Material, List<Geometry>>();
 
@@ -240,18 +247,24 @@ public class GeometryBatchFactory {
     }
 
     public static void main(String[] args){
-        Quad q1 = new Quad(1, 1);
-        Quad q2 = new Quad(1, 1);
-        
-        Geometry g1 = new Geometry("g1", q1);
-        g1.center();
-        
-        Geometry g2 = new Geometry("g2", q2);
-        g2.rotate(FastMath.HALF_PI, 0, 0);
+        Mesh mesh = new Mesh();
+        mesh.setBuffer(Type.Position, 3, new float[]{
+            0, 0, 0,
+            1, 0, 0,
+            1, 1, 0,
+            0, 1, 0
+        });
+        mesh.setBuffer(Type.Index, 2, new short[]{
+           0, 1,
+           1, 2,
+           2, 3,
+           3, 0
+        });
+
+        Geometry g1 = new Geometry("g1", mesh);
 
         ArrayList<Geometry> geoms = new ArrayList<Geometry>();
         geoms.add(g1);
-        geoms.add(g2);
 
         Mesh outMesh = new Mesh();
         mergeGeometries(geoms, outMesh);

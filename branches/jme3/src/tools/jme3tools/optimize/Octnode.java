@@ -47,6 +47,7 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.debug.WireBox;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -69,6 +70,7 @@ public class Octnode {
     Geometry[] geoms;
     final Octnode[] children = new Octnode[8];
     boolean leaf = false;
+    FastOctnode fastNode;
 
     public Octnode(BoundingBox bbox, ArrayList<OCTTriangle> tris){
         this.bbox = bbox;
@@ -170,6 +172,18 @@ public class Octnode {
 
     public void subdivide(int minTrisPerNode){
         subdivide(0, minTrisPerNode);
+    }
+
+    public void makeFastOctnode(List<Geometry> globalGeomList){
+        Collection<Geometry> geomsColl = Arrays.asList(geoms);
+        List<Geometry> myOptimizedList = GeometryBatchFactory.makeBatches(geomsColl);
+        
+        int startIndex = globalGeomList.size();
+        globalGeomList.addAll(myOptimizedList);
+
+        fastNode = new FastOctnode();
+        fastNode.setOffset(startIndex);
+        fastNode.length = myOptimizedList.size();
     }
 
     private void generateRenderSetNoCheck(Set<Geometry> renderSet, Camera cam){
