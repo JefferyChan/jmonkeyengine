@@ -29,7 +29,6 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package jme3test.bullet;
 
 import com.jme3.bullet.BulletAppState;
@@ -37,6 +36,8 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
+import com.jme3.bullet.control.PhysicsGhostControl;
+import com.jme3.bullet.control.PhysicsControl;
 import com.jme3.bullet.joints.PhysicsHingeJoint;
 import com.jme3.bullet.nodes.PhysicsGhostNode;
 import com.jme3.bullet.nodes.PhysicsNode;
@@ -56,7 +57,8 @@ public class TestAttachGhostObject extends SimpleApplication implements AnalogLi
     private PhysicsHingeJoint joint;
     private PhysicsGhostNode gNode;
     private PhysicsNode collisionNode;
-
+    private PhysicsNode hammerNode;
+    private Vector3f tempVec = new Vector3f();
     private BulletAppState bulletAppState;
 
     public static void main(String[] args) {
@@ -89,7 +91,7 @@ public class TestAttachGhostObject extends SimpleApplication implements AnalogLi
         setupJoint();
     }
 
-    private PhysicsSpace getPhysicsSpace(){
+    private PhysicsSpace getPhysicsSpace() {
         return bulletAppState.getPhysicsSpace();
     }
 
@@ -105,7 +107,7 @@ public class TestAttachGhostObject extends SimpleApplication implements AnalogLi
         getPhysicsSpace().add(holderNode);
 
         //movable
-        PhysicsNode hammerNode = new PhysicsNode(new BoxCollisionShape(new Vector3f(.3f, .3f, .3f)), 1);
+        hammerNode = new PhysicsNode(new BoxCollisionShape(new Vector3f(.3f, .3f, .3f)), 1);
         hammerNode.setLocalTranslation(new Vector3f(0f, -1, 0f));
         hammerNode.attachDebugShape(assetManager);
         rootNode.attachChild(hammerNode);
@@ -122,9 +124,7 @@ public class TestAttachGhostObject extends SimpleApplication implements AnalogLi
         gNode = new PhysicsGhostNode(new SphereCollisionShape(0.7f));
         gNode.attachDebugShape(mat);
 
-        //"trick": ghostNode is simply attached to the movable node
-        //and is updated via the scenegraph - no "real" physics connection
-        hammerNode.attachChild(gNode);
+        rootNode.attachChild(gNode);
         getPhysicsSpace().add(gNode);
 
         joint = new PhysicsHingeJoint(holderNode.getRigidBody(), hammerNode.getRigidBody(), Vector3f.ZERO, new Vector3f(0f, -1, 0f), Vector3f.UNIT_Z, Vector3f.UNIT_Z);
@@ -133,7 +133,9 @@ public class TestAttachGhostObject extends SimpleApplication implements AnalogLi
 
     @Override
     public void simpleUpdate(float tpf) {
-        if (gNode.getOverlappingObjects().contains(collisionNode)) {
+        hammerNode.getPhysicsLocation(tempVec);
+        gNode.getControl(PhysicsGhostControl.class).setPhysicsLocation(tempVec);
+        if (gNode.getOverlappingObjects().contains(collisionNode.getControl(PhysicsControl.class))) {
             fpsText.setText("collide");
         }
     }
