@@ -68,11 +68,12 @@ public class AnimChannel {
 
     private static float clampWrapTime(float t, float max, LoopMode loopMode){
         if (t < 0f){
+            //float tMod = -(-t % max);
             switch (loopMode){
                 case DontLoop:
                     return 0;
                 case Cycle:
-                    return /*-0.001f;*/t;
+                    return t;
                 case Loop:
                     return max - t;
             }

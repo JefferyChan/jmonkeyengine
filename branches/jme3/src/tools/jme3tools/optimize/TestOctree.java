@@ -37,13 +37,13 @@ import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
 import com.jme3.material.MaterialList;
 import com.jme3.math.ColorRGBA;
-import com.jme3.math.Matrix4f;
 import com.jme3.math.Vector3f;
 import com.jme3.post.SceneProcessor;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
+import com.jme3.scene.Mesh;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.debug.WireBox;
 import com.jme3.scene.plugins.ogre.MeshLoader;
@@ -56,7 +56,7 @@ import java.util.Set;
 public class TestOctree extends SimpleApplication implements SceneProcessor {
 
     private Octree tree;
-    private Set<Geometry> renderSet = new HashSet<Geometry>();
+    private Set<Geometry> renderSet = new HashSet<Geometry>(300);
     private Material mat, mat2;
     private WireBox box = new WireBox(1,1,1);
 
@@ -70,26 +70,28 @@ public class TestOctree extends SimpleApplication implements SceneProcessor {
         this.cam.setFrustumFar(10000);
         MeshLoader.AUTO_INTERLEAVE = false;
 
-        mat = new Material(assetManager, "Common/MatDefs/Misc/WireColor.j3md");
-        mat.setColor("m_Color", ColorRGBA.White);
+//        mat = new Material(assetManager, "Common/MatDefs/Misc/WireColor.j3md");
+//        mat.setColor("m_Color", ColorRGBA.White);
 
-        mat2 = new Material(assetManager, "Common/MatDefs/Misc/ShowNormals.j3md");
-
-        DirectionalLight dl = new DirectionalLight();
-        dl.setColor(ColorRGBA.White);
-        dl.setDirection(new Vector3f(-1, -1, -1).normalize());
-        rootNode.addLight(dl);
-
-        dl = new DirectionalLight();
-        dl.setColor(ColorRGBA.White);
-        dl.setDirection(new Vector3f(1, -1, 1).normalize());
-        rootNode.addLight(dl);
+//        mat2 = new Material(assetManager, "Common/MatDefs/Misc/ShowNormals.j3md");
 
         assetManager.registerLocator("quake3level.zip", "com.jme3.asset.plugins.ZipLocator");
         MaterialList matList = (MaterialList) assetManager.loadAsset("Scene.material");
         OgreMeshKey key = new OgreMeshKey("main.meshxml", matList);
         Spatial scene = assetManager.loadModel(key);
-        scene.setMaterial(mat2);
+
+
+        DirectionalLight dl = new DirectionalLight();
+        dl.setColor(ColorRGBA.White);
+        dl.setDirection(new Vector3f(-1, -1, -1).normalize());
+        scene.addLight(dl);
+
+        dl = new DirectionalLight();
+        dl.setColor(ColorRGBA.White);
+        dl.setDirection(new Vector3f(1, -1, 1).normalize());
+        scene.addLight(dl);
+
+//        scene.setMaterial(mat2);
 //        scene.setLocalScale(0.2f);
 //        Spatial scene = manager.loadModel("models/teapot.obj");
 //        Material mat = new Material(manager, "Common/MatDefs/Misc/ShowNormals.j3md");

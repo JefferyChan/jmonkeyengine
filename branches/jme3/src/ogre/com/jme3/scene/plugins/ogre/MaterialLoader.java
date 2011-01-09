@@ -180,7 +180,7 @@ public class MaterialLoader implements AssetLoader {
                 texture.setWrap(WrapMode.BorderClamp);
             }
         }else if (keyword.equals("filtering")){
-            // ignored.. only anisotrpy is considered
+            // ignored.. only anisotropy is considered
             readString("\n");
         }else if (keyword.equals("max_anisotropy")){
             int amount = scan.nextInt();
@@ -346,7 +346,7 @@ public class MaterialLoader implements AssetLoader {
         if (shinines > 0f)
             mat.setFloat("m_Shininess", shinines);
         else
-            mat.setFloat("m_Shininess", 1f); // set shininess to some value anyway..
+            mat.setFloat("m_Shininess", 16f); // set shininess to some value anyway..
         
         if (vcolor)
             mat.setBoolean("m_UseVertexColor", true);
@@ -354,17 +354,23 @@ public class MaterialLoader implements AssetLoader {
         if (texture != null)
             mat.setTexture("m_DiffuseMap", texture);
 
-        if(diffuse  != null){
+        mat.setBoolean("m_UseMaterialColors", true);
+        if(diffuse != null){
             mat.setColor("m_Diffuse",  diffuse);
-            mat.setBoolean("m_UseMaterialColors", true);
+        }else{
+            mat.setColor("m_Diffuse", ColorRGBA.White);
         }
-        if(ambient  != null){
+
+        if(ambient != null){
             mat.setColor("m_Ambient",  ambient);
-            mat.setBoolean("m_UseMaterialColors", true);
+        }else{
+            mat.setColor("m_Ambient", ColorRGBA.Black);
         }
+
         if(specular != null){
             mat.setColor("m_Specular", specular);
-            mat.setBoolean("m_UseMaterialColors", true);
+        }else{
+            mat.setColor("m_Specular", ColorRGBA.Black);
         }
 
         texture = null;

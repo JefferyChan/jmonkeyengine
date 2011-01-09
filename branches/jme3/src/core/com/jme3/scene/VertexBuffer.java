@@ -48,6 +48,11 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
 
+/**
+ * A <code>VertexBuffer</code> contains a particular type of geometry
+ * data used by {@link Mesh}es. Every VertexBuffer set on a <code>Mesh</code>
+ * is sent as an attribute to the vertex shader to be processed.
+ */
 public class VertexBuffer extends GLObject implements Savable, Cloneable {
 
     /**
@@ -135,7 +140,7 @@ public class VertexBuffer extends GLObject implements Savable, Cloneable {
     /**
      * The usage of the VertexBuffer, specifies how often the buffer
      * is used. This can determine if a vertex buffer is placed in VRAM
-     * or held in video memory, but no garantees are made- it's only a hint.
+     * or held in video memory, but no guarantees are made- it's only a hint.
      */
     public static enum Usage {
         
@@ -225,22 +230,45 @@ public class VertexBuffer extends GLObject implements Savable, Cloneable {
         super(GLObject.Type.VertexBuffer, id);
     }
 
+    /**
+     * @return The offset (in bytes) from the start of the buffer
+     * after which the data is sent to the GPU.
+     */
     public int getOffset() {
         return offset;
     }
 
+    /**
+     * @param offset Specify the offset (in bytes) from the start of the buffer
+     * after which the data is sent to the GPU.
+     */
     public void setOffset(int offset) {
         this.offset = offset;
     }
 
+    /**
+     * @return The stride (in bytes) for the data. If the data is packed
+     * in the buffer, then stride is 0, if there's other data that is between
+     * the current component and the next component in the buffer, then this
+     * specifies the size in bytes of that additional data.
+     */
     public int getStride() {
         return stride;
     }
 
+    /**
+     * @param stride The stride (in bytes) for the data. If the data is packed
+     * in the buffer, then stride is 0, if there's other data that is between
+     * the current component and the next component in the buffer, then this
+     * specifies the size in bytes of that additional data.
+     */
     public void setStride(int stride) {
         this.stride = stride;
     }
 
+    /**
+     * @return A native buffer, in the specified {@link Format format}.
+     */
     public Buffer getData(){
         return data;
     }
@@ -252,11 +280,19 @@ public class VertexBuffer extends GLObject implements Savable, Cloneable {
     public void setMappedData(ByteBuffer mappedData) {
         this.mappedData = mappedData;
     }
-    
+
+    /**
+     * @return The usage of this buffer. See {@link Usage} for more
+     * information.
+     */
     public Usage getUsage(){
         return usage;
     }
 
+    /**
+     * @param usage The usage of this buffer. See {@link Usage} for more
+     * information.
+     */
     public void setUsage(Usage usage){
 //        if (id != -1)
 //            throw new UnsupportedOperationException("Data has already been sent. Cannot set usage.");
@@ -264,26 +300,51 @@ public class VertexBuffer extends GLObject implements Savable, Cloneable {
         this.usage = usage;
     }
 
+    /**
+     * @param normalized Set to true if integer components should be converted
+     * from their maximal range into the range 0.0 - 1.0 when converted to
+     * a floating-point value for the shader.
+     * E.g. if the {@link Format} is {@link Format#UnsignedInt}, then
+     * the components will be converted to the range 0.0 - 1.0 by dividing
+     * every integer by 2^32.
+     */
     public void setNormalized(boolean normalized){
         this.normalized = normalized;
     }
 
+    /**
+     * @return True if integer components should be converted to the range 0-1.
+     * @see VertexBuffer#setNormalized(boolean) 
+     */
     public boolean isNormalized(){
         return normalized;
     }
 
+    /**
+     * @return The type of information that this buffer has.
+     */
     public Type getBufferType(){
         return bufType;
     }
 
+    /**
+     * @return The {@link Format format}, or data type of the data.
+     */
     public Format getFormat(){
         return format;
     }
 
+    /**
+     * @return The number of components of the given {@link Format format} per
+     * element.
+     */
     public int getNumComponents(){
         return components;
     }
 
+    /**
+     * @return The total number of data elements in the data buffer.
+     */
     public int getNumElements(){
         int elements = data.capacity() / components;
         if (format == Format.Half)
@@ -291,6 +352,18 @@ public class VertexBuffer extends GLObject implements Savable, Cloneable {
         return elements;
     }
 
+    /**
+     * Called to initialize the data in the <code>VertexBuffer</code>. Must only
+     * be called once.
+     * 
+     * @param usage The usage for the data, or how often will the data
+     * be updated per frame. See the {@link Usage} enum.
+     * @param components The number of components per element.
+     * @param format The {@link Format format}, or data-type of a single
+     * component.
+     * @param data A native buffer, the format of which matches the {@link Format}
+     * argument.
+     */
     public void setupData(Usage usage, int components, Format format, Buffer data){
         if (id != -1)
             throw new UnsupportedOperationException("Data has already been sent. Cannot setupData again.");
@@ -303,6 +376,18 @@ public class VertexBuffer extends GLObject implements Savable, Cloneable {
         setUpdateNeeded();
     }
 
+    /**
+     * Called to update the data in the buffer with new data. Can only
+     * be called after {@link VertexBuffer#setupData(com.jme3.scene.VertexBuffer.Usage, int, com.jme3.scene.VertexBuffer.Format, java.nio.Buffer) }
+     * has been called. Note that it is fine to call this method on the
+     * data already set, e.g. vb.updateData(vb.getData()), this will just
+     * set the proper update flag indicating the data should be sent to the GPU
+     * again.
+     * It is allowed to specify a buffer with different capacity than the
+     * originally set buffer.
+     *
+     * @param data The data buffer to set
+     */
     public void updateData(Buffer data){
         if (id != -1){
             // request to update data is okay
@@ -326,6 +411,9 @@ public class VertexBuffer extends GLObject implements Savable, Cloneable {
         dataSizeChanged = false;
     }
 
+    /**
+     * Converts single floating-point data to {@link Format#Half half} floating-point data.
+     */
     public void convertToHalf(){
         if (id != -1)
             throw new UnsupportedOperationException("Data has already been sent.");
@@ -353,6 +441,13 @@ public class VertexBuffer extends GLObject implements Savable, Cloneable {
         dataSizeChanged = true;
     }
 
+    /**
+     * Reduces the capacity of the buffer to the given amount
+     * of elements, any elements at the end of the buffer are truncated
+     * as necessary.
+     *
+     * @param numElements
+     */
     public void compact(int numElements){
         int total = components * numElements;
         data.clear();
@@ -397,6 +492,84 @@ public class VertexBuffer extends GLObject implements Savable, Cloneable {
         dataSizeChanged = true;
     }
 
+    public void setElementComponent(int elementIndex, int componentIndex, Object val){
+        int inPos = elementIndex * components;
+        int elementPos = componentIndex;
+
+        if (format == Format.Half){
+            inPos *= 2;
+            elementPos *= 2;
+        }
+
+        data.clear();
+
+        switch (format){
+            case Byte:
+            case UnsignedByte:
+            case Half:
+                ByteBuffer bin = (ByteBuffer) data;
+                bin.put(inPos + elementPos, (Byte)val);
+                break;
+            case Short:
+            case UnsignedShort:
+                ShortBuffer sin = (ShortBuffer) data;
+                sin.put(inPos + elementPos, (Short)val);
+                break;
+            case Int:
+            case UnsignedInt:
+                IntBuffer iin = (IntBuffer) data;
+                iin.put(inPos + elementPos, (Integer)val);
+                break;
+            case Float:
+                FloatBuffer fin = (FloatBuffer) data;
+                fin.put(inPos + elementPos, (Float)val);
+                break;
+            default:
+                throw new UnsupportedOperationException("Unrecognized buffer format: "+format);
+        }
+    }
+
+    public Object getElementComponent(int elementIndex, int componentIndex){
+        int inPos = elementIndex * components;
+        int elementPos = componentIndex;
+
+        if (format == Format.Half){
+            inPos *= 2;
+            elementPos *= 2;
+        }
+
+        data.clear();
+
+        switch (format){
+            case Byte:
+            case UnsignedByte:
+            case Half:
+                ByteBuffer bin = (ByteBuffer) data;
+                return bin.get(inPos + elementPos);
+            case Short:
+            case UnsignedShort:
+                ShortBuffer sin = (ShortBuffer) data;
+                return sin.get(inPos + elementPos);
+            case Int:
+            case UnsignedInt:
+                IntBuffer iin = (IntBuffer) data;
+                return iin.get(inPos + elementPos);
+            case Float:
+                FloatBuffer fin = (FloatBuffer) data;
+                return fin.get(inPos + elementPos);
+            default:
+                throw new UnsupportedOperationException("Unrecognized buffer format: "+format);
+        }
+    }
+
+    /**
+     * Copies a single element of data from this <code>VertexBuffer</code>
+     * to the given output VertexBuffer.
+     * 
+     * @param inIndex
+     * @param outVb
+     * @param outIndex
+     */
     public void copyElement(int inIndex, VertexBuffer outVb, int outIndex){
         if (outVb.format != format || outVb.components != components)
             throw new IllegalArgumentException("Buffer format mismatch. Cannot copy");
@@ -455,7 +628,18 @@ public class VertexBuffer extends GLObject implements Savable, Cloneable {
         outVb.data.clear();
     }
 
-    public static final Buffer createBuffer(Format format, int components, int numElements){
+    /**
+     * Creates a {@link Buffer} that satisfies the given type and size requirements
+     * of the parameters. The buffer will be of the type specified by
+     * {@link Format format} and would be able to contain the given number
+     * of elements with the given number of components in each element.
+     *
+     * @param format
+     * @param components
+     * @param numElements
+     * @return
+     */
+    public static Buffer createBuffer(Format format, int components, int numElements){
         if (components < 1 || components > 4)
             throw new IllegalArgumentException("Num components must be between 1 and 4");
 

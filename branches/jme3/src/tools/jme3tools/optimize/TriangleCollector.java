@@ -32,6 +32,7 @@
 
 package jme3tools.optimize;
 
+import com.jme3.light.Light;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.VertexBuffer;
@@ -234,10 +235,14 @@ public class TriangleCollector {
             out.updateBound();
             out.updateCounts();
             out.setStatic();
-            out.setInterleaved();
+            //out.setInterleaved();
             Geometry outGeom = new Geometry("Geom"+entry.getKey(), out);
             outGeom.setLocalTransform(inGeom.getWorldTransform());
             outGeom.setMaterial(inGeom.getMaterial());
+            for (Light light : inGeom.getWorldLightList()){
+                outGeom.addLight(light);
+            }
+
             outGeom.updateGeometricState();
             newGeoms.add(outGeom);
         }

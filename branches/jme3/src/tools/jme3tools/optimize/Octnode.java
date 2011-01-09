@@ -46,6 +46,7 @@ import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.debug.WireBox;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -173,9 +174,7 @@ public class Octnode {
 
     private void generateRenderSetNoCheck(Set<Geometry> renderSet, Camera cam){
         if (geoms != null){
-            for (Geometry geom : geoms){
-                renderSet.add(geom);
-            }
+            renderSet.addAll(Arrays.asList(geoms));
         }
         for (int i = 0; i < 8; i++){
             if (children[i] != null){
@@ -192,9 +191,7 @@ public class Octnode {
         Camera.FrustumIntersect result = cam.contains(bbox);
         if (result != Camera.FrustumIntersect.Outside){
             if (geoms != null){
-                for (Geometry geom : geoms){
-                    renderSet.add(geom);
-                }
+                renderSet.addAll(Arrays.asList(geoms));
             }
             for (int i = 0; i < 8; i++){
                 if (children[i] != null){

@@ -32,6 +32,7 @@
 
 package com.jme3.bounding;
 
+import com.jme3.util.TempVars;
 import com.jme3.math.FastMath;
 import com.jme3.math.Plane;
 import com.jme3.math.Vector3f;
@@ -73,7 +74,7 @@ public class Intersection {
 //            return false;
 //    }
 
-    public static final boolean intersect(BoundingBox bbox, Vector3f v1, Vector3f v2, Vector3f v3){
+    public static boolean intersect(BoundingBox bbox, Vector3f v1, Vector3f v2, Vector3f v3){
         //  use separating axis theorem to test overlap between triangle and box
        //  need to test for overlap in these directions:
        //  1) the {x,y,z}-directions (actually, since we use the AABB of the triangle
@@ -82,13 +83,16 @@ public class Intersection {
        //  3) crossproduct(edge from tri, {x,y,z}-directin)
        //       this gives 3x3=9 more tests
 
-       Vector3f tmp0 = new Vector3f(),
-                tmp1 = new Vector3f(),
-                tmp2 = new Vector3f();
+       TempVars vars = TempVars.get();
+       assert vars.lock();
 
-       Vector3f e0 = new Vector3f(),
-                e1 = new Vector3f(),
-                e2 = new Vector3f();
+       Vector3f tmp0 = vars.vect1,
+                tmp1 = vars.vect2,
+                tmp2 = vars.vect3;
+
+       Vector3f e0 = vars.vect4,
+                e1 = vars.vect5,
+                e2 = vars.vect6;
 
        Vector3f center = bbox.getCenter();
        Vector3f extent = bbox.getExtent(null);
@@ -123,8 +127,10 @@ public class Intersection {
         min = min(p0,p2);
         max = max(p0,p2);
         rad = fez * extent.y + fey * extent.z;
-        if (min > rad || max < -rad)
+        if (min > rad || max < -rad){
+            assert vars.unlock();
             return false;
+        }
 
         //   AXISTEST_Y02(e0[Z], e0[X], fez, fex);
         p0 = -e0.z * tmp0.x + e0.x * tmp0.z;
@@ -132,8 +138,10 @@ public class Intersection {
         min = min(p0,p2);
         max = max(p0,p2);
         rad = fez * extent.x + fex * extent.z;
-        if (min > rad || max < -rad)
+        if (min > rad || max < -rad){
+            assert vars.unlock();
             return false;
+        }
 
         // AXISTEST_Z12(e0[Y], e0[X], fey, fex);
         p1 = e0.y * tmp1.x - e0.x * tmp1.y;
@@ -141,8 +149,10 @@ public class Intersection {
         min = min(p1,p2);
         max = max(p1,p2);
         rad = fey * extent.x + fex * extent.y;
-        if (min > rad || max < -rad)
+        if (min > rad || max < -rad){
+            assert vars.unlock();
             return false;
+        }
 
        fex = FastMath.abs(e1.x);
        fey = FastMath.abs(e1.y);
@@ -154,8 +164,10 @@ public class Intersection {
         min = min(p0,p2);
         max = max(p0,p2);
         rad = fez * extent.y + fey * extent.z;
-        if (min > rad || max < -rad)
+        if (min > rad || max < -rad){
+            assert vars.unlock();
             return false;
+        }
 
         //   AXISTEST_Y02(e1[Z], e1[X], fez, fex);
         p0 = -e1.z * tmp0.x + e1.x * tmp0.z;
@@ -163,8 +175,10 @@ public class Intersection {
         min = min(p0,p2);
         max = max(p0,p2);
         rad = fez * extent.x + fex * extent.z;
-        if (min > rad || max < -rad)
+        if (min > rad || max < -rad){
+            assert vars.unlock();
             return false;
+        }
 
         // AXISTEST_Z0(e1[Y], e1[X], fey, fex);
         p0 = e1.y * tmp0.x - e1.x * tmp0.y;
@@ -172,8 +186,10 @@ public class Intersection {
         min = min(p0,p1);
         max = max(p0,p1);
         rad = fey * extent.x + fex * extent.y;
-        if (min > rad || max < -rad)
+        if (min > rad || max < -rad){
+            assert vars.unlock();
             return false;
+        }
 //
        fex = FastMath.abs(e2.x);
        fey = FastMath.abs(e2.y);
@@ -185,8 +201,10 @@ public class Intersection {
         min = min(p0,p1);
         max = max(p0,p1);
         rad = fez * extent.y + fey * extent.z;
-        if (min > rad || max < -rad)
+        if (min > rad || max < -rad){
+            assert vars.unlock();
             return false;
+        }
 
         // AXISTEST_Y1(e2[Z], e2[X], fez, fex);
         p0 = -e2.z * tmp0.x + e2.x * tmp0.z;
@@ -194,8 +212,10 @@ public class Intersection {
         min = min(p0,p1);
         max = max(p0,p1);
         rad = fez * extent.x + fex * extent.y;
-        if (min > rad || max < -rad)
+        if (min > rad || max < -rad){
+            assert vars.unlock();
             return false;
+        }
 
 //   AXISTEST_Z12(e2[Y], e2[X], fey, fex);
         p1 = e2.y * tmp1.x - e2.x * tmp1.y;
@@ -203,8 +223,10 @@ public class Intersection {
         min = min(p1,p2);
         max = max(p1,p2);
         rad = fey * extent.x + fex * extent.y;
-        if (min > rad || max < -rad)
+        if (min > rad || max < -rad){
+            assert vars.unlock();
             return false;
+        }
 
        //  Bullet 1:
        //  first test overlap in the {x,y,z}-directions
@@ -213,35 +235,46 @@ public class Intersection {
        //  the triangle against the AABB
 
        
-       Vector3f minMax = new Vector3f();
+       Vector3f minMax = vars.vect7;
 
        // test in X-direction
        findMinMax(tmp0.x, tmp1.x, tmp2.x, minMax);
-       if(minMax.x > extent.x || minMax.y < -extent.x)
-           return false;
+       if(minMax.x > extent.x || minMax.y < -extent.x){
+            assert vars.unlock();
+            return false;
+        }
 
        // test in Y-direction
        findMinMax(tmp0.y, tmp1.y, tmp2.y, minMax);
-       if(minMax.x > extent.y || minMax.y < -extent.y)
-           return false;
+       if(minMax.x > extent.y || minMax.y < -extent.y){
+            assert vars.unlock();
+            return false;
+        }
 
        // test in Z-direction
        findMinMax(tmp0.z, tmp1.z, tmp2.z, minMax);
-       if(minMax.x > extent.z || minMax.y < -extent.z)
-           return false;
+       if(minMax.x > extent.z || minMax.y < -extent.z){
+            assert vars.unlock();
+            return false;
+        }
 
 //       // Bullet 2:
 //       //  test if the box intersects the plane of the triangle
 //       //  compute plane equation of triangle: normal * x + d = 0
 //        Vector3f normal = new Vector3f();
 //        e0.cross(e1, normal);
-         Plane p = new Plane();
+         Plane p = vars.plane;
+
          p.setPlanePoints(v1,v2,v3);
-         if (bbox.whichSide(p) == Plane.Side.Negative)
-             return false;
+         if (bbox.whichSide(p) == Plane.Side.Negative){
+            assert vars.unlock();
+            return false;
+        }
 //
 //        if(!planeBoxOverlap(normal,v0,boxhalfsize)) return false;
 
+        assert vars.unlock();
+        
         return true;   /* box and triangle overlaps */
     }
 

@@ -200,7 +200,11 @@ public class Geometry extends Spatial {
         worldLights.sort(true);
     }
 
-    private void computeWorldMatrix(){
+    /**
+     * Recomputes the matrix returned by {@link Geometry#getWorldMatrix() }.
+     * This will require a localized transform update for this geometry.
+     */
+    public void computeWorldMatrix(){
         // Force a local update of the geometry's transform
         checkDoTransformUpdate();
 
@@ -217,6 +221,13 @@ public class Geometry extends Spatial {
         assert TempVars.get().unlock();
     }
 
+    /**
+     * @return A {@link Matrix4f matrix} that transforms the {@link Geometry#getMesh() mesh}
+     * from model space to world space. This matrix is computed based on the
+     * {@link Geometry#getWorldTransform() world transform} of this geometry.
+     * In order to receive updated values, you must call {@link Geometry#computeWorldMatrix() }
+     * before using this method.
+     */
     public Matrix4f getWorldMatrix(){
         return cachedWorldMat;
     }

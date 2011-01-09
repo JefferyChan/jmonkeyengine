@@ -46,6 +46,7 @@ import com.jme3.math.Vector3f;
  *
  * @author Kirill Vainer
  */
+@Deprecated
 public class SweepSphere implements Collidable {
 
     private Vector3f velocity = new Vector3f();
