@@ -98,6 +98,12 @@ public class GeometryBatchFactory {
 
         outMesh.setMode(mode);
 
+        if (totalVerts >= 65536){
+            // make sure we create an UnsignedInt buffer so
+            // we can fit all of the meshes
+            formatForBuf[Type.Index.ordinal()] = Format.UnsignedInt;
+        }
+
         // generate output buffers based on retrieved info
         for (int i = 0; i < compsForBuf.length; i++){
             if (compsForBuf[i] == 0)
@@ -138,7 +144,7 @@ public class GeometryBatchFactory {
 
                     IndexBuffer inIdx = inMesh.getIndexBuffer();
                     IndexBuffer outIdx = outMesh.getIndexBuffer();
-                    
+
                     for (int tri = 0; tri < geomTriCount; tri++){
                         for (int comp = 0; comp < components; comp++){
                             int idx = inIdx.get(tri*components+comp) + globalVertIndex;
