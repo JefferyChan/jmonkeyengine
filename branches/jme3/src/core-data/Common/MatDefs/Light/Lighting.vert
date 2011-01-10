@@ -121,7 +121,7 @@ void main(){
      lightComputeDir(wvPosition, lightColor, wvLightPos, vLightDir);
 
      #ifdef V_TANGENT
-        vNormal = normalize(g_NormalMatrix * inTangent);
+        vNormal = normalize(g_NormalMatrix * inTangent.xyz);
         vNormal = -cross(cross(vLightDir.xyz, vNormal), vNormal);
      #endif
    #endif
