@@ -183,7 +183,7 @@ public class TestRenderToMemory extends SimpleApplication implements SceneProces
         offView.addProcessor(this);
 
         // create offscreen framebuffer
-        offBuffer = new FrameBuffer(width, height, 0);
+        offBuffer = new FrameBuffer(width, height, 1);
 
         //setup framebuffer's cam
         offCamera.setFrustumPerspective(45f, 1f, 1f, 1000f);

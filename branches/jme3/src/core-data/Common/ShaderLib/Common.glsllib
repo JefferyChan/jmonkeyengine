@@ -11,8 +11,3 @@ vec3 Common_UnpackNormalLA(in vec4 norm){
 vec3 Common_PackNormal(in vec3 norm){
     return (norm * vec3(0.5)) + vec3(0.5);
 }
-
-// Do not use
-//float Common_LinearDepth(in float viewZ){
-//    return (-viewZ-gl_DepthRange.near) / gl_DepthRange.diff;
-//}

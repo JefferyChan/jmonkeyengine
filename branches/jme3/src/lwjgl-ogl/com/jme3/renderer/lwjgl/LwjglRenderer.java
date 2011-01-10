@@ -262,10 +262,6 @@ public class LwjglRenderer implements Renderer {
         vertexAttribs = intBuf16.get(0);
         logger.log(Level.FINER, "Vertex Attributes: {0}", vertexAttribs);
 
-        glGetInteger(GL_MAX_VARYING_FLOATS, intBuf16);
-        int varyingFloats = intBuf16.get(0);
-        logger.log(Level.FINER, "Varying Floats: {0}", varyingFloats);
-
         glGetInteger(GL_SUBPIXEL_BITS, intBuf16);
         int subpixelBits = intBuf16.get(0);
         logger.log(Level.FINER, "Subpixel Bits: {0}", subpixelBits);
@@ -487,7 +483,6 @@ public class LwjglRenderer implements Renderer {
             glEnable(GL_POINT_SPRITE);
             glTexEnvi(GL_POINT_SPRITE, GL_COORD_REPLACE, GL_TRUE);
             glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
-            glPointParameterf(GL_POINT_SIZE_MIN, 1.0f);
         } else if (!state.isPointSprite() && context.pointSprite) {
             glDisable(GL_POINT_SPRITE);
         }
@@ -810,9 +805,13 @@ public class LwjglRenderer implements Renderer {
 
         stringBuf.setLength(0);
         if (language.startsWith("GLSL")) {
-            if (!language.substring(4).equals("100")) {
+            int version = Integer.parseInt(language.substring(4));
+            if (version > 100) {
                 stringBuf.append("#version ");
                 stringBuf.append(language.substring(4));
+                if (version >= 150){
+                    stringBuf.append(" core");
+                }
                 stringBuf.append("\n");
             }
         }
@@ -890,7 +889,7 @@ public class LwjglRenderer implements Renderer {
             // create program
             id = glCreateProgram();
             if (id <= 0) {
-                throw new RendererException("Invalid ID received when trying to create shader program.");
+                throw new RendererException("Invalid ID ("+id+") received when trying to create shader program.");
             }
 
             shader.setId(id);
@@ -913,7 +912,7 @@ public class LwjglRenderer implements Renderer {
         }
 
         if (caps.contains(Caps.OpenGL30)){
-            GL30.glBindFragDataLocation(id, 0, "gl_FragColor");
+            GL30.glBindFragDataLocation(id, 0, "outFragColor");
         }
 
         // link shaders to program
@@ -1559,9 +1558,9 @@ public class LwjglRenderer implements Renderer {
         if (!img.hasMipmaps() && mips) {
             // No pregenerated mips available,
             // generate from base level if required
-//          if (!GLContext.getCapabilities().GL_EXT_framebuffer_multisample){
+          if (!GLContext.getCapabilities().GL_EXT_framebuffer_object){
             glTexParameteri(target, GL_GENERATE_MIPMAP, GL_TRUE);
-//          }
+          }
         } else {
 //          glTexParameteri(target, GL_TEXTURE_BASE_LEVEL, 0 );
             if (img.getMipMapSizes() != null) {
@@ -1603,9 +1602,11 @@ public class LwjglRenderer implements Renderer {
         if (img.getMultiSamples() != imageSamples)
             img.setMultiSamples(imageSamples);
 
-//            if (GLContext.getCapabilities().GL_EXT_framebuffer_multisample){
-//                glGenerateMipmapEXT(target);
-//            }
+        if (GLContext.getCapabilities().GL_EXT_framebuffer_object){
+            if (!img.hasMipmaps() && mips) {
+                glGenerateMipmapEXT(target);
+            }
+        }
 
         img.clearUpdateNeeded();
     }

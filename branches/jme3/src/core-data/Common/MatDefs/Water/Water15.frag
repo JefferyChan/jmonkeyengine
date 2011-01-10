@@ -9,7 +9,6 @@
     uniform sampler2DMS m_Texture;
     uniform sampler2DMS m_DepthTexture;
     uniform int m_NumSamples;
-    uniform vec2 m_SamplePositions[16];
 #else
     uniform sampler2D m_Texture;
     uniform sampler2D m_DepthTexture;
@@ -62,8 +61,9 @@ const float displace = 1.7;
 const float visibility = 3.0;
 
 in vec2 texCoord;
+out vec4 outFragColor;
 
-mat3 MatrixInverse(in mat3 inMatrix){  
+mat3 MatrixInverse(in mat3 inMatrix){
     float det = dot(cross(inMatrix[0], inMatrix[1]), inMatrix[2]);
     mat3 T = transpose(inMatrix);
     return mat3(cross(T[1], T[2]),
@@ -157,7 +157,7 @@ vec4 main_multiSample(int sampleNum){
     float t = (level - m_CameraPosition.y) / eyeVecNorm.y;
     vec3 surfacePoint = m_CameraPosition + eyeVecNorm * t;
 
-    vec2 texC;
+    vec2 texC = vec2(0.0);
     int samples = 1;
     if (m_UseHQShoreline){
         samples = 10;
@@ -188,10 +188,10 @@ vec4 main_multiSample(int sampleNum){
     eyeVecNorm = normalize(m_CameraPosition - surfacePoint);
 
     // Find normal of water surface
-    float normal1 = texture(m_HeightMap, (texC + vec2(-1.0, 0.0) / 256.0)).r;
-    float normal2 = texture(m_HeightMap, (texC + vec2(1.0, 0.0) / 256.0)).r;
-    float normal3 = texture(m_HeightMap, (texC + vec2(0.0, -1.0) / 256.0)).r;
-    float normal4 = texture(m_HeightMap, (texC + vec2(0.0, 1.0) / 256.0)).r;
+    float normal1 = textureOffset(m_HeightMap, texC, ivec2(-1,  0)).r;
+    float normal2 = textureOffset(m_HeightMap, texC, ivec2( 1,  0)).r;
+    float normal3 = textureOffset(m_HeightMap, texC, ivec2( 0, -1)).r;
+    float normal4 = textureOffset(m_HeightMap, texC, ivec2( 0,  1)).r;
 
     vec3 myNormal = normalize(vec3((normal1 - normal2) * m_MaxAmplitude,m_NormalScale,(normal3 - normal4) * m_MaxAmplitude));
     vec3 normal = vec3(0.0);
@@ -199,19 +199,19 @@ vec4 main_multiSample(int sampleNum){
     if (m_UseRipples){
         texC = surfacePoint.xz * 0.8 + m_WindDirection * m_Time* 1.6;
         mat3 tangentFrame = computeTangentFrame(myNormal, eyeVecNorm, texC);
-        vec3 normal0a = normalize(tangentFrame*(2.0 * texture2D(m_NormalMap, texC).xyz - 1.0));
+        vec3 normal0a = normalize(tangentFrame*(2.0 * texture(m_NormalMap, texC).xyz - 1.0));
 
         texC = surfacePoint.xz * 0.4 + m_WindDirection * m_Time* 0.8;
         tangentFrame = computeTangentFrame(myNormal, eyeVecNorm, texC);
-        vec3 normal1a = normalize(tangentFrame*(2.0 * texture2D(m_NormalMap, texC).xyz - 1.0));
+        vec3 normal1a = normalize(tangentFrame*(2.0 * texture(m_NormalMap, texC).xyz - 1.0));
 
         texC = surfacePoint.xz * 0.2 + m_WindDirection * m_Time * 0.4;
         tangentFrame = computeTangentFrame(myNormal, eyeVecNorm, texC);
-        vec3 normal2a = normalize(tangentFrame*(2.0 * texture2D(m_NormalMap, texC).xyz - 1.0));
+        vec3 normal2a = normalize(tangentFrame*(2.0 * texture(m_NormalMap, texC).xyz - 1.0));
 
         texC = surfacePoint.xz * 0.1 + m_WindDirection * m_Time * 0.2;
         tangentFrame = computeTangentFrame(myNormal, eyeVecNorm, texC);
-        vec3 normal3a = normalize(tangentFrame*(2.0 * texture2D(m_NormalMap, texC).xyz - 1.0));
+        vec3 normal3a = normalize(tangentFrame*(2.0 * texture(m_NormalMap, texC).xyz - 1.0));
 
         normal = normalize(normal0a * normalModifier.x + normal1a * normalModifier.y +normal2a * normalModifier.z + normal3a * normalModifier.w);
         // XXX: Here's another way to fix the terrain edge issue,
@@ -309,6 +309,6 @@ void main(){
         }
         gl_FragColor = color / m_NumSamples;
     #else
-        gl_FragColor = main_multiSample(0);
+        outFragColor = main_multiSample(0);
     #endif
 }

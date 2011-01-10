@@ -166,7 +166,7 @@ public class TestMultiRenderTarget extends SimpleApplication implements ScenePro
 
         guiNode.updateGeometricState();
         
-        fb = new FrameBuffer(w, h, 0);
+        fb = new FrameBuffer(w, h, 1);
         fb.setDepthTexture(depthData);
         fb.addColorTexture(diffuseData);
         fb.addColorTexture(normalData);

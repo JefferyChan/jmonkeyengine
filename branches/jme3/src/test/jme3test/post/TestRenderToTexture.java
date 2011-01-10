@@ -69,7 +69,7 @@ public class TestRenderToTexture extends SimpleApplication {
         offView.setBackgroundColor(ColorRGBA.DarkGray);
 
         // create offscreen framebuffer
-        FrameBuffer offBuffer = new FrameBuffer(512, 512, 0);
+        FrameBuffer offBuffer = new FrameBuffer(512, 512, 1);
 
         //setup framebuffer's cam
         offCamera.setFrustumPerspective(45f, 1f, 1f, 1000f);

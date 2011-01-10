@@ -288,6 +288,18 @@ public class Geometry extends Spatial {
     }
 
     /**
+     * This version of clone is a shallow clone, in other words, the
+     * same mesh is referenced as the original geometry.
+     * Exception: if the mesh is marked as being a software
+     * animated mesh, (bind pose is set) then the positions
+     * and normals are deep copied.
+     * @return
+     */
+    public Geometry clone(){
+        return clone(true);
+    }
+
+    /**
      * Creates a deep clone of the geometry,
      * this creates an identical copy of the mesh
      * with the vertexbuffer data duplicated.

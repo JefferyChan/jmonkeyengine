@@ -27,6 +27,5 @@ void main(void)
         color+=glowColor;
    #endif
    
-  
    gl_FragColor = color;
 }
