@@ -741,7 +741,7 @@ public class ParticleEmitter extends Geometry implements Control {
         startVel = (Vector3f) ic.readSavable("startVel", null);
         startColor = (ColorRGBA) ic.readSavable("startColor", null);
         endColor = (ColorRGBA) ic.readSavable("endColor", null);
-        startSize = ic.readFloat("startSiz", 0);
+        startSize = ic.readFloat("startSize", 0);
         endSize = ic.readFloat("endSize", 0);
         worldSpace = ic.readBoolean("worldSpace", false);
         facingVelocity = ic.readBoolean("facingVelocity", false);
