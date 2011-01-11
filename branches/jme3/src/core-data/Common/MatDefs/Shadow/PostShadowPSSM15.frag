@@ -79,7 +79,7 @@ float Shadow_DoBilinear_2x2(in SHADOWMAP tex, in vec4 projCoord){
 
     ivec2 texSize = textureSize(tex, 0);
     #ifdef GL_ARB_texture_gather
-        vec4 coord = projCoord.xyz / projCoord.w;
+        vec4 coord = vec4(projCoord.xyz / projCoord.w,0.0);
         vec4 gather = SHADOWGATHER(tex, coord);
     #else
         vec4 gather = vec4(0.0);
