@@ -54,6 +54,7 @@ public class BitmapCharacter implements Savable, Cloneable {
     private int yOffset;
     private int xAdvance;
     private IntMap<Integer> kerning = new IntMap<Integer>();
+    private int page;
 
     @Override
     public BitmapCharacter clone() {
@@ -120,6 +121,14 @@ public class BitmapCharacter implements Savable, Cloneable {
 
     public void setXAdvance(int advance) {
         xAdvance = advance;
+    }
+
+    public void setPage(int page) {
+        this.page = page;
+    }
+
+    public int getPage() {
+        return page;
     }
 
     public void addKerning(int second, int amount){

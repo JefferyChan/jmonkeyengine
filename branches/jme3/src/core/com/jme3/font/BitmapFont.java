@@ -81,6 +81,10 @@ public class BitmapFont implements Savable {
         return pages[index];
     }
 
+    public int getPageSize() {
+        return pages.length;
+    }
+
     public BitmapCharacterSet getCharSet() {
         return charSet;
     }
@@ -109,6 +113,8 @@ public class BitmapFont implements Savable {
 
     private int findKerningAmount(int newLineLastChar, int nextChar) {
         BitmapCharacter c = charSet.getCharacter(newLineLastChar);
+        if (c == null)
+            return 0;
         return c.getKerning(nextChar);
     }
 
@@ -163,7 +169,7 @@ public class BitmapFont implements Savable {
         return Math.max(maxLineWidth, lineWidth);
     }
 
-    public float updateText(StringBlock block, QuadList target, boolean rightToLeft) {
+    public float updateText(StringBlock block, QuadList target, boolean rightToLeft, int page) {
 
         CharSequence text = block.getCharacters();
         Align alignment = block.getAlignment();
@@ -175,10 +181,9 @@ public class BitmapFont implements Savable {
         BitmapCharacter lastChar = null;
         int lineNumber = 1;
         int wordNumber = 1;
-        int quadIndex = -1;
         float wordWidth = 0f;
         boolean useKerning = block.isKerning();
-        target.setActualSize(text.length());
+        target.clear();
 
         float incrScale = rightToLeft ? -1f : 1f;
         textColor.set(block.getColor());
@@ -275,12 +280,22 @@ public class BitmapFont implements Savable {
                     }
                 }
 
+                final float x0 = x;
+                final float wordWidth0 = wordWidth;
+
+                x += xAdvance * incrScale;
+                wordWidth += xAdvance;
+                lineWidth += xAdvance;
+
+                if (c.getPage() != page) {
+                    continue;
+                }
+
                 // Create the quad
-                quadIndex++;
-                FontQuad q = target.getQuad(quadIndex);
+                FontQuad q = target.newQuad();
 
                 // Determine quad position
-                float quadPosX = x + (xOffset * incrScale);
+                float quadPosX = x0 + (xOffset * incrScale);
                 if (rightToLeft){
                     quadPosX -= width;
                 }
@@ -302,20 +317,16 @@ public class BitmapFont implements Savable {
                     // since this is a space,
                     // increment wordnumber and reset wordwidth
                     wordNumber++;
-                    wordWidth = 0f;
+                    wordWidth = xAdvance;
                 }
 
                 // set data
-                q.setWordNumber(wordNumber);
+                q.setWordWidth(wordWidth0);
                 q.setWordWidth(wordWidth);
                 q.setBitmapChar(c);
                 q.setSizeScale(sizeScale);
                 q.setCharacter(text.charAt(i));
                 q.setTotalWidth(kernAmount + xAdvance);
-
-                x += xAdvance * incrScale;
-                wordWidth += xAdvance;
-                lineWidth += xAdvance;
 
                 lastChar = c;
             }
@@ -324,7 +335,7 @@ public class BitmapFont implements Savable {
         return Math.max(lineWidth, maxLineWidth);
     }
 
-    public float updateTextRect(StringBlock b, QuadList target) {
+    public float updateTextRect(StringBlock b, QuadList target, int page) {
 
         String text = b.getText();
         float x = b.getTextBox().x;
@@ -337,13 +348,12 @@ public class BitmapFont implements Savable {
         char lastChar = 0;
         int lineNumber = 1;
         int wordNumber = 1;
-        int quadIndex = -1;
         float wordWidth = 0f;
         boolean firstCharOfLine = true;
         boolean useKerning = b.isKerning();
         Align alignment = b.getAlignment();
 
-        target.setActualSize(text.length());
+        target.clear();
 
         for (int i = 0; i < text.length(); i++){
             BitmapCharacter c = charSet.getCharacter((int) text.charAt(i));
@@ -382,7 +392,7 @@ public class BitmapFont implements Savable {
                         lineWidth = 0f;
 
 
-                        for (int j = 0; j <= quadIndex; j++){
+                        for (int j = 0; j <= target.getActualSize(); j++){
                             FontQuad q = target.getQuad(j);
                             BitmapCharacter localChar = q.getBitmapChar();
 
@@ -469,11 +479,18 @@ public class BitmapFont implements Savable {
                 }
                 firstCharOfLine = false;
 
-                // edit the quad
-                quadIndex++;
-                FontQuad q = target.getQuad(quadIndex);
+                final float x0 = x;
 
-                float quadPosX = x + (xOffset);
+                x += xAdvance;
+                lineWidth += xAdvance;
+                if (c.getPage() != page) {
+                    continue;
+                }
+
+                // edit the quad
+                FontQuad q = target.newQuad();
+
+                float quadPosX = x0 + (xOffset);
                 float quadPosY = y - yOffset;
                 q.setPosition(quadPosX, quadPosY);
                 q.setSize(width, height);
@@ -497,8 +514,6 @@ public class BitmapFont implements Savable {
                 q.setSizeScale(sizeScale);
                 q.setCharacter(text.charAt(i));
 
-                x += xAdvance;
-                lineWidth += xAdvance;
                 lastChar = text.charAt(i);
 
             }

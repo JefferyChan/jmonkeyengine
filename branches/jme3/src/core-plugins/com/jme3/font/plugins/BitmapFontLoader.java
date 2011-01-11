@@ -142,6 +142,8 @@ public class BitmapFontLoader implements AssetLoader {
                         ch.setYOffset(Integer.parseInt(tokens[i + 1]));
                     }else if (token.equals("xadvance")){
                         ch.setXAdvance(Integer.parseInt(tokens[i + 1]));
+                    } else if (token.equals("page")) {
+                        ch.setPage(Integer.parseInt(tokens[i + 1]));
                     }
                 }
             }else if (tokens[0].equals("kerning")){

@@ -197,7 +197,7 @@ public class RenderDeviceJme implements RenderDevice {
         tempMat.setScale(size, size, 0);
 
         rm.setWorldMatrix(tempMat);
-        niftyMat.render(text, rm);
+        text.render(rm, niftyMat);
     }
 
     public void renderImage(RenderImage image, int x, int y, int w, int h,

@@ -39,10 +39,6 @@ public class QuadList {
     private ArrayList<FontQuad> quads = new ArrayList<FontQuad>();
     private int actualSize = 0;
 
-    public void addQuad(FontQuad quad){
-        quads.add(quad);
-    }
-
     public FontQuad getQuad(int index){
         return quads.get(index);
     }
@@ -51,16 +47,24 @@ public class QuadList {
         return quads.size();
     }
 
-    public void setActualSize(int size){
-        if (quads.size() < size){
-            int quadSize = quads.size();
-            for (int i = 0; i < size - quadSize; i++){
-                quads.add(new FontQuad());
-            }
-        }
-        for (int i = 0; i < quads.size(); i++){
-            quads.get(i).setSize(0, 0);
-        }
+    public void clear() {
+        actualSize = 0;
     }
 
+    public int getActualSize() {
+        return actualSize;
+    }
+
+    public FontQuad newQuad() {
+        FontQuad q = null;
+        if (actualSize == quads.size()) {
+            q = new FontQuad();
+            quads.add(q);
+        } else {
+            q = quads.get(actualSize);
+            q.setSize(0, 0);
+        }
+        actualSize++;
+        return q;
+    }
 }
