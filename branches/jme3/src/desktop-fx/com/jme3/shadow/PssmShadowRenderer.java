@@ -51,27 +51,76 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.debug.WireFrustum;
 import com.jme3.texture.FrameBuffer;
 import com.jme3.texture.Image.Format;
+import com.jme3.texture.Texture.MagFilter;
+import com.jme3.texture.Texture.MinFilter;
+import com.jme3.texture.Texture.ShadowCompareMode;
 import com.jme3.texture.Texture2D;
 import com.jme3.ui.Picture;
 
 public class PssmShadowRenderer implements SceneProcessor {
 
+    @Deprecated
     public static final String EDGE_FILTERING_PCF = "EDGE_FILTERING_PCF";
+
+    @Deprecated
     public static final String EDGE_FILTERING_DITHER = "EDGE_FILTERING_DITHER";
 
-    public enum FILTERING{
-      PCF4X4,
-      PCF8X8,
-      PCF10X10,
-      PCF16X16,
-      PCF20X20
+    @Deprecated
+    public enum FILTERING {
+        PCF4X4,
+        PCF8X8,
+        PCF10X10,
+        PCF16X16,
+        PCF20X20
     }
-//    public static final String PCF_ = "m_Pcf4";
-//    public static final String PCF_8X8 = "m_Pcf8";
-//    public static final String PCF_10X10 = "m_Pcf10";
-//    public static final String PCF_16X16 = "m_Pcf16";
-//    public static final String PCF_20X20 = "m_Pcf20";
 
+    /**
+     * <code>FilterMode</code> specifies how shadows are filtered
+     */
+    public enum FilterMode {
+        /**
+         * Shadows are not filtered. Nearest sample is used, causing in blocky
+         * shadows.
+         */
+        Nearest,
+
+        /**
+         * Bilinear filtering is used. Has the potential of being hardware
+         * accelerated on some GPUs
+         */
+        Bilinear,
+
+        /**
+         * Dither-based sampling is used, very cheap but can look bad
+         * at low resolutions.
+         */
+        Dither,
+
+        /**
+         * 4x4 percentage-closer filtering is used. Shadows will be smoother
+         * at the cost of performance
+         */
+        PCF4,
+        
+        /**
+         * 8x8 percentage-closer  filtering is used. Shadows will be smoother
+         * at the cost of performance
+         */
+        PCF8
+    }
+
+    public enum CompareMode {
+        /**
+         * Shadow depth comparisons are done by using shader code
+         */
+        Software,
+
+        /**
+         * Shadow depth comparisons are done by using the GPU's dedicated
+         * shadowing pipeline.
+         */
+        Hardware;
+    }
 
     private int nbSplits = 3;
     private float lambda = 0.65f;
@@ -85,17 +134,23 @@ public class PssmShadowRenderer implements SceneProcessor {
     private Camera shadowCam;
     private Material preshadowMat;
     private Material postshadowMat;
-    private Picture[] dispPic;
+
+    private GeometryList splitOccluders = new GeometryList(new OpaqueComparator());
     private Matrix4f[] lightViewProjectionsMatrices;
-    private float[] splits;
+    private ColorRGBA splits;
+    private float[] splitsArray;
     private boolean noOccluders = false;
-    private Vector3f[] points = new Vector3f[8];
+    
     private Vector3f direction = new Vector3f();
     private AssetManager assetManager;
     private boolean debug = false;
-    private boolean cropShadows=true;
-    private FILTERING pcfFilter=FILTERING.PCF4X4;
-    private int edgesThickness=10;
+    private float edgesThickness = 1.0f;
+
+    private FilterMode filterMode;
+    private CompareMode compareMode;
+
+    private Picture[] dispPic;
+    private Vector3f[] points = new Vector3f[8];
 
 //    private float textureSize;
 
@@ -108,28 +163,27 @@ public class PssmShadowRenderer implements SceneProcessor {
      */
     public PssmShadowRenderer(AssetManager manager, int size, int nbSplits) {
         assetManager = manager;
-        nbSplits= Math.max(Math.min(nbSplits, 8), 1);
+        nbSplits = Math.max(Math.min(nbSplits, 4), 1);
         this.nbSplits = nbSplits;
- //       textureSize=size;
 
         shadowFB = new FrameBuffer[nbSplits];
         shadowMaps = new Texture2D[nbSplits];
         dispPic = new Picture[nbSplits];
         lightViewProjectionsMatrices = new Matrix4f[nbSplits];
-        splits = new float[nbSplits + 1];
+        splits = new ColorRGBA();
+        splitsArray = new float[nbSplits+1];
 
         //DO NOT COMMENT THIS (it prevent the OSX incomplete read buffer crash)
         dummyTex= new Texture2D(size, size, Format.RGBA8);
 
-        preshadowMat = new Material(manager, "Common/MatDefs/Shadow/PreShadow.j3md");
+        preshadowMat  = new Material(manager, "Common/MatDefs/Shadow/PreShadow.j3md");
         postshadowMat = new Material(manager, "Common/MatDefs/Shadow/PostShadowPSSM.j3md");
-
 
         for (int i = 0; i < nbSplits; i++) {
             lightViewProjectionsMatrices[i] = new Matrix4f();
             shadowFB[i] = new FrameBuffer(size, size, 1);
-            shadowMaps[i] = new Texture2D(size, size, Format.Depth16);
-
+            shadowMaps[i] = new Texture2D(size, size, Format.Depth);
+            
             shadowFB[i].setDepthTexture(shadowMaps[i]);
 
             //DO NOT COMMENT THIS (it prevent the OSX incomplete read buffer crash)
@@ -137,16 +191,13 @@ public class PssmShadowRenderer implements SceneProcessor {
 
             postshadowMat.setTexture("m_ShadowMap" + i, shadowMaps[i]);
             
-
             //quads for debuging purpose
             dispPic[i] = new Picture("Picture" + i);
             dispPic[i].setTexture(manager, shadowMaps[i], false);
         }
-        
-        postshadowMat.setBoolean(pcfFilter.toString(),true);
-        postshadowMat.setBoolean("m_PcfEdg"+edgesThickness,true);
-        postshadowMat.setFloat("m_ShadowIntensity", shadowIntensity);
 
+        setCompareMode(CompareMode.Hardware);
+        setFilterMode(FilterMode.Bilinear);
 
         shadowCam = new Camera(size, size);
         shadowCam.setParallelProjection(true);
@@ -156,22 +207,64 @@ public class PssmShadowRenderer implements SceneProcessor {
         }
     }
 
-    /**
-     * Create a PSSM Shadow Renderer
-     * More info on the technique at http://http.developer.nvidia.com/GPUGems3/gpugems3_ch10.html
-     * @param manager the application asset manager
-     * @param size the size of the rendered shadowmaps (512,1024,2048, etc...)
-     * @param nbSplits the number of shadow maps rendered (the more shadow maps the more quality, the less fps).
-     * @param edgeFiltering the type of filtering for shadow edge smoothing (use PSSMShadowRenderer.EDGE_FILTERING_DITHER or PSSMShadowRenderer.EDGE_FILTERING_PCF) default is PCF
-     */
-    public PssmShadowRenderer(AssetManager manager, int size, int nbSplits, String edgeFiltering) {
+    @Deprecated
+    public PssmShadowRenderer(AssetManager manager, int size, int nbSplits, String filterMode){
         this(manager, size, nbSplits);
-        if (edgeFiltering.equals(EDGE_FILTERING_DITHER) || edgeFiltering.equals(EDGE_FILTERING_PCF)) {
-            postshadowMat.setBoolean("m_DoDither", edgeFiltering.equals(EDGE_FILTERING_DITHER));
-            //postshadowMat.selectTechnique("Default");
-            //postshadowMat.getActiveTechnique().getDef().addShaderParamDefine(edgeFiltering, edgeFiltering);
-            //postshadowMat.setParam(edgeFiltering, VarType.Boolean, true);
+        if (filterMode.equals(EDGE_FILTERING_DITHER)){
+            setFilterMode(FilterMode.Dither);
+        }else if (filterMode.equals(EDGE_FILTERING_PCF)){
+            setFilterMode(FilterMode.PCF4);
         }
+    }
+
+    public void setFilterMode(FilterMode filterMode){
+        if (filterMode == null)
+            throw new NullPointerException();
+
+        if (this.filterMode == filterMode)
+            return;
+
+        this.filterMode = filterMode;
+        postshadowMat.setInt("m_FilterMode", filterMode.ordinal());
+        postshadowMat.setFloat("m_PCFEdge", edgesThickness);
+        if (compareMode == CompareMode.Hardware){
+            for (Texture2D shadowMap : shadowMaps){
+                if (filterMode == FilterMode.Bilinear){
+                    shadowMap.setMagFilter(MagFilter.Bilinear);
+                    shadowMap.setMinFilter(MinFilter.BilinearNoMipMaps);
+                }else{
+                    shadowMap.setMagFilter(MagFilter.Nearest);
+                    shadowMap.setMinFilter(MinFilter.NearestNoMipMaps);
+                }
+            }
+        }
+    }
+
+    public void setCompareMode(CompareMode compareMode) {
+        if (compareMode == null)
+            throw new NullPointerException();
+
+        if (this.compareMode == compareMode)
+            return;
+
+        this.compareMode = compareMode;
+        for (Texture2D shadowMap : shadowMaps){
+            if (compareMode == CompareMode.Hardware){
+                shadowMap.setShadowCompareMode(ShadowCompareMode.LessOrEqual);
+                if (filterMode == FilterMode.Bilinear){
+                    shadowMap.setMagFilter(MagFilter.Bilinear);
+                    shadowMap.setMinFilter(MinFilter.BilinearNoMipMaps);
+                }else{
+                    shadowMap.setMagFilter(MagFilter.Nearest);
+                    shadowMap.setMinFilter(MinFilter.NearestNoMipMaps);
+                }
+            } else{
+                shadowMap.setShadowCompareMode(ShadowCompareMode.Off);
+                shadowMap.setMagFilter(MagFilter.Nearest);
+                shadowMap.setMinFilter(MinFilter.NearestNoMipMaps);
+            }
+        }
+        postshadowMat.setBoolean("m_HardwareShadows", compareMode == CompareMode.Hardware);
     }
 
     //debug function that create a displayable frustrum
@@ -205,7 +298,6 @@ public class PssmShadowRenderer implements SceneProcessor {
     public void initialize(RenderManager rm, ViewPort vp) {
         renderManager = rm;
         viewPort = vp;
-
     }
 
     public boolean isInitialized() {
@@ -220,15 +312,12 @@ public class PssmShadowRenderer implements SceneProcessor {
         this.direction.set(direction).normalizeLocal();
     }
 
-    GeometryList splitOccluders=new GeometryList(new OpaqueComparator());
-
     public void postQueue(RenderQueue rq) {
-        
         GeometryList occluders = rq.getShadowQueueContent(ShadowMode.Cast);        
         if (occluders.size() == 0) {
             return;
         }
-        if (rq.getShadowQueueContent(ShadowMode.Receive).size()==0) {
+        if (rq.getShadowQueueContent(ShadowMode.Receive).size() == 0) {
             return;
         }
 
@@ -254,14 +343,26 @@ public class PssmShadowRenderer implements SceneProcessor {
         shadowCam.update();
         shadowCam.updateViewProjection();
 
-        PssmShadowUtil.updateFrustumSplits(splits, viewCam.getFrustumNear(), zFar, lambda);
+        PssmShadowUtil.updateFrustumSplits(splitsArray, viewCam.getFrustumNear(), zFar, lambda);
+        switch (splitsArray.length){
+            case 5:
+                splits.a = splitsArray[4];
+            case 4:
+                splits.b = splitsArray[3];
+            case 3:
+                splits.g = splitsArray[2];
+            case 2:
+            case 1:
+                splits.r = splitsArray[1];
+                break;
+        }
 
         Renderer r = renderManager.getRenderer();
         renderManager.setForcedMaterial(preshadowMat);
 
         for (int i = 0; i < nbSplits; i++) {
             // update frustum points based on current camera and split
-            ShadowUtil.updateFrustumPoints(viewCam, splits[i], splits[i + 1], 1.0f, points);
+            ShadowUtil.updateFrustumPoints(viewCam, splitsArray[i], splitsArray[i + 1], 1.0f, points);
 
             //Updating shadow cam with curent split frustra
          //   if(cropShadows){
@@ -296,7 +397,7 @@ public class PssmShadowRenderer implements SceneProcessor {
             //viewPort.getQueue().renderShadowQueue(ShadowMode.Cast, renderManager, shadowCam, i == nbSplits - 1);
             
         }
-occluders.clear();
+        occluders.clear();
         //restore setting for future rendering
         r.setFrameBuffer(viewPort.getOutputFrameBuffer());
         renderManager.setForcedMaterial(null);
@@ -310,9 +411,7 @@ occluders.clear();
         renderManager.setCamera(cam, true);
         int h = cam.getHeight();
         for (int i = 0; i < dispPic.length; i++) {
-
             dispPic[i].setPosition(64 * (i + 1) + 128 * i, h / 20f);
-
             dispPic[i].setWidth(128);
             dispPic[i].setHeight(128);
             dispPic[i].updateGeometricState();
@@ -333,10 +432,9 @@ occluders.clear();
     public void postFrame(FrameBuffer out) {
         Camera cam = viewPort.getCamera();
         if (!noOccluders) {
-
+            postshadowMat.setColor("m_Splits", splits);
             for (int i = 0; i < nbSplits; i++) {
                 postshadowMat.setMatrix4("m_LightViewProjectionMatrix" + i, lightViewProjectionsMatrices[i]);
-                postshadowMat.setFloat("m_Splits"+i, splits[i+1]);
             }
             renderManager.setForcedMaterial(postshadowMat);
             viewPort.getQueue().renderShadowQueue(ShadowMode.Receive, renderManager, cam, true);
@@ -344,7 +442,8 @@ occluders.clear();
             renderManager.setCamera(cam, false);
 
         }
-        //    displayShadowMap(renderManager.getRenderer());
+        if (debug)
+            displayShadowMap(renderManager.getRenderer());
     }
 
     public void preFrame(float tpf) {
@@ -401,33 +500,38 @@ occluders.clear();
         postshadowMat.setFloat("m_ShadowIntensity", shadowIntensity);
     }
 
-    public boolean isCropShadows() {
-        return cropShadows;
-    }
-
-    public void setCropShadows(boolean cropShadows) {
-        this.cropShadows = cropShadows;
-    }
-
-
     public int getEdgesThickness() {
-        return edgesThickness;
+        return (int) (edgesThickness * 10);
     }
 
     public void setEdgesThickness(int edgesThickness) {
-        postshadowMat.setBoolean("m_PcfEdg"+this.edgesThickness,false);
         this.edgesThickness = Math.max(1, Math.min(edgesThickness,10));
-        postshadowMat.setBoolean("m_PcfEdg"+ this.edgesThickness,true);
+        this.edgesThickness *= 0.1f;
+        postshadowMat.setFloat("m_PCFEdge", edgesThickness);
     }
 
+    @Deprecated
     public FILTERING getPcfFilter() {
-        return pcfFilter;
+        switch (filterMode){
+            case PCF4:
+                return FILTERING.PCF4X4;
+            case PCF8:
+                return FILTERING.PCF8X8;
+            default:
+                return null;
+        }
     }
 
+    @Deprecated
     public void setPcfFilter(FILTERING pcfFilter) {
-        postshadowMat.setBoolean(this.pcfFilter.toString(),false);
-        this.pcfFilter = pcfFilter;
-        postshadowMat.setBoolean(pcfFilter.toString(),true);
+        switch (pcfFilter){
+            case PCF4X4:
+                setFilterMode(FilterMode.PCF4);
+                break;
+            case PCF8X8:
+                setFilterMode(FilterMode.PCF8);
+                break;
+        }
     }
 
 

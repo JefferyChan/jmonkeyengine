@@ -105,6 +105,9 @@ public class DefineList implements Savable {
             case Boolean:
                 if ( ((Boolean) val).booleanValue() )
                     defines.put(key, "1");
+                else if (defines.containsKey(key))
+                    defines.remove(key);
+                
                 break;
             case Float:
             case Int:

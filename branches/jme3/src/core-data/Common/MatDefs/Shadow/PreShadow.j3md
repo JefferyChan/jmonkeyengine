@@ -9,7 +9,7 @@ MaterialDef Pre Shadow {
         }
 
         RenderState {
-            // FaceCull Off
+            FaceCull Back
             DepthTest On
             DepthWrite On
             PolyOffset 5 0
