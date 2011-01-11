@@ -152,8 +152,6 @@ public class PssmShadowRenderer implements SceneProcessor {
     private Picture[] dispPic;
     private Vector3f[] points = new Vector3f[8];
 
-//    private float textureSize;
-
     /**
      * Create a PSSM Shadow Renderer 
      * More info on the technique at http://http.developer.nvidia.com/GPUGems3/gpugems3_ch10.html
@@ -291,7 +289,8 @@ public class PssmShadowRenderer implements SceneProcessor {
                 frustumMdl.getMaterial().setColor("m_Color", ColorRGBA.White);
                 break;
         }
-        
+
+        frustumMdl.updateGeometricState();
         return frustumMdl;
     }
 
@@ -314,14 +313,13 @@ public class PssmShadowRenderer implements SceneProcessor {
 
     public void postQueue(RenderQueue rq) {
         GeometryList occluders = rq.getShadowQueueContent(ShadowMode.Cast);        
-        if (occluders.size() == 0) {
+        if (occluders.size() == 0)
             return;
-        }
-        if (rq.getShadowQueueContent(ShadowMode.Receive).size() == 0) {
-            return;
-        }
 
         GeometryList receivers = rq.getShadowQueueContent(ShadowMode.Receive);
+        if (receivers.size() == 0)
+            return;
+        
         Camera viewCam = viewPort.getCamera();
 
         float zFar = zFarOverride;
@@ -361,29 +359,30 @@ public class PssmShadowRenderer implements SceneProcessor {
         renderManager.setForcedMaterial(preshadowMat);
 
         for (int i = 0; i < nbSplits; i++) {
+
             // update frustum points based on current camera and split
             ShadowUtil.updateFrustumPoints(viewCam, splitsArray[i], splitsArray[i + 1], 1.0f, points);
 
             //Updating shadow cam with curent split frustra
          //   if(cropShadows){
-                ShadowUtil.updateShadowCamera(occluders, receivers, shadowCam, points,splitOccluders);
+                ShadowUtil.updateShadowCamera(occluders, receivers, shadowCam, points, splitOccluders);
 //            }else{
 //                ShadowUtil.updateShadowCamera(shadowCam, points);
 //            }           
-            //displaying the current splitted frustrum and the associated croped light frustrums in wireframe.
+            //displaying the current splitted frustrum and the associated cropped light frustrums in wireframe.
             //only for debuging purpose
-            if (debug) {
-                viewPort.attachScene(createFrustum(points, i));
-                Vector3f[] pts = new Vector3f[8];
-                for (int j = 0; j < pts.length; j++) {
-                    pts[j] = new Vector3f();
-                }
-                ShadowUtil.updateFrustumPoints2(shadowCam, pts);
-                viewPort.attachScene(createFrustum(pts, i));
-                if (i == 3) {
-                    debug = false;
-                }
-            }
+//            if (debug) {
+//                viewPort.attachScene(createFrustum(points, i));
+//                Vector3f[] pts = new Vector3f[8];
+//                for (int j = 0; j < pts.length; j++) {
+//                    pts[j] = new Vector3f();
+//                }
+//                ShadowUtil.updateFrustumPoints2(shadowCam, pts);
+//                viewPort.attachScene(createFrustum(pts, i));
+//                if (i == nbSplits-1) {
+//                    debug = false;
+//                }
+//            }
 
             //saving light view projection matrix for this split
             lightViewProjectionsMatrices[i] = shadowCam.getViewProjectionMatrix().clone();
@@ -417,9 +416,7 @@ public class PssmShadowRenderer implements SceneProcessor {
             dispPic[i].updateGeometricState();
             renderManager.renderGeometry(dispPic[i]);
         }
-
         renderManager.setCamera(cam, false);
-
     }
 
     /**For dubuging purpose

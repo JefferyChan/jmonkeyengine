@@ -146,16 +146,16 @@ public class ShadowUtil {
         if (scale != 1.0f) {
             // find center of frustum
             Vector3f center = new Vector3f();
-            for (Vector3f pt : points) {
-                center.addLocal(pt);
+            for (int i = 0; i < 8; i++) {
+                center.addLocal(points[i]);
             }
             center.divideLocal(8f);
 
             Vector3f cDir = new Vector3f();
-            for (Vector3f pt : points) {
-                cDir.set(pt).subtractLocal(center);
+            for (int i = 0; i < 8; i++) {
+                cDir.set(points[i]).subtractLocal(center);
                 cDir.multLocal(scale - 1.0f);
-                pt.addLocal(cDir);
+                points[i].addLocal(cDir);
             }
         }
     }
@@ -221,7 +221,8 @@ public class ShadowUtil {
 
             temp.x /= w;
             temp.y /= w;
-//            temp.z /= w;
+            // Why was this commented out?
+            temp.z /= w;
 
             min.minLocal(temp);
             max.maxLocal(temp);
@@ -319,7 +320,8 @@ public class ShadowUtil {
     public static void updateShadowCamera(GeometryList occluders,
                                           GeometryList receivers,
                                           Camera shadowCam,
-                                          Vector3f[] points,GeometryList splitOccluders){
+                                          Vector3f[] points,
+                                          GeometryList splitOccluders){
 
         boolean ortho = shadowCam.isParallelProjection();
 
@@ -345,7 +347,7 @@ public class ShadowUtil {
             Geometry receiver = receivers.get(i);
             BoundingVolume bv = receiver.getWorldBound();
             BoundingVolume recvBox = bv.transform(viewProjMatrix, null);
-
+            
             if (splitBB.intersects(recvBox)){
                 visRecvList.add(recvBox);
             }
@@ -357,10 +359,21 @@ public class ShadowUtil {
             Geometry occluder = occluders.get(i);
             BoundingVolume bv = occluder.getWorldBound();
             BoundingVolume occBox = bv.transform(viewProjMatrix, null);
+            if (occBox instanceof BoundingBox){
+                BoundingBox occBB = (BoundingBox)occBox;
+                //Kirill 01/10/2011
+                // Extend the occluder further into the frustum
+                // This fixes shadow dissapearing issues when
+                // the caster itself is not in the view camera
+                // but its shadow is in the camera
+                //      The number is in world units
+                occBB.setZExtent(occBB.getZExtent() + 50);
+                occBB.setCenter(occBB.getCenter().addLocal(0, 0, 25));
+            }
 
             if (splitBB.intersects(occBox)){
                 visOccList.add(occBox);
-                if(splitOccluders!=null){
+                if(splitOccluders != null){
                     splitOccluders.add(occluder);
                 }
             }

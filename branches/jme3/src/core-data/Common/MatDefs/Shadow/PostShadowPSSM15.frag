@@ -12,6 +12,7 @@
     #define SHADOWGATHER(tex,coord) step(coord.z, textureGather(tex, coord.xy))
 #endif
 
+#define KERNEL 1
 #if FILTER_MODE == 0
     #define GETSHADOW SHADOWCOMPARE
 #elif FILTER_MODE == 1
@@ -54,6 +55,10 @@ float Shadow_BorderCheck(in vec2 coord){
 }
 
 float Shadow_DoDither_2x2(in SHADOWMAP tex, in vec4 projCoord){
+    float border = Shadow_BorderCheck(projCoord.xy);
+    if (border > 0.0)
+        return 1.0;
+
     ivec2 texSize = textureSize(tex, 0);
     vec2 pixSize = 1.0 / vec2(texSize);
 
@@ -68,8 +73,11 @@ float Shadow_DoDither_2x2(in SHADOWMAP tex, in vec4 projCoord){
 }
 
 float Shadow_DoBilinear_2x2(in SHADOWMAP tex, in vec4 projCoord){
-    ivec2 texSize = textureSize(tex, 0);
+    float border = Shadow_BorderCheck(projCoord.xy);
+    if (border > 0.0)
+        return 1.0;
 
+    ivec2 texSize = textureSize(tex, 0);
     #ifdef GL_ARB_texture_gather
         vec4 coord = projCoord.xyz / projCoord.w;
         vec4 gather = SHADOWGATHER(tex, coord);
