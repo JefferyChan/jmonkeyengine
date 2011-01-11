@@ -248,6 +248,7 @@ public class TestCinematic extends SimpleApplication {
         viewPort.addProcessor(pssm);
 
         fpp = new FilterPostProcessor(assetManager);
+        //fpp.setNumSamples(4);
         fade = new FadeFilter();
         fpp.addFilter(fade);
         viewPort.addProcessor(fpp);

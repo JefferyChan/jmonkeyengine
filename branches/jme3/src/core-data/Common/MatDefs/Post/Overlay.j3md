@@ -1,43 +1,36 @@
-MaterialDef Bloom {
+MaterialDef Default GUI {
 
     MaterialParameters {
         Int m_NumSamples
         Texture2D m_Texture
-        Float m_ExposurePow
-        Float m_ExposureCutoff
-        Boolean m_Extract
-        Texture2D m_GlowMap
+        Color m_Color        
     }
 
     Technique {
         VertexShader GLSL150:   Common/MatDefs/Post/Post15.vert
-        FragmentShader GLSL150: Common/MatDefs/Post/bloomExtract15.frag
+        FragmentShader GLSL150: Common/MatDefs/Post/Overlay15.frag
 
         WorldParameters {
             WorldViewProjectionMatrix
         }
 
         Defines {
-            HAS_GLOWMAP : m_GlowMap
-            DO_EXTRACT : m_Extract
             RESOLVE_MS : m_NumSamples
         }
+
     }
 
     Technique {
         VertexShader GLSL100:   Common/MatDefs/Post/Post.vert
-        FragmentShader GLSL100: Common/MatDefs/Post/bloomExtract.frag
+        FragmentShader GLSL100: Common/MatDefs/Post/Overlay.frag
 
         WorldParameters {
             WorldViewProjectionMatrix
         }
 
-        Defines {
-            HAS_GLOWMAP : m_GlowMap
-            DO_EXTRACT : m_Extract
-        }
     }
 
     Technique FixedFunc {
     }
+
 }

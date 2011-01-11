@@ -79,7 +79,7 @@ public class CartoonEdgeFilter extends Filter {
     @Override
     public void initFilter(AssetManager manager, RenderManager renderManager, ViewPort vp, int w, int h) {
         normalPass = new Pass();
-        normalPass.init(w, h, Format.RGBA8, Format.Depth);
+        normalPass.init(renderManager.getRenderer(), w, h, Format.RGBA8, Format.Depth);
         material = new Material(manager, "Common/MatDefs/Post/CartoonEdge.j3md");
         normalMaterial = new Material(manager, "Common/MatDefs/SSAO/normal.j3md");
     }

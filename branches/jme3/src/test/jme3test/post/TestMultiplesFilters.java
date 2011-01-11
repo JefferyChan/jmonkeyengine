@@ -91,6 +91,7 @@ public class TestMultiplesFilters extends SimpleApplication {
         scene.addLight(sun);
 
         fpp = new FilterPostProcessor(assetManager);
+      //  fpp.setNumSamples(4);
         ssaoFilter = new SSAOFilter(0.92f, 2.2f, 0.46f, 0.2f);
         final WaterFilter water=new WaterFilter(rootNode,new Vector3f(-0.4790551f, -0.39247334f, -0.7851566f));
         water.setWaterHeight(-6);

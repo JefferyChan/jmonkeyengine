@@ -60,6 +60,7 @@ public class TestCartoonEdge extends SimpleApplication {
     public void setupFilters(){
         if (renderer.getCaps().contains(Caps.GLSL100)){
             fpp=new FilterPostProcessor(assetManager);
+            //fpp.setNumSamples(4);
             fpp.addFilter(new CartoonEdgeFilter());
             viewPort.addProcessor(fpp);
         }

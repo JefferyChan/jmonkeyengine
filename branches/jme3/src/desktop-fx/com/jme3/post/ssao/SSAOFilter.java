@@ -155,7 +155,7 @@ public class SSAOFilter extends Filter {
         int screenWidth = w;
         int screenHeight = h;
         normalPass = new Pass();
-        normalPass.init(screenWidth, screenHeight, Format.RGBA8, Format.Depth);
+        normalPass.init(renderManager.getRenderer(),screenWidth, screenHeight, Format.RGBA8, Format.Depth);
         
         frustumNearFar = new Vector2f();
                

@@ -183,7 +183,7 @@ public class WaterFilter extends Filter {
     public void initFilter(AssetManager manager, RenderManager renderManager, ViewPort vp, int w, int h) {
 
         reflectionPass = new Pass();
-        reflectionPass.init(reflectionMapSize, reflectionMapSize, Format.RGBA8, Format.Depth);
+        reflectionPass.init(renderManager.getRenderer(), reflectionMapSize, reflectionMapSize, Format.RGBA8, Format.Depth);
         reflectionCam = new Camera(reflectionMapSize, reflectionMapSize);
         reflectionView = new ViewPort("reflectionView", reflectionCam);
         reflectionView.setClearEnabled(true);

@@ -149,10 +149,10 @@ public class BloomFilter extends Filter {
     public void initFilter(AssetManager manager, RenderManager renderManager, ViewPort vp, int w, int h) {
         screenWidth = (int) (w / downSamplingFactor);
         screenHeight = (int) (h / downSamplingFactor);
-    //    System.out.println(screenWidth + " " + screenHeight);
+        //    System.out.println(screenWidth + " " + screenHeight);
         if (glowMode != GlowMode.Scene) {
             preGlowPass = new Pass();
-            preGlowPass.init(screenWidth, screenHeight, Format.RGBA8, Format.Depth);
+            preGlowPass.init(renderManager.getRenderer(), screenWidth, screenHeight, Format.RGBA8, Format.Depth);
         }
 
         postRenderPasses = new ArrayList<Pass>();
@@ -176,7 +176,7 @@ public class BloomFilter extends Filter {
             }
         };
 
-        extractPass.init(screenWidth, screenHeight, Format.RGBA8, Format.Depth, extractMat);
+        extractPass.init(renderManager.getRenderer(), screenWidth, screenHeight, Format.RGBA8, Format.Depth, 1, extractMat);
         postRenderPasses.add(extractPass);
 
         //configuring horizontal blur pass
@@ -191,7 +191,7 @@ public class BloomFilter extends Filter {
             }
         };
 
-        horizontalBlur.init(screenWidth, screenHeight, Format.RGBA8, Format.Depth, hBlurMat);
+        horizontalBlur.init(renderManager.getRenderer(), screenWidth, screenHeight, Format.RGBA8, Format.Depth, 1, hBlurMat);
         postRenderPasses.add(horizontalBlur);
 
         //configuring vertical blur pass
@@ -206,7 +206,7 @@ public class BloomFilter extends Filter {
             }
         };
 
-        verticalalBlur.init(screenWidth, screenHeight, Format.RGBA8, Format.Depth, vBlurMat);
+        verticalalBlur.init(renderManager.getRenderer(), screenWidth, screenHeight, Format.RGBA8, Format.Depth, 1, vBlurMat);
         postRenderPasses.add(verticalalBlur);
 
 

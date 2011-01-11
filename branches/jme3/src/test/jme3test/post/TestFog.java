@@ -97,6 +97,7 @@ public class TestFog extends SimpleApplication {
         rootNode.attachChild(mainScene);
 
         fpp=new FilterPostProcessor(assetManager);
+        //fpp.setNumSamples(4);
         fog=new FogFilter();
         fog.setFogColor(new ColorRGBA(0.9f, 0.9f, 0.9f, 1.0f));
         fog.setFogDistance(155);

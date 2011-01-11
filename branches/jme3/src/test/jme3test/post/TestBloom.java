@@ -117,7 +117,8 @@ public class TestBloom extends SimpleApplication {
         sky.setCullHint(Spatial.CullHint.Never);
         rootNode.attachChild(sky);
 
-         fpp=new FilterPostProcessor(assetManager);
+        fpp=new FilterPostProcessor(assetManager);
+       // fpp.setNumSamples(4);
         BloomFilter bloom=new BloomFilter();
         bloom.setDownSamplingFactor(2);
         bloom.setBlurScale(1.37f);

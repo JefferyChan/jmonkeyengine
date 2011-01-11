@@ -128,7 +128,7 @@ public class TestLightScattering extends SimpleApplication {
         LightScatteringFilter filter = new LightScatteringFilter(lightPos);
         LightScatteringUI ui = new LightScatteringUI(inputManager, filter);
         fpp.addFilter(filter);
-
+//fpp.setNumSamples(4);
         //fpp.addFilter(new RadialBlurFilter(0.3f,15.0f));
         //    SSAOUI ui=new SSAOUI(inputManager, ssaoFilter.getConfig());
 

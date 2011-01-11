@@ -29,7 +29,6 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package jme3test.post;
 
 import com.jme3.app.SimpleApplication;
@@ -46,77 +45,76 @@ import com.jme3.math.Vector3f;
 import com.jme3.post.FilterPostProcessor;
 import com.jme3.post.filters.ColorOverlayFilter;
 import com.jme3.post.filters.FadeFilter;
-import com.jme3.post.filters.RadialBlurFilter;
 import com.jme3.renderer.Caps;
-import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.Spatial.CullHint;
 import com.jme3.scene.shape.Box;
-import com.jme3.scene.shape.Sphere;
 import com.jme3.texture.Texture;
 import com.jme3.texture.Texture.WrapMode;
 import com.jme3.util.SkyFactory;
+import com.jme3.util.TangentBinormalGenerator;
 
-public class TestPostFilters extends SimpleApplication implements ActionListener{
-
+public class TestPostFilters extends SimpleApplication implements ActionListener {
 
     private FilterPostProcessor fpp;
     private Vector3f lightDir = new Vector3f(-1, -1, .5f).normalizeLocal();
     FadeFilter fade;
-    public static void main(String[] args){
+
+    public static void main(String[] args) {
         TestPostFilters app = new TestPostFilters();
         app.start();
     }
 
-    public void setupFilters(){
-        if (renderer.getCaps().contains(Caps.GLSL100)){
-            fpp=new FilterPostProcessor(assetManager);
+    public void setupFilters() {
+        if (renderer.getCaps().contains(Caps.GLSL100)) {
+            fpp = new FilterPostProcessor(assetManager);
+            // fpp.setNumSamples(4);
             fpp.addFilter(new ColorOverlayFilter(ColorRGBA.LightGray));
-            fpp.addFilter(new RadialBlurFilter());
-            fade=new FadeFilter(1.0f);
-            fpp.addFilter(fade);
-            
+            //  fpp.addFilter(new RadialBlurFilter());
+            //fade=new FadeFilter(1.0f);
+            //fpp.addFilter(fade);
+
 
             viewPort.addProcessor(fpp);
         }
     }
 
-
-    public void setupSkyBox(){
+    public void setupSkyBox() {
         Texture envMap;
-        if (renderer.getCaps().contains(Caps.FloatTexture)){
+        if (renderer.getCaps().contains(Caps.FloatTexture)) {
             envMap = assetManager.loadTexture("Textures/Sky/St Peters/StPeters.hdr");
-        }else{
+        } else {
             envMap = assetManager.loadTexture("Textures/Sky/St Peters/StPeters.jpg");
         }
-        rootNode.attachChild(SkyFactory.createSky(assetManager, envMap, new Vector3f(-1,-1,-1), true));
+        rootNode.attachChild(SkyFactory.createSky(assetManager, envMap, new Vector3f(-1, -1, -1), true));
     }
 
-    public void setupLighting(){
-   
+    public void setupLighting() {
+
         DirectionalLight dl = new DirectionalLight();
         dl.setDirection(lightDir);
-      
+
         dl.setColor(new ColorRGBA(.9f, .9f, .9f, 1));
-       
+
         rootNode.addLight(dl);
 
         dl = new DirectionalLight();
         dl.setDirection(new Vector3f(1, 0, -1).normalizeLocal());
-       
+
         dl.setColor(new ColorRGBA(.4f, .4f, .4f, 1));
-        
+
         rootNode.addLight(dl);
     }
 
-    public void setupFloor(){
+    public void setupFloor() {
         Material mat = assetManager.loadMaterial("Textures/Terrain/BrickWall/BrickWall.j3m");
         mat.getTextureParam("m_DiffuseMap").getTextureValue().setWrap(WrapMode.Repeat);
         mat.getTextureParam("m_NormalMap").getTextureValue().setWrap(WrapMode.Repeat);
         mat.getTextureParam("m_ParallaxMap").getTextureValue().setWrap(WrapMode.Repeat);
         Box floor = new Box(Vector3f.ZERO, 50, 1f, 50);
+        TangentBinormalGenerator.generate(floor);
         floor.scaleTextureCoordinates(new Vector2f(5, 5));
         Geometry floorGeom = new Geometry("Floor", floor);
         floorGeom.setMaterial(mat);
@@ -124,8 +122,7 @@ public class TestPostFilters extends SimpleApplication implements ActionListener
         rootNode.attachChild(floorGeom);
     }
 
-
-    public void setupSignpost(){
+    public void setupSignpost() {
         Spatial signpost = assetManager.loadModel("Models/Sign Post/Sign Post.mesh.xml");
         Material mat = assetManager.loadMaterial("Models/Sign Post/Sign Post.j3m");
         signpost.setMaterial(mat);
@@ -172,18 +169,14 @@ public class TestPostFilters extends SimpleApplication implements ActionListener
     }
 
     public void onAction(String name, boolean value, float tpf) {
-        if(name.equals("fadein") && value){
+        if (name.equals("fadein") && value) {
             fade.fadeIn();
             System.out.println("fade in");
 
         }
-        if(name.equals("fadeout") && value){
+        if (name.equals("fadeout") && value) {
             fade.fadeOut();
             System.out.println("fade out");
         }
     }
-
-
-
-
 }

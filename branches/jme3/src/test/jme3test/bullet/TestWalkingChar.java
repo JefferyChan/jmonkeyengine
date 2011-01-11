@@ -57,11 +57,15 @@ import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
+import com.jme3.material.RenderState.BlendMode;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
+import com.jme3.post.FilterPostProcessor;
+import com.jme3.post.filters.BloomFilter;
+import com.jme3.post.filters.ColorOverlayFilter;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Geometry;
@@ -123,6 +127,7 @@ public class TestWalkingChar extends SimpleApplication implements ActionListener
     float bLength = 0.8f;
     float bWidth = 0.4f;
     float bHeight = 0.4f;
+    FilterPostProcessor fpp;
 
     public static void main(String[] args) {
         TestWalkingChar app = new TestWalkingChar();
@@ -144,6 +149,15 @@ public class TestWalkingChar extends SimpleApplication implements ActionListener
         createCharacter();
         setupChaseCamera();
         setupAnimationController();
+        setupFilter();
+    }
+    private void setupFilter(){
+        fpp=new FilterPostProcessor(assetManager);
+        BloomFilter bloom=new BloomFilter(BloomFilter.GlowMode.Objects);
+        
+        fpp.addFilter(bloom);
+        //fpp.addFilter(new ColorOverlayFilter(ColorRGBA.Blue));
+        viewPort.addProcessor(fpp);
     }
 
     private PhysicsSpace getPhysicsSpace() {
@@ -198,8 +212,9 @@ public class TestWalkingChar extends SimpleApplication implements ActionListener
         bullet = new Sphere(32, 32, 0.4f, true, false);
         bullet.setTextureMode(TextureMode.Projected);
         bulletCollisionShape = new SphereCollisionShape(0.4f);
-        matBullet = new Material(getAssetManager(), "Common/MatDefs/Misc/WireColor.j3md");
+        matBullet = new Material(getAssetManager(), "Common/MatDefs/Misc/SolidColor.j3md");
         matBullet.setColor("m_Color", ColorRGBA.Green);
+        matBullet.setColor("m_GlowColor", ColorRGBA.Green);        
         getPhysicsSpace().addCollisionListener(this);
     }
 
@@ -217,18 +232,31 @@ public class TestWalkingChar extends SimpleApplication implements ActionListener
         effect.setGravity(-5f);
         effect.setLowLife(.4f);
         effect.setHighLife(.5f);
-        effect.setStartVel(new Vector3f(0, 7, 0));
-        effect.setVariation(1f);
+        effect.setInitialVelocity(new Vector3f(0, 7, 0));
+        effect.setVelocityVariation(1f);
         effect.setImagesX(2);
         effect.setImagesY(2);
-        Material mat = new Material(assetManager, "Common/MatDefs/Misc/Particle.j3md");
-        mat.setTexture("m_Texture", assetManager.loadTexture("Effects/Explosion/flame.png"));
+        Material mat = new Material(assetManager, "Common/MatDefs/Misc/SimpleTextured.j3md");
+        mat.setTexture("m_ColorMap", assetManager.loadTexture("Effects/Explosion/flame.png"));
+       mat.getAdditionalRenderState().setDepthWrite(false);
+       mat.getAdditionalRenderState().setBlendMode(BlendMode.AlphaAdditive);
+        mat.getAdditionalRenderState().setPointSprite(true);
         effect.setMaterial(mat);
         effect.setLocalScale(100);
         effect.setCullHint(CullHint.Never);
-        rootNode.attachChild(effect);
-    }
+       //rootNode.attachChild(effect);
 
+        Sphere s=new Sphere(10, 10, 10);
+         g=new Geometry("dssds", s);
+
+        g.setLocalTranslation(-140, 10, -30);
+        g.setMaterial(mat);
+
+        rootNode.attachChild(g);
+        g.setCullHint(CullHint.Always);
+      //  effect.emitAllParticles();
+    }
+Geometry g;
     private void createLight() {
         Vector3f direction = new Vector3f(-0.1f, -0.7f, -1).normalizeLocal();
         DirectionalLight dl = new DirectionalLight();
@@ -413,6 +441,7 @@ public class TestWalkingChar extends SimpleApplication implements ActionListener
             effect.killAllParticles();
             effect.setLocalTranslation(node.getLocalTranslation());
             effect.emitAllParticles();
+             g.setCullHint(CullHint.Never);
         } else if ("bullet".equals(event.getNodeB().getName())) {
             final Spatial node = event.getNodeB();
             getPhysicsSpace().remove(node);
@@ -420,6 +449,7 @@ public class TestWalkingChar extends SimpleApplication implements ActionListener
             effect.killAllParticles();
             effect.setLocalTranslation(node.getLocalTranslation());
             effect.emitAllParticles();
+            g.setCullHint(CullHint.Never);
         }
     }
 

@@ -38,6 +38,7 @@ import com.jme3.export.JmeImporter;
 import com.jme3.export.OutputCapsule;
 import com.jme3.export.Savable;
 import com.jme3.material.Material;
+import com.jme3.renderer.Caps;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.Renderer;
 import com.jme3.renderer.ViewPort;
@@ -45,6 +46,7 @@ import com.jme3.texture.FrameBuffer;
 import com.jme3.texture.Image.Format;
 import com.jme3.texture.Texture2D;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -61,6 +63,7 @@ public abstract class Filter implements Savable {
     protected List<Pass> postRenderPasses;
     protected Material material;
     protected boolean enabled = true;
+    protected FilterPostProcessor processor;
 
     public Filter(String name) {
         this.name = name;
@@ -72,15 +75,25 @@ public abstract class Filter implements Savable {
         protected Texture2D renderedTexture;
         protected Material passMaterial;
 
-        public void init(int width, int height, Format textureFormat, Format depthBufferFormat) {
-            renderFrameBuffer = new FrameBuffer(width, height, 1);
-            renderedTexture = new Texture2D(width, height, textureFormat);
-            renderFrameBuffer.setDepthBuffer(depthBufferFormat);
+        public void init(Renderer renderer, int width, int height, Format textureFormat, Format depthBufferFormat, int numSamples) {
+            Collection<Caps> caps = renderer.getCaps();
+            if (numSamples > 1 && caps.contains(Caps.FrameBufferMultisample) && caps.contains(Caps.OpenGL31)) {
+                renderFrameBuffer = new FrameBuffer(width, height, numSamples);
+                renderedTexture = new Texture2D(width, height, numSamples, textureFormat);
+            } else {
+                renderFrameBuffer = new FrameBuffer(width, height, 1);
+                renderedTexture = new Texture2D(width, height, textureFormat);
+            }
             renderFrameBuffer.setColorTexture(renderedTexture);
+            renderFrameBuffer.setDepthBuffer(depthBufferFormat);
         }
 
-        public void init(int width, int height, Format textureFormat, Format depthBurfferFormat, Material material) {
-            init(width, height, textureFormat, depthBurfferFormat);
+        public void init(Renderer renderer, int width, int height, Format textureFormat, Format depthBufferFormat) {
+            init(renderer, width, height, textureFormat, depthBufferFormat, 1);
+        }
+
+        public void init(Renderer renderer, int width, int height, Format textureFormat, Format depthBufferFormat, int numSample, Material material) {
+            init(renderer, width, height, textureFormat, depthBufferFormat, numSample);
             passMaterial = material;
         }
 
@@ -137,10 +150,11 @@ public abstract class Filter implements Savable {
         this("filter");
     }
 
-    public void init(AssetManager manager, RenderManager renderManager, ViewPort vp, int w, int h) {
-      //  cleanup(renderManager.getRenderer());
+    public void init(FilterPostProcessor parentProcessor, AssetManager manager, RenderManager renderManager, ViewPort vp, int w, int h) {
+        //  cleanup(renderManager.getRenderer());
         defaultPass = new Pass();
-        defaultPass.init(w, h, getDefaultPassTextureFormat(), getDefaultPassDepthFormat());
+        defaultPass.init(renderManager.getRenderer(),w, h, getDefaultPassTextureFormat(), getDefaultPassDepthFormat());
+        processor = parentProcessor;
         initFilter(manager, renderManager, vp, w, h);
     }
 

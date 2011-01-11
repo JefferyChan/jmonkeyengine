@@ -1,6 +1,7 @@
 MaterialDef Bloom {
 
     MaterialParameters {
+        Int m_NumSamples
         Texture2D m_Texture
         Float m_Size
         Float m_Scale

@@ -1,5 +1,6 @@
 MaterialDef Light Scattering {
  MaterialParameters {
+        Int m_NumSamples
         Texture2D m_Texture
         Texture2D m_DepthTexture       
         Vector3 m_LightPosition
@@ -8,6 +9,19 @@ MaterialDef Light Scattering {
         Float m_BlurWidth
         Float m_LightDensity
         Boolean m_Display
+    }
+
+    Technique {
+        VertexShader GLSL150:   Common/MatDefs/Light/LightScattering15.vert
+        FragmentShader GLSL150: Common/MatDefs/Light/LightScattering15.frag
+
+        WorldParameters {
+            WorldViewProjectionMatrix
+        }
+
+        Defines {
+            RESOLVE_MS : m_NumSamples
+        }
     }
 
     Technique {

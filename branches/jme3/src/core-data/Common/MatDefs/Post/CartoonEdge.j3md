@@ -1,9 +1,25 @@
 MaterialDef Cartoon Edge {
 
     MaterialParameters {
+        Int m_NumSamples
         Texture2D m_Texture
         Texture2D m_NormalsTexture
         Texture2D m_DepthTexture
+    }
+
+    Technique {
+        VertexShader GLSL150:   Common/MatDefs/Post/Post15.vert
+        FragmentShader GLSL150: Common/MatDefs/Post/CartoonEdge15.frag
+
+        WorldParameters {
+            WorldViewProjectionMatrix
+            WorldViewMatrix
+            Resolution
+        }
+
+        Defines {
+            RESOLVE_MS : m_NumSamples
+        }
     }
 
     Technique {
