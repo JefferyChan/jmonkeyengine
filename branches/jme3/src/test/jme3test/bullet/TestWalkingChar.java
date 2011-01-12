@@ -65,7 +65,6 @@ import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.post.FilterPostProcessor;
 import com.jme3.post.filters.BloomFilter;
-import com.jme3.post.filters.ColorOverlayFilter;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Geometry;
@@ -151,12 +150,11 @@ public class TestWalkingChar extends SimpleApplication implements ActionListener
         setupAnimationController();
         setupFilter();
     }
-    private void setupFilter(){
-        fpp=new FilterPostProcessor(assetManager);
-        BloomFilter bloom=new BloomFilter(BloomFilter.GlowMode.Objects);
-        
+
+    private void setupFilter() {
+        FilterPostProcessor fpp = new FilterPostProcessor(assetManager);
+        BloomFilter bloom = new BloomFilter(BloomFilter.GlowMode.Objects);
         fpp.addFilter(bloom);
-        //fpp.addFilter(new ColorOverlayFilter(ColorRGBA.Blue));
         viewPort.addProcessor(fpp);
     }
 
@@ -214,7 +212,7 @@ public class TestWalkingChar extends SimpleApplication implements ActionListener
         bulletCollisionShape = new SphereCollisionShape(0.4f);
         matBullet = new Material(getAssetManager(), "Common/MatDefs/Misc/SolidColor.j3md");
         matBullet.setColor("m_Color", ColorRGBA.Green);
-        matBullet.setColor("m_GlowColor", ColorRGBA.Green);        
+        matBullet.setColor("m_GlowColor", ColorRGBA.Green);
         getPhysicsSpace().addCollisionListener(this);
     }
 
@@ -236,27 +234,14 @@ public class TestWalkingChar extends SimpleApplication implements ActionListener
         effect.setVelocityVariation(1f);
         effect.setImagesX(2);
         effect.setImagesY(2);
-        Material mat = new Material(assetManager, "Common/MatDefs/Misc/SimpleTextured.j3md");
-        mat.setTexture("m_ColorMap", assetManager.loadTexture("Effects/Explosion/flame.png"));
-       mat.getAdditionalRenderState().setDepthWrite(false);
-       mat.getAdditionalRenderState().setBlendMode(BlendMode.AlphaAdditive);
-        mat.getAdditionalRenderState().setPointSprite(true);
+        Material mat = new Material(assetManager, "Common/MatDefs/Misc/Particle.j3md");
+        mat.setTexture("m_Texture", assetManager.loadTexture("Effects/Explosion/flame.png"));
         effect.setMaterial(mat);
         effect.setLocalScale(100);
         effect.setCullHint(CullHint.Never);
-       //rootNode.attachChild(effect);
-
-        Sphere s=new Sphere(10, 10, 10);
-         g=new Geometry("dssds", s);
-
-        g.setLocalTranslation(-140, 10, -30);
-        g.setMaterial(mat);
-
-        rootNode.attachChild(g);
-        g.setCullHint(CullHint.Always);
-      //  effect.emitAllParticles();
+        rootNode.attachChild(effect);
     }
-Geometry g;
+
     private void createLight() {
         Vector3f direction = new Vector3f(-0.1f, -0.7f, -1).normalizeLocal();
         DirectionalLight dl = new DirectionalLight();
@@ -307,7 +292,7 @@ Geometry g;
         terrain.updateModelBound();
         terrain.setLocalScale(new Vector3f(2, 2, 2));
 
-        terrainPhysicsNode = new PhysicsRigidBodyControl(CollisionShapeFactory.createMeshShape(terrain),0);
+        terrainPhysicsNode = new PhysicsRigidBodyControl(CollisionShapeFactory.createMeshShape(terrain), 0);
         terrain.addControl(terrainPhysicsNode);
         rootNode.attachChild(terrain);
         getPhysicsSpace().add(terrainPhysicsNode);
@@ -441,7 +426,6 @@ Geometry g;
             effect.killAllParticles();
             effect.setLocalTranslation(node.getLocalTranslation());
             effect.emitAllParticles();
-             g.setCullHint(CullHint.Never);
         } else if ("bullet".equals(event.getNodeB().getName())) {
             final Spatial node = event.getNodeB();
             getPhysicsSpace().remove(node);
@@ -449,7 +433,6 @@ Geometry g;
             effect.killAllParticles();
             effect.setLocalTranslation(node.getLocalTranslation());
             effect.emitAllParticles();
-            g.setCullHint(CullHint.Never);
         }
     }
 

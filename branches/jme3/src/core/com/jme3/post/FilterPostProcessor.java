@@ -40,6 +40,7 @@ import com.jme3.export.InputCapsule;
 import com.jme3.export.OutputCapsule;
 import com.jme3.export.Savable;
 import com.jme3.material.Material;
+import com.jme3.material.RenderState;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.Caps;
 import com.jme3.renderer.RenderManager;
@@ -196,6 +197,9 @@ public class FilterPostProcessor implements SceneProcessor, Savable {
     }
 
     public void postFrame(FrameBuffer out) {
+        //Added this to fix the issue where the filter were not rendered when an object in the scene had a DepthWrite to false. (particles for example)
+        //there should be a better way...
+        renderer.applyRenderState(RenderState.DEFAULT);
         if (renderFrameBufferMS != null && !renderer.getCaps().contains(Caps.OpenGL31)) {
             renderer.copyFrameBuffer(renderFrameBufferMS, renderFrameBuffer);
         }
