@@ -70,7 +70,7 @@ public class PhysicsRigidBodyControl extends PhysicsRigidBody implements Physics
         control.setPhysicsRotation(getPhysicsRotation(null));
         control.setRestitution(getRestitution());
 
-        if(mass>0){
+        if (mass > 0) {
             control.setAngularVelocity(getAngularVelocity());
             control.setLinearVelocity(getLinearVelocity());
         }
@@ -80,9 +80,17 @@ public class PhysicsRigidBodyControl extends PhysicsRigidBody implements Physics
     }
 
     public void setSpatial(Spatial spatial) {
+        if (getUserObject() == null || getUserObject() == this.spatial) {
+            setUserObject(spatial);
+            collisionShape = null;
+        }
         this.spatial = spatial;
-        setUserObject(spatial);
         if (spatial == null) {
+            if (getUserObject() == spatial) {
+                setUserObject(null);
+            }
+            spatial = null;
+            collisionShape = null;
             return;
         }
         if (collisionShape == null) {
@@ -93,7 +101,7 @@ public class PhysicsRigidBodyControl extends PhysicsRigidBody implements Physics
         setPhysicsRotation(spatial.getWorldRotation().toRotationMatrix());
     }
 
-    protected void createCollisionShape(){
+    protected void createCollisionShape() {
         if (spatial == null) {
             return;
         }

@@ -67,9 +67,16 @@ public class PhysicsVehicleControl extends PhysicsVehicle implements PhysicsCont
     }
 
     public void setSpatial(Spatial spatial) {
+        if (getUserObject() == null || getUserObject() == this.spatial) {
+            setUserObject(spatial);
+        }
         this.spatial = spatial;
-        setUserObject(spatial);
         if (spatial == null) {
+            if (getUserObject() == spatial) {
+                setUserObject(null);
+            }
+            this.spatial = null;
+            this.collisionShape = null;
             return;
         }
         setPhysicsLocation(spatial.getWorldTranslation());
