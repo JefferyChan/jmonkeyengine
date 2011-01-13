@@ -1,4 +1,4 @@
-#extension GL_ARB_texture_multisample : require
+#extension GL_ARB_texture_multisample : enable
 
 #ifdef RESOLVE_MS
     #define TEXTURE sampler2DMS
@@ -16,6 +16,16 @@ vec4 getColor(in TEXTURE tex, in vec2 texC){
              color += texelFetch(tex, iTexC, i);
           }
           return color/m_NumSamples;
+      #else
+          ivec2 iTexC = ivec2(texC * textureSize(tex, 0));
+          return texelFetch(tex, iTexC, 0);
+      #endif
+}
+
+vec4 getColorSingle(in TEXTURE tex, in vec2 texC){
+      #ifdef RESOLVE_MS
+          ivec2 iTexC = ivec2(texC * textureSize(tex));
+          return texelFetch(tex, iTexC, 0);
       #else
           ivec2 iTexC = ivec2(texC * textureSize(tex, 0));
           return texelFetch(tex, iTexC, 0);

@@ -9,9 +9,21 @@ varying vec2 texCoord1;
     #endif
 #endif
 
+#ifdef HAS_VERTEXCOLOR
+    varying vec4 vertColor;
+#endif
+
 void main(){
 
-    vec4 color = texture2D(m_ColorMap, texCoord1) * m_Color;
+    vec4 color = texture2D(m_ColorMap, texCoord1);
+
+    #ifdef HAS_COLOR
+        color *= m_Color;
+    #endif
+
+    #ifdef HAS_VERTEXCOLOR
+        color *= vertColor;
+    #endif
 
     #ifdef HAS_LIGHTMAP
         #ifdef SEPERATE_TEXCOORD

@@ -4,6 +4,7 @@ MaterialDef Plain Texture {
         Texture2D m_ColorMap
         Texture2D m_LightMap
         Color m_Color
+        Boolean m_VertexColor
         Boolean m_SeperateTexCoord
     }
 
@@ -18,6 +19,8 @@ MaterialDef Plain Texture {
         Defines {
             SEPERATE_TEXCOORD : m_SeperateTexCoord
             HAS_LIGHTMAP : m_LightMap
+            HAS_VERTEXCOLOR : m_VertexColor
+            HAS_COLOR : m_Color
         }
     }
 

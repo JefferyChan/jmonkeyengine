@@ -1,4 +1,4 @@
-#extension GL_ARB_texture_multisample : require
+#extension GL_ARB_texture_multisample : enable
 
 // Water pixel shader
 // Copyright (C) JMonkeyEngine 3.0
@@ -119,18 +119,9 @@ float fresnelTerm(in vec3 normal,in vec3 eyeVec){
 }
 
 // NOTE: This will be called even for single-sampling
-vec4 main_multiSample(int sampleNum){
-    #ifdef RESOLVE_MS
-        ivec2 iTexCoord = ivec2(texCoord * textureSize(m_DepthTexture));
-        float sceneDepth = texelFetch(m_DepthTexture, iTexCoord, sampleNum).r;
-        vec3 color2 = texelFetch(m_Texture, iTexCoord, sampleNum).rgb;
-    #else
-        ivec2 iTexCoord = ivec2(texCoord * textureSize(m_DepthTexture, 0));
-        float sceneDepth = texelFetch(m_DepthTexture, iTexCoord, 0).r;
-        vec3 color2 = texelFetch(m_Texture, iTexCoord, 0).rgb;
-    #endif
-
-    vec3 color = color2;
+vec4 main_multiSample(vec4 sceneColor, float sceneDepth){
+    vec3 color2 = sceneColor.rgb;
+    vec3 color  = color2;
     vec3 position = getPosition(sceneDepth, texCoord);
 
     float level = m_WaterHeight;
@@ -232,7 +223,7 @@ vec4 main_multiSample(int sampleNum){
         texC += sin(m_Time*1.8  + 3.0 * abs(position.y)) * (refractionScale * min(depth2, 1.0));
         #ifdef RESOLVE_MS
             ivec2 iTexC = ivec2(texC * textureSize(m_Texture));
-            refraction = texelFetch(m_Texture, iTexC, sampleNum).rgb;
+            refraction = texelFetch(m_Texture, iTexC, 0).rgb;
         #else
             ivec2 iTexC = ivec2(texC * textureSize(m_Texture, 0));
             refraction = texelFetch(m_Texture, iTexC, 0).rgb;
@@ -303,12 +294,20 @@ vec4 main_multiSample(int sampleNum){
 
 void main(){
     #ifdef RESOLVE_MS
-        vec4 color = vec4(0.0);
+        ivec2 iTexCoord = ivec2(texCoord * textureSize(m_DepthTexture));
+        outFragColor = vec4(0.0);
         for (int i = 0; i < m_NumSamples; i++){
-            color += main_multiSample(i);
+            float depth = texelFetch(m_DepthTexture, iTexCoord, i).r;
+            vec4 color = texelFetch(m_Texture, iTexCoord, i);
+            outFragColor += main_multiSample(color, depth);
         }
-        gl_FragColor = color / m_NumSamples;
+        outFragColor /= m_NumSamples;
     #else
-        outFragColor = main_multiSample(0);
+        ivec2 iTexCoord = ivec2(texCoord * textureSize(m_DepthTexture, 0));
+
+        float sceneDepth = texelFetch(m_DepthTexture, iTexCoord, 0).r;
+        vec4 sceneColor = texelFetch(m_Texture, iTexCoord, 0);
+
+        outFragColor = main_multiSample(sceneColor, sceneDepth);
     #endif
 }

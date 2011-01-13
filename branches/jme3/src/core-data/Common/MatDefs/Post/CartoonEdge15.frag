@@ -2,6 +2,7 @@
 
 uniform TEXTURE m_Texture;
 uniform TEXTURE m_DepthTexture;
+
 uniform sampler2D m_NormalsTexture;
 uniform vec2 g_Resolution;
 
@@ -15,19 +16,19 @@ const float c_NormalSensitivity = 1.0;
 const float c_DepthSensitivity = 10.0;
 
 in vec2 texCoord;
+out vec4 outFragColor;
 
 vec4 fetchNormalDepth(vec2 tc){
     vec4 nd;
     nd.xyz = texture2D(m_NormalsTexture, tc).rgb;
-    nd.w   = getColor(m_DepthTexture,   tc).r;
+    nd.w   = getColorSingle(m_DepthTexture,   tc).r;
     return nd;
 }
 
 void main(){
     vec3 color = getColor(m_Texture, texCoord).rgb;
 
-    vec2 edgeOffset = vec2(c_EdgeWidth) / g_Resolution;
-
+    vec2 edgeOffset = vec2(c_EdgeWidth) / textureSize(m_NormalsTexture, 0);
     vec4 n1 = fetchNormalDepth(texCoord + vec2(-1.0, -1.0) * edgeOffset);
     vec4 n2 = fetchNormalDepth(texCoord + vec2( 1.0,  1.0) * edgeOffset);
     vec4 n3 = fetchNormalDepth(texCoord + vec2(-1.0,  1.0) * edgeOffset);
@@ -49,5 +50,5 @@ void main(){
     // Apply the edge detection result to the main scene color.
     color *= (1.0 - edgeAmount);
 
-    gl_FragColor = vec4(color, 1.0);
+    outFragColor = vec4(color, 1.0);
 }

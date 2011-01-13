@@ -34,6 +34,7 @@ package com.jme3.font;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.renderer.RenderManager;
+import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.scene.Node;
 
 public class BitmapText extends Node {
@@ -59,7 +60,9 @@ public class BitmapText extends Node {
             textPages[page] = new BitmapTextPage(font, arrayBased, page);
             attachChild(textPages[page]);
         }
-        
+
+        setQueueBucket(Bucket.Gui);
+
         this.font = font;
         this.block = new StringBlock();
         block.setSize(font.getPreferredSize());

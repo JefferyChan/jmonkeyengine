@@ -33,7 +33,6 @@
 package com.jme3.renderer.queue;
 
 import com.jme3.material.Material;
-import com.jme3.material.Technique;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Geometry;

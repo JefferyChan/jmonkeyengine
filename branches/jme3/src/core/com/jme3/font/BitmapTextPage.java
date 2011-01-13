@@ -59,9 +59,6 @@ class BitmapTextPage extends Geometry {
             throw new NullPointerException("'font' cannot be null.");
         }
 
-        setQueueBucket(Bucket.Gui);
-        setCullHint(CullHint.Never);
-
         this.page = page;
 
         Material mat = font.getPage(page);
