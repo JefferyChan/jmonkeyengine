@@ -182,7 +182,8 @@ public class RenderDeviceJme implements RenderDevice {
         niftyMat.setTexture("m_Texture", texture);
         niftyMat.setInt("m_Mode", 4);
         niftyMat.getAdditionalRenderState().setBlendMode(convertBlend());
-
+        text.setMaterial(niftyMat);
+        
         text.setText(str);
         text.updateLogicalState(0);
 
@@ -197,7 +198,7 @@ public class RenderDeviceJme implements RenderDevice {
         tempMat.setScale(size, size, 0);
 
         rm.setWorldMatrix(tempMat);
-        text.render(rm, niftyMat);
+        text.render(rm);
     }
 
     public void renderImage(RenderImage image, int x, int y, int w, int h,
