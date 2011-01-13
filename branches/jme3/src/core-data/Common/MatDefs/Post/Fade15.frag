@@ -1,6 +1,6 @@
 #import "Common/ShaderLib/MultiSample.glsllib"
 
-uniform TEXTURE m_Texture;
+uniform COLORTEXTURE m_Texture;
 uniform float m_Value;
 
 in vec2 texCoord;

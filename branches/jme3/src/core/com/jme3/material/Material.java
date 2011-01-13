@@ -307,6 +307,43 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
             val.setValue(value);
     }
 
+    /**
+     * Clear a parameter from this material. The param must exist
+     * @param name the name of the parameter to clear
+     */
+    public void clearParam(String name){
+        checkSetParam(null, name);
+
+        MatParam matParam = getParam(name);
+        if (matParam != null){
+            paramValues.remove(name);
+            if (technique != null){
+                 technique.notifyClearParam(name);
+            }
+            if(matParam instanceof MatParamTexture){
+                int texUnit =((MatParamTexture) matParam).getUnit();
+                nextTexUnit --;
+                for (MatParam param : paramValues.values()){
+                    if (param instanceof MatParamTexture){
+                        MatParamTexture texParam = (MatParamTexture) param;
+                        if (texParam.getUnit() > texUnit){
+                            texParam.setUnit(texParam.getUnit()-1);
+                        }
+                    }
+                }
+            }
+        }
+//        else {
+//            throw new IllegalArgumentException("The given parameter is not set.");
+//        }
+    }
+
+    /**
+     * 
+     * @param name 
+     * @deprecated use clearParam instead
+     */
+    @Deprecated
     public void clearTextureParam(String name){
         checkSetParam(null, name);
 

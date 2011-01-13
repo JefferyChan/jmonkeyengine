@@ -1,6 +1,7 @@
 MaterialDef Light Scattering {
  MaterialParameters {
         Int m_NumSamples
+        Int m_NumSamplesDepth
         Texture2D m_Texture
         Texture2D m_DepthTexture       
         Vector3 m_LightPosition
@@ -9,6 +10,7 @@ MaterialDef Light Scattering {
         Float m_BlurWidth
         Float m_LightDensity
         Boolean m_Display
+        Boolean multiSampledDepth
     }
 
     Technique {
@@ -21,6 +23,7 @@ MaterialDef Light Scattering {
 
         Defines {
             RESOLVE_MS : m_NumSamples
+            RESOLVE_DEPTH_MS : m_NumSamplesDepth
         }
     }
 

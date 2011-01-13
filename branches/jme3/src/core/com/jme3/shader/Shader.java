@@ -327,6 +327,10 @@ public final class Shader extends GLObject implements Savable {
         return uniform;
     }
 
+    public void removeUniform(String name){
+        uniforms.remove(name);
+    }
+
     public Attribute getAttribute(String name){
         Attribute attrib = attribs.get(name);
         if (attrib == null){

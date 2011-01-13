@@ -162,6 +162,7 @@ public class FilterPostProcessor implements SceneProcessor, Savable {
 
     public void renderFilterChain(Renderer r) {
         Texture2D tex = filterTexture;
+        boolean msDepth = depthTexture != null && depthTexture.getImage().getMultiSamples() > 1;
         for (int i = 0; i < filters.size(); i++) {
             Filter filter = filters.get(i);
             if (filter.enabled) {
@@ -173,6 +174,10 @@ public class FilterPostProcessor implements SceneProcessor, Savable {
                             pass.getPassMaterial().setTexture("m_Texture", tex);
                             if (tex.getImage().getMultiSamples() > 1) {
                                 pass.getPassMaterial().setInt("m_NumSamples", tex.getImage().getMultiSamples());
+                            } else {
+                              //  if (pass.getPassMaterial().getParam("m_NumSamples") != null) {
+                                    pass.getPassMaterial().clearParam("m_NumSamples");
+                              //  }
                             }
                         }
                         renderProcessing(r, pass.getRenderFrameBuffer(), pass.getPassMaterial());
@@ -180,10 +185,17 @@ public class FilterPostProcessor implements SceneProcessor, Savable {
                 }
 
                 Material mat = filter.getMaterial();
+                if (msDepth && filter.isRequiresDepthTexture()) {
+                    mat.setInt("m_NumSamplesDepth", depthTexture.getImage().getMultiSamples());
+                }
 
                 mat.setTexture("m_Texture", tex);
                 if (tex.getImage().getMultiSamples() > 1) {
                     mat.setInt("m_NumSamples", tex.getImage().getMultiSamples());
+                } else {
+                  //  if (mat.getParam("m_NumSamples") != null) {
+                        mat.clearParam("m_NumSamples");
+//                    }
                 }
 
                 FrameBuffer buff = outputBuffer;

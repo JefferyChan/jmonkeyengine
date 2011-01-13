@@ -1,6 +1,6 @@
 #import "Common/ShaderLib/MultiSample.glsllib"
 
-uniform TEXTURE m_Texture;
+uniform COLORTEXTURE m_Texture;
 
 uniform sampler2D m_BloomTex;
 uniform float m_BloomIntensity;

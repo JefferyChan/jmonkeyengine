@@ -1,6 +1,6 @@
 #import "Common/ShaderLib/MultiSample.glsllib"
 
-uniform TEXTURE m_Texture;
+uniform COLORTEXTURE m_Texture;
 uniform float m_SampleDist;
 uniform float m_SampleStrength;
 uniform float[10] m_Samples;

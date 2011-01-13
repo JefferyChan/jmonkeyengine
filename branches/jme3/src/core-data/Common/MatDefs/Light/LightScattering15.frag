@@ -1,7 +1,7 @@
 #import "Common/ShaderLib/MultiSample.glsllib"
 
-uniform TEXTURE m_Texture;
-uniform TEXTURE m_DepthTexture;
+uniform COLORTEXTURE m_Texture;
+uniform DEPTHTEXTURE m_DepthTexture;
 
 uniform int m_NbSamples;
 uniform float m_BlurStart;
@@ -24,9 +24,9 @@ void main(void)
        vec4 res = vec4(0.0);
        for(int i=0; i<m_NbSamples; i++) {
             scale = i * factor + m_BlurStart ;
-            scaledCoord=texCoo*scale+lightPos;
-            if(getColor(m_DepthTexture,scaledCoord).r==1.0){
-                res += getColor(m_Texture,scaledCoord);
+            scaledCoord=texCoo*scale+lightPos;            
+            if(fetchTextureSample(m_DepthTexture, scaledCoord,0).r==1.0){
+                res += fetchTextureSample(m_Texture,scaledCoord,0);
             }
         }
         res /= m_NbSamples;

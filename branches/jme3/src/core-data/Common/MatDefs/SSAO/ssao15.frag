@@ -1,7 +1,7 @@
 #import "Common/ShaderLib/MultiSample.glsllib"
 
-uniform TEXTURE m_Texture;
-uniform TEXTURE m_DepthTexture;
+uniform COLORTEXTURE m_Texture;
+uniform DEPTHTEXTURE m_DepthTexture;
 
 uniform vec2 g_Resolution;
 uniform vec2 m_FrustumNearFar;
@@ -21,7 +21,7 @@ float depthv;
 
 vec3 getPosition(in vec2 uv){
   //Reconstruction from depth
-  depthv =getColor(m_DepthTexture,uv).r;
+  depthv =getDepth(m_DepthTexture,uv).r;
   float depth= (2.0 * m_FrustumNearFar.x) / (m_FrustumNearFar.y + m_FrustumNearFar.x - depthv* (m_FrustumNearFar.y-m_FrustumNearFar.x));
 
   //one frustum corner method

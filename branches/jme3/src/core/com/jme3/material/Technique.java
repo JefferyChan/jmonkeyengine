@@ -29,7 +29,6 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package com.jme3.material;
 
 import com.jme3.asset.AssetManager;
@@ -56,7 +55,6 @@ import java.util.logging.Logger;
 public class Technique implements Savable {
 
     private static final Logger logger = Logger.getLogger(Technique.class.getName());
-
     private TechniqueDef def;
     private Material owner;
     private ArrayList<Uniform> worldBindUniforms;
@@ -64,19 +62,19 @@ public class Technique implements Savable {
     private Shader shader;
     private boolean needReload = true;
 
-    public Technique(Material owner, TechniqueDef def){
+    public Technique(Material owner, TechniqueDef def) {
         this.owner = owner;
         this.def = def;
-        if (def.isUsingShaders()){
+        if (def.isUsingShaders()) {
             this.worldBindUniforms = new ArrayList<Uniform>();
             this.defines = new DefineList();
         }
     }
 
-    public Technique(){
+    public Technique() {
     }
 
-    public void write(JmeExporter ex) throws IOException{
+    public void write(JmeExporter ex) throws IOException {
         OutputCapsule oc = ex.getCapsule(this);
         oc.write(def, "def", null);
         // TODO:
@@ -86,7 +84,7 @@ public class Technique implements Savable {
         oc.write(shader, "shader", null);
     }
 
-    public void read(JmeImporter im) throws IOException{
+    public void read(JmeImporter im) throws IOException {
         InputCapsule ic = im.getCapsule(this);
         def = (TechniqueDef) ic.readSavable("def", null);
         worldBindUniforms = ic.readSavableArrayList("worldBindUniforms", null);
@@ -111,38 +109,57 @@ public class Technique implements Savable {
     /**
      * @param paramName
      */
-    public void notifySetParam(String paramName, VarType type, Object value){
+    public void notifySetParam(String paramName, VarType type, Object value) {
         String defineName = def.getShaderParamDefine(paramName);
-        if (defineName != null){
+        if (defineName != null) {
             defines.set(defineName, type, value);
             needReload = true;
         }
-        if (shader != null){
+        if (shader != null) {
             updateUniformParam(paramName, type, value);
         }
     }
 
-    void updateUniformParam(String paramName, VarType type, Object value, boolean ifNotOwner){
+    /**
+     * @param paramName
+     */
+    public void notifyClearParam(String paramName) {
+        String defineName = def.getShaderParamDefine(paramName);
+        if (defineName != null) {
+            defines.remove(defineName);
+            needReload = true;
+        }
+        if (shader != null) {
+            shader.removeUniform(paramName);
+        }
+    }
+
+    void updateUniformParam(String paramName, VarType type, Object value, boolean ifNotOwner) {
         Uniform u = shader.getUniform(paramName);
+
 //        if (ifNotOwner && u.getLastChanger() == owner)
 //            return;
 
-        switch (type){
+        switch (type) {
             case Texture2D: // fall intentional
             case Texture3D:
             case TextureArray:
             case TextureCubeMap:
-            case Int:     u.setValue(VarType.Int, value); break;
-            default:      u.setValue(type, value); break;
+            case Int:
+                u.setValue(VarType.Int, value);
+                break;
+            default:
+                u.setValue(type, value);
+                break;
         }
 //        u.setLastChanger(owner);
     }
 
-    void updateUniformParam(String paramName, VarType type, Object value){
+    void updateUniformParam(String paramName, VarType type, Object value) {
         updateUniformParam(paramName, type, value, false);
     }
 
-    public boolean isNeedReload(){
+    public boolean isNeedReload() {
         return needReload;
     }
 
@@ -150,22 +167,22 @@ public class Technique implements Savable {
      * Prepares the technique for use by loading the shader and setting
      * the proper defines based on material parameters.
      */
-    public void makeCurrent(AssetManager manager){
+    public void makeCurrent(AssetManager manager) {
         // check if reload is needed..
-        if (def.isUsingShaders()){
+        if (def.isUsingShaders()) {
             DefineList newDefines = new DefineList();
             Collection<MatParam> params = owner.getParams();
-            for (MatParam param : params){
+            for (MatParam param : params) {
                 String defineName = def.getShaderParamDefine(param.getName());
-                if (defineName != null){
+                if (defineName != null) {
                     newDefines.set(defineName, param.getVarType(), param.getValue());
                 }
             }
 
-            if (!needReload && defines.getCompiled().equals(newDefines.getCompiled())){
+            if (!needReload && defines.getCompiled().equals(newDefines.getCompiled())) {
                 newDefines = null;
                 // defines have not been changed..
-            }else{
+            } else {
                 defines.clear();
                 defines.addFrom(newDefines);
                 // defines changed, recompile needed
@@ -174,18 +191,18 @@ public class Technique implements Savable {
         }
     }
 
-    private void loadShader(AssetManager manager){
+    private void loadShader(AssetManager manager) {
         // recompute define list
         DefineList allDefines = new DefineList();
         allDefines.addFrom(def.getShaderPresetDefines());
         allDefines.addFrom(defines);
 
         ShaderKey key = new ShaderKey(def.getVertName(),
-                                                  def.getFragName(),
-                                                  allDefines,
-                                                  def.getShaderLanguage());
+                def.getFragName(),
+                allDefines,
+                def.getShaderLanguage());
         shader = manager.loadShader(key);
-        if (shader == null){
+        if (shader == null) {
             logger.warning("Failed to reload shader!");
             return;
         }
@@ -195,14 +212,15 @@ public class Technique implements Savable {
 
         // register the world bound uniforms
         worldBindUniforms.clear();
-        for (UniformBinding binding : def.getWorldBindings()){
-            Uniform uniform = shader.getUniform("g_"+binding.name());
+        for (UniformBinding binding : def.getWorldBindings()) {
+            Uniform uniform = shader.getUniform("g_" + binding.name());
             uniform.setBinding(binding);
-            if (uniform != null)
+            if (uniform != null) {
                 worldBindUniforms.add(uniform);
+                
+            }
         }
 
         needReload = false;
     }
-
 }

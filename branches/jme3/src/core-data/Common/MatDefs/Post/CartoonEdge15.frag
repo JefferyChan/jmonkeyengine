@@ -1,7 +1,7 @@
 #import "Common/ShaderLib/MultiSample.glsllib"
 
-uniform TEXTURE m_Texture;
-uniform TEXTURE m_DepthTexture;
+uniform COLORTEXTURE m_Texture;
+uniform DEPTHTEXTURE m_DepthTexture;
 
 uniform sampler2D m_NormalsTexture;
 uniform vec2 g_Resolution;
@@ -21,7 +21,7 @@ out vec4 outFragColor;
 vec4 fetchNormalDepth(vec2 tc){
     vec4 nd;
     nd.xyz = texture2D(m_NormalsTexture, tc).rgb;
-    nd.w   = getColorSingle(m_DepthTexture,   tc).r;
+    nd.w   = fetchTextureSample(m_DepthTexture,   tc,0).r;
     return nd;
 }
 

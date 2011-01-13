@@ -2,7 +2,7 @@ MaterialDef Advanced Water {
 
     MaterialParameters {
         Int m_NumSamples
-
+        Int m_NumSamplesDepth
         Texture2D m_FoamMap
         Texture2D m_NormalMap
         Texture2D m_ReflectionMap
@@ -50,6 +50,7 @@ MaterialDef Advanced Water {
 
         Defines {
             RESOLVE_MS : m_NumSamples
+            RESOLVE_DEPTH_MS : m_NumSamplesDepth
         }
     }
 

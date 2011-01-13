@@ -1,18 +1,13 @@
-#extension GL_ARB_texture_multisample : enable
+#import "Common/ShaderLib/MultiSample.glsllib"
 
 // Water pixel shader
 // Copyright (C) JMonkeyEngine 3.0
 // by Remy Bouquet (nehon) for JMonkeyEngine 3.0
 // original HLSL version by Wojciech Toman 2009
 
-#ifdef RESOLVE_MS
-    uniform sampler2DMS m_Texture;
-    uniform sampler2DMS m_DepthTexture;
-    uniform int m_NumSamples;
-#else
-    uniform sampler2D m_Texture;
-    uniform sampler2D m_DepthTexture;
-#endif
+uniform COLORTEXTURE m_Texture;
+uniform DEPTHTEXTURE m_DepthTexture;
+
 
 uniform sampler2D m_HeightMap;
 uniform sampler2D m_NormalMap;
@@ -119,9 +114,12 @@ float fresnelTerm(in vec3 normal,in vec3 eyeVec){
 }
 
 // NOTE: This will be called even for single-sampling
-vec4 main_multiSample(vec4 sceneColor, float sceneDepth){
-    vec3 color2 = sceneColor.rgb;
-    vec3 color  = color2;
+vec4 main_multiSample(int sampleNum){
+
+    float sceneDepth = fetchTextureSample(m_DepthTexture, texCoord, sampleNum).r;
+    vec3 color2 = fetchTextureSample(m_Texture, texCoord, sampleNum).rgb;
+
+    vec3 color = color2;
     vec3 position = getPosition(sceneDepth, texCoord);
 
     float level = m_WaterHeight;
@@ -216,14 +214,14 @@ vec4 main_multiSample(vec4 sceneColor, float sceneDepth){
     }else{
         normal = myNormal;
     }
-    
+
     vec3 refraction = color2;
     if (m_UseRefraction){
         texC = texCoord.xy;
         texC += sin(m_Time*1.8  + 3.0 * abs(position.y)) * (refractionScale * min(depth2, 1.0));
         #ifdef RESOLVE_MS
             ivec2 iTexC = ivec2(texC * textureSize(m_Texture));
-            refraction = texelFetch(m_Texture, iTexC, 0).rgb;
+            refraction = texelFetch(m_Texture, iTexC, sampleNum).rgb;
         #else
             ivec2 iTexC = ivec2(texC * textureSize(m_Texture, 0));
             refraction = texelFetch(m_Texture, iTexC, 0).rgb;
@@ -282,7 +280,7 @@ vec4 main_multiSample(vec4 sceneColor, float sceneDepth){
     color = mix(refraction, color, saturate(depth * m_ShoreHardness));
     color = saturate(color + max(specular, foam ));
     color = mix(refraction, color, saturate(depth* m_FoamHardness));
-        
+
 
     // XXX: HACK ALERT:
     // We trick the GeForces to think they have
@@ -294,20 +292,12 @@ vec4 main_multiSample(vec4 sceneColor, float sceneDepth){
 
 void main(){
     #ifdef RESOLVE_MS
-        ivec2 iTexCoord = ivec2(texCoord * textureSize(m_DepthTexture));
-        outFragColor = vec4(0.0);
+        vec4 color = vec4(0.0);
         for (int i = 0; i < m_NumSamples; i++){
-            float depth = texelFetch(m_DepthTexture, iTexCoord, i).r;
-            vec4 color = texelFetch(m_Texture, iTexCoord, i);
-            outFragColor += main_multiSample(color, depth);
+            color += main_multiSample(i);
         }
-        outFragColor /= m_NumSamples;
+        gl_FragColor = color / m_NumSamples;
     #else
-        ivec2 iTexCoord = ivec2(texCoord * textureSize(m_DepthTexture, 0));
-
-        float sceneDepth = texelFetch(m_DepthTexture, iTexCoord, 0).r;
-        vec4 sceneColor = texelFetch(m_Texture, iTexCoord, 0);
-
-        outFragColor = main_multiSample(sceneColor, sceneDepth);
+        outFragColor = main_multiSample(0);
     #endif
 }

@@ -2,6 +2,7 @@ MaterialDef SSAO {
 
     MaterialParameters {
         Int m_NumSamples
+        Int m_NumSamplesDepth
         Texture2D m_Texture
         Texture2D m_Normals
         Texture2D m_DepthTexture
@@ -28,6 +29,7 @@ MaterialDef SSAO {
 
         Defines {
             RESOLVE_MS : m_NumSamples
+            RESOLVE_DEPTH_MS : m_NumSamplesDepth
         }
     }
 
