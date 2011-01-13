@@ -51,11 +51,11 @@ public class TestMipMapGen extends SimpleApplication {
     @Override
     public void simpleInitApp() {
         BitmapText txt = guiFont.createLabel("Left: HW Mips");
-        txt.setLocalTranslation(0, txt.getLineHeight() * 4, 0);
+        txt.setLocalTranslation(0, settings.getHeight() - txt.getLineHeight() * 4, 0);
         guiNode.attachChild(txt);
 
         txt = guiFont.createLabel("Right: AWT Mips");
-        txt.setLocalTranslation(0, txt.getLineHeight() * 3, 0);
+        txt.setLocalTranslation(0, settings.getHeight() - txt.getLineHeight() * 3, 0);
         guiNode.attachChild(txt);
 
         // create a simple plane/quad

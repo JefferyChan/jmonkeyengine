@@ -66,6 +66,8 @@ public class ComboMove {
     private String moveName;
     private List<ComboMoveState> states = new ArrayList<ComboMoveState>();
     private boolean useFinalState = true;
+    private float priority = 1;
+    private float castTime = 0.8f;
 
     private transient String[] pressed, unpressed;
     private transient float timeElapsed;
@@ -74,6 +76,22 @@ public class ComboMove {
         this.moveName = moveName;
     }
 
+    public float getPriority() {
+        return priority;
+    }
+
+    public void setPriority(float priority) {
+        this.priority = priority;
+    }
+
+    public float getCastTime() {
+        return castTime;
+    }
+
+    public void setCastTime(float castTime) {
+        this.castTime = castTime;
+    }
+    
     public boolean useFinalState() {
         return useFinalState;
     }

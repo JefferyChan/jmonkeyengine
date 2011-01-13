@@ -236,6 +236,7 @@ public class TestExplosionEffect extends SimpleApplication {
         createDebris();
         createShockwave();
         explosionEffect.setLocalScale(0.5f);
+        renderManager.preloadScene(explosionEffect);
 
         cam.setLocation(new Vector3f(0, 3.5135868f, 10));
         cam.setRotation(new Quaternion(1.5714673E-4f, 0.98696727f, -0.16091813f, 9.6381607E-4f));

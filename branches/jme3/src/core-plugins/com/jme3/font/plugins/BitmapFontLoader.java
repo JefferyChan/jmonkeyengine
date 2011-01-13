@@ -50,7 +50,7 @@ public class BitmapFontLoader implements AssetLoader {
 
     public Object load(AssetInfo info) throws IOException {
         MaterialDef spriteMat = 
-                (MaterialDef) info.getManager().loadAsset(new AssetKey("Common/MatDefs/Gui/Gui.j3md"));
+                (MaterialDef) info.getManager().loadAsset(new AssetKey("Common/MatDefs/Misc/Unshaded.j3md"));
 
         BitmapCharacterSet charSet = new BitmapCharacterSet();
         Material[] matPages = null;
@@ -113,8 +113,7 @@ public class BitmapFontLoader implements AssetLoader {
                 // set page
                 if (index >= 0 && tex != null){
                     Material mat = new Material(spriteMat);
-                    mat.setTexture("m_Texture", tex);
-                    mat.setColor("m_Color", ColorRGBA.White);
+                    mat.setTexture("m_ColorMap", tex);
                     mat.setBoolean("m_VertexColor", true);
                     mat.getAdditionalRenderState().setBlendMode(BlendMode.Alpha);
                     matPages[index] = mat;

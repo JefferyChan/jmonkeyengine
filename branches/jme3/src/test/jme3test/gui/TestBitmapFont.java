@@ -61,7 +61,6 @@ public class TestBitmapFont extends SimpleApplication {
         txt4.setSize(fnt.getPreferredSize() * 1.2f);
         txt4.setText("Text without restriction. \nText without restriction. Text without restriction. Text without restriction");
         txt4.setLocalTranslation(40, txt4.getLineHeight() * 2, 0);
-
         guiNode.attachChild(txt4);
     }
 

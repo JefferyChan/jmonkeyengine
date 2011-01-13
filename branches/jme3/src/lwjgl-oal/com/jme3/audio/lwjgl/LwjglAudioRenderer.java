@@ -32,7 +32,6 @@
 
 package com.jme3.audio.lwjgl;
 
-import org.lwjgl.openal.AL10;
 import com.jme3.audio.AudioBuffer;
 import com.jme3.audio.AudioData;
 import com.jme3.audio.AudioRenderer;
@@ -70,13 +69,14 @@ public class LwjglAudioRenderer implements AudioRenderer {
     private static final int BUFFER_SIZE = 8192;
     private static final int STREAMING_BUFFER_COUNT = 5;
 
-    private final IntBuffer ib = BufferUtils.createIntBuffer(16);
+    private final static int MAX_NUM_CHANNELS = 64;
+    private IntBuffer ib = BufferUtils.createIntBuffer(1);
     private final FloatBuffer fb = BufferUtils.createVector3Buffer(2);
     private final ByteBuffer nativeBuf = ByteBuffer.allocateDirect(BUFFER_SIZE);
     private final byte[] arrayBuf = new byte[BUFFER_SIZE];
 
-    private int[] channels = new int[16];
-    private AudioNode[] chanSrcs = new AudioNode[16];
+    private int[] channels;
+    private AudioNode[] chanSrcs;
     private int nextChan = 0;
     private ArrayList<Integer> freeChans = new ArrayList<Integer>();
 
@@ -110,24 +110,25 @@ public class LwjglAudioRenderer implements AudioRenderer {
         logger.log(Level.FINER, "Audio Version: {0}", alGetString(AL_VERSION));
 
         // Find maximum # of sources supported by this implementation
-        channels = new int[16];
-        for (int i = 0; i < 16; i++){
-            channels[i] = alGenSources();
+        ArrayList<Integer> channelList = new ArrayList<Integer>();
+        for (int i = 0; i < MAX_NUM_CHANNELS; i++){
+            int chan = alGenSources();
             if (alGetError() != 0){
-                int[] oldChans = channels;
-                channels = new int[i];
-                System.arraycopy(oldChans, 0, channels, 0, i);
-                chanSrcs = new AudioNode[i];
                 break;
+            }else{
+                channelList.add(chan);
             }
         }
 
-//        ib.clear();
-//        ib.limit(channels.length);
-//        alGenSources(ib);
-//        ib.clear();
-//        ib.get(channels);
-//        ib.clear();
+        channels = new int[channelList.size()];
+        for (int i = 0; i < channels.length; i++){
+            channels[i] = channelList.get(i);
+        }
+
+        ib = BufferUtils.createIntBuffer(channels.length);
+        chanSrcs = new AudioNode[channels.length];
+
+        logger.log(Level.INFO, "AudioRenderer supports {0} channels", channels.length);
 
         ALCdevice device = AL.getDevice();
         supportEfx = ALC10.alcIsExtensionPresent(device, "ALC_EXT_EFX");
@@ -294,10 +295,11 @@ public class LwjglAudioRenderer implements AudioRenderer {
     }
 
     private void freeChannel(int index){
-        if (index == nextChan-1)
+        if (index == nextChan-1){
             nextChan--;
-        else
+        } else{
             freeChans.add(index);
+        }
     }
     
     public void setEnvironment(Environment env){
@@ -530,7 +532,7 @@ public class LwjglAudioRenderer implements AudioRenderer {
         int index = newChannel();
         if (index == -1)
             return;
-        
+
         int sourceId = channels[index];
 
         clearChannel(index);
@@ -542,8 +544,6 @@ public class LwjglAudioRenderer implements AudioRenderer {
 
         // play the channel
         alSourcePlay(sourceId);
-
-        System.out.println("Playing on "+index);
     }
 
     

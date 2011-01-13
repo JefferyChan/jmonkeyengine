@@ -108,7 +108,7 @@ public class TestAttachDriver extends SimpleApplication implements ActionListene
     }
 
     public void setupFloor() {
-        Material mat = new Material(assetManager, "Common/MatDefs/Misc/SimpleTextured.j3md");
+        Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
         TextureKey key = new TextureKey("Interface/Logo/Monkey.jpg", true);
         key.setGenerateMips(true);
         Texture tex = assetManager.loadTexture(key);

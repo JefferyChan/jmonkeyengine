@@ -55,6 +55,17 @@ public class QuadList {
         return actualSize;
     }
 
+    /**
+     * Sets the size of any remaining quads to 0, 0
+     */
+    public void cleanTail(){
+        if (quads.size() > actualSize){
+            for (int i = actualSize; i < quads.size(); i++){
+                quads.get(i).setSize(0, 0);
+            }
+        }
+    }
+
     public FontQuad newQuad() {
         FontQuad q = null;
         if (actualSize == quads.size()) {

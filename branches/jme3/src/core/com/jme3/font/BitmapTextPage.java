@@ -36,7 +36,6 @@ import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 
 import com.jme3.material.Material;
-import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.VertexBuffer;
@@ -109,9 +108,6 @@ class BitmapTextPage extends Geometry {
         return clone;
     }
 
-    
-
-
     float assemble(BitmapFont font, StringBlock block, boolean rightToLeft) {
         float lineWidth = 0;
         // first generate quadlist
@@ -120,6 +116,10 @@ class BitmapTextPage extends Geometry {
         } else {
             lineWidth = font.updateTextRect(block, quadList, page);
         }
+        
+        // set size to zero of any quads at the end that
+        // were not updated
+        quadList.cleanTail();
 
         Mesh m = getMesh();
         m.setVertexCount(quadList.getQuantity() * 4);

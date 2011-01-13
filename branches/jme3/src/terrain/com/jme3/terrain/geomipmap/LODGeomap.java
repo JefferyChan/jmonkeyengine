@@ -341,8 +341,6 @@ public class LODGeomap extends BufferGeomap {
 		for (int i=buffer.getCount(); i<numIndexes; i++)
 			buffer.put(getWidth()*getWidth()-1);
 		
-		
-		
 		return buffer.delegate;
 	}
 	

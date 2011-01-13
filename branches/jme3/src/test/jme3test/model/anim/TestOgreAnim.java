@@ -72,7 +72,6 @@ public class TestOgreAnim extends SimpleApplication
         rootNode.addLight(dl);
 
         Spatial model = (Spatial) assetManager.loadModel("Models/Oto/Oto.mesh.xml");
-
         model.center();
 
         control = model.getControl(AnimControl.class);

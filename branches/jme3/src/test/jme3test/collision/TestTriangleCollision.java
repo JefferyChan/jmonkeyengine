@@ -47,14 +47,14 @@ import com.jme3.light.DirectionalLight;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Spatial;
 
-public class TriangleCollisionTest extends SimpleApplication {
+public class TestTriangleCollision extends SimpleApplication {
 
     Geometry geom1;
 
     Spatial golem;
 
     public static void main(String[] args) {
-        TriangleCollisionTest app = new TriangleCollisionTest();
+        TestTriangleCollision app = new TestTriangleCollision();
         app.start();
     }
 

@@ -212,6 +212,9 @@ public class Uniform extends ShaderVariable {
             return;
         }
 
+        if (varType == null)
+            return;
+
         switch (varType){
             case Int:
                 this.value = ZERO_INT;

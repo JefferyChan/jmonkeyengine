@@ -52,7 +52,6 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.Caps;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.Renderer;
-import com.jme3.renderer.RendererException;
 import com.jme3.scene.Geometry;
 import com.jme3.shader.Shader;
 import com.jme3.shader.Uniform;
@@ -520,9 +519,11 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
             Uniform lightColor = shader.getUniform("g_LightColor");
             Uniform lightPos = shader.getUniform("g_LightPosition");
 
+            r.applyRenderState(additiveLight);
+
             for (int i = 0; i < lightList.size(); i++){
                 if (i == 1){
-                    r.applyRenderState(additiveLight);
+//                    r.applyRenderState(additiveLight);
                 }
 
                 Light l = lightList.get(i);

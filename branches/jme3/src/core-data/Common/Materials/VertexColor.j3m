@@ -1,2 +1,5 @@
-Material Vertex Color Ext : Common/MatDefs/Misc/VertexColor.j3md {
+Material Vertex Color Ext : Common/MatDefs/Misc/Unshaded.j3md {
+    MaterialParameters {
+        m_VertexColor : true
+    }
 }

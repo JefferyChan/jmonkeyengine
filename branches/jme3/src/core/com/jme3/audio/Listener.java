@@ -62,8 +62,9 @@ public class Listener {
 
     public void setGain(float gain) {
         this.gain = gain;
+        needRefresh = true;
     }
-
+    
     public Vector3f getLocation() {
         return location;
     }

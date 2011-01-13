@@ -33,7 +33,13 @@
 package com.jme3.network.sync;
 
 public interface SyncEntity {
-    public InitState generateInitState();
-    public SyncState generateSyncState();
-    public void      applySyncState(SyncState state);
+    
+    public void onRemoteCreate();
+    public void onRemoteUpdate(float latencyDelta);
+    public void onRemoteDelete();
+    public void onLocalUpdate();
+
+    public void interpolate(float blendAmount);
+    public void extrapolate(float tpf);
+    
 }

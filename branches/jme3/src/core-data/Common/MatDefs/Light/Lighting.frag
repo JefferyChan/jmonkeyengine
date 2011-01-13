@@ -1,6 +1,7 @@
 #define ATTENUATION
 //#define HQ_ATTENUATION
 
+
 varying vec2 texCoord;
 
 varying vec4 AmbientSum;

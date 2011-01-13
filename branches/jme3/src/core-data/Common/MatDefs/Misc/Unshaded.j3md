@@ -1,4 +1,4 @@
-MaterialDef Plain Texture {
+MaterialDef Unshaded {
 
     MaterialParameters {
         Texture2D m_ColorMap
@@ -6,6 +6,11 @@ MaterialDef Plain Texture {
         Color m_Color
         Boolean m_VertexColor
         Boolean m_SeperateTexCoord
+
+        // Texture of the glowing parts of the material
+        Texture2D m_GlowMap
+        // The glow color of the object
+        Color m_GlowColor
     }
 
     Technique {
@@ -18,9 +23,25 @@ MaterialDef Plain Texture {
 
         Defines {
             SEPERATE_TEXCOORD : m_SeperateTexCoord
+            HAS_COLORMAP : m_ColorMap
             HAS_LIGHTMAP : m_LightMap
             HAS_VERTEXCOLOR : m_VertexColor
             HAS_COLOR : m_Color
+        }
+    }
+
+    Technique Glow {
+
+        VertexShader GLSL100:   Common/MatDefs/Misc/Unshaded.vert
+        FragmentShader GLSL100: Common/MatDefs/Light/Glow.frag
+
+        WorldParameters {
+            WorldViewProjectionMatrix
+        }
+
+        Defines {
+            HAS_GLOWMAP : m_GlowMap
+            HAS_GLOWCOLOR : m_GlowColor
         }
     }
 

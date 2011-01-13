@@ -31,7 +31,6 @@
  */
 package com.jme3.font;
 
-import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.queue.RenderQueue.Bucket;
@@ -83,7 +82,6 @@ public class BitmapText extends Node {
         return font;
     }
     
-
     public void setSize(float size) {
         block.setSize(size);
         needRefresh = true;
@@ -154,9 +152,10 @@ public class BitmapText extends Node {
         needRefresh = false;
     }
     
-    public void render(RenderManager rm, Material mat) {
+    public void render(RenderManager rm) {
         for (BitmapTextPage entry : textPages) {
-            mat.render(entry, rm);
+            //mat.render(entry, rm);
+            entry.getMaterial().render(entry, rm);
         }
     }
 }

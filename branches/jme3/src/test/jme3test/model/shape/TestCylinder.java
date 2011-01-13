@@ -51,7 +51,7 @@ public class TestCylinder extends SimpleApplication {
         Cylinder t = new Cylinder(20, 50, 1, 2, true);
         Geometry geom = new Geometry("Cylinder", t);
 
-        Material mat = new Material(assetManager, "Common/MatDefs/Misc/SimpleTextured.j3md");
+        Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
         TextureKey key = new TextureKey("Interface/Logo/Monkey.jpg", true);
         key.setGenerateMips(true);
         Texture tex = assetManager.loadTexture(key);

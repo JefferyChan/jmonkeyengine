@@ -32,38 +32,6 @@
 
 package com.jme3.network.sync;
 
-import com.jme3.network.serializing.Serializable;
-
-/**
- * An interface for synchronization state.
- * Sent across network to update clients.
- *
- * @author Kirill Vainer
- * @param <T>
- */
-@Serializable
-public interface SyncState <T extends SyncState> {
-    
-    /**
-     * Interpolate from this state toward the <code>end</code> state by
-     * <code>amount</code> scale (from 0.0 to 1.0), and store the result
-     * in store.
-     *
-     * @param end End state.
-     * @param amount Scale.
-     * @param store In which object to store the result.
-     */
-    public void interpolate(T end, float amount, T store);
-
-    /**
-     * Update the state based on the currently known information.
-     * @param tpf Time per frame.
-     */
-    public void update(float tpf);
-
-    /**
-     * @return Determines the rate in seconds at which
-     * sync update packets are sent.
-     */
-    public float getSyncRate();
+public interface EntityFactory {
+    public SyncEntity createEntity(Class<? extends SyncEntity> entityType);
 }

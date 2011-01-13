@@ -106,6 +106,21 @@ MaterialDef Phong Lighting {
         }
     }
 
+    Technique AmbientPass {
+
+        VertexShader GLSL100:   Common/MatDefs/Light/AmbientPass.vert
+        FragmentShader GLSL100: Common/MatDefs/Light/AmbientPass.frag
+
+        WorldParameters {
+            WorldViewProjectionMatrix
+        }
+
+        Defines {
+            HAS_VERTEXCOLOR : m_UseVertexColor
+            HAS_DIFFUSEMAP : m_DiffuseMap
+        }
+    }
+
     Technique PreShadow {
 
         VertexShader GLSL100 :   Common/MatDefs/Shadow/PreShadow.vert
@@ -151,29 +166,6 @@ MaterialDef Phong Lighting {
             NORMALMAP : m_NormalMap
             SPECULARMAP : m_SpecularMap
             PARALLAXMAP : m_ParallaxMap
-        }
-    }
-
-    Technique NewGpu {
-
-        LightMode SinglePass
-
-        VertexShader GLSL100:   Common/MatDefs/Light/LightingOld.vert
-        FragmentShader GLSL100: Common/MatDefs/Light/LightingOld.frag
-
-        WorldParameters {
-            WorldViewProjectionMatrix
-            NormalMatrix
-            WorldMatrix
-            WorldViewMatrix
-            ViewMatrix
-        }
-
-        Defines {
-            HAS_DIFFUSEMAP : m_DiffuseMap
-            HAS_NORMALMAP : m_NormalMap
-            HAS_SPECULARMAP : m_SpecularMap
-            USE_ALPHA : m_UseAlpha
         }
     }
 

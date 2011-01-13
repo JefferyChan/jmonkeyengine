@@ -69,7 +69,7 @@ public class TestOnlineJar extends SimpleApplication {
         key.setGenerateMips(true);
         Texture tex = assetManager.loadTexture(key);
 
-        Material mat = new Material(assetManager, "Common/MatDefs/Misc/SimpleTextured.j3md");
+        Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
         mat.setTexture("m_ColorMap", tex);
         quad.setMaterial(mat);
 

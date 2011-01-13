@@ -10,8 +10,12 @@ MaterialDef Solid Color {
     }
 
     Technique {
-        VertexShader GLSL100:   Common/MatDefs/Misc/SolidColor.vert
-        FragmentShader GLSL100: Common/MatDefs/Misc/SolidColor.frag
+        VertexShader GLSL100:   Common/MatDefs/Misc/Unshaded.vert
+        FragmentShader GLSL100: Common/MatDefs/Misc/Unshaded.frag
+
+        Defines {
+            HAS_COLOR : m_Color
+        }
 
         WorldParameters {
             WorldViewProjectionMatrix
@@ -23,7 +27,7 @@ MaterialDef Solid Color {
 
    Technique Glow {
 
-        VertexShader GLSL100:   Common/MatDefs/Misc/SimpleTextured.vert
+        VertexShader GLSL100:   Common/MatDefs/Misc/Unshaded.vert
         FragmentShader GLSL100: Common/MatDefs/Light/Glow.frag
 
         WorldParameters {

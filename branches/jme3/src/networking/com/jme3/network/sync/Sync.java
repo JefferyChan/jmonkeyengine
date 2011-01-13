@@ -32,18 +32,17 @@
 
 package com.jme3.network.sync;
 
-public class SyncService {
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-    public void addEntity(SyncEntity entity){
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.FIELD)
+public @interface Sync {
 
-    }
-
-    public void removeEntity(SyncEntity entity){
-
-    }
-
-    public void update(){
-        
-    }
-
+    public enum SyncType { InitOnly, Init, Sync }
+    
+    boolean smooth() default false;
+    SyncType value() default SyncType.Sync;
 }

@@ -568,9 +568,22 @@ public class RenderManager {
         RenderQueue rq = vp.getQueue();
         Camera cam = vp.getCamera();
         boolean depthRangeChanged = false;
+        boolean drawAmbient = true;
+
+        // NOTE we render all objects twice, once in AmbientPass mode
+        // and then again
 
         // render opaque objects with default depth range
         // opaque objects are sorted front-to-back, reducing overdraw
+        if (forcedMaterial != null || forcedTechnique != null)
+            drawAmbient = false;
+
+        if (drawAmbient){
+            forcedTechnique = "AmbientPass";
+            rq.renderQueue(Bucket.Opaque, this, cam, false);
+            forcedTechnique = null;
+        }
+        
         rq.renderQueue(Bucket.Opaque, this, cam, flush);
 
         // render the sky, with depth range set to the farthest
@@ -589,6 +602,13 @@ public class RenderManager {
                 renderer.setDepthRange(0, 1);
                 depthRangeChanged = false;
             }
+
+            if (drawAmbient){
+                forcedTechnique = "AmbientPass";
+                rq.renderQueue(Bucket.Transparent, this, cam, false);
+                forcedTechnique = null;
+            }
+            
             rq.renderQueue(Bucket.Transparent, this, cam, flush);
         }
 

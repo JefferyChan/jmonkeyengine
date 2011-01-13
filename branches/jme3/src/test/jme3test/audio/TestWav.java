@@ -44,13 +44,14 @@ public class TestWav extends AudioApp {
         test.start();
     }
 
-    public static final void sleep(float time){
+    public static void sleep(float time){
         try{
             Thread.sleep((long) (time * 1000));
         }catch (InterruptedException ex){
         }
     }
 
+    @Override
     public void updateAudioApp(float tpf){
         time += tpf;
         if (time > .1f){
