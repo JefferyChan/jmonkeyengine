@@ -44,7 +44,7 @@ import org.openide.util.ImageUtilities;
  * @author normenhansen
  */
 @org.openide.util.lookup.ServiceProvider(service=SceneExplorerNode.class)
-public class JmeBitmapText extends JmeGeometry {
+public class JmeBitmapText extends JmeNode {
 
     private static Image smallImage =
             ImageUtilities.loadImage("/com/jme3/gde/core/sceneexplorer/nodes/icons/bitmaptext.gif");
