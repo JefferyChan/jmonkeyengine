@@ -6,16 +6,20 @@ package com.jme3.bullet.control;
 
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.CollisionShape;
+import com.jme3.bullet.joints.PhysicsJoint;
 import com.jme3.bullet.objects.PhysicsVehicle;
+import com.jme3.bullet.objects.PhysicsVehicleWheel;
 import com.jme3.export.InputCapsule;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
 import com.jme3.export.OutputCapsule;
+import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.Control;
 import java.io.IOException;
+import java.util.Iterator;
 
 /**
  *
@@ -60,7 +64,24 @@ public class PhysicsVehicleControl extends PhysicsVehicle implements PhysicsCont
         control.setPhysicsLocation(getPhysicsLocation(null));
         control.setPhysicsRotation(getPhysicsRotation(null));
         control.setRestitution(getRestitution());
-        //TODO!
+
+        control.setFrictionSlip(getFrictionSlip());
+        control.setMaxSuspensionTravelCm(getMaxSuspensionTravelCm());
+        control.setSuspensionStiffness(getSuspensionStiffness());
+        control.setSuspensionCompression(tuning.suspensionCompression);
+        control.setSuspensionDamping(tuning.suspensionDamping);
+        control.setMaxSuspensionForce(getMaxSuspensionForce());
+
+        for (Iterator<PhysicsVehicleWheel> it = wheels.iterator(); it.hasNext();) {
+            PhysicsVehicleWheel wheel = it.next();
+            PhysicsVehicleWheel newWheel = control.addWheel(wheel.getLocation(), wheel.getDirection(), wheel.getAxle(), wheel.getRestLength(), wheel.getRadius(), wheel.isFrontWheel());
+            newWheel.setFrictionSlip(wheel.getFrictionSlip());
+            newWheel.setMaxSuspensionTravelCm(wheel.getMaxSuspensionTravelCm());
+            newWheel.setSuspensionStiffness(wheel.getSuspensionStiffness());
+            newWheel.setWheelsDampingCompression(wheel.getWheelsDampingCompression());
+            newWheel.setWheelsDampingRelaxation(wheel.getWheelsDampingRelaxation());
+            newWheel.setMaxSuspensionForce(wheel.getMaxSuspensionForce());
+        }
 
         control.setSpatial(spatial);
         return control;

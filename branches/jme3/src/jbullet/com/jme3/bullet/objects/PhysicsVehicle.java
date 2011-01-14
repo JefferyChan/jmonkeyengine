@@ -69,10 +69,10 @@ import java.util.Iterator;
  */
 public class PhysicsVehicle extends PhysicsRigidBody {
 
-    private RaycastVehicle vehicle;
-    private VehicleTuning tuning;
-    private VehicleRaycaster rayCaster;
-    private ArrayList<PhysicsVehicleWheel> wheels = new ArrayList<PhysicsVehicleWheel>();
+    protected RaycastVehicle vehicle;
+    protected VehicleTuning tuning;
+    protected VehicleRaycaster rayCaster;
+    protected ArrayList<PhysicsVehicleWheel> wheels = new ArrayList<PhysicsVehicleWheel>();
 
     public PhysicsVehicle() {
     }
