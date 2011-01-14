@@ -74,7 +74,7 @@ public class GeometryBatchFactory {
      * @param geometries
      * @param outMesh
      */
-    private static void mergeGeometries(Collection<Geometry> geometries, Mesh outMesh){
+    public static void mergeGeometries(Collection<Geometry> geometries, Mesh outMesh){
         int[] compsForBuf = new int[VertexBuffer.Type.values().length];
         Format[] formatForBuf = new Format[compsForBuf.length];
         Mode mode = null;
