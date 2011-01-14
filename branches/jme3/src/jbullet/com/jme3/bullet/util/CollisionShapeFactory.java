@@ -82,10 +82,6 @@ public class CollisionShapeFactory {
 
     private static CompoundCollisionShape createCompoundShape(
             Node rootNode, CompoundCollisionShape shape, boolean meshAccurate) {
-        if (rootNode.getParent() != null) {
-            throw new IllegalStateException("Spatial should not be attached to parent while creating compound collision shape!");
-        }
-        rootNode.updateGeometricState();
         return createCompoundShape(rootNode, shape, meshAccurate, false);
     }
 
@@ -133,7 +129,6 @@ public class CollisionShapeFactory {
             }*/
 
         } else if (spatial instanceof Geometry) {
-            spatial.updateGeometricState();
             return createSingleMeshShape((Geometry) spatial);
         } else if (spatial instanceof Node) {
             return createMeshCompoundShape((Node) spatial);
@@ -154,7 +149,6 @@ public class CollisionShapeFactory {
             if (spatial.getParent() != null) {
                 throw new IllegalStateException("Spatial should not be attached to parent while creating compound collision shape!");
             }
-            spatial.updateGeometricState();
             return createCompoundShape((Node) spatial, new CompoundCollisionShape(), true, true);
         } else {
             throw new IllegalArgumentException("Supplied spatial must either be Node or Geometry!");
@@ -195,9 +189,6 @@ public class CollisionShapeFactory {
      */
     public static BoxCollisionShape createSingleBoxShape(Spatial spatial) {
         spatial.setModelBound(new BoundingBox());
-        //TODO: this updateGeometric is not good, it could be called on a spatial
-        //      with a parent when compound shapes are created.. why does it crash w/o?
-        spatial.updateGeometricState();
         BoxCollisionShape shape = new BoxCollisionShape(
                 ((BoundingBox) spatial.getWorldBound()).getExtent(new Vector3f()));
         return shape;
