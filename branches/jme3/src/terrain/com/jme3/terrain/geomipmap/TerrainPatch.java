@@ -56,8 +56,10 @@ import com.jme3.scene.VertexBuffer.Type;
 import com.jme3.terrain.geomipmap.lodcalc.DistanceLodCalculator;
 import com.jme3.terrain.geomipmap.lodcalc.LodCalculator;
 import com.jme3.terrain.geomipmap.lodcalc.LodCalculatorFactory;
+import com.jme3.terrain.geomipmap.lodcalc.util.EntropyComputeUtil;
 import com.jme3.util.BufferUtils;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -109,6 +111,9 @@ public class TerrainPatch extends Geometry {
 
     protected TerrainPatch leftNeighbour, topNeighbour, rightNeighbour, bottomNeighbour;
     protected boolean searchedForNeighboursAlready = false;
+
+
+    protected float[] lodEntropy;
 
     public TerrainPatch() {
         super("TerrainPatch");
@@ -186,6 +191,18 @@ public class TerrainPatch extends Geometry {
 		setMesh(m);
 		
 	}
+
+        public float[] getLodEntropies(){
+            if (lodEntropy == null){
+                lodEntropy = new float[getMaxLod()+1];
+                for (int i = 0; i <= getMaxLod(); i++){
+                    int curLod = (int) Math.pow(2, i);
+                    IntBuffer buf = geomap.writeIndexArrayLodDiff(null, curLod, false, false, false, false);
+                    lodEntropy[i] = EntropyComputeUtil.computeLodEntropy(mesh, buf);
+                }
+            }
+            return lodEntropy;
+        }
 
 	public FloatBuffer getHeightmap() {
 		return geomap.getHeightData();
@@ -419,6 +436,8 @@ public class TerrainPatch extends Geometry {
 
 	public void setLod(int lod) {
 		this.lod = lod;
+                if (this.lod <= 0)
+                    throw new IllegalArgumentException();
 	}
 
 	public int getPreviousLod() {
@@ -492,7 +511,6 @@ public class TerrainPatch extends Geometry {
         else {
             throw new UnsupportedCollisionException();
         }
-        
     }
 
     private int collideWithSweepSphere(SweepSphere sweepSphere, CollisionResults results) {

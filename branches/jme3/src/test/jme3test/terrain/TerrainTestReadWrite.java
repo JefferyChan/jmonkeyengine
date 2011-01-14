@@ -29,7 +29,6 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package jme3test.terrain;
 
 import com.jme3.app.SimpleApplication;
@@ -46,6 +45,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.terrain.geomipmap.TerrainLodControl;
 import com.jme3.terrain.geomipmap.TerrainQuad;
+import com.jme3.terrain.geomipmap.lodcalc.LodPerspectiveCalculatorFactory;
 import com.jme3.terrain.heightmap.AbstractHeightMap;
 import com.jme3.terrain.heightmap.HillHeightMap;
 import com.jme3.texture.Texture;
@@ -68,109 +68,110 @@ import java.util.logging.Logger;
  */
 public class TerrainTestReadWrite extends SimpleApplication {
 
-	private TerrainQuad terrain;
+    private TerrainQuad terrain;
     protected BitmapText hintText;
 
-	public static void main(String[] args) {
-		TerrainTestReadWrite app = new TerrainTestReadWrite();
-		app.start();
+    public static void main(String[] args) {
+        TerrainTestReadWrite app = new TerrainTestReadWrite();
+        app.start();
         //testHeightmapBuilding();
-	}
+    }
 
     @Override
-	public void initialize() {
-		super.initialize();
+    public void initialize() {
+        super.initialize();
 
-		loadHintText();
-	}
+        loadHintText();
+    }
 
-	@Override
-	public void simpleInitApp() {
-		createControls();
-		createMap();
+    @Override
+    public void simpleInitApp() {
 
-	}
 
-	private void createMap() {
-		AbstractHeightMap heightmap = null;
-		try {
-			heightmap = new HillHeightMap(513, 3000, 30, 60, (byte) 4);
-		} catch (Exception ex) {
-			Logger.getLogger(TerrainTestReadWrite.class.getName()).log(Level.SEVERE, null, ex);
-		}
-		terrain = new TerrainQuad("terrain", 65, 513, heightmap.getHeightMap());
-		getRootNode().attachChild(terrain);
+        createControls();
+        createMap();
+    }
 
-		// TERRAIN TEXTURE material
-		Material matRock = new Material(assetManager, "Common/MatDefs/Terrain/Terrain.j3md");
+    private void createMap() {
+        AbstractHeightMap heightmap = null;
+        try {
+            heightmap = new HillHeightMap(513, 3000, 30, 60, (byte) 4);
+        } catch (Exception ex) {
+            Logger.getLogger(TerrainTestReadWrite.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        terrain = new TerrainQuad("terrain", 65, 513, heightmap.getHeightMap());
+        terrain.setLodCalculatorFactory(new LodPerspectiveCalculatorFactory(cam, 6));
+        getRootNode().attachChild(terrain);
 
-		// ALPHA map (for splat textures)
-		matRock.setTexture("m_Alpha", assetManager.loadTexture("Textures/Terrain/splat/alphamap.png"));
+        // TERRAIN TEXTURE material
+        Material matRock = new Material(assetManager, "Common/MatDefs/Terrain/Terrain.j3md");
 
-		// HEIGHTMAP image (for the terrain heightmap)
-		Texture heightMapImage = assetManager.loadTexture("Textures/Terrain/splat/mountains512.png");
+        // ALPHA map (for splat textures)
+        matRock.setTexture("m_Alpha", assetManager.loadTexture("Textures/Terrain/splat/alphamap.png"));
 
-		// GRASS texture
-		Texture grass = assetManager.loadTexture("Textures/Terrain/splat/grass.jpg");
-		grass.setWrap(WrapMode.Repeat);
-		matRock.setTexture("m_Tex1", grass);
-		matRock.setFloat("m_Tex1Scale", 64f);
+        // HEIGHTMAP image (for the terrain heightmap)
+        Texture heightMapImage = assetManager.loadTexture("Textures/Terrain/splat/mountains512.png");
 
-		// DIRT texture
-		Texture dirt = assetManager.loadTexture("Textures/Terrain/splat/dirt.jpg");
-		dirt.setWrap(WrapMode.Repeat);
-		matRock.setTexture("m_Tex2", dirt);
-		matRock.setFloat("m_Tex2Scale", 32f);
+        // GRASS texture
+        Texture grass = assetManager.loadTexture("Textures/Terrain/splat/grass.jpg");
+        grass.setWrap(WrapMode.Repeat);
+        matRock.setTexture("m_Tex1", grass);
+        matRock.setFloat("m_Tex1Scale", 64f);
 
-		// ROCK texture
-		Texture rock = assetManager.loadTexture("Textures/Terrain/splat/road.jpg");
-		rock.setWrap(WrapMode.Repeat);
-		matRock.setTexture("m_Tex3", rock);
-		matRock.setFloat("m_Tex3Scale", 128f);
+        // DIRT texture
+        Texture dirt = assetManager.loadTexture("Textures/Terrain/splat/dirt.jpg");
+        dirt.setWrap(WrapMode.Repeat);
+        matRock.setTexture("m_Tex2", dirt);
+        matRock.setFloat("m_Tex2Scale", 32f);
+
+        // ROCK texture
+        Texture rock = assetManager.loadTexture("Textures/Terrain/splat/road.jpg");
+        rock.setWrap(WrapMode.Repeat);
+        matRock.setTexture("m_Tex3", rock);
+        matRock.setFloat("m_Tex3Scale", 128f);
 
         Material matWire = new Material(assetManager, "Common/MatDefs/Misc/WireColor.j3md");
         matWire.setColor("m_Color", ColorRGBA.Green);
 
         // create the terrain as normal, and give it a control for LOD management
-		List<Camera> cameras = new ArrayList<Camera>();
-		cameras.add(getCamera());
-		TerrainLodControl control = new TerrainLodControl(terrain, cameras);
-		terrain.addControl(control);
-		terrain.setMaterial(matWire);
-		terrain.setModelBound(new BoundingBox());
-		terrain.updateModelBound();
-		terrain.setLocalScale(1f, 0.25f, 1f);
-	}
+        List<Camera> cameras = new ArrayList<Camera>();
+        cameras.add(getCamera());
+        TerrainLodControl control = new TerrainLodControl(terrain, cameras);
+        terrain.addControl(control);
+        terrain.setMaterial(matWire);
+        terrain.setModelBound(new BoundingBox());
+        terrain.updateModelBound();
+        terrain.setLocalScale(1f, 0.25f, 1f);
+    }
 
     /**
      * Create the save and load actions and add them to the input listener
      */
-	private void createControls() {
-		flyCam.setMoveSpeed(50);
-		getCamera().setLocation(new Vector3f(0,100,0));
+    private void createControls() {
+        flyCam.setMoveSpeed(50);
+        cam.setLocation(new Vector3f(0,100,0));
 
         inputManager.addMapping("save", new KeyTrigger(KeyInput.KEY_T));
-		inputManager.addListener(saveActionListener, "save");
+        inputManager.addListener(saveActionListener, "save");
 
         inputManager.addMapping("load", new KeyTrigger(KeyInput.KEY_Y));
-		inputManager.addListener(loadActionListener, "load");
+        inputManager.addListener(loadActionListener, "load");
 
         inputManager.addMapping("clone", new KeyTrigger(KeyInput.KEY_C));
-		inputManager.addListener(cloneActionListener, "clone");
-	}
+        inputManager.addListener(cloneActionListener, "clone");
+    }
 
     public void loadHintText() {
-		hintText = new BitmapText(guiFont, false);
-		hintText.setSize(guiFont.getCharSet().getRenderedSize());
-		hintText.setLocalTranslation(0, getCamera().getHeight(), 0);
-		hintText.setText("Hit T to save, and Y to load");
-		guiNode.attachChild(hintText);
-	}
-
+        hintText = new BitmapText(guiFont, false);
+        hintText.setSize(guiFont.getCharSet().getRenderedSize());
+        hintText.setLocalTranslation(0, getCamera().getHeight(), 0);
+        hintText.setText("Hit T to save, and Y to load");
+        guiNode.attachChild(hintText);
+    }
     private ActionListener saveActionListener = new ActionListener() {
 
-		public void onAction(String name, boolean pressed, float tpf) {
-			if (name.equals("save") && !pressed) {
+        public void onAction(String name, boolean pressed, float tpf) {
+            if (name.equals("save") && !pressed) {
 
                 FileOutputStream fos = null;
                 try {
@@ -181,26 +182,26 @@ public class TerrainTestReadWrite extends SimpleApplication {
                     BinaryExporter.getInstance().save(terrain, new BufferedOutputStream(fos));
 
                     fos.flush();
-                    float duration = (System.currentTimeMillis()-start)/1000.0f;
-                    System.out.println("Save took "+duration+" seconds");
+                    float duration = (System.currentTimeMillis() - start) / 1000.0f;
+                    System.out.println("Save took " + duration + " seconds");
                 } catch (IOException ex) {
                     Logger.getLogger(TerrainTestReadWrite.class.getName()).log(Level.SEVERE, null, ex);
                 } finally {
                     try {
-                        if (fos != null)
+                        if (fos != null) {
                             fos.close();
+                        }
                     } catch (IOException e) {
                         Logger.getLogger(TerrainTestReadWrite.class.getName()).log(Level.SEVERE, null, e);
                     }
                 }
-			}
-		}
-	};
-
+            }
+        }
+    };
     private ActionListener loadActionListener = new ActionListener() {
 
-		public void onAction(String name, boolean pressed, float tpf) {
-			if (name.equals("load") && !pressed) {
+        public void onAction(String name, boolean pressed, float tpf) {
+            if (name.equals("load") && !pressed) {
                 FileInputStream fis = null;
                 try {
                     long start = System.currentTimeMillis();
@@ -216,79 +217,82 @@ public class TerrainTestReadWrite extends SimpleApplication {
                     terrain = (TerrainQuad) imp.load(new BufferedInputStream(fis));
                     rootNode.attachChild(terrain);
 
-                    float duration = (System.currentTimeMillis()-start)/1000.0f;
-                    System.out.println("Load took "+duration+" seconds");
+                    float duration = (System.currentTimeMillis() - start) / 1000.0f;
+                    System.out.println("Load took " + duration + " seconds");
 
                     // now we have to add back the cameras to the LOD control, since we didn't want to duplicate them on save
                     List<Camera> cameras = new ArrayList<Camera>();
                     cameras.add(getCamera());
                     TerrainLodControl lodControl = terrain.getControl(TerrainLodControl.class);
-                    if (lodControl != null && !(terrain.getParent() instanceof TerrainQuad))
+                    if (lodControl != null && !(terrain.getParent() instanceof TerrainQuad)) {
                         lodControl.setCameras(cameras);
+                    }
 
                 } catch (IOException ex) {
                     Logger.getLogger(TerrainTestReadWrite.class.getName()).log(Level.SEVERE, null, ex);
                 } finally {
                     try {
-                        if (fis != null)
+                        if (fis != null) {
                             fis.close();
+                        }
                     } catch (IOException ex) {
                         Logger.getLogger(TerrainTestReadWrite.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
-			}
-		}
-	};
-
+            }
+        }
+    };
     private ActionListener cloneActionListener = new ActionListener() {
 
-		public void onAction(String name, boolean pressed, float tpf) {
-			if (name.equals("clone") && !pressed) {
+        public void onAction(String name, boolean pressed, float tpf) {
+            if (name.equals("clone") && !pressed) {
 
                 TerrainQuad clone = terrain.clone();
                 terrain.removeFromParent();
                 terrain = clone;
                 getRootNode().attachChild(terrain);
-			}
-		}
-	};
+            }
+        }
+    };
 
     // no junit tests, so this has to be hand-tested:
     private static void testHeightmapBuilding() {
         int s = 9;
         int b = 3;
-        float[] hm = new float[s*s];
-        for (int i=0; i<s; i++)
-            for (int j=0; j<s; j++)
-                hm[(i*s)+j] = i*j;
-
-        for (int i=0; i<s; i++) {
-                for (int j=0; j<s; j++) {
-                    System.out.print(hm[i*s+j] + " ");
-                }
-                System.out.println("");
+        float[] hm = new float[s * s];
+        for (int i = 0; i < s; i++) {
+            for (int j = 0; j < s; j++) {
+                hm[(i * s) + j] = i * j;
             }
+        }
+
+        for (int i = 0; i < s; i++) {
+            for (int j = 0; j < s; j++) {
+                System.out.print(hm[i * s + j] + " ");
+            }
+            System.out.println("");
+        }
 
         TerrainQuad terrain = new TerrainQuad("terrain", b, s, hm);
-		float[] hm2 = terrain.getHeightMap();
+        float[] hm2 = terrain.getHeightMap();
         boolean failed = false;
-        for (int i=0; i<s*s; i++) {
-            if (hm[i] != hm2[i])
+        for (int i = 0; i < s * s; i++) {
+            if (hm[i] != hm2[i]) {
                 failed = true;
+            }
         }
 
         System.out.println("");
         if (failed) {
             System.out.println("Terrain heightmap building FAILED!!!");
-            for (int i=0; i<s; i++) {
-                for (int j=0; j<s; j++) {
-                    System.out.print(hm2[i*s+j] + " ");
+            for (int i = 0; i < s; i++) {
+                for (int j = 0; j < s; j++) {
+                    System.out.print(hm2[i * s + j] + " ");
                 }
                 System.out.println("");
             }
-        } else
+        } else {
             System.out.println("Terrain heightmap building PASSED");
+        }
     }
 }
-
-

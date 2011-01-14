@@ -34,33 +34,48 @@ package com.jme3.terrain.geomipmap.lodcalc;
 
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
+import com.jme3.renderer.Camera;
 import com.jme3.terrain.geomipmap.TerrainPatch;
 import java.io.IOException;
 
 /**
- *
- * @author bowens
+ * TODO: Make it work with multiple cameras
+ * TODO: Fix the cracks when the lod differences are greater than 1
+ * for two adjacent blocks.
  */
 public class LodPerspectiveCalculatorFactory implements LodCalculatorFactory {
 
+    private Camera cam;
+    private float pixelError;
+
+    public LodPerspectiveCalculatorFactory(Camera cam, float pixelError){
+        this.cam = cam;
+        this.pixelError = pixelError;
+    }
+
     public LodCalculator createCalculator() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return new PerspectiveLodCalculator(cam, pixelError);
     }
 
     public LodCalculator createCalculator(TerrainPatch terrainPatch) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        PerspectiveLodCalculator p = new PerspectiveLodCalculator(cam, pixelError);
+        p.setTerrainPatch(terrainPatch);
+        return p;
     }
 
     public void write(JmeExporter ex) throws IOException {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public void read(JmeImporter im) throws IOException {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    @Override
     public LodCalculatorFactory clone() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        try {
+            return (LodCalculatorFactory) super.clone();
+        } catch (CloneNotSupportedException ex) {
+            throw new AssertionError();
+        }
     }
 
 }

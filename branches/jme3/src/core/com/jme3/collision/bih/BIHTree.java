@@ -32,6 +32,8 @@
 
 package com.jme3.collision.bih;
 
+import com.jme3.scene.mesh.VirtualIndexBuffer;
+import com.jme3.scene.mesh.WrappedIndexBuffer;
 import com.jme3.bounding.BoundingSphere;
 import com.jme3.scene.Mesh.Mode;
 import com.jme3.bounding.BoundingBox;
@@ -66,7 +68,6 @@ public class BIHTree implements CollisionData {
 
     private Mesh mesh;
 
-    
     private BIHNode root;
     private int maxTrisPerNode;
     private int numTris;
@@ -84,7 +85,7 @@ public class BIHTree implements CollisionData {
         comparators[2] = new TriangleAxisComparator(2);
     }
 
-    private void initTriList(FloatBuffer vb, IndexBuffer ib, int numTris){
+    private void initTriList(FloatBuffer vb, IndexBuffer ib){
         pointData = new float[numTris * 3 * 3];
         int p = 0;
         for (int i = 0; i < numTris*3; i+=3){
@@ -117,18 +118,17 @@ public class BIHTree implements CollisionData {
             throw new IllegalArgumentException();
 
         bihSwapTmp = new float[9];
-        mesh.updateCounts();
-        mesh.updateBound();
 
         FloatBuffer vb = (FloatBuffer) mesh.getBuffer(Type.Position).getData();
         IndexBuffer ib = mesh.getIndexBuffer();
-
-        numTris = mesh.getTriangleCount();
-        if (mesh.getMode() == Mode.Triangles){
-            initTriList(vb, ib, numTris);
-        }else{
-            throw new UnsupportedOperationException("Only 'Triangles' mesh mode is supported.");
+        if (ib == null){
+            ib = new VirtualIndexBuffer(mesh.getVertexCount(), mesh.getMode());
+        }else if (mesh.getMode() != Mode.Triangles){
+            ib = new WrappedIndexBuffer(mesh);
         }
+
+        numTris = ib.size() / 3;
+        initTriList(vb, ib);
     }
 
     public BIHTree(Mesh mesh){

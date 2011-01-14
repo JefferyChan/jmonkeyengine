@@ -62,14 +62,8 @@ import java.util.Map.Entry;
  * @author Brent Owens
  */
 public class LODGeomap extends BufferGeomap {
-
-	private int maxLod = -1;
-	
-	
 	public LODGeomap(int size, FloatBuffer heightMap) {
 		super(heightMap, null, size, size, 1);
-		
-		maxLod = Math.max(1, (int) (FastMath.log(size-1)/FastMath.log(2)) -1);
 	}
 	
 	public Mesh createMesh(Vector3f scale, Vector2f tcScale, Vector2f tcOffset, float offsetAmount, int totalSize, boolean center) {
@@ -91,6 +85,7 @@ public class LODGeomap extends BufferGeomap {
 		m.updateBound();
 		return m;
 	}
+
 
     protected void removeNormalBuffer() {
         ndata = null;

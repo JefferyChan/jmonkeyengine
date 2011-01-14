@@ -56,6 +56,8 @@ public class UpdatedTerrainPatch {
 	public UpdatedTerrainPatch(TerrainPatch updatedPatch, int newLod) {
 		this.updatedPatch = updatedPatch;
 		this.newLod = newLod;
+                if (this.newLod <= 0)
+                    throw new IllegalArgumentException();
 	}
 	
 	public UpdatedTerrainPatch(TerrainPatch updatedPatch, int newLod, int prevLOD, boolean reIndexNeeded) {
@@ -63,7 +65,8 @@ public class UpdatedTerrainPatch {
 		this.newLod = newLod;
 		this.previousLod = prevLOD;
 		this.reIndexNeeded = reIndexNeeded;
-		
+		if (this.newLod <= 0)
+                    throw new IllegalArgumentException();
 	}
 
 	public String getName() {
@@ -91,6 +94,8 @@ public class UpdatedTerrainPatch {
 
 	protected void setNewLod(int newLod) {
 		this.newLod = newLod;
+                if (this.newLod <= 0)
+                    throw new IllegalArgumentException();
 	}
 
 	protected IntBuffer getNewIndexBuffer() {

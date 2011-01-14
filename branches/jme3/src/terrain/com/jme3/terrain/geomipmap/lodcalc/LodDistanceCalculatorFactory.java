@@ -50,14 +50,12 @@ public class LodDistanceCalculatorFactory implements LodCalculatorFactory {
 
 
     public LodDistanceCalculatorFactory() {
-
     }
     
     public LodDistanceCalculatorFactory(LodThreshold lodThreshold) {
         this.lodThreshold = lodThreshold;
     }
 
-    
     public LodCalculator createCalculator() {
         return new DistanceLodCalculator();
     }
@@ -85,7 +83,6 @@ public class LodDistanceCalculatorFactory implements LodCalculatorFactory {
         LodDistanceCalculatorFactory clone = new LodDistanceCalculatorFactory();
         clone.lodThreshold = lodThreshold.clone();
         clone.lodThresholdSize = lodThresholdSize;
-
         return clone;
     }
 
