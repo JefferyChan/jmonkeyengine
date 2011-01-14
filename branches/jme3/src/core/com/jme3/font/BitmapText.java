@@ -147,7 +147,7 @@ public class BitmapText extends Node {
 
     private void assemble() {
         for (BitmapTextPage page : textPages) {
-            page.assemble(font, block, rightToLeft);
+            lineWidth = page.assemble(font, block, rightToLeft);
         }
         needRefresh = false;
     }
