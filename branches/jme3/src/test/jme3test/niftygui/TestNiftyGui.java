@@ -64,7 +64,7 @@ public class TestNiftyGui extends SimpleApplication {
                                                           guiViewPort);
         nifty = niftyDisplay.getNifty();
 
-        nifty.fromXml(/*"tutorial/tutorial.xml"*/ "jme3test/niftygui/hellojme.xml", "start");
+        nifty.fromXml("all/intro.xml", "start");
 
         // attach the nifty display to the gui view port as a processor
         guiViewPort.addProcessor(niftyDisplay);

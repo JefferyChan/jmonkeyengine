@@ -87,13 +87,10 @@ public class TestSSAO extends SimpleApplication {
         rootNode.attachChild(teapot);
 
          for (int i = 0; i < 30; i++) {
-            Spatial t=teapot.deepClone();
+            Spatial t = teapot.clone();
             rootNode.attachChild(t);
-            teapot.setLocalTranslation((float)Math.random()*3,(float)Math.random()*3,(i+2));
-
+            teapot.setLocalTranslation((float) Math.random() * 3, (float) Math.random() * 3, (i + 2));
         }
-
-
 
         Geometry soil=new Geometry("soil", new Box(new Vector3f(0, -13, 550), 800, 10, 700));
         soil.setMaterial(matSoil);
@@ -101,14 +98,14 @@ public class TestSSAO extends SimpleApplication {
         rootNode.attachChild(soil);
 
         for (int i = 0; i < 30; i++) {
-            Spatial t=teapot.deepClone();
+            Spatial t = teapot.clone();
             t.setLocalScale(10.0f);
             rootNode.attachChild(t);
-            teapot.setLocalTranslation((float)Math.random()*300,(float)Math.random()*30,30*(i+2));
+            teapot.setLocalTranslation((float) Math.random() * 300, (float) Math.random() * 30, 30 * (i + 2));
         }
 
-
         FilterPostProcessor fpp=new FilterPostProcessor(assetManager);
+        fpp.setNumSamples(8);
         SSAOFilter ssaoFilter= new SSAOFilter(0.92f,2.2f,0.29000017f,0.21200025f);
         fpp.addFilter(ssaoFilter);
         SSAOUI ui=new SSAOUI(inputManager, ssaoFilter);
