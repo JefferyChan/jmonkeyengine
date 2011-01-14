@@ -52,7 +52,9 @@ import java.util.List;
 /**
  * <p>PhysicsNode - Basic physics object</p>
  * @author normenhansen
+ * @deprecated in favor of physics Controls
  */
+@Deprecated
 public class PhysicsNode extends PhysicsBaseNode {
 
     protected Vector3f continuousForce = new Vector3f();

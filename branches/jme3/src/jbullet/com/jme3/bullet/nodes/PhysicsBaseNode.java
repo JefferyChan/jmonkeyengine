@@ -47,7 +47,9 @@ import java.io.IOException;
 /**
  * Base class for Physics Nodes (PhysicsNode, PhysicsGhostNode)
  * @author normenhansen
+ * @deprecated in favor of physics Controls
  */
+@Deprecated
 public abstract class PhysicsBaseNode extends Node {
 
     protected PhysicsCollisionObject collisionObject;

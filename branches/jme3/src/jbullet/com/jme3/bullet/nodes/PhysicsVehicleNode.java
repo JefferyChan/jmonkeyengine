@@ -59,7 +59,9 @@ import java.io.IOException;
  * @see com.jmex.jbullet.nodes.PhysicsNode
  * @see com.jmex.jbullet.PhysicsSpace
  * @author normenhansen
+ * @deprecated in favor of physics Controls
  */
+@Deprecated
 public class PhysicsVehicleNode extends PhysicsNode {
 
     public PhysicsVehicleNode() {

@@ -54,7 +54,9 @@ import java.util.List;
  * This is useful for creating a character controller,
  * collision sensors/triggers, explosions etc.<br>
  * @author normenhansen
+ * @deprecated in favor of physics Controls
  */
+@Deprecated
 public class PhysicsGhostNode extends PhysicsBaseNode {
 
 //    protected PhysicsGhostControl gObject;

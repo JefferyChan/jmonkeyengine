@@ -49,7 +49,9 @@ import java.io.IOException;
 /**
  *
  * @author normenhansen
+ * @deprecated in favor of physics Controls
  */
+@Deprecated
 public class PhysicsCharacterNode extends PhysicsBaseNode {
 
     public PhysicsCharacterNode() {
