@@ -207,6 +207,10 @@ public class PhysicsVehicle extends PhysicsRigidBody {
         return wheels.get(wheel);
     }
 
+    public int getNumWheels(){
+        return wheels.size();
+    }
+
     /**
      * @return the frictionSlip
      */

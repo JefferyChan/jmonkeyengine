@@ -6,16 +6,15 @@ package com.jme3.bullet.control;
 
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.CollisionShape;
-import com.jme3.bullet.joints.PhysicsJoint;
 import com.jme3.bullet.objects.PhysicsVehicle;
 import com.jme3.bullet.objects.PhysicsVehicleWheel;
 import com.jme3.export.InputCapsule;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
 import com.jme3.export.OutputCapsule;
-import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
+import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.Control;
 import java.io.IOException;
@@ -61,8 +60,8 @@ public class PhysicsVehicleControl extends PhysicsVehicle implements PhysicsCont
         control.setKinematic(isKinematic());
         control.setLinearSleepingThreshold(getLinearSleepingThreshold());
         control.setLinearVelocity(getLinearVelocity());
-        control.setPhysicsLocation(getPhysicsLocation(null));
-        control.setPhysicsRotation(getPhysicsRotation(null));
+        control.setPhysicsLocation(getPhysicsLocation());
+        control.setPhysicsRotation(getPhysicsRotation());
         control.setRestitution(getRestitution());
 
         control.setFrictionSlip(getFrictionSlip());
@@ -81,6 +80,15 @@ public class PhysicsVehicleControl extends PhysicsVehicle implements PhysicsCont
             newWheel.setWheelsDampingCompression(wheel.getWheelsDampingCompression());
             newWheel.setWheelsDampingRelaxation(wheel.getWheelsDampingRelaxation());
             newWheel.setMaxSuspensionForce(wheel.getMaxSuspensionForce());
+
+            //TODO: bad way finding children!
+            if (spatial instanceof Node) {
+                Node node = (Node) spatial;
+                Spatial wheelSpat = node.getChild(wheel.getWheelSpatial().getName());
+                if(wheelSpat!=null){
+                    newWheel.setWheelSpatial(wheelSpat);
+                }
+            }
         }
 
         control.setSpatial(spatial);
