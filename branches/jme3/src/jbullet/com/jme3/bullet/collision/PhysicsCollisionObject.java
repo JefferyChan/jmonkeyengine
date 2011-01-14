@@ -215,12 +215,14 @@ public abstract class PhysicsCollisionObject implements Savable {
                 Spatial spatial1 = it1.next();
                 Geometry geom = ((Geometry) spatial1);
                 geom.setMaterial(debugMaterialBlue);
+                geom.setCullHint(Spatial.CullHint.Never);
             }
         } else {
             Geometry geom = ((Geometry) spatial);
             geom.setMaterial(debugMaterialBlue);
-
+            geom.setCullHint(Spatial.CullHint.Never);
         }
+        spatial.setCullHint(Spatial.CullHint.Never);
         return spatial;
     }
 

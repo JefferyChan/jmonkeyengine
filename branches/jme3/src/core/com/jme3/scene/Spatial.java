@@ -972,17 +972,10 @@ public abstract class Spatial implements Savable, Cloneable, Collidable {
     }
 
     /**
-     * Centers the spatial in the origin, the spatial should have no
-     * parent when this method is called.
-     *
+     * Centers the spatial in the origin of the world bound.
      * @return The spatial on which this method is called, e.g <code>this</code>.
      */
     public Spatial center(){
-        assert(parent == null);
-        if ((refreshFlags & RF_BOUND) != 0){
-            updateGeometricState();
-        }
-
         Vector3f worldTrans = getWorldTranslation();
         Vector3f worldCenter = getWorldBound().getCenter();
 

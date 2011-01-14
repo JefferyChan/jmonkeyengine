@@ -79,12 +79,10 @@ public class PhysicsVehicle extends PhysicsRigidBody {
 
     public PhysicsVehicle(CollisionShape shape) {
         super(shape);
-        motionState.setVehicle(this);
     }
 
     public PhysicsVehicle(CollisionShape shape, float mass) {
         super(shape, mass);
-        motionState.setVehicle(this);
     }
 
     /**
@@ -112,6 +110,7 @@ public class PhysicsVehicle extends PhysicsRigidBody {
         super.postRebuild();
         createVehicleConstraint();
         rBody.setActivationState(CollisionObject.DISABLE_DEACTIVATION);
+        motionState.setVehicle(this);
     }
 
     private void createVehicleConstraint(PhysicsSpace space) {
