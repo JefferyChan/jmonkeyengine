@@ -52,6 +52,10 @@ public class TestSync extends SimpleApplication implements EntityFactory {
         serverSyncServ.addNpc(serverBox);
         rootNode.attachChild(serverBox);
 
+        // Enable 10% packet drop rate and 200 ms latency
+        serverSyncServ.setNetworkSimulationParams(0.1f, 200);
+
+
         // ------ Start Client -------
         try {
             client = new Client("localhost", 5110, 5110);

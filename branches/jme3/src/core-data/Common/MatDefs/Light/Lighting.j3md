@@ -118,6 +118,7 @@ MaterialDef Phong Lighting {
         Defines {
             HAS_VERTEXCOLOR : m_UseVertexColor
             HAS_DIFFUSEMAP : m_DiffuseMap
+            MATERIAL_COLORS : m_UseMaterialColors
         }
     }
 

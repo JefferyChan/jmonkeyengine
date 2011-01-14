@@ -1,4 +1,5 @@
 uniform vec4 m_Ambient;
+uniform vec4 m_Diffuse;
 uniform sampler2D m_DiffuseMap;
 varying vec2 texCoord;
 
@@ -6,8 +7,15 @@ varying vec2 texCoord;
     varying vec4 vertColor;
 #endif
 
+
+
 void main(){
-    vec4 color = m_Ambient;
+    #ifdef MATERIAL_COLORS
+        vec4 color = m_Ambient;
+        color.a = m_Diffuse.a;
+    #else
+        vec4 color = vec4(0.0, 0.0, 0.0, 1.0);
+    #endif
 
     #ifdef HAS_DIFFUSEMAP
         color *= texture2D(m_DiffuseMap, texCoord);

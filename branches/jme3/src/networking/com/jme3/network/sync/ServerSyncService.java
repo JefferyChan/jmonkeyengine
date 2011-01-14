@@ -49,7 +49,7 @@ public class ServerSyncService extends ConnectionAdapter implements Service {
 
     private float updateRate = 0.1f;
     private float packetDropRate = 0;
-    private float latency = 0;
+    private long latency = 0;
     private HashMap<Long, SyncMessage> latencyQueue;
 
     private final Server server;
@@ -69,7 +69,7 @@ public class ServerSyncService extends ConnectionAdapter implements Service {
         server.addConnectionListener(this);
     }
 
-    public void setNetworkSimulationParams(float packetDropRate, float latency){
+    public void setNetworkSimulationParams(float packetDropRate, long latency){
         if (latencyQueue == null)
             latencyQueue = new HashMap<Long, SyncMessage>();
 
@@ -105,6 +105,14 @@ public class ServerSyncService extends ConnectionAdapter implements Service {
         return info;
     }
 
+    private EntitySyncInfo generateDeleteInfo(SyncEntity entity){
+        EntitySyncInfo info = new EntitySyncInfo();
+        info.className = null;
+        info.id = npcToId.get(entity);
+        info.type = EntitySyncInfo.TYPE_DELETE;
+        return info;
+    }
+
     public void addNpc(SyncEntity entity){
         EntitySyncInfo info = generateInitInfo(entity, true);
         SyncMessage syncMsg = new SyncMessage();
@@ -114,9 +122,6 @@ public class ServerSyncService extends ConnectionAdapter implements Service {
 
         try {
             server.broadcast(syncMsg);
-//            for (Client id : server.getConnectors()){
-//                id.send(syncMsg);
-//            }
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -124,6 +129,26 @@ public class ServerSyncService extends ConnectionAdapter implements Service {
         synchronized (npcs){
             npcs.add(entity);
             npcToId.put(entity, info.id);
+        }
+    }
+
+    public void removeNpc(SyncEntity entity){
+        EntitySyncInfo info = generateDeleteInfo(entity);
+
+        SyncMessage syncMsg = new SyncMessage();
+        syncMsg.setReliable(true);
+        syncMsg.heartbeat = heartbeat;
+        syncMsg.infos = new EntitySyncInfo[]{ info };
+
+        try {
+            server.broadcast(syncMsg);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+
+        synchronized (npcs){
+            npcs.remove(entity);
+            npcToId.remove(entity);
         }
     }
 
@@ -209,7 +234,7 @@ public class ServerSyncService extends ConnectionAdapter implements Service {
 
         if (latencyQueue != null){
             long latencyTime = (long) (latency + (FastMath.nextRandomFloat()-0.5f) * latency);
-            long timeToSend = System.currentTimeMillis() + (long)(latencyTime * 1000);
+            long timeToSend = System.currentTimeMillis() + latencyTime;
             latencyQueue.put(timeToSend, msg);
         }else{
             for (Client id : server.getConnectors()){

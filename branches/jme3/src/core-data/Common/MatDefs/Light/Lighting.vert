@@ -146,7 +146,6 @@ void main(){
        //DiffuseSum *= light.x;
        //SpecularSum *= light.y;
 
-       DiffuseSum.a  = DiffuseSum.a * SpecularSum.a;
        AmbientSum.a  = light.x;
        SpecularSum.a = light.y;
     #endif
