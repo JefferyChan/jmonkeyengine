@@ -36,6 +36,7 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.asset.TextureKey;
 import com.jme3.asset.plugins.HttpZipLocator;
 import com.jme3.asset.plugins.ZipLocator;
+import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
@@ -83,8 +84,11 @@ public class TestSceneLoading extends SimpleApplication {
         }
         Spatial scene = assetManager.loadModel("main.scene");
 
+        AmbientLight al = new AmbientLight();
+        scene.addLight(al);
+
         DirectionalLight sun = new DirectionalLight();
-        sun.setDirection(new Vector3f(-0.4790551f, -0.39247334f, -0.7851566f));
+        sun.setDirection(new Vector3f(0.69077975f, -0.6277887f, -0.35875428f).normalizeLocal());
         sun.setColor(ColorRGBA.White.clone().multLocal(2));
         scene.addLight(sun);
 
