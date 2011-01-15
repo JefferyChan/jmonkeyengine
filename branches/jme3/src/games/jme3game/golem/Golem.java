@@ -174,7 +174,7 @@ public class Golem extends SimpleApplication
 
         matRock = new Material(assetManager, "Common/MatDefs/Misc/SimpleTextured.j3md");
         Texture tex_ml = assetManager.loadTexture("Textures/Terrain/BrickWall/BrickWall.jpg");
-        matRock.setTexture("m_ColorMap", tex_ml);
+        matRock.setTexture("ColorMap", tex_ml);
 
         brick = new Box(Vector3f.ZERO, bLength, bHeight, bWidth);
         brick.scaleTextureCoordinates(new Vector2f(1f, 1f));
@@ -219,7 +219,7 @@ public class Golem extends SimpleApplication
         bullet.setTextureMode(TextureMode.Projected);
         bulletCollisionShape = new SphereCollisionShape(0.4f);
         matBullet = new Material(getAssetManager(), "Common/MatDefs/Misc/WireColor.j3md");
-        matBullet.setColor("m_Color", ColorRGBA.Green);
+        matBullet.setColor("Color", ColorRGBA.Green);
         getPhysicsSpace().addCollisionListener(this);
     }
 
@@ -228,7 +228,7 @@ public class Golem extends SimpleApplication
         bomb.setTextureMode(TextureMode.Projected);
         bombCollisionShape = new SphereCollisionShape(2);
         matBomb = new Material(getAssetManager(), "Common/MatDefs/Misc/WireColor.j3md");
-        matBomb.setColor("m_Color", ColorRGBA.Red);
+        matBomb.setColor("Color", ColorRGBA.Red);
         getPhysicsSpace().addCollisionListener(this);
     }
 
@@ -252,7 +252,7 @@ public class Golem extends SimpleApplication
         effect.setImagesY(2);
         Material mat = new Material(
                 assetManager, "Common/MatDefs/Misc/Particle.j3md");
-        mat.setTexture("m_Texture",
+        mat.setTexture("Texture",
                 assetManager.loadTexture("Effects/Explosion/flame.png"));
         effect.setMaterial(mat);
         effect.setLocalScale(100);
@@ -281,22 +281,22 @@ public class Golem extends SimpleApplication
 
     private void createTerrain() {
         matTerrain = new Material(assetManager, "Common/MatDefs/Terrain/Terrain.j3md");
-        matTerrain.setTexture("m_Alpha", assetManager.loadTexture("Textures/Terrain/splat/alphamap2.png"));
+        matTerrain.setTexture("Alpha", assetManager.loadTexture("Textures/Terrain/splat/alphamap2.png"));
         Texture heightMapImage = assetManager.loadTexture("Textures/Terrain/splat/fortress512.png");
         Texture grass = assetManager.loadTexture("Textures/Terrain/splat/grass.jpg");
         grass.setWrap(WrapMode.Repeat);
-        matTerrain.setTexture("m_Tex1", grass);
-        matTerrain.setFloat("m_Tex1Scale", 64f);
+        matTerrain.setTexture("Tex1", grass);
+        matTerrain.setFloat("Tex1Scale", 64f);
         Texture dirt = assetManager.loadTexture("Textures/Terrain/splat/dirt.jpg");
         dirt.setWrap(WrapMode.Repeat);
-        matTerrain.setTexture("m_Tex2", dirt);
-        matTerrain.setFloat("m_Tex2Scale", 32f);
+        matTerrain.setTexture("Tex2", dirt);
+        matTerrain.setFloat("Tex2Scale", 32f);
         Texture rock = assetManager.loadTexture("Textures/Terrain/splat/road.jpg");
         rock.setWrap(WrapMode.Repeat);
-        matTerrain.setTexture("m_Tex3", rock);
-        matTerrain.setFloat("m_Tex3Scale", 128f);
+        matTerrain.setTexture("Tex3", rock);
+        matTerrain.setFloat("Tex3Scale", 128f);
         matWire = new Material(assetManager, "Common/MatDefs/Misc/WireColor.j3md");
-        matWire.setColor("m_Color", ColorRGBA.Green);
+        matWire.setColor("Color", ColorRGBA.Green);
 
         AbstractHeightMap heightmap = null;
         try {
@@ -512,7 +512,7 @@ public class Golem extends SimpleApplication
     private void AxisRods() {
         Material mat = new Material(assetManager,
                 "Common/MatDefs/Misc/SolidColor.j3md");
-        mat.setColor("m_Color", ColorRGBA.White);
+        mat.setColor("Color", ColorRGBA.White);
         Box x = new Box(Vector3f.ZERO, 100f, 0.5f, 0.5f);
         Geometry gx = new Geometry("Box", x);
         gx.setMaterial(mat);

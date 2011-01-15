@@ -113,8 +113,8 @@ public class BitmapFontLoader implements AssetLoader {
                 // set page
                 if (index >= 0 && tex != null){
                     Material mat = new Material(spriteMat);
-                    mat.setTexture("m_ColorMap", tex);
-                    mat.setBoolean("m_VertexColor", true);
+                    mat.setTexture("ColorMap", tex);
+                    mat.setBoolean("VertexColor", true);
                     mat.getAdditionalRenderState().setBlendMode(BlendMode.Alpha);
                     matPages[index] = mat;
                 }

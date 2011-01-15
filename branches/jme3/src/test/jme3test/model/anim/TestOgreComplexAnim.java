@@ -104,7 +104,7 @@ public class TestOgreComplexAnim extends SimpleApplication {
         SkeletonDebugger skeletonDebug = new SkeletonDebugger("skeleton", control.getSkeleton());
         Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
         mat.getAdditionalRenderState().setWireframe(true);
-        mat.setColor("m_Color", ColorRGBA.Green);
+        mat.setColor("Color", ColorRGBA.Green);
         mat.getAdditionalRenderState().setDepthTest(false);
         skeletonDebug.setMaterial(mat);
 

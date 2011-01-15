@@ -1,7 +1,7 @@
 MaterialDef Wire Color {
 
     MaterialParameters {
-        Vector4 m_Color
+        Vector4 Color
     }
 
     Technique {
@@ -16,7 +16,7 @@ MaterialDef Wire Color {
         }
 
         Defines {
-            HAS_COLOR : m_Color
+            HAS_COLOR : Color
         }
 
         WorldParameters {

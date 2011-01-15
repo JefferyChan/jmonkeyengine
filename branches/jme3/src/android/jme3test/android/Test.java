@@ -19,7 +19,7 @@ public class Test extends SimpleApplication {
 
         Material mat = new Material(assetManager, "plain_texture.j3md");
         Texture tex = assetManager.loadTexture(new TextureKey("monkey.j3i"));
-        mat.setTexture("m_ColorMap", tex);
+        mat.setTexture("ColorMap", tex);
 //        geom.setMaterial(mat);
 
         for (int y = -1; y < 2; y++){

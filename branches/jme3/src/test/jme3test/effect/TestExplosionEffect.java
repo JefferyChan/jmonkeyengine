@@ -80,8 +80,8 @@ public class TestExplosionEffect extends SimpleApplication {
         flame.setImagesX(2);
         flame.setImagesY(2);
         Material mat = new Material(assetManager, "Common/MatDefs/Misc/Particle.j3md");
-        mat.setTexture("m_Texture", assetManager.loadTexture("Effects/Explosion/flame.png"));
-        mat.setBoolean("m_PointSprite", POINT_SPRITE);
+        mat.setTexture("Texture", assetManager.loadTexture("Effects/Explosion/flame.png"));
+        mat.setBoolean("PointSprite", POINT_SPRITE);
         flame.setMaterial(mat);
         explosionEffect.attachChild(flame);
     }
@@ -103,8 +103,8 @@ public class TestExplosionEffect extends SimpleApplication {
         flash.setImagesX(2);
         flash.setImagesY(2);
         Material mat = new Material(assetManager, "Common/MatDefs/Misc/Particle.j3md");
-        mat.setTexture("m_Texture", assetManager.loadTexture("Effects/Explosion/flash.png"));
-        mat.setBoolean("m_PointSprite", POINT_SPRITE);
+        mat.setTexture("Texture", assetManager.loadTexture("Effects/Explosion/flash.png"));
+        mat.setBoolean("PointSprite", POINT_SPRITE);
         flash.setMaterial(mat);
         explosionEffect.attachChild(flash);
     }
@@ -125,8 +125,8 @@ public class TestExplosionEffect extends SimpleApplication {
         roundspark.setImagesX(1);
         roundspark.setImagesY(1);
         Material mat = new Material(assetManager, "Common/MatDefs/Misc/Particle.j3md");
-        mat.setTexture("m_Texture", assetManager.loadTexture("Effects/Explosion/roundspark.png"));
-        mat.setBoolean("m_PointSprite", POINT_SPRITE);
+        mat.setTexture("Texture", assetManager.loadTexture("Effects/Explosion/roundspark.png"));
+        mat.setBoolean("PointSprite", POINT_SPRITE);
         roundspark.setMaterial(mat);
         explosionEffect.attachChild(roundspark);
     }
@@ -149,7 +149,7 @@ public class TestExplosionEffect extends SimpleApplication {
         spark.setImagesX(1);
         spark.setImagesY(1);
         Material mat = new Material(assetManager, "Common/MatDefs/Misc/Particle.j3md");
-        mat.setTexture("m_Texture", assetManager.loadTexture("Effects/Explosion/spark.png"));
+        mat.setTexture("Texture", assetManager.loadTexture("Effects/Explosion/spark.png"));
         spark.setMaterial(mat);
         explosionEffect.attachChild(spark);
     }
@@ -172,7 +172,7 @@ public class TestExplosionEffect extends SimpleApplication {
         smoketrail.setImagesX(1);
         smoketrail.setImagesY(3);
         Material mat = new Material(assetManager, "Common/MatDefs/Misc/Particle.j3md");
-        mat.setTexture("m_Texture", assetManager.loadTexture("Effects/Explosion/smoketrail.png"));
+        mat.setTexture("Texture", assetManager.loadTexture("Effects/Explosion/smoketrail.png"));
         smoketrail.setMaterial(mat);
         explosionEffect.attachChild(smoketrail);
     }
@@ -197,7 +197,7 @@ public class TestExplosionEffect extends SimpleApplication {
         debris.setImagesX(3);
         debris.setImagesY(3);
         Material mat = new Material(assetManager, "Common/MatDefs/Misc/Particle.j3md");
-        mat.setTexture("m_Texture", assetManager.loadTexture("Effects/Explosion/Debris.png"));
+        mat.setTexture("Texture", assetManager.loadTexture("Effects/Explosion/Debris.png"));
         debris.setMaterial(mat);
         explosionEffect.attachChild(debris);
     }
@@ -221,7 +221,7 @@ public class TestExplosionEffect extends SimpleApplication {
         shockwave.setImagesX(1);
         shockwave.setImagesY(1);
         Material mat = new Material(assetManager, "Common/MatDefs/Misc/Particle.j3md");
-        mat.setTexture("m_Texture", assetManager.loadTexture("Effects/Explosion/shockwave.png"));
+        mat.setTexture("Texture", assetManager.loadTexture("Effects/Explosion/shockwave.png"));
         shockwave.setMaterial(mat);
         explosionEffect.attachChild(shockwave);
     }

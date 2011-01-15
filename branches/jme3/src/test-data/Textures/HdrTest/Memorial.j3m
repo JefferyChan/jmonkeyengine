@@ -1,5 +1,5 @@
 Material HDR Picture : Common/MatDefs/Misc/SimpleTextured.j3md {
     MaterialParameters {
-        m_ColorMap : Flip Textures/HdrTest/Memorial.hdr
+        ColorMap : Flip Textures/HdrTest/Memorial.hdr
     }
 }

@@ -113,7 +113,7 @@ public class TestLightScattering extends SimpleApplication {
 
 
 //           Material mat2 = new Material(assetManager, "Common/MatDefs/Misc/SimpleTextured.j3md");
-//        mat2.setTexture("m_ColorMap", assetManager.loadTexture("Interface/Logo/Monkey.jpg"));
+//        mat2.setTexture("ColorMap", assetManager.loadTexture("Interface/Logo/Monkey.jpg"));
 //
 //        Sphere lite=new Sphere(8, 8, 10.0f);
 //        Geometry lightSphere=new Geometry("lightsphere", lite);

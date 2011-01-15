@@ -65,7 +65,7 @@ public class TestPssmShadow extends SimpleApplication implements ActionListener 
     public void loadScene(){
         Material mat = assetManager.loadMaterial("Common/Materials/RedColor.j3m");
         Material matSoil = new Material(assetManager,"Common/MatDefs/Misc/SolidColor.j3md");
-        matSoil.setColor("m_Color", ColorRGBA.Cyan);
+        matSoil.setColor("Color", ColorRGBA.Cyan);
 
         teapot = new Geometry("sphere", new Sphere(30, 30, 2));
 //        teapot = new Geometry("cube", new Box(1.0f, 1.0f, 1.0f));

@@ -26,9 +26,9 @@ public class TestUnshadedModel extends SimpleApplication {
 
         Geometry sphere = new Geometry("Rock Ball", sphMesh);
         Material mat = assetManager.loadMaterial("Textures/Terrain/Pond/Pond.j3m");
-        mat.setColor("m_Ambient", ColorRGBA.DarkGray);
-        mat.setColor("m_Diffuse", ColorRGBA.White);
-        mat.setBoolean("m_UseMaterialColors", true);
+        mat.setColor("Ambient", ColorRGBA.DarkGray);
+        mat.setColor("Diffuse", ColorRGBA.White);
+        mat.setBoolean("UseMaterialColors", true);
         sphere.setMaterial(mat);
         rootNode.attachChild(sphere);
 

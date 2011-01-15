@@ -128,9 +128,9 @@ public class TestEverything extends SimpleApplication {
 
     public void setupFloor(){
         Material mat = assetManager.loadMaterial("Textures/Terrain/BrickWall/BrickWall.j3m");
-        mat.getTextureParam("m_DiffuseMap").getTextureValue().setWrap(WrapMode.Repeat);
-        mat.getTextureParam("m_NormalMap").getTextureValue().setWrap(WrapMode.Repeat);
-        mat.getTextureParam("m_ParallaxMap").getTextureValue().setWrap(WrapMode.Repeat);
+        mat.getTextureParam("DiffuseMap").getTextureValue().setWrap(WrapMode.Repeat);
+        mat.getTextureParam("NormalMap").getTextureValue().setWrap(WrapMode.Repeat);
+        mat.getTextureParam("ParallaxMap").getTextureValue().setWrap(WrapMode.Repeat);
         Box floor = new Box(Vector3f.ZERO, 50, 1f, 50);
         floor.scaleTextureCoordinates(new Vector2f(5, 5));
         Geometry floorGeom = new Geometry("Floor", floor);
@@ -141,8 +141,8 @@ public class TestEverything extends SimpleApplication {
 
 //    public void setupTerrain(){
 //        Material mat = manager.loadMaterial("Textures/Terrain/Rock/Rock.j3m");
-//        mat.getTextureParam("m_DiffuseMap").getValue().setWrap(WrapMode.Repeat);
-//        mat.getTextureParam("m_NormalMap").getValue().setWrap(WrapMode.Repeat);
+//        mat.getTextureParam("DiffuseMap").getValue().setWrap(WrapMode.Repeat);
+//        mat.getTextureParam("NormalMap").getValue().setWrap(WrapMode.Repeat);
 //        try{
 //            Geomap map = GeomapLoader.fromImage(TestEverything.class.getResource("/textures/heightmap.png"));
 //            Mesh m = map.createMesh(new Vector3f(0.35f, 0.0005f, 0.35f), new Vector2f(10, 10), true);

@@ -167,12 +167,12 @@ public class BloomFilter extends Filter {
 
             @Override
             public void beforeRender() {
-                extractMat.setFloat("m_ExposurePow", exposurePower);
-                extractMat.setFloat("m_ExposureCutoff", exposureCutOff);
+                extractMat.setFloat("ExposurePow", exposurePower);
+                extractMat.setFloat("ExposureCutoff", exposureCutOff);
                 if (glowMode != GlowMode.Scene) {
-                    extractMat.setTexture("m_GlowMap", preGlowPass.getRenderedTexture());
+                    extractMat.setTexture("GlowMap", preGlowPass.getRenderedTexture());
                 }
-                extractMat.setBoolean("m_Extract", glowMode != GlowMode.Objects);
+                extractMat.setBoolean("Extract", glowMode != GlowMode.Objects);
             }
         };
 
@@ -185,9 +185,9 @@ public class BloomFilter extends Filter {
 
             @Override
             public void beforeRender() {
-                hBlurMat.setTexture("m_Texture", extractPass.getRenderedTexture());
-                hBlurMat.setFloat("m_Size", screenWidth);
-                hBlurMat.setFloat("m_Scale", blurScale);
+                hBlurMat.setTexture("Texture", extractPass.getRenderedTexture());
+                hBlurMat.setFloat("Size", screenWidth);
+                hBlurMat.setFloat("Scale", blurScale);
             }
         };
 
@@ -200,9 +200,9 @@ public class BloomFilter extends Filter {
 
             @Override
             public void beforeRender() {
-                vBlurMat.setTexture("m_Texture", horizontalBlur.getRenderedTexture());
-                vBlurMat.setFloat("m_Size", screenHeight);
-                vBlurMat.setFloat("m_Scale", blurScale);
+                vBlurMat.setTexture("Texture", horizontalBlur.getRenderedTexture());
+                vBlurMat.setFloat("Size", screenHeight);
+                vBlurMat.setFloat("Scale", blurScale);
             }
         };
 
@@ -212,7 +212,7 @@ public class BloomFilter extends Filter {
 
         //final material
         material = new Material(manager, "Common/MatDefs/Post/BloomFinal.j3md");
-        material.setTexture("m_BloomTex", verticalalBlur.getRenderedTexture());
+        material.setTexture("BloomTex", verticalalBlur.getRenderedTexture());
     }
 
     @Override
@@ -234,7 +234,7 @@ public class BloomFilter extends Filter {
 
     @Override
     public Material getMaterial() {
-        material.setFloat("m_BloomIntensity", bloomIntensity);
+        material.setFloat("BloomIntensity", bloomIntensity);
         return material;
     }
 

@@ -1,11 +1,11 @@
 Material My Material : Common/MatDefs/Light/Lighting.j3md {
      MaterialParameters {
-        m_NormalMap : Scenes/Beach/Sand_Normal.png
-        m_DiffuseMap : Scenes/Beach/Sand.jpg
-        m_UseMaterialColors : true
-        m_Ambient : 0 0 0 1
-        m_Diffuse : 1 1 1 1
-        m_Specular : 0 0 0 1
-        m_Shininess : 16
+        NormalMap : Scenes/Beach/Sand_Normal.png
+        DiffuseMap : Scenes/Beach/Sand.jpg
+        UseMaterialColors : true
+        Ambient : 0 0 0 1
+        Diffuse : 1 1 1 1
+        Specular : 0 0 0 1
+        Shininess : 16
      }
 }

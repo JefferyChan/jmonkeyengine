@@ -55,7 +55,7 @@ public class TestDdsLoading extends SimpleApplication {
         Texture tex = assetManager.loadTexture("Textures/Sky/Night/Night_dxt1.dds");
 
         Material mat = new Material(assetManager, "Common/MatDefs/Misc/SimpleTextured.j3md");
-        mat.setTexture("m_ColorMap", tex);
+        mat.setTexture("ColorMap", tex);
         quad.setMaterial(mat);
 
         float aspect = tex.getImage().getWidth() / (float) tex.getImage().getHeight();

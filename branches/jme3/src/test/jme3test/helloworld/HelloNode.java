@@ -57,14 +57,14 @@ public class HelloNode extends SimpleApplication {
         Box box1 = new Box( new Vector3f(1,-1,1), 1,1,1);
         Geometry blue = new Geometry("Box", box1);
         Material mat1 = new Material(assetManager, "Common/MatDefs/Misc/SolidColor.j3md");
-        mat1.setColor("m_Color", ColorRGBA.Blue);
+        mat1.setColor("Color", ColorRGBA.Blue);
         blue.setMaterial(mat1);
 
         /** create a red box straight above the blue one at (1,3,1) */
         Box box2 = new Box( new Vector3f(1,3,1), 1,1,1);
         Geometry red = new Geometry("Box", box2);
         Material mat2 = new Material(assetManager, "Common/MatDefs/Misc/SolidColor.j3md");
-        mat2.setColor("m_Color", ColorRGBA.Red);
+        mat2.setColor("Color", ColorRGBA.Red);
         red.setMaterial(mat2);
 
         /** Create a pivot node at (0,0,0) and attach it to the root node */

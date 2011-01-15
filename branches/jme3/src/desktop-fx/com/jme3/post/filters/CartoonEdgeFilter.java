@@ -72,7 +72,7 @@ public class CartoonEdgeFilter extends Filter {
 
     @Override
     public Material getMaterial() {
-        material.setTexture("m_NormalsTexture", normalPass.getRenderedTexture());
+        material.setTexture("NormalsTexture", normalPass.getRenderedTexture());
         return material;
     }
 

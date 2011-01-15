@@ -17,7 +17,7 @@ public class BoxEntity extends Geometry implements SyncEntity {
     public BoxEntity(AssetManager assetManager, ColorRGBA color){
         super("Box", new Box(1,1,1));
         setMaterial(new Material(assetManager, "Common/MatDefs/Misc/SolidColor.j3md"));
-        getMaterial().setColor("m_Color", color);
+        getMaterial().setColor("Color", color);
     }
 
     public void setPosVel(Vector3f pos, Vector3f vel){

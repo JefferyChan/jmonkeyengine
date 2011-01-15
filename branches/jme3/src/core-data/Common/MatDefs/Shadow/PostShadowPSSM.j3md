@@ -1,23 +1,23 @@
 MaterialDef Post Shadow {
 
     MaterialParameters {
-        Int m_FilterMode
-        Boolean m_HardwareShadows
+        Int FilterMode
+        Boolean HardwareShadows
 
-        Texture2D m_ShadowMap0
-        Texture2D m_ShadowMap1
-        Texture2D m_ShadowMap2
-        Texture2D m_ShadowMap3
+        Texture2D ShadowMap0
+        Texture2D ShadowMap1
+        Texture2D ShadowMap2
+        Texture2D ShadowMap3
         
-        Float m_ShadowIntensity
-        Vector4 m_Splits
+        Float ShadowIntensity
+        Vector4 Splits
 
-        Matrix4 m_LightViewProjectionMatrix0
-        Matrix4 m_LightViewProjectionMatrix1
-        Matrix4 m_LightViewProjectionMatrix2
-        Matrix4 m_LightViewProjectionMatrix3
+        Matrix4 LightViewProjectionMatrix0
+        Matrix4 LightViewProjectionMatrix1
+        Matrix4 LightViewProjectionMatrix2
+        Matrix4 LightViewProjectionMatrix3
 
-        Float m_PCFEdge
+        Float PCFEdge
     }
 
     Technique {
@@ -30,9 +30,9 @@ MaterialDef Post Shadow {
         }
 
         Defines {
-            HARDWARE_SHADOWS : m_HardwareShadows
-            FILTER_MODE : m_FilterMode
-            PCFEDGE : m_PCFEdge
+            HARDWARE_SHADOWS : HardwareShadows
+            FILTER_MODE : FilterMode
+            PCFEDGE : PCFEdge
         }
 
         RenderState {
@@ -50,9 +50,9 @@ MaterialDef Post Shadow {
         }
 
         Defines {
-            HARDWARE_SHADOWS : m_HardwareShadows
-            FILTER_MODE : m_FilterMode
-            PCFEDGE : m_PCFEdge
+            HARDWARE_SHADOWS : HardwareShadows
+            FILTER_MODE : FilterMode
+            PCFEDGE : PCFEdge
         }
 
         RenderState {

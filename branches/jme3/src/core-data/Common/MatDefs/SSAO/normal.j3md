@@ -1,7 +1,7 @@
 MaterialDef Normal {
 
     MaterialParameters {
-          Int m_NumSamples
+          Int NumSamples
     }
 
     Technique {

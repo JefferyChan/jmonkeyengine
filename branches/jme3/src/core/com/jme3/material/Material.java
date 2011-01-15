@@ -236,7 +236,7 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
     }
 
     public RenderState getAdditionalRenderState() {
-        if (additionalState == null) {          
+        if (additionalState == null) {
             additionalState = RenderState.ADDITIONAL.clone();
         }
         return additionalState;
@@ -273,10 +273,17 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
         return paramValues.values();
     }
 
-    private void checkSetParam(VarType type, String name) {
+    private String checkSetParam(VarType type, String name) {
         MatParam paramDef = def.getMaterialParam(name);
+        String newName=name;
         if (paramDef == null) {
-            throw new IllegalArgumentException("Material parameter is not defined: " + name);
+            newName=name.replaceAll("m_", "");
+            paramDef = def.getMaterialParam(newName);
+            if (paramDef == null) {
+                throw new IllegalArgumentException("Material parameter is not defined: " + name);
+            } else {
+                logger.log( Level.WARNING, "Material parameter {0} uses a deprecated naming convention use {1} instead ", new Object[]{name, newName});
+            }
         }
 
         if (type != null && paramDef.getVarType() != type) {
@@ -284,6 +291,7 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
                     + "type {1} doesn't match definition type {2}",
                     name, type.name(), paramDef.getVarType());
         }
+        return newName;
     }
 
     /**
@@ -293,7 +301,7 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
      * @param value the value of the param
      */
     public void setParam(String name, VarType type, Object value) {
-        checkSetParam(type, name);
+        name=checkSetParam(type, name);
 
         MatParam val = getParam(name);
         if (technique != null) {
@@ -311,7 +319,7 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
      * @param name the name of the parameter to clear
      */
     public void clearParam(String name) {
-        checkSetParam(null, name);
+        name=checkSetParam(null, name);
 
         MatParam matParam = getParam(name);
         if (matParam != null) {
@@ -344,8 +352,8 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
      */
     @Deprecated
     public void clearTextureParam(String name) {
-        checkSetParam(null, name);
-
+        name=checkSetParam(null, name);
+        
         MatParamTexture val = getTextureParam(name);
         if (val == null) {
             throw new IllegalArgumentException("The given texture parameter is not set.");
@@ -369,7 +377,7 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
             throw new NullPointerException();
         }
 
-        checkSetParam(type, name);
+        name=checkSetParam(type, name);
 
         MatParamTexture val = getTextureParam(name);
         if (val == null) {
@@ -385,7 +393,7 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
 
     /**
      * Pass a texture to the material shader
-     * @param name the name of the texture defined in the material definition (j3md) (for example m_Texture for Lighting.j3md)
+     * @param name the name of the texture defined in the material definition (j3md) (for example Texture for Lighting.j3md)
      * @param value the Texture object previously loaded by the asset manager
      */
     public void setTexture(String name, Texture value) {
@@ -763,7 +771,7 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
 //                r.applyRenderState(additionalState);
 //            }
         } else {
-             r.applyRenderState(RenderState.DEFAULT.cloneMerged(additionalState));
+            r.applyRenderState(RenderState.DEFAULT.cloneMerged(additionalState));
 //            if (additionalState != null) {
 //                r.applyRenderState(additionalState);
 //            } else {

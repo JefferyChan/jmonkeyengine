@@ -78,11 +78,11 @@ public class TestCartoonEdge extends SimpleApplication {
                 Texture t = assetManager.loadTexture("Textures/ColorRamp/toon.png");
 //                t.setMinFilter(Texture.MinFilter.NearestNoMipMaps);
 //                t.setMagFilter(Texture.MagFilter.Nearest);
-                m.setTexture("m_ColorRamp", t);
-                m.setBoolean("m_UseMaterialColors", true);
-                m.setColor("m_Specular", ColorRGBA.Black);
-                m.setColor("m_Diffuse", ColorRGBA.White);
-                m.setBoolean("m_VertexLighting", true);
+                m.setTexture("ColorRamp", t);
+                m.setBoolean("UseMaterialColors", true);
+                m.setColor("Specular", ColorRGBA.Black);
+                m.setColor("Diffuse", ColorRGBA.White);
+                m.setBoolean("VertexLighting", true);
             }
         }
     }

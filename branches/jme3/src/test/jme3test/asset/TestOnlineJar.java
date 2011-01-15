@@ -70,7 +70,7 @@ public class TestOnlineJar extends SimpleApplication {
         Texture tex = assetManager.loadTexture(key);
 
         Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        mat.setTexture("m_ColorMap", tex);
+        mat.setTexture("ColorMap", tex);
         quad.setMaterial(mat);
 
         float aspect = tex.getImage().getWidth() / (float) tex.getImage().getHeight();

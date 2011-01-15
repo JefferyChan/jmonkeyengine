@@ -76,7 +76,7 @@ public class TestOctree extends SimpleApplication implements SceneProcessor {
         MeshLoader.AUTO_INTERLEAVE = false;
 
 //        mat = new Material(assetManager, "Common/MatDefs/Misc/WireColor.j3md");
-//        mat.setColor("m_Color", ColorRGBA.White);
+//        mat.setColor("Color", ColorRGBA.White);
 
 //        mat2 = new Material(assetManager, "Common/MatDefs/Misc/ShowNormals.j3md");
 

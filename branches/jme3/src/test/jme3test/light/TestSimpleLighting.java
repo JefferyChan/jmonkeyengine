@@ -63,21 +63,21 @@ public class TestSimpleLighting extends SimpleApplication {
         teapot.setLocalScale(2f);
         Material mat = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
 //        mat.selectTechnique("GBuf");
-        mat.setFloat("m_Shininess", 12);
-        mat.setBoolean("m_UseMaterialColors", true);
+        mat.setFloat("Shininess", 12);
+        mat.setBoolean("UseMaterialColors", true);
 
-//        mat.setTexture("m_ColorRamp", assetManager.loadTexture("Textures/ColorRamp/cloudy.png"));
+//        mat.setTexture("ColorRamp", assetManager.loadTexture("Textures/ColorRamp/cloudy.png"));
 //
-//        mat.setBoolean("m_VTangent", true);
-//        mat.setBoolean("m_Minnaert", true);
-//        mat.setBoolean("m_WardIso", true);
-//        mat.setBoolean("m_VertexLighting", true);
-//        mat.setBoolean("m_LowQuality", true);
-//        mat.setBoolean("m_HighQuality", true);
+//        mat.setBoolean("VTangent", true);
+//        mat.setBoolean("Minnaert", true);
+//        mat.setBoolean("WardIso", true);
+//        mat.setBoolean("VertexLighting", true);
+//        mat.setBoolean("LowQuality", true);
+//        mat.setBoolean("HighQuality", true);
 
-        mat.setColor("m_Ambient",  ColorRGBA.Black);
-        mat.setColor("m_Diffuse",  ColorRGBA.Gray);
-        mat.setColor("m_Specular", ColorRGBA.Gray);
+        mat.setColor("Ambient",  ColorRGBA.Black);
+        mat.setColor("Diffuse",  ColorRGBA.Gray);
+        mat.setColor("Specular", ColorRGBA.Gray);
         
         teapot.setMaterial(mat);
         rootNode.attachChild(teapot);

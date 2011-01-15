@@ -1,5 +1,5 @@
 Material jME Logo : Common/MatDefs/Misc/Unshaded.j3md {
     MaterialParameters {
-        m_ColorMap : Interface/Logo/Monkey.jpg
+        ColorMap : Interface/Logo/Monkey.jpg
     }
 }

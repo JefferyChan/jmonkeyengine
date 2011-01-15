@@ -217,7 +217,7 @@ public class TestCinematic extends SimpleApplication {
 
 
         Material mat = new Material(assetManager, "Common/MatDefs/Misc/SolidColor.j3md");
-        mat.setColor("m_Color", ColorRGBA.Cyan);
+        mat.setColor("Color", ColorRGBA.Cyan);
 
         teapot = assetManager.loadModel("Models/Teapot/Teapot.obj");
         teapot.setLocalTranslation(10, 0, 10);
@@ -228,10 +228,10 @@ public class TestCinematic extends SimpleApplication {
 
 
         Material matSoil = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
-        matSoil.setBoolean("m_UseMaterialColors", true);
-        matSoil.setColor("m_Ambient", ColorRGBA.Gray);
-        matSoil.setColor("m_Diffuse", ColorRGBA.Green);
-        matSoil.setColor("m_Specular", ColorRGBA.Black);
+        matSoil.setBoolean("UseMaterialColors", true);
+        matSoil.setColor("Ambient", ColorRGBA.Gray);
+        matSoil.setColor("Diffuse", ColorRGBA.Green);
+        matSoil.setColor("Specular", ColorRGBA.Black);
 
         Geometry soil = new Geometry("soil", new Box(new Vector3f(0, -6.0f, 0), 50, 1, 50));
         soil.setMaterial(matSoil);

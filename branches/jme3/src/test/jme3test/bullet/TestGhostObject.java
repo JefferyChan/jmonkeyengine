@@ -113,7 +113,7 @@ public class TestGhostObject extends SimpleApplication {
     private void initGhostObject() {
         Vector3f halfExtents = new Vector3f(3, 4.2f, 1);
         Material mat = new Material(getAssetManager(), "Common/MatDefs/Misc/WireColor.j3md");
-        mat.setColor("m_Color", ColorRGBA.Red);
+        mat.setColor("Color", ColorRGBA.Red);
         ghostNode = new PhysicsGhostNode(new BoxCollisionShape(halfExtents));
         ghostNode.attachDebugShape(mat);
         rootNode.attachChild(ghostNode);

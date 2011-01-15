@@ -103,7 +103,7 @@ public class TestShadow extends SimpleApplication {
         frustumMdl.setCullHint(Spatial.CullHint.Never);
         frustumMdl.setShadowMode(ShadowMode.Off);
         frustumMdl.setMaterial(new Material(assetManager, "Common/MatDefs/Misc/WireColor.j3md"));
-        frustumMdl.getMaterial().setColor("m_Color", ColorRGBA.Red);
+        frustumMdl.getMaterial().setColor("Color", ColorRGBA.Red);
         rootNode.attachChild(frustumMdl);
     }
 

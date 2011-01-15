@@ -102,22 +102,22 @@ public class TerrainTestCollision extends SimpleBulletApplication {
     public void simpleInitApp() {
         setupKeys();
         matRock = new Material(assetManager, "Common/MatDefs/Terrain/Terrain.j3md");
-        matRock.setTexture("m_Alpha", assetManager.loadTexture("Textures/Terrain/splat/alphamap.png"));
+        matRock.setTexture("Alpha", assetManager.loadTexture("Textures/Terrain/splat/alphamap.png"));
         Texture heightMapImage = assetManager.loadTexture("Textures/Terrain/splat/mountains512.png");
         Texture grass = assetManager.loadTexture("Textures/Terrain/splat/grass.jpg");
         grass.setWrap(WrapMode.Repeat);
-        matRock.setTexture("m_Tex1", grass);
-        matRock.setFloat("m_Tex1Scale", 64f);
+        matRock.setTexture("Tex1", grass);
+        matRock.setFloat("Tex1Scale", 64f);
         Texture dirt = assetManager.loadTexture("Textures/Terrain/splat/dirt.jpg");
         dirt.setWrap(WrapMode.Repeat);
-        matRock.setTexture("m_Tex2", dirt);
-        matRock.setFloat("m_Tex2Scale", 32f);
+        matRock.setTexture("Tex2", dirt);
+        matRock.setFloat("Tex2Scale", 32f);
         Texture rock = assetManager.loadTexture("Textures/Terrain/splat/road.jpg");
         rock.setWrap(WrapMode.Repeat);
-        matRock.setTexture("m_Tex3", rock);
-        matRock.setFloat("m_Tex3Scale", 128f);
+        matRock.setTexture("Tex3", rock);
+        matRock.setFloat("Tex3Scale", 128f);
         matWire = new Material(assetManager, "Common/MatDefs/Misc/WireColor.j3md");
-        matWire.setColor("m_Color", ColorRGBA.Green);
+        matWire.setColor("Color", ColorRGBA.Green);
         AbstractHeightMap heightmap = null;
         try {
             heightmap = new ImageBasedHeightMap(ImageToAwt.convert(heightMapImage.getImage(), false, true, 0), 0.25f);
@@ -223,7 +223,7 @@ public class TerrainTestCollision extends SimpleBulletApplication {
         collisionMarker = new Geometry("collisionMarker");
         collisionMarker.setMesh(s);
         Material mat = new Material(assetManager, "Common/MatDefs/Misc/SolidColor.j3md");
-        mat.setColor("m_Color", ColorRGBA.Orange);
+        mat.setColor("Color", ColorRGBA.Orange);
         collisionMarker.setMaterial(mat);
         rootNode.attachChild(collisionMarker);
     }

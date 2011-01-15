@@ -75,7 +75,7 @@ public class TestBoneRagdoll  extends SimpleApplication {
         AnimControl control= model.getControl(AnimControl.class);
         SkeletonDebugger skeletonDebug = new SkeletonDebugger("skeleton", control.getSkeleton());
         Material mat2 = new Material(assetManager, "Common/MatDefs/Misc/WireColor.j3md");
-        mat2.setColor("m_Color", ColorRGBA.Green);
+        mat2.setColor("Color", ColorRGBA.Green);
         mat2.getAdditionalRenderState().setDepthTest(false);
         skeletonDebug.setMaterial(mat2);
 
@@ -97,7 +97,7 @@ public class TestBoneRagdoll  extends SimpleApplication {
         key.setGenerateMips(true);
         Texture tex = assetManager.loadTexture(key);
         tex.setMinFilter(Texture.MinFilter.Trilinear);
-        mat.setTexture("m_ColorMap", tex);
+        mat.setTexture("ColorMap", tex);
         // the floor, does not move (mass=0)
         Geometry geom5 = new Geometry("box2", new Box(Vector3f.ZERO, 100f, 1f, 100f));
         geom5.setMaterial(mat);

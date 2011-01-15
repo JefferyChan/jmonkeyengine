@@ -54,7 +54,7 @@ public class TestDebugShapes extends SimpleApplication {
         Geometry g = new Geometry("shape", shape);
         Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
         mat.getAdditionalRenderState().setWireframe(true);
-        mat.setColor("m_Color", color);
+        mat.setColor("Color", color);
         g.setMaterial(mat);
         rootNode.attachChild(g);
         return g;

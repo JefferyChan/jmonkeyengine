@@ -22,10 +22,10 @@ public class SkyFactory {
         sky.setCullHint(Spatial.CullHint.Never);
 
         Material skyMat = new Material(assetManager, "Common/MatDefs/Misc/Sky.j3md");
-        skyMat.setTexture("m_Texture", texture);
-        skyMat.setVector3("m_NormalScale", normalScale);
+        skyMat.setTexture("Texture", texture);
+        skyMat.setVector3("NormalScale", normalScale);
         if (sphereMap){
-            skyMat.setBoolean("m_SphereMap", sphereMap);
+            skyMat.setBoolean("SphereMap", sphereMap);
         }
         sky.setMaterial(skyMat);
         
@@ -63,8 +63,8 @@ public class SkyFactory {
         cubeMap.setWrap(Texture.WrapMode.EdgeClamp);
 
         Material skyMat = new Material(assetManager, "Common/MatDefs/Misc/Sky.j3md");
-        skyMat.setTexture("m_Texture", cubeMap);
-        skyMat.setVector3("m_NormalScale", normalScale);
+        skyMat.setTexture("Texture", cubeMap);
+        skyMat.setVector3("NormalScale", normalScale);
         sky.setMaterial(skyMat);
 
         return sky;

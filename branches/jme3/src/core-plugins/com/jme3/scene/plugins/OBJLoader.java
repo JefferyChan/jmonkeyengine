@@ -364,7 +364,7 @@ public final class OBJLoader implements AssetLoader {
         if (material == null){
             // create default material
             material = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
-            material.setFloat("m_Shininess", 64);
+            material.setFloat("Shininess", 64);
         }
         geom.setMaterial(material);
         if (material.isTransparent())

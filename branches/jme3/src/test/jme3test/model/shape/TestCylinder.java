@@ -56,7 +56,7 @@ public class TestCylinder extends SimpleApplication {
         key.setGenerateMips(true);
         Texture tex = assetManager.loadTexture(key);
         tex.setMinFilter(Texture.MinFilter.Trilinear);
-        mat.setTexture("m_ColorMap", tex);
+        mat.setTexture("ColorMap", tex);
 
         geom.setMaterial(mat);
         

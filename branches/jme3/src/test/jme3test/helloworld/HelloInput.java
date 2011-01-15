@@ -60,7 +60,7 @@ public class HelloInput extends SimpleApplication {
     Box b = new Box(Vector3f.ZERO, 1, 1, 1);
     player = new Geometry("Player", b);
     Material mat = new Material(assetManager, "Common/MatDefs/Misc/SolidColor.j3md");
-    mat.setColor("m_Color", ColorRGBA.Blue);
+    mat.setColor("Color", ColorRGBA.Blue);
     player.setMaterial(mat);
     rootNode.attachChild(player);
     initKeys(); // load my custom keybinding

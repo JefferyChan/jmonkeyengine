@@ -1,10 +1,10 @@
 Material Pong Rock : Common/MatDefs/Light/Lighting.j3md {
      MaterialParameters {
-         m_Shininess: 8.0
-         m_NormalMap: Textures/BumpMapTest/Simple_normal.png
-         m_UseMaterialColors : true
-         m_Ambient  : 0 0 0 1
-         m_Diffuse  : 1 1 1 1
-         m_Specular : 0 0 0 1
+         Shininess: 8.0
+         NormalMap: Textures/BumpMapTest/Simple_normal.png
+         UseMaterialColors : true
+         Ambient  : 0 0 0 1
+         Diffuse  : 1 1 1 1
+         Specular : 0 0 0 1
      }
 }

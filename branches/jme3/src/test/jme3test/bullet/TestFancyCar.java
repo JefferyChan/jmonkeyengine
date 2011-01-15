@@ -120,9 +120,9 @@ public class TestFancyCar extends SimpleApplication implements ActionListener {
 
     public void setupFloor() {
         Material mat = assetManager.loadMaterial("Textures/Terrain/BrickWall/BrickWall.j3m");
-        mat.getTextureParam("m_DiffuseMap").getTextureValue().setWrap(WrapMode.Repeat);
-//        mat.getTextureParam("m_NormalMap").getTextureValue().setWrap(WrapMode.Repeat);
-//        mat.getTextureParam("m_ParallaxMap").getTextureValue().setWrap(WrapMode.Repeat);
+        mat.getTextureParam("DiffuseMap").getTextureValue().setWrap(WrapMode.Repeat);
+//        mat.getTextureParam("NormalMap").getTextureValue().setWrap(WrapMode.Repeat);
+//        mat.getTextureParam("ParallaxMap").getTextureValue().setWrap(WrapMode.Repeat);
 
         Box floor = new Box(Vector3f.ZERO, 140, 1f, 140);
         floor.scaleTextureCoordinates(new Vector2f(112.0f, 112.0f));

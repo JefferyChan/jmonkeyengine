@@ -3,7 +3,7 @@ uniform vec2 m_FrustumNearFar;
 uniform sampler2D m_Texture;
 uniform sampler2D m_Normals;
 uniform sampler2D m_DepthTexture;
-uniform vec3 frustumCorner;
+uniform vec3 m_FrustumCorner;
 uniform float m_SampleRadius;
 uniform float m_Intensity;
 uniform float m_Scale;
@@ -22,10 +22,10 @@ vec3 getPosition(in vec2 uv){
   float depth= (2.0 * m_FrustumNearFar.x) / (m_FrustumNearFar.y + m_FrustumNearFar.x - depthv* (m_FrustumNearFar.y-m_FrustumNearFar.x));
 
   //one frustum corner method
-  float x = mix(-frustumCorner.x, frustumCorner.x, uv.x);
-  float y = mix(-frustumCorner.y, frustumCorner.y, uv.y);
+  float x = mix(-m_FrustumCorner.x, m_FrustumCorner.x, uv.x);
+  float y = mix(-m_FrustumCorner.y, m_FrustumCorner.y, uv.y);
 
-  return depth* vec3(x, y, frustumCorner.z);
+  return depth* vec3(x, y, m_FrustumCorner.z);
 }
 
 vec3 getNormal(in vec2 uv){

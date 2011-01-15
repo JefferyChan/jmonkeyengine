@@ -64,7 +64,7 @@ public class ColorOverlayFilter extends Filter {
     @Override
     public Material getMaterial() {
 
-        material.setColor("m_Color", color);
+        material.setColor("Color", color);
         return material;
     }
 

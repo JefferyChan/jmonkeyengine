@@ -63,7 +63,7 @@ public class TestChaseCamera extends SimpleApplication implements AnalogListener
         teaGeom.setMaterial(mat);
         pivot.attachChild(teaGeom);
         mat = new Material(assetManager, "Common/MatDefs/Misc/SimpleTextured.j3md");
-        mat.setTexture("m_ColorMap", assetManager.loadTexture("Interface/Logo/Monkey.jpg"));
+        mat.setTexture("ColorMap", assetManager.loadTexture("Interface/Logo/Monkey.jpg"));
         Geometry ground = new Geometry("ground", new Quad(50, 50));
         ground.setLocalRotation(new Quaternion().fromAngleAxis(-FastMath.HALF_PI, Vector3f.UNIT_X));
         ground.setLocalTranslation(-25, -1, 25);

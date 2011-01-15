@@ -76,7 +76,7 @@ public class TestSSAO extends SimpleApplication {
 
         Material mat = assetManager.loadMaterial("Common/Materials/WhiteColor.j3m");
         Material matSoil = new Material(assetManager,"Common/MatDefs/Misc/SolidColor.j3md");
-        matSoil.setColor("m_Color", ColorRGBA.LightGray);
+        matSoil.setColor("Color", ColorRGBA.LightGray);
 
 
         teapot = assetManager.loadModel("Models/Teapot/Teapot.obj");

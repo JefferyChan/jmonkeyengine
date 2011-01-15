@@ -1,43 +1,43 @@
 MaterialDef Advanced Water {
 
     MaterialParameters {
-        Int m_NumSamples
-        Int m_NumSamplesDepth
-        Texture2D m_FoamMap
-        Texture2D m_NormalMap
-        Texture2D m_ReflectionMap
-        Texture2D m_HeightMap
-        Texture2D m_Texture
-        Texture2D m_DepthTexture        
-        Vector3 m_CameraPosition
-        Float m_Time
+        Int NumSamples
+        Int NumSamplesDepth
+        Texture2D FoamMap
+        Texture2D NormalMap
+        Texture2D ReflectionMap
+        Texture2D HeightMap
+        Texture2D Texture
+        Texture2D DepthTexture        
+        Vector3 CameraPosition
+        Float Time
         Vector3 frustumCorner
-        Matrix4 m_TextureProjMatrix
-        Matrix4 m_ViewProjectionMatrixInverse
-        Float m_WaterHeight
-        Vector3 m_LightDir
-        Float m_WaterTransparency
-        Float m_NormalScale
-        Float m_R0
-        Float m_MaxAmplitude
-        Color m_LightColor
-        Float m_ShoreHardness
-        Float m_FoamHardness
-        Float m_RefractionStrength
-        Float m_WaveScale
-        Vector3 m_FoamExistence
-        Float m_SunScale
-        Vector3 m_ColorExtinction
-        Float m_Shininess
-        Color m_WaterColor
-        Color m_DeepWaterColor
-        Vector2 m_WindDirection
+        Matrix4 TextureProjMatrix
+        Matrix4 ViewProjectionMatrixInverse
+        Float WaterHeight
+        Vector3 LightDir
+        Float WaterTransparency
+        Float NormalScale
+        Float R0
+        Float MaxAmplitude
+        Color LightColor
+        Float ShoreHardness
+        Float FoamHardness
+        Float RefractionStrength
+        Float WaveScale
+        Vector3 FoamExistence
+        Float SunScale
+        Vector3 ColorExtinction
+        Float Shininess
+        Color WaterColor
+        Color DeepWaterColor
+        Vector2 WindDirection
 
-        Boolean m_UseRipples
-        Boolean m_UseHQShoreline
-        Boolean m_UseSpecular
-        Boolean m_UseFoam
-        Boolean m_UseRefraction
+        Boolean UseRipples
+        Boolean UseHQShoreline
+        Boolean UseSpecular
+        Boolean UseFoam
+        Boolean UseRefraction
     }
 
     Technique {
@@ -49,8 +49,8 @@ MaterialDef Advanced Water {
         }
 
         Defines {
-            RESOLVE_MS : m_NumSamples
-            RESOLVE_DEPTH_MS : m_NumSamplesDepth
+            RESOLVE_MS : NumSamples
+            RESOLVE_DEPTH_MS : NumSamplesDepth
         }
     }
 
@@ -62,11 +62,11 @@ MaterialDef Advanced Water {
             WorldViewProjectionMatrix
         }
         Defines {
-            ENABLE_RIPPLES : m_UseRipples
-            ENABLE_HQ_SHORELINE : m_UseHQShoreline
-            ENABLE_SPECULAR : m_UseSpecular
-            ENABLE_FOAM : m_UseFoam
-            ENABLE_REFRACTION : m_UseRefraction
+            ENABLE_RIPPLES : UseRipples
+            ENABLE_HQ_SHORELINE : UseHQShoreline
+            ENABLE_SPECULAR : UseSpecular
+            ENABLE_FOAM : UseFoam
+            ENABLE_REFRACTION : UseRefraction
         }
     }
 

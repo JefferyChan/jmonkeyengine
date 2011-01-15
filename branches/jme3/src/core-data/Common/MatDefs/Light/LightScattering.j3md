@@ -1,15 +1,15 @@
 MaterialDef Light Scattering {
  MaterialParameters {
-        Int m_NumSamples
-        Int m_NumSamplesDepth
-        Texture2D m_Texture
-        Texture2D m_DepthTexture       
-        Vector3 m_LightPosition
-        Int m_NbSamples
-        Float m_BlurStart
-        Float m_BlurWidth
-        Float m_LightDensity
-        Boolean m_Display
+        Int NumSamples
+        Int NumSamplesDepth
+        Texture2D Texture
+        Texture2D DepthTexture       
+        Vector3 LightPosition
+        Int NbSamples
+        Float BlurStart
+        Float BlurWidth
+        Float LightDensity
+        Boolean Display
         Boolean multiSampledDepth
     }
 
@@ -22,8 +22,8 @@ MaterialDef Light Scattering {
         }
 
         Defines {
-            RESOLVE_MS : m_NumSamples
-            RESOLVE_DEPTH_MS : m_NumSamplesDepth
+            RESOLVE_MS : NumSamples
+            RESOLVE_DEPTH_MS : NumSamplesDepth
         }
     }
 

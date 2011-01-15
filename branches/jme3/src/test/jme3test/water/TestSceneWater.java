@@ -92,7 +92,7 @@ public class TestSceneWater extends SimpleApplication {
         scene.addLight(sun);
 
         Material mat = new Material(assetManager, "Common/MatDefs/Misc/SimpleTextured.j3md");
-        mat.setTexture("m_ColorMap", assetManager.loadTexture("Interface/Logo/Monkey.jpg"));
+        mat.setTexture("ColorMap", assetManager.loadTexture("Interface/Logo/Monkey.jpg"));
            //add lightPos Geometry
         Sphere lite=new Sphere(8, 8, 3.0f);
         Geometry lightSphere=new Geometry("lightsphere", lite);

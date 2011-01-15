@@ -161,13 +161,13 @@ public abstract class PhysicsCollisionObject implements Savable {
      */
     public Spatial attachDebugShape(AssetManager manager) {
         debugMaterialBlue = new Material(manager, "Common/MatDefs/Misc/WireColor.j3md");
-        debugMaterialBlue.setColor("m_Color", ColorRGBA.Blue);
+        debugMaterialBlue.setColor("Color", ColorRGBA.Blue);
         debugMaterialGreen = new Material(manager, "Common/MatDefs/Misc/WireColor.j3md");
-        debugMaterialGreen.setColor("m_Color", ColorRGBA.Green);
+        debugMaterialGreen.setColor("Color", ColorRGBA.Green);
         debugMaterialRed = new Material(manager, "Common/MatDefs/Misc/WireColor.j3md");
-        debugMaterialRed.setColor("m_Color", ColorRGBA.Red);
+        debugMaterialRed.setColor("Color", ColorRGBA.Red);
         debugMaterialYellow = new Material(manager, "Common/MatDefs/Misc/WireColor.j3md");
-        debugMaterialYellow.setColor("m_Color", ColorRGBA.Yellow);
+        debugMaterialYellow.setColor("Color", ColorRGBA.Yellow);
         return attachDebugShape();
     }
 

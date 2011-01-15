@@ -73,9 +73,9 @@ public class FogFilter extends Filter {
     @Override
     public void initFilter(AssetManager manager, RenderManager renderManager, ViewPort vp, int w, int h) {
         material = new Material(manager, "Common/MatDefs/Post/Fog.j3md");
-        material.setColor("m_FogColor", fogColor);
-        material.setFloat("m_FogDensity", fogDensity);
-        material.setFloat("m_FogDistance", fogDistance);
+        material.setColor("FogColor", fogColor);
+        material.setFloat("FogDensity", fogDensity);
+        material.setFloat("FogDistance", fogDistance);
     }
 
     @Override
@@ -102,7 +102,7 @@ public class FogFilter extends Filter {
      */
     public void setFogColor(ColorRGBA fogColor) {
         if (material != null) {
-            material.setColor("m_FogColor", fogColor);
+            material.setColor("FogColor", fogColor);
         }
         this.fogColor = fogColor;
     }
@@ -121,7 +121,7 @@ public class FogFilter extends Filter {
      */
     public void setFogDensity(float fogDensity) {
         if (material != null) {
-            material.setFloat("m_FogDensity", fogDensity);
+            material.setFloat("FogDensity", fogDensity);
         }
         this.fogDensity = fogDensity;
     }
@@ -140,7 +140,7 @@ public class FogFilter extends Filter {
      */
     public void setFogDistance(float fogDistance) {
         if (material != null) {
-            material.setFloat("m_FogDistance", fogDistance);
+            material.setFloat("FogDistance", fogDistance);
         }
         this.fogDistance = fogDistance;
     }

@@ -67,7 +67,7 @@ public class FadeFilter extends Filter {
 
     @Override
     public Material getMaterial() {
-        material.setFloat("m_Value", value);
+        material.setFloat("Value", value);
         return material;
     }
 

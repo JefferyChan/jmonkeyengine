@@ -78,12 +78,12 @@ public class LightScatteringFilter extends Filter {
 
     @Override
     public Material getMaterial() {
-        material.setVector3("m_LightPosition", screenLightPos);
-        material.setInt("m_NbSamples", nbSamples);
-        material.setFloat("m_BlurStart", blurStart);
-        material.setFloat("m_BlurWidth", blurWidth);
-        material.setFloat("m_LightDensity", innerLightDensity);
-        material.setBoolean("m_Display", display);
+        material.setVector3("LightPosition", screenLightPos);
+        material.setInt("NbSamples", nbSamples);
+        material.setFloat("BlurStart", blurStart);
+        material.setFloat("BlurWidth", blurWidth);
+        material.setFloat("LightDensity", innerLightDensity);
+        material.setBoolean("Display", display);
         return material;
     }
 

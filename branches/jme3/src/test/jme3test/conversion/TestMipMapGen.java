@@ -75,10 +75,10 @@ public class TestMipMapGen extends SimpleApplication {
         texCustomMip.setImage(imageCustomMip);
 
         Material mat1 = new Material(assetManager, "Common/MatDefs/Misc/SimpleTextured.j3md");
-        mat1.setTexture("m_ColorMap", tex);
+        mat1.setTexture("ColorMap", tex);
 
         Material mat2 = new Material(assetManager, "Common/MatDefs/Misc/SimpleTextured.j3md");
-        mat2.setTexture("m_ColorMap", texCustomMip);
+        mat2.setTexture("ColorMap", texCustomMip);
 
         quad1.setMaterial(mat1);
 //        quad1.setLocalTranslation(1, 0, 0);

@@ -1,10 +1,10 @@
 MaterialDef Bloom Final {
 
     MaterialParameters {
-          Int m_NumSamples
-        Texture2D m_Texture
-        Texture2D m_BloomTex
-        Float m_BloomIntensity
+          Int NumSamples
+        Texture2D Texture
+        Texture2D BloomTex
+        Float BloomIntensity
     }
 
     Technique {
@@ -16,7 +16,7 @@ MaterialDef Bloom Final {
         }
 
         Defines {
-            RESOLVE_MS : m_NumSamples
+            RESOLVE_MS : NumSamples
         }
     }
 

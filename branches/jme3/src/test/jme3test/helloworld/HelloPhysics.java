@@ -140,20 +140,20 @@ public class HelloPhysics extends SimpleApplication {
     TextureKey key = new TextureKey("Textures/Terrain/BrickWall/BrickWall.jpg");
     key.setGenerateMips(true);
     Texture tex = assetManager.loadTexture(key);
-    wall_mat.setTexture("m_ColorMap", tex);
+    wall_mat.setTexture("ColorMap", tex);
 
     stone_mat = new Material(assetManager, "Common/MatDefs/Misc/SimpleTextured.j3md");
     TextureKey key2 = new TextureKey("Textures/Terrain/Rock/Rock.PNG");
     key2.setGenerateMips(true);
     Texture tex2 = assetManager.loadTexture(key2);
-    stone_mat.setTexture("m_ColorMap", tex2);
+    stone_mat.setTexture("ColorMap", tex2);
 
     floor_mat = new Material(assetManager, "Common/MatDefs/Misc/SimpleTextured.j3md");
     TextureKey key3 = new TextureKey("Textures/Terrain/Pond/Pond.png");
     key3.setGenerateMips(true);
     Texture tex3 = assetManager.loadTexture(key3);
     tex3.setWrap(WrapMode.Repeat);
-    floor_mat.setTexture("m_ColorMap", tex3);
+    floor_mat.setTexture("ColorMap", tex3);
   }
 
   /** Make a solid floor and add it to the scene. */

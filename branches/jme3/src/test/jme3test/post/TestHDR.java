@@ -58,7 +58,7 @@ public class TestHDR extends SimpleApplication {
 //        box.setMaterial(mat);
 
         Material mat = new Material(assetManager, "Common/MatDefs/Misc/SimpleTextured.j3md");
-        mat.setTexture("m_ColorMap", assetManager.loadTexture("Textures/HdrTest/Memorial.hdr"));
+        mat.setTexture("ColorMap", assetManager.loadTexture("Textures/HdrTest/Memorial.hdr"));
         box.setMaterial(mat);
 
         return box;

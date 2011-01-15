@@ -1,20 +1,20 @@
 MaterialDef SSAO {
 
     MaterialParameters {
-        Int m_NumSamples
-        Int m_NumSamplesDepth
-        Texture2D m_Texture
-        Texture2D m_Normals
-        Texture2D m_DepthTexture
-        Vector3 frustumCorner      
-        Float m_SampleRadius
-        Float m_Intensity
-        Float m_Scale
-        Float m_Bias
-        Boolean m_UseAo
-        Boolean m_UseOnlyAo
-        Vector2 m_FrustumNearFar
-        Vector2Array m_Samples
+        Int NumSamples
+        Int NumSamplesDepth
+        Texture2D Texture
+        Texture2D Normals
+        Texture2D DepthTexture
+        Vector3 FrustumCorner
+        Float SampleRadius
+        Float Intensity
+        Float Scale
+        Float Bias
+        Boolean UseAo
+        Boolean UseOnlyAo
+        Vector2 FrustumNearFar
+        Vector2Array Samples
     }
 
     Technique {
@@ -28,8 +28,8 @@ MaterialDef SSAO {
         }
 
         Defines {
-            RESOLVE_MS : m_NumSamples
-            RESOLVE_DEPTH_MS : m_NumSamplesDepth
+            RESOLVE_MS : NumSamples
+            RESOLVE_DEPTH_MS : NumSamplesDepth
         }
     }
 

@@ -1,5 +1,5 @@
 Material Red Color : Common/MatDefs/Misc/Unshaded.j3md {
      MaterialParameters {
-         m_Color : 1 0 0 1
+         Color : 1 0 0 1
      }
 }

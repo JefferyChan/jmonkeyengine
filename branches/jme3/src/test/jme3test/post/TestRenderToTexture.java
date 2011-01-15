@@ -111,7 +111,7 @@ public class TestRenderToTexture extends SimpleApplication {
         Texture offTex = setupOffscreenView();
 
         Material mat = new Material(assetManager, "Common/MatDefs/Misc/SimpleTextured.j3md");
-        mat.setTexture("m_ColorMap", offTex);
+        mat.setTexture("ColorMap", offTex);
         quad.setMaterial(mat);
         rootNode.attachChild(quad);
     }

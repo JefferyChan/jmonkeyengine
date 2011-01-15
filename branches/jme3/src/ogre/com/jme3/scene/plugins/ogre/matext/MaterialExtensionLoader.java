@@ -103,7 +103,7 @@ public class MaterialExtensionLoader {
 
         material = new Material(assetManager, matExt.getJmeMatDefName());
 
-        material.setFloat("m_Shininess", 16f);
+        material.setFloat("Shininess", 16f);
 
         while (!scan.hasNext("\\}")){
             readExtendingMaterialStatement();

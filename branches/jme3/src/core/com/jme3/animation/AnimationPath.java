@@ -311,7 +311,7 @@ public class AnimationPath extends AbstractControl {
     private Geometry CreateLinearPath() {
 
         Material mat = new Material(assetManager, "Common/MatDefs/Misc/WireColor.j3md");
-        mat.setColor("m_Color", ColorRGBA.Blue);
+        mat.setColor("Color", ColorRGBA.Blue);
 
         float[] array = new float[wayPoints.size() * 3];
         short[] indices = new short[(wayPoints.size() - 1) * 2];
@@ -353,7 +353,7 @@ public class AnimationPath extends AbstractControl {
     private Geometry CreateCatmullRomPath() {
 
         Material mat = new Material(assetManager, "Common/MatDefs/Misc/WireColor.j3md");
-        mat.setColor("m_Color", ColorRGBA.Blue);
+        mat.setColor("Color", ColorRGBA.Blue);
         int nbSubSegments = 10;
 
         float[] array = new float[(((wayPoints.size() - 1) * nbSubSegments) + 1) * 3];

@@ -89,10 +89,10 @@ public class TestCcd extends SimpleApplication implements ActionListener{
         setupKeys();
 
         mat = new Material(getAssetManager(), "Common/MatDefs/Misc/WireColor.j3md");
-        mat.setColor("m_Color", ColorRGBA.Green);
+        mat.setColor("Color", ColorRGBA.Green);
 
         mat2 = new Material(getAssetManager(), "Common/MatDefs/Misc/WireColor.j3md");
-        mat2.setColor("m_Color", ColorRGBA.Red);
+        mat2.setColor("Color", ColorRGBA.Red);
 
         // An obstacle mesh, does not move (mass=0)
         PhysicsNode node2 = new PhysicsNode(new MeshCollisionShape(new Box(Vector3f.ZERO,4,4,0.1f)), 0);

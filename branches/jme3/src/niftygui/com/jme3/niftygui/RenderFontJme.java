@@ -54,7 +54,7 @@ public class RenderFontJme implements RenderFont {
         this.display = display;
         font = display.getAssetManager().loadFont(name);
         System.out.println(name);
-        texture = font.getPage(0).getTextureParam("m_ColorMap").getTextureValue();
+        texture = font.getPage(0).getTextureParam("ColorMap").getTextureValue();
         text = new BitmapText(font);
         actualSize = font.getPreferredSize();
         text.setSize(actualSize);

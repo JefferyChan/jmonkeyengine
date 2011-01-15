@@ -59,9 +59,9 @@ public class TestYCoCgDds extends SimpleApplication {
 
         Texture tex = assetManager.loadTexture(texName);
         Material mat = new Material(assetManager, "Common/MatDefs/Misc/SimpleTextured.j3md");
-        mat.setTexture("m_ColorMap", tex);
+        mat.setTexture("ColorMap", tex);
         if (ycocg)
-            mat.setBoolean("m_YCoCg", true);
+            mat.setBoolean("YCoCg", true);
 
         quad.setMaterial(mat);
 

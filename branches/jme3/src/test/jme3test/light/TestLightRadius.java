@@ -64,13 +64,13 @@ public class TestLightRadius extends SimpleApplication {
 //        g.move(0, 1, 0);
         
         Material mat = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
-        mat.setFloat("m_Shininess", 32f);
-        mat.setBoolean("m_UseMaterialColors", true);
-        mat.setColor("m_Ambient",  ColorRGBA.Black);
-        mat.setColor("m_Diffuse",  ColorRGBA.White);
-        mat.setColor("m_Specular", ColorRGBA.White);
-//        mat.setBoolean("m_VertexLighting", true);
-//        mat.setBoolean("m_LowQuality", true);
+        mat.setFloat("Shininess", 32f);
+        mat.setBoolean("UseMaterialColors", true);
+        mat.setColor("Ambient",  ColorRGBA.Black);
+        mat.setColor("Diffuse",  ColorRGBA.White);
+        mat.setColor("Specular", ColorRGBA.White);
+//        mat.setBoolean("VertexLighting", true);
+//        mat.setBoolean("LowQuality", true);
         g.setMaterial(mat);
 
         rootNode.attachChild(g);

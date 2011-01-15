@@ -82,7 +82,7 @@ public class TestNiftyToMesh extends SimpleApplication{
         Box b = new Box(Vector3f.ZERO, 1, 1, 1);
         Geometry geom = new Geometry("Box", b);
         Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        mat.setTexture("m_ColorMap", tex);
+        mat.setTexture("ColorMap", tex);
         geom.setMaterial(mat);
         rootNode.attachChild(geom);
     }

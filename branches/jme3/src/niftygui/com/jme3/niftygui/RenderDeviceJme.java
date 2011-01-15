@@ -178,9 +178,9 @@ public class RenderDeviceJme implements RenderDevice {
         Texture2D texture = jmeFont.getTexture();
         BitmapText text = jmeFont.getText();
 
-        niftyMat.setColor("m_Color", convertColor(color));
-        niftyMat.setTexture("m_Texture", texture);
-        niftyMat.setInt("m_Mode", 4);
+        niftyMat.setColor("Color", convertColor(color));
+        niftyMat.setTexture("Texture", texture);
+        niftyMat.setInt("Mode", 4);
         niftyMat.getAdditionalRenderState().setBlendMode(convertBlend());
         text.setMaterial(niftyMat);
         
@@ -210,9 +210,9 @@ public class RenderDeviceJme implements RenderDevice {
         Texture2D texture = jmeImage.getTexture();
 
         niftyMat.getAdditionalRenderState().setBlendMode(convertBlend());
-        niftyMat.setTexture("m_Texture", texture);
-        niftyMat.setInt("m_Mode", 3);
-        niftyMat.setColor("m_Color", convertColor(color));
+        niftyMat.setTexture("Texture", texture);
+        niftyMat.setInt("Mode", 3);
+        niftyMat.setColor("Color", convertColor(color));
 
         float imageWidth  = texture.getImage().getWidth();
         float imageHeight = texture.getImage().getHeight();
@@ -254,9 +254,9 @@ public class RenderDeviceJme implements RenderDevice {
         RenderImageJme jmeImage = (RenderImageJme) image;
 
         niftyMat.getAdditionalRenderState().setBlendMode(convertBlend());
-        niftyMat.setTexture("m_Texture", jmeImage.getTexture());
-        niftyMat.setInt("m_Mode", 3);
-        niftyMat.setColor("m_Color", convertColor(color));
+        niftyMat.setTexture("Texture", jmeImage.getTexture());
+        niftyMat.setInt("Mode", 3);
+        niftyMat.setColor("Color", convertColor(color));
 
         quad.clearBuffer(Type.TexCoord);
         quad.setBuffer(quadDefaultTC);
@@ -274,8 +274,8 @@ public class RenderDeviceJme implements RenderDevice {
 
     public void renderQuad(int x, int y, int width, int height, Color color){
         niftyMat.getAdditionalRenderState().setBlendMode(convertBlend());
-        niftyMat.setInt("m_Mode", 1);
-        niftyMat.setColor("m_Color", convertColor(color));
+        niftyMat.setInt("Mode", 1);
+        niftyMat.setColor("Color", convertColor(color));
 
         tempMat.loadIdentity();
         tempMat.setTranslation(x, getHeight() - y, 0);
@@ -302,7 +302,7 @@ public class RenderDeviceJme implements RenderDevice {
         colors.updateData(buf);
 
         niftyMat.getAdditionalRenderState().setBlendMode(convertBlend());
-        niftyMat.setInt("m_Mode", 2);
+        niftyMat.setInt("Mode", 2);
 
         tempMat.loadIdentity();
         tempMat.setTranslation(x, getHeight() - y, 0);

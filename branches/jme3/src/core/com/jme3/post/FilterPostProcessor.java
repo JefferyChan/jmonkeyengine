@@ -125,7 +125,7 @@ public class FilterPostProcessor implements SceneProcessor, Savable {
                 renderFrameBuffer.setDepthTexture(depthTexture);
             }
             computeDepth = true;
-            filter.getMaterial().setTexture("m_DepthTexture", depthTexture);
+            filter.getMaterial().setTexture("DepthTexture", depthTexture);
         }
     }
 
@@ -171,12 +171,12 @@ public class FilterPostProcessor implements SceneProcessor, Savable {
                         Filter.Pass pass = it1.next();
                         pass.beforeRender();
                         if (pass.requiresSceneAsTexture()) {
-                            pass.getPassMaterial().setTexture("m_Texture", tex);
+                            pass.getPassMaterial().setTexture("Texture", tex);
                             if (tex.getImage().getMultiSamples() > 1) {
-                                pass.getPassMaterial().setInt("m_NumSamples", tex.getImage().getMultiSamples());
+                                pass.getPassMaterial().setInt("NumSamples", tex.getImage().getMultiSamples());
                             } else {
-                              //  if (pass.getPassMaterial().getParam("m_NumSamples") != null) {
-                                    pass.getPassMaterial().clearParam("m_NumSamples");
+                              //  if (pass.getPassMaterial().getParam("NumSamples") != null) {
+                                    pass.getPassMaterial().clearParam("NumSamples");
                               //  }
                             }
                         }
@@ -186,15 +186,15 @@ public class FilterPostProcessor implements SceneProcessor, Savable {
 
                 Material mat = filter.getMaterial();
                 if (msDepth && filter.isRequiresDepthTexture()) {
-                    mat.setInt("m_NumSamplesDepth", depthTexture.getImage().getMultiSamples());
+                    mat.setInt("NumSamplesDepth", depthTexture.getImage().getMultiSamples());
                 }
 
-                mat.setTexture("m_Texture", tex);
+                mat.setTexture("Texture", tex);
                 if (tex.getImage().getMultiSamples() > 1) {
-                    mat.setInt("m_NumSamples", tex.getImage().getMultiSamples());
+                    mat.setInt("NumSamples", tex.getImage().getMultiSamples());
                 } else {
-                  //  if (mat.getParam("m_NumSamples") != null) {
-                        mat.clearParam("m_NumSamples");
+                  //  if (mat.getParam("NumSamples") != null) {
+                        mat.clearParam("NumSamples");
 //                    }
                 }
 

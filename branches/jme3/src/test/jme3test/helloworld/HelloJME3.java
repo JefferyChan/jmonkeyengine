@@ -56,7 +56,7 @@ public class HelloJME3 extends SimpleApplication {
         Geometry geom = new Geometry("Box", b);  // create cube geometry from the shape
         Material mat = new Material(assetManager,
          "Common/MatDefs/Misc/SolidColor.j3md"); // create a simple material
-        mat.setColor("m_Color", ColorRGBA.Blue); // set color of material to blue
+        mat.setColor("Color", ColorRGBA.Blue); // set color of material to blue
         geom.setMaterial(mat);                   // set the cube's material
         rootNode.attachChild(geom);              // make the cube appear in the scene
     }

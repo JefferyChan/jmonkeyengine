@@ -90,7 +90,7 @@ public class TestCollisionListener extends SimpleApplication implements ActionLi
         setupKeys();
 
         mat = new Material(getAssetManager(), "Common/MatDefs/Misc/WireColor.j3md");
-        mat.setColor("m_Color", ColorRGBA.Red);
+        mat.setColor("Color", ColorRGBA.Red);
 
         // Add a physics box to the world
         PhysicsNode physicsBox = new PhysicsNode(new BoxCollisionShape(new Vector3f(1, 1, 1)), 1);

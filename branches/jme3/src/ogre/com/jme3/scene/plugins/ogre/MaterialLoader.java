@@ -335,7 +335,7 @@ public class MaterialLoader implements AssetLoader {
                 rs.setFaceCullMode(RenderState.FaceCullMode.Off);
 //            rs.setDepthWrite(false);
             mat.setTransparent(true);
-            mat.setBoolean("m_UseAlpha", true);
+            mat.setBoolean("UseAlpha", true);
         }else{
             if (twoSide){
                 RenderState rs = mat.getAdditionalRenderState();
@@ -344,33 +344,33 @@ public class MaterialLoader implements AssetLoader {
         }
 
         if (shinines > 0f)
-            mat.setFloat("m_Shininess", shinines);
+            mat.setFloat("Shininess", shinines);
         else
-            mat.setFloat("m_Shininess", 16f); // set shininess to some value anyway..
+            mat.setFloat("Shininess", 16f); // set shininess to some value anyway..
         
         if (vcolor)
-            mat.setBoolean("m_UseVertexColor", true);
+            mat.setBoolean("UseVertexColor", true);
 
         if (texture != null)
-            mat.setTexture("m_DiffuseMap", texture);
+            mat.setTexture("DiffuseMap", texture);
 
-        mat.setBoolean("m_UseMaterialColors", true);
+        mat.setBoolean("UseMaterialColors", true);
         if(diffuse != null){
-            mat.setColor("m_Diffuse",  diffuse);
+            mat.setColor("Diffuse",  diffuse);
         }else{
-            mat.setColor("m_Diffuse", ColorRGBA.White);
+            mat.setColor("Diffuse", ColorRGBA.White);
         }
 
         if(ambient != null){
-            mat.setColor("m_Ambient",  ambient);
+            mat.setColor("Ambient",  ambient);
         }else{
-            mat.setColor("m_Ambient", ColorRGBA.DarkGray);
+            mat.setColor("Ambient", ColorRGBA.DarkGray);
         }
 
         if(specular != null){
-            mat.setColor("m_Specular", specular);
+            mat.setColor("Specular", specular);
         }else{
-            mat.setColor("m_Specular", ColorRGBA.Black);
+            mat.setColor("Specular", ColorRGBA.Black);
         }
 
         texture = null;

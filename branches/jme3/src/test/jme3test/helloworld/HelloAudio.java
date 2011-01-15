@@ -30,7 +30,7 @@ public class HelloAudio extends SimpleApplication {
     Box box1 = new Box(Vector3f.ZERO, 1, 1, 1);
     player = new Geometry("Player", box1);
     Material mat1 = new Material(assetManager, "Common/MatDefs/Misc/SolidColor.j3md");
-    mat1.setColor("m_Color", ColorRGBA.Blue);
+    mat1.setColor("Color", ColorRGBA.Blue);
     player.setMaterial(mat1);
     rootNode.attachChild(player);
 

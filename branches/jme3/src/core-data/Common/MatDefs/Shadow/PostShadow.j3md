@@ -1,8 +1,8 @@
 MaterialDef Post Shadow {
 
     MaterialParameters {
-        Texture2D m_ShadowMap
-        Matrix4 m_LightViewProjectionMatrix
+        Texture2D ShadowMap
+        Matrix4 LightViewProjectionMatrix
     }
 
     Technique {

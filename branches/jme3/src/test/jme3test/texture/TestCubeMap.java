@@ -87,8 +87,8 @@ public class TestCubeMap extends SimpleApplication {
         g.setLocalScale(5);
 
         Material mat = new Material(assetManager, "Common/MatDefs/Light/Reflection.j3md");
-        mat.setTexture("m_Texture", envMap);
-        mat.setBoolean("m_SphereMap", true);
+        mat.setTexture("Texture", envMap);
+        mat.setBoolean("SphereMap", true);
         g.setMaterial(mat);
 
         return g;

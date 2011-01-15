@@ -52,7 +52,7 @@ public class HelloEffects extends SimpleApplication {
 
     ParticleEmitter fire = new ParticleEmitter("Emitter", ParticleMesh.Type.Triangle, 30);
     Material mat_red = new Material(assetManager, "Common/MatDefs/Misc/Particle.j3md");
-    mat_red.setTexture("m_Texture", assetManager.loadTexture("Effects/Explosion/flame.png"));
+    mat_red.setTexture("Texture", assetManager.loadTexture("Effects/Explosion/flame.png"));
     fire.setMaterial(mat_red);
     fire.setImagesX(2); fire.setImagesY(2); // 2x2 texture animation
     fire.setEndColor(  new ColorRGBA(1f, 0f, 0f, 1f));   // red
@@ -68,7 +68,7 @@ public class HelloEffects extends SimpleApplication {
 
     ParticleEmitter debris = new ParticleEmitter("Debris", ParticleMesh.Type.Triangle, 10);
     Material debris_mat = new Material(assetManager, "Common/MatDefs/Misc/Particle.j3md");
-    debris_mat.setTexture("m_Texture", assetManager.loadTexture("Effects/Explosion/Debris.png"));
+    debris_mat.setTexture("Texture", assetManager.loadTexture("Effects/Explosion/Debris.png"));
     debris.setMaterial(debris_mat);
     debris.setImagesX(3); debris.setImagesY(3); // 3x3 texture animation
     debris.setRotateSpeed(4);
@@ -82,7 +82,7 @@ public class HelloEffects extends SimpleApplication {
 
 //    ParticleEmitter water = new ParticleEmitter("Emitter", ParticleMesh.Type.Triangle, 30);
 //    Material mat_blue = new Material(assetManager, "Common/MatDefs/Misc/Particle.j3md");
-//    mat_blue.setTexture("m_Texture", assetManager.loadTexture("Effects/Explosion/flame.png"));
+//    mat_blue.setTexture("Texture", assetManager.loadTexture("Effects/Explosion/flame.png"));
 //    water.setMaterial(mat_blue);
 //    water.setImagesX(2); water.setImagesY(2); // 2x2 texture animation
 //    water.setStartColor(new ColorRGBA(0f, 0f, 1f, 1f)); // blue

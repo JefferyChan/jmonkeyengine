@@ -65,7 +65,7 @@ public class TestTriangleCollision extends SimpleApplication {
         geom1 = new Geometry("Box", mesh1);
         geom1.move(2, 2, -.5f);
         Material m1 = new Material(assetManager, "Common/MatDefs/Misc/SolidColor.j3md");
-        m1.setColor("m_Color", ColorRGBA.Blue);
+        m1.setColor("Color", ColorRGBA.Blue);
         geom1.setMaterial(m1);
         rootNode.attachChild(geom1);
 
@@ -118,9 +118,9 @@ public class TestTriangleCollision extends SimpleApplication {
         golem.collideWith(bv, results);
 
         if (results.size() > 0) {
-            geom1.getMaterial().setColor("m_Color", ColorRGBA.Red);
+            geom1.getMaterial().setColor("Color", ColorRGBA.Red);
         }else{
-            geom1.getMaterial().setColor("m_Color", ColorRGBA.Blue);
+            geom1.getMaterial().setColor("Color", ColorRGBA.Blue);
         }
     }
 }

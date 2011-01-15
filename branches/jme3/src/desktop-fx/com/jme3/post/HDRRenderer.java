@@ -160,11 +160,11 @@ public class HDRRenderer implements SceneProcessor {
 
         Material mat = new Material(manager, "Common/MatDefs/Hdr/LogLum.j3md");
 //        if (mode == LUMMODE_ENCODE_LUM)
-//            mat.setBoolean("m_EncodeLum", true);
+//            mat.setBoolean("EncodeLum", true);
 //        else if (mode == LUMMODE_DECODE_LUM)
-            mat.setBoolean("m_DecodeLum", true);
-            mat.setTexture("m_Texture", scene64);
-//        mat.setTexture("m_Texture", tex);
+            mat.setBoolean("DecodeLum", true);
+            mat.setTexture("Texture", scene64);
+//        mat.setTexture("Texture", tex);
         
         Picture dispQuad = new Picture("Luminance Display");
         dispQuad.setMaterial(mat);
@@ -193,16 +193,16 @@ public class HDRRenderer implements SceneProcessor {
         }
         System.out.println(numPixels);
 
-        mat.setBoolean("m_Blocks", true);
+        mat.setBoolean("Blocks", true);
         if (mode == LUMMODE_ENCODE_LUM)
-            mat.setBoolean("m_EncodeLum", true);
+            mat.setBoolean("EncodeLum", true);
         else if (mode == LUMMODE_DECODE_LUM)
-            mat.setBoolean("m_DecodeLum", true);
+            mat.setBoolean("DecodeLum", true);
 
-        mat.setTexture("m_Texture", tex);
-        mat.setVector2("m_BlockSize", blockSize);
-        mat.setVector2("m_PixelSize", pixelSize);
-        mat.setFloat("m_NumPixels", numPixels);
+        mat.setTexture("Texture", tex);
+        mat.setVector2("BlockSize", blockSize);
+        mat.setVector2("PixelSize", pixelSize);
+        mat.setFloat("NumPixels", numPixels);
 
         return mat;
     }
@@ -239,11 +239,11 @@ public class HDRRenderer implements SceneProcessor {
     }
 
     private void renderToneMap(Renderer r, FrameBuffer out){
-        tone.setFloat("m_A", exposure);
-        tone.setFloat("m_White", whiteLevel);
-        tone.setTexture("m_Lum", scene1[oppSrc]);
-        tone.setTexture("m_Lum2", scene1[curSrc]);
-        tone.setFloat("m_BlendFactor", blendFactor);
+        tone.setFloat("A", exposure);
+        tone.setFloat("White", whiteLevel);
+        tone.setTexture("Lum", scene1[oppSrc]);
+        tone.setTexture("Lum2", scene1[curSrc]);
+        tone.setFloat("BlendFactor", blendFactor);
         renderProcessing(r, out, tone);
     }
 
@@ -273,7 +273,7 @@ public class HDRRenderer implements SceneProcessor {
             renderer.deleteFrameBuffer(msFB);
         }
 
-        tone.setTexture("m_Texture", mainScene);
+        tone.setTexture("Texture", mainScene);
         
         Collection<Caps> caps = renderer.getCaps();
         if (numSamples > 1 && caps.contains(Caps.FrameBufferMultisample)){
@@ -325,8 +325,8 @@ public class HDRRenderer implements SceneProcessor {
 
         // prepare tonemap shader
         tone = new Material(manager, "Common/MatDefs/Hdr/ToneMap.j3md");
-        tone.setFloat("m_A", 0.18f);
-        tone.setFloat("m_White", 100);
+        tone.setFloat("A", 0.18f);
+        tone.setFloat("White", 100);
 
         // load();
         int w = vp.getCamera().getWidth();

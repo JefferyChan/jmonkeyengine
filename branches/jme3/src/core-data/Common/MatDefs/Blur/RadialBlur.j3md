@@ -1,12 +1,12 @@
 MaterialDef Radial Blur {
 
     MaterialParameters {
-        Int m_NumSamples
-        Texture2D m_Texture
-        Color m_Color
-        Float m_SampleDist
-        Float m_SampleStrength
-        FloatArray m_Samples
+        Int NumSamples
+        Texture2D Texture
+        Color Color
+        Float SampleDist
+        Float SampleStrength
+        FloatArray Samples
     }
 
     Technique {
@@ -18,7 +18,7 @@ MaterialDef Radial Blur {
         }
 
         Defines {
-            RESOLVE_MS : m_NumSamples
+            RESOLVE_MS : NumSamples
         }
     }
 

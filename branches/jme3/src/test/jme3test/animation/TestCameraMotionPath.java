@@ -121,16 +121,16 @@ public class TestCameraMotionPath extends SimpleApplication {
 
     private void createScene() {
         Material mat = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
-        mat.setFloat("m_Shininess", 1f);
-        mat.setBoolean("m_UseMaterialColors", true);
-        mat.setColor("m_Ambient", ColorRGBA.Black);
-        mat.setColor("m_Diffuse", ColorRGBA.DarkGray);
-        mat.setColor("m_Specular", ColorRGBA.White.mult(0.6f));
+        mat.setFloat("Shininess", 1f);
+        mat.setBoolean("UseMaterialColors", true);
+        mat.setColor("Ambient", ColorRGBA.Black);
+        mat.setColor("Diffuse", ColorRGBA.DarkGray);
+        mat.setColor("Specular", ColorRGBA.White.mult(0.6f));
         Material matSoil = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
-        matSoil.setBoolean("m_UseMaterialColors", true);
-        matSoil.setColor("m_Ambient", ColorRGBA.Gray);
-        matSoil.setColor("m_Diffuse", ColorRGBA.Gray);
-        matSoil.setColor("m_Specular", ColorRGBA.Black);
+        matSoil.setBoolean("UseMaterialColors", true);
+        matSoil.setColor("Ambient", ColorRGBA.Gray);
+        matSoil.setColor("Diffuse", ColorRGBA.Gray);
+        matSoil.setColor("Specular", ColorRGBA.Black);
         teapot = assetManager.loadModel("Models/Teapot/Teapot.obj");
         teapot.setLocalScale(3);
         teapot.setMaterial(mat);

@@ -1,9 +1,9 @@
 MaterialDef Fade {
 
     MaterialParameters {
-        Int m_NumSamples
-        Texture2D m_Texture
-        Float m_Value
+        Int NumSamples
+        Texture2D Texture
+        Float Value
     }
 
     Technique {
@@ -15,7 +15,7 @@ MaterialDef Fade {
         }
 
         Defines {
-            RESOLVE_MS : m_NumSamples
+            RESOLVE_MS : NumSamples
         }
     }
 

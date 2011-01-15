@@ -74,7 +74,7 @@ public class BasicShadowRenderer implements SceneProcessor {
         
         preshadowMat  = new Material(manager, "Common/MatDefs/Shadow/PreShadow.j3md");
         postshadowMat = new Material(manager, "Common/MatDefs/Shadow/PostShadow.j3md");
-        postshadowMat.setTexture("m_ShadowMap", shadowMap);
+        postshadowMat.setTexture("ShadowMap", shadowMap);
 
         dispPic.setTexture(manager, shadowMap, false);
 
@@ -168,7 +168,7 @@ public class BasicShadowRenderer implements SceneProcessor {
 
     public void postFrame(FrameBuffer out){
         if (!noOccluders){
-            postshadowMat.setMatrix4("m_LightViewProjectionMatrix", shadowCam.getViewProjectionMatrix());
+            postshadowMat.setMatrix4("LightViewProjectionMatrix", shadowCam.getViewProjectionMatrix());
             renderManager.setForcedMaterial(postshadowMat);
             viewPort.getQueue().renderShadowQueue(ShadowMode.Receive, renderManager, viewPort.getCamera(), true);
             renderManager.setForcedMaterial(null);

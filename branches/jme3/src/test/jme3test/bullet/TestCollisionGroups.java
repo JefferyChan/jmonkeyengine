@@ -64,9 +64,9 @@ public class TestCollisionGroups extends SimpleApplication{
         bulletAppState = new BulletAppState();
         stateManager.attach(bulletAppState);
         Material mat = new Material(getAssetManager(), "Common/MatDefs/Misc/WireColor.j3md");
-        mat.setColor("m_Color", ColorRGBA.Red);
+        mat.setColor("Color", ColorRGBA.Red);
         Material mat2 = new Material(getAssetManager(), "Common/MatDefs/Misc/WireColor.j3md");
-        mat2.setColor("m_Color", ColorRGBA.Magenta);
+        mat2.setColor("Color", ColorRGBA.Magenta);
 
         // Add a physics sphere to the world
         PhysicsNode physicsSphere=new PhysicsNode(new SphereCollisionShape(1),1);

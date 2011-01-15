@@ -1,7 +1,7 @@
 Material Rock : Common/MatDefs/Light/Lighting.j3md {
      MaterialParameters {
-         m_Shininess: 100000.0
-         m_DiffuseMap : Textures/Terrain/Rocky/RockyTexture.png
-         m_NormalMap :  Textures/Terrain/Rocky/RockyNormals.png
+         Shininess: 100000.0
+         DiffuseMap : Textures/Terrain/Rocky/RockyTexture.png
+         NormalMap :  Textures/Terrain/Rocky/RockyNormals.png
      }
 }

@@ -58,7 +58,7 @@ public class TestColoredTexture extends SimpleApplication {
         quad.setQueueBucket(Bucket.Gui);
 
         mat = new Material(assetManager, "Common/MatDefs/Misc/ColoredTextured.j3md");
-        mat.setTexture("m_ColorMap", assetManager.loadTexture("Textures/ColoredTex/Monkey.png"));
+        mat.setTexture("ColorMap", assetManager.loadTexture("Textures/ColoredTex/Monkey.png"));
         quad.setMaterial(mat);
         guiNode.attachChildAt(quad, 0);
 
@@ -77,7 +77,7 @@ public class TestColoredTexture extends SimpleApplication {
         ColorRGBA currentColor = new ColorRGBA();
         currentColor.interpolate(prevColor, nextColor, time);
 
-        mat.setColor("m_Color", currentColor);
+        mat.setColor("Color", currentColor);
     }
 
 }

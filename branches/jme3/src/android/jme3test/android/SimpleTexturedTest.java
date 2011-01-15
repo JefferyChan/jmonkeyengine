@@ -75,17 +75,17 @@ public class SimpleTexturedTest extends SimpleApplication {
 		if (texturedEnabled) {
 			if (lightingEnabled) {
 				material = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
-				material.setBoolean("m_VertexLighting", true);
-				material.setFloat("m_Shininess", 127);
-				material.setBoolean("m_LowQuality", true);
-				material.setTexture("m_DiffuseMap", texture);
+				material.setBoolean("VertexLighting", true);
+				material.setFloat("Shininess", 127);
+				material.setBoolean("LowQuality", true);
+				material.setTexture("DiffuseMap", texture);
 			} else {
 				material = new Material(assetManager, "Common/MatDefs/Misc/SimpleTextured.j3md");
-				material.setTexture("m_ColorMap", texture);
+				material.setTexture("ColorMap", texture);
 			}
 		} else {
 			material = new Material(assetManager, "Common/MatDefs/Misc/SolidColor.j3md");
-			material.setColor("m_Color", ColorRGBA.Red);
+			material.setColor("Color", ColorRGBA.Red);
 		}
 
 		TangentBinormalGenerator.generate(shape);

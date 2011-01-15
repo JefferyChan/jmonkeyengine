@@ -99,7 +99,7 @@ public class TestSimpleWater extends SimpleApplication implements ActionListener
         //init scene
         sceneNode = new Node("Scene");
         mat = new Material(assetManager, "Common/MatDefs/Misc/SimpleTextured.j3md");
-        mat.setTexture("m_ColorMap", assetManager.loadTexture("Interface/Logo/Monkey.jpg"));
+        mat.setTexture("ColorMap", assetManager.loadTexture("Interface/Logo/Monkey.jpg"));
         Box b = new Box(1, 1, 1);
         Geometry geom = new Geometry("Box", b);
         geom.setMaterial(mat);

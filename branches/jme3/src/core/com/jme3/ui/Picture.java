@@ -91,11 +91,11 @@ public class Picture extends Geometry {
     public void setTexture(AssetManager manager, Texture2D tex, boolean useAlpha){
         if (getMaterial() == null){
             Material mat = new Material(manager, "Common/MatDefs/Gui/Gui.j3md");
-            mat.setColor("m_Color", ColorRGBA.White);
+            mat.setColor("Color", ColorRGBA.White);
             setMaterial(mat);
         }
         material.getAdditionalRenderState().setBlendMode(useAlpha ? BlendMode.Alpha : BlendMode.Off);
-        material.setTexture("m_Texture", tex);
+        material.setTexture("Texture", tex);
     }
 
 }

@@ -187,7 +187,7 @@ public class PssmShadowRenderer implements SceneProcessor {
             //DO NOT COMMENT THIS (it prevent the OSX incomplete read buffer crash)
             shadowFB[i].setColorTexture(dummyTex);
 
-            postshadowMat.setTexture("m_ShadowMap" + i, shadowMaps[i]);
+            postshadowMat.setTexture("ShadowMap" + i, shadowMaps[i]);
             
             //quads for debuging purpose
             dispPic[i] = new Picture("Picture" + i);
@@ -223,8 +223,8 @@ public class PssmShadowRenderer implements SceneProcessor {
             return;
 
         this.filterMode = filterMode;
-        postshadowMat.setInt("m_FilterMode", filterMode.ordinal());
-        postshadowMat.setFloat("m_PCFEdge", edgesThickness);
+        postshadowMat.setInt("FilterMode", filterMode.ordinal());
+        postshadowMat.setFloat("PCFEdge", edgesThickness);
         if (compareMode == CompareMode.Hardware){
             for (Texture2D shadowMap : shadowMaps){
                 if (filterMode == FilterMode.Bilinear){
@@ -262,7 +262,7 @@ public class PssmShadowRenderer implements SceneProcessor {
                 shadowMap.setMinFilter(MinFilter.NearestNoMipMaps);
             }
         }
-        postshadowMat.setBoolean("m_HardwareShadows", compareMode == CompareMode.Hardware);
+        postshadowMat.setBoolean("HardwareShadows", compareMode == CompareMode.Hardware);
     }
 
     //debug function that create a displayable frustrum
@@ -274,19 +274,19 @@ public class PssmShadowRenderer implements SceneProcessor {
         frustumMdl.setMaterial(new Material(assetManager, "Common/MatDefs/Misc/WireColor.j3md"));
         switch (i) {
             case 0:
-                frustumMdl.getMaterial().setColor("m_Color", ColorRGBA.Pink);
+                frustumMdl.getMaterial().setColor("Color", ColorRGBA.Pink);
                 break;
             case 1:
-                frustumMdl.getMaterial().setColor("m_Color", ColorRGBA.Red);
+                frustumMdl.getMaterial().setColor("Color", ColorRGBA.Red);
                 break;
             case 2:
-                frustumMdl.getMaterial().setColor("m_Color", ColorRGBA.Green);
+                frustumMdl.getMaterial().setColor("Color", ColorRGBA.Green);
                 break;
             case 3:
-                frustumMdl.getMaterial().setColor("m_Color", ColorRGBA.Blue);
+                frustumMdl.getMaterial().setColor("Color", ColorRGBA.Blue);
                 break;
             default:
-                frustumMdl.getMaterial().setColor("m_Color", ColorRGBA.White);
+                frustumMdl.getMaterial().setColor("Color", ColorRGBA.White);
                 break;
         }
 
@@ -431,9 +431,9 @@ public class PssmShadowRenderer implements SceneProcessor {
     public void postFrame(FrameBuffer out) {
         Camera cam = viewPort.getCamera();
         if (!noOccluders) {
-            postshadowMat.setColor("m_Splits", splits);
+            postshadowMat.setColor("Splits", splits);
             for (int i = 0; i < nbSplits; i++) {
-                postshadowMat.setMatrix4("m_LightViewProjectionMatrix" + i, lightViewProjectionsMatrices[i]);
+                postshadowMat.setMatrix4("LightViewProjectionMatrix" + i, lightViewProjectionsMatrices[i]);
             }
             renderManager.setForcedMaterial(postshadowMat);
             viewPort.getQueue().renderShadowQueue(ShadowMode.Receive, renderManager, cam, true);
@@ -496,7 +496,7 @@ public class PssmShadowRenderer implements SceneProcessor {
      */
     public void setShadowIntensity(float shadowIntensity) {
         this.shadowIntensity = shadowIntensity;
-        postshadowMat.setFloat("m_ShadowIntensity", shadowIntensity);
+        postshadowMat.setFloat("ShadowIntensity", shadowIntensity);
     }
 
     public int getEdgesThickness() {
@@ -506,7 +506,7 @@ public class PssmShadowRenderer implements SceneProcessor {
     public void setEdgesThickness(int edgesThickness) {
         this.edgesThickness = Math.max(1, Math.min(edgesThickness,10));
         this.edgesThickness *= 0.1f;
-        postshadowMat.setFloat("m_PCFEdge", edgesThickness);
+        postshadowMat.setFloat("PCFEdge", edgesThickness);
     }
 
     @Deprecated

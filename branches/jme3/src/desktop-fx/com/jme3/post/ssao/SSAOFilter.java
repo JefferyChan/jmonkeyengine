@@ -138,15 +138,15 @@ public class SSAOFilter extends Filter {
     @Override
     public Material getMaterial() {
              
-        material.setVector3("frustumCorner", frustumCorner);
-        material.setFloat("m_SampleRadius", sampleRadius);
-        material.setFloat("m_Intensity", intensity);
-        material.setFloat("m_Scale", scale);
-        material.setFloat("m_Bias", bias);
-        material.setBoolean("m_UseAo", useAo);
-        material.setBoolean("m_UseOnlyAo", useOnlyAo);
-        material.setVector2("m_FrustumNearFar", frustumNearFar);
-        material.setParam("m_Samples", VarType.Vector2Array, samples);
+        material.setVector3("FrustumCorner", frustumCorner);
+        material.setFloat("SampleRadius", sampleRadius);
+        material.setFloat("Intensity", intensity);
+        material.setFloat("Scale", scale);
+        material.setFloat("Bias", bias);
+        material.setBoolean("UseAo", useAo);
+        material.setBoolean("UseOnlyAo", useOnlyAo);
+        material.setVector2("FrustumNearFar", frustumNearFar);
+        material.setParam("Samples", VarType.Vector2Array, samples);
         return material;
     }
 
@@ -166,7 +166,7 @@ public class SSAOFilter extends Filter {
         frustumNearFar.y = vp.getCamera().getFrustumFar();
         material = new Material(manager, "Common/MatDefs/SSAO/ssao.j3md");
         normalMaterial = new Material(manager, "Common/MatDefs/SSAO/normal.j3md");
-        material.setTexture("m_Normals", normalPass.getRenderedTexture());
+        material.setTexture("Normals", normalPass.getRenderedTexture());
     }
 
     /**

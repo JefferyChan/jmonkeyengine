@@ -78,7 +78,7 @@ public class TestMultiRenderTarget extends SimpleApplication implements ScenePro
 
         Node tank = (Node) assetManager.loadModel("Models/HoverTank/Tank2.mesh.xml");
         
-        //tankMesh.getMaterial().setColor("m_Specular", ColorRGBA.Black);
+        //tankMesh.getMaterial().setColor("Specular", ColorRGBA.Black);
         rootNode.attachChild(tank);
 
         display1 = new Picture("Picture");
@@ -132,10 +132,10 @@ public class TestMultiRenderTarget extends SimpleApplication implements ScenePro
         depthData    = new Texture2D(w, h, Format.Depth);
 
         mat = new Material(assetManager, "Common/MatDefs/Light/Deferred.j3md");
-        mat.setTexture("m_DiffuseData",  diffuseData);
-        mat.setTexture("m_SpecularData", specularData);
-        mat.setTexture("m_NormalData",   normalData);
-        mat.setTexture("m_DepthData",    depthData);
+        mat.setTexture("DiffuseData",  diffuseData);
+        mat.setTexture("SpecularData", specularData);
+        mat.setTexture("NormalData",   normalData);
+        mat.setTexture("DepthData",    depthData);
 
         display.setMaterial(mat);
         display.setPosition(0, 0);
@@ -209,7 +209,7 @@ public class TestMultiRenderTarget extends SimpleApplication implements ScenePro
 
     public void preFrame(float tpf) {
         Matrix4f inverseViewProj = cam.getViewProjectionMatrix().invert();
-        mat.setMatrix4("m_ViewProjectionMatrixInverse", inverseViewProj);
+        mat.setMatrix4("ViewProjectionMatrixInverse", inverseViewProj);
     }
 
     public void postQueue(RenderQueue rq) {

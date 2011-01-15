@@ -63,7 +63,7 @@ public class HelloMaterial extends SimpleApplication {
     Geometry cube = new Geometry("My Textured Box", boxshape1);
     Material mat_stl = new Material(assetManager, "Common/MatDefs/Misc/SimpleTextured.j3md");
     Texture tex_ml = assetManager.loadTexture("Interface/Logo/Monkey.jpg");
-    mat_stl.setTexture("m_ColorMap", tex_ml);
+    mat_stl.setTexture("ColorMap", tex_ml);
     cube.setMaterial(mat_stl);
     rootNode.attachChild(cube);
 
@@ -71,7 +71,7 @@ public class HelloMaterial extends SimpleApplication {
     Box boxshape3 = new Box(new Vector3f(0f,0f,0f), 1f,1f,0.01f);
     Geometry window_frame = new Geometry("window frame", boxshape3);
     Material mat_tt = new Material(assetManager, "Common/MatDefs/Misc/SimpleTextured.j3md");
-    mat_tt.setTexture("m_ColorMap", assetManager.loadTexture("Textures/ColoredTex/Monkey.png"));
+    mat_tt.setTexture("ColorMap", assetManager.loadTexture("Textures/ColoredTex/Monkey.png"));
     mat_tt.getAdditionalRenderState().setBlendMode(BlendMode.Alpha);  // activate transparency
     window_frame.setQueueBucket(Bucket.Transparent);
     window_frame.setMaterial(mat_tt);
@@ -81,8 +81,8 @@ public class HelloMaterial extends SimpleApplication {
     Box boxshape4 = new Box(new Vector3f(3f,-1f,0f), 1f,1f,1f);
     Geometry cube_leak = new Geometry("Leak-through color cube", boxshape4);
     Material mat_tl = new Material(assetManager, "Common/MatDefs/Misc/ColoredTextured.j3md");
-    mat_tl.setTexture("m_ColorMap", assetManager.loadTexture("Textures/ColoredTex/Monkey.png"));
-    mat_tl.setColor("m_Color", new ColorRGBA(1f,0f,1f, 1f)); // purple
+    mat_tl.setTexture("ColorMap", assetManager.loadTexture("Textures/ColoredTex/Monkey.png"));
+    mat_tl.setColor("Color", new ColorRGBA(1f,0f,1f, 1f)); // purple
     cube_leak.setMaterial(mat_tl);
     rootNode.attachChild(cube_leak);
     // cube_leak.setMaterial((Material) assetManager.loadAsset( "Materials/LeakThrough.j3m"));
@@ -93,9 +93,9 @@ public class HelloMaterial extends SimpleApplication {
     rock.setTextureMode(Sphere.TextureMode.Projected); // better quality on spheres
     TangentBinormalGenerator.generate(rock);           // for lighting effect
     Material mat_lit = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
-    mat_lit.setTexture("m_DiffuseMap", assetManager.loadTexture("Textures/Terrain/Pond/Pond.png"));
-    mat_lit.setTexture("m_NormalMap", assetManager.loadTexture("Textures/Terrain/Pond/Pond_normal.png"));
-    mat_lit.setFloat("m_Shininess", 5f); // [0,128]
+    mat_lit.setTexture("DiffuseMap", assetManager.loadTexture("Textures/Terrain/Pond/Pond.png"));
+    mat_lit.setTexture("NormalMap", assetManager.loadTexture("Textures/Terrain/Pond/Pond_normal.png"));
+    mat_lit.setFloat("Shininess", 5f); // [0,128]
     shiny_rock.setMaterial(mat_lit);
     shiny_rock.setLocalTranslation(0,2,-2); // Move it a bit
     shiny_rock.rotate(1.6f, 0, 0);          // Rotate it a bit

@@ -97,14 +97,14 @@ public class SimpleWaterProcessor implements SceneProcessor {
     public SimpleWaterProcessor(AssetManager manager) {
         this.manager = manager;
         material = new Material(manager, "Common/MatDefs/Water/SimpleWater.j3md");
-        material.setFloat("m_waterDepth", waterDepth);
-        material.setFloat("m_waterTransparency", waterTransparency / 10);
-        material.setColor("m_waterColor", ColorRGBA.White);
-        material.setVector3("m_lightPos", new Vector3f(1, -1, 1));
+        material.setFloat("waterDepth", waterDepth);
+        material.setFloat("waterTransparency", waterTransparency / 10);
+        material.setColor("waterColor", ColorRGBA.White);
+        material.setVector3("lightPos", new Vector3f(1, -1, 1));
 
-        material.setColor("m_distortionScale", new ColorRGBA(0.2f, 0.2f, 0.2f, 0.2f));
-        material.setColor("m_distortionMix", new ColorRGBA(0.5f, 0.5f, 0.5f, 0.5f));
-        material.setColor("m_texScale", new ColorRGBA(1.0f, 1.0f, 1.0f, 1.0f));
+        material.setColor("distortionScale", new ColorRGBA(0.2f, 0.2f, 0.2f, 0.2f));
+        material.setColor("distortionMix", new ColorRGBA(0.5f, 0.5f, 0.5f, 0.5f));
+        material.setColor("texScale", new ColorRGBA(1.0f, 1.0f, 1.0f, 1.0f));
         updateClipPlanes();
 
     }
@@ -119,7 +119,7 @@ public class SimpleWaterProcessor implements SceneProcessor {
 
         createPreViews();
 
-        material.setVector2("m_FrustumNearFar", new Vector2f(vp.getCamera().getFrustumNear(), vp.getCamera().getFrustumFar()));
+        material.setVector2("FrustumNearFar", new Vector2f(vp.getCamera().getFrustumNear(), vp.getCamera().getFrustumFar()));
 
         if (debug) {
             dispRefraction = new Picture("dispRefraction");
@@ -144,7 +144,7 @@ public class SimpleWaterProcessor implements SceneProcessor {
         if (time > 1f) {
             time = 0;
         }
-        material.setFloat("m_time", time);
+        material.setFloat("time", time);
     }
 
     public void postQueue(RenderQueue rq) {
@@ -225,11 +225,11 @@ public class SimpleWaterProcessor implements SceneProcessor {
     }
 
     protected void applyTextures(Material mat) {
-        mat.setTexture("m_water_reflection", reflectionTexture);
-        mat.setTexture("m_water_refraction", refractionTexture);
-        mat.setTexture("m_water_depthmap", depthTexture);
-        mat.setTexture("m_water_normalmap", normalTexture);
-        mat.setTexture("m_water_dudvmap", dudvTexture);
+        mat.setTexture("water_reflection", reflectionTexture);
+        mat.setTexture("water_refraction", refractionTexture);
+        mat.setTexture("water_depthmap", depthTexture);
+        mat.setTexture("water_normalmap", normalTexture);
+        mat.setTexture("water_dudvmap", dudvTexture);
     }
 
     protected void createPreViews() {
@@ -348,7 +348,7 @@ public class SimpleWaterProcessor implements SceneProcessor {
      */
     //TODO maybe we should provide a convenient method to compute position from direction
     public void setLightPosition(Vector3f position) {
-        material.setVector3("m_lightPos", position);
+        material.setVector3("lightPos", position);
     }
 
     /**
@@ -356,7 +356,7 @@ public class SimpleWaterProcessor implements SceneProcessor {
      * @param color
      */
     public void setWaterColor(ColorRGBA color) {
-        material.setColor("m_waterColor", color);
+        material.setColor("waterColor", color);
     }
 
     /**
@@ -366,7 +366,7 @@ public class SimpleWaterProcessor implements SceneProcessor {
      */
     public void setWaterDepth(float depth) {
         waterDepth = depth;
-        material.setFloat("m_waterDepth", depth);
+        material.setFloat("waterDepth", depth);
     }
 
     public float getWaterDepth() {
@@ -379,7 +379,7 @@ public class SimpleWaterProcessor implements SceneProcessor {
 
     public void setWaterTransparency(float waterTransparency) {
         this.waterTransparency = Math.max(0, waterTransparency);
-        material.setFloat("m_waterTransparency", waterTransparency / 10);
+        material.setFloat("waterTransparency", waterTransparency / 10);
     }
 
     /**
@@ -394,14 +394,14 @@ public class SimpleWaterProcessor implements SceneProcessor {
      * Sets the scale of distortion by the normal map, default = 0.2
      */
     public void setDistortionScale(float value) {
-        material.setColor("m_distortionScale", new ColorRGBA(value, value, value, value));
+        material.setColor("distortionScale", new ColorRGBA(value, value, value, value));
     }
 
     /**
      * Sets how the normal and dudv map are mixed to create the wave effect, default = 0.5
      */
     public void setDistortionMix(float value) {
-        material.setColor("m_distortionMix", new ColorRGBA(value, value, value, value));
+        material.setColor("distortionMix", new ColorRGBA(value, value, value, value));
     }
 
     /**
@@ -410,7 +410,7 @@ public class SimpleWaterProcessor implements SceneProcessor {
      * use mesh.scaleTextureCoordinates(Vector2f) for that.
      */
     public void setTexScale(float value) {
-        material.setColor("m_texScale", new ColorRGBA(value, value, value, value));
+        material.setColor("texScale", new ColorRGBA(value, value, value, value));
     }
 
     public boolean isDebug() {

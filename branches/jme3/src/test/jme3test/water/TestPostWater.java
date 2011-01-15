@@ -57,8 +57,8 @@ public class TestPostWater extends SimpleApplication {
         beach.setShadowMode(ShadowMode.CastAndReceive);
 
         Material mat = assetManager.loadMaterial("/Scenes/Beach/sand.j3m");
-        mat.getTextureParam("m_DiffuseMap").getTextureValue().setWrap(WrapMode.Repeat);
-        mat.getTextureParam("m_NormalMap").getTextureValue().setWrap(WrapMode.Repeat);
+        mat.getTextureParam("DiffuseMap").getTextureValue().setWrap(WrapMode.Repeat);
+        mat.getTextureParam("NormalMap").getTextureValue().setWrap(WrapMode.Repeat);
 
         beach.setMaterial(mat);
 

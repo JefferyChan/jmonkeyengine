@@ -104,7 +104,7 @@ public class TestPhysicsCar extends SimpleApplication implements ActionListener 
         key.setGenerateMips(true);
         Texture tex = assetManager.loadTexture(key);
         tex.setMinFilter(Texture.MinFilter.Trilinear);
-        mat.setTexture("m_ColorMap", tex);
+        mat.setTexture("ColorMap", tex);
 
         Box floor = new Box(Vector3f.ZERO, 100, 1f, 100);
         Geometry floorGeom = new Geometry("Floor", floor);
@@ -118,7 +118,7 @@ public class TestPhysicsCar extends SimpleApplication implements ActionListener 
 
     private void buildPlayer() {
         Material mat = new Material(getAssetManager(), "Common/MatDefs/Misc/WireColor.j3md");
-        mat.setColor("m_Color", ColorRGBA.Red);
+        mat.setColor("Color", ColorRGBA.Red);
 
         //create a compound shape and attach the BoxCollisionShape for the car body at 0,1,0
         //this shifts the effective center of mass of the BoxCollisionShape to 0,-1,0

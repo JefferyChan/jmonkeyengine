@@ -1,12 +1,12 @@
 MaterialDef Bloom {
 
     MaterialParameters {
-        Int m_NumSamples
-        Texture2D m_Texture
-        Float m_ExposurePow
-        Float m_ExposureCutoff
-        Boolean m_Extract
-        Texture2D m_GlowMap
+        Int NumSamples
+        Texture2D Texture
+        Float ExposurePow
+        Float ExposureCutoff
+        Boolean Extract
+        Texture2D GlowMap
     }
 
     Technique {
@@ -18,9 +18,9 @@ MaterialDef Bloom {
         }
 
         Defines {
-            HAS_GLOWMAP : m_GlowMap
-            DO_EXTRACT : m_Extract
-            RESOLVE_MS : m_NumSamples
+            HAS_GLOWMAP : GlowMap
+            DO_EXTRACT : Extract
+            RESOLVE_MS : NumSamples
         }
     }
 
@@ -33,8 +33,8 @@ MaterialDef Bloom {
         }
 
         Defines {
-            HAS_GLOWMAP : m_GlowMap
-            DO_EXTRACT : m_Extract
+            HAS_GLOWMAP : GlowMap
+            DO_EXTRACT : Extract
         }
     }
 

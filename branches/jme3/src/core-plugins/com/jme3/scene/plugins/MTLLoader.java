@@ -79,11 +79,11 @@ public class MTLLoader implements AssetLoader {
 
     protected void startMaterial(String name){
         material = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
-        material.setBoolean("m_UseMaterialColors", true);
-        material.setColor("m_Ambient",  ColorRGBA.DarkGray);
-        material.setColor("m_Diffuse",  ColorRGBA.White);
-        material.setColor("m_Specular", ColorRGBA.Black);
-        material.setFloat("m_Shininess", 16f); // prevents "premature culling" bug
+        material.setBoolean("UseMaterialColors", true);
+        material.setColor("Ambient",  ColorRGBA.DarkGray);
+        material.setColor("Diffuse",  ColorRGBA.White);
+        material.setColor("Specular", ColorRGBA.Black);
+        material.setFloat("Shininess", 16f); // prevents "premature culling" bug
         matList.put(name, material);
     }
 
@@ -102,19 +102,19 @@ public class MTLLoader implements AssetLoader {
             // ignore it for now
         }else if (cmd.equals("Kd")){
             ColorRGBA color = readColor();
-            MatParam param = material.getParam("m_Diffuse");
+            MatParam param = material.getParam("Diffuse");
             if (param != null){
                 color.a = ((ColorRGBA) param.getValue()).getAlpha();
             }
-            material.setColor("m_Diffuse", color);
+            material.setColor("Diffuse", color);
         }else if (cmd.equals("Ks")){
-            material.setColor("m_Specular", readColor());
+            material.setColor("Specular", readColor());
         }else if (cmd.equals("Ns")){
-            material.setFloat("m_Shininess", scan.nextFloat() /* (128f / 1000f)*/ );
+            material.setFloat("Shininess", scan.nextFloat() /* (128f / 1000f)*/ );
         }else if (cmd.equals("d")){
             float alpha = scan.nextFloat();
 //            if (alpha < 1f){
-//                MatParam param = material.getParam("m_Diffuse");
+//                MatParam param = material.getParam("Diffuse");
 //                ColorRGBA color;
 //                if (param != null)
 //                    color = (ColorRGBA) param.getValue();
@@ -122,8 +122,8 @@ public class MTLLoader implements AssetLoader {
 //                    color = new ColorRGBA(ColorRGBA.White);
 //
 //                color.a = scan.nextFloat();
-//                material.setColor("m_Diffuse", color);
-//                material.setBoolean("m_UseAlpha", true);
+//                material.setColor("Diffuse", color);
+//                material.setBoolean("UseAlpha", true);
 //                material.setTransparent(true);
 //                material.getAdditionalRenderState().setBlendMode(BlendMode.Alpha);
 //            }
@@ -137,10 +137,10 @@ public class MTLLoader implements AssetLoader {
             Texture texture = assetManager.loadTexture(key);
             if (texture != null){
                 texture.setWrap(WrapMode.Repeat);
-                material.setTexture("m_DiffuseMap", texture);
+                material.setTexture("DiffuseMap", texture);
             }
         }else if (cmd.equals("map_bump") || cmd.equals("bump")){
-            if (material.getParam("m_NormalMap") == null){
+            if (material.getParam("NormalMap") == null){
                 String path = scan.next();
                 String name = new File(path).getName();
                 TextureKey key = new TextureKey(folderName + name);
@@ -148,9 +148,9 @@ public class MTLLoader implements AssetLoader {
                 Texture texture = assetManager.loadTexture(key);
                 if (texture != null){
                     texture.setWrap(WrapMode.Repeat);
-                    material.setTexture("m_NormalMap", texture);
+                    material.setTexture("NormalMap", texture);
                     if (texture.getImage().getFormat() == Format.LATC){
-                        material.setBoolean("m_LATC", true);
+                        material.setBoolean("LATC", true);
                     }
                 }
             }
@@ -162,11 +162,11 @@ public class MTLLoader implements AssetLoader {
             Texture texture = assetManager.loadTexture(key);
             if (texture != null){
                 texture.setWrap(WrapMode.Repeat);
-                material.setTexture("m_SpecularMap", texture);
+                material.setTexture("SpecularMap", texture);
 
                 // NOTE: since specular color is modulated with specmap
                 // make sure we have it set
-                material.setColor("m_Specular", ColorRGBA.White);
+                material.setColor("Specular", ColorRGBA.White);
             }
         }else if (cmd.equals("map_d")){
             String path = scan.next();
@@ -176,7 +176,7 @@ public class MTLLoader implements AssetLoader {
             Texture texture = assetManager.loadTexture(key);
             if (texture != null){
                 texture.setWrap(WrapMode.Repeat);
-                material.setTexture("m_AlphaMap", texture);
+                material.setTexture("AlphaMap", texture);
                 material.setTransparent(true);
                 material.getAdditionalRenderState().setBlendMode(BlendMode.Alpha);
                 material.getAdditionalRenderState().setAlphaTest(true);

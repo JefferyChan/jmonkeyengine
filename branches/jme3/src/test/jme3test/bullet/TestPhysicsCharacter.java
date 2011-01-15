@@ -101,7 +101,7 @@ public class TestPhysicsCharacter extends SimpleApplication implements ActionLis
         setupKeys();
 
         mat = new Material(getAssetManager(), "Common/MatDefs/Misc/WireColor.j3md");
-        mat.setColor("m_Color", ColorRGBA.Red);
+        mat.setColor("Color", ColorRGBA.Red);
 
         // Add a physics character to the world
         physicsCharacter = new PhysicsCharacterNode(new SphereCollisionShape(1.2f), .1f);

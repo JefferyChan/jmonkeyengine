@@ -1,9 +1,9 @@
 MaterialDef Default GUI {
 
     MaterialParameters {
-        Int m_NumSamples
-        Texture2D m_Texture
-        Color m_Color        
+        Int NumSamples
+        Texture2D Texture
+        Color Color        
     }
 
     Technique {
@@ -15,7 +15,7 @@ MaterialDef Default GUI {
         }
 
         Defines {
-            RESOLVE_MS : m_NumSamples
+            RESOLVE_MS : NumSamples
         }
 
     }

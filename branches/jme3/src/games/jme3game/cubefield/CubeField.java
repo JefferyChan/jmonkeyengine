@@ -188,7 +188,7 @@ public class CubeField extends SimpleApplication implements AnalogListener {
 
 
         Material mat = new Material(assetManager, boxSolid);
-        mat.setColor("m_Color", obstacleColors.get(FastMath.nextRandomInt(0, obstacleColors.size() - 1)));
+        mat.setColor("Color", obstacleColors.get(FastMath.nextRandomInt(0, obstacleColors.size() - 1)));
         cube.setMaterial(mat);
 
         rootNode.attachChild(cube);
@@ -202,7 +202,7 @@ public class CubeField extends SimpleApplication implements AnalogListener {
 
         Geometry geom = new Geometry("Box", b);
         Material mat = new Material(assetManager, "Common/MatDefs/Misc/SolidColor.j3md");
-        mat.setColor("m_Color", ColorRGBA.Blue);
+        mat.setColor("Color", ColorRGBA.Blue);
         geom.setMaterial(mat);
 
         return geom;
@@ -213,7 +213,7 @@ public class CubeField extends SimpleApplication implements AnalogListener {
         Geometry playerMesh = new Geometry("Box", b);
 
         playerMaterial = new Material(assetManager, "Common/MatDefs/Misc/SolidColor.j3md");
-        playerMaterial.setColor("m_Color", ColorRGBA.Red);
+        playerMaterial.setColor("Color", ColorRGBA.Red);
         playerMesh.setMaterial(playerMaterial);
         playerMesh.setName("player");
 
@@ -222,7 +222,7 @@ public class CubeField extends SimpleApplication implements AnalogListener {
         Geometry floorMesh = new Geometry("Box", floor);
 
         floorMaterial = new Material(assetManager, "Common/MatDefs/Misc/SolidColor.j3md");
-        floorMaterial.setColor("m_Color", ColorRGBA.LightGray);
+        floorMaterial.setColor("Color", ColorRGBA.LightGray);
         floorMesh.setMaterial(floorMaterial);
         floorMesh.setName("floor");
 
@@ -344,15 +344,15 @@ public class CubeField extends SimpleApplication implements AnalogListener {
 	                boxSolid(false);
 	                obstacleColors.add(ColorRGBA.Green);
 	                renderer.setBackgroundColor(ColorRGBA.Black);
-	                playerMaterial.setColor("m_Color", ColorRGBA.White);
-			floorMaterial.setColor("m_Color", ColorRGBA.Black);
+	                playerMaterial.setColor("Color", ColorRGBA.White);
+			floorMaterial.setColor("Color", ColorRGBA.Black);
 	                break;
 	            case 2:
 	                obstacleColors.set(0, ColorRGBA.Black);
 	                boxSolid(true);
 	                renderer.setBackgroundColor(ColorRGBA.White);
-	                playerMaterial.setColor("m_Color", ColorRGBA.Gray);
-                        floorMaterial.setColor("m_Color", ColorRGBA.LightGray);
+	                playerMaterial.setColor("Color", ColorRGBA.Gray);
+                        floorMaterial.setColor("Color", ColorRGBA.LightGray);
 	                break;
 	            case 3:
 	                obstacleColors.set(0, ColorRGBA.Pink);
@@ -361,39 +361,39 @@ public class CubeField extends SimpleApplication implements AnalogListener {
 	                obstacleColors.set(0, ColorRGBA.Cyan);
 	                obstacleColors.add(ColorRGBA.Magenta);
 	                renderer.setBackgroundColor(ColorRGBA.Gray);
-                        floorMaterial.setColor("m_Color", ColorRGBA.Gray);
-	                playerMaterial.setColor("m_Color", ColorRGBA.White);
+                        floorMaterial.setColor("Color", ColorRGBA.Gray);
+	                playerMaterial.setColor("Color", ColorRGBA.White);
 	                break;
 	            case 5:
 	                obstacleColors.remove(0);
 	                renderer.setBackgroundColor(ColorRGBA.Pink);
 	                boxSolid(false);
-	                playerMaterial.setColor("m_Color", ColorRGBA.White);
+	                playerMaterial.setColor("Color", ColorRGBA.White);
 	                break;
 	            case 6:
 	                obstacleColors.set(0, ColorRGBA.White);
 	                boxSolid(true);
 	                renderer.setBackgroundColor(ColorRGBA.Black);
-	                playerMaterial.setColor("m_Color", ColorRGBA.Gray);
-                        floorMaterial.setColor("m_Color", ColorRGBA.LightGray);
+	                playerMaterial.setColor("Color", ColorRGBA.Gray);
+                        floorMaterial.setColor("Color", ColorRGBA.LightGray);
 	                break;
 	            case 7:
 	                obstacleColors.set(0, ColorRGBA.Green);
 	                renderer.setBackgroundColor(ColorRGBA.Gray);
-	                playerMaterial.setColor("m_Color", ColorRGBA.Black);
-                        floorMaterial.setColor("m_Color", ColorRGBA.Orange);
+	                playerMaterial.setColor("Color", ColorRGBA.Black);
+                        floorMaterial.setColor("Color", ColorRGBA.Orange);
 	                break;
 	            case 8:
 	                obstacleColors.set(0, ColorRGBA.Red);
-                        floorMaterial.setColor("m_Color", ColorRGBA.Pink);
+                        floorMaterial.setColor("Color", ColorRGBA.Pink);
 	                break;
 	            case 9:
 	                obstacleColors.set(0, ColorRGBA.Orange);
 	                obstacleColors.add(ColorRGBA.Red);
 	                obstacleColors.add(ColorRGBA.Yellow);
 	                renderer.setBackgroundColor(ColorRGBA.White);
-	                playerMaterial.setColor("m_Color", ColorRGBA.Red);
-	                floorMaterial.setColor("m_Color", ColorRGBA.Gray);
+	                playerMaterial.setColor("Color", ColorRGBA.Red);
+	                floorMaterial.setColor("Color", ColorRGBA.Gray);
 	                colorInt=0;
 	                break;
 	            default:

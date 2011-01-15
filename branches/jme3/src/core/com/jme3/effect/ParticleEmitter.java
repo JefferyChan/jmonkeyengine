@@ -677,7 +677,7 @@ public class ParticleEmitter extends Geometry implements Control {
             C *= cam.getWidth() * 0.5f;
 
             // send attenuation params
-            getMaterial().setFloat("m_Quadratic", C);
+            getMaterial().setFloat("Quadratic", C);
         }
 
         particleMesh.updateParticleData(particles, cam);

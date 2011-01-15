@@ -89,7 +89,7 @@ public class TerrainTest extends SimpleApplication {
 		matRock = new Material(assetManager, "Common/MatDefs/Terrain/Terrain.j3md");
 
 		// ALPHA map (for splat textures)
-		matRock.setTexture("m_Alpha", assetManager.loadTexture("Textures/Terrain/splat/alphamap.png"));
+		matRock.setTexture("Alpha", assetManager.loadTexture("Textures/Terrain/splat/alphamap.png"));
 
 		// HEIGHTMAP image (for the terrain heightmap)
 		Texture heightMapImage = assetManager.loadTexture("Textures/Terrain/splat/mountains512.png");
@@ -97,24 +97,24 @@ public class TerrainTest extends SimpleApplication {
 		// GRASS texture
 		Texture grass = assetManager.loadTexture("Textures/Terrain/splat/grass.jpg");
 		grass.setWrap(WrapMode.Repeat);
-		matRock.setTexture("m_Tex1", grass);
-		matRock.setFloat("m_Tex1Scale", 64f);
+		matRock.setTexture("Tex1", grass);
+		matRock.setFloat("Tex1Scale", 64f);
 
 		// DIRT texture
 		Texture dirt = assetManager.loadTexture("Textures/Terrain/splat/dirt.jpg");
 		dirt.setWrap(WrapMode.Repeat);
-		matRock.setTexture("m_Tex2", dirt);
-		matRock.setFloat("m_Tex2Scale", 32f);
+		matRock.setTexture("Tex2", dirt);
+		matRock.setFloat("Tex2Scale", 32f);
 
 		// ROCK texture
 		Texture rock = assetManager.loadTexture("Textures/Terrain/splat/road.jpg");
 		rock.setWrap(WrapMode.Repeat);
-		matRock.setTexture("m_Tex3", rock);
-		matRock.setFloat("m_Tex3Scale", 128f);
+		matRock.setTexture("Tex3", rock);
+		matRock.setFloat("Tex3Scale", 128f);
 
 		// WIREFRAME material
 		matWire = new Material(assetManager, "Common/MatDefs/Misc/WireColor.j3md");
-        matWire.setColor("m_Color", ColorRGBA.Green);
+        matWire.setColor("Color", ColorRGBA.Green);
 
 
 		// CREATE HEIGHTMAP

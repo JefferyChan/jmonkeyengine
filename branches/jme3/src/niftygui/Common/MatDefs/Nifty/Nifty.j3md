@@ -1,9 +1,9 @@
 MaterialDef Default GUI {
 
     MaterialParameters {
-        Texture2D m_Texture
-        Color m_Color
-        Int m_Mode
+        Texture2D Texture
+        Color Color
+        Int Mode
     }
 
     Technique {
