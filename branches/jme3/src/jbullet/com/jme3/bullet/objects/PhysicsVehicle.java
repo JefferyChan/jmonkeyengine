@@ -86,16 +86,6 @@ public class PhysicsVehicle extends PhysicsRigidBody {
         super(shape, mass);
     }
 
-    public PhysicsVehicle(PhysicsSpace space, CollisionShape shape) {
-        super(shape);
-        createVehicle(space);
-    }
-
-    public PhysicsVehicle(PhysicsSpace space, CollisionShape shape, float mass) {
-        super(shape, mass);
-        createVehicle(space);
-    }
-
     /**
      * used internally
      */
