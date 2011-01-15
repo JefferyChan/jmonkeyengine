@@ -15,6 +15,8 @@ import com.jme3.scene.VertexBuffer.Format;
 import com.jme3.scene.VertexBuffer.Type;
 import com.jme3.scene.VertexBuffer.Usage;
 import com.jme3.scene.mesh.IndexBuffer;
+import com.jme3.scene.mesh.VirtualIndexBuffer;
+import com.jme3.scene.mesh.WrappedIndexBuffer;
 import com.jme3.scene.shape.Quad;
 import com.jme3.util.IntMap.Entry;
 import java.nio.Buffer;
@@ -77,31 +79,58 @@ public class GeometryBatchFactory {
     public static void mergeGeometries(Collection<Geometry> geometries, Mesh outMesh){
         int[] compsForBuf = new int[VertexBuffer.Type.values().length];
         Format[] formatForBuf = new Format[compsForBuf.length];
-        Mode mode = null;
 
         int totalVerts = 0;
         int totalTris  = 0;
 
+        Mode mode = null;
         for (Geometry geom : geometries){
             totalVerts += geom.getVertexCount();
             totalTris  += geom.getTriangleCount();
-            if (mode != null && geom.getMesh().getMode() != mode)
-                throw new UnsupportedOperationException("All geometries must"
-                                                      + " have the same mode!");
-            mode = geom.getMesh().getMode();
 
+            Mode listMode;
+            int components;
+            switch (geom.getMesh().getMode()){
+                case Points:
+                    listMode = Mode.Points;
+                    components = 1;
+                    break;
+                case LineLoop:
+                case LineStrip:
+                case Lines:
+                    listMode = Mode.Lines;
+                    components = 2;
+                    break;
+                case TriangleFan:
+                case TriangleStrip:
+                case Triangles:
+                    listMode = Mode.Triangles;
+                    components = 3;
+                    break;
+                default:
+                    throw new UnsupportedOperationException();
+            }
+            
             for (Entry<VertexBuffer> entry : geom.getMesh().getBuffers()){
                 compsForBuf[entry.getKey()] = entry.getValue().getNumComponents();
                 formatForBuf[entry.getKey()] = entry.getValue().getFormat();
             }
+
+            if (mode != null && mode != listMode){
+                throw new UnsupportedOperationException("Cannot combine different"
+                                                      + " primitive types: " + mode + " != " + listMode);
+            }
+            mode = listMode;
+            compsForBuf[Type.Index.ordinal()] = components;
         }
 
         outMesh.setMode(mode);
-
         if (totalVerts >= 65536){
             // make sure we create an UnsignedInt buffer so
             // we can fit all of the meshes
             formatForBuf[Type.Index.ordinal()] = Format.UnsignedInt;
+        }else{
+            formatForBuf[Type.Index.ordinal()] = Format.UnsignedShort;
         }
 
         // generate output buffers based on retrieved info
@@ -143,6 +172,11 @@ public class GeometryBatchFactory {
                     int components = compsForBuf[bufType];
 
                     IndexBuffer inIdx = inMesh.getIndexBuffer();
+                    if (inIdx == null){
+                        inIdx = new VirtualIndexBuffer(geomVertCount, inMesh.getMode());
+                    }else if (inMesh.getMode() != mode){
+                        inIdx = new WrappedIndexBuffer(inMesh);
+                    }
                     IndexBuffer outIdx = outMesh.getIndexBuffer();
 
                     for (int tri = 0; tri < geomTriCount; tri++){
@@ -155,7 +189,7 @@ public class GeometryBatchFactory {
                     FloatBuffer inPos = (FloatBuffer) inBuf.getData();
                     FloatBuffer outPos = (FloatBuffer) outBuf.getData();
                     doTransformVerts(inPos, globalVertIndex, outPos, worldMatrix);
-                }else if (Type.Normal.ordinal() == bufType){
+                }else if (Type.Normal.ordinal() == bufType || Type.Tangent.ordinal() == bufType){
                     FloatBuffer inPos = (FloatBuffer) inBuf.getData();
                     FloatBuffer outPos = (FloatBuffer) outBuf.getData();
                     doTransformNorms(inPos, globalVertIndex, outPos, worldMatrix);

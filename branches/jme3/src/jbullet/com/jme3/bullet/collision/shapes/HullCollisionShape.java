@@ -17,40 +17,61 @@ import java.io.IOException;
 
 public class HullCollisionShape extends CollisionShape {
 
-    private Mesh mesh;
+    private float[] points;
 
     public HullCollisionShape() {
     }
 
     public HullCollisionShape(Mesh mesh) {
-        this.mesh = mesh;
-        createShape();
+        this.points = getPoints(mesh);
+        createShape(this.points);
     }
 
+    @Override
     public void write(JmeExporter ex) throws IOException {
         super.write(ex);
+        
         OutputCapsule capsule = ex.getCapsule(this);
-        capsule.write(mesh, "hullMesh", null);
+        capsule.write(points, "points", null);
     }
 
+    @Override
     public void read(JmeImporter im) throws IOException {
         super.read(im);
         InputCapsule capsule = im.getCapsule(this);
-        mesh = (Mesh)capsule.readSavable("hullMesh", null);
-        createShape();
+
+        // for backwards compatability
+        Mesh mesh = (Mesh)capsule.readSavable("hullMesh", null);
+        if (mesh != null){
+            this.points = getPoints(mesh);
+        }else{
+            this.points = capsule.readFloatArray("points", null);
+            
+        }
+        createShape(this.points);
     }
 
-    protected void createShape() {
-        FloatBuffer vertices = mesh.getFloatBuffer(Type.Position);
-        vertices.rewind();
-        ObjectArrayList<Vector3f> points = new ObjectArrayList<Vector3f>();
-        int size = mesh.getVertexCount();
-        for (int i = 0; i < size; i++) {
-            points.add(new Vector3f(vertices.get(), vertices.get(), vertices.get()));
-
+    protected void createShape(float[] points){
+        ObjectArrayList<Vector3f> pointList = new ObjectArrayList<Vector3f>();
+        for (int i = 0; i < points.length; i += 3) {
+            pointList.add(new Vector3f(points[i], points[i+1], points[i+2]));
         }
-        cShape = new ConvexHullShape(points);
+        cShape = new ConvexHullShape(pointList);
         cShape.setLocalScaling(Converter.convert(getScale()));
         cShape.setMargin(margin);
     }
+
+    protected float[] getPoints(Mesh mesh){
+        FloatBuffer vertices = mesh.getFloatBuffer(Type.Position);
+        vertices.rewind();
+        int size = mesh.getVertexCount();
+        float[] pointsArray = new float[size];
+        for (int i = 0; i < size; i += 3) {
+            pointsArray[i] = vertices.get();
+            pointsArray[i+1] = vertices.get();
+            pointsArray[i+2] = vertices.get();
+        }
+        return pointsArray;
+    }
+
 }
