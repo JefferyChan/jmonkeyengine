@@ -50,11 +50,19 @@ import java.util.List;
 public interface Terrain {
 
 	/**
-	 * Get the height of the terrain at the specified X-Z coorindate.
-	 * @param xz the X-Z coordinate
-	 * @return
+	 * Get the real-world height of the terrain at the specified X-Z coorindate.
+	 * @param xz the X-Z world coordinate
+	 * @return the height at the given point
 	 */
 	public float getHeight(Vector2f xz);
+
+    /**
+     * Get the heightmap height at the specified X-Z coordinate. This does not
+     * count scaling and snaps the XZ coordinate to the nearest (rounded) heightmap grid point.
+     * @param xz world coordinate
+     * @return the height, unscaled and uninterpolated
+     */
+    public float getHeightmapHeight(Vector2f xz);
 	
 	/**
 	 * Set the height at the specified X-Z coordinate.
@@ -66,6 +74,11 @@ public interface Terrain {
 	 */
 	public void setHeight(Vector2f xzCoordinate, float height);
 
+    /**
+     * Raise/lower the height in one call (instead of getHeight then setHeight).
+     * @param xzCoordinate world coordinate to adjust the terrain height
+     * @param delta +- value to adjust the height by
+     */
     public void adjustHeight(Vector2f xzCoordinate, float delta);
 	
 	/**

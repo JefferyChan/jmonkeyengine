@@ -100,6 +100,7 @@ public class TerrainQuad extends Node implements Terrain {
 	private int maxLod = -1;
 	private HashMap<String,UpdatedTerrainPatch> updatedPatches;
 	private final Object updatePatchesLock = new Object();
+    private BoundingBox affectedAreaBBox; // only set in the root quad
 
     private TerrainPicker picker;
 
@@ -119,12 +120,14 @@ public class TerrainQuad extends Node implements Terrain {
 	
 	public TerrainQuad(String name, int blockSize, int size, float[] heightMap) {
 		this(name, blockSize, size, Vector3f.UNIT_XYZ, heightMap, size, new Vector2f(), 0, null);
-        fixNormals();
+        affectedAreaBBox = new BoundingBox(new Vector3f(0,0,0), size, Float.MAX_VALUE, size);
+        fixNormalEdges(affectedAreaBBox);
 	}
 	
 	public TerrainQuad(String name, int blockSize, int size, Vector3f scale, float[] heightMap, LodCalculatorFactory lodCalculatorFactory) {
 		this(name, blockSize, size, scale, heightMap, size, new Vector2f(), 0, lodCalculatorFactory);
-        fixNormals();
+        affectedAreaBBox = new BoundingBox(new Vector3f(0,0,0), size, Float.MAX_VALUE, size);
+        fixNormalEdges(affectedAreaBBox);
 	}
 	
 	protected TerrainQuad(String name, int blockSize, int size,
@@ -172,16 +175,36 @@ public class TerrainQuad extends Node implements Terrain {
 	}
 
 	 /**
-	  * Call from the update() method of your gamestate to update
+	  * Call from the update() method of a terrain controller to update
 	  * the LOD values of each patch.
 	  * This will perform the geometry calculation in a background thread and 
 	  * do the actual update on the opengl thread.
 	  */
 	public void update(List<Vector3f> locations) {
 		
-		// update any existing ones that need updating
+        updateNormals();
+        updateLOD(locations);
+	}
+
+    /**
+     * update the normals if there were any height changes recently.
+     * Should only be called on the root quad
+     */
+    protected void updateNormals() {
+        if (needToRecalculateNormals()) {
+            //TODO background-thread this if it ends up being expensive
+            fixNormals(affectedAreaBBox); // the affected patches
+            fixNormalEdges(affectedAreaBBox); // the edges between the patches
+            
+            setNormalRecalcNeeded(null); // set to false
+        }
+    }
+
+    // do all of the LOD calculations
+    protected void updateLOD(List<Vector3f> locations) {
+        // update any existing ones that need updating
 		updateQuadLODs();
-		
+
 		if (lastCameraLocations != null) {
 			if (lastCameraLocationsTheSame(locations))
 				return; // don't update if in same spot
@@ -192,19 +215,18 @@ public class TerrainQuad extends Node implements Terrain {
 			lastCameraLocations = cloneVectorList(locations);
 			return;
 		}
-		
+
 		if (isLodCalcRunning()) {
 			return;
 		}
-		
+
 		if (getParent() instanceof TerrainQuad) {
 			return; // we just want the root quad to perform this.
 		}
-		
+
 		UpdateLOD updateLodThread = new UpdateLOD(locations);
 		executor.execute(updateLodThread);
-		
-	}
+    }
 	
 	private synchronized boolean isLodCalcRunning() {
 		return lodCalcRunning;
@@ -248,6 +270,7 @@ public class TerrainQuad extends Node implements Terrain {
     public Spatial getSpatial() {
         return this;
     }
+
 	
 	/**
 	 * Calculates the LOD of all child terrain patches.
@@ -737,19 +760,45 @@ public class TerrainQuad extends Node implements Terrain {
         parent.attachChild(g);
     }
 
-	public float getHeight(Vector2f xz) {
-        // offset
-        int x = (int) ((xz.x / getLocalScale().x) + totalSize / 2);
-        int z = (int) ((xz.y / getLocalScale().z) + totalSize / 2);
+    /**
+     * Signal if the normal vectors for the terrain need to be recalculated.
+     * Does this by looking at the affectedAreaBBox bounding box. If the bbox
+     * exists already, then it will grow the box to fit the new changedPoint.
+     * If the affectedAreaBBox is null, then it will create one of unit size.
+     *
+     * @param needToRecalculateNormals if null, will cause needToRecalculateNormals() to return false
+     */
+    protected void setNormalRecalcNeeded(Vector2f changedPoint) {
+        if (changedPoint == null) { // set needToRecalculateNormals() to false
+            affectedAreaBBox = null;
+            return;
+        }
 
-        return getHeight(x, z);
+        if (affectedAreaBBox == null) {
+            affectedAreaBBox = new BoundingBox(new Vector3f(changedPoint.x, 0, changedPoint.y), 0.5f, Float.MAX_VALUE, 0.5f); // unit length
+        } else {
+            // adjust size of box to be larger
+            affectedAreaBBox.mergeLocal(new BoundingBox(new Vector3f(changedPoint.x, 0, changedPoint.y), 0.5f, Float.MAX_VALUE, 0.5f));
+        }
+    }
+
+    protected boolean needToRecalculateNormals() {
+        return affectedAreaBBox != null;
+    }
+
+	public float getHeightmapHeight(Vector2f xz) {
+        // offset
+        int x = Math.round((xz.x / getLocalScale().x) + totalSize / 2);
+        int z = Math.round((xz.y / getLocalScale().z) + totalSize / 2);
+
+        return getHeightmapHeight(x, z);
 	}
 
     /**
      * This will just get the heightmap value at the supplied point,
      * not an interpolated (actual) height value.
      */
-    protected float getHeight(int x, int z) {
+    protected float getHeightmapHeight(int x, int z) {
         int quad = findQuadrant(x, z);
         int split = (size + 1) >> 1;
         if (children != null) {
@@ -795,12 +844,42 @@ public class TerrainQuad extends Node implements Terrain {
     }
 
 
+    public float getHeight(Vector2f xz) {
+        // offset
+        float x = ((xz.x / getLocalScale().x) + totalSize / 2);
+        float z = ((xz.y / getLocalScale().z) + totalSize / 2);
+        return getHeight(x, z);
+    }
+
+    // gets an interpolated value
+    protected float getHeight(float x, float z) {
+        float col = FastMath.floor(x);
+        float row = FastMath.floor(z);
+
+        boolean onX = (x-col) > (z-row); // what triangle to interpolate on
+
+        float topLeft = getHeightmapHeight((int)FastMath.floor(x), (int)FastMath.ceil(z));
+        float topRight = getHeightmapHeight((int)FastMath.ceil(x), (int)FastMath.ceil(z));
+        float bottomLeft = getHeightmapHeight((int)FastMath.floor(x), (int)FastMath.floor(z));
+        float bottomRight = getHeightmapHeight((int)FastMath.ceil(x), (int)FastMath.floor(z));
+
+        if (onX) {
+             return (1-(x-col))*topLeft + ((x-col)-(z-row))*topRight + (z-row)*bottomRight;
+        } else {
+            return (1-(z-row))*topLeft + ((z-row)-(x-col))*bottomLeft + (x-col)*bottomRight;
+        }
+    }
+
+
+    // the coord calculations should be the same as getHeight()
     public void setHeight(Vector2f xz, float height) {
         // offset
-        int x = (int) ((xz.x / getLocalScale().x) + totalSize / 2);
-        int z = (int) ((xz.y / getLocalScale().z) + totalSize / 2);
+        int x = Math.round((xz.x / getLocalScale().x) + totalSize / 2);
+        int z = Math.round((xz.y / getLocalScale().z) + totalSize / 2);
 
         setHeight(x, z, height); // adjust the actual mesh
+
+        setNormalRecalcNeeded(xz);
 	}
 
     protected void setHeight(int x, int z, float newVal) {
@@ -853,13 +932,15 @@ public class TerrainQuad extends Node implements Terrain {
 
 
     public void adjustHeight(Vector2f xz, float delta) {
-        int x = (int) ((xz.x / getLocalScale().x) + totalSize / 2);
-        int z = (int) ((xz.y / getLocalScale().z) + totalSize / 2);
+        int x = Math.round((xz.x / getLocalScale().x) + totalSize / 2);
+        int z = Math.round((xz.y / getLocalScale().z) + totalSize / 2);
 
         if (!isPointOnTerrain(x,z))
             return;
         
         adjustHeight(x, z,delta);
+
+        setNormalRecalcNeeded(xz);
     }
 
     protected void adjustHeight(int x, int z, float delta) {
@@ -1145,19 +1226,45 @@ public class TerrainQuad extends Node implements Terrain {
 
 		return null;
 	}
+
+    /**
+     * Find what terrain patches need normal recalculations and update
+     * their normals;
+     */
+    protected void fixNormals(BoundingBox affectedArea) {
+        if (children == null)
+            return;
+
+        // go through the children and see if they collide with the affectedAreaBBox
+        // if they do, then update their normals
+        for (int x = children.size(); --x >= 0;) {
+            Spatial child = children.get(x);
+            if (child instanceof TerrainQuad) {
+                if (affectedArea != null && affectedArea.intersects(((TerrainQuad) child).getWorldBound()) )
+                    ((TerrainQuad) child).fixNormals(affectedArea);
+            } else if (child instanceof TerrainPatch) {
+                if (affectedArea != null && affectedArea.intersects(((TerrainPatch) child).getWorldBound()) )
+                    ((TerrainPatch) child).updateNormals(); // recalculate the patch's normals
+            }
+        }
+    }
 	
 	/**
 	 * fix the normals on the edge of the terrain patches.
 	 */
-	public void fixNormals() {
+	protected void fixNormalEdges(BoundingBox affectedArea) {
 		if (children == null)
             return;
 
         for (int x = children.size(); --x >= 0;) {
             Spatial child = children.get(x);
             if (child instanceof TerrainQuad) {
-                ((TerrainQuad) child).fixNormals();
+                if (affectedArea != null && affectedArea.intersects(((TerrainQuad) child).getWorldBound()) )
+                    ((TerrainQuad) child).fixNormalEdges(affectedArea);
             } else if (child instanceof TerrainPatch) {
+                if (affectedArea != null && !affectedArea.intersects(((TerrainPatch) child).getWorldBound()) ) // if doesn't intersect, continue
+                    continue;
+
                 TerrainPatch tp = (TerrainPatch) child;
                 TerrainPatch right = findRightPatch(tp);
                 TerrainPatch down = findDownPatch(tp);

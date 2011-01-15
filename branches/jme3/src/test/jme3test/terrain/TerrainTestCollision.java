@@ -70,6 +70,7 @@ import java.util.List;
  * drops several balls from the sky that collide with the terrain
  * and roll around.
  * Left click to place a sphere on the ground where the crosshairs intersect the terrain.
+ * Hit keys 1 or 2 to raise/lower the terrain at that spot.
  *
  * @author Brent Owens
  */
@@ -258,14 +259,12 @@ public class TerrainTestCollision extends SimpleBulletApplication {
             } else if (binding.equals("Raise")) {
                 if (keyPressed) {
                     Vector2f loc = new Vector2f(collisionMarker.getWorldTranslation().x, collisionMarker.getWorldTranslation().z);
-                    float h = terrain.getHeight(loc);
-                    terrain.setHeight(loc, h + 1);
+                    terrain.adjustHeight(loc, 1);
                 }
             } else if (binding.equals("Lower")) {
                 if (keyPressed) {
                     Vector2f loc = new Vector2f(collisionMarker.getWorldTranslation().x, collisionMarker.getWorldTranslation().z);
-                    float h = terrain.getHeight(loc);
-                    terrain.setHeight(loc, h - 1);
+                    terrain.adjustHeight(loc, -1);
                 }
             }
         }

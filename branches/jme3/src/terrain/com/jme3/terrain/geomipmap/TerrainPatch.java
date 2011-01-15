@@ -261,8 +261,7 @@ public class TerrainPatch extends Geometry {
         FloatBuffer newVertexBuffer = geomap.writeVertexArray(null, stepScale, false);
         getMesh().clearBuffer(Type.Position);
 		getMesh().setBuffer(Type.Position, 3, newVertexBuffer);
-
-        //updateNormals(x,z);
+        // normals are updated from the terrain controller on update()
     }
 
     public void adjustHeight(float x, float z, float delta) {
@@ -274,20 +273,15 @@ public class TerrainPatch extends Geometry {
         FloatBuffer newVertexBuffer = geomap.writeVertexArray(null, stepScale, false);
         getMesh().clearBuffer(Type.Position);
 		getMesh().setBuffer(Type.Position, 3, newVertexBuffer);
+    }
 
+    /**
+     * recalculate all of this normal vectors in this terrain patch
+     */
+    protected void updateNormals() {
         FloatBuffer newNormalBuffer = geomap.writeNormalArray(null, stepScale);
         getMesh().clearBuffer(Type.Normal);
 		getMesh().setBuffer(Type.Normal, 3, newNormalBuffer);
-
-        //updateNormals(x,z);
-    }
-
-    protected void updateNormals(float x, float z) {
-        //TODO: we need real smooth normals, and a method to calculate that for the triangle strips
-        ((LODGeomap)geomap).removeNormalBuffer();
-        FloatBuffer nb = geomap.writeNormalArray(null, Vector3f.UNIT_XYZ);
-        getMesh().clearBuffer(Type.Normal);
-        getMesh().setBuffer(Type.Normal, 3, nb);
     }
 
     /**

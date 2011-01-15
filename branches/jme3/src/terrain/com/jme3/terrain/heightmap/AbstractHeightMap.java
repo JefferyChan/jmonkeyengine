@@ -29,16 +29,14 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package com.jme3.terrain.heightmap;
 
 import java.io.DataOutputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
-
-
 
 /**
  * <code>AbstractHeightMap</code> provides a base implementation of height
@@ -53,21 +51,17 @@ import java.util.logging.Logger;
  * @author Mark Powell
  * @version $Id: AbstractHeightMap.java 4133 2009-03-19 20:40:11Z blaine.dev $
  */
-public abstract class AbstractHeightMap {
-    private static final Logger logger = Logger.getLogger(AbstractHeightMap.class.getName());
+public abstract class AbstractHeightMap implements HeightMap {
 
+    private static final Logger logger = Logger.getLogger(AbstractHeightMap.class.getName());
     /** Height data information. */
     protected float[] heightData = null;
-
     /** The size of the height map's width. */
     protected int size = 0;
-
     /** Allows scaling the Y height of the map. */
     protected float heightScale = 1.0f;
-
     /** The filter is used to erode the terrain. */
     protected float filter = 0.5f;
-    
     /** The range used to normalize terrain */
     public static float NORMALIZE_RANGE = 255f;
 
@@ -104,7 +98,7 @@ public abstract class AbstractHeightMap {
      *            the z (north/south) coordinate.
      */
     public void setHeightAtPoint(float height, int x, int z) {
-        heightData[x + (z*size)] = height;
+        heightData[x + (z * size)] = height;
     }
 
     /**
@@ -119,8 +113,9 @@ public abstract class AbstractHeightMap {
      *             if the size is less than or equal to zero.
      */
     public void setSize(int size) throws Exception {
-        if (size <= 0) { 
-        	throw new Exception("size must be greater than zero."); }
+        if (size <= 0) {
+            throw new Exception("size must be greater than zero.");
+        }
 
         this.size = size;
     }
@@ -137,8 +132,9 @@ public abstract class AbstractHeightMap {
      *             if filter is less than 0 or greater than 1.
      */
     public void setMagnificationFilter(float filter) throws Exception {
-        if (filter < 0 || filter >= 1) { 
-        	throw new Exception("filter must be between 0 and 1"); }
+        if (filter < 0 || filter >= 1) {
+            throw new Exception("filter must be between 0 and 1");
+        }
         this.filter = filter;
     }
 
@@ -154,7 +150,7 @@ public abstract class AbstractHeightMap {
      */
     public float getTrueHeightAtPoint(int x, int z) {
         //logger.info( heightData[x + (z*size)]);
-        return heightData[x + (z*size)];
+        return heightData[x + (z * size)];
     }
 
     /**
@@ -168,7 +164,7 @@ public abstract class AbstractHeightMap {
      * @return the scaled value at (x, z).
      */
     public float getScaledHeightAtPoint(int x, int z) {
-        return ((heightData[x + (z*size)]) * heightScale);
+        return ((heightData[x + (z * size)]) * heightScale);
     }
 
     /**
@@ -191,8 +187,8 @@ public abstract class AbstractHeightMap {
         if (x + 1 > size) {
             return low;
         }
-         
-        highX = getScaledHeightAtPoint((int) x + 1, (int) z);        
+
+        highX = getScaledHeightAtPoint((int) x + 1, (int) z);
 
         interpolation = x - (int) x;
         intX = ((highX - low) * interpolation) + low;
@@ -200,8 +196,8 @@ public abstract class AbstractHeightMap {
         if (z + 1 > size) {
             return low;
         }
-           
-        highZ = getScaledHeightAtPoint((int) x, (int) z + 1);        
+
+        highZ = getScaledHeightAtPoint((int) x, (int) z + 1);
 
         interpolation = z - (int) z;
         intZ = ((highZ - low) * interpolation) + low;
@@ -216,6 +212,18 @@ public abstract class AbstractHeightMap {
      */
     public float[] getHeightMap() {
         return heightData;
+    }
+
+    /**
+     * Build a new array of height data with the scaled values.
+     * @return
+     */
+    public float[] getScaledHeightMap() {
+        float[] hm = new float[heightData.length];
+        for (int i=0; i<heightData.length; i++) {
+            hm[i] = heightScale * heightData[i];
+        }
+        return hm;
     }
 
     /**
@@ -241,66 +249,69 @@ public abstract class AbstractHeightMap {
      *             if filename is null.
      */
     public boolean save(String filename) throws Exception {
-        if (null == filename) { 
-        	throw new Exception("Filename must not be null"); }
+        if (null == filename) {
+            throw new Exception("Filename must not be null");
+        }
         //open the streams and send the height data to the file.
         try {
             FileOutputStream fos = new FileOutputStream(filename);
             DataOutputStream dos = new DataOutputStream(fos);
             for (int i = 0; i < size; i++) {
                 for (int j = 0; j < size; j++) {
-                    dos.write((int)heightData[j + (i*size)]);
+                    dos.write((int) heightData[j + (i * size)]);
                 }
             }
 
             fos.close();
             dos.close();
         } catch (FileNotFoundException e) {
-            logger.warning("Error opening file " + filename);
+            logger.log(Level.WARNING, "Error opening file {0}", filename);
             return false;
         } catch (IOException e) {
-            logger.warning("Error writing to file " + filename);
+            logger.log(Level.WARNING, "Error writing to file {0}", filename);
             return false;
         }
 
-        logger.info("Saved terrain to " + filename);
+        logger.log(Level.INFO, "Saved terrain to {0}", filename);
         return true;
     }
 
     /**
      * <code>normalizeTerrain</code> takes the current terrain data and
-     * converts it to values between 0 and 255.
+     * converts it to values between 0 and <code>value</code>.
      *
-     * @param tempBuffer
-     *            the terrain to normalize.
+     * @param value
+     *            the value to normalize to.
      */
-    public void normalizeTerrain(float[][] tempBuffer) {
+    public void normalizeTerrain(float value) {
         float currentMin, currentMax;
         float height;
 
-        currentMin = tempBuffer[0][0];
-        currentMax = tempBuffer[0][0];
+        currentMin = heightData[0];
+        currentMax = heightData[0];
 
         //find the min/max values of the height fTemptemptempBuffer
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
-                if (tempBuffer[i][j] > currentMax) {
-                    currentMax = tempBuffer[i][j];
-                } else if (tempBuffer[i][j] < currentMin) {
-                    currentMin = tempBuffer[i][j];
+                if (heightData[i + j * size] > currentMax) {
+                    currentMax = heightData[i + j * size];
+                } else if (heightData[i + j * size] < currentMin) {
+                    currentMin = heightData[i + j * size];
                 }
             }
         }
 
         //find the range of the altitude
-        if (currentMax <= currentMin) { return; }
+        if (currentMax <= currentMin) {
+            return;
+        }
 
         height = currentMax - currentMin;
 
         //scale the values to a range of 0-255
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
-                tempBuffer[i][j] = ((tempBuffer[i][j] - currentMin) / height) * NORMALIZE_RANGE;
+                heightData[i + j * size] = ((heightData[i + j * size] - currentMin) / height) * value;
             }
         }
     }
@@ -309,55 +320,116 @@ public abstract class AbstractHeightMap {
      * <code>erodeTerrain</code> is a convenience method that applies the FIR
      * filter to a given height map. This simulates water errosion.
      *
-     * @param tempBuffer
-     *            the terrain to filter.
+     * @see setFilter
      */
-    public void erodeTerrain(float[][] tempBuffer) {
+    public void erodeTerrain() {
         //erode left to right
         float v;
 
         for (int i = 0; i < size; i++) {
-            v = tempBuffer[i][0];
+            v = heightData[i];
             for (int j = 1; j < size; j++) {
-                tempBuffer[i][j] = filter * v + (1 - filter) * tempBuffer[i][j];
-                v = tempBuffer[i][j];
+                heightData[i + j * size] = filter * v + (1 - filter) * heightData[i + j * size];
+                v = heightData[i + j * size];
             }
         }
 
         //erode right to left
         for (int i = size - 1; i >= 0; i--) {
-            v = tempBuffer[i][0];
+            v = heightData[i];
             for (int j = 0; j < size; j++) {
-                tempBuffer[i][j] = filter * v + (1 - filter) * tempBuffer[i][j];
-                v = tempBuffer[i][j];
+                heightData[i + j * size] = filter * v + (1 - filter) * heightData[i + j * size];
+                v = heightData[i + j * size];
                 //erodeBand(tempBuffer[size * i + size - 1], -1);
             }
         }
 
         //erode top to bottom
         for (int i = 0; i < size; i++) {
-            v = tempBuffer[0][i];
+            v = heightData[i];
             for (int j = 0; j < size; j++) {
-                tempBuffer[j][i] = filter * v + (1 - filter) * tempBuffer[j][i];
-                v = tempBuffer[j][i];
+                heightData[i + j * size] = filter * v + (1 - filter) * heightData[i + j * size];
+                v = heightData[i + j * size];
             }
         }
 
         //erode from bottom to top
         for (int i = size - 1; i >= 0; i--) {
-            v = tempBuffer[0][i];
+            v = heightData[i];
             for (int j = 0; j < size; j++) {
-                tempBuffer[j][i] = filter * v + (1 - filter) * tempBuffer[j][i];
-                v = tempBuffer[j][i];
+                heightData[i + j * size] = filter * v + (1 - filter) * heightData[i + j * size];
+                v = heightData[i + j * size];
             }
         }
     }
 
     /**
-     * <code>load</code> populates the height map data. This is dependent on
-     * the subclass's implementation.
+     * Flattens out the valleys. The flatten algorithm makes the valleys more
+     * prominent while keeping the hills mostly intact. This effect is based on
+     * what happens when values below one are squared. The terrain will be
+     * normalized between 0 and 1 for this function to work.
      *
-     * @return true if the load was successful, false otherwise.
+     * @param flattening
+     *            the power of flattening applied, 1 means none
      */
-    public abstract boolean load();
+    public void flatten(byte flattening) {
+        // If flattening is one we can skip the calculations
+        // since it wouldn't change anything. (e.g. 2 power 1 = 2)
+        if (flattening <= 1) {
+            return;
+        }
+        normalizeTerrain(1f);
+        for (int x = 0; x < size; x++) {
+            for (int y = 0; y < size; y++) {
+                float flat = 1.0f;
+                float original = heightData[x + y * size];
+
+                // Flatten as many times as desired;
+                for (int i = 0; i < flattening; i++) {
+                    flat *= original;
+                }
+                heightData[x + y * size] = flat;
+            }
+        }
+    }
+
+    /**
+     * Smooth the terrain. For each node, its 8 neighbors heights
+     * are averaged and will participate in the  node new height
+     * by a factor <code>np</code> between 0 and 1
+     *
+     * @param np
+     *          The factor to what extend the neighbors average has an influence.
+     *          Value of 0 will ignore neighbors (no smoothing)
+     *          Value of 1 will ignore the node old height.
+     */
+    public void smooth(float np) {
+        if (np < 0 || np > 1) {
+            return;
+        }
+        int[] dxs = new int[]{-1, 0, 1, 1, 1, 0, -1, -1};
+        int[] dys = new int[]{-1, -1, -1, 0, 1, 1, 1, 0};
+        for (int x = 0; x < size; x++) {
+            for (int y = 0; y < size; y++) {
+                int neighNumber = 0;
+                float neighAverage = 0;
+                for (int d = 0; d < 8; d++) {
+                    int i = x + dxs[d];
+                    int j = y + dys[d];
+                    if (i < 0 || i > size) {
+                        continue;
+                    }
+                    if (j < 0 || j > size) {
+                        continue;
+                    }
+                    neighNumber++;
+                    neighAverage += heightData[i + j * size];
+                }
+
+                neighAverage /= neighNumber;
+                float cp = 1 - np;
+                heightData[x + y * size] = neighAverage * np + heightData[x + y * size] * cp;
+            }
+        }
+    }
 }
