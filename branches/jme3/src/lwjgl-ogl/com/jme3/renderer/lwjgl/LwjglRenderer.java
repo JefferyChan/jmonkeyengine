@@ -1574,7 +1574,7 @@ public class LwjglRenderer implements Renderer {
         if (!img.hasMipmaps() && mips) {
             // No pregenerated mips available,
             // generate from base level if required
-            if (!GLContext.getCapabilities().GL_EXT_framebuffer_object) {
+            if (!GLContext.getCapabilities().OpenGL30) {
                 glTexParameteri(target, GL_GENERATE_MIPMAP, GL_TRUE);
             }
         } else {
@@ -1620,7 +1620,7 @@ public class LwjglRenderer implements Renderer {
             img.setMultiSamples(imageSamples);
         }
 
-        if (GLContext.getCapabilities().GL_EXT_framebuffer_object) {
+        if (GLContext.getCapabilities().OpenGL30) {
             if (!img.hasMipmaps() && mips) {
                 glGenerateMipmapEXT(target);
             }
