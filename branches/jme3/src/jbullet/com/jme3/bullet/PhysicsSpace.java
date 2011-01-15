@@ -558,6 +558,7 @@ public class PhysicsSpace {
         physicsNodes.put(node.getRigidBody(), node);
         dynamicsWorld.addRigidBody(node.getRigidBody());
         if (node instanceof PhysicsVehicle) {
+            ((PhysicsVehicle) node).createVehicle(this);
             dynamicsWorld.addVehicle(((PhysicsVehicle) node).getVehicle());
         }
     }

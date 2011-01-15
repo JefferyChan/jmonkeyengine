@@ -123,6 +123,7 @@ public class PhysicsVehicleWheel implements Savable {
 
     public void setWheelInfo(com.bulletphysics.dynamics.vehicle.WheelInfo wheelInfo) {
         this.wheelInfo = wheelInfo;
+        applyInfo();
     }
 
     public boolean isFrontWheel() {
@@ -247,7 +248,10 @@ public class PhysicsVehicleWheel implements Savable {
         applyInfo();
     }
 
-    public void applyInfo() {
+    private void applyInfo() {
+        if (wheelInfo == null) {
+            return;
+        }
         wheelInfo.suspensionStiffness = suspensionStiffness;
         wheelInfo.wheelsDampingRelaxation = wheelsDampingRelaxation;
         wheelInfo.wheelsDampingCompression = wheelsDampingCompression;

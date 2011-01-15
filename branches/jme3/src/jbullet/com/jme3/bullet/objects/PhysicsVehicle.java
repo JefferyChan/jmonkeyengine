@@ -73,6 +73,7 @@ public class PhysicsVehicle extends PhysicsRigidBody {
     protected VehicleTuning tuning;
     protected VehicleRaycaster rayCaster;
     protected ArrayList<PhysicsVehicleWheel> wheels = new ArrayList<PhysicsVehicleWheel>();
+    protected PhysicsSpace physicsSpace;
 
     public PhysicsVehicle() {
     }
@@ -85,10 +86,20 @@ public class PhysicsVehicle extends PhysicsRigidBody {
         super(shape, mass);
     }
 
+    public PhysicsVehicle(PhysicsSpace space, CollisionShape shape) {
+        super(shape);
+        createVehicle(space);
+    }
+
+    public PhysicsVehicle(PhysicsSpace space, CollisionShape shape, float mass) {
+        super(shape, mass);
+        createVehicle(space);
+    }
+
     /**
      * used internally
      */
-    public void updateWheels(){
+    public void updateWheels() {
         if (wheels != null) {
             for (int i = 0; i < wheels.size(); i++) {
                 vehicle.updateWheelTransform(i, true);
@@ -97,7 +108,10 @@ public class PhysicsVehicle extends PhysicsRigidBody {
         }
     }
 
-    public void applyWheelTransforms(){
+    /**
+     * used internally
+     */
+    public void applyWheelTransforms() {
         if (wheels != null) {
             for (int i = 0; i < wheels.size(); i++) {
                 wheels.get(i).applyWheelTransform();
@@ -108,18 +122,21 @@ public class PhysicsVehicle extends PhysicsRigidBody {
     @Override
     protected void postRebuild() {
         super.postRebuild();
-        createVehicleConstraint();
-        rBody.setActivationState(CollisionObject.DISABLE_DEACTIVATION);
-        motionState.setVehicle(this);
-    }
-
-    private void createVehicleConstraint(PhysicsSpace space) {
         if (tuning == null) {
             tuning = new VehicleTuning();
         }
-        if(space==null){
-            throw new IllegalStateException("Error getting PhysicsSpace for vehicle! Please make sure you create the vehicle on the physics thread!");
+        rBody.setActivationState(CollisionObject.DISABLE_DEACTIVATION);
+        motionState.setVehicle(this);
+        if (physicsSpace != null) {
+            createVehicle(physicsSpace);
         }
+    }
+
+    /**
+     * Used internally, creates the actual vehicle constraint when vehicle is added to phyicsspace
+     */
+    public void createVehicle(PhysicsSpace space) {
+        physicsSpace = space;
         rayCaster = new DefaultVehicleRaycaster(space.getDynamicsWorld());
         vehicle = new RaycastVehicle(tuning, rBody, rayCaster);
         vehicle.setCoordinateSystem(0, 1, 2);
@@ -127,13 +144,8 @@ public class PhysicsVehicle extends PhysicsRigidBody {
             for (PhysicsVehicleWheel wheel : wheels) {
                 wheel.setWheelInfo(vehicle.addWheel(Converter.convert(wheel.getLocation()), Converter.convert(wheel.getDirection()), Converter.convert(wheel.getAxle()),
                         wheel.getRestLength(), wheel.getRadius(), tuning, wheel.isFrontWheel()));
-                wheel.applyInfo();
             }
         }
-    }
-
-    private void createVehicleConstraint() {
-        createVehicleConstraint(PhysicsSpace.getPhysicsSpace());
     }
 
     /**
@@ -168,22 +180,21 @@ public class PhysicsVehicle extends PhysicsRigidBody {
         } else {
             wheel = new PhysicsVehicleWheel(spat, connectionPoint, direction, axle, suspensionRestLength, wheelRadius, isFrontWheel);
         }
-        WheelInfo info = vehicle.addWheel(Converter.convert(connectionPoint), Converter.convert(direction), Converter.convert(axle),
-                suspensionRestLength, wheelRadius, tuning, isFrontWheel);
-        wheel.setWheelInfo(info);
-        //TODO: info.applyTuningInfo(Tuning tuning)
+        if (vehicle != null) {
+            WheelInfo info = vehicle.addWheel(Converter.convert(connectionPoint), Converter.convert(direction), Converter.convert(axle),
+                    suspensionRestLength, wheelRadius, tuning, isFrontWheel);
+            wheel.setWheelInfo(info);
+        }
         wheel.setFrictionSlip(tuning.frictionSlip);
         wheel.setMaxSuspensionTravelCm(tuning.maxSuspensionTravelCm);
         wheel.setSuspensionStiffness(tuning.suspensionStiffness);
         wheel.setWheelsDampingCompression(tuning.suspensionCompression);
         wheel.setWheelsDampingRelaxation(tuning.suspensionDamping);
         wheel.setMaxSuspensionForce(tuning.maxSuspensionForce);
-        wheel.applyInfo();
         wheels.add(wheel);
         if (debugShape != null) {
             detachDebugShape();
         }
-//        this.attachChild(wheel);
         updateDebugShape();
         return wheel;
     }
@@ -192,7 +203,7 @@ public class PhysicsVehicle extends PhysicsRigidBody {
      * This rebuilds the vehicle as there is no way in bullet to remove a wheel.
      * @param wheel
      */
-    public void removeWheel(int wheel){
+    public void removeWheel(int wheel) {
         wheels.remove(wheel);
         rebuildRigidBody();
         updateDebugShape();
@@ -207,7 +218,7 @@ public class PhysicsVehicle extends PhysicsRigidBody {
         return wheels.get(wheel);
     }
 
-    public int getNumWheels(){
+    public int getNumWheels() {
         return wheels.size();
     }
 
@@ -537,6 +548,7 @@ public class PhysicsVehicle extends PhysicsRigidBody {
         tuning.suspensionCompression = capsule.readFloat("suspensionCompression", 0.83f);
         tuning.suspensionDamping = capsule.readFloat("suspensionDamping", 0.88f);
         tuning.suspensionStiffness = capsule.readFloat("suspensionStiffness", 5.88f);
+        wheels = capsule.readSavableArrayList("wheelsList", new ArrayList<PhysicsVehicleWheel>());
         motionState.setVehicle(this);
         super.read(im);
     }
@@ -550,6 +562,7 @@ public class PhysicsVehicle extends PhysicsRigidBody {
         capsule.write(tuning.suspensionCompression, "suspensionCompression", 0.83f);
         capsule.write(tuning.suspensionDamping, "suspensionDamping", 0.88f);
         capsule.write(tuning.suspensionStiffness, "suspensionStiffness", 5.88f);
+        capsule.writeSavableArrayList(wheels, "wheelsList", new ArrayList<PhysicsVehicleWheel>());
         super.write(ex);
     }
 }
