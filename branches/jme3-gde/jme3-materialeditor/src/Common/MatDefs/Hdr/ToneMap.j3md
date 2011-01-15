@@ -1,12 +1,12 @@
 MaterialDef Tone Mapper {
     MaterialParameters {
-        Texture2D m_Texture
-        Texture2D m_Lum
-        Texture2D m_Lum2
-        Float m_BlendFactor
-        Float m_White
-        Float m_A
-        Float m_Gamma
+        Texture2D Texture
+        Texture2D Lum
+        Texture2D Lum2
+        Float BlendFactor
+        Float White
+        Float A
+        Float Gamma
     }
     Technique {
         VertexShader GLSL100:   Common/MatDefs/Gui/Gui.vert

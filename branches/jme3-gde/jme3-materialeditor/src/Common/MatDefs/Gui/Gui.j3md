@@ -1,9 +1,9 @@
 MaterialDef Default GUI {
 
     MaterialParameters {
-        Texture2D m_Texture
-        Color m_Color
-        Boolean m_VertexColor
+        Texture2D Texture
+        Color Color
+        Boolean VertexColor
     }
 
     Technique {
@@ -15,8 +15,8 @@ MaterialDef Default GUI {
         }
 
         Defines {
-            TEXTURE : m_Texture
-            VERTEX_COLOR : m_VertexColor
+            TEXTURE : Texture
+            VERTEX_COLOR : VertexColor
         }
     }
 

@@ -51,13 +51,13 @@ public class SceneToolController {
 
     protected void initTools() {
         Material redMat = new Material(manager, "Common/MatDefs/Misc/WireColor.j3md");
-        redMat.setColor("m_Color", ColorRGBA.Red);
+        redMat.setColor("Color", ColorRGBA.Red);
         Material greenMat = new Material(manager, "Common/MatDefs/Misc/WireColor.j3md");
-        greenMat.setColor("m_Color", ColorRGBA.Green);
+        greenMat.setColor("Color", ColorRGBA.Green);
         Material blueMat = new Material(manager, "Common/MatDefs/Misc/WireColor.j3md");
-        blueMat.setColor("m_Color", ColorRGBA.Blue);
+        blueMat.setColor("Color", ColorRGBA.Blue);
         Material grayMat = new Material(manager, "Common/MatDefs/Misc/WireColor.j3md");
-        grayMat.setColor("m_Color", ColorRGBA.Gray);
+        grayMat.setColor("Color", ColorRGBA.Gray);
 
         //cursor
         if (cursor == null) {
@@ -161,7 +161,7 @@ public class SceneToolController {
             return;
         }
         Material mat = new Material(SceneApplication.getApplication().getAssetManager(), "Common/MatDefs/Misc/WireColor.j3md");
-        mat.setColor("m_Color", ColorRGBA.Blue);
+        mat.setColor("Color", ColorRGBA.Blue);
         Geometry selectionGeometry = new Geometry("selection_geometry_sceneviewer", mesh);
         selectionGeometry.setMaterial(mat);
         selectionGeometry.setLocalTransform(geom.getWorldTransform());
@@ -171,7 +171,7 @@ public class SceneToolController {
 
     protected void attachBoxSelection(Spatial geom) {
         Material mat = new Material(SceneApplication.getApplication().getAssetManager(), "Common/MatDefs/Misc/WireColor.j3md");
-        mat.setColor("m_Color", ColorRGBA.Blue);
+        mat.setColor("Color", ColorRGBA.Blue);
         BoundingVolume bound = geom.getWorldBound();
         if (bound instanceof BoundingBox) {
             BoundingBox bbox = (BoundingBox) bound;
@@ -200,7 +200,7 @@ public class SceneToolController {
             return;
         }
         Material mat = new Material(SceneApplication.getApplication().getAssetManager(), "Common/MatDefs/Misc/WireColor.j3md");
-        mat.setColor("m_Color", ColorRGBA.Blue);
+        mat.setColor("Color", ColorRGBA.Blue);
         Spatial selectionGeometry = DebugShapeFactory.getDebugShape(control.getCollisionShape());
         if (selectionGeometry != null) {
             selectionGeometry.setMaterial(mat);

@@ -368,13 +368,13 @@ public final class TerrainEditorTopComponent extends TopComponent implements Sce
 
                     TerrainQuad terrain = new TerrainQuad("terrain", patchSize, totalSize, heightmapData);
                     com.jme3.material.Material mat = new com.jme3.material.Material(SceneApplication.getApplication().getAssetManager(), "Common/MatDefs/Misc/WireColor.j3md");
-                    mat.setColor("m_Color", ColorRGBA.Brown);
+                    mat.setColor("Color", ColorRGBA.Brown);
                     /*com.jme3.material.Material mat = new com.jme3.material.Material(SceneApplication.getApplication().getAssetManager(), "Common/MatDefs/Light/Lighting.j3md");
-                    mat.setFloat("m_Shininess", 1);
-                    mat.setBoolean("m_LowQuality", true);
-                    mat.setBoolean("m_UseMaterialColors", true);
-                    mat.setColor("m_Diffuse", ColorRGBA.Brown);
-                    mat.setColor("m_Specular", ColorRGBA.Brown);*/
+                    mat.setFloat("Shininess", 1);
+                    mat.setBoolean("LowQuality", true);
+                    mat.setBoolean("UseMaterialColors", true);
+                    mat.setColor("Diffuse", ColorRGBA.Brown);
+                    mat.setColor("Specular", ColorRGBA.Brown);*/
                     terrain.setMaterial(mat);
                     terrain.setModelBound(new BoundingBox());
                     terrain.updateModelBound();

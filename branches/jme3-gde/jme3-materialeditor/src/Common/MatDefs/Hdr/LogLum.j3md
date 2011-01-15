@@ -1,14 +1,14 @@
 MaterialDef Log Lum 2D {
 
     MaterialParameters {
-        Texture2D m_Texture
-        Vector2 m_BlockSize
-        Vector2 m_PixelSize
-        Float m_NumPixels
-        Boolean m_DecodeLum
-        Boolean m_EncodeLum
-        Boolean m_Blocks
-        Boolean m_ComputeMax
+        Texture2D Texture
+        Vector2 BlockSize
+        Vector2 PixelSize
+        Float NumPixels
+        Boolean DecodeLum
+        Boolean EncodeLum
+        Boolean Blocks
+        Boolean ComputeMax
     }
 
     Technique {
@@ -21,10 +21,10 @@ MaterialDef Log Lum 2D {
 
         Defines {
             TEXTURE
-            ENCODE_LUM : m_EncodeLum
-            DECODE_LUM : m_DecodeLum
-            BLOCKS : m_Blocks
-            COMPUTE_MAX : m_ComputeMax
+            ENCODE_LUM : EncodeLum
+            DECODE_LUM : DecodeLum
+            BLOCKS : Blocks
+            COMPUTE_MAX : ComputeMax
         }
     }
 

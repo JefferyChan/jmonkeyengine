@@ -4,71 +4,71 @@ MaterialDef Phong Lighting {
 
         // Compute vertex lighting in the shader
         // For better performance
-        Boolean m_VertexLighting
+        Boolean VertexLighting
 
         // Use more efficent algorithms to improve performance
-        Boolean m_LowQuality
+        Boolean LowQuality
 
         // Improve quality at the cost of performance
-        Boolean m_HighQuality
+        Boolean HighQuality
 
         // Output alpha from the diffuse map
-        Boolean m_UseAlpha
+        Boolean UseAlpha
 
         // Normal map is in BC5/ATI2n/LATC/3Dc compression format
-        Boolean m_LATC
+        Boolean LATC
 
         // Use the provided ambient, diffuse, and specular colors
-        Boolean m_UseMaterialColors
+        Boolean UseMaterialColors
 
         // Activate shading along the tangent, instead of the normal
         // Requires tangent data to be available on the model.
-        Boolean m_VTangent
+        Boolean VTangent
 
         // Use minnaert diffuse instead of lambert
-        Boolean m_Minnaert
+        Boolean Minnaert
 
         // Use ward specular instead of phong
-        Boolean m_WardIso
+        Boolean WardIso
 
         // Use vertex color as an additional diffuse color.
-        Boolean m_UseVertexColor
+        Boolean UseVertexColor
 
         // Ambient color
-        Color m_Ambient
+        Color Ambient
 
         // Diffuse color
-        Color m_Diffuse
+        Color Diffuse
 
         // Specular color
-        Color m_Specular
+        Color Specular
 
         // Specular power/shininess
-        Float m_Shininess
+        Float Shininess
 
         // Diffuse map
-        Texture2D m_DiffuseMap
+        Texture2D DiffuseMap
 
         // Normal map
-        Texture2D m_NormalMap
+        Texture2D NormalMap
 
         // Specular/gloss map
-        Texture2D m_SpecularMap
+        Texture2D SpecularMap
 
         // Parallax/height map
-        Texture2D m_ParallaxMap
+        Texture2D ParallaxMap
 
         // Texture that specifies alpha values
-        Texture2D m_AlphaMap
+        Texture2D AlphaMap
 
         // Color ramp, will map diffuse and specular values through it.
-        Texture2D m_ColorRamp
+        Texture2D ColorRamp
 
         // Texture of the glowing parts of the material
-        Texture2D m_GlowMap
+        Texture2D GlowMap
 
         // The glow color of the object
-        Color m_GlowColor
+        Color GlowColor
     }
 
     Technique {
@@ -86,24 +86,24 @@ MaterialDef Phong Lighting {
         }
 
         Defines {
-            USE_ALPHA : m_UseAlpha
-            LATC : m_LATC
-            VERTEX_COLOR : m_UseVertexColor
-            VERTEX_LIGHTING : m_VertexLighting
-            ATTENUATION : m_Attenuation
-            MATERIAL_COLORS : m_UseMaterialColors
-            V_TANGENT : m_VTangent
-            MINNAERT  : m_Minnaert
-            WARDISO   : m_WardIso
-            LOW_QUALITY : m_LowQuality
-            HQ_ATTENUATION : m_HighQuality
+            USE_ALPHA : UseAlpha
+            LATC : LATC
+            VERTEX_COLOR : UseVertexColor
+            VERTEX_LIGHTING : VertexLighting
+            ATTENUATION : Attenuation
+            MATERIAL_COLORS : UseMaterialColors
+            V_TANGENT : VTangent
+            MINNAERT  : Minnaert
+            WARDISO   : WardIso
+            LOW_QUALITY : LowQuality
+            HQ_ATTENUATION : HighQuality
 
-            DIFFUSEMAP : m_DiffuseMap
-            NORMALMAP : m_NormalMap
-            SPECULARMAP : m_SpecularMap
-            PARALLAXMAP : m_ParallaxMap
-            ALPHAMAP : m_AlphaMap
-            COLORRAMP : m_ColorRamp
+            DIFFUSEMAP : DiffuseMap
+            NORMALMAP : NormalMap
+            SPECULARMAP : SpecularMap
+            PARALLAXMAP : ParallaxMap
+            ALPHAMAP : AlphaMap
+            COLORRAMP : ColorRamp
         }
     }
 
@@ -118,7 +118,7 @@ MaterialDef Phong Lighting {
         }
 
         Defines {
-            DIFFUSEMAP_ALPHA : m_DiffuseMap
+            DIFFUSEMAP_ALPHA : DiffuseMap
         }
 
         RenderState {
@@ -142,16 +142,16 @@ MaterialDef Phong Lighting {
         }
 
         Defines {
-            VERTEX_COLOR : m_UseVertexColor
-            MATERIAL_COLORS : m_UseMaterialColors
-            V_TANGENT : m_VTangent
-            MINNAERT  : m_Minnaert
-            WARDISO   : m_WardIso
+            VERTEX_COLOR : UseVertexColor
+            MATERIAL_COLORS : UseMaterialColors
+            V_TANGENT : VTangent
+            MINNAERT  : Minnaert
+            WARDISO   : WardIso
 
-            DIFFUSEMAP : m_DiffuseMap
-            NORMALMAP : m_NormalMap
-            SPECULARMAP : m_SpecularMap
-            PARALLAXMAP : m_ParallaxMap
+            DIFFUSEMAP : DiffuseMap
+            NORMALMAP : NormalMap
+            SPECULARMAP : SpecularMap
+            PARALLAXMAP : ParallaxMap
         }
     }
 
@@ -171,10 +171,10 @@ MaterialDef Phong Lighting {
         }
 
         Defines {
-            HAS_DIFFUSEMAP : m_DiffuseMap
-            HAS_NORMALMAP : m_NormalMap
-            HAS_SPECULARMAP : m_SpecularMap
-            USE_ALPHA : m_UseAlpha
+            HAS_DIFFUSEMAP : DiffuseMap
+            HAS_NORMALMAP : NormalMap
+            HAS_SPECULARMAP : SpecularMap
+            USE_ALPHA : UseAlpha
         }
     }
 
@@ -192,8 +192,8 @@ MaterialDef Phong Lighting {
         }
 
         Defines {
-            HAS_GLOWMAP : m_GlowMap
-            HAS_GLOWCOLOR : m_GlowColor
+            HAS_GLOWMAP : GlowMap
+            HAS_GLOWCOLOR : GlowColor
         }
     }
 

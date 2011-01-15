@@ -1,13 +1,13 @@
 MaterialDef Terrain {
 
 	MaterialParameters {
-		Texture2D m_Alpha
-		Texture2D m_Tex1
-		Texture2D m_Tex2
-		Texture2D m_Tex3
-		Float m_Tex1Scale
-		Float m_Tex2Scale
-		Float m_Tex3Scale
+		Texture2D Alpha
+		Texture2D Tex1
+		Texture2D Tex2
+		Texture2D Tex3
+		Float Tex1Scale
+		Float Tex2Scale
+		Float Tex3Scale
 	}
 
 	Technique {

@@ -1,12 +1,12 @@
 MaterialDef Solid Color {
 
     MaterialParameters {
-        Vector4 m_Color
+        Vector4 Color
 
         // Texture of the glowing parts of the material
-        Texture2D m_GlowMap
+        Texture2D GlowMap
         // The glow color of the object
-        Color m_GlowColor
+        Color GlowColor
     }
 
     Technique {
@@ -31,8 +31,8 @@ MaterialDef Solid Color {
         }
 
         Defines {
-            HAS_GLOWMAP : m_GlowMap
-            HAS_GLOWCOLOR : m_GlowColor
+            HAS_GLOWMAP : GlowMap
+            HAS_GLOWCOLOR : GlowColor
         }
     }
 }

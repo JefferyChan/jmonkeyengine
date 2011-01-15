@@ -1,8 +1,8 @@
 MaterialDef Fade {
 
     MaterialParameters {
-        Texture2D m_Texture
-        Float m_Value
+        Texture2D Texture
+        Float Value
     }
 
     Technique {

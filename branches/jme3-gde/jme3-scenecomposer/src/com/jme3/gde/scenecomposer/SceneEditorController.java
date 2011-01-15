@@ -139,7 +139,7 @@ public class SceneEditorController implements PropertyChangeListener, NodeListen
                 emit.setInitialVelocity(new Vector3f(0, 0, 0));
                 emit.setImagesX(15);
                 Material mat = new Material(SceneApplication.getApplication().getAssetManager(), "Common/MatDefs/Misc/Particle.j3md");
-                //                    mat.setTexture("m_Texture", SceneApplication.getApplication().getAssetManager().loadTexture("Effects/Smoke/Smoke.png"));
+                //                    mat.setTexture("Texture", SceneApplication.getApplication().getAssetManager().loadTexture("Effects/Smoke/Smoke.png"));
                 emit.setMaterial(mat);
                 if (point != null) {
                     Vector3f localVec = new Vector3f();

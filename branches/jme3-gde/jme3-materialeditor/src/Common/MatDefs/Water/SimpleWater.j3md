@@ -1,20 +1,20 @@
 MaterialDef SimpleWater {
 
     MaterialParameters {
-        Texture2D m_water_reflection
-        Texture2D m_water_refraction
-        Texture2D m_water_depthmap
-        Texture2D m_water_normalmap
-        Texture2D m_water_dudvmap
-        Vector4 m_waterColor
-        Vector3 m_lightPos
-        Float m_time
-        Float m_waterDepth
-        Vector4 m_distortionScale
-        Vector4 m_distortionMix
-        Vector4 m_texScale
-        Vector2 m_FrustumNearFar
-        Float m_waterTransparency
+        Texture2D water_reflection
+        Texture2D water_refraction
+        Texture2D water_depthmap
+        Texture2D water_normalmap
+        Texture2D water_dudvmap
+        Vector4 waterColor
+        Vector3 lightPos
+        Float time
+        Float waterDepth
+        Vector4 distortionScale
+        Vector4 distortionMix
+        Vector4 texScale
+        Vector2 FrustumNearFar
+        Float waterTransparency
     }
 
     Technique {

@@ -94,7 +94,7 @@ public class TerrainToolController extends SceneToolController {
         Mesh m = new Sphere(8, 8, 3);
         marker.setMesh(m);
         Material mat = new Material(manager, "Common/MatDefs/Misc/WireColor.j3md");
-        mat.setColor("m_Color", ColorRGBA.Green);
+        mat.setColor("Color", ColorRGBA.Green);
         marker.setMaterial(mat);
         marker.setLocalTranslation(0,0,0);
     }

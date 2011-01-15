@@ -20,10 +20,10 @@ MaterialDef GroundFromSpace {
         Float fExposure;
 
         // Surface Textures & Animation
-        Texture2D m_Diffuse1
-        Texture2D m_Diffuse2
-        Float m_Time
-        Float m_Speed        
+        Texture2D Diffuse1
+        Texture2D Diffuse2
+        Float Time
+        Float Speed        
     }
 
 

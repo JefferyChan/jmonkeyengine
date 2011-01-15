@@ -41,9 +41,9 @@ public class SkyBox {
         cubemap = new TextureCubeMap(cube);
         
         material = new Material(assetManager, "Common/MatDefs/Misc/Sky.j3md");
-        material.setBoolean("m_SphereMap", false);
-        material.setTexture("m_Texture", cubemap);
-        material.setVector3("m_NormalScale", new Vector3f(1, 1, 1));
+        material.setBoolean("SphereMap", false);
+        material.setTexture("Texture", cubemap);
+        material.setVector3("NormalScale", new Vector3f(1, 1, 1));
         geometry.setMaterial(material);
     }
 

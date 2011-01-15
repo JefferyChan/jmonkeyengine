@@ -1,11 +1,11 @@
 MaterialDef Fade {
 
     MaterialParameters {
-        Texture2D m_Texture
-        Texture2D m_DepthTexture
-        Vector4 m_FogColor;
-        Float m_FogDensity;
-        Float m_FogDistance;
+        Texture2D Texture
+        Texture2D DepthTexture
+        Vector4 FogColor;
+        Float FogDensity;
+        Float FogDistance;
     }
 
     Technique {

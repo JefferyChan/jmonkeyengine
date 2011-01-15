@@ -136,23 +136,23 @@ public class AssetPackLoader {
          */
         MaterialExtension baseLightExt = new MaterialExtension("/base/normalmap/specular",
                 "Common/MatDefs/Light/Lighting.j3md");
-        baseLightExt.setTextureMapping("DiffuseMap", "m_DiffuseMap");
-        baseLightExt.setTextureMapping("NormalHeightMap", "m_NormalMap");
-        baseLightExt.setTextureMapping("SpecularMap", "m_SpecularMap");
+        baseLightExt.setTextureMapping("DiffuseMap", "DiffuseMap");
+        baseLightExt.setTextureMapping("NormalHeightMap", "NormalMap");
+        baseLightExt.setTextureMapping("SpecularMap", "SpecularMap");
         matExts.addMaterialExtension(baseLightExt);
         
         MaterialExtension baseLightExt2 = new MaterialExtension("/base/normalmap",
                 "Common/MatDefs/Light/Lighting.j3md");
-        baseLightExt2.setTextureMapping("DiffuseMap", "m_DiffuseMap");
-        baseLightExt2.setTextureMapping("NormalHeightMap", "m_NormalMap");
-        baseLightExt2.setTextureMapping("SpecularMap", "m_SpecularMap");
+        baseLightExt2.setTextureMapping("DiffuseMap", "DiffuseMap");
+        baseLightExt2.setTextureMapping("NormalHeightMap", "NormalMap");
+        baseLightExt2.setTextureMapping("SpecularMap", "SpecularMap");
         matExts.addMaterialExtension(baseLightExt2);
 
         MaterialExtension baseLightExt3 = new MaterialExtension("/base/simple",
                 "Common/MatDefs/Light/Lighting.j3md");
-        baseLightExt3.setTextureMapping("DiffuseMap", "m_DiffuseMap");
-        baseLightExt3.setTextureMapping("NormalHeightMap", "m_NormalMap");
-        baseLightExt3.setTextureMapping("SpecularMap", "m_SpecularMap");
+        baseLightExt3.setTextureMapping("DiffuseMap", "DiffuseMap");
+        baseLightExt3.setTextureMapping("NormalHeightMap", "NormalMap");
+        baseLightExt3.setTextureMapping("SpecularMap", "SpecularMap");
         matExts.addMaterialExtension(baseLightExt3);
 
         //TODO: mesh.xml!!

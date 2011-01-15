@@ -102,7 +102,7 @@ public class PlanetRenderer {
         // choose correct material according to camera position
         if (cameraHeight > planet.getOuterRadius()) {            
             Material mat = mGroundFromSpace;            
-            mat.setFloat("m_Time", time);
+            mat.setFloat("Time", time);
             mat.setVector3("v3CameraPos", cameraLocation);
             mat.setVector3("v3LightPos", lightPosNormalized);
             mat.setFloat("fCameraHeight2", cameraHeight2);
@@ -133,7 +133,7 @@ public class PlanetRenderer {
             
         } else {
             Material mat = mGroundFromSpace;
-            mat.setFloat("m_Time", time);
+            mat.setFloat("Time", time);
             mat.setVector3("v3CameraPos", cameraLocation);
             mat.setVector3("v3LightPos", lightPosNormalized);
             mat.setFloat("fCameraHeight2", cameraHeight2);
@@ -169,9 +169,9 @@ public class PlanetRenderer {
      * @param mat
      */
     private void setupGroundMaterial(Material mat) {
-            mat.setTexture("m_Diffuse1", t_diffuse1);
-            mat.setTexture("m_Diffuse2", t_diffuse2);
-            mat.setFloat("m_Speed", planet.getRotationSpeed());
+            mat.setTexture("Diffuse1", t_diffuse1);
+            mat.setTexture("Diffuse2", t_diffuse2);
+            mat.setFloat("Speed", planet.getRotationSpeed());
             mat.setVector3("v3LightPos", lightPosition.normalize());
             mat.setVector3("v3InvWavelength", planet.getInvWavelength4());
             mat.setFloat("fKrESun", planet.getKrESun());

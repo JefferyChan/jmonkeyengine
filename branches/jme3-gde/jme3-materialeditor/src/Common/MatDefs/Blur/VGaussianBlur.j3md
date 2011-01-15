@@ -1,9 +1,9 @@
 MaterialDef Bloom {
 
     MaterialParameters {
-        Texture2D m_Texture
-        Float m_Size
-        Float m_Scale
+        Texture2D Texture
+        Float Size
+        Float Scale
     }
 
     Technique {

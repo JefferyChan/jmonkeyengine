@@ -3,32 +3,32 @@ MaterialDef Phong Lighting Deferred {
     MaterialParameters {
 
         // Use more efficent algorithms to improve performance
-        Boolean m_LowQuality
+        Boolean LowQuality
 
         // Improve quality at the cost of performance
-        Boolean m_HighQuality
+        Boolean HighQuality
 
         // Activate shading along the tangent, instead of the normal
         // Requires tangent data to be available on the model.
-        Boolean m_VTangent
+        Boolean VTangent
 
         // Use minnaert diffuse instead of lambert
-        Boolean m_Minnaert
+        Boolean Minnaert
 
         // Use ward specular instead of phong
-        Boolean m_WardIso
+        Boolean WardIso
 
-        Texture2D m_DiffuseData
-        Texture2D m_SpecularData
-        Texture2D m_NormalData
-        Texture2D m_DepthData
+        Texture2D DiffuseData
+        Texture2D SpecularData
+        Texture2D NormalData
+        Texture2D DepthData
 
-        Vector3 m_FrustumCorner
-        Vector2 m_FrustumNearFar
-        Matrix4 m_ViewProjectionMatrixInverse
+        Vector3 FrustumCorner
+        Vector2 FrustumNearFar
+        Matrix4 ViewProjectionMatrixInverse
 
         // Color ramp, will map diffuse and specular values through it.
-        Texture2D m_ColorRamp
+        Texture2D ColorRamp
     }
 
     Technique {
@@ -45,13 +45,13 @@ MaterialDef Phong Lighting Deferred {
         }
 
         Defines {
-            ATTENUATION : m_Attenuation
-            V_TANGENT : m_VTangent
-            MINNAERT  : m_Minnaert
-            WARDISO   : m_WardIso
-            LOW_QUALITY : m_LowQuality
-            HQ_ATTENUATION : m_HighQuality
-            COLORRAMP : m_ColorRamp
+            ATTENUATION : Attenuation
+            V_TANGENT : VTangent
+            MINNAERT  : Minnaert
+            WARDISO   : WardIso
+            LOW_QUALITY : LowQuality
+            HQ_ATTENUATION : HighQuality
+            COLORRAMP : ColorRamp
         }
     }
 

@@ -1,7 +1,7 @@
 MaterialDef Wire Color {
 
     MaterialParameters {
-        Vector4 m_Color
+        Vector4 Color
     }
 
     Technique {

@@ -1,8 +1,8 @@
 MaterialDef Sky Plane {
     MaterialParameters {
-        TextureCubeMap m_Texture
-        Boolean m_SphereMap
-        Vector3 m_NormalScale
+        TextureCubeMap Texture
+        Boolean SphereMap
+        Vector3 NormalScale
     }
     Technique {
         VertexShader GLSL100:   Common/MatDefs/Misc/Sky.vert
@@ -19,7 +19,7 @@ MaterialDef Sky Plane {
         }
 
         Defines {
-            SPHERE_MAP : m_SphereMap
+            SPHERE_MAP : SphereMap
         }
     }
 }

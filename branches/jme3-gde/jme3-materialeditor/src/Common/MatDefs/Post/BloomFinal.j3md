@@ -1,9 +1,9 @@
 MaterialDef Bloom Final {
 
     MaterialParameters {
-        Texture2D m_Texture
-        Texture2D m_BloomTex
-        Float m_BloomIntensity
+        Texture2D Texture
+        Texture2D BloomTex
+        Float BloomIntensity
     }
 
     Technique {

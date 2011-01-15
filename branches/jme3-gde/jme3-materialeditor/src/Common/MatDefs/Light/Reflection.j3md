@@ -1,7 +1,7 @@
 MaterialDef Cube Texture {
     MaterialParameters {
-        TextureCubeMap m_Texture
-        Boolean m_SphereMap
+        TextureCubeMap Texture
+        Boolean SphereMap
     }
     Technique {
         VertexShader GLSL100 :   Common/MatDefs/Light/Reflection.vert
@@ -15,7 +15,7 @@ MaterialDef Cube Texture {
         }
 
         Defines {
-            SPHERE_MAP : m_SphereMap
+            SPHERE_MAP : SphereMap
         }
     }
 }
