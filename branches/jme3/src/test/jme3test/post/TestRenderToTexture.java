@@ -79,6 +79,7 @@ public class TestRenderToTexture extends SimpleApplication {
         //setup framebuffer's texture
         Texture2D offTex = new Texture2D(512, 512, Format.RGBA8);
         offTex.setMinFilter(Texture.MinFilter.Trilinear);
+        offTex.setMagFilter(Texture.MagFilter.Bilinear);
 
         //setup framebuffer to use texture
         offBuffer.setDepthBuffer(Format.Depth);

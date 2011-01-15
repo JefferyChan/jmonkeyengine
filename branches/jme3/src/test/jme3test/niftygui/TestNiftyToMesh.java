@@ -42,6 +42,8 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Box;
 import com.jme3.texture.FrameBuffer;
 import com.jme3.texture.Image.Format;
+import com.jme3.texture.Texture.MagFilter;
+import com.jme3.texture.Texture.MinFilter;
 import com.jme3.texture.Texture2D;
 import de.lessvoid.nifty.Nifty;
 
@@ -62,19 +64,24 @@ public class TestNiftyToMesh extends SimpleApplication{
                                                           audioRenderer,
                                                           niftyView);
         nifty = niftyDisplay.getNifty();
-        nifty.fromXml("jme3test/niftygui/hellojme.xml", "start");
+        nifty.fromXml("all/intro.xml", "start");
         niftyView.addProcessor(niftyDisplay);
 
-        FrameBuffer fb = new FrameBuffer(1024, 768, 0);
-        fb.setDepthBuffer(Format.Depth);
+        Texture2D depthTex = new Texture2D(1024, 768, Format.Depth);
+        FrameBuffer fb = new FrameBuffer(1024, 768, 1);
+        fb.setDepthTexture(depthTex);
+
         Texture2D tex = new Texture2D(1024, 768, Format.RGBA8);
+        tex.setMinFilter(MinFilter.Trilinear);
+        tex.setMagFilter(MagFilter.Bilinear);
+
         fb.setColorTexture(tex);
         niftyView.setClearEnabled(true);
         niftyView.setOutputFrameBuffer(fb);
 
         Box b = new Box(Vector3f.ZERO, 1, 1, 1);
         Geometry geom = new Geometry("Box", b);
-        Material mat = new Material(assetManager, "Common/MatDefs/Misc/SimpleTextured.j3md");
+        Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
         mat.setTexture("m_ColorMap", tex);
         geom.setMaterial(mat);
         rootNode.attachChild(geom);
