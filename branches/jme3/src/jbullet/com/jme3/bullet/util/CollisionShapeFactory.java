@@ -146,9 +146,6 @@ public class CollisionShapeFactory {
         if (spatial instanceof Geometry) {
             return createSingleDynamicMeshShape((Geometry) spatial);
         } else if (spatial instanceof Node) {
-            if (spatial.getParent() != null) {
-                throw new IllegalStateException("Spatial should not be attached to parent while creating compound collision shape!");
-            }
             return createCompoundShape((Node) spatial, new CompoundCollisionShape(), true, true);
         } else {
             throw new IllegalArgumentException("Supplied spatial must either be Node or Geometry!");
