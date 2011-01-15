@@ -26,9 +26,10 @@ public class VirtualIndexBuffer extends IndexBuffer {
                 numIndices = numVerts;
                 return;
             case TriangleFan:
+                numIndices = (numVerts - 2) * 3;
                 return;
             case TriangleStrip:
-                numIndices = (numVerts - 3) * 3 + 3;
+                numIndices = (numVerts - 2) * 3;
                 return;
             case Triangles:
                 numIndices = numVerts;
@@ -58,6 +59,12 @@ public class VirtualIndexBuffer extends IndexBuffer {
                    default: throw new AssertionError();
                }
             }
+        }else if (meshMode == Mode.TriangleFan){
+            int vertIndex = i%3;
+            if (vertIndex == 0)
+                return 0;
+            else
+                return (i / 3) + vertIndex;
         }else{
             throw new UnsupportedOperationException();
         }

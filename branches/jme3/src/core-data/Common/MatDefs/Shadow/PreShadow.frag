@@ -4,9 +4,10 @@ varying vec2 texCoord;
 uniform sampler2D m_DiffuseMap;
 #endif
 
+
 void main(){
    #ifdef DIFFUSEMAP_ALPHA
-      if (texture2D(m_DiffuseMap, texCoord).a == 0.0)
+      if (texture2D(m_DiffuseMap, texCoord).a <= 0.50)
           discard;
    #endif
 

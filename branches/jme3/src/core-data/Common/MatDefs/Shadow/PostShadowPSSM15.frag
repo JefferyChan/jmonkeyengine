@@ -12,17 +12,20 @@
     #define SHADOWGATHER(tex,coord) step(coord.z, textureGather(tex, coord.xy))
 #endif
 
-#define KERNEL 1
+
 #if FILTER_MODE == 0
     #define GETSHADOW SHADOWCOMPARE
+    #define KERNEL 1
 #elif FILTER_MODE == 1
     #ifdef HARDWARE_SHADOWS
         #define GETSHADOW SHADOWCOMPARE
     #else
         #define GETSHADOW Shadow_DoBilinear_2x2
     #endif
+    #define KERNEL 1
 #elif FILTER_MODE == 2
     #define GETSHADOW Shadow_DoDither_2x2
+    #define KERNEL 1
 #elif FILTER_MODE == 3
     #define GETSHADOW Shadow_DoPCF
     #define KERNEL 4

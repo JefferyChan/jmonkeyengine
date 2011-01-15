@@ -63,8 +63,8 @@ float Shadow_BorderCheck(in vec2 coord){
 float Shadow_DoDither_2x2(in SHADOWMAP tex, in vec4 projCoord){
     float shadow = 0.0;
     vec2 o = mod(floor(gl_FragCoord.xy), 2.0);
-    shadow += Shadow_DoShadowCompareOffset(tex,projCoord,vec2(-1.5, 1.5) + o);
-    shadow += Shadow_DoShadowCompareOffset(tex,projCoord,vec2( 0.5, 1.5) + o);
+    shadow += Shadow_DoShadowCompareOffset(tex,projCoord,vec2(-1.5,  1.5) + o);
+    shadow += Shadow_DoShadowCompareOffset(tex,projCoord,vec2( 0.5,  1.5) + o);
     shadow += Shadow_DoShadowCompareOffset(tex,projCoord,vec2(-1.5, -0.5) + o);
     shadow += Shadow_DoShadowCompareOffset(tex,projCoord,vec2( 0.5, -0.5) + o);
     shadow *= 0.25 ;

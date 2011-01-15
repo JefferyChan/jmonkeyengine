@@ -357,6 +357,7 @@ public class PssmShadowRenderer implements SceneProcessor {
 
         Renderer r = renderManager.getRenderer();
         renderManager.setForcedMaterial(preshadowMat);
+        renderManager.setForcedTechnique("PreShadow");
 
         for (int i = 0; i < nbSplits; i++) {
 
@@ -400,6 +401,7 @@ public class PssmShadowRenderer implements SceneProcessor {
         //restore setting for future rendering
         r.setFrameBuffer(viewPort.getOutputFrameBuffer());
         renderManager.setForcedMaterial(null);
+        renderManager.setForcedTechnique(null);
         renderManager.setCamera(viewCam, false);
         
     }
