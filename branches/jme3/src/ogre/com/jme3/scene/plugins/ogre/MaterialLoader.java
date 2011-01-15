@@ -71,7 +71,7 @@ public class MaterialLoader implements AssetLoader {
     private boolean vcolor = false;
     private boolean blend = false;
     private boolean twoSide = false;
-
+    private boolean noLight = false;
 
     private String readString(String end){
         scan.useDelimiter(end);
@@ -255,6 +255,13 @@ public class MaterialLoader implements AssetLoader {
         }else if (keyword.equals("cull_software")){
             // ignore
             scan.next();
+        }else if (keyword.equals("lighting")){
+            String isOn = scan.next();
+            if (isOn.equals("on")){
+                noLight = false;
+            }else if (isOn.equals("off")){
+                noLight = true;
+            }
         }else{
             System.out.println(matName + ": " + keyword);
             readString("\n");
@@ -325,7 +332,12 @@ public class MaterialLoader implements AssetLoader {
     }
 
     private Material compileMaterial(){
-        Material mat = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
+        Material mat;
+        if (noLight){
+           mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+        }else{
+           mat = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
+        }
         if (blend){
             RenderState rs = mat.getAdditionalRenderState();
             rs.setAlphaTest(true);
@@ -335,7 +347,8 @@ public class MaterialLoader implements AssetLoader {
                 rs.setFaceCullMode(RenderState.FaceCullMode.Off);
 //            rs.setDepthWrite(false);
             mat.setTransparent(true);
-            mat.setBoolean("UseAlpha", true);
+            if (!noLight)
+                mat.setBoolean("UseAlpha", true);
         }else{
             if (twoSide){
                 RenderState rs = mat.getAdditionalRenderState();
@@ -343,36 +356,49 @@ public class MaterialLoader implements AssetLoader {
             }
         }
 
-        if (shinines > 0f)
-            mat.setFloat("Shininess", shinines);
-        else
-            mat.setFloat("Shininess", 16f); // set shininess to some value anyway..
-        
-        if (vcolor)
-            mat.setBoolean("UseVertexColor", true);
+        if (!noLight){
+            if (shinines > 0f)
+                mat.setFloat("Shininess", shinines);
+            else
+                mat.setFloat("Shininess", 16f); // set shininess to some value anyway..
 
-        if (texture != null)
-            mat.setTexture("DiffuseMap", texture);
+            if (vcolor)
+                mat.setBoolean("UseVertexColor", true);
 
-        mat.setBoolean("UseMaterialColors", true);
-        if(diffuse != null){
-            mat.setColor("Diffuse",  diffuse);
+            if (texture != null)
+                mat.setTexture("DiffuseMap", texture);
+
+            mat.setBoolean("UseMaterialColors", true);
+            if(diffuse != null){
+                mat.setColor("Diffuse",  diffuse);
+            }else{
+                mat.setColor("Diffuse", ColorRGBA.White);
+            }
+
+            if(ambient != null){
+                mat.setColor("Ambient",  ambient);
+            }else{
+                mat.setColor("Ambient", ColorRGBA.DarkGray);
+            }
+
+            if(specular != null){
+                mat.setColor("Specular", specular);
+            }else{
+                mat.setColor("Specular", ColorRGBA.Black);
+            }
         }else{
-            mat.setColor("Diffuse", ColorRGBA.White);
+            if (vcolor)
+                mat.setBoolean("VertexColor", true);
+
+            if (texture != null)
+                mat.setTexture("ColorMap", texture);
+
+            if(diffuse != null){
+                mat.setColor("Color", diffuse);
+            }
         }
 
-        if(ambient != null){
-            mat.setColor("Ambient",  ambient);
-        }else{
-            mat.setColor("Ambient", ColorRGBA.DarkGray);
-        }
-
-        if(specular != null){
-            mat.setColor("Specular", specular);
-        }else{
-            mat.setColor("Specular", ColorRGBA.Black);
-        }
-
+        noLight = false;
         texture = null;
         diffuse = null;
         specular = null;
