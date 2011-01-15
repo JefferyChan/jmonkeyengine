@@ -236,7 +236,7 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
     }
 
     public RenderState getAdditionalRenderState() {
-        if (additionalState == null) {
+        if (additionalState == null) {          
             additionalState = RenderState.ADDITIONAL.clone();
         }
         return additionalState;
@@ -758,16 +758,17 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
         }
 
         if (techDef.getRenderState() != null) {
-            r.applyRenderState(techDef.getRenderState());
-            if (additionalState != null) {
-                r.applyRenderState(additionalState);
-            }
+            r.applyRenderState(techDef.getRenderState().cloneMerged(additionalState));
+//            if (additionalState != null) {
+//                r.applyRenderState(additionalState);
+//            }
         } else {
-            if (additionalState != null) {
-                r.applyRenderState(additionalState);
-            } else {
-                r.applyRenderState(RenderState.DEFAULT);
-            }
+             r.applyRenderState(RenderState.DEFAULT.cloneMerged(additionalState));
+//            if (additionalState != null) {
+//                r.applyRenderState(additionalState);
+//            } else {
+//                r.applyRenderState(RenderState.DEFAULT);
+//            }
         }
         if (rm.getForcedRenderState() != null) {
             r.applyRenderState(rm.getForcedRenderState());

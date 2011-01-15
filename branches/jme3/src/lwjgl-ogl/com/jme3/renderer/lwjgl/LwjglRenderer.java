@@ -440,45 +440,45 @@ public class LwjglRenderer implements Renderer {
     }
 
     public void applyRenderState(RenderState state) {
-        if (state.isApplyWireFrame()) {
-            if (state.isWireframe() && !context.wireframe) {
-                glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-                context.wireframe = true;
-            } else if (!state.isWireframe() && context.wireframe) {
-                glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-                context.wireframe = false;
-            }
+
+        if (state.isWireframe() && !context.wireframe) {
+            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+            context.wireframe = true;
+        } else if (!state.isWireframe() && context.wireframe) {
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+            context.wireframe = false;
         }
 
-        if (state.isApplyDepthTest()) {
-            if (state.isDepthTest() && !context.depthTestEnabled) {
-                glEnable(GL_DEPTH_TEST);
-                glDepthFunc(GL_LEQUAL);
-                context.depthTestEnabled = true;
-            } else if (!state.isDepthTest() && context.depthTestEnabled) {
-                glDisable(GL_DEPTH_TEST);
-                context.depthTestEnabled = false;
-            }
+
+
+        if (state.isDepthTest() && !context.depthTestEnabled) {
+            glEnable(GL_DEPTH_TEST);
+            glDepthFunc(GL_LEQUAL);
+            context.depthTestEnabled = true;
+        } else if (!state.isDepthTest() && context.depthTestEnabled) {
+            glDisable(GL_DEPTH_TEST);
+            context.depthTestEnabled = false;
         }
 
-        if (state.isApplyAlphaTest()) {
-            if (state.isAlphaTest() && !context.alphaTestEnabled) {
-                glEnable(GL_ALPHA_TEST);
-                glAlphaFunc(GL_GREATER, state.getAlphaFallOff());
-                context.alphaTestEnabled = true;
-            } else if (!state.isAlphaTest() && context.alphaTestEnabled) {
-                glDisable(GL_ALPHA_TEST);
-                context.alphaTestEnabled = false;
-            }
+
+
+        if (state.isAlphaTest() && !context.alphaTestEnabled) {
+            glEnable(GL_ALPHA_TEST);
+            glAlphaFunc(GL_GREATER, state.getAlphaFallOff());
+            context.alphaTestEnabled = true;
+        } else if (!state.isAlphaTest() && context.alphaTestEnabled) {
+            glDisable(GL_ALPHA_TEST);
+            context.alphaTestEnabled = false;
         }
-        if (state.isApplyDepthWrite()) {
-            if (state.isDepthWrite() && !context.depthWriteEnabled) {
-                glDepthMask(true);
-                context.depthWriteEnabled = true;
-            } else if (!state.isDepthWrite() && context.depthWriteEnabled) {
-                glDepthMask(false);
-                context.depthWriteEnabled = false;
-            }
+
+
+
+        if (state.isDepthWrite() && !context.depthWriteEnabled) {
+            glDepthMask(true);
+            context.depthWriteEnabled = true;
+        } else if (!state.isDepthWrite() && context.depthWriteEnabled) {
+            glDepthMask(false);
+            context.depthWriteEnabled = false;
         }
 
         if (state.isApplyColorWrite()) {
@@ -490,110 +490,104 @@ public class LwjglRenderer implements Renderer {
                 context.colorWriteEnabled = false;
             }
         }
-        if (state.isApplyPointSprite()) {
-            if (state.isPointSprite() && !context.pointSprite) {
-                glEnable(GL_POINT_SPRITE);
-                glTexEnvi(GL_POINT_SPRITE, GL_COORD_REPLACE, GL_TRUE);
-                glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
-            } else if (!state.isPointSprite() && context.pointSprite) {
-                glDisable(GL_POINT_SPRITE);
-            }
+        if (state.isPointSprite() && !context.pointSprite) {
+            glEnable(GL_POINT_SPRITE);
+            glTexEnvi(GL_POINT_SPRITE, GL_COORD_REPLACE, GL_TRUE);
+            glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
+        } else if (!state.isPointSprite() && context.pointSprite) {
+            glDisable(GL_POINT_SPRITE);
         }
-        if (state.isApplyPolyOffset()) {
-            if (state.isPolyOffset()) {
-                if (!context.polyOffsetEnabled) {
-                    glEnable(GL_POLYGON_OFFSET_FILL);
+
+        if (state.isPolyOffset()) {
+            if (!context.polyOffsetEnabled) {
+                glEnable(GL_POLYGON_OFFSET_FILL);
+                glPolygonOffset(state.getPolyOffsetFactor(),
+                        state.getPolyOffsetUnits());
+                context.polyOffsetEnabled = true;
+                context.polyOffsetFactor = state.getPolyOffsetFactor();
+                context.polyOffsetUnits = state.getPolyOffsetUnits();
+            } else {
+                if (state.getPolyOffsetFactor() != context.polyOffsetFactor
+                        || state.getPolyOffsetUnits() != context.polyOffsetUnits) {
                     glPolygonOffset(state.getPolyOffsetFactor(),
                             state.getPolyOffsetUnits());
-                    context.polyOffsetEnabled = true;
                     context.polyOffsetFactor = state.getPolyOffsetFactor();
                     context.polyOffsetUnits = state.getPolyOffsetUnits();
-                } else {
-                    if (state.getPolyOffsetFactor() != context.polyOffsetFactor
-                            || state.getPolyOffsetUnits() != context.polyOffsetUnits) {
-                        glPolygonOffset(state.getPolyOffsetFactor(),
-                                state.getPolyOffsetUnits());
-                        context.polyOffsetFactor = state.getPolyOffsetFactor();
-                        context.polyOffsetUnits = state.getPolyOffsetUnits();
-                    }
-                }
-            } else {
-                if (context.polyOffsetEnabled) {
-                    glDisable(GL_POLYGON_OFFSET_FILL);
-                    context.polyOffsetEnabled = false;
-                    context.polyOffsetFactor = 0;
-                    context.polyOffsetUnits = 0;
                 }
             }
+        } else {
+            if (context.polyOffsetEnabled) {
+                glDisable(GL_POLYGON_OFFSET_FILL);
+                context.polyOffsetEnabled = false;
+                context.polyOffsetFactor = 0;
+                context.polyOffsetUnits = 0;
+            }
         }
-        if (state.isApplyCullMode()) {
-            if (state.getFaceCullMode() != context.cullMode) {
-                if (state.getFaceCullMode() == RenderState.FaceCullMode.Off) {
-                    glDisable(GL_CULL_FACE);
-                } else {
-                    glEnable(GL_CULL_FACE);
-                }
+        if (state.getFaceCullMode() != context.cullMode) {
+            if (state.getFaceCullMode() == RenderState.FaceCullMode.Off) {
+                glDisable(GL_CULL_FACE);
+            } else {
+                glEnable(GL_CULL_FACE);
+            }
 
-                switch (state.getFaceCullMode()) {
+            switch (state.getFaceCullMode()) {
+                case Off:
+                    break;
+                case Back:
+                    glCullFace(GL_BACK);
+                    break;
+                case Front:
+                    glCullFace(GL_FRONT);
+                    break;
+                case FrontAndBack:
+                    glCullFace(GL_FRONT_AND_BACK);
+                    break;
+                default:
+                    throw new UnsupportedOperationException("Unrecognized face cull mode: "
+                            + state.getFaceCullMode());
+            }
+
+            context.cullMode = state.getFaceCullMode();
+        }
+
+        if (state.getBlendMode() != context.blendMode) {
+            if (state.getBlendMode() == RenderState.BlendMode.Off) {
+                glDisable(GL_BLEND);
+            } else {
+                glEnable(GL_BLEND);
+                switch (state.getBlendMode()) {
                     case Off:
                         break;
-                    case Back:
-                        glCullFace(GL_BACK);
+                    case Additive:
+                        glBlendFunc(GL_ONE, GL_ONE);
                         break;
-                    case Front:
-                        glCullFace(GL_FRONT);
+                    case AlphaAdditive:
+                        glBlendFunc(GL_SRC_ALPHA, GL_ONE);
                         break;
-                    case FrontAndBack:
-                        glCullFace(GL_FRONT_AND_BACK);
+                    case Color:
+                        glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_COLOR);
+                        break;
+                    case Alpha:
+                        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                        break;
+                    case PremultAlpha:
+                        glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+                        break;
+                    case Modulate:
+                        glBlendFunc(GL_DST_COLOR, GL_ZERO);
+                        break;
+                    case ModulateX2:
+                        glBlendFunc(GL_DST_COLOR, GL_SRC_COLOR);
                         break;
                     default:
-                        throw new UnsupportedOperationException("Unrecognized face cull mode: "
-                                + state.getFaceCullMode());
+                        throw new UnsupportedOperationException("Unrecognized blend mode: "
+                                + state.getBlendMode());
                 }
-
-                context.cullMode = state.getFaceCullMode();
             }
+
+            context.blendMode = state.getBlendMode();
         }
 
-        if (state.isApplyBlendMode()) {
-            if (state.getBlendMode() != context.blendMode) {
-                if (state.getBlendMode() == RenderState.BlendMode.Off) {
-                    glDisable(GL_BLEND);
-                } else {
-                    glEnable(GL_BLEND);
-                    switch (state.getBlendMode()) {
-                        case Off:
-                            break;
-                        case Additive:
-                            glBlendFunc(GL_ONE, GL_ONE);
-                            break;
-                        case AlphaAdditive:
-                            glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-                            break;
-                        case Color:
-                            glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_COLOR);
-                            break;
-                        case Alpha:
-                            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-                            break;
-                        case PremultAlpha:
-                            glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-                            break;
-                        case Modulate:
-                            glBlendFunc(GL_DST_COLOR, GL_ZERO);
-                            break;
-                        case ModulateX2:
-                            glBlendFunc(GL_DST_COLOR, GL_SRC_COLOR);
-                            break;
-                        default:
-                            throw new UnsupportedOperationException("Unrecognized blend mode: "
-                                    + state.getBlendMode());
-                    }
-                }
-
-                context.blendMode = state.getBlendMode();
-            }
-        }
     }
 
     /*********************************************************************\

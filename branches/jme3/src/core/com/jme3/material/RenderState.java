@@ -350,4 +350,51 @@ public class RenderState implements Cloneable, Savable {
     public boolean isApplyWireFrame() {
         return applyWireFrame;
     }
+
+    public RenderState cloneMerged(RenderState additionalState) {
+        if (additionalState == null) {
+            return this;
+        }
+        RenderState state = this.clone();
+
+        if (additionalState.isApplyPointSprite()) {
+            state.pointSprite = additionalState.pointSprite;
+        }
+        if (additionalState.isApplyWireFrame()) {
+            state.wireframe = additionalState.wireframe;
+        }
+        if (additionalState.isApplyCullMode()) {
+            state.cullMode = additionalState.cullMode;
+        }
+        if (additionalState.isApplyDepthWrite()) {
+            state.depthWrite = additionalState.depthWrite;
+        }
+        if (additionalState.isApplyDepthTest()) {
+            state.depthTest = additionalState.depthTest;
+        }
+        if (additionalState.isApplyColorWrite()) {
+            state.colorWrite = additionalState.colorWrite;
+        }
+        if (additionalState.isApplyBlendMode()) {
+            state.blendMode = additionalState.blendMode;
+        }
+        if (additionalState.isApplyAlphaTest()) {
+            state.alphaTest = additionalState.alphaTest;
+        }
+
+        if (additionalState.isApplyAlphaFallOff()) {
+            state.alphaFallOff = additionalState.alphaFallOff;
+        }
+        if (additionalState.isApplyPolyOffset()) {
+            state.offsetEnabled = additionalState.offsetEnabled;
+            state.offsetFactor = additionalState.offsetFactor;
+            state.offsetUnits = additionalState.offsetUnits;
+        }
+        return state;
+    }
+
+    @Override
+    public String toString() {
+        return "RenderState{" + "pointSprite=" + pointSprite + "applyPointSprite=" + applyPointSprite + "wireframe=" + wireframe + "applyWireFrame=" + applyWireFrame + "cullMode=" + cullMode + "applyCullMode=" + applyCullMode + "depthWrite=" + depthWrite + "applyDepthWrite=" + applyDepthWrite + "depthTest=" + depthTest + "applyDepthTest=" + applyDepthTest + "colorWrite=" + colorWrite + "applyColorWrite=" + applyColorWrite + "blendMode=" + blendMode + "applyBlendMode=" + applyBlendMode + "alphaTest=" + alphaTest + "applyAlphaTest=" + applyAlphaTest + "alphaFallOff=" + alphaFallOff + "applyAlphaFallOff=" + applyAlphaFallOff + "offsetEnabled=" + offsetEnabled + "applyPolyOffset=" + applyPolyOffset + "offsetFactor=" + offsetFactor + "offsetUnits=" + offsetUnits + '}';
+    }
 }
