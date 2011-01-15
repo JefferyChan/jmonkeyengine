@@ -1,6 +1,7 @@
 package jme3test.material;
 
 import com.jme3.app.SimpleApplication;
+import com.jme3.light.AmbientLight;
 import com.jme3.light.PointLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
@@ -35,5 +36,9 @@ public class TestUnshadedModel extends SimpleApplication {
         pl.setColor(ColorRGBA.White);
         pl.setPosition(new Vector3f(4f, 0f, 0f));
         rootNode.addLight(pl);
+
+        AmbientLight al = new AmbientLight();
+        al.setColor(ColorRGBA.White);
+        rootNode.addLight(al);
     }
 }

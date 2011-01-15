@@ -31,8 +31,12 @@
  */
 package com.jme3.renderer;
 
+import com.jme3.light.AmbientLight;
+import com.jme3.light.Light;
+import com.jme3.light.LightList;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
+import com.jme3.math.ColorRGBA;
 import com.jme3.math.Matrix3f;
 import com.jme3.math.Matrix4f;
 import com.jme3.math.Quaternion;
@@ -92,6 +96,10 @@ public class RenderManager {
             camLeft = new Vector3f(),
             camDir = new Vector3f(),
             camLoc = new Vector3f();
+
+    private LightList worldLightList;
+    private ColorRGBA ambientLightColor = new ColorRGBA(0,0,0,0);
+
     //temp technique
     private String tmpTech;
 
@@ -363,6 +371,16 @@ public class RenderManager {
                 case FrameRate:
                     u.setValue(VarType.Float, timer.getFrameRate());
                     break;
+                case AmbientLightColor:
+                    ambientLightColor.set(0,0,0,0);
+                    for (int j = 0; j < worldLightList.size(); j++){
+                        Light l = worldLightList.get(j);
+                        if (l instanceof AmbientLight){
+                            ambientLightColor.addLocal(l.getColor());
+                        }
+                    }
+                    u.setValue(VarType.Vector4, ambientLightColor);
+                    break;
             }
         }
 
@@ -403,6 +421,8 @@ public class RenderManager {
         } else {
             setWorldMatrix(g.getWorldMatrix());
         }
+
+        worldLightList = g.getWorldLightList();
 
         //if forcedTechnique we try to force it for render,
         //if it does not exists in the mat def, we check for forcedMaterial and render the geom if not null

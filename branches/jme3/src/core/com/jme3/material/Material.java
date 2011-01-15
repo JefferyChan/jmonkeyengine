@@ -42,6 +42,7 @@ import com.jme3.export.JmeImporter;
 import com.jme3.export.InputCapsule;
 import com.jme3.export.OutputCapsule;
 import com.jme3.export.Savable;
+import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.light.Light;
 import com.jme3.light.LightList;
@@ -164,26 +165,20 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
     }
 
     public int getSortId(){
-        int texId = 0;
         Technique t = getActiveTechnique();
-        
-        if (sortingId == -1){
+        if (sortingId == -1 && t != null && t.getShader() != null){
+            int texId = -1;
             for (int i = 0; i < paramValues.size(); i++){
                 MatParam param = paramValues.getValue(i);
                 if (param instanceof MatParamTexture){
                     MatParamTexture tex = (MatParamTexture) param;
                     if (tex.getTextureValue() != null && tex.getTextureValue().getImage() != null){
-                        texId = tex.getTextureValue().getImage().getId();
+                        if (texId == -1) texId = 0;
+                        texId += tex.getTextureValue().getImage().getId() % 0xff;
                     }
                 }
             }
-            sortingId = texId;
-
-            if (t != null){
-                if (t.getShader() != null){
-                    sortingId = sortingId + t.getShader().getId() * 1000;
-                }
-            }
+            sortingId = texId + t.getShader().getId() * 1000;
         }
         return sortingId;
     }
@@ -560,11 +555,14 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
             r.applyRenderState(additiveLight);
 
             for (int i = 0; i < lightList.size(); i++){
-                if (i == 1){
+//                if (i == 1){
 //                    r.applyRenderState(additiveLight);
-                }
+//                }
 
                 Light l = lightList.get(i);
+                if (l instanceof AmbientLight)
+                    continue;
+
                 ColorRGBA color = l.getColor();
                 ColorRGBA color2;
                 if (lightColor.getValue() != null){

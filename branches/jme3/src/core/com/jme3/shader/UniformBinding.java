@@ -32,6 +32,8 @@
 
 package com.jme3.shader;
 
+import com.jme3.light.AmbientLight;
+
 public enum UniformBinding {
 
     /**
@@ -158,5 +160,13 @@ public enum UniformBinding {
      * Frames per second.
      * Type: float
      */
-    FrameRate;
+    FrameRate,
+
+    /**
+     * AmbientLightColor.
+     * The sum of all the colors in the LightList with type
+     * {@link AmbientLight}.
+     * Type: vec4
+     */
+    AmbientLightColor;
 }

@@ -113,6 +113,7 @@ MaterialDef Phong Lighting {
 
         WorldParameters {
             WorldViewProjectionMatrix
+            AmbientLightColor
         }
 
         Defines {

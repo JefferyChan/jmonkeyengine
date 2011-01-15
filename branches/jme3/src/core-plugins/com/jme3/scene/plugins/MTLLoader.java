@@ -80,7 +80,7 @@ public class MTLLoader implements AssetLoader {
     protected void startMaterial(String name){
         material = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
         material.setBoolean("m_UseMaterialColors", true);
-        material.setColor("m_Ambient",  ColorRGBA.Black);
+        material.setColor("m_Ambient",  ColorRGBA.DarkGray);
         material.setColor("m_Diffuse",  ColorRGBA.White);
         material.setColor("m_Specular", ColorRGBA.Black);
         material.setFloat("m_Shininess", 16f); // prevents "premature culling" bug

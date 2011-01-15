@@ -32,6 +32,9 @@
 
 package com.jme3.util;
 
+import com.jme3.scene.Geometry;
+import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector2f;
@@ -140,6 +143,18 @@ public class TangentBinormalGenerator {
 
     public static void generate(Mesh mesh) {
         generate(mesh, true);
+    }
+
+    public static void generate(Spatial scene){
+        if (scene instanceof Node){
+            Node node = (Node) scene;
+            for (Spatial child : node.getChildren()){
+                generate(child);
+            }
+        }else{
+            Geometry geom = (Geometry) scene;
+            generate(geom.getMesh());
+        }
     }
 
     public static void generate(Mesh mesh, boolean approxTangents) {

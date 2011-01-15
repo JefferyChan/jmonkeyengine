@@ -364,7 +364,7 @@ public class MaterialLoader implements AssetLoader {
         if(ambient != null){
             mat.setColor("m_Ambient",  ambient);
         }else{
-            mat.setColor("m_Ambient", ColorRGBA.Black);
+            mat.setColor("m_Ambient", ColorRGBA.DarkGray);
         }
 
         if(specular != null){

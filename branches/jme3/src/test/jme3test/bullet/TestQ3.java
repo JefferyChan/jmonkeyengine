@@ -43,6 +43,7 @@ import com.jme3.bullet.nodes.PhysicsCharacterNode;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
+import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.material.MaterialList;
 import com.jme3.math.ColorRGBA;
@@ -81,6 +82,10 @@ public class TestQ3 extends SimpleApplication implements ActionListener {
         dl.setColor(ColorRGBA.White.clone().multLocal(2));
         dl.setDirection(new Vector3f(-1, -1, -1).normalize());
         rootNode.addLight(dl);
+
+        AmbientLight am = new AmbientLight();
+        am.setColor(ColorRGBA.White.mult(2));
+        rootNode.addLight(am);
 
         // load the level from zip or http zip
         if (useHttp) {

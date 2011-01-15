@@ -50,7 +50,8 @@ public abstract class Light implements Savable, Cloneable {
 
         Directional(0),
         Point(1),
-        Spot(2);
+        Spot(2),
+        Ambient(3);
 
         private int typeId;
 
