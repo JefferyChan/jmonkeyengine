@@ -96,10 +96,8 @@ public class RenderManager {
             camLeft = new Vector3f(),
             camDir = new Vector3f(),
             camLoc = new Vector3f();
-
     private LightList worldLightList;
-    private ColorRGBA ambientLightColor = new ColorRGBA(0,0,0,1);
-
+    private ColorRGBA ambientLightColor = new ColorRGBA(0, 0, 0, 1);
     //temp technique
     private String tmpTech;
 
@@ -372,10 +370,10 @@ public class RenderManager {
                     u.setValue(VarType.Float, timer.getFrameRate());
                     break;
                 case AmbientLightColor:
-                    ambientLightColor.set(0,0,0,1);
-                    for (int j = 0; j < worldLightList.size(); j++){
+                    ambientLightColor.set(0, 0, 0, 1);
+                    for (int j = 0; j < worldLightList.size(); j++) {
                         Light l = worldLightList.get(j);
-                        if (l instanceof AmbientLight){
+                        if (l instanceof AmbientLight) {
                             ambientLightColor.addLocal(l.getColor());
                         }
                     }
@@ -596,15 +594,17 @@ public class RenderManager {
 
         // render opaque objects with default depth range
         // opaque objects are sorted front-to-back, reducing overdraw
-        if (forcedMaterial != null || forcedTechnique != null)
+        if (forcedMaterial != null || forcedTechnique != null) {
             drawAmbient = false;
 
-        if (drawAmbient){
+
+        }
+        if (drawAmbient) {
             forcedTechnique = "AmbientPass";
             rq.renderQueue(Bucket.Opaque, this, cam, false);
             forcedTechnique = null;
         }
-        
+
         rq.renderQueue(Bucket.Opaque, this, cam, flush);
 
         // render the sky, with depth range set to the farthest
@@ -624,12 +624,12 @@ public class RenderManager {
                 depthRangeChanged = false;
             }
 
-            if (drawAmbient){
+            if (drawAmbient) {
                 forcedTechnique = "AmbientPass";
                 rq.renderQueue(Bucket.Transparent, this, cam, false);
                 forcedTechnique = null;
             }
-            
+
             rq.renderQueue(Bucket.Transparent, this, cam, flush);
         }
 
@@ -793,5 +793,9 @@ public class RenderManager {
 
     public void setForcedTechnique(String forcedTechnique) {
         this.forcedTechnique = forcedTechnique;
+    }
+
+    public void setAlphaToCoverage(boolean value) {
+        renderer.setAlphaToCoverage(value);
     }
 }

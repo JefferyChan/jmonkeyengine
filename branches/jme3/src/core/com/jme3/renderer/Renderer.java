@@ -200,5 +200,11 @@ public interface Renderer {
      * all created GL objects.
      */
     public void cleanup();
+
+    /**
+     * sets alpha to coverage
+     * @param value
+     */
+    public void setAlphaToCoverage(boolean value);
     
 }

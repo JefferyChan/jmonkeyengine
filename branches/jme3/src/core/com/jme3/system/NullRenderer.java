@@ -137,4 +137,7 @@ public class NullRenderer implements Renderer {
     public void deleteImage(Image image) {
     }
 
+    public void setAlphaToCoverage(boolean value) {
+    }
+
 }

@@ -62,7 +62,6 @@ import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import java.util.Collection;
 import java.util.EnumSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -1114,6 +1113,14 @@ public class JoglRenderer implements Renderer {
             } else {
                 renderMeshDefault(mesh, lod, count);
             }
+        }
+    }
+
+    public void setAlphaToCoverage(boolean value) {
+        if (value) {
+            gl.glEnable(gl.GL_SAMPLE_ALPHA_TO_COVERAGE);
+        } else {
+            gl.glDisable(gl.GL_SAMPLE_ALPHA_TO_COVERAGE);
         }
     }
 }

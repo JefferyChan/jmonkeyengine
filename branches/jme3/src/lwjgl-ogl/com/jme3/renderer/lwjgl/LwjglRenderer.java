@@ -2182,4 +2182,12 @@ public class LwjglRenderer implements Renderer {
         renderMeshDefault(mesh, lod, count);
 //        }
     }
+
+    public void setAlphaToCoverage(boolean value) {
+        if (value) {
+            glEnable(ARBMultisample.GL_SAMPLE_ALPHA_TO_COVERAGE_ARB);
+        } else {
+            glDisable(ARBMultisample.GL_SAMPLE_ALPHA_TO_COVERAGE_ARB);
+        }
+    }
 }
