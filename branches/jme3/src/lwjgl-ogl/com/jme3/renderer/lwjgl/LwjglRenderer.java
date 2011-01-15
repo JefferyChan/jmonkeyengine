@@ -135,10 +135,8 @@ public class LwjglRenderer implements Renderer {
     private int maxCubeTexSize;
     private int maxVertCount;
     private int maxTriCount;
-
     private int maxColorTexSamples;
     private int maxDepthTexSamples;
-
     private boolean tdc;
     private FrameBuffer lastFb = null;
     private final Statistics statistics = new Statistics();
@@ -185,7 +183,7 @@ public class LwjglRenderer implements Renderer {
                 }
             }
         }
-        
+
 
         String versionStr = glGetString(GL_SHADING_LANGUAGE_VERSION);
         if (versionStr == null || versionStr.equals("")) {
@@ -360,7 +358,7 @@ public class LwjglRenderer implements Renderer {
                 logger.log(Level.FINER, "FBO Max Samples: {0}", maxFBOSamples);
             }
 
-            if (ctxCaps.GL_ARB_texture_multisample){
+            if (ctxCaps.GL_ARB_texture_multisample) {
                 caps.add(Caps.TextureMultisample);
 
                 glGetInteger(GL_MAX_COLOR_TEXTURE_SAMPLES, intBuf16);
@@ -442,138 +440,159 @@ public class LwjglRenderer implements Renderer {
     }
 
     public void applyRenderState(RenderState state) {
-        if (state.isWireframe() && !context.wireframe) {
-            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-            context.wireframe = true;
-        } else if (!state.isWireframe() && context.wireframe) {
-            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-            context.wireframe = false;
+        if (state.isApplyWireFrame()) {
+            if (state.isWireframe() && !context.wireframe) {
+                glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+                context.wireframe = true;
+            } else if (!state.isWireframe() && context.wireframe) {
+                glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+                context.wireframe = false;
+            }
         }
-        if (state.isDepthTest() && !context.depthTestEnabled) {
-            glEnable(GL_DEPTH_TEST);
-            glDepthFunc(GL_LEQUAL);
-            context.depthTestEnabled = true;
-        } else if (!state.isDepthTest() && context.depthTestEnabled) {
-            glDisable(GL_DEPTH_TEST);
-            context.depthTestEnabled = false;
+
+        if (state.isApplyDepthTest()) {
+            if (state.isDepthTest() && !context.depthTestEnabled) {
+                glEnable(GL_DEPTH_TEST);
+                glDepthFunc(GL_LEQUAL);
+                context.depthTestEnabled = true;
+            } else if (!state.isDepthTest() && context.depthTestEnabled) {
+                glDisable(GL_DEPTH_TEST);
+                context.depthTestEnabled = false;
+            }
         }
-        if (state.isAlphaTest() && !context.alphaTestEnabled) {
-            glEnable(GL_ALPHA_TEST);
-            glAlphaFunc(GL_GREATER, state.getAlphaFallOff());
-            context.alphaTestEnabled = true;
-        } else if (!state.isAlphaTest() && context.alphaTestEnabled) {
-            glDisable(GL_ALPHA_TEST);
-            context.alphaTestEnabled = false;
+
+        if (state.isApplyAlphaTest()) {
+            if (state.isAlphaTest() && !context.alphaTestEnabled) {
+                glEnable(GL_ALPHA_TEST);
+                glAlphaFunc(GL_GREATER, state.getAlphaFallOff());
+                context.alphaTestEnabled = true;
+            } else if (!state.isAlphaTest() && context.alphaTestEnabled) {
+                glDisable(GL_ALPHA_TEST);
+                context.alphaTestEnabled = false;
+            }
         }
-        if (state.isDepthWrite() && !context.depthWriteEnabled) {
-            glDepthMask(true);
-            context.depthWriteEnabled = true;
-        } else if (!state.isDepthWrite() && context.depthWriteEnabled) {
-            glDepthMask(false);
-            context.depthWriteEnabled = false;
+        if (state.isApplyDepthWrite()) {
+            if (state.isDepthWrite() && !context.depthWriteEnabled) {
+                glDepthMask(true);
+                context.depthWriteEnabled = true;
+            } else if (!state.isDepthWrite() && context.depthWriteEnabled) {
+                glDepthMask(false);
+                context.depthWriteEnabled = false;
+            }
         }
-        if (state.isColorWrite() && !context.colorWriteEnabled) {
-            glColorMask(true, true, true, true);
-            context.colorWriteEnabled = true;
-        } else if (!state.isColorWrite() && context.colorWriteEnabled) {
-            glColorMask(false, false, false, false);
-            context.colorWriteEnabled = false;
+
+        if (state.isApplyColorWrite()) {
+            if (state.isColorWrite() && !context.colorWriteEnabled) {
+                glColorMask(true, true, true, true);
+                context.colorWriteEnabled = true;
+            } else if (!state.isColorWrite() && context.colorWriteEnabled) {
+                glColorMask(false, false, false, false);
+                context.colorWriteEnabled = false;
+            }
         }
-        if (state.isPointSprite() && !context.pointSprite) {
-            glEnable(GL_POINT_SPRITE);
-            glTexEnvi(GL_POINT_SPRITE, GL_COORD_REPLACE, GL_TRUE);
-            glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
-        } else if (!state.isPointSprite() && context.pointSprite) {
-            glDisable(GL_POINT_SPRITE);
+        if (state.isApplyPointSprite()) {
+            if (state.isPointSprite() && !context.pointSprite) {
+                glEnable(GL_POINT_SPRITE);
+                glTexEnvi(GL_POINT_SPRITE, GL_COORD_REPLACE, GL_TRUE);
+                glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
+            } else if (!state.isPointSprite() && context.pointSprite) {
+                glDisable(GL_POINT_SPRITE);
+            }
         }
-        if (state.isPolyOffset()) {
-            if (!context.polyOffsetEnabled) {
-                glEnable(GL_POLYGON_OFFSET_FILL);
-                glPolygonOffset(state.getPolyOffsetFactor(),
-                        state.getPolyOffsetUnits());
-                context.polyOffsetEnabled = true;
-                context.polyOffsetFactor = state.getPolyOffsetFactor();
-                context.polyOffsetUnits = state.getPolyOffsetUnits();
-            } else {
-                if (state.getPolyOffsetFactor() != context.polyOffsetFactor
-                        || state.getPolyOffsetUnits() != context.polyOffsetUnits) {
+        if (state.isApplyPolyOffset()) {
+            if (state.isPolyOffset()) {
+                if (!context.polyOffsetEnabled) {
+                    glEnable(GL_POLYGON_OFFSET_FILL);
                     glPolygonOffset(state.getPolyOffsetFactor(),
                             state.getPolyOffsetUnits());
+                    context.polyOffsetEnabled = true;
                     context.polyOffsetFactor = state.getPolyOffsetFactor();
                     context.polyOffsetUnits = state.getPolyOffsetUnits();
+                } else {
+                    if (state.getPolyOffsetFactor() != context.polyOffsetFactor
+                            || state.getPolyOffsetUnits() != context.polyOffsetUnits) {
+                        glPolygonOffset(state.getPolyOffsetFactor(),
+                                state.getPolyOffsetUnits());
+                        context.polyOffsetFactor = state.getPolyOffsetFactor();
+                        context.polyOffsetUnits = state.getPolyOffsetUnits();
+                    }
+                }
+            } else {
+                if (context.polyOffsetEnabled) {
+                    glDisable(GL_POLYGON_OFFSET_FILL);
+                    context.polyOffsetEnabled = false;
+                    context.polyOffsetFactor = 0;
+                    context.polyOffsetUnits = 0;
                 }
             }
-        } else {
-            if (context.polyOffsetEnabled) {
-                glDisable(GL_POLYGON_OFFSET_FILL);
-                context.polyOffsetEnabled = false;
-                context.polyOffsetFactor = 0;
-                context.polyOffsetUnits = 0;
-            }
         }
-        if (state.getFaceCullMode() != context.cullMode) {
-            if (state.getFaceCullMode() == RenderState.FaceCullMode.Off) {
-                glDisable(GL_CULL_FACE);
-            } else {
-                glEnable(GL_CULL_FACE);
-            }
+        if (state.isApplyCullMode()) {
+            if (state.getFaceCullMode() != context.cullMode) {
+                if (state.getFaceCullMode() == RenderState.FaceCullMode.Off) {
+                    glDisable(GL_CULL_FACE);
+                } else {
+                    glEnable(GL_CULL_FACE);
+                }
 
-            switch (state.getFaceCullMode()) {
-                case Off:
-                    break;
-                case Back:
-                    glCullFace(GL_BACK);
-                    break;
-                case Front:
-                    glCullFace(GL_FRONT);
-                    break;
-                case FrontAndBack:
-                    glCullFace(GL_FRONT_AND_BACK);
-                    break;
-                default:
-                    throw new UnsupportedOperationException("Unrecognized face cull mode: "
-                            + state.getFaceCullMode());
-            }
-
-            context.cullMode = state.getFaceCullMode();
-        }
-
-        if (state.getBlendMode() != context.blendMode) {
-            if (state.getBlendMode() == RenderState.BlendMode.Off) {
-                glDisable(GL_BLEND);
-            } else {
-                glEnable(GL_BLEND);
-                switch (state.getBlendMode()) {
+                switch (state.getFaceCullMode()) {
                     case Off:
                         break;
-                    case Additive:
-                        glBlendFunc(GL_ONE, GL_ONE);
+                    case Back:
+                        glCullFace(GL_BACK);
                         break;
-                    case AlphaAdditive:
-                        glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+                    case Front:
+                        glCullFace(GL_FRONT);
                         break;
-                    case Color:
-                        glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_COLOR);
-                        break;
-                    case Alpha:
-                        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-                        break;
-                    case PremultAlpha:
-                        glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-                        break;
-                    case Modulate:
-                        glBlendFunc(GL_DST_COLOR, GL_ZERO);
-                        break;
-                    case ModulateX2:
-                        glBlendFunc(GL_DST_COLOR, GL_SRC_COLOR);
+                    case FrontAndBack:
+                        glCullFace(GL_FRONT_AND_BACK);
                         break;
                     default:
-                        throw new UnsupportedOperationException("Unrecognized blend mode: "
-                                + state.getBlendMode());
+                        throw new UnsupportedOperationException("Unrecognized face cull mode: "
+                                + state.getFaceCullMode());
                 }
-            }
 
-            context.blendMode = state.getBlendMode();
+                context.cullMode = state.getFaceCullMode();
+            }
+        }
+
+        if (state.isApplyBlendMode()) {
+            if (state.getBlendMode() != context.blendMode) {
+                if (state.getBlendMode() == RenderState.BlendMode.Off) {
+                    glDisable(GL_BLEND);
+                } else {
+                    glEnable(GL_BLEND);
+                    switch (state.getBlendMode()) {
+                        case Off:
+                            break;
+                        case Additive:
+                            glBlendFunc(GL_ONE, GL_ONE);
+                            break;
+                        case AlphaAdditive:
+                            glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+                            break;
+                        case Color:
+                            glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_COLOR);
+                            break;
+                        case Alpha:
+                            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                            break;
+                        case PremultAlpha:
+                            glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+                            break;
+                        case Modulate:
+                            glBlendFunc(GL_DST_COLOR, GL_ZERO);
+                            break;
+                        case ModulateX2:
+                            glBlendFunc(GL_DST_COLOR, GL_SRC_COLOR);
+                            break;
+                        default:
+                            throw new UnsupportedOperationException("Unrecognized blend mode: "
+                                    + state.getBlendMode());
+                    }
+                }
+
+                context.blendMode = state.getBlendMode();
+            }
         }
     }
 
@@ -809,7 +828,7 @@ public class LwjglRenderer implements Renderer {
             if (version > 100) {
                 stringBuf.append("#version ");
                 stringBuf.append(language.substring(4));
-                if (version >= 150){
+                if (version >= 150) {
                     stringBuf.append(" core");
                 }
                 stringBuf.append("\n");
@@ -889,7 +908,7 @@ public class LwjglRenderer implements Renderer {
             // create program
             id = glCreateProgram();
             if (id <= 0) {
-                throw new RendererException("Invalid ID ("+id+") received when trying to create shader program.");
+                throw new RendererException("Invalid ID (" + id + ") received when trying to create shader program.");
             }
 
             shader.setId(id);
@@ -911,7 +930,7 @@ public class LwjglRenderer implements Renderer {
             glAttachShader(id, source.getId());
         }
 
-        if (caps.contains(Caps.OpenGL30)){
+        if (caps.contains(Caps.OpenGL30)) {
             GL30.glBindFragDataLocation(id, 0, "outFragColor");
         }
 
@@ -1244,19 +1263,20 @@ public class LwjglRenderer implements Renderer {
         fb.clearUpdateNeeded();
     }
 
-    public Vector2f[] getFrameBufferSamplePositions(FrameBuffer fb){
-        if (fb.getSamples() <= 1)
+    public Vector2f[] getFrameBufferSamplePositions(FrameBuffer fb) {
+        if (fb.getSamples() <= 1) {
             throw new IllegalArgumentException("Framebuffer must be multisampled");
+        }
 
         setFrameBuffer(fb);
 
         Vector2f[] samplePositions = new Vector2f[fb.getSamples()];
         FloatBuffer samplePos = BufferUtils.createFloatBuffer(2);
-        for (int i = 0; i < samplePositions.length; i++){
+        for (int i = 0; i < samplePositions.length; i++) {
             glGetMultisample(GL_SAMPLE_POSITION, i, samplePos);
             samplePos.clear();
             samplePositions[i] = new Vector2f(samplePos.get(0) - 0.5f,
-                                              samplePos.get(1) - 0.5f);
+                    samplePos.get(1) - 0.5f);
         }
         return samplePositions;
     }
@@ -1420,15 +1440,17 @@ public class LwjglRenderer implements Renderer {
     private int convertTextureType(Texture.Type type, int samples) {
         switch (type) {
             case TwoDimensional:
-                if (samples > 1)
+                if (samples > 1) {
                     return ARBTextureMultisample.GL_TEXTURE_2D_MULTISAMPLE;
-                else
+                } else {
                     return GL_TEXTURE_2D;
+                }
             case TwoDimensionalArray:
-                if (samples > 1)
+                if (samples > 1) {
                     return ARBTextureMultisample.GL_TEXTURE_2D_MULTISAMPLE_ARRAY;
-                else
+                } else {
                     return EXTTextureArray.GL_TEXTURE_2D_ARRAY_EXT;
+                }
             case ThreeDimensional:
                 return GL_TEXTURE_3D;
             case CubeMap:
@@ -1558,9 +1580,9 @@ public class LwjglRenderer implements Renderer {
         if (!img.hasMipmaps() && mips) {
             // No pregenerated mips available,
             // generate from base level if required
-          if (!GLContext.getCapabilities().GL_EXT_framebuffer_object){
-            glTexParameteri(target, GL_GENERATE_MIPMAP, GL_TRUE);
-          }
+            if (!GLContext.getCapabilities().GL_EXT_framebuffer_object) {
+                glTexParameteri(target, GL_GENERATE_MIPMAP, GL_TRUE);
+            }
         } else {
 //          glTexParameteri(target, GL_TEXTURE_BASE_LEVEL, 0 );
             if (img.getMipMapSizes() != null) {
@@ -1569,11 +1591,12 @@ public class LwjglRenderer implements Renderer {
         }
 
         int imageSamples = img.getMultiSamples();
-        if (imageSamples > 1){
-            if (img.getFormat().isDepthFormat())
-                img.setMultiSamples( Math.min(maxDepthTexSamples, imageSamples) );
-            else
-                img.setMultiSamples( Math.min(maxColorTexSamples, imageSamples) );
+        if (imageSamples > 1) {
+            if (img.getFormat().isDepthFormat()) {
+                img.setMultiSamples(Math.min(maxDepthTexSamples, imageSamples));
+            } else {
+                img.setMultiSamples(Math.min(maxColorTexSamples, imageSamples));
+            }
         }
 
         if (target == GL_TEXTURE_CUBE_MAP) {
@@ -1599,10 +1622,11 @@ public class LwjglRenderer implements Renderer {
             TextureUtil.uploadTexture(img, target, 0, 0, tdc);
         }
 
-        if (img.getMultiSamples() != imageSamples)
+        if (img.getMultiSamples() != imageSamples) {
             img.setMultiSamples(imageSamples);
+        }
 
-        if (GLContext.getCapabilities().GL_EXT_framebuffer_object){
+        if (GLContext.getCapabilities().GL_EXT_framebuffer_object) {
             if (!img.hasMipmaps() && mips) {
                 glGenerateMipmapEXT(target);
             }

@@ -29,7 +29,6 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package com.jme3.material;
 
 import com.jme3.export.JmeExporter;
@@ -43,8 +42,10 @@ public class RenderState implements Cloneable, Savable {
 
     public static final RenderState DEFAULT = new RenderState();
     public static final RenderState NULL = new RenderState();
+    public static final RenderState ADDITIONAL = new RenderState();
 
     public enum TestFunc {
+
         Never,
         Equal,
         Less,
@@ -61,21 +62,18 @@ public class RenderState implements Cloneable, Savable {
          * No blending mode is used.
          */
         Off,
-
         /**
          * Additive blending. For use with glows and particle emitters.
          *
          * Result = Source Color + Destination Color
          */
         Additive,
-
         /**
          * Premultiplied alpha blending, for use with premult alpha textures.
          *
          * Result = Source Color + (Dest Color * 1 - Source Alpha)
          */
         PremultAlpha,
-
         /**
          * Additive blending that is multiplied with source alpha.
          * For use with glows and particle emitters.
@@ -83,7 +81,6 @@ public class RenderState implements Cloneable, Savable {
          * Result = (Source Alpha * Source Color) + Dest Color
          */
         AlphaAdditive,
-
         /**
          * Color blending, blends in color from dest color
          * using source color.
@@ -91,7 +88,6 @@ public class RenderState implements Cloneable, Savable {
          * Result = Source Color + (1 - Source Color) * Dest Color
          */
         Color,
-
         /**
          * Alpha blending, interpolates to source color from dest color
          * using source alpha.
@@ -100,14 +96,12 @@ public class RenderState implements Cloneable, Savable {
          *          (1 - Source Alpha) * Dest Color
          */
         Alpha,
-
         /**
          * Multiplies the source and dest colors.
          *
          * Result = Source Color * Dest Color
          */
         Modulate,
-
         /**
          * Multiplies the source and dest colors then doubles the result.
          *
@@ -122,17 +116,14 @@ public class RenderState implements Cloneable, Savable {
          * Face culling is disabled.
          */
         Off,
-
         /**
          * Cull front faces
          */
         Front,
-
         /**
          * Cull back faces
          */
         Back,
-
         /**
          * Cull both front and back faces. 
          */
@@ -144,24 +135,42 @@ public class RenderState implements Cloneable, Savable {
         NULL.depthTest = false;
     }
 
+    static {
+        ADDITIONAL.applyPointSprite = false;
+        ADDITIONAL.applyWireFrame = false;
+        ADDITIONAL.applyCullMode = false;
+        ADDITIONAL.applyDepthWrite = false;
+        ADDITIONAL.applyDepthTest = false;
+        ADDITIONAL.applyColorWrite = false;
+        ADDITIONAL.applyBlendMode = false;
+        ADDITIONAL.applyAlphaTest = false;
+        ADDITIONAL.applyAlphaFallOff = false;
+        ADDITIONAL.applyPolyOffset = false;
+    }
     boolean pointSprite = false;
+    boolean applyPointSprite = true;
     boolean wireframe = false;
+    boolean applyWireFrame = true;
     FaceCullMode cullMode = FaceCullMode.Back;
-
+    boolean applyCullMode = true;
     boolean depthWrite = true;
+    boolean applyDepthWrite = true;
     boolean depthTest = true;
-
+    boolean applyDepthTest = true;
     boolean colorWrite = true;
-
+    boolean applyColorWrite = true;
     BlendMode blendMode = BlendMode.Off;
+    boolean applyBlendMode = true;
     boolean alphaTest = false;
+    boolean applyAlphaTest = true;
     float alphaFallOff = 0;
-
+    boolean applyAlphaFallOff = true;
     boolean offsetEnabled = false;
+    boolean applyPolyOffset = true;
     float offsetFactor = 0;
     float offsetUnits = 0;
 
-    public void write(JmeExporter ex) throws IOException{
+    public void write(JmeExporter ex) throws IOException {
         OutputCapsule oc = ex.getCapsule(this);
         oc.write(pointSprite, "pointSprite", false);
         oc.write(wireframe, "wireframe", false);
@@ -177,27 +186,27 @@ public class RenderState implements Cloneable, Savable {
         oc.write(offsetUnits, "offsetUnits", 0);
     }
 
-    public void read(JmeImporter im) throws IOException{
+    public void read(JmeImporter im) throws IOException {
         InputCapsule ic = im.getCapsule(this);
         pointSprite = ic.readBoolean("pointSprite", false);
-        wireframe  = ic.readBoolean("wireframe", false);
-        cullMode  = ic.readEnum("cullMode", FaceCullMode.class, FaceCullMode.Back);
-        depthWrite  = ic.readBoolean("depthWrite", true);
-        depthTest  = ic.readBoolean("depthTest", true);
-        colorWrite  = ic.readBoolean("colorWrite", true);
-        blendMode  = ic.readEnum("blendMode", BlendMode.class, BlendMode.Off);
-        alphaTest  = ic.readBoolean("alphaTest", false);
-        alphaFallOff  = ic.readFloat("alphaFallOff", 0);
-        offsetEnabled  = ic.readBoolean("offsetEnabled", false);
-        offsetFactor  = ic.readFloat("offsetFactor", 0);
-        offsetUnits  = ic.readFloat("offsetUnits", 0);
+        wireframe = ic.readBoolean("wireframe", false);
+        cullMode = ic.readEnum("cullMode", FaceCullMode.class, FaceCullMode.Back);
+        depthWrite = ic.readBoolean("depthWrite", true);
+        depthTest = ic.readBoolean("depthTest", true);
+        colorWrite = ic.readBoolean("colorWrite", true);
+        blendMode = ic.readEnum("blendMode", BlendMode.class, BlendMode.Off);
+        alphaTest = ic.readBoolean("alphaTest", false);
+        alphaFallOff = ic.readFloat("alphaFallOff", 0);
+        offsetEnabled = ic.readBoolean("offsetEnabled", false);
+        offsetFactor = ic.readFloat("offsetFactor", 0);
+        offsetUnits = ic.readFloat("offsetUnits", 0);
     }
 
     @Override
-    public RenderState clone(){
-        try{
+    public RenderState clone() {
+        try {
             return (RenderState) super.clone();
-        }catch (CloneNotSupportedException ex){
+        } catch (CloneNotSupportedException ex) {
             throw new AssertionError();
         }
     }
@@ -207,6 +216,7 @@ public class RenderState implements Cloneable, Savable {
     }
 
     public void setPointSprite(boolean pointSprite) {
+        applyPointSprite = true;
         this.pointSprite = pointSprite;
     }
 
@@ -222,7 +232,7 @@ public class RenderState implements Cloneable, Savable {
         return offsetUnits;
     }
 
-    public boolean isPolyOffset(){
+    public boolean isPolyOffset() {
         return offsetEnabled;
     }
 
@@ -231,6 +241,7 @@ public class RenderState implements Cloneable, Savable {
     }
 
     public void setAlphaFallOff(float alphaFallOff) {
+        applyAlphaFallOff = true;
         this.alphaFallOff = alphaFallOff;
     }
 
@@ -239,6 +250,7 @@ public class RenderState implements Cloneable, Savable {
     }
 
     public void setAlphaTest(boolean alphaTest) {
+        applyAlphaTest = true;
         this.alphaTest = alphaTest;
     }
 
@@ -246,17 +258,20 @@ public class RenderState implements Cloneable, Savable {
         return cullMode;
     }
 
-    public void setColorWrite(boolean colorWrite){
+    public void setColorWrite(boolean colorWrite) {
+        applyColorWrite = true;
         this.colorWrite = colorWrite;
     }
 
-    public void setPolyOffset(float factor, float units){
+    public void setPolyOffset(float factor, float units) {
+        applyPolyOffset = true;
         offsetEnabled = true;
         offsetFactor = factor;
         offsetUnits = units;
     }
 
     public void setFaceCullMode(FaceCullMode cullMode) {
+        applyCullMode = true;
         this.cullMode = cullMode;
     }
 
@@ -265,6 +280,7 @@ public class RenderState implements Cloneable, Savable {
     }
 
     public void setBlendMode(BlendMode blendMode) {
+        applyBlendMode = true;
         this.blendMode = blendMode;
     }
 
@@ -273,6 +289,7 @@ public class RenderState implements Cloneable, Savable {
     }
 
     public void setDepthTest(boolean depthTest) {
+        applyDepthTest = true;
         this.depthTest = depthTest;
     }
 
@@ -281,6 +298,7 @@ public class RenderState implements Cloneable, Savable {
     }
 
     public void setDepthWrite(boolean depthWrite) {
+        applyDepthWrite = true;
         this.depthWrite = depthWrite;
     }
 
@@ -289,7 +307,47 @@ public class RenderState implements Cloneable, Savable {
     }
 
     public void setWireframe(boolean wireframe) {
+        applyWireFrame = true;
         this.wireframe = wireframe;
     }
 
+    public boolean isApplyAlphaFallOff() {
+        return applyAlphaFallOff;
+    }
+
+    public boolean isApplyAlphaTest() {
+        return applyAlphaTest;
+    }
+
+    public boolean isApplyBlendMode() {
+        return applyBlendMode;
+    }
+
+    public boolean isApplyColorWrite() {
+        return applyColorWrite;
+    }
+
+    public boolean isApplyCullMode() {
+        return applyCullMode;
+    }
+
+    public boolean isApplyDepthTest() {
+        return applyDepthTest;
+    }
+
+    public boolean isApplyDepthWrite() {
+        return applyDepthWrite;
+    }
+
+    public boolean isApplyPointSprite() {
+        return applyPointSprite;
+    }
+
+    public boolean isApplyPolyOffset() {
+        return applyPolyOffset;
+    }
+
+    public boolean isApplyWireFrame() {
+        return applyWireFrame;
+    }
 }

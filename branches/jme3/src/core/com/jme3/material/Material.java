@@ -29,7 +29,6 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package com.jme3.material;
 
 import com.jme3.asset.AssetKey;
@@ -71,7 +70,6 @@ import java.util.logging.Logger;
 public class Material implements Cloneable, Savable, Comparable<Material> {
 
     private static final Logger logger = Logger.getLogger(Material.class.getName());
-
     private static final RenderState additiveLight = new RenderState();
     private static final RenderState depthOnly = new RenderState();
 
@@ -84,17 +82,14 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
         additiveLight.setBlendMode(RenderState.BlendMode.AlphaAdditive);
         additiveLight.setDepthWrite(false);
     }
-
     private MaterialDef def;
     private ListMap<String, MatParam> paramValues = new ListMap<String, MatParam>();
-
     private Technique technique;
     private HashMap<String, Technique> techniques = new HashMap<String, Technique>();
     private int nextTexUnit = 0;
     private RenderState additionalState = null;
     private boolean transparent = false;
     private boolean receivesShadows = false;
-
     private int sortingId = -1;
 
     public static class MatParamTexture extends MatParam {
@@ -103,25 +98,25 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
         private int unit;
 //        private transient TextureKey key;
 
-        public MatParamTexture(VarType type, String name, Texture texture, int unit){
+        public MatParamTexture(VarType type, String name, Texture texture, int unit) {
             super(type, name, texture);
             this.texture = texture;
             this.unit = unit;
         }
 
-        public MatParamTexture(){
+        public MatParamTexture() {
         }
 
-        public Texture getTextureValue(){
+        public Texture getTextureValue() {
             return texture;
         }
 
-        public void setTextureValue(Texture value){
+        public void setTextureValue(Texture value) {
             this.value = value;
             this.texture = value;
         }
 
-        public void setUnit(int unit){
+        public void setUnit(int unit) {
             this.unit = unit;
         }
 
@@ -130,7 +125,7 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
         }
 
         @Override
-        public void write(JmeExporter ex) throws IOException{
+        public void write(JmeExporter ex) throws IOException {
             super.write(ex);
             OutputCapsule oc = ex.getCapsule(this);
             oc.write(unit, "texture_unit", -1);
@@ -138,7 +133,7 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
         }
 
         @Override
-        public void read(JmeImporter im) throws IOException{
+        public void read(JmeImporter im) throws IOException {
             super.read(im);
             InputCapsule ic = im.getCapsule(this);
             unit = ic.readInt("texture_unit", -1);
@@ -147,33 +142,36 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
         }
     }
 
-    public Material(MaterialDef def){
-        if (def == null)
+    public Material(MaterialDef def) {
+        if (def == null) {
             throw new NullPointerException("Material definition cannot be null");
+        }
 
         this.def = def;
     }
 
-    public Material(AssetManager contentMan, String defName){
-        this( (MaterialDef) contentMan.loadAsset(new AssetKey(defName)) );
+    public Material(AssetManager contentMan, String defName) {
+        this((MaterialDef) contentMan.loadAsset(new AssetKey(defName)));
     }
 
     /**
      * Do not use this constructor. Serialization purposes only.
      */
-    public Material(){
+    public Material() {
     }
 
-    public int getSortId(){
+    public int getSortId() {
         Technique t = getActiveTechnique();
-        if (sortingId == -1 && t != null && t.getShader() != null){
+        if (sortingId == -1 && t != null && t.getShader() != null) {
             int texId = -1;
-            for (int i = 0; i < paramValues.size(); i++){
+            for (int i = 0; i < paramValues.size(); i++) {
                 MatParam param = paramValues.getValue(i);
-                if (param instanceof MatParamTexture){
+                if (param instanceof MatParamTexture) {
                     MatParamTexture tex = (MatParamTexture) param;
-                    if (tex.getTextureValue() != null && tex.getTextureValue().getImage() != null){
-                        if (texId == -1) texId = 0;
+                    if (tex.getTextureValue() != null && tex.getTextureValue().getImage() != null) {
+                        if (texId == -1) {
+                            texId = 0;
+                        }
                         texId += tex.getTextureValue().getImage().getId() % 0xff;
                     }
                 }
@@ -188,23 +186,23 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
     }
 
     @Override
-    public Material clone(){
-        try{
+    public Material clone() {
+        try {
             Material mat = (Material) super.clone();
-            if (additionalState != null){
+            if (additionalState != null) {
                 mat.additionalState = additionalState.clone();
             }
             mat.technique = null;
             mat.techniques = new HashMap<String, Technique>();
 
             mat.paramValues = new ListMap<String, MatParam>();
-            for (int i = 0; i < paramValues.size(); i++){
+            for (int i = 0; i < paramValues.size(); i++) {
                 Map.Entry<String, MatParam> entry = paramValues.getEntry(i);
                 mat.paramValues.put(entry.getKey(), entry.getValue().clone());
             }
 
             return mat;
-        }catch (CloneNotSupportedException ex){
+        } catch (CloneNotSupportedException ex) {
             throw new AssertionError();
         }
     }
@@ -217,7 +215,7 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
      * Should only be used in Technique.makeCurrent()
      * @param tech
      */
-    public void setActiveTechnique(Technique tech){
+    public void setActiveTechnique(Technique tech) {
         technique = tech;
     }
 
@@ -236,14 +234,15 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
     public void setReceivesShadows(boolean receivesShadows) {
         this.receivesShadows = receivesShadows;
     }
-    
-    public RenderState getAdditionalRenderState(){
-        if (additionalState == null)
-            additionalState = new RenderState();
+
+    public RenderState getAdditionalRenderState() {
+        if (additionalState == null) {
+            additionalState = RenderState.ADDITIONAL.clone();
+        }
         return additionalState;
     }
 
-    public MaterialDef getMaterialDef(){
+    public MaterialDef getMaterialDef() {
         return def;
     }
 
@@ -252,36 +251,39 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
 //            param.uniform = technique.getShader().getUniform(param.name);
 //        }
 //    }
-
-    public MatParam getParam(String name){
+    public MatParam getParam(String name) {
         MatParam param = paramValues.get(name);
-        if (param instanceof MatParam)
+        if (param instanceof MatParam) {
             return (MatParam) param;
+        }
 
         return null;
     }
 
-    public MatParamTexture getTextureParam(String name){
+    public MatParamTexture getTextureParam(String name) {
         MatParam param = paramValues.get(name);
-        if (param instanceof MatParamTexture)
+        if (param instanceof MatParamTexture) {
             return (MatParamTexture) param;
+        }
 
         return null;
     }
 
-    public Collection<MatParam> getParams(){
+    public Collection<MatParam> getParams() {
         return paramValues.values();
     }
 
-    private void checkSetParam(VarType type, String name){
+    private void checkSetParam(VarType type, String name) {
         MatParam paramDef = def.getMaterialParam(name);
-        if (paramDef == null)
+        if (paramDef == null) {
             throw new IllegalArgumentException("Material parameter is not defined: " + name);
+        }
 
-        if (type != null && paramDef.getVarType() != type)
-            logger.logp(Level.WARNING, "Material parameter being set: {0} with " +
-                                      "type {1} doesn't match definition type {2}",
-                                      name, type.name(), paramDef.getVarType());
+        if (type != null && paramDef.getVarType() != type) {
+            logger.logp(Level.WARNING, "Material parameter being set: {0} with "
+                    + "type {1} doesn't match definition type {2}",
+                    name, type.name(), paramDef.getVarType());
+        }
     }
 
     /**
@@ -290,40 +292,41 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
      * @param type the type of the parameter @see com.jme3.shaderVarType
      * @param value the value of the param
      */
-    public void setParam(String name, VarType type, Object value){
+    public void setParam(String name, VarType type, Object value) {
         checkSetParam(type, name);
 
         MatParam val = getParam(name);
-        if (technique != null){
+        if (technique != null) {
             technique.notifySetParam(name, type, value);
         }
-        if (val == null)
+        if (val == null) {
             paramValues.put(name, new MatParam(type, name, value));
-        else
+        } else {
             val.setValue(value);
+        }
     }
 
     /**
      * Clear a parameter from this material. The param must exist
      * @param name the name of the parameter to clear
      */
-    public void clearParam(String name){
+    public void clearParam(String name) {
         checkSetParam(null, name);
 
         MatParam matParam = getParam(name);
-        if (matParam != null){
+        if (matParam != null) {
             paramValues.remove(name);
-            if (technique != null){
-                 technique.notifyClearParam(name);
+            if (technique != null) {
+                technique.notifyClearParam(name);
             }
-            if(matParam instanceof MatParamTexture){
-                int texUnit =((MatParamTexture) matParam).getUnit();
-                nextTexUnit --;
-                for (MatParam param : paramValues.values()){
-                    if (param instanceof MatParamTexture){
+            if (matParam instanceof MatParamTexture) {
+                int texUnit = ((MatParamTexture) matParam).getUnit();
+                nextTexUnit--;
+                for (MatParam param : paramValues.values()) {
+                    if (param instanceof MatParamTexture) {
                         MatParamTexture texParam = (MatParamTexture) param;
-                        if (texParam.getUnit() > texUnit){
-                            texParam.setUnit(texParam.getUnit()-1);
+                        if (texParam.getUnit() > texUnit) {
+                            texParam.setUnit(texParam.getUnit() - 1);
                         }
                     }
                 }
@@ -340,41 +343,43 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
      * @deprecated use clearParam instead
      */
     @Deprecated
-    public void clearTextureParam(String name){
+    public void clearTextureParam(String name) {
         checkSetParam(null, name);
 
         MatParamTexture val = getTextureParam(name);
-        if (val == null){
+        if (val == null) {
             throw new IllegalArgumentException("The given texture parameter is not set.");
-        }else{
+        } else {
             int texUnit = val.getUnit();
             paramValues.remove(name);
-            nextTexUnit --;
-            for (MatParam param : paramValues.values()){
-                if (param instanceof MatParamTexture){
+            nextTexUnit--;
+            for (MatParam param : paramValues.values()) {
+                if (param instanceof MatParamTexture) {
                     MatParamTexture texParam = (MatParamTexture) param;
-                    if (texParam.getUnit() > texUnit){
-                        texParam.setUnit(texParam.getUnit()-1);
+                    if (texParam.getUnit() > texUnit) {
+                        texParam.setUnit(texParam.getUnit() - 1);
                     }
                 }
             }
         }
     }
 
-    public void setTextureParam(String name, VarType type, Texture value){
-        if (value == null)
+    public void setTextureParam(String name, VarType type, Texture value) {
+        if (value == null) {
             throw new NullPointerException();
+        }
 
         checkSetParam(type, name);
-        
-        MatParamTexture val = getTextureParam(name);
-        if (val == null)
-            paramValues.put(name, new MatParamTexture(type, name, value, nextTexUnit++));
-        else
-            val.setTextureValue(value);
 
-        if (technique != null){
-            technique.notifySetParam(name, type, nextTexUnit-1);
+        MatParamTexture val = getTextureParam(name);
+        if (val == null) {
+            paramValues.put(name, new MatParamTexture(type, name, value, nextTexUnit++));
+        } else {
+            val.setTextureValue(value);
+        }
+
+        if (technique != null) {
+            technique.notifySetParam(name, type, nextTexUnit - 1);
         }
     }
 
@@ -383,15 +388,15 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
      * @param name the name of the texture defined in the material definition (j3md) (for example m_Texture for Lighting.j3md)
      * @param value the Texture object previously loaded by the asset manager
      */
-    public void setTexture(String name, Texture value){
-        if (value == null){
+    public void setTexture(String name, Texture value) {
+        if (value == null) {
             // clear it
             clearTextureParam(name);
             return;
         }
 
         VarType paramType = null;
-        switch (value.getType()){
+        switch (value.getType()) {
             case TwoDimensional:
                 paramType = VarType.Texture2D;
                 break;
@@ -405,9 +410,9 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
                 paramType = VarType.TextureCubeMap;
                 break;
             default:
-                throw new UnsupportedOperationException("Unknown texture type: "+value.getType());
+                throw new UnsupportedOperationException("Unknown texture type: " + value.getType());
         }
-        
+
         setTextureParam(name, paramType, value);
     }
 
@@ -425,7 +430,7 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
      * @param name the name of the boolean defined in the material definition (j3md)
      * @param value the boolean value
      */
-    public void setBoolean(String name, boolean value){
+    public void setBoolean(String name, boolean value) {
         setParam(name, VarType.Boolean, value);
     }
 
@@ -434,7 +439,7 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
      * @param name the name of the float defined in the material definition (j3md)
      * @param value the float value
      */
-    public void setFloat(String name, float value){
+    public void setFloat(String name, float value) {
         setParam(name, VarType.Float, value);
     }
 
@@ -443,7 +448,7 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
      * @param name the name of the int defined in the material definition (j3md)
      * @param value the int value
      */
-    public void setInt(String name, int value){
+    public void setInt(String name, int value) {
         setParam(name, VarType.Int, value);
     }
 
@@ -452,7 +457,7 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
      * @param name the name of the color defined in the material definition (j3md)
      * @param value the ColorRGBA value
      */
-    public void setColor(String name, ColorRGBA value){
+    public void setColor(String name, ColorRGBA value) {
         setParam(name, VarType.Vector4, value);
     }
 
@@ -466,10 +471,10 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
     }
 
     /**
-    * Pass a Vector3f to the material shader
-    * @param name the name of the Vector3f defined in the material definition (j3md)
-    * @param value the Vector3f value
-    */
+     * Pass a Vector3f to the material shader
+     * @param name the name of the Vector3f defined in the material definition (j3md)
+     * @param value the Vector3f value
+     */
     public void setVector3(String name, Vector3f value) {
         setParam(name, VarType.Vector3, value);
     }
@@ -491,9 +496,11 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
      * @param shader
      * @param lightList
      */
-    protected void updateLightListUniforms(Shader shader, Geometry g, int numLights){
+    protected void updateLightListUniforms(Shader shader, Geometry g, int numLights) {
         if (numLights == 0) // this shader does not do lighting, ignore.
+        {
             return;
+        }
 
         LightList lightList = g.getWorldLightList();
         Uniform lightColor = shader.getUniform("g_LightColor");
@@ -501,20 +508,20 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
         lightColor.setVector4Length(numLights);
         lightPos.setVector4Length(numLights);
 
-        for (int i = 0; i < numLights; i++){
-            if (lightList.size() <= i){
+        for (int i = 0; i < numLights; i++) {
+            if (lightList.size() <= i) {
                 lightColor.setVector4InArray(0f, 0f, 0f, 0f, i);
                 lightPos.setVector4InArray(0f, 0f, 0f, 0f, i);
-            }else{
+            } else {
                 Light l = lightList.get(i);
                 ColorRGBA color = l.getColor();
                 lightColor.setVector4InArray(color.getRed(),
-                                             color.getGreen(),
-                                             color.getBlue(),
-                                             l.getType().getId(),
-                                             i);
+                        color.getGreen(),
+                        color.getBlue(),
+                        l.getType().getId(),
+                        i);
 
-                switch (l.getType()){
+                switch (l.getType()) {
                     case Directional:
                         DirectionalLight dl = (DirectionalLight) l;
                         Vector3f dir = dl.getDirection();
@@ -524,19 +531,19 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
                         PointLight pl = (PointLight) l;
                         Vector3f pos = pl.getPosition();
                         float invRadius = pl.getRadius();
-                        if (invRadius != 0){
+                        if (invRadius != 0) {
                             invRadius = 1f / invRadius;
                         }
                         lightPos.setVector4InArray(pos.getX(), pos.getY(), pos.getZ(), invRadius, i);
                         break;
                     default:
-                        throw new UnsupportedOperationException("Unknown type of light: "+l.getType());
+                        throw new UnsupportedOperationException("Unknown type of light: " + l.getType());
                 }
             }
         }
     }
 
-    protected void renderMultipassLighting(Shader shader, Geometry g, Renderer r){
+    protected void renderMultipassLighting(Shader shader, Geometry g, Renderer r) {
 //        if (r.getCaps().contains(Caps.MeshInstancing)){
 //            r.applyRenderState(depthOnly);
 //            r.setShader(shader);
@@ -548,87 +555,89 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
 //            r.setShader(shader);
 //            r.renderMesh(g.getMesh(), g.getLodLevel(), numLights);
 //        }else{
-            LightList lightList = g.getWorldLightList();
-            Uniform lightColor = shader.getUniform("g_LightColor");
-            Uniform lightPos = shader.getUniform("g_LightPosition");
+        LightList lightList = g.getWorldLightList();
+        Uniform lightColor = shader.getUniform("g_LightColor");
+        Uniform lightPos = shader.getUniform("g_LightPosition");
 
-            r.applyRenderState(additiveLight);
+        r.applyRenderState(additiveLight);
 
-            for (int i = 0; i < lightList.size(); i++){
+        for (int i = 0; i < lightList.size(); i++) {
 //                if (i == 1){
 //                    r.applyRenderState(additiveLight);
 //                }
 
-                Light l = lightList.get(i);
-                if (l instanceof AmbientLight)
-                    continue;
-
-                ColorRGBA color = l.getColor();
-                ColorRGBA color2;
-                if (lightColor.getValue() != null){
-                    color2 = (ColorRGBA) lightColor.getValue();
-                }else{
-                    color2 = new ColorRGBA();
-                }
-                color2.set(color);
-                color2.a = l.getType().getId();
-                lightColor.setValue(VarType.Vector4, color2);
-
-                switch (l.getType()){
-                    case Directional:
-                        DirectionalLight dl = (DirectionalLight) l;
-                        Vector3f dir = dl.getDirection();
-                        Quaternion q1;
-                        if (lightPos.getValue() != null){
-                            q1 = (Quaternion) lightPos.getValue();
-                        }else{
-                            q1 = new Quaternion();
-                        }
-                        q1.set(dir.getX(), dir.getY(), dir.getZ(), -1);
-                        lightPos.setValue(VarType.Vector4, q1);
-                        break;
-                    case Point:
-                        PointLight pl = (PointLight) l;
-                        Vector3f pos = pl.getPosition();
-                        float invRadius = pl.getRadius();
-                        if (invRadius != 0){
-                            invRadius = 1f / invRadius;
-                        }
-                        Quaternion q2;
-                        if (lightPos.getValue() != null){
-                            q2 = (Quaternion) lightPos.getValue();
-                        }else{
-                            q2 = new Quaternion();
-                        }
-                        q2.set(pos.getX(), pos.getY(), pos.getZ(), invRadius);
-                        lightPos.setValue(VarType.Vector4, q2);
-                        break;
-                    default:
-                        throw new UnsupportedOperationException("Unknown type of light: "+l.getType());
-                }
-
-                r.setShader(shader);
-                r.renderMesh(g.getMesh(), g.getLodLevel(), 1);
+            Light l = lightList.get(i);
+            if (l instanceof AmbientLight) {
+                continue;
             }
+
+            ColorRGBA color = l.getColor();
+            ColorRGBA color2;
+            if (lightColor.getValue() != null) {
+                color2 = (ColorRGBA) lightColor.getValue();
+            } else {
+                color2 = new ColorRGBA();
+            }
+            color2.set(color);
+            color2.a = l.getType().getId();
+            lightColor.setValue(VarType.Vector4, color2);
+
+            switch (l.getType()) {
+                case Directional:
+                    DirectionalLight dl = (DirectionalLight) l;
+                    Vector3f dir = dl.getDirection();
+                    Quaternion q1;
+                    if (lightPos.getValue() != null) {
+                        q1 = (Quaternion) lightPos.getValue();
+                    } else {
+                        q1 = new Quaternion();
+                    }
+                    q1.set(dir.getX(), dir.getY(), dir.getZ(), -1);
+                    lightPos.setValue(VarType.Vector4, q1);
+                    break;
+                case Point:
+                    PointLight pl = (PointLight) l;
+                    Vector3f pos = pl.getPosition();
+                    float invRadius = pl.getRadius();
+                    if (invRadius != 0) {
+                        invRadius = 1f / invRadius;
+                    }
+                    Quaternion q2;
+                    if (lightPos.getValue() != null) {
+                        q2 = (Quaternion) lightPos.getValue();
+                    } else {
+                        q2 = new Quaternion();
+                    }
+                    q2.set(pos.getX(), pos.getY(), pos.getZ(), invRadius);
+                    lightPos.setValue(VarType.Vector4, q2);
+                    break;
+                default:
+                    throw new UnsupportedOperationException("Unknown type of light: " + l.getType());
+            }
+
+            r.setShader(shader);
+            r.renderMesh(g.getMesh(), g.getLodLevel(), 1);
+        }
 //        }
     }
 
-    public void selectTechnique(String name, RenderManager renderManager){
+    public void selectTechnique(String name, RenderManager renderManager) {
         // check if already created
         Technique tech = techniques.get(name);
-        if (tech == null){
+        if (tech == null) {
             // When choosing technique, we choose one that
             // supports all the caps.
             EnumSet<Caps> rendererCaps = renderManager.getRenderer().getCaps();
 
-            if (name.equals("Default")){
+            if (name.equals("Default")) {
                 List<TechniqueDef> techDefs = def.getDefaultTechniques();
-                if (techDefs == null || techDefs.size() == 0)
+                if (techDefs == null || techDefs.size() == 0) {
                     throw new IllegalStateException("No default techniques are available on material '" + def.getName() + "'");
-                
+                }
+
                 TechniqueDef lastTech = null;
-                for (TechniqueDef techDef : techDefs){
-                    if (rendererCaps.containsAll(techDef.getRequiredCaps())){
+                for (TechniqueDef techDef : techDefs) {
+                    if (rendererCaps.containsAll(techDef.getRequiredCaps())) {
                         // use the first one that supports all the caps
                         tech = new Technique(this, techDef);
                         techniques.put(name, tech);
@@ -636,27 +645,29 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
                     }
                     lastTech = techDef;
                 }
-                if (tech == null)
-                    throw new UnsupportedOperationException("No default technique on material '" + def.getName() + "'\n" +
-                                                            " is supported by the video hardware. The caps " +
-                                                            lastTech.getRequiredCaps() + " are required.");
+                if (tech == null) {
+                    throw new UnsupportedOperationException("No default technique on material '" + def.getName() + "'\n"
+                            + " is supported by the video hardware. The caps "
+                            + lastTech.getRequiredCaps() + " are required.");
+                }
 
-            }else{
+            } else {
                 // create "special" technique instance
                 TechniqueDef techDef = def.getTechniqueDef(name);
-                if (techDef == null)
-                    throw new IllegalArgumentException("For material "+def.getName()+", technique not found: "+name);
+                if (techDef == null) {
+                    throw new IllegalArgumentException("For material " + def.getName() + ", technique not found: " + name);
+                }
 
-                if (!rendererCaps.containsAll(techDef.getRequiredCaps())){
-                    throw new UnsupportedOperationException("The explicitly chosen technique '" + name + "' on material '" + def.getName() + "'\n" +
-                                                            "requires caps " + techDef.getRequiredCaps() + " which are not" +
-                                                            "supported by the video renderer");
+                if (!rendererCaps.containsAll(techDef.getRequiredCaps())) {
+                    throw new UnsupportedOperationException("The explicitly chosen technique '" + name + "' on material '" + def.getName() + "'\n"
+                            + "requires caps " + techDef.getRequiredCaps() + " which are not"
+                            + "supported by the video renderer");
                 }
 
                 tech = new Technique(this, techDef);
                 techniques.put(name, tech);
             }
-        }else if (technique == tech){
+        } else if (technique == tech) {
             // attempting to switch to an already
             // active technique.
             return;
@@ -666,16 +677,16 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
         tech.makeCurrent(def.getAssetManager());
     }
 
-    private void autoSelectTechnique(RenderManager rm){
-        if (technique == null){
+    private void autoSelectTechnique(RenderManager rm) {
+        if (technique == null) {
             // XXX: hack warning, choose "FixedFunc" if GLSL100
             // not supported by renderer
-            if (!rm.getRenderer().getCaps().contains(Caps.GLSL100)){
+            if (!rm.getRenderer().getCaps().contains(Caps.GLSL100)) {
                 selectTechnique("FixedFunc", rm);
-            }else{
+            } else {
                 selectTechnique("Default", rm);
             }
-        }else if (technique.isNeedReload()){
+        } else if (technique.isNeedReload()) {
             technique.makeCurrent(def.getAssetManager());
         }
     }
@@ -684,45 +695,47 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
      * "Pre-load" the material, including textures and shaders, to the 
      * renderer.
      */
-    public void preload(RenderManager rm){
+    public void preload(RenderManager rm) {
         autoSelectTechnique(rm);
 
         Renderer r = rm.getRenderer();
         TechniqueDef techDef = technique.getDef();
-        
+
         Collection<MatParam> params = paramValues.values();
-        for (MatParam param : params){
-            if (param instanceof MatParamTexture){
+        for (MatParam param : params) {
+            if (param instanceof MatParamTexture) {
                 MatParamTexture texParam = (MatParamTexture) param;
                 r.setTexture(0, texParam.getTextureValue());
-            }else{
-                if (!techDef.isUsingShaders())
+            } else {
+                if (!techDef.isUsingShaders()) {
                     continue;
-                
+                }
+
                 technique.updateUniformParam(param.getName(),
-                                             param.getVarType(),
-                                             param.getValue(), true);
+                        param.getVarType(),
+                        param.getValue(), true);
             }
         }
 
         Shader shader = technique.getShader();
-        if (techDef.isUsingShaders())
+        if (techDef.isUsingShaders()) {
             r.setShader(shader);
+        }
     }
 
-    private void clearUniformsSetByCurrent(Shader shader){
+    private void clearUniformsSetByCurrent(Shader shader) {
         ListMap<String, Uniform> uniforms = shader.getUniformMap();
-        for (int i = 0; i < uniforms.size(); i++){
+        for (int i = 0; i < uniforms.size(); i++) {
             Uniform u = uniforms.getValue(i);
             u.clearSetByCurrentMaterial();
         }
     }
 
-    private void resetUniformsNotSetByCurrent(Shader shader){
+    private void resetUniformsNotSetByCurrent(Shader shader) {
         ListMap<String, Uniform> uniforms = shader.getUniformMap();
-        for (int i = 0; i < uniforms.size(); i++){
+        for (int i = 0; i < uniforms.size(); i++) {
             Uniform u = uniforms.getValue(i);
-            if (!u.isSetByCurrentMaterial()){
+            if (!u.isSetByCurrentMaterial()) {
                 u.clearValue();
             }
         }
@@ -733,64 +746,69 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
      * @param geom
      * @param r
      */
-    public void render(Geometry geom, RenderManager rm){
+    public void render(Geometry geom, RenderManager rm) {
         autoSelectTechnique(rm);
 
         Renderer r = rm.getRenderer();
         TechniqueDef techDef = technique.getDef();
 
         if (techDef.getLightMode() == LightMode.MultiPass
-         && geom.getWorldLightList().size() == 0)
+                && geom.getWorldLightList().size() == 0) {
             return;
-
-        if (techDef.getRenderState() != null){
-            r.applyRenderState(techDef.getRenderState());
-            if (additionalState != null)
-                r.applyRenderState(additionalState);
-        }else{
-            if (additionalState != null)
-                r.applyRenderState(additionalState);
-            else
-                r.applyRenderState(RenderState.DEFAULT);
         }
-        if (rm.getForcedRenderState() != null)
+
+        if (techDef.getRenderState() != null) {
+            r.applyRenderState(techDef.getRenderState());
+            if (additionalState != null) {
+                r.applyRenderState(additionalState);
+            }
+        } else {
+            if (additionalState != null) {
+                r.applyRenderState(additionalState);
+            } else {
+                r.applyRenderState(RenderState.DEFAULT);
+            }
+        }
+        if (rm.getForcedRenderState() != null) {
             r.applyRenderState(rm.getForcedRenderState());
+        }
 
 
 
         // update camera and world matrices
         // NOTE: setWorldTransform should have been called already
-        if (techDef.isUsingShaders()){
+        if (techDef.isUsingShaders()) {
             // reset unchanged uniform flag
             clearUniformsSetByCurrent(technique.getShader());
             rm.updateUniformBindings(technique.getWorldBindUniforms());
         }
 
         // setup textures and uniforms
-        for (int i = 0; i < paramValues.size(); i++){
+        for (int i = 0; i < paramValues.size(); i++) {
             MatParam param = paramValues.getValue(i);
-            if (param instanceof MatParamTexture){
+            if (param instanceof MatParamTexture) {
                 MatParamTexture texParam = (MatParamTexture) param;
                 r.setTexture(texParam.getUnit(), texParam.getTextureValue());
-                if (techDef.isUsingShaders()){
+                if (techDef.isUsingShaders()) {
                     technique.updateUniformParam(texParam.getName(),
-                                                 texParam.getVarType(),
-                                                 texParam.getUnit(), true);
+                            texParam.getVarType(),
+                            texParam.getUnit(), true);
                 }
-            }else{
-                if (!techDef.isUsingShaders())
+            } else {
+                if (!techDef.isUsingShaders()) {
                     continue;
-                
+                }
+
                 technique.updateUniformParam(param.getName(),
-                                             param.getVarType(),
-                                             param.getValue(), true);
+                        param.getVarType(),
+                        param.getValue(), true);
             }
         }
 
         Shader shader = technique.getShader();
-        
+
         // send lighting information, if needed
-        switch (techDef.getLightMode()){
+        switch (techDef.getLightMode()) {
             case Disable:
                 r.setLighting(null);
                 break;
@@ -809,16 +827,16 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
         }
 
         // upload and bind shader
-        if (techDef.isUsingShaders()){
+        if (techDef.isUsingShaders()) {
             // any unset uniforms will be set to 0
             resetUniformsNotSetByCurrent(shader);
             r.setShader(shader);
         }
-        
+
         r.renderMesh(geom.getMesh(), geom.getLodLevel(), 1);
     }
 
-    public void write(JmeExporter ex) throws IOException{
+    public void write(JmeExporter ex) throws IOException {
         OutputCapsule oc = ex.getCapsule(this);
         oc.write(def.getAssetName(), "material_def", null);
         oc.write(additionalState, "render_state", null);
@@ -826,7 +844,7 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
         oc.writeStringSavableMap(paramValues, "parameters", null);
     }
 
-    public void read(JmeImporter im) throws IOException{
+    public void read(JmeImporter im) throws IOException {
         InputCapsule ic = im.getCapsule(this);
         String defName = ic.readString("material_def", null);
         def = (MaterialDef) im.getAssetManager().loadAsset(new AssetKey(defName));
@@ -838,21 +856,21 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
         paramValues = new ListMap<String, MatParam>();
 
         // load the textures and update nextTexUnit
-        for (Map.Entry<String, MatParam> entry : params.entrySet()){
+        for (Map.Entry<String, MatParam> entry : params.entrySet()) {
             MatParam param = entry.getValue();
-            if (param instanceof MatParamTexture){
+            if (param instanceof MatParamTexture) {
                 MatParamTexture texVal = (MatParamTexture) param;
-                if (nextTexUnit < texVal.getUnit()+1){
-                    nextTexUnit = texVal.getUnit()+1;
+                if (nextTexUnit < texVal.getUnit() + 1) {
+                    nextTexUnit = texVal.getUnit() + 1;
                 }
 
                 // the texture failed to load for this param
                 // do not add to param values
-                if (texVal.texture == null || texVal.texture.getImage() == null)
+                if (texVal.texture == null || texVal.texture.getImage() == null) {
                     continue;
+                }
             }
             paramValues.put(entry.getKey(), entry.getValue());
         }
     }
-
 }
