@@ -35,6 +35,7 @@ package jme3test.model.shape;
 import com.jme3.app.SimpleApplication;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
@@ -69,13 +70,40 @@ public class TestBillboard extends SimpleApplication {
         g2.setMaterial(mat);
 
         Node bb = new Node("billboard");
-        bb.addControl(new BillboardControl());
-        bb.attachChild(g);
-        bb.attachChild(g3);
 
-        rootNode.attachChild(bb);
-        rootNode.attachChild(g2);
+        BillboardControl control=new BillboardControl();
+        
+        bb.addControl(control);
+        bb.attachChild(g);
+        bb.attachChild(g3);       
+        
+
+        n=new Node("parent");
+        n.attachChild(g2);
+        n.attachChild(bb);
+        rootNode.attachChild(n);
+
+        n2=new Node("parentParent");
+        n2.setLocalTranslation(Vector3f.UNIT_X.mult(5));
+        n2.attachChild(n);
+
+        rootNode.attachChild(n2);
+
+
+//        rootNode.attachChild(bb);
+//        rootNode.attachChild(g2);
     }
+ Node n;
+ Node n2;
+    @Override
+    public void simpleUpdate(float tpf) {
+        super.simpleUpdate(tpf);
+        n.rotate(0, tpf, 0);
+        n.move(0.1f*tpf, 0, 0);
+        n2.rotate(0, 0, -tpf);
+    }
+
+
 
     public static void main(String[] args) {
         TestBillboard app = new TestBillboard();
