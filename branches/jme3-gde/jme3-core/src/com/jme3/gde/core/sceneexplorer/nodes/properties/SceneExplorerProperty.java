@@ -35,6 +35,7 @@ import com.jme3.effect.EmitterShape;
 import com.jme3.gde.core.scene.SceneApplication;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Matrix3f;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import java.lang.reflect.InvocationTargetException;
@@ -64,6 +65,8 @@ public class SceneExplorerProperty<T> extends PropertySupport.Reflection<T> {
             setPropertyEditorClass(Vector3fPropertyEditor.class);
         } else if (valueType == Quaternion.class) {
             setPropertyEditorClass(QuaternionPropertyEditor.class);
+        } else if (valueType == Matrix3f.class) {
+            setPropertyEditorClass(Matrix3fPropertyEditor.class);
         } else if (valueType == ColorRGBA.class) {
             setPropertyEditorClass(ColorRGBAPropertyEditor.class);
         } else if (valueType == Material.class) {
