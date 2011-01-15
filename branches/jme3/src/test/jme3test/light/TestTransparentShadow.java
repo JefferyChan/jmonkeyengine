@@ -1,6 +1,7 @@
 package jme3test.light;
 
 import com.jme3.app.SimpleApplication;
+import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
@@ -16,7 +17,6 @@ import com.jme3.scene.shape.Quad;
 import com.jme3.shadow.PssmShadowRenderer;
 import com.jme3.shadow.PssmShadowRenderer.CompareMode;
 import com.jme3.shadow.PssmShadowRenderer.FilterMode;
-import com.jme3.texture.Texture.WrapMode;
 import org.lwjgl.opengl.ARBMultisample;
 import org.lwjgl.opengl.GL11;
 
@@ -51,6 +51,10 @@ public class TestTransparentShadow extends SimpleApplication {
         teaGeom.setQueueBucket(Bucket.Transparent);
         teaGeom.setShadowMode(ShadowMode.Cast);
 
+        AmbientLight al = new AmbientLight();
+        al.setColor(ColorRGBA.White.mult(2));
+        rootNode.addLight(al);
+
         DirectionalLight dl1 = new DirectionalLight();
         dl1.setDirection(new Vector3f(1, -1, 1).normalizeLocal());
         dl1.setColor(new ColorRGBA(0.965f, 0.949f, 0.772f, 1f).mult(0.7f));
@@ -64,7 +68,7 @@ public class TestTransparentShadow extends SimpleApplication {
         rootNode.attachChild(teaGeom);
         
         PssmShadowRenderer pssmRenderer = new PssmShadowRenderer(assetManager, 1024, 1);
-        pssmRenderer.setDirection(new Vector3f(0, -1f, 0f).normalizeLocal());
+        pssmRenderer.setDirection(new Vector3f(0.01f, -1f, 0.01f).normalizeLocal());
         pssmRenderer.setLambda(0.55f);
         pssmRenderer.setShadowIntensity(0.6f);
         pssmRenderer.setCompareMode(CompareMode.Software);

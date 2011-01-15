@@ -20,12 +20,12 @@ void main(){
         color *= texture2D(m_ColorMap, texCoord1);
     #endif
 
-    #ifdef HAS_COLOR
-        color *= m_Color;
-    #endif
-
     #ifdef HAS_VERTEXCOLOR
         color *= vertColor;
+    #endif
+
+    #ifdef HAS_COLOR
+        color *= m_Color;
     #endif
 
     #ifdef HAS_LIGHTMAP

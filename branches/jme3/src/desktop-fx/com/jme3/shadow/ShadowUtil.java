@@ -359,7 +359,9 @@ public class ShadowUtil {
             Geometry occluder = occluders.get(i);
             BoundingVolume bv = occluder.getWorldBound();
             BoundingVolume occBox = bv.transform(viewProjMatrix, null);
-            if (occBox instanceof BoundingBox){
+
+            boolean intersects = splitBB.intersects(occBox);
+            if (!intersects && occBox instanceof BoundingBox){
                 BoundingBox occBB = (BoundingBox)occBox;
                 //Kirill 01/10/2011
                 // Extend the occluder further into the frustum
@@ -369,9 +371,18 @@ public class ShadowUtil {
                 //      The number is in world units
                 occBB.setZExtent(occBB.getZExtent() + 50);
                 occBB.setCenter(occBB.getCenter().addLocal(0, 0, 25));
-            }
-
-            if (splitBB.intersects(occBox)){
+                if (splitBB.intersects(occBB)){
+                    // To prevent extending the depth range too much
+                    // We return the bound to its former shape
+                    // Before adding it
+                    occBB.setZExtent(occBB.getZExtent() - 50);
+                    occBB.setCenter(occBB.getCenter().subtractLocal(0, 0, 25));
+                    visOccList.add(occBox);
+                    if(splitOccluders != null){
+                        splitOccluders.add(occluder);
+                    }
+                }
+            }else if (intersects){
                 visOccList.add(occBox);
                 if(splitOccluders != null){
                     splitOccluders.add(occluder);

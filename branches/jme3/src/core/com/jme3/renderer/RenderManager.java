@@ -98,7 +98,7 @@ public class RenderManager {
             camLoc = new Vector3f();
 
     private LightList worldLightList;
-    private ColorRGBA ambientLightColor = new ColorRGBA(0,0,0,0);
+    private ColorRGBA ambientLightColor = new ColorRGBA(0,0,0,1);
 
     //temp technique
     private String tmpTech;
@@ -372,13 +372,14 @@ public class RenderManager {
                     u.setValue(VarType.Float, timer.getFrameRate());
                     break;
                 case AmbientLightColor:
-                    ambientLightColor.set(0,0,0,0);
+                    ambientLightColor.set(0,0,0,1);
                     for (int j = 0; j < worldLightList.size(); j++){
                         Light l = worldLightList.get(j);
                         if (l instanceof AmbientLight){
                             ambientLightColor.addLocal(l.getColor());
                         }
                     }
+                    ambientLightColor.a = 1.0f;
                     u.setValue(VarType.Vector4, ambientLightColor);
                     break;
             }
