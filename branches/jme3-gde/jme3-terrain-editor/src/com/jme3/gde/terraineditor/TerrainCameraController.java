@@ -1,6 +1,33 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (c) 2009-2010 jMonkeyEngine
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ * * Redistributions of source code must retain the above copyright
+ *   notice, this list of conditions and the following disclaimer.
+ *
+ * * Redistributions in binary form must reproduce the above copyright
+ *   notice, this list of conditions and the following disclaimer in the
+ *   documentation and/or other materials provided with the distribution.
+ *
+ * * Neither the name of 'jMonkeyEngine' nor the names of its contributors
+ *   may be used to endorse or promote products derived from this software
+ *   without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+ * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+ * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+ * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package com.jme3.gde.terraineditor;
 
@@ -8,6 +35,7 @@ import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
+import com.jme3.gde.core.scene.SceneApplication;
 import com.jme3.gde.core.scene.controller.AbstractCameraController;
 import com.jme3.gde.core.sceneexplorer.nodes.JmeNode;
 import com.jme3.input.InputManager;
@@ -29,7 +57,6 @@ import com.jme3.renderer.Camera;
  */
 public class TerrainCameraController extends AbstractCameraController {
 
-    private boolean active;
     private TerrainToolController toolController;
     private TerrainEditorController editorController;
     private boolean forceCameraControls = false; // when user holds shift, this is true
@@ -39,18 +66,9 @@ public class TerrainCameraController extends AbstractCameraController {
     private float toolModifyRate = 0.1f; // how frequently (in seconds) it should update
     private long lastModifyTime;
 
-    public TerrainCameraController(Camera cam, InputManager inputManager, JmeNode rootNode) {
-        super(cam, inputManager);
-        //this.jmeRootNode = rootNode;
-        //this.rootNode = rootNode.getLookup().lookup(Node.class);
-    }
-
-
-
-    @Override
-    public void initialize(AppStateManager stateManager, Application app) {
-        super.initialize(stateManager, app);
-        this.app = app;
+    public TerrainCameraController(Camera cam) {
+        super(cam, SceneApplication.getApplication().getInputManager());
+        app = SceneApplication.getApplication();
     }
 
     public void setToolController(TerrainToolController toolController) {
@@ -221,20 +239,6 @@ public class TerrainCameraController extends AbstractCameraController {
         return result.getContactPoint();
     }
 
-    @Override
-    public void setActive(boolean bln) {
-        this.active = bln;
-    }
-
-    @Override
-    public boolean isActive() {
-        return active;
-    }
-
-    @Override
-    public void postRender() {
-        
-    }
     
     
 
