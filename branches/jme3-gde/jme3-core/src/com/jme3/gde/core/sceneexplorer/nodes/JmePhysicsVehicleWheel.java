@@ -140,6 +140,7 @@ public class JmePhysicsVehicleWheel extends AbstractSceneExplorerNode{
                     return null;
                 }
             }).get();
+            ((AbstractSceneExplorerNode)getParentNode()).refresh(true);
         } catch (InterruptedException ex) {
             Exceptions.printStackTrace(ex);
         } catch (ExecutionException ex) {
