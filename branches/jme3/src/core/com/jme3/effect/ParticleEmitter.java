@@ -32,6 +32,7 @@
 
 package com.jme3.effect;
 
+import com.jme3.bounding.BoundingBox;
 import com.jme3.effect.ParticleMesh.Type;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
@@ -541,6 +542,8 @@ public class ParticleEmitter extends Geometry implements Control {
      */
     @SuppressWarnings("empty-statement")
     public void emitAllParticles(){
+        // Force world transform to update
+        getWorldTransform();
         while (emitParticle());
     }
 
@@ -583,8 +586,9 @@ public class ParticleEmitter extends Geometry implements Control {
     }
 
     private void updateParticleState(float tpf){
-        assert TempVars.get().lock();
-        Vector3f temp = TempVars.get().vect1;
+        // Force world transform to update
+        getWorldTransform();
+
         for (int i = 0; i < particles.length; i++){
             Particle p = particles[i];
             if (p.life == 0){ // particle is dead
@@ -609,6 +613,7 @@ public class ParticleEmitter extends Geometry implements Control {
             p.color.interpolate(startColor, endColor, b);
             p.size = FastMath.interpolateLinear(b, startSize, endSize);
             p.angle += p.rotateSpeed * tpf;
+
 
             if (!selectRandomImage) // use animated effect
                 p.imageIndex = (int) (b * imagesX * imagesY);
