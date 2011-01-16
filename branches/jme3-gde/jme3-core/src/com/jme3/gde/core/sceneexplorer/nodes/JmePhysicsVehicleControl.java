@@ -33,11 +33,10 @@ package com.jme3.gde.core.sceneexplorer.nodes;
 
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.PhysicsVehicleControl;
+import com.jme3.math.Matrix3f;
 import com.jme3.math.Vector3f;
 import java.awt.Image;
-import javax.vecmath.Matrix3f;
 import org.openide.loaders.DataObject;
-import org.openide.nodes.Children;
 import org.openide.nodes.Sheet;
 import org.openide.util.ImageUtilities;
 
@@ -55,10 +54,10 @@ public class JmePhysicsVehicleControl extends AbstractSceneExplorerNode {
     public JmePhysicsVehicleControl() {
     }
 
-    public JmePhysicsVehicleControl(PhysicsVehicleControl spatial) {
-        super(Children.LEAF);
-        getLookupContents().add(spatial);
-        this.vehicle = spatial;
+    public JmePhysicsVehicleControl(PhysicsVehicleControl vehicle) {
+        super(new PhysicsVehicleChildren(vehicle));
+        getLookupContents().add(vehicle);
+        this.vehicle = vehicle;
         setName("VehicleControl");
     }
 

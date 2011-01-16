@@ -99,7 +99,7 @@ public class SpatialAssetDataObject extends AssetDataObject {
             outFile=getPrimaryFile().getParent().getFileObject(getPrimaryFile().getName(), saveExtension);
             if(outFile==null){
                 //ERROR
-                throw new IllegalStateException("Cannot find save file!");
+                throw new IllegalStateException("Cannot access save file!");
             }
         }
         try {
