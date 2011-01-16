@@ -57,7 +57,7 @@ public class JmePhysicsVehicleWheel extends AbstractSceneExplorerNode{
     private PhysicsVehicleWheel wheel;
     private PhysicsVehicleControl vehicle;
     private static Image smallImage =
-            ImageUtilities.loadImage("com/jme3/gde/core/sceneexplorer/nodes/icons/light.gif");
+            ImageUtilities.loadImage("com/jme3/gde/core/sceneexplorer/nodes/icons/physicswheel.gif");
 
     public JmePhysicsVehicleWheel() {
     }

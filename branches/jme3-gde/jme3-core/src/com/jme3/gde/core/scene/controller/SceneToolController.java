@@ -34,7 +34,7 @@ import java.util.concurrent.Callable;
  */
 public class SceneToolController {
 
-    protected Node toolsNode;
+    private Node toolsNode;
     protected boolean showSelection = false;
     protected boolean showGrid = false;
     protected Node cursor;
@@ -42,6 +42,11 @@ public class SceneToolController {
     protected Spatial selected;
     protected Spatial selectionShape;
     protected AssetManager manager;
+
+    public SceneToolController(AssetManager manager) {
+        this.toolsNode = new Node("ToolsNode");
+        initTools();
+    }
 
     public SceneToolController(Node toolsNode, AssetManager manager) {
         this.toolsNode = toolsNode;
@@ -264,5 +269,12 @@ public class SceneToolController {
         } else {
             toolsNode.detachChild(grid);
         }
+    }
+
+    /**
+     * @return the toolsNode
+     */
+    public Node getToolsNode() {
+        return toolsNode;
     }
 }
