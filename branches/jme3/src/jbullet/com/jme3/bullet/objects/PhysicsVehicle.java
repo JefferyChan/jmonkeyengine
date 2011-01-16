@@ -90,7 +90,7 @@ public class PhysicsVehicle extends PhysicsRigidBody {
      * used internally
      */
     public void updateWheels() {
-        if (wheels != null) {
+        if (vehicle != null) {
             for (int i = 0; i < wheels.size(); i++) {
                 vehicle.updateWheelTransform(i, true);
                 wheels.get(i).updatePhysicsState();
@@ -130,11 +130,9 @@ public class PhysicsVehicle extends PhysicsRigidBody {
         rayCaster = new DefaultVehicleRaycaster(space.getDynamicsWorld());
         vehicle = new RaycastVehicle(tuning, rBody, rayCaster);
         vehicle.setCoordinateSystem(0, 1, 2);
-        if (wheels != null) {
-            for (PhysicsVehicleWheel wheel : wheels) {
-                wheel.setWheelInfo(vehicle.addWheel(Converter.convert(wheel.getLocation()), Converter.convert(wheel.getDirection()), Converter.convert(wheel.getAxle()),
-                        wheel.getRestLength(), wheel.getRadius(), tuning, wheel.isFrontWheel()));
-            }
+        for (PhysicsVehicleWheel wheel : wheels) {
+            wheel.setWheelInfo(vehicle.addWheel(Converter.convert(wheel.getLocation()), Converter.convert(wheel.getDirection()), Converter.convert(wheel.getAxle()),
+                    wheel.getRestLength(), wheel.getRadius(), tuning, wheel.isFrontWheel()));
         }
     }
 
