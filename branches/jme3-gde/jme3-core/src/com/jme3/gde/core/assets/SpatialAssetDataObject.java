@@ -34,6 +34,8 @@ package com.jme3.gde.core.assets;
 import com.jme3.asset.ModelKey;
 import com.jme3.scene.Spatial;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openide.filesystems.FileLock;
 import org.openide.filesystems.FileObject;
 import org.openide.loaders.DataObject;
@@ -77,8 +79,9 @@ public class SpatialAssetDataObject extends AssetDataObject {
             savable = spatial;
             lock.releaseLock();
             return spatial;
-        } catch (IOException ex) {
+        } catch (Exception ex) {
             Exceptions.printStackTrace(ex);
+        } finally {
             if (lock != null) {
                 lock.releaseLock();
             }
@@ -86,7 +89,7 @@ public class SpatialAssetDataObject extends AssetDataObject {
         return null;
     }
 
-    public void saveAsset() {
+    public void saveAsset() throws IOException {
         super.saveAsset();
         ProjectAssetManager mgr = getLookup().lookup(ProjectAssetManager.class);
         if (mgr == null) {
@@ -99,7 +102,8 @@ public class SpatialAssetDataObject extends AssetDataObject {
             outFile=getPrimaryFile().getParent().getFileObject(getPrimaryFile().getName(), saveExtension);
             if(outFile==null){
                 //ERROR
-                throw new IllegalStateException("Cannot access save file!");
+                Logger.getLogger(SpatialAssetDataObject.class.getName()).log(Level.SEVERE, "Could not locate saved file.");
+                return;
             }
         }
         try {

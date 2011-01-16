@@ -69,7 +69,7 @@ public class AssetData extends Properties {
         return file.loadAsset();
     }
 
-    public void saveAsset() {
+    public void saveAsset() throws IOException {
         file.saveAsset();
     }
 

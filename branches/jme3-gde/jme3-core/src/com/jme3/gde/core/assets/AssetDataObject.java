@@ -35,8 +35,8 @@ import com.jme3.asset.AssetKey;
 import com.jme3.export.Savable;
 import com.jme3.export.binary.BinaryExporter;
 import com.jme3.gde.core.scene.SceneApplication;
-import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -161,8 +161,9 @@ public class AssetDataObject extends MultiDataObject {
             Savable spatial = (Savable) mgr.loadAsset(new AssetKey(assetKey));
             savable = spatial;
             lock.releaseLock();
-        } catch (IOException ex) {
+        } catch (Exception ex) {
             Exceptions.printStackTrace(ex);
+        } finally {
             if (lock != null) {
                 lock.releaseLock();
             }
@@ -170,7 +171,7 @@ public class AssetDataObject extends MultiDataObject {
         return savable;
     }
 
-    public void saveAsset() {
+    public void saveAsset() throws IOException {
         if (savable == null) {
             Logger.getLogger(AssetDataObject.class.getName()).log(Level.WARNING, "Trying to save asset that has not been loaded before or does not support saving!");
             return;
@@ -180,24 +181,24 @@ public class AssetDataObject extends MultiDataObject {
         progressHandle.start();
         BinaryExporter exp = BinaryExporter.getInstance();
         FileLock lock = null;
+        OutputStream out = null;
         try {
-            lock = takePrimaryFileLock();
-            File outFile = null;
             if (saveExtension == null) {
-                outFile = FileUtil.toFile(getPrimaryFile());
+                out = getPrimaryFile().getOutputStream();
             } else {
-                FileObject outFileObject=getPrimaryFile().getParent().getFileObject(getPrimaryFile().getName(), saveExtension);
-                if(outFileObject==null){
-                    outFileObject=getPrimaryFile().getParent().createData(getPrimaryFile().getName(), saveExtension);
+                FileObject outFileObject = getPrimaryFile().getParent().getFileObject(getPrimaryFile().getName(), saveExtension);
+                if (outFileObject == null) {
+                    outFileObject = getPrimaryFile().getParent().createData(getPrimaryFile().getName(), saveExtension);
                 }
-                outFile = FileUtil.toFile(outFileObject);
+                out = outFileObject.getOutputStream();
             }
-            exp.save(savable, outFile);
-        } catch (Exception ex) {
-            Exceptions.printStackTrace(ex);
+            exp.save(savable, out);
         } finally {
             if (lock != null) {
                 lock.releaseLock();
+            }
+            if (out != null) {
+                out.close();
             }
         }
         progressHandle.finish();
