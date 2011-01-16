@@ -1,7 +1,11 @@
-MaterialDef Solid Color {
+MaterialDef Unshaded {
 
     MaterialParameters {
-        Vector4 Color
+        Texture2D ColorMap
+        Texture2D LightMap
+        Color Color
+        Boolean VertexColor
+        Boolean SeperateTexCoord
 
         // Texture of the glowing parts of the material
         Texture2D GlowMap
@@ -13,19 +17,20 @@ MaterialDef Solid Color {
         VertexShader GLSL100:   Common/MatDefs/Misc/Unshaded.vert
         FragmentShader GLSL100: Common/MatDefs/Misc/Unshaded.frag
 
-        Defines {
-            HAS_COLOR : Color
-        }
-
         WorldParameters {
             WorldViewProjectionMatrix
         }
+
+        Defines {
+            SEPERATE_TEXCOORD : SeperateTexCoord
+            HAS_COLORMAP : ColorMap
+            HAS_LIGHTMAP : LightMap
+            HAS_VERTEXCOLOR : VertexColor
+            HAS_COLOR : Color
+        }
     }
 
-    Technique FixedFunc {
-    }
-
-   Technique Glow {
+    Technique Glow {
 
         VertexShader GLSL100:   Common/MatDefs/Misc/Unshaded.vert
         FragmentShader GLSL100: Common/MatDefs/Light/Glow.frag
@@ -39,4 +44,8 @@ MaterialDef Solid Color {
             HAS_GLOWCOLOR : GlowColor
         }
     }
+
+    Technique FixedFunc {
+    }
+
 }

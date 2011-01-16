@@ -1,57 +1,43 @@
 MaterialDef Post Shadow {
 
     MaterialParameters {
-        Boolean DoDither
+        Int FilterMode
+        Boolean HardwareShadows
 
         Texture2D ShadowMap0
         Texture2D ShadowMap1
         Texture2D ShadowMap2
         Texture2D ShadowMap3
-        Texture2D ShadowMap4
-        Texture2D ShadowMap5
-        Texture2D ShadowMap6
-        Texture2D ShadowMap7
         
-       
         Float ShadowIntensity
-        FloatArray Splits
+        Vector4 Splits
 
         Matrix4 LightViewProjectionMatrix0
         Matrix4 LightViewProjectionMatrix1
         Matrix4 LightViewProjectionMatrix2
         Matrix4 LightViewProjectionMatrix3
-        Matrix4 LightViewProjectionMatrix4
-        Matrix4 LightViewProjectionMatrix5
-        Matrix4 LightViewProjectionMatrix6
-        Matrix4 LightViewProjectionMatrix7
 
-        Float Splits0
-        Float Splits1
-        Float Splits2
-        Float Splits3
-        Float Splits4
-        Float Splits5
-        Float Splits6
-        Float Splits7
+        Float PCFEdge
+    }
 
+    Technique {
+        VertexShader GLSL150:   Common/MatDefs/Shadow/PostShadowPSSM.vert
+        FragmentShader GLSL150: Common/MatDefs/Shadow/PostShadowPSSM15.frag
 
-        Boolean PCF4X4
-        Boolean PCF8X8
-        Boolean PCF10X10
-        Boolean PCF16X16
-        Boolean PCF20X20
+        WorldParameters {
+            WorldViewProjectionMatrix
+            WorldMatrix
+        }
 
+        Defines {
+            HARDWARE_SHADOWS : HardwareShadows
+            FILTER_MODE : FilterMode
+            PCFEDGE : PCFEdge
+        }
 
-        Boolean PcfEdg1
-        Boolean PcfEdg2
-        Boolean PcfEdg3
-        Boolean PcfEdg4
-        Boolean PcfEdg5
-        Boolean PcfEdg6
-        Boolean PcfEdg7
-        Boolean PcfEdg8
-        Boolean PcfEdg9
-        Boolean PcfEdg10
+        RenderState {
+            Blend Modulate
+        }
     }
 
     Technique {
@@ -64,22 +50,9 @@ MaterialDef Post Shadow {
         }
 
         Defines {
-            EDGE_FILTERING_DITHER : DoDither
-            PCF_4 : PCF4X4
-            PCF_8 : PCF8X8
-            PCF_10 : PCF10X10
-            PCF_16 : PCF16X16
-            PCF_20 : PCF20X20
-            STEP_1 : PcfEdg1
-            STEP_2 : PcfEdg2
-            STEP_3 : PcfEdg3
-            STEP_4 : PcfEdg4
-            STEP_5 : PcfEdg5
-            STEP_6 : PcfEdg6
-            STEP_7 : PcfEdg7
-            STEP_8 : PcfEdg8
-            STEP_9 : PcfEdg9
-            STEP_10 : PcfEdg10
+            HARDWARE_SHADOWS : HardwareShadows
+            FILTER_MODE : FilterMode
+            PCFEDGE : PCFEdge
         }
 
         RenderState {

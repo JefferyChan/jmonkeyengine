@@ -1,6 +1,7 @@
 MaterialDef Radial Blur {
 
     MaterialParameters {
+        Int NumSamples
         Texture2D Texture
         Color Color
         Float SampleDist
@@ -9,8 +10,21 @@ MaterialDef Radial Blur {
     }
 
     Technique {
-        VertexShader GLSL100:   Common/MatDefs/Blur/RadialBlur.vert
-        FragmentShader GLSL100: Common/MatDefs/Blur/RadialBlur.frag
+        VertexShader GLSL150:   Common/MatDefs/Post/Post15.vert
+        FragmentShader GLSL150: Common/MatDefs/Blur/RadialBlur15.frag
+
+        WorldParameters {
+            WorldViewProjectionMatrix
+        }
+
+        Defines {
+            RESOLVE_MS : NumSamples
+        }
+    }
+
+    Technique {
+        VertexShader GLSL120:   Common/MatDefs/Post/Post.vert
+        FragmentShader GLSL120: Common/MatDefs/Blur/RadialBlur.frag
 
         WorldParameters {
             WorldViewProjectionMatrix

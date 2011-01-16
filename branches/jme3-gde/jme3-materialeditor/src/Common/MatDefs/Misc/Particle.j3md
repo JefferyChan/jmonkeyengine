@@ -13,8 +13,8 @@ MaterialDef Point Sprite {
 
     Technique {
 
-        VertexShader GLSL100:   Common/MatDefs/Misc/Particle.vert
-        FragmentShader GLSL100: Common/MatDefs/Misc/Particle.frag
+        VertexShader   GLSL100 : Common/MatDefs/Misc/Particle.vert
+        FragmentShader GLSL120 : Common/MatDefs/Misc/Particle.frag
 
         WorldParameters {
             WorldViewProjectionMatrix

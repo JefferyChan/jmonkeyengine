@@ -86,7 +86,6 @@ MaterialDef Phong Lighting {
         }
 
         Defines {
-            USE_ALPHA : UseAlpha
             LATC : LATC
             VERTEX_COLOR : UseVertexColor
             VERTEX_LIGHTING : VertexLighting
@@ -104,6 +103,23 @@ MaterialDef Phong Lighting {
             PARALLAXMAP : ParallaxMap
             ALPHAMAP : AlphaMap
             COLORRAMP : ColorRamp
+        }
+    }
+
+    Technique AmbientPass {
+
+        VertexShader GLSL100:   Common/MatDefs/Light/AmbientPass.vert
+        FragmentShader GLSL100: Common/MatDefs/Light/AmbientPass.frag
+
+        WorldParameters {
+            WorldViewProjectionMatrix
+            AmbientLightColor
+        }
+
+        Defines {
+            HAS_VERTEXCOLOR : UseVertexColor
+            HAS_DIFFUSEMAP : DiffuseMap
+            MATERIAL_COLORS : UseMaterialColors
         }
     }
 
@@ -152,29 +168,6 @@ MaterialDef Phong Lighting {
             NORMALMAP : NormalMap
             SPECULARMAP : SpecularMap
             PARALLAXMAP : ParallaxMap
-        }
-    }
-
-    Technique NewGpu {
-
-        LightMode SinglePass
-
-        VertexShader GLSL100:   Common/MatDefs/Light/LightingOld.vert
-        FragmentShader GLSL100: Common/MatDefs/Light/LightingOld.frag
-
-        WorldParameters {
-            WorldViewProjectionMatrix
-            NormalMatrix
-            WorldMatrix
-            WorldViewMatrix
-            ViewMatrix
-        }
-
-        Defines {
-            HAS_DIFFUSEMAP : DiffuseMap
-            HAS_NORMALMAP : NormalMap
-            HAS_SPECULARMAP : SpecularMap
-            USE_ALPHA : UseAlpha
         }
     }
 

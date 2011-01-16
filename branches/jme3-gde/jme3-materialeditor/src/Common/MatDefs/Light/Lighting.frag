@@ -1,6 +1,7 @@
 #define ATTENUATION
 //#define HQ_ATTENUATION
 
+
 varying vec2 texCoord;
 
 varying vec4 AmbientSum;
@@ -68,7 +69,7 @@ float lightComputeDiffuse(in vec3 norm, in vec3 lightdir, in vec3 viewdir){
 }
 
 float lightComputeSpecular(in vec3 norm, in vec3 viewdir, in vec3 lightdir, in float shiny){
-    #ifdef LOW_QUALITY 
+    #ifdef LOW_QUALITY
        // Blinn-Phong
        // Note: preferably, H should be computed in the vertex shader
        vec3 H = (viewdir + lightdir) * vec3(0.5);
@@ -91,9 +92,8 @@ float lightComputeSpecular(in vec3 norm, in vec3 viewdir, in vec3 lightdir, in f
 
 vec2 computeLighting(in vec3 wvPos, in vec3 wvNorm, in vec3 wvViewDir, in vec3 wvLightDir){
    float diffuseFactor = lightComputeDiffuse(wvNorm, wvLightDir, wvViewDir);
-   float specularFactor = 1.0;
-   specularFactor = //step(0.001, m_Shininess) * min(1.0, diffuseFactor * 10.0)
-                    lightComputeSpecular(wvNorm, wvViewDir, wvLightDir, m_Shininess);
+   float specularFactor = lightComputeSpecular(wvNorm, wvViewDir, wvLightDir, m_Shininess);
+   specularFactor *= step(1.0, m_Shininess);
 
    #ifdef HQ_ATTENUATION
     float att = clamp(1.0 - g_LightPosition.w * length(lightVec), 0.0, 1.0);
@@ -153,11 +153,9 @@ void main(){
       vec4 specularColor = vec4(1.0);
     #endif
 
-    float alpha = 1.0;
-    #ifdef USE_ALPHA
-       alpha = DiffuseSum.a * diffuseColor.a;
-    #elif defined(ALPHAMAP)
-       alpha = texture2D(m_AlphaMap, newTexCoord).r;
+    float alpha = DiffuseSum.a * diffuseColor.a;
+    #ifdef ALPHAMAP
+       alpha = alpha * texture2D(m_AlphaMap, newTexCoord).r;
     #endif
     #ifdef VERTEX_LIGHTING
        vec2 light = vec2(AmbientSum.a, SpecularSum.a);

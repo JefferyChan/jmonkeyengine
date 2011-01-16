@@ -1,8 +1,11 @@
+#import "Common/ShaderLib/MultiSample.glsllib"
+
+uniform COLORTEXTURE m_Texture;
+uniform DEPTHTEXTURE m_DepthTexture;
+
 uniform vec2 g_Resolution;
 uniform vec2 m_FrustumNearFar;
-uniform sampler2D m_Texture;
 uniform sampler2D m_Normals;
-uniform sampler2D m_DepthTexture;
 uniform vec3 m_FrustumCorner;
 uniform float m_SampleRadius;
 uniform float m_Intensity;
@@ -18,7 +21,7 @@ float depthv;
 
 vec3 getPosition(in vec2 uv){
   //Reconstruction from depth
-  depthv =texture2D(m_DepthTexture,uv).r;
+  depthv =getDepth(m_DepthTexture,uv).r;
   float depth= (2.0 * m_FrustumNearFar.x) / (m_FrustumNearFar.y + m_FrustumNearFar.x - depthv* (m_FrustumNearFar.y-m_FrustumNearFar.x));
 
   //one frustum corner method
@@ -45,15 +48,15 @@ float doAmbientOcclusion(in vec2 tc, in vec3 pos, in vec3 norm){
    return max(0.0, dot(norm, v) - m_Bias) * ( 1.0/(1.0 + d) ) * m_Intensity;
 }
 
-vec4 getColor(in float result){
+vec4 getColorRes(in float result){
 
  if(m_UseOnlyAo){
      return vec4(result,result,result, 1.0);
  }
  if(m_UseAo){
-      return texture2D(m_Texture,texCoord)* vec4(result,result,result, 1.0);
+      return getColor(m_Texture,texCoord)* vec4(result,result,result, 1.0);
   }else{
-      return texture2D(m_Texture,texCoord);
+      return getColor(m_Texture,texCoord);
   }
 
 }
@@ -74,7 +77,7 @@ void main(){
    vec3 position = getPosition(texCoord);
     //optimization, do not calculate AO if depth is 1
    if(depthv==1.0){
-        gl_FragColor=getColor(1.0);
+        gl_FragColor=getColorRes(1.0);
         return;
    }
    vec3 normal = getNormal(texCoord);
@@ -98,7 +101,7 @@ void main(){
    ao /= float(iterations) * 4.0;
    result = 1.0-ao;
 
-   gl_FragColor=getColor(result);
+   gl_FragColor=getColorRes(result);
 
 //gl_FragColor=vec4(normal,1.0);
 }

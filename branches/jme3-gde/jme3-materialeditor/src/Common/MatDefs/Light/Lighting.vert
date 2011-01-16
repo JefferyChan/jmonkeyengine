@@ -6,7 +6,7 @@ uniform mat4 g_WorldViewMatrix;
 uniform mat3 g_NormalMatrix;
 uniform mat4 g_ViewMatrix;
 
-uniform vec4 m_Ambient;
+//uniform vec4 m_Ambient;
 uniform vec4 m_Diffuse;
 uniform vec4 m_Specular;
 uniform float m_Shininess;
@@ -33,7 +33,7 @@ attribute vec3 inNormal;
 #endif
 
 #ifndef VERTEX_LIGHTING
-  attribute vec3 inTangent;
+  attribute vec4 inTangent;
 
   #ifndef NORMALMAP
     varying vec3 vNormal;
@@ -103,10 +103,11 @@ void main(){
    vec4 lightColor = g_LightColor;
 
    #if defined(NORMALMAP) && !defined(VERTEX_LIGHTING)
-     vec3 wvTangent = normalize(g_NormalMatrix * inTangent);
+     vec3 wvTangent = normalize(g_NormalMatrix * inTangent.xyz);
      vec3 wvBinormal = cross(wvNormal, wvTangent);
-     mat3 tbnMat = mat3(wvTangent, wvBinormal, wvNormal);
 
+     mat3 tbnMat = mat3(wvTangent, wvBinormal * -inTangent.w,wvNormal);
+     
      vPosition = wvPosition * tbnMat;
      vViewDir  = viewDir * tbnMat;
      lightComputeDir(wvPosition, lightColor, wvLightPos, vLightDir);
@@ -120,14 +121,14 @@ void main(){
      lightComputeDir(wvPosition, lightColor, wvLightPos, vLightDir);
 
      #ifdef V_TANGENT
-        vNormal = normalize(g_NormalMatrix * inTangent);
+        vNormal = normalize(g_NormalMatrix * inTangent.xyz);
         vNormal = -cross(cross(vLightDir.xyz, vNormal), vNormal);
      #endif
    #endif
 
    lightColor.w = 1.0;
    #ifdef MATERIAL_COLORS
-      AmbientSum  = m_Ambient  * lightColor;
+      AmbientSum  = vec4(0.0); //m_Ambient  * lightColor;
       DiffuseSum  = m_Diffuse  * lightColor;
       SpecularSum = m_Specular * lightColor;
     #else
@@ -145,7 +146,6 @@ void main(){
        //DiffuseSum *= light.x;
        //SpecularSum *= light.y;
 
-       DiffuseSum.a  = AmbientSum.a * DiffuseSum.a * SpecularSum.a;
        AmbientSum.a  = light.x;
        SpecularSum.a = light.y;
     #endif

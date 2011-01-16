@@ -46,11 +46,13 @@ void main(){
 
      vNormal = wvNormal.xyz;
    #else
+     vec4 wvNormal;
      #ifdef V_TANGENT
-       // vNormal = normalize(g_WorldMatrix * inTangent);
+        wvNormal = vec4(inTangent, 0.0);
      #else
-      //  vNormal = normalize(g_WorldMatrix * inNormal);
+        wvNormal = vec4(inNormal, 0.0);
      #endif
+     vNormal = normalize( (g_WorldMatrix * wvNormal).xyz );
    #endif
 
    #ifdef MATERIAL_COLORS

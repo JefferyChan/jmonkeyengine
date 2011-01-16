@@ -57,7 +57,7 @@ void main(){
       normal.y = -normal.y;
 
       normal = tbnMat * normal;
-    #elif !defined(VERTEX_LIGHTING)
+    #else
       vec3 normal = vNormal;
       #if !defined(LOW_QUALITY) && !defined(V_TANGENT)
          normal = normalize(normal);

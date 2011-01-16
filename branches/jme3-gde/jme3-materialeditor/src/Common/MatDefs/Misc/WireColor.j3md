@@ -5,14 +5,18 @@ MaterialDef Wire Color {
     }
 
     Technique {
-        VertexShader GLSL100:   Common/MatDefs/Misc/SolidColor.vert
-        FragmentShader GLSL100: Common/MatDefs/Misc/SolidColor.frag
+        VertexShader GLSL100:   Common/MatDefs/Misc/Unshaded.vert
+        FragmentShader GLSL100: Common/MatDefs/Misc/Unshaded.frag
 
         RenderState {
             FaceCull Off
             Blend Alpha
             AlphaTestFalloff 0.01
             Wireframe On
+        }
+
+        Defines {
+            HAS_COLOR : Color
         }
 
         WorldParameters {

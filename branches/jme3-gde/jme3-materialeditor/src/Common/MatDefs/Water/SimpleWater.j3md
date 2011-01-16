@@ -1,4 +1,4 @@
-MaterialDef SimpleWater {
+MaterialDef Simple Water {
 
     MaterialParameters {
         Texture2D water_reflection
