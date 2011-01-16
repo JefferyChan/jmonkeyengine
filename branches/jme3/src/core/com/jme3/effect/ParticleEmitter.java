@@ -589,6 +589,11 @@ public class ParticleEmitter extends Geometry implements Control {
         // Force world transform to update
         getWorldTransform();
 
+        TempVars vars = TempVars.get();
+        assert vars.lock();
+
+        Vector3f temp = vars.vect1;
+
         for (int i = 0; i < particles.length; i++){
             Particle p = particles[i];
             if (p.life == 0){ // particle is dead
@@ -627,7 +632,7 @@ public class ParticleEmitter extends Geometry implements Control {
             }
         }
 
-        assert TempVars.get().unlock();
+        assert vars.unlock();
 
         float particlesToEmitF = particlesPerSec * tpf;
         int particlesToEmit = (int) (particlesToEmitF);
