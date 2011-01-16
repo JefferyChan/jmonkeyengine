@@ -96,6 +96,7 @@ public class JmePhysicsVehicleWheel extends AbstractSceneExplorerNode{
         set.put(makeProperty(obj, Vector3f.class, "getLocation", "Location"));
         set.put(makeProperty(obj, Vector3f.class, "getAxle", "Axis"));
         set.put(makeProperty(obj, Vector3f.class, "getDirection", "Direction"));
+        set.put(makeProperty(obj, boolean.class, "isFrontWheel", "setFrontWheel", "Front Wheel"));
         set.put(makeProperty(obj, float.class, "getFrictionSlip", "setFrictionSlip", "Friction Slip"));
         set.put(makeProperty(obj, float.class, "getMaxSuspensionForce", "setMaxSuspensionForce", "Max Suspension Force"));
         set.put(makeProperty(obj, float.class, "getMaxSuspensionTravelCm", "setMaxSuspensionTravelCm", "Max Suspension Travel"));

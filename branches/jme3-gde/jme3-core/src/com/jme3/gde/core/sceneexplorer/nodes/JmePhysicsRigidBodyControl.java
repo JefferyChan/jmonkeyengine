@@ -55,8 +55,8 @@ public class JmePhysicsRigidBodyControl extends AbstractSceneExplorerNode {
     public JmePhysicsRigidBodyControl() {
     }
 
-    public JmePhysicsRigidBodyControl(PhysicsRigidBodyControl spatial) {
-        super(Children.LEAF);
+    public JmePhysicsRigidBodyControl(PhysicsRigidBodyControl spatial, DataObject dataObject) {
+        super(dataObject);
         getLookupContents().add(spatial);
         this.geom = spatial;
         setName("PhysicsControl");
@@ -115,6 +115,6 @@ public class JmePhysicsRigidBodyControl extends AbstractSceneExplorerNode {
     }
 
     public org.openide.nodes.Node[] createNodes(Object key, DataObject key2, boolean cookie) {
-        return new org.openide.nodes.Node[]{new JmePhysicsRigidBodyControl((PhysicsRigidBodyControl) key).setReadOnly(cookie)};
+        return new org.openide.nodes.Node[]{new JmePhysicsRigidBodyControl((PhysicsRigidBodyControl) key, key2).setReadOnly(cookie)};
     }
 }

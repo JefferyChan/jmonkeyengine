@@ -55,8 +55,8 @@ public class JmePhysicsCharacterControl extends AbstractSceneExplorerNode {
     public JmePhysicsCharacterControl() {
     }
 
-    public JmePhysicsCharacterControl(PhysicsCharacterControl spatial) {
-        super(Children.LEAF);
+    public JmePhysicsCharacterControl(PhysicsCharacterControl spatial, DataObject dataObject) {
+        super(dataObject);
         getLookupContents().add(spatial);
         this.geom = spatial;
         setName("CharacterControl");
@@ -110,6 +110,6 @@ public class JmePhysicsCharacterControl extends AbstractSceneExplorerNode {
     }
 
     public org.openide.nodes.Node[] createNodes(Object key, DataObject key2, boolean cookie) {
-        return new org.openide.nodes.Node[]{new JmePhysicsCharacterControl((PhysicsCharacterControl) key).setReadOnly(cookie)};
+        return new org.openide.nodes.Node[]{new JmePhysicsCharacterControl((PhysicsCharacterControl) key, key2).setReadOnly(cookie)};
     }
 }

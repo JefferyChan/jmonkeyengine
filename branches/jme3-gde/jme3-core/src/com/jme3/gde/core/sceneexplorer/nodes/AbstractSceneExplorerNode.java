@@ -50,9 +50,22 @@ public abstract class AbstractSceneExplorerNode extends AbstractNode implements 
     protected Children jmeChildren;
     protected final InstanceContent lookupContents;
     protected boolean readOnly = false;
+    protected DataObject dataObject;
 
     public AbstractSceneExplorerNode() {
         super(Children.LEAF, new SceneExplorerLookup(new InstanceContent()));
+        lookupContents = ((SceneExplorerLookup) getLookup()).getInstanceContent();
+    }
+
+    public AbstractSceneExplorerNode(Children children, DataObject dataObject) {
+        super(children, new ProxyLookup(dataObject.getLookup(), new SceneExplorerLookup(new InstanceContent())));
+        this.dataObject=dataObject;
+        lookupContents = ((SceneExplorerLookup) getLookup()).getInstanceContent();
+    }
+
+    public AbstractSceneExplorerNode(DataObject dataObject) {
+        super(Children.LEAF, new ProxyLookup(dataObject.getLookup(), new SceneExplorerLookup(new InstanceContent())));
+        this.dataObject=dataObject;
         lookupContents = ((SceneExplorerLookup) getLookup()).getInstanceContent();
     }
 
@@ -65,6 +78,9 @@ public abstract class AbstractSceneExplorerNode extends AbstractNode implements 
                 : new SceneExplorerLookup(new InstanceContent()));
         this.jmeChildren = children;
         lookupContents = getLookup().lookup(SceneExplorerLookup.class).getInstanceContent();
+        if(children instanceof SceneExplorerChildren){
+            this.dataObject=((SceneExplorerChildren) children).getDataObject();
+        }
     }
 
     public InstanceContent getLookupContents() {
@@ -77,11 +93,8 @@ public abstract class AbstractSceneExplorerNode extends AbstractNode implements 
     }
 
     protected void fireSave(boolean modified) {
-        if(jmeChildren instanceof SceneExplorerChildren){
-            DataObject dobj = ((SceneExplorerChildren)jmeChildren).getDataObject();
-            if(dobj!=null){
-                dobj.setModified(modified);
-            }
+        if(dataObject!=null){
+            dataObject.setModified(true);
         }
     }
 

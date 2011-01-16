@@ -55,8 +55,8 @@ public class JmePhysicsGhostControl extends AbstractSceneExplorerNode {
     public JmePhysicsGhostControl() {
     }
 
-    public JmePhysicsGhostControl(PhysicsGhostControl spatial) {
-        super(Children.LEAF);
+    public JmePhysicsGhostControl(PhysicsGhostControl spatial, DataObject dataObject) {
+        super(dataObject);
         getLookupContents().add(spatial);
         this.geom = spatial;
         setName("GhostControl");
@@ -104,6 +104,6 @@ public class JmePhysicsGhostControl extends AbstractSceneExplorerNode {
     }
 
     public org.openide.nodes.Node[] createNodes(Object key, DataObject key2, boolean cookie) {
-        return new org.openide.nodes.Node[]{new JmePhysicsGhostControl((PhysicsGhostControl) key).setReadOnly(cookie)};
+        return new org.openide.nodes.Node[]{new JmePhysicsGhostControl((PhysicsGhostControl) key, key2).setReadOnly(cookie)};
     }
 }

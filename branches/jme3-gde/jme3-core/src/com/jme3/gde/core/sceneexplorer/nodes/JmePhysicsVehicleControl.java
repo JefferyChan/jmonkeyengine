@@ -37,6 +37,7 @@ import com.jme3.math.Matrix3f;
 import com.jme3.math.Vector3f;
 import java.awt.Image;
 import org.openide.loaders.DataObject;
+import org.openide.nodes.Children;
 import org.openide.nodes.Sheet;
 import org.openide.util.ImageUtilities;
 
@@ -54,8 +55,8 @@ public class JmePhysicsVehicleControl extends AbstractSceneExplorerNode {
     public JmePhysicsVehicleControl() {
     }
 
-    public JmePhysicsVehicleControl(PhysicsVehicleControl vehicle) {
-        super(new PhysicsVehicleChildren(vehicle));
+    public JmePhysicsVehicleControl(PhysicsVehicleControl vehicle, Children children) {
+        super(children);
         getLookupContents().add(vehicle);
         this.vehicle = vehicle;
         setName("VehicleControl");
@@ -121,6 +122,9 @@ public class JmePhysicsVehicleControl extends AbstractSceneExplorerNode {
     }
 
     public org.openide.nodes.Node[] createNodes(Object key, DataObject key2, boolean cookie) {
-        return new org.openide.nodes.Node[]{new JmePhysicsVehicleControl((PhysicsVehicleControl) key).setReadOnly(cookie)};
+        PhysicsVehicleChildren children = new PhysicsVehicleChildren((PhysicsVehicleControl) key);
+        children.setReadOnly(cookie);
+        children.setDataObject(key2);
+        return new org.openide.nodes.Node[]{new JmePhysicsVehicleControl((PhysicsVehicleControl) key, children).setReadOnly(cookie)};
     }
 }
