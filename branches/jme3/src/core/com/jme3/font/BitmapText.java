@@ -122,6 +122,18 @@ public class BitmapText extends Node {
         return font.getLineHeight(block);
     }
     
+    public float getHeight() {
+        if (needRefresh) {
+            assemble();
+        }
+        float height = getLineHeight()*block.getLineCount();
+        Rectangle textBox = block.getTextBox();
+        if (textBox != null) {
+            return Math.max(height, textBox.height);
+        }
+        return height;
+    }
+    
     public float getLineWidth() {
         if (needRefresh) {
             assemble();

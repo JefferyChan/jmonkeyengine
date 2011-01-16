@@ -49,6 +49,7 @@ public class StringBlock implements Cloneable {
     private float size;
     private ColorRGBA color = new ColorRGBA(ColorRGBA.White);
     private boolean kerning;
+    private int lineCount;
 
     /**
      *
@@ -145,4 +146,13 @@ public class StringBlock implements Cloneable {
     public void setKerning(boolean kerning) {
         this.kerning = kerning;
     }
+
+    public int getLineCount() {
+        return lineCount;
+    }
+
+    void setLineCount(int lineCount) {
+        this.lineCount = lineCount;
+    }
+
 }
