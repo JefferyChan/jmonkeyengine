@@ -57,6 +57,7 @@ public class JmePhysicsCharacterControl extends AbstractSceneExplorerNode {
 
     public JmePhysicsCharacterControl(PhysicsCharacterControl spatial, DataObject dataObject) {
         super(dataObject);
+        getLookupContents().add(this);
         getLookupContents().add(spatial);
         this.geom = spatial;
         setName("CharacterControl");

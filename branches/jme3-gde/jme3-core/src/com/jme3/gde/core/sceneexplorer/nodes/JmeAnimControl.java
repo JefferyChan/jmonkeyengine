@@ -64,6 +64,7 @@ public class JmeAnimControl extends AbstractSceneExplorerNode{
         super(Children.LEAF);
         this.animControl = animControl;
         lookupContents.add(this);
+        lookupContents.add(animControl);
         setName("AnimControl");
     }
 

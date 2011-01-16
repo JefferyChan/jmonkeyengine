@@ -58,6 +58,7 @@ public class JmePhysicsRigidBodyControl extends AbstractSceneExplorerNode {
     public JmePhysicsRigidBodyControl(PhysicsRigidBodyControl spatial, DataObject dataObject) {
         super(dataObject);
         getLookupContents().add(spatial);
+        getLookupContents().add(this);
         this.geom = spatial;
         setName("PhysicsControl");
     }

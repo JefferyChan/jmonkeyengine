@@ -58,6 +58,7 @@ public class JmePhysicsVehicleControl extends AbstractSceneExplorerNode {
     public JmePhysicsVehicleControl(PhysicsVehicleControl vehicle, Children children) {
         super(children);
         getLookupContents().add(vehicle);
+        getLookupContents().add(this);
         this.vehicle = vehicle;
         setName("VehicleControl");
     }

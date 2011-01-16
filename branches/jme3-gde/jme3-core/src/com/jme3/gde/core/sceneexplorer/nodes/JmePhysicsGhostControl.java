@@ -57,6 +57,7 @@ public class JmePhysicsGhostControl extends AbstractSceneExplorerNode {
 
     public JmePhysicsGhostControl(PhysicsGhostControl spatial, DataObject dataObject) {
         super(dataObject);
+        getLookupContents().add(this);
         getLookupContents().add(spatial);
         this.geom = spatial;
         setName("GhostControl");

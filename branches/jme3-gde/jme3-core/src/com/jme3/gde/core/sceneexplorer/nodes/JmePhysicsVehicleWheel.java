@@ -66,8 +66,8 @@ public class JmePhysicsVehicleWheel extends AbstractSceneExplorerNode{
         super(Children.LEAF);
         this.vehicle=vehicle;
         this.wheel = wheel;
-        lookupContents.add(wheel);
-        lookupContents.add(this);
+        getLookupContents().add(wheel);
+        getLookupContents().add(this);
         setName("Wheel");
     }
 
