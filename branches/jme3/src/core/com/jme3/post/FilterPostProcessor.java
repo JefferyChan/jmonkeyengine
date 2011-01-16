@@ -121,7 +121,12 @@ public class FilterPostProcessor implements SceneProcessor, Savable {
         filter.init(this, assetManager, renderManager, vp, width, height);
         if (filter.isRequiresDepthTexture()) {
             if (!computeDepth && renderFrameBuffer != null) {
-                depthTexture = new Texture2D(width, height, Format.Depth24);
+                Collection<Caps> caps = renderer.getCaps();
+                if(caps.contains(Caps.FloatDepthBuffer)){
+                    depthTexture = new Texture2D(width, height, Format.Depth24);
+                }else{
+                    depthTexture = new Texture2D(width, height, Format.Depth16);
+                }
                 renderFrameBuffer.setDepthTexture(depthTexture);
             }
             computeDepth = true;
