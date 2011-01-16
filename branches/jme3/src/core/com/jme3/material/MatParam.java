@@ -65,6 +65,10 @@ public class MatParam implements Savable, Cloneable {
         return name;
     }
 
+    public void setName(String name){
+        this.name=name;
+    }
+
     public Object getValue(){
         return value;
     }

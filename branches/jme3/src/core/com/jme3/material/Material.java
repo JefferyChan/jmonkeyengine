@@ -302,7 +302,7 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
      */
     public void setParam(String name, VarType type, Object value) {
         name=checkSetParam(type, name);
-
+        
         MatParam val = getParam(name);
         if (technique != null) {
             technique.notifySetParam(name, type, value);
@@ -377,8 +377,7 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
             throw new NullPointerException();
         }
 
-        name=checkSetParam(type, name);
-
+        name=checkSetParam(type, name);       
         MatParamTexture val = getTextureParam(name);
         if (val == null) {
             paramValues.put(name, new MatParamTexture(type, name, value, nextTexUnit++));
@@ -718,7 +717,7 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
                 if (!techDef.isUsingShaders()) {
                     continue;
                 }
-
+                
                 technique.updateUniformParam(param.getName(),
                         param.getVarType(),
                         param.getValue(), true);
@@ -799,6 +798,7 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
                 MatParamTexture texParam = (MatParamTexture) param;
                 r.setTexture(texParam.getUnit(), texParam.getTextureValue());
                 if (techDef.isUsingShaders()) {
+                    
                     technique.updateUniformParam(texParam.getName(),
                             texParam.getVarType(),
                             texParam.getUnit(), true);
@@ -866,9 +866,10 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
 
         // load the textures and update nextTexUnit
         for (Map.Entry<String, MatParam> entry : params.entrySet()) {
-            MatParam param = entry.getValue();
+            MatParam param = entry.getValue();         
             if (param instanceof MatParamTexture) {
                 MatParamTexture texVal = (MatParamTexture) param;
+                
                 if (nextTexUnit < texVal.getUnit() + 1) {
                     nextTexUnit = texVal.getUnit() + 1;
                 }
@@ -878,8 +879,9 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
                 if (texVal.texture == null || texVal.texture.getImage() == null) {
                     continue;
                 }
-            }
-            paramValues.put(entry.getKey(), entry.getValue());
+            }            
+            param.setName(checkSetParam(param.getVarType(),param.getName()));
+            paramValues.put(param.getName(), param);
         }
     }
 }
