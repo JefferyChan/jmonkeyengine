@@ -42,6 +42,7 @@ import com.jme3.material.Material;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -628,6 +629,19 @@ public class Node extends Spatial implements Savable {
                 children.get(i).updateModelBound();
             }
         }
+    }
+    
+    @Override
+    public void depthFirstTraversal(SceneGraphVisitor visitor) {
+        for(int i = 0, max = children.size(); i < max; i++) {
+            children.get(i).depthFirstTraversal(visitor);
+        }
+        visitor.visit(this);
+    }
+    
+    @Override
+    protected void breadthFirstTraversal(SceneGraphVisitor visitor, Queue<Spatial> queue) {
+        queue.addAll(children);
     }
 
 }

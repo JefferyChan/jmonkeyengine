@@ -59,6 +59,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.logging.Logger;
 
 
@@ -1392,5 +1394,27 @@ public abstract class Spatial implements Savable, Cloneable, Collidable {
         return store;
     }
     
+    /**
+     * Visit each scene graph element ordered by DFS
+     * @param visitor
+     */
+    public abstract void depthFirstTraversal(SceneGraphVisitor visitor);
+    
+    /**
+     * Visit each scene graph element ordered by BFS
+     * @param visitor
+     */
+    public void breadthFirstTraversal(SceneGraphVisitor visitor) {
+        Queue<Spatial> queue = new LinkedList<Spatial>();
+        queue.add(this);
+        
+        while (!queue.isEmpty()) {
+            Spatial s = queue.poll();
+            visitor.visit(s);
+            s.breadthFirstTraversal(visitor, queue);
+        }
+    }
+    
+    protected abstract void breadthFirstTraversal(SceneGraphVisitor visitor, Queue<Spatial> queue);
 }
 

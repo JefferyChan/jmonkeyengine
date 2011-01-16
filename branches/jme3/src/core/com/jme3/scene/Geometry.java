@@ -44,6 +44,7 @@ import com.jme3.math.Matrix4f;
 import com.jme3.scene.VertexBuffer.Type;
 import com.jme3.util.TempVars;
 import java.io.IOException;
+import java.util.Queue;
 
 public class Geometry extends Spatial {
 
@@ -259,6 +260,15 @@ public class Geometry extends Spatial {
             return added;
         }
         return 0;
+    }
+    
+    @Override
+    public void depthFirstTraversal(SceneGraphVisitor visitor) {
+        visitor.visit(this);
+    }
+    
+    @Override
+    protected void breadthFirstTraversal(SceneGraphVisitor visitor, Queue<Spatial> queue) {
     }
 
     /**
