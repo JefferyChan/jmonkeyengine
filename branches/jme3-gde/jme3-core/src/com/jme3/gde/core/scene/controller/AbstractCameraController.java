@@ -62,7 +62,7 @@ public abstract class AbstractCameraController extends AbstractAppState implemen
     protected int mouseX = 0;
     protected int mouseY = 0;
     protected Quaternion rot = new Quaternion();
-    protected Vector3f vector = new Vector3f();
+    protected Vector3f vector = new Vector3f(0,0,5);
     protected Vector3f focus = new Vector3f();
     protected Camera cam;
     protected InputManager inputManager;
@@ -113,8 +113,8 @@ public abstract class AbstractCameraController extends AbstractAppState implemen
     }
 
     public void doSetCamFocus(Vector3f focus) {
+        cam.setLocation(cam.getLocation().add(focus.subtract(this.focus)));
         this.focus.set(focus);
-        cam.setLocation(focus.add(vector, cam.getLocation()));
     }
 
     /*
