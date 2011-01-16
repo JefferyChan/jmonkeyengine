@@ -127,6 +127,7 @@ public class PhysicsVehicle extends PhysicsRigidBody {
      */
     public void createVehicle(PhysicsSpace space) {
         physicsSpace = space;
+        if(space==null) return;
         rayCaster = new DefaultVehicleRaycaster(space.getDynamicsWorld());
         vehicle = new RaycastVehicle(tuning, rBody, rayCaster);
         vehicle.setCoordinateSystem(0, 1, 2);
