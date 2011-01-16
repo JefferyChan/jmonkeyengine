@@ -63,7 +63,7 @@ public class TestPostWaterLake extends SimpleApplication {
     public void simpleInitApp() {
         this.flyCam.setMoveSpeed(10);
         cam.setLocation(new Vector3f(-27.0f, 1.0f, 75.0f));
-        cam.setRotation(new Quaternion(0.03f, 0.9f, 0f, 0.4f));
+      //  cam.setRotation(new Quaternion(0.03f, 0.9f, 0f, 0.4f));
 
         // load sky
         rootNode.attachChild(SkyFactory.createSky(assetManager, "Textures/Sky/Bright/BrightSky.dds", false));
@@ -84,7 +84,7 @@ public class TestPostWaterLake extends SimpleApplication {
         sun.setColor(ColorRGBA.White.clone().multLocal(2));
         scene.addLight(sun);
 
-        FilterPostProcessor fpp = new FilterPostProcessor(assetManager);
+        FilterPostProcessor fpp = new FilterPostProcessor(assetManager);        
         final WaterFilter water = new WaterFilter(rootNode, lightDir);
         water.setWaterHeight(-6);
         water.setUseFoam(false);
