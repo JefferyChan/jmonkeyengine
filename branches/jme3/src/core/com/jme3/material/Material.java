@@ -80,7 +80,8 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
         depthOnly.setColorWrite(false);
 
         additiveLight.setBlendMode(RenderState.BlendMode.AlphaAdditive);
-        additiveLight.setDepthWrite(false);
+        
+       // additiveLight.setDepthWrite(false);
     }
     private MaterialDef def;
     private ListMap<String, MatParam> paramValues = new ListMap<String, MatParam>();
