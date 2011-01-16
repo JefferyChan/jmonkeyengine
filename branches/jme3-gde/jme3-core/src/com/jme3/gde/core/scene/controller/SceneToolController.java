@@ -4,6 +4,9 @@
  */
 package com.jme3.gde.core.scene.controller;
 
+import com.jme3.app.Application;
+import com.jme3.app.state.AppState;
+import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
 import com.jme3.bounding.BoundingBox;
 import com.jme3.bounding.BoundingVolume;
@@ -18,6 +21,7 @@ import com.jme3.gde.core.scene.SceneApplication;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.RenderManager;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
@@ -32,7 +36,7 @@ import java.util.concurrent.Callable;
  * standard tools in the tools scene e.g. a cursor etc.
  * @author normenhansen
  */
-public class SceneToolController {
+public class SceneToolController implements AppState {
 
     private Node toolsNode;
     protected boolean showSelection = false;
@@ -46,12 +50,14 @@ public class SceneToolController {
     public SceneToolController(AssetManager manager) {
         this.toolsNode = new Node("ToolsNode");
         initTools();
+        SceneApplication.getApplication().getStateManager().attach(this);
     }
 
     public SceneToolController(Node toolsNode, AssetManager manager) {
         this.toolsNode = toolsNode;
         this.manager = manager;
         initTools();
+        SceneApplication.getApplication().getStateManager().attach(this);
     }
 
     protected void initTools() {
@@ -182,7 +188,7 @@ public class SceneToolController {
             BoundingBox bbox = (BoundingBox) bound;
             Vector3f extent = new Vector3f();
             bbox.getExtent(extent);
-            Geometry selectionGeometry = new Geometry("selection_geometry_sceneviewer", new Box(bbox.getCenter(), extent.x, extent.x, extent.z));
+            Geometry selectionGeometry = new Geometry("selection_geometry_sceneviewer", new Box(bbox.getCenter(), extent.x, extent.y, extent.z));
             selectionGeometry.setMaterial(mat);
             selectionGeometry.setLocalTransform(geom.getWorldTransform());
             toolsNode.attachChild(selectionGeometry);
@@ -226,6 +232,7 @@ public class SceneToolController {
         detachSelectionShape();
         cursor.removeFromParent();
         grid.removeFromParent();
+        SceneApplication.getApplication().getStateManager().detach(this);
     }
 
     //TODO: multithreading!
@@ -276,5 +283,47 @@ public class SceneToolController {
      */
     public Node getToolsNode() {
         return toolsNode;
+    }
+
+    public void initialize(AppStateManager asm, Application aplctn) {
+//        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public boolean isInitialized() {
+        return true;
+//        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void setActive(boolean bln) {
+//        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public boolean isActive() {
+        return true;
+//        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void stateAttached(AppStateManager asm) {
+//        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void stateDetached(AppStateManager asm) {
+//        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void update(float f) {
+        if (selected == null || selectionShape == null) {
+            return;
+        }
+        selectionShape.setLocalTranslation(selected.getWorldTranslation());
+        selectionShape.setLocalRotation(selected.getWorldRotation());
+    }
+
+    public void render(RenderManager rm) {
+//        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void postRender() {
+//        throw new UnsupportedOperationException("Not supported yet.");
     }
 }
