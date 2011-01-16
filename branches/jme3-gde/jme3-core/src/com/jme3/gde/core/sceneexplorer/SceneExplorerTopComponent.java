@@ -35,6 +35,7 @@ import com.jme3.gde.core.scene.PreviewRequest;
 import com.jme3.gde.core.scene.SceneApplication;
 import com.jme3.gde.core.scene.SceneListener;
 import com.jme3.gde.core.scene.SceneRequest;
+import com.jme3.gde.core.sceneexplorer.nodes.AbstractSceneExplorerNode;
 import com.jme3.gde.core.sceneexplorer.nodes.JmeNode;
 import com.jme3.gde.core.sceneexplorer.nodes.JmeSpatial;
 import java.util.Collection;
@@ -72,8 +73,8 @@ public final class SceneExplorerTopComponent extends TopComponent implements Exp
     static final String ICON_PATH = "com/jme3/gde/core/sceneexplorer/jme-logo.png";
     private static final String PREFERRED_ID = "SceneExplorerTopComponent";
     private SceneRequest request;
-    private final Result<JmeSpatial> nodeSelectionResult;
-    private JmeSpatial selectedSpatial;
+    private final Result<AbstractSceneExplorerNode> nodeSelectionResult;
+    private AbstractSceneExplorerNode selectedSpatial;
 
     public SceneExplorerTopComponent() {
         initComponents();
@@ -82,7 +83,7 @@ public final class SceneExplorerTopComponent extends TopComponent implements Exp
         setToolTipText(NbBundle.getMessage(SceneExplorerTopComponent.class, "HINT_SceneExplorerTopComponent"));
         setIcon(ImageUtilities.loadImage(ICON_PATH, true));
         associateLookup(ExplorerUtils.createLookup(explorerManager, getActionMap()));
-        nodeSelectionResult = Utilities.actionsGlobalContext().lookupResult(JmeSpatial.class);
+        nodeSelectionResult = Utilities.actionsGlobalContext().lookupResult(AbstractSceneExplorerNode.class);
         nodeSelectionResult.addLookupListener(this);
     }
 
@@ -241,8 +242,8 @@ public final class SceneExplorerTopComponent extends TopComponent implements Exp
         Collection collection = nodeSelectionResult.allInstances();
         for (Iterator it = collection.iterator(); it.hasNext();) {
             Object object = it.next();
-            if (object instanceof JmeSpatial) {
-                selectedSpatial = (JmeSpatial) object;
+            if (object instanceof AbstractSceneExplorerNode) {
+                selectedSpatial = (AbstractSceneExplorerNode) object;
                 return;
             }
         }
