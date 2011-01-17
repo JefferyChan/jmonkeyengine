@@ -83,15 +83,7 @@ public abstract class AbstractCameraController extends AbstractAppState implemen
 
     public void enable() {
         inputManager.addRawInputListener(this);
-        inputManager.addListener(this, "MouseAxisX");
-        inputManager.addListener(this, "MouseAxisY");
-        inputManager.addListener(this, "MouseAxisX-");
-        inputManager.addListener(this, "MouseAxisY-");
-        inputManager.addListener(this, "MouseWheel");
-        inputManager.addListener(this, "MouseWheel-");
-        inputManager.addListener(this, "MouseButtonLeft");
-        inputManager.addListener(this, "MouseButtonMiddle");
-        inputManager.addListener(this, "MouseButtonRight");
+        inputManager.addListener(this, "MouseAxisX", "MouseAxisY", "MouseAxisX-", "MouseAxisY-", "MouseWheel", "MouseWheel-", "MouseButtonLeft", "MouseButtonMiddle", "MouseButtonRight");
         SceneApplication.getApplication().getStateManager().attach(this);
     }
 

@@ -13,6 +13,7 @@ import com.jme3.math.Vector3f;
 public class SuspensionSettings {
 
     private float boundingScale = 0;
+    private boolean createNode = true;
     private Vector3f direction = new Vector3f(0, -1, 0);
     private Vector3f axle = new Vector3f(-1, 0, 0);
     private boolean frontWheel = false;
@@ -31,6 +32,20 @@ public class SuspensionSettings {
 
     public void setBoundingScale(float boundingScale) {
         this.boundingScale = boundingScale;
+    }
+
+    /**
+     * @return the createNode
+     */
+    public boolean isCreateNode() {
+        return createNode;
+    }
+
+    /**
+     * @param createNode the createNode to set
+     */
+    public void setCreateNode(boolean createNode) {
+        this.createNode = createNode;
     }
 
     /**

@@ -250,7 +250,7 @@ public class VehicleEditorController implements LookupListener, ActionListener {
     }
 
     public void addWheel(final SuspensionSettings settings) {
-        if (selectedSpat == null) {
+        if (selectedSpat == null || selectedSpat == jmeRootNode) {
             return;
         }
         try {
@@ -265,7 +265,7 @@ public class VehicleEditorController implements LookupListener, ActionListener {
                     }
                 }).get();
                 currentFileObject.setModified(true);
-                refreshRoot();
+                refreshSelectedParent();
             }
         } catch (InterruptedException ex) {
             Exceptions.printStackTrace(ex);
@@ -275,6 +275,7 @@ public class VehicleEditorController implements LookupListener, ActionListener {
     }
 
     public void doAddWheel(Spatial selected, Spatial vehicle, SuspensionSettings settings) {
+        Spatial node = null;
         Vector3f wheelLocation = vehicle.worldToLocal(selected.getWorldBound().getCenter(), new Vector3f());
         wheelLocation.add(0, settings.getRestLength(), 0);
 
@@ -289,15 +290,27 @@ public class VehicleEditorController implements LookupListener, ActionListener {
             }
         }
 
-        selected.setLocalTranslation(selected.worldToLocal(selected.getWorldBound().getCenter(), new Vector3f()));
+        if (settings.isCreateNode()) {
+            node = new Node(selected.getName() + "-WheelNode");
+        } else {
+            node = selected;
+        }
 
-        PhysicsVehicleWheel wheel = vehicleControl.addWheel(selected, wheelLocation, settings.getDirection(), settings.getAxle(), settings.getRestLength(), settings.getRadius(), settings.isFrontWheel());
+        node.setLocalTranslation(selected.worldToLocal(selected.getWorldBound().getCenter(), new Vector3f()));
+
+        PhysicsVehicleWheel wheel = vehicleControl.addWheel(node, wheelLocation, settings.getDirection(), settings.getAxle(), settings.getRestLength(), settings.getRadius(), settings.isFrontWheel());
         wheel.setFrictionSlip(settings.getFriction());
         wheel.setRollInfluence(settings.getRollInfluence());
         wheel.setMaxSuspensionForce(settings.getMaxForce());
         wheel.setSuspensionStiffness(settings.getStiffness());
         wheel.setWheelsDampingCompression(settings.getCompression());
         wheel.setWheelsDampingRelaxation(settings.getRelease());
+        if (settings.isCreateNode()) {
+            selected.center();
+            Node parent = selected.getParent();
+            ((Node) node).attachChild(selected);
+            parent.attachChild(node);
+        }
     }
 
     public void checkVehicle() {
