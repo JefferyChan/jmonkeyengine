@@ -183,6 +183,7 @@ public class VehicleEditorController implements LookupListener, ActionListener {
         testing = true;
         bulletState.getPhysicsSpace().addAll(toolsNode);
         bulletState.getPhysicsSpace().add(vehicleControl);
+        vehicleControl.detachDebugShape();
 //        cameraController.disable();
 //        if (chaseCam == null) {
 //            chaseCam = new ChaseCamera(SceneApplication.getApplication().getCamera(), vehicleNode);
@@ -215,6 +216,7 @@ public class VehicleEditorController implements LookupListener, ActionListener {
         vehicleControl.setLinearVelocity(Vector3f.ZERO);
         vehicleControl.setAngularVelocity(Vector3f.ZERO);
         vehicleControl.resetSuspension();
+        vehicleControl.attachDebugShape(SceneApplication.getApplication().getAssetManager());
         bulletState.getPhysicsSpace().removeAll(toolsNode);
         bulletState.getPhysicsSpace().remove(vehicleControl);
 //        chaseCam.setEnabled(false);
