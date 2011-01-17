@@ -721,14 +721,11 @@ public class ParticleEmitter extends Geometry implements Control {
         }
 
         particleMesh.updateParticleData(particles, cam);
-//        updateModelBound();
-//        updateWorldBound();
     }
 
     public void preload(RenderManager rm, ViewPort vp){
         updateParticleState(0);
         particleMesh.updateParticleData(particles, vp.getCamera());
-//        updateModelBound();
     }
 
     @Override
