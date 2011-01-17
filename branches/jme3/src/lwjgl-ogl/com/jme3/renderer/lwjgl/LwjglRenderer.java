@@ -440,7 +440,6 @@ public class LwjglRenderer implements Renderer {
     }
 
     public void applyRenderState(RenderState state) {
-
         if (state.isWireframe() && !context.wireframe) {
             glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
             context.wireframe = true;
@@ -448,8 +447,6 @@ public class LwjglRenderer implements Renderer {
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
             context.wireframe = false;
         }
-
-
 
         if (state.isDepthTest() && !context.depthTestEnabled) {
             glEnable(GL_DEPTH_TEST);
@@ -460,8 +457,6 @@ public class LwjglRenderer implements Renderer {
             context.depthTestEnabled = false;
         }
 
-
-
         if (state.isAlphaTest() && !context.alphaTestEnabled) {
             glEnable(GL_ALPHA_TEST);
             glAlphaFunc(GL_GREATER, state.getAlphaFallOff());
@@ -471,8 +466,6 @@ public class LwjglRenderer implements Renderer {
             context.alphaTestEnabled = false;
         }
 
-
-
         if (state.isDepthWrite() && !context.depthWriteEnabled) {
             glDepthMask(true);
             context.depthWriteEnabled = true;
@@ -481,21 +474,22 @@ public class LwjglRenderer implements Renderer {
             context.depthWriteEnabled = false;
         }
 
-        if (state.isApplyColorWrite()) {
-            if (state.isColorWrite() && !context.colorWriteEnabled) {
-                glColorMask(true, true, true, true);
-                context.colorWriteEnabled = true;
-            } else if (!state.isColorWrite() && context.colorWriteEnabled) {
-                glColorMask(false, false, false, false);
-                context.colorWriteEnabled = false;
-            }
+        if (state.isColorWrite() && !context.colorWriteEnabled) {
+            glColorMask(true, true, true, true);
+            context.colorWriteEnabled = true;
+        } else if (!state.isColorWrite() && context.colorWriteEnabled) {
+            glColorMask(false, false, false, false);
+            context.colorWriteEnabled = false;
         }
+        
         if (state.isPointSprite() && !context.pointSprite) {
             glEnable(GL_POINT_SPRITE);
             glTexEnvi(GL_POINT_SPRITE, GL_COORD_REPLACE, GL_TRUE);
             glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
+            context.pointSprite = true;
         } else if (!state.isPointSprite() && context.pointSprite) {
             glDisable(GL_POINT_SPRITE);
+            context.pointSprite = false;
         }
 
         if (state.isPolyOffset()) {

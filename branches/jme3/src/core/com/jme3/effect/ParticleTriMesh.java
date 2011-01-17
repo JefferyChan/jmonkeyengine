@@ -46,22 +46,20 @@ import java.nio.ShortBuffer;
 
 public class ParticleTriMesh extends ParticleMesh {
 
-    private int imagesX;
-    private int imagesY;
+    private int imagesX = 1;
+    private int imagesY = 1;
     private boolean uniqueTexCoords = false;
     private ParticleComparator comparator = new ParticleComparator();
     private ParticleEmitter emitter;
     private Particle[] particlesCopy;
 
     @Override
-    public void initParticleData(ParticleEmitter emitter, int numParticles, int imagesX, int imagesY) {
+    public void initParticleData(ParticleEmitter emitter, int numParticles) {
         setMode(Mode.Triangles);
         setVertexCount(numParticles * 4);
         setTriangleCount(numParticles * 2);
 
         this.emitter = emitter;
-        this.imagesX = imagesX;
-        this.imagesY = imagesY;
 
         particlesCopy = new Particle[numParticles];
 
@@ -81,20 +79,17 @@ public class ParticleTriMesh extends ParticleMesh {
         // set texcoords
         VertexBuffer tvb = new VertexBuffer(VertexBuffer.Type.TexCoord);
         FloatBuffer tb = BufferUtils.createVector2Buffer(numParticles * 4);
-        if (imagesX == 1 && imagesY == 1){
-            uniqueTexCoords = false;
-            for (int i = 0; i < numParticles; i++){
-                tb.put(0f).put(1f);
-                tb.put(1f).put(1f);
-                tb.put(0f).put(0f);
-                tb.put(1f).put(0f);
-            }
-            tb.flip();
-            tvb.setupData(Usage.Static, 2, Format.Float, tb);
-        }else{
-            uniqueTexCoords = true;
-            tvb.setupData(Usage.Stream, 2, Format.Float, tb);
+        
+        uniqueTexCoords = false;
+        for (int i = 0; i < numParticles; i++){
+            tb.put(0f).put(1f);
+            tb.put(1f).put(1f);
+            tb.put(0f).put(0f);
+            tb.put(1f).put(0f);
         }
+        tb.flip();
+        tvb.setupData(Usage.Static, 2, Format.Float, tb);
+        
         setBuffer(tvb);
 
         // set indices
@@ -117,6 +112,16 @@ public class ParticleTriMesh extends ParticleMesh {
         VertexBuffer ivb = new VertexBuffer(VertexBuffer.Type.Index);
         ivb.setupData(Usage.Static, 3, Format.UnsignedShort, ib);
         setBuffer(ivb);
+    }
+
+    @Override
+    public void setImagesXY(int imagesX, int imagesY) {
+        this.imagesX = imagesX;
+        this.imagesY = imagesY;
+        if (imagesX != 1 || imagesY != 1){
+            uniqueTexCoords = true;
+            getBuffer(VertexBuffer.Type.TexCoord).setUsage(Usage.Stream);
+        }
     }
 
     @Override

@@ -44,17 +44,21 @@ public class ParticlePointMesh extends ParticleMesh {
 
     private ParticleEmitter emitter;
 
-    private int imagesX;
-    private int imagesY;
+    private int imagesX = 1;
+    private int imagesY = 1;
 
     @Override
-    public void initParticleData(ParticleEmitter emitter, int numParticles, int imagesX, int imagesY) {
+    public void setImagesXY(int imagesX, int imagesY) {
+        this.imagesX = imagesX;
+        this.imagesY = imagesY;
+    }
+
+    @Override
+    public void initParticleData(ParticleEmitter emitter, int numParticles) {
         setMode(Mode.Points);
         setVertexCount(numParticles);
         setTriangleCount(numParticles);
 
-        this.imagesX = imagesX;
-        this.imagesY = imagesY;
         this.emitter = emitter;
 
         // set positions
@@ -135,5 +139,4 @@ public class ParticlePointMesh extends ParticleMesh {
         svb.updateData(sizes);
         tvb.updateData(texcoords);
     }
-
 }

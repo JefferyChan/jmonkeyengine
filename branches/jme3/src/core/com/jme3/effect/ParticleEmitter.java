@@ -90,6 +90,8 @@ public class ParticleEmitter extends Geometry implements Control {
     private float endSize = 2f;
     private boolean worldSpace = true;
 
+    private Vector3f temp = new Vector3f();
+
     @Override
     public ParticleEmitter clone(){
         ParticleEmitter clone = (ParticleEmitter) super.clone();
@@ -120,29 +122,24 @@ public class ParticleEmitter extends Geometry implements Control {
         setNumParticles(numParticles);
 
         controls.add(this);
+
+        switch (meshType){
+            case Point:
+                particleMesh = new ParticlePointMesh();
+                setMesh(particleMesh);
+                break;
+            case Triangle:
+                particleMesh = new ParticleTriMesh();
+                setMesh(particleMesh);
+                break;
+            default:
+                throw new IllegalStateException("Unrecognized particle type: "+meshType);
+        }
+        particleMesh.initParticleData(this, particles.length);
     }
 
     public ParticleEmitter(){
         super();
-    }
-
-    private void initParticleMesh(){
-        if (particleMesh == null){
-            switch (meshType){
-                case Point:
-                    particleMesh = new ParticlePointMesh();
-                    setMesh(particleMesh);
-                    break;
-                case Triangle:
-                    particleMesh = new ParticleTriMesh();
-                    setMesh(particleMesh);
-                    break;
-                default:
-                    throw new IllegalStateException("Unrecognized particle type: "+meshType);
-            }
-            // create it
-            particleMesh.initParticleData(this, particles.length, imagesX, imagesY);
-        }
     }
 
     public Control cloneForSpatial(Spatial spatial){
@@ -339,6 +336,7 @@ public class ParticleEmitter extends Geometry implements Control {
      */
     public void setImagesX(int imagesX) {
         this.imagesX = imagesX;
+        particleMesh.setImagesXY(this.imagesX, this.imagesY);
     }
 
     public int getImagesY() {
@@ -352,6 +350,7 @@ public class ParticleEmitter extends Geometry implements Control {
      */
     public void setImagesY(int imagesY) {
         this.imagesY = imagesY;
+        particleMesh.setImagesXY(this.imagesX, this.imagesY);
     }
 
     public float getLowLife() {
@@ -494,7 +493,7 @@ public class ParticleEmitter extends Geometry implements Control {
 //        unusedIndices.add(index);
 //    }
 
-    private boolean emitParticle(){
+    private boolean emitParticle(Vector3f min, Vector3f max){
 //        int idx = newIndex();
 //        if (idx == -1)
 //            return false;
@@ -521,14 +520,17 @@ public class ParticleEmitter extends Geometry implements Control {
         if (rotateSpeed != 0)
             p.rotateSpeed = rotateSpeed * (0.2f + (FastMath.nextRandomFloat() * 2f - 1f) * .8f);
 
-        assert TempVars.get().lock();
-        Vector3f temp = TempVars.get().vect1;
+        // NOTE: Using temp variable here
         temp.set(FastMath.nextRandomFloat(),FastMath.nextRandomFloat(),FastMath.nextRandomFloat());
         temp.multLocal(2f);
         temp.subtractLocal(1f,1f,1f);
         temp.multLocal(startVel.length());
         p.velocity.interpolate(temp, variation);
-        assert TempVars.get().unlock();
+
+        temp.set(p.position).addLocal(p.size, p.size, p.size);
+        max.maxLocal(temp);
+        temp.set(p.position).subtractLocal(p.size, p.size, p.size);
+        min.minLocal(temp);
 
         lastUsed++;
         firstUnUsed = idx + 1;
@@ -544,7 +546,29 @@ public class ParticleEmitter extends Geometry implements Control {
     public void emitAllParticles(){
         // Force world transform to update
         getWorldTransform();
-        while (emitParticle());
+
+        TempVars vars = TempVars.get();
+        assert vars.lock();
+        
+        BoundingBox bbox = (BoundingBox) getMesh().getBound();
+
+        Vector3f min = vars.vect1;
+        Vector3f max = vars.vect2;
+
+        bbox.getMin(min);
+        bbox.getMax(max);
+
+        if (!Vector3f.isValidVector(min)){
+            min.set(Vector3f.POSITIVE_INFINITY);
+        }
+        if (!Vector3f.isValidVector(max)){
+            max.set(Vector3f.NEGATIVE_INFINITY);
+        }
+        
+        while (emitParticle(min, max));
+
+        bbox.setMinMax(min, max);
+        setBoundRefresh();
     }
 
     /**
@@ -592,7 +616,8 @@ public class ParticleEmitter extends Geometry implements Control {
         TempVars vars = TempVars.get();
         assert vars.lock();
 
-        Vector3f temp = vars.vect1;
+        Vector3f min = vars.vect1.set(Vector3f.POSITIVE_INFINITY);
+        Vector3f max = vars.vect2.set(Vector3f.NEGATIVE_INFINITY);
 
         for (int i = 0; i < particles.length; i++){
             Particle p = particles[i];
@@ -611,6 +636,8 @@ public class ParticleEmitter extends Geometry implements Control {
             p.distToCam = -1;
             float g = gravity * tpf;
             p.velocity.y -= g;
+
+            // NOTE: Using temp variable
             temp.set(p.velocity).multLocal(tpf);
             p.position.addLocal(temp);
 
@@ -619,6 +646,11 @@ public class ParticleEmitter extends Geometry implements Control {
             p.size = FastMath.interpolateLinear(b, startSize, endSize);
             p.angle += p.rotateSpeed * tpf;
 
+            // Computing bounding volume
+            temp.set(p.position).addLocal(p.size, p.size, p.size);
+            max.maxLocal(temp);
+            temp.set(p.position).subtractLocal(p.size, p.size, p.size);
+            min.minLocal(temp);
 
             if (!selectRandomImage) // use animated effect
                 p.imageIndex = (int) (b * imagesX * imagesY);
@@ -632,8 +664,6 @@ public class ParticleEmitter extends Geometry implements Control {
             }
         }
 
-        assert vars.unlock();
-
         float particlesToEmitF = particlesPerSec * tpf;
         int particlesToEmit = (int) (particlesToEmitF);
         emitCarry += particlesToEmitF - particlesToEmit;
@@ -643,14 +673,15 @@ public class ParticleEmitter extends Geometry implements Control {
             emitCarry -= 1f;
         }
 
-//        if (emitCarry > 1f){
-//            particlesToEmit ++;
-//            emitCarry = 0f;
-//        }
-
         for (int i = 0; i < particlesToEmit; i++){
-            emitParticle();
+            emitParticle(min, max);
         }
+
+        BoundingBox bbox = (BoundingBox) getMesh().getBound();
+        bbox.setMinMax(min, max);
+        setBoundRefresh();
+
+        assert vars.unlock();
     }
 
     /**
@@ -672,7 +703,6 @@ public class ParticleEmitter extends Geometry implements Control {
     }
 
     public void update(float tpf) {
-        initParticleMesh();
         if (!enabled)
             return;
 
@@ -691,15 +721,14 @@ public class ParticleEmitter extends Geometry implements Control {
         }
 
         particleMesh.updateParticleData(particles, cam);
-        updateModelBound();
-        updateWorldBound();
+//        updateModelBound();
+//        updateWorldBound();
     }
 
     public void preload(RenderManager rm, ViewPort vp){
-        initParticleMesh();
         updateParticleState(0);
         particleMesh.updateParticleData(particles, vp.getCamera());
-        updateModelBound();
+//        updateModelBound();
     }
 
     @Override
