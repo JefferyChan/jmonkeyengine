@@ -4,6 +4,17 @@
  */
 package com.jme3.gde.vehiclecreator;
 
+import com.jme3.gde.core.assets.BinaryModelDataObject;
+import com.jme3.gde.core.assets.ProjectAssetManager;
+import com.jme3.gde.core.scene.PreviewRequest;
+import com.jme3.gde.core.scene.SceneApplication;
+import com.jme3.gde.core.scene.SceneListener;
+import com.jme3.gde.core.scene.SceneRequest;
+import com.jme3.gde.core.scene.controller.SceneToolController;
+import com.jme3.gde.core.sceneexplorer.nodes.JmeNode;
+import com.jme3.gde.core.sceneexplorer.nodes.NodeUtility;
+import com.jme3.math.FastMath;
+import com.jme3.scene.Node;
 import java.util.logging.Logger;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
@@ -16,12 +27,16 @@ import org.netbeans.api.settings.ConvertAsProperties;
  */
 @ConvertAsProperties(dtd = "-//com.jme3.gde.vehiclecreator//VehicleCreator//EN",
 autostore = false)
-public final class VehicleCreatorTopComponent extends TopComponent {
+public final class VehicleCreatorTopComponent extends TopComponent implements SceneListener {
 
     private static VehicleCreatorTopComponent instance;
     /** path to the icon used by the component and its open action */
     static final String ICON_PATH = "com/jme3/gde/vehiclecreator/objects_039.gif";
     private static final String PREFERRED_ID = "VehicleCreatorTopComponent";
+    private VehicleEditorController editorController;
+    private VehicleCreatorCameraController cameraController;
+    private SceneRequest currentRequest;
+    private boolean testing = false;
 
     public VehicleCreatorTopComponent() {
         initComponents();
@@ -39,188 +54,346 @@ public final class VehicleCreatorTopComponent extends TopComponent {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
-        jToolBar5 = new javax.swing.JToolBar();
-        jButton2 = new javax.swing.JButton();
-        jLabel5 = new javax.swing.JLabel();
-        jSlider3 = new javax.swing.JSlider();
-        jToolBar11 = new javax.swing.JToolBar();
-        jButton8 = new javax.swing.JButton();
-        jLabel13 = new javax.swing.JLabel();
-        jTextField5 = new javax.swing.JTextField();
-        jLabel14 = new javax.swing.JLabel();
-        jTextField7 = new javax.swing.JTextField();
-        jPanel2 = new javax.swing.JPanel();
-        jToolBar3 = new javax.swing.JToolBar();
-        jLabel3 = new javax.swing.JLabel();
-        jPanel5 = new javax.swing.JPanel();
-        jSpinner1 = new javax.swing.JSpinner();
-        jToolBar4 = new javax.swing.JToolBar();
-        jLabel4 = new javax.swing.JLabel();
-        jPanel6 = new javax.swing.JPanel();
-        jTextField1 = new javax.swing.JTextField();
-        jPanel8 = new javax.swing.JPanel();
-        jToolBar2 = new javax.swing.JToolBar();
-        jLabel2 = new javax.swing.JLabel();
-        jSlider2 = new javax.swing.JSlider();
-        jLabel1 = new javax.swing.JLabel();
-        jSlider1 = new javax.swing.JSlider();
-        jToolBar6 = new javax.swing.JToolBar();
-        jLabel6 = new javax.swing.JLabel();
-        jSlider4 = new javax.swing.JSlider();
-        jLabel10 = new javax.swing.JLabel();
-        jSlider5 = new javax.swing.JSlider();
-        jToolBar7 = new javax.swing.JToolBar();
-        jLabel11 = new javax.swing.JLabel();
-        jTextField4 = new javax.swing.JTextField();
-        jSeparator6 = new javax.swing.JToolBar.Separator();
-        jLabel7 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
-        jToolBar8 = new javax.swing.JToolBar();
-        jToolBar9 = new javax.swing.JToolBar();
-        jLabel12 = new javax.swing.JLabel();
-        jTextField6 = new javax.swing.JTextField();
-        jSeparator5 = new javax.swing.JToolBar.Separator();
-        jLabel9 = new javax.swing.JLabel();
-        jTextField3 = new javax.swing.JTextField();
-        jToolBar1 = new javax.swing.JToolBar();
-        jPanel3 = new javax.swing.JPanel();
-        jLabel8 = new javax.swing.JLabel();
-        jButton3 = new javax.swing.JButton();
-        jButton6 = new javax.swing.JButton();
-        jButton7 = new javax.swing.JButton();
+        buttonGroup1 = new javax.swing.ButtonGroup();
         jToolBar10 = new javax.swing.JToolBar();
         jButton5 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
-        jSeparator2 = new javax.swing.JToolBar.Separator();
-        jButton1 = new javax.swing.JButton();
         jSeparator4 = new javax.swing.JToolBar.Separator();
+        jLabel4 = new javax.swing.JLabel();
+        motorForceSpinner = new javax.swing.JSpinner();
+        brakeForceSpinner = new javax.swing.JSpinner();
         jSeparator3 = new javax.swing.JToolBar.Separator();
         jPanel10 = new javax.swing.JPanel();
         jSeparator1 = new javax.swing.JToolBar.Separator();
+        jPanel13 = new javax.swing.JPanel();
+        jPanel2 = new javax.swing.JPanel();
+        jToolBar3 = new javax.swing.JToolBar();
+        jButton2 = new javax.swing.JButton();
+        jPanel5 = new javax.swing.JPanel();
+        jToolBar4 = new javax.swing.JToolBar();
+        jButton8 = new javax.swing.JButton();
+        jPanel1 = new javax.swing.JPanel();
+        jToolBar11 = new javax.swing.JToolBar();
+        jLabel3 = new javax.swing.JLabel();
+        jPanel12 = new javax.swing.JPanel();
+        jToolBar13 = new javax.swing.JToolBar();
+        jButton1 = new javax.swing.JButton();
+        jPanel3 = new javax.swing.JPanel();
+        frontCheckBox = new javax.swing.JCheckBox();
+        jToolBar14 = new javax.swing.JToolBar();
+        boundingRadioButton = new javax.swing.JRadioButton();
+        jPanel14 = new javax.swing.JPanel();
+        boundingSpinner = new javax.swing.JSpinner();
+        jToolBar15 = new javax.swing.JToolBar();
+        jLabel5 = new javax.swing.JLabel();
+        jPanel6 = new javax.swing.JPanel();
+        axisSpinner = new javax.swing.JSpinner();
+        jToolBar16 = new javax.swing.JToolBar();
+        fixedRadioButton = new javax.swing.JRadioButton();
+        jPanel11 = new javax.swing.JPanel();
+        fixedSpinner = new javax.swing.JSpinner();
+        jPanel8 = new javax.swing.JPanel();
+        jToolBar2 = new javax.swing.JToolBar();
+        jLabel2 = new javax.swing.JLabel();
+        compressionSlider = new javax.swing.JSlider();
+        jLabel1 = new javax.swing.JLabel();
+        releaseSlider = new javax.swing.JSlider();
+        jToolBar6 = new javax.swing.JToolBar();
+        jLabel6 = new javax.swing.JLabel();
+        stiffnessSlider = new javax.swing.JSlider();
+        jLabel10 = new javax.swing.JLabel();
+        rollSlider = new javax.swing.JSlider();
+        jToolBar7 = new javax.swing.JToolBar();
+        jLabel11 = new javax.swing.JLabel();
+        restSpinner = new javax.swing.JSpinner();
+        jSeparator6 = new javax.swing.JToolBar.Separator();
+        jLabel7 = new javax.swing.JLabel();
+        forceSpinner = new javax.swing.JSpinner();
+        jPanel7 = new javax.swing.JPanel();
+        jToolBar9 = new javax.swing.JToolBar();
+        jLabel9 = new javax.swing.JLabel();
+        frictionSpinner = new javax.swing.JSpinner();
+        jPanel15 = new javax.swing.JPanel();
+        jPanel4 = new javax.swing.JPanel();
+        jToolBar1 = new javax.swing.JToolBar();
+        jLabel8 = new javax.swing.JLabel();
+        jPanel9 = new javax.swing.JPanel();
+        jButton3 = new javax.swing.JButton();
+        jButton6 = new javax.swing.JButton();
+        jButton7 = new javax.swing.JButton();
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(VehicleCreatorTopComponent.class, "VehicleCreatorTopComponent.jPanel1.border.title"))); // NOI18N
+        jToolBar10.setFloatable(false);
+        jToolBar10.setRollover(true);
 
-        jToolBar5.setFloatable(false);
-        jToolBar5.setRollover(true);
-
-        org.openide.awt.Mnemonics.setLocalizedText(jButton2, org.openide.util.NbBundle.getMessage(VehicleCreatorTopComponent.class, "VehicleCreatorTopComponent.jButton2.text")); // NOI18N
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/jme3/gde/vehiclecreator/car-icon.png"))); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(jButton5, org.openide.util.NbBundle.getMessage(VehicleCreatorTopComponent.class, "VehicleCreatorTopComponent.jButton5.text")); // NOI18N
+        jButton5.setToolTipText(org.openide.util.NbBundle.getMessage(VehicleCreatorTopComponent.class, "VehicleCreatorTopComponent.jButton5.toolTipText")); // NOI18N
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                jButton5ActionPerformed(evt);
             }
         });
-        jToolBar5.add(jButton2);
+        jToolBar10.add(jButton5);
+        jToolBar10.add(jSeparator4);
 
-        jLabel5.setFont(new java.awt.Font("Lucida Grande", 0, 10));
-        org.openide.awt.Mnemonics.setLocalizedText(jLabel5, org.openide.util.NbBundle.getMessage(VehicleCreatorTopComponent.class, "VehicleCreatorTopComponent.jLabel5.text")); // NOI18N
-        jToolBar5.add(jLabel5);
-        jToolBar5.add(jSlider3);
+        jLabel4.setFont(new java.awt.Font("Lucida Grande", 0, 11));
+        org.openide.awt.Mnemonics.setLocalizedText(jLabel4, org.openide.util.NbBundle.getMessage(VehicleCreatorTopComponent.class, "VehicleCreatorTopComponent.jLabel4.text")); // NOI18N
+        jToolBar10.add(jLabel4);
 
-        jToolBar11.setFloatable(false);
-        jToolBar11.setRollover(true);
+        motorForceSpinner.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(800.0f), null, null, Float.valueOf(1.0f)));
+        motorForceSpinner.setToolTipText(org.openide.util.NbBundle.getMessage(VehicleCreatorTopComponent.class, "VehicleCreatorTopComponent.motorForceSpinner.toolTipText")); // NOI18N
+        motorForceSpinner.setPreferredSize(new java.awt.Dimension(80, 28));
+        motorForceSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                motorForceSpinnerStateChanged(evt);
+            }
+        });
+        jToolBar10.add(motorForceSpinner);
 
-        org.openide.awt.Mnemonics.setLocalizedText(jButton8, org.openide.util.NbBundle.getMessage(VehicleCreatorTopComponent.class, "VehicleCreatorTopComponent.jButton8.text")); // NOI18N
-        jButton8.setFocusable(false);
-        jButton8.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton8.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar11.add(jButton8);
+        brakeForceSpinner.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(40.0f), null, null, Float.valueOf(1.0f)));
+        brakeForceSpinner.setToolTipText(org.openide.util.NbBundle.getMessage(VehicleCreatorTopComponent.class, "VehicleCreatorTopComponent.brakeForceSpinner.toolTipText")); // NOI18N
+        brakeForceSpinner.setPreferredSize(new java.awt.Dimension(80, 28));
+        brakeForceSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                brakeForceSpinnerStateChanged(evt);
+            }
+        });
+        jToolBar10.add(brakeForceSpinner);
+        jToolBar10.add(jSeparator3);
 
-        jLabel13.setFont(new java.awt.Font("Lucida Grande", 0, 10)); // NOI18N
-        org.openide.awt.Mnemonics.setLocalizedText(jLabel13, org.openide.util.NbBundle.getMessage(VehicleCreatorTopComponent.class, "VehicleCreatorTopComponent.jLabel13.text")); // NOI18N
-        jToolBar11.add(jLabel13);
-
-        jTextField5.setText(org.openide.util.NbBundle.getMessage(VehicleCreatorTopComponent.class, "VehicleCreatorTopComponent.jTextField5.text")); // NOI18N
-        jToolBar11.add(jTextField5);
-
-        jLabel14.setFont(new java.awt.Font("Lucida Grande", 0, 10)); // NOI18N
-        org.openide.awt.Mnemonics.setLocalizedText(jLabel14, org.openide.util.NbBundle.getMessage(VehicleCreatorTopComponent.class, "VehicleCreatorTopComponent.jLabel14.text")); // NOI18N
-        jToolBar11.add(jLabel14);
-
-        jTextField7.setText(org.openide.util.NbBundle.getMessage(VehicleCreatorTopComponent.class, "VehicleCreatorTopComponent.jTextField7.text")); // NOI18N
-        jToolBar11.add(jTextField7);
-
-        org.jdesktop.layout.GroupLayout jPanel1Layout = new org.jdesktop.layout.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, jToolBar5, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
-            .add(jToolBar11, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
+        javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
+        jPanel10.setLayout(jPanel10Layout);
+        jPanel10Layout.setHorizontalGroup(
+            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 434, Short.MAX_VALUE)
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel1Layout.createSequentialGroup()
-                .add(jToolBar5, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jToolBar11, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(117, Short.MAX_VALUE))
+        jPanel10Layout.setVerticalGroup(
+            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 21, Short.MAX_VALUE)
         );
+
+        jToolBar10.add(jPanel10);
+        jToolBar10.add(jSeparator1);
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(VehicleCreatorTopComponent.class, "VehicleCreatorTopComponent.jPanel2.border.title"))); // NOI18N
 
         jToolBar3.setFloatable(false);
         jToolBar3.setRollover(true);
 
-        org.openide.awt.Mnemonics.setLocalizedText(jLabel3, org.openide.util.NbBundle.getMessage(VehicleCreatorTopComponent.class, "VehicleCreatorTopComponent.jLabel3.text")); // NOI18N
-        jToolBar3.add(jLabel3);
+        org.openide.awt.Mnemonics.setLocalizedText(jButton2, org.openide.util.NbBundle.getMessage(VehicleCreatorTopComponent.class, "VehicleCreatorTopComponent.jButton2.text")); // NOI18N
+        jButton2.setToolTipText(org.openide.util.NbBundle.getMessage(VehicleCreatorTopComponent.class, "VehicleCreatorTopComponent.jButton2.toolTipText")); // NOI18N
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+        jToolBar3.add(jButton2);
 
         jPanel5.setPreferredSize(new java.awt.Dimension(100, 21));
 
-        org.jdesktop.layout.GroupLayout jPanel5Layout = new org.jdesktop.layout.GroupLayout(jPanel5);
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
-            jPanel5Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 101, Short.MAX_VALUE)
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 38, Short.MAX_VALUE)
         );
         jPanel5Layout.setVerticalGroup(
-            jPanel5Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 21, Short.MAX_VALUE)
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 21, Short.MAX_VALUE)
         );
 
         jToolBar3.add(jPanel5);
 
-        jSpinner1.setPreferredSize(new java.awt.Dimension(80, 28));
-        jToolBar3.add(jSpinner1);
-
         jToolBar4.setFloatable(false);
         jToolBar4.setRollover(true);
 
-        org.openide.awt.Mnemonics.setLocalizedText(jLabel4, org.openide.util.NbBundle.getMessage(VehicleCreatorTopComponent.class, "VehicleCreatorTopComponent.jLabel4.text")); // NOI18N
-        jToolBar4.add(jLabel4);
+        org.openide.awt.Mnemonics.setLocalizedText(jButton8, org.openide.util.NbBundle.getMessage(VehicleCreatorTopComponent.class, "VehicleCreatorTopComponent.jButton8.text")); // NOI18N
+        jButton8.setToolTipText(org.openide.util.NbBundle.getMessage(VehicleCreatorTopComponent.class, "VehicleCreatorTopComponent.jButton8.toolTipText")); // NOI18N
+        jButton8.setFocusable(false);
+        jButton8.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton8.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton8ActionPerformed(evt);
+            }
+        });
+        jToolBar4.add(jButton8);
 
-        jPanel6.setPreferredSize(new java.awt.Dimension(80, 21));
-
-        org.jdesktop.layout.GroupLayout jPanel6Layout = new org.jdesktop.layout.GroupLayout(jPanel6);
-        jPanel6.setLayout(jPanel6Layout);
-        jPanel6Layout.setHorizontalGroup(
-            jPanel6Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 80, Short.MAX_VALUE)
-        );
-        jPanel6Layout.setVerticalGroup(
-            jPanel6Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 21, Short.MAX_VALUE)
-        );
-
-        jToolBar4.add(jPanel6);
-
-        jTextField1.setText(org.openide.util.NbBundle.getMessage(VehicleCreatorTopComponent.class, "VehicleCreatorTopComponent.jTextField1.text")); // NOI18N
-        jTextField1.setPreferredSize(new java.awt.Dimension(80, 28));
-        jToolBar4.add(jTextField1);
-
-        org.jdesktop.layout.GroupLayout jPanel2Layout = new org.jdesktop.layout.GroupLayout(jPanel2);
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jToolBar3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 263, Short.MAX_VALUE)
-            .add(jToolBar4, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 263, Short.MAX_VALUE)
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jToolBar3, javax.swing.GroupLayout.DEFAULT_SIZE, 225, Short.MAX_VALUE)
+            .addComponent(jToolBar4, javax.swing.GroupLayout.DEFAULT_SIZE, 225, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel2Layout.createSequentialGroup()
-                .add(jToolBar3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jToolBar4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(125, Short.MAX_VALUE))
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addComponent(jToolBar3, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jToolBar4, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(115, Short.MAX_VALUE))
+        );
+
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(VehicleCreatorTopComponent.class, "VehicleCreatorTopComponent.jPanel1.border.title"))); // NOI18N
+
+        jToolBar11.setFloatable(false);
+        jToolBar11.setRollover(true);
+
+        jLabel3.setFont(new java.awt.Font("Lucida Grande", 0, 11));
+        org.openide.awt.Mnemonics.setLocalizedText(jLabel3, org.openide.util.NbBundle.getMessage(VehicleCreatorTopComponent.class, "VehicleCreatorTopComponent.jLabel3.text")); // NOI18N
+        jToolBar11.add(jLabel3);
+
+        javax.swing.GroupLayout jPanel12Layout = new javax.swing.GroupLayout(jPanel12);
+        jPanel12.setLayout(jPanel12Layout);
+        jPanel12Layout.setHorizontalGroup(
+            jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 17, Short.MAX_VALUE)
+        );
+        jPanel12Layout.setVerticalGroup(
+            jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 21, Short.MAX_VALUE)
+        );
+
+        jToolBar11.add(jPanel12);
+
+        jToolBar13.setFloatable(false);
+        jToolBar13.setRollover(true);
+
+        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/jme3/gde/vehiclecreator/objects_039.gif"))); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(jButton1, org.openide.util.NbBundle.getMessage(VehicleCreatorTopComponent.class, "VehicleCreatorTopComponent.jButton1.text")); // NOI18N
+        jButton1.setToolTipText(org.openide.util.NbBundle.getMessage(VehicleCreatorTopComponent.class, "VehicleCreatorTopComponent.jButton1.toolTipText")); // NOI18N
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        jToolBar13.add(jButton1);
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 17, Short.MAX_VALUE)
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 21, Short.MAX_VALUE)
+        );
+
+        jToolBar13.add(jPanel3);
+
+        frontCheckBox.setFont(new java.awt.Font("Lucida Grande", 0, 11));
+        org.openide.awt.Mnemonics.setLocalizedText(frontCheckBox, org.openide.util.NbBundle.getMessage(VehicleCreatorTopComponent.class, "VehicleCreatorTopComponent.frontCheckBox.text")); // NOI18N
+        frontCheckBox.setToolTipText(org.openide.util.NbBundle.getMessage(VehicleCreatorTopComponent.class, "VehicleCreatorTopComponent.frontCheckBox.toolTipText")); // NOI18N
+        frontCheckBox.setFocusable(false);
+        frontCheckBox.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar13.add(frontCheckBox);
+
+        jToolBar14.setFloatable(false);
+        jToolBar14.setRollover(true);
+
+        buttonGroup1.add(boundingRadioButton);
+        boundingRadioButton.setSelected(true);
+        org.openide.awt.Mnemonics.setLocalizedText(boundingRadioButton, org.openide.util.NbBundle.getMessage(VehicleCreatorTopComponent.class, "VehicleCreatorTopComponent.boundingRadioButton.text")); // NOI18N
+        boundingRadioButton.setToolTipText(org.openide.util.NbBundle.getMessage(VehicleCreatorTopComponent.class, "VehicleCreatorTopComponent.boundingRadioButton.toolTipText")); // NOI18N
+        boundingRadioButton.setFocusable(false);
+        boundingRadioButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar14.add(boundingRadioButton);
+
+        javax.swing.GroupLayout jPanel14Layout = new javax.swing.GroupLayout(jPanel14);
+        jPanel14.setLayout(jPanel14Layout);
+        jPanel14Layout.setHorizontalGroup(
+            jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 32, Short.MAX_VALUE)
+        );
+        jPanel14Layout.setVerticalGroup(
+            jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 21, Short.MAX_VALUE)
+        );
+
+        jToolBar14.add(jPanel14);
+
+        boundingSpinner.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(1.0f), null, null, Float.valueOf(0.1f)));
+        boundingSpinner.setToolTipText(org.openide.util.NbBundle.getMessage(VehicleCreatorTopComponent.class, "VehicleCreatorTopComponent.boundingSpinner.toolTipText")); // NOI18N
+        boundingSpinner.setPreferredSize(new java.awt.Dimension(50, 28));
+        jToolBar14.add(boundingSpinner);
+
+        jToolBar15.setFloatable(false);
+        jToolBar15.setRollover(true);
+
+        jLabel5.setFont(new java.awt.Font("Lucida Grande", 0, 11));
+        org.openide.awt.Mnemonics.setLocalizedText(jLabel5, org.openide.util.NbBundle.getMessage(VehicleCreatorTopComponent.class, "VehicleCreatorTopComponent.jLabel5.text")); // NOI18N
+        jToolBar15.add(jLabel5);
+
+        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
+        jPanel6.setLayout(jPanel6Layout);
+        jPanel6Layout.setHorizontalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 172, Short.MAX_VALUE)
+        );
+        jPanel6Layout.setVerticalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 21, Short.MAX_VALUE)
+        );
+
+        jToolBar15.add(jPanel6);
+
+        axisSpinner.setModel(new javax.swing.SpinnerListModel(new String[] {"+Z", "-Z", "+X", "-X"}));
+        axisSpinner.setToolTipText(org.openide.util.NbBundle.getMessage(VehicleCreatorTopComponent.class, "VehicleCreatorTopComponent.axisSpinner.toolTipText")); // NOI18N
+        axisSpinner.setEnabled(false);
+        jToolBar15.add(axisSpinner);
+
+        jToolBar16.setFloatable(false);
+        jToolBar16.setRollover(true);
+
+        buttonGroup1.add(fixedRadioButton);
+        fixedRadioButton.setFont(new java.awt.Font("Lucida Grande", 0, 11));
+        org.openide.awt.Mnemonics.setLocalizedText(fixedRadioButton, org.openide.util.NbBundle.getMessage(VehicleCreatorTopComponent.class, "VehicleCreatorTopComponent.fixedRadioButton.text")); // NOI18N
+        fixedRadioButton.setToolTipText(org.openide.util.NbBundle.getMessage(VehicleCreatorTopComponent.class, "VehicleCreatorTopComponent.fixedRadioButton.toolTipText")); // NOI18N
+        fixedRadioButton.setFocusable(false);
+        fixedRadioButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar16.add(fixedRadioButton);
+
+        javax.swing.GroupLayout jPanel11Layout = new javax.swing.GroupLayout(jPanel11);
+        jPanel11.setLayout(jPanel11Layout);
+        jPanel11Layout.setHorizontalGroup(
+            jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 144, Short.MAX_VALUE)
+        );
+        jPanel11Layout.setVerticalGroup(
+            jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 21, Short.MAX_VALUE)
+        );
+
+        jToolBar16.add(jPanel11);
+
+        fixedSpinner.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(1.0f), null, null, Float.valueOf(0.1f)));
+        fixedSpinner.setToolTipText(org.openide.util.NbBundle.getMessage(VehicleCreatorTopComponent.class, "VehicleCreatorTopComponent.fixedSpinner.toolTipText")); // NOI18N
+        fixedSpinner.setPreferredSize(new java.awt.Dimension(50, 28));
+        jToolBar16.add(fixedSpinner);
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jToolBar13, javax.swing.GroupLayout.DEFAULT_SIZE, 301, Short.MAX_VALUE)
+            .addComponent(jToolBar14, javax.swing.GroupLayout.DEFAULT_SIZE, 301, Short.MAX_VALUE)
+            .addComponent(jToolBar16, javax.swing.GroupLayout.DEFAULT_SIZE, 301, Short.MAX_VALUE)
+            .addComponent(jToolBar15, javax.swing.GroupLayout.DEFAULT_SIZE, 301, Short.MAX_VALUE)
+            .addComponent(jToolBar11, javax.swing.GroupLayout.DEFAULT_SIZE, 301, Short.MAX_VALUE)
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(jToolBar13, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jToolBar14, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jToolBar16, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jToolBar15, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 40, Short.MAX_VALUE)
+                .addComponent(jToolBar11, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         jPanel8.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(VehicleCreatorTopComponent.class, "VehicleCreatorTopComponent.jPanel8.border.title"))); // NOI18N
@@ -228,215 +401,287 @@ public final class VehicleCreatorTopComponent extends TopComponent {
         jToolBar2.setFloatable(false);
         jToolBar2.setRollover(true);
 
+        jLabel2.setFont(new java.awt.Font("Lucida Grande", 0, 11));
         org.openide.awt.Mnemonics.setLocalizedText(jLabel2, org.openide.util.NbBundle.getMessage(VehicleCreatorTopComponent.class, "VehicleCreatorTopComponent.jLabel2.text")); // NOI18N
         jToolBar2.add(jLabel2);
 
-        jSlider2.setToolTipText(org.openide.util.NbBundle.getMessage(VehicleCreatorTopComponent.class, "VehicleCreatorTopComponent.jSlider2.toolTipText")); // NOI18N
-        jToolBar2.add(jSlider2);
+        compressionSlider.setMinimum(1);
+        compressionSlider.setToolTipText(org.openide.util.NbBundle.getMessage(VehicleCreatorTopComponent.class, "VehicleCreatorTopComponent.compressionSlider.toolTipText")); // NOI18N
+        compressionSlider.setValue(30);
+        jToolBar2.add(compressionSlider);
 
+        jLabel1.setFont(new java.awt.Font("Lucida Grande", 0, 11));
         org.openide.awt.Mnemonics.setLocalizedText(jLabel1, org.openide.util.NbBundle.getMessage(VehicleCreatorTopComponent.class, "VehicleCreatorTopComponent.jLabel1.text")); // NOI18N
         jToolBar2.add(jLabel1);
 
-        jSlider1.setToolTipText(org.openide.util.NbBundle.getMessage(VehicleCreatorTopComponent.class, "VehicleCreatorTopComponent.jSlider1.toolTipText")); // NOI18N
-        jToolBar2.add(jSlider1);
+        releaseSlider.setMinimum(1);
+        releaseSlider.setToolTipText(org.openide.util.NbBundle.getMessage(VehicleCreatorTopComponent.class, "VehicleCreatorTopComponent.releaseSlider.toolTipText")); // NOI18N
+        releaseSlider.setValue(40);
+        jToolBar2.add(releaseSlider);
 
         jToolBar6.setFloatable(false);
         jToolBar6.setRollover(true);
 
+        jLabel6.setFont(new java.awt.Font("Lucida Grande", 0, 11));
         org.openide.awt.Mnemonics.setLocalizedText(jLabel6, org.openide.util.NbBundle.getMessage(VehicleCreatorTopComponent.class, "VehicleCreatorTopComponent.jLabel6.text")); // NOI18N
         jToolBar6.add(jLabel6);
 
-        jSlider4.setMaximum(220);
-        jSlider4.setMinimum(10);
-        jSlider4.setToolTipText(org.openide.util.NbBundle.getMessage(VehicleCreatorTopComponent.class, "VehicleCreatorTopComponent.jSlider4.toolTipText")); // NOI18N
-        jSlider4.setPreferredSize(new java.awt.Dimension(260, 29));
-        jToolBar6.add(jSlider4);
+        stiffnessSlider.setMaximum(220);
+        stiffnessSlider.setMinimum(10);
+        stiffnessSlider.setToolTipText(org.openide.util.NbBundle.getMessage(VehicleCreatorTopComponent.class, "VehicleCreatorTopComponent.stiffnessSlider.toolTipText")); // NOI18N
+        stiffnessSlider.setPreferredSize(new java.awt.Dimension(260, 29));
+        jToolBar6.add(stiffnessSlider);
 
+        jLabel10.setFont(new java.awt.Font("Lucida Grande", 0, 11));
         org.openide.awt.Mnemonics.setLocalizedText(jLabel10, org.openide.util.NbBundle.getMessage(VehicleCreatorTopComponent.class, "VehicleCreatorTopComponent.jLabel10.text")); // NOI18N
         jToolBar6.add(jLabel10);
 
-        jSlider5.setToolTipText(org.openide.util.NbBundle.getMessage(VehicleCreatorTopComponent.class, "VehicleCreatorTopComponent.jSlider5.toolTipText")); // NOI18N
-        jToolBar6.add(jSlider5);
+        rollSlider.setToolTipText(org.openide.util.NbBundle.getMessage(VehicleCreatorTopComponent.class, "VehicleCreatorTopComponent.rollSlider.toolTipText")); // NOI18N
+        jToolBar6.add(rollSlider);
 
         jToolBar7.setFloatable(false);
         jToolBar7.setRollover(true);
 
+        jLabel11.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(jLabel11, org.openide.util.NbBundle.getMessage(VehicleCreatorTopComponent.class, "VehicleCreatorTopComponent.jLabel11.text")); // NOI18N
         jToolBar7.add(jLabel11);
 
-        jTextField4.setText(org.openide.util.NbBundle.getMessage(VehicleCreatorTopComponent.class, "VehicleCreatorTopComponent.jTextField4.text")); // NOI18N
-        jTextField4.setToolTipText(org.openide.util.NbBundle.getMessage(VehicleCreatorTopComponent.class, "VehicleCreatorTopComponent.jTextField4.toolTipText")); // NOI18N
-        jToolBar7.add(jTextField4);
+        restSpinner.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(0.2f), null, null, Float.valueOf(0.01f)));
+        restSpinner.setToolTipText(org.openide.util.NbBundle.getMessage(VehicleCreatorTopComponent.class, "VehicleCreatorTopComponent.restSpinner.toolTipText")); // NOI18N
+        restSpinner.setPreferredSize(new java.awt.Dimension(80, 28));
+        jToolBar7.add(restSpinner);
         jToolBar7.add(jSeparator6);
 
+        jLabel7.setFont(new java.awt.Font("Lucida Grande", 0, 11));
         org.openide.awt.Mnemonics.setLocalizedText(jLabel7, org.openide.util.NbBundle.getMessage(VehicleCreatorTopComponent.class, "VehicleCreatorTopComponent.jLabel7.text")); // NOI18N
         jToolBar7.add(jLabel7);
 
-        jTextField2.setText(org.openide.util.NbBundle.getMessage(VehicleCreatorTopComponent.class, "VehicleCreatorTopComponent.jTextField2.text")); // NOI18N
-        jTextField2.setToolTipText(org.openide.util.NbBundle.getMessage(VehicleCreatorTopComponent.class, "VehicleCreatorTopComponent.jTextField2.toolTipText")); // NOI18N
-        jToolBar7.add(jTextField2);
+        forceSpinner.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(6000.0f), null, null, Float.valueOf(1.0f)));
+        forceSpinner.setToolTipText(org.openide.util.NbBundle.getMessage(VehicleCreatorTopComponent.class, "VehicleCreatorTopComponent.forceSpinner.toolTipText")); // NOI18N
+        forceSpinner.setPreferredSize(new java.awt.Dimension(80, 28));
+        jToolBar7.add(forceSpinner);
 
-        jToolBar8.setFloatable(false);
-        jToolBar8.setRollover(true);
+        javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
+        jPanel7.setLayout(jPanel7Layout);
+        jPanel7Layout.setHorizontalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 9, Short.MAX_VALUE)
+        );
+        jPanel7Layout.setVerticalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 28, Short.MAX_VALUE)
+        );
+
+        jToolBar7.add(jPanel7);
 
         jToolBar9.setFloatable(false);
         jToolBar9.setRollover(true);
 
-        org.openide.awt.Mnemonics.setLocalizedText(jLabel12, org.openide.util.NbBundle.getMessage(VehicleCreatorTopComponent.class, "VehicleCreatorTopComponent.jLabel12.text")); // NOI18N
-        jToolBar9.add(jLabel12);
-
-        jTextField6.setText(org.openide.util.NbBundle.getMessage(VehicleCreatorTopComponent.class, "VehicleCreatorTopComponent.jTextField6.text")); // NOI18N
-        jTextField6.setToolTipText(org.openide.util.NbBundle.getMessage(VehicleCreatorTopComponent.class, "VehicleCreatorTopComponent.jTextField6.toolTipText")); // NOI18N
-        jToolBar9.add(jTextField6);
-        jToolBar9.add(jSeparator5);
-
+        jLabel9.setFont(new java.awt.Font("Lucida Grande", 0, 11));
         org.openide.awt.Mnemonics.setLocalizedText(jLabel9, org.openide.util.NbBundle.getMessage(VehicleCreatorTopComponent.class, "VehicleCreatorTopComponent.jLabel9.text")); // NOI18N
         jToolBar9.add(jLabel9);
 
-        jTextField3.setText(org.openide.util.NbBundle.getMessage(VehicleCreatorTopComponent.class, "VehicleCreatorTopComponent.jTextField3.text")); // NOI18N
-        jTextField3.setToolTipText(org.openide.util.NbBundle.getMessage(VehicleCreatorTopComponent.class, "VehicleCreatorTopComponent.jTextField3.toolTipText")); // NOI18N
-        jToolBar9.add(jTextField3);
+        frictionSpinner.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(10.5f), null, null, Float.valueOf(0.1f)));
+        frictionSpinner.setToolTipText(org.openide.util.NbBundle.getMessage(VehicleCreatorTopComponent.class, "VehicleCreatorTopComponent.frictionSpinner.toolTipText")); // NOI18N
+        frictionSpinner.setPreferredSize(new java.awt.Dimension(80, 28));
+        jToolBar9.add(frictionSpinner);
+
+        javax.swing.GroupLayout jPanel15Layout = new javax.swing.GroupLayout(jPanel15);
+        jPanel15.setLayout(jPanel15Layout);
+        jPanel15Layout.setHorizontalGroup(
+            jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 73, Short.MAX_VALUE)
+        );
+        jPanel15Layout.setVerticalGroup(
+            jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 21, Short.MAX_VALUE)
+        );
+
+        jToolBar9.add(jPanel15);
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 102, Short.MAX_VALUE)
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 21, Short.MAX_VALUE)
+        );
+
+        jToolBar9.add(jPanel4);
 
         jToolBar1.setFloatable(false);
         jToolBar1.setRollover(true);
 
-        org.jdesktop.layout.GroupLayout jPanel3Layout = new org.jdesktop.layout.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 128, Short.MAX_VALUE)
-        );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 21, Short.MAX_VALUE)
-        );
-
-        jToolBar1.add(jPanel3);
-
-        jLabel8.setFont(new java.awt.Font("Lucida Grande", 0, 12)); // NOI18N
+        jLabel8.setFont(new java.awt.Font("Lucida Grande", 0, 11));
         org.openide.awt.Mnemonics.setLocalizedText(jLabel8, org.openide.util.NbBundle.getMessage(VehicleCreatorTopComponent.class, "VehicleCreatorTopComponent.jLabel8.text")); // NOI18N
         jToolBar1.add(jLabel8);
 
+        javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
+        jPanel9.setLayout(jPanel9Layout);
+        jPanel9Layout.setHorizontalGroup(
+            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 38, Short.MAX_VALUE)
+        );
+        jPanel9Layout.setVerticalGroup(
+            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 21, Short.MAX_VALUE)
+        );
+
+        jToolBar1.add(jPanel9);
+
         org.openide.awt.Mnemonics.setLocalizedText(jButton3, org.openide.util.NbBundle.getMessage(VehicleCreatorTopComponent.class, "VehicleCreatorTopComponent.jButton3.text")); // NOI18N
+        jButton3.setToolTipText(org.openide.util.NbBundle.getMessage(VehicleCreatorTopComponent.class, "VehicleCreatorTopComponent.jButton3.toolTipText")); // NOI18N
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
         jToolBar1.add(jButton3);
 
         org.openide.awt.Mnemonics.setLocalizedText(jButton6, org.openide.util.NbBundle.getMessage(VehicleCreatorTopComponent.class, "VehicleCreatorTopComponent.jButton6.text")); // NOI18N
+        jButton6.setToolTipText(org.openide.util.NbBundle.getMessage(VehicleCreatorTopComponent.class, "VehicleCreatorTopComponent.jButton6.toolTipText")); // NOI18N
         jButton6.setFocusable(false);
         jButton6.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton6.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
+            }
+        });
         jToolBar1.add(jButton6);
 
         org.openide.awt.Mnemonics.setLocalizedText(jButton7, org.openide.util.NbBundle.getMessage(VehicleCreatorTopComponent.class, "VehicleCreatorTopComponent.jButton7.text")); // NOI18N
+        jButton7.setToolTipText(org.openide.util.NbBundle.getMessage(VehicleCreatorTopComponent.class, "VehicleCreatorTopComponent.jButton7.toolTipText")); // NOI18N
         jButton7.setFocusable(false);
         jButton7.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton7.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar1.add(jButton7);
-
-        org.jdesktop.layout.GroupLayout jPanel8Layout = new org.jdesktop.layout.GroupLayout(jPanel8);
-        jPanel8.setLayout(jPanel8Layout);
-        jPanel8Layout.setHorizontalGroup(
-            jPanel8Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel8Layout.createSequentialGroup()
-                .add(120, 120, 120)
-                .add(jToolBar8, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 224, Short.MAX_VALUE)
-                .add(100, 100, 100))
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, jToolBar1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 444, Short.MAX_VALUE)
-            .add(jToolBar7, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 444, Short.MAX_VALUE)
-            .add(jToolBar6, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 444, Short.MAX_VALUE)
-            .add(jToolBar2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 444, Short.MAX_VALUE)
-            .add(jToolBar9, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 444, Short.MAX_VALUE)
-        );
-        jPanel8Layout.setVerticalGroup(
-            jPanel8Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel8Layout.createSequentialGroup()
-                .add(jToolBar7, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 32, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jToolBar6, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jToolBar2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jToolBar9, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 39, Short.MAX_VALUE)
-                .add(jToolBar1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jToolBar8, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-        );
-
-        jToolBar10.setFloatable(false);
-        jToolBar10.setRollover(true);
-
-        jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/jme3/gde/vehiclecreator/car-icon.png"))); // NOI18N
-        org.openide.awt.Mnemonics.setLocalizedText(jButton5, org.openide.util.NbBundle.getMessage(VehicleCreatorTopComponent.class, "VehicleCreatorTopComponent.jButton5.text")); // NOI18N
-        jToolBar10.add(jButton5);
-
-        jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/jme3/gde/vehiclecreator/new_file.gif"))); // NOI18N
-        org.openide.awt.Mnemonics.setLocalizedText(jButton4, org.openide.util.NbBundle.getMessage(VehicleCreatorTopComponent.class, "VehicleCreatorTopComponent.jButton4.text")); // NOI18N
-        jToolBar10.add(jButton4);
-        jToolBar10.add(jSeparator2);
-
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/jme3/gde/vehiclecreator/objects_039.gif"))); // NOI18N
-        org.openide.awt.Mnemonics.setLocalizedText(jButton1, org.openide.util.NbBundle.getMessage(VehicleCreatorTopComponent.class, "VehicleCreatorTopComponent.jButton1.text")); // NOI18N
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        jButton7.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                jButton7ActionPerformed(evt);
             }
         });
-        jToolBar10.add(jButton1);
-        jToolBar10.add(jSeparator4);
-        jToolBar10.add(jSeparator3);
+        jToolBar1.add(jButton7);
 
-        org.jdesktop.layout.GroupLayout jPanel10Layout = new org.jdesktop.layout.GroupLayout(jPanel10);
-        jPanel10.setLayout(jPanel10Layout);
-        jPanel10Layout.setHorizontalGroup(
-            jPanel10Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 705, Short.MAX_VALUE)
+        javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
+        jPanel8.setLayout(jPanel8Layout);
+        jPanel8Layout.setHorizontalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jToolBar7, javax.swing.GroupLayout.DEFAULT_SIZE, 309, Short.MAX_VALUE)
+            .addComponent(jToolBar6, javax.swing.GroupLayout.DEFAULT_SIZE, 309, Short.MAX_VALUE)
+            .addComponent(jToolBar2, javax.swing.GroupLayout.DEFAULT_SIZE, 309, Short.MAX_VALUE)
+            .addComponent(jToolBar9, javax.swing.GroupLayout.DEFAULT_SIZE, 309, Short.MAX_VALUE)
+            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 309, Short.MAX_VALUE)
         );
-        jPanel10Layout.setVerticalGroup(
-            jPanel10Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 21, Short.MAX_VALUE)
+        jPanel8Layout.setVerticalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addComponent(jToolBar7, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jToolBar6, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jToolBar2, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jToolBar9, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 33, Short.MAX_VALUE)
+                .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
-        jToolBar10.add(jPanel10);
-        jToolBar10.add(jSeparator1);
+        javax.swing.GroupLayout jPanel13Layout = new javax.swing.GroupLayout(jPanel13);
+        jPanel13.setLayout(jPanel13Layout);
+        jPanel13Layout.setHorizontalGroup(
+            jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel13Layout.createSequentialGroup()
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel13Layout.setVerticalGroup(
+            jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
 
-        org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(layout.createSequentialGroup()
-                .add(jPanel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jPanel8, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(19, Short.MAX_VALUE))
-            .add(jToolBar10, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 1042, Short.MAX_VALUE)
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jToolBar10, javax.swing.GroupLayout.DEFAULT_SIZE, 871, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                .add(jToolBar10, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(jPanel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .add(jPanel8, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .add(jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jToolBar10, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
+        editorController.addWheel(getSuspensionSettings());
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
+        editorController.createHullShapeFromSelected();
     }//GEN-LAST:event_jButton2ActionPerformed
 
+    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
+        editorController.centerSelected();
+    }//GEN-LAST:event_jButton8ActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        if (testing) {
+            editorController.stopVehicle();
+            jButton5.setText("test vehicle");
+            testing = false;
+        } else {
+            editorController.testVehicle();
+            jButton5.setText("stop testing");
+            testing = true;
+        }
+    }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        editorController.applyWheelData(0, getSuspensionSettings());
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        editorController.applyWheelData(1, getSuspensionSettings());
+    }//GEN-LAST:event_jButton6ActionPerformed
+
+    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+        editorController.applyWheelData(2, getSuspensionSettings());
+    }//GEN-LAST:event_jButton7ActionPerformed
+
+    private void motorForceSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_motorForceSpinnerStateChanged
+        editorController.setMotorForce((Float)motorForceSpinner.getValue());
+    }//GEN-LAST:event_motorForceSpinnerStateChanged
+
+    private void brakeForceSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_brakeForceSpinnerStateChanged
+        editorController.setBrakeForce((Float)brakeForceSpinner.getValue());
+    }//GEN-LAST:event_brakeForceSpinnerStateChanged
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JSpinner axisSpinner;
+    private javax.swing.JRadioButton boundingRadioButton;
+    private javax.swing.JSpinner boundingSpinner;
+    private javax.swing.JSpinner brakeForceSpinner;
+    private javax.swing.ButtonGroup buttonGroup1;
+    private javax.swing.JSlider compressionSlider;
+    private javax.swing.JRadioButton fixedRadioButton;
+    private javax.swing.JSpinner fixedSpinner;
+    private javax.swing.JSpinner forceSpinner;
+    private javax.swing.JSpinner frictionSpinner;
+    private javax.swing.JCheckBox frontCheckBox;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
@@ -444,9 +689,6 @@ public final class VehicleCreatorTopComponent extends TopComponent {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel12;
-    private javax.swing.JLabel jLabel13;
-    private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -457,42 +699,43 @@ public final class VehicleCreatorTopComponent extends TopComponent {
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
+    private javax.swing.JPanel jPanel11;
+    private javax.swing.JPanel jPanel12;
+    private javax.swing.JPanel jPanel13;
+    private javax.swing.JPanel jPanel14;
+    private javax.swing.JPanel jPanel15;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
+    private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
+    private javax.swing.JPanel jPanel9;
     private javax.swing.JToolBar.Separator jSeparator1;
-    private javax.swing.JToolBar.Separator jSeparator2;
     private javax.swing.JToolBar.Separator jSeparator3;
     private javax.swing.JToolBar.Separator jSeparator4;
-    private javax.swing.JToolBar.Separator jSeparator5;
     private javax.swing.JToolBar.Separator jSeparator6;
-    private javax.swing.JSlider jSlider1;
-    private javax.swing.JSlider jSlider2;
-    private javax.swing.JSlider jSlider3;
-    private javax.swing.JSlider jSlider4;
-    private javax.swing.JSlider jSlider5;
-    private javax.swing.JSpinner jSpinner1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField4;
-    private javax.swing.JTextField jTextField5;
-    private javax.swing.JTextField jTextField6;
-    private javax.swing.JTextField jTextField7;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JToolBar jToolBar10;
     private javax.swing.JToolBar jToolBar11;
+    private javax.swing.JToolBar jToolBar13;
+    private javax.swing.JToolBar jToolBar14;
+    private javax.swing.JToolBar jToolBar15;
+    private javax.swing.JToolBar jToolBar16;
     private javax.swing.JToolBar jToolBar2;
     private javax.swing.JToolBar jToolBar3;
     private javax.swing.JToolBar jToolBar4;
-    private javax.swing.JToolBar jToolBar5;
     private javax.swing.JToolBar jToolBar6;
     private javax.swing.JToolBar jToolBar7;
-    private javax.swing.JToolBar jToolBar8;
     private javax.swing.JToolBar jToolBar9;
+    private javax.swing.JSpinner motorForceSpinner;
+    private javax.swing.JSlider releaseSlider;
+    private javax.swing.JSpinner restSpinner;
+    private javax.swing.JSlider rollSlider;
+    private javax.swing.JSlider stiffnessSlider;
     // End of variables declaration//GEN-END:variables
+
     /**
      * Gets default instance. Do not use directly: reserved for *.settings files only,
      * i.e. deserialization routines; otherwise you could get a non-deserialized instance.
@@ -537,6 +780,9 @@ public final class VehicleCreatorTopComponent extends TopComponent {
     @Override
     public void componentClosed() {
         // TODO add custom code on component closing
+        if (currentRequest != null) {
+            SceneApplication.getApplication().closeScene(currentRequest);
+        }
     }
 
     void writeProperties(java.util.Properties p) {
@@ -562,5 +808,86 @@ public final class VehicleCreatorTopComponent extends TopComponent {
     @Override
     protected String preferredID() {
         return PREFERRED_ID;
+    }
+
+    private SuspensionSettings getSuspensionSettings() {
+        SuspensionSettings settings = new SuspensionSettings();
+        settings.setFriction((Float) frictionSpinner.getValue());
+        settings.setMaxForce((Float) forceSpinner.getValue());
+        settings.setRestLength((Float) restSpinner.getValue());
+        if (boundingRadioButton.isSelected()) {
+            settings.setBoundingScale((Float) boundingSpinner.getValue());
+        } else {
+            settings.setBoundingScale(0);
+            settings.setRadius((Float) fixedSpinner.getValue());
+        }
+        float stiffness = stiffnessSlider.getValue();
+        float compValue = (float) compressionSlider.getValue() / 100.0f;
+        float dampValue = (float) releaseSlider.getValue() / 100.0f;
+        settings.setCompression(compValue * 2.0f * FastMath.sqrt(stiffness));
+        settings.setRelease(dampValue * 2.0f * FastMath.sqrt(stiffness));
+        settings.setStiffness(stiffness);
+        settings.setFrontWheel(frontCheckBox.isSelected());
+        return settings;
+    }
+
+    public void openFile(BinaryModelDataObject file, Node spatial) {
+        JmeNode node = NodeUtility.createNode(spatial, false);
+        editorController = new VehicleEditorController(node, file);
+        SceneApplication.getApplication().addSceneListener(this);
+        currentRequest = new SceneRequest(this, node, file.getLookup().lookup(ProjectAssetManager.class));
+        currentRequest.setWindowTitle("Vehicle Creator");
+        currentRequest.setDataObject(file);
+        currentRequest.setToolNode(editorController.getToolsNode());
+        SceneApplication.getApplication().requestScene(currentRequest);
+    }
+
+    public void previewRequested(PreviewRequest request) {
+    }
+
+    public boolean sceneClose(SceneRequest request) {
+        if (request == currentRequest) {
+            currentRequest = null;
+            cameraController.disable();
+            cameraController = null;
+            editorController.cleanupApplication();
+            SceneApplication.getApplication().getStateManager().detach(editorController.getBulletState());
+            setLoadedScene(null, false);
+        }
+        return true;
+    }
+
+    public void sceneRequested(SceneRequest request) {
+        if (request == currentRequest) {
+            SceneApplication.getApplication().removeSceneListener(this);
+            cameraController = new VehicleCreatorCameraController(SceneApplication.getApplication().getCamera(), SceneApplication.getApplication().getInputManager());
+            cameraController.setMaster(this);
+            cameraController.enable();
+            cameraController.setVehicle(currentRequest.getRootNode());
+            editorController.prepareApplication();
+            SceneApplication.getApplication().getStateManager().attach(editorController.getBulletState());
+            setLoadedScene(currentRequest.getJmeNode(), true);
+        }
+    }
+
+    private void setLoadedScene(final org.openide.nodes.Node jmeNode, final boolean active) {
+        java.awt.EventQueue.invokeLater(new Runnable() {
+
+            public void run() {
+                if (!active) {
+                    close();
+                    setActivatedNodes(new org.openide.nodes.Node[]{jmeNode});
+                    if (editorController != null) {
+                        editorController.cleanup();
+                        editorController = null;
+                    }
+                } else {
+                    open();
+                    requestActive();
+                    setActivatedNodes(new org.openide.nodes.Node[]{});
+                    editorController.checkVehicle();
+                }
+            }
+        });
     }
 }

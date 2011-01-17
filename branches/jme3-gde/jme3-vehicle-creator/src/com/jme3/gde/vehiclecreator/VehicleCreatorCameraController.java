@@ -34,6 +34,7 @@ package com.jme3.gde.vehiclecreator;
 import com.jme3.gde.core.scene.controller.AbstractCameraController;
 import com.jme3.input.InputManager;
 import com.jme3.renderer.Camera;
+import com.jme3.scene.Spatial;
 
 /**
  *
@@ -41,12 +42,28 @@ import com.jme3.renderer.Camera;
  */
 public class VehicleCreatorCameraController extends AbstractCameraController {
 
+    private Spatial vehicle;
+
     public VehicleCreatorCameraController(Camera cam, InputManager inputManager) {
         super(cam, inputManager);
+    }
+
+    @Override
+    public void update(float f) {
+        super.update(f);
+        if (vehicle != null) {
+            doSetCamFocus(vehicle.getWorldTranslation());
+        }
     }
 
     @Override
     protected void checkClick(int button) {
     }
 
+    /**
+     * @param vehicle the vehicle to set
+     */
+    public void setVehicle(Spatial vehicle) {
+        this.vehicle = vehicle;
+    }
 }
