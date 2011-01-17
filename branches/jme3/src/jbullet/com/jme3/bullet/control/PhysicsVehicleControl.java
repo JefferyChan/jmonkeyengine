@@ -152,7 +152,6 @@ public class PhysicsVehicleControl extends PhysicsVehicle implements PhysicsCont
                 Vector3f axle = physicsVehicleWheel.getAxle().clone();
                 float restLength = physicsVehicleWheel.getRestLength();
                 float radius = physicsVehicleWheel.getRadius();
-                float skid = physicsVehicleWheel.getSkidInfo();
 
                 Geometry locGeom = (Geometry) debugNode.getChild("WheelLocationDebugShape" + i);
                 Geometry dirGeom = (Geometry) debugNode.getChild("WheelDirectionDebugShape" + i);
@@ -167,12 +166,6 @@ public class PhysicsVehicleControl extends PhysicsVehicle implements PhysicsCont
                 wheelArrow.setArrowExtent(direction.normalizeLocal().multLocal(radius));
                 Arrow dirArrow = (Arrow) dirGeom.getMesh();
                 dirArrow.setArrowExtent(direction.normalizeLocal().multLocal(restLength));
-
-                if (skid < 0.9f) {
-                    wheelGeom.setMaterial(debugMaterialRed);
-                } else {
-                    wheelGeom.setMaterial(debugMaterialGreen);
-                }
 
                 dirGeom.setLocalTranslation(location);
                 axleGeom.setLocalTranslation(location.addLocal(direction));
