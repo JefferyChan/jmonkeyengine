@@ -64,7 +64,7 @@ When we speak of Materials, we mean everything that influences what the surface 
     Geometry cube <span class="sy0">=</span> <span class="kw1">new</span> Geometry<span class="br0">&#40;</span><span class="st0">&quot;My Textured Box&quot;</span>, boxshape1<span class="br0">&#41;</span>;
     Material mat_stl <span class="sy0">=</span> <span class="kw1">new</span> Material<span class="br0">&#40;</span>assetManager, <span class="st0">&quot;Common/MatDefs/Misc/SimpleTextured.j3md&quot;</span><span class="br0">&#41;</span>;
     Texture tex_ml <span class="sy0">=</span> assetManager.<span class="me1">loadTexture</span><span class="br0">&#40;</span><span class="st0">&quot;Interface/Logo/Monkey.jpg&quot;</span><span class="br0">&#41;</span>;
-    mat_stl.<span class="me1">setTexture</span><span class="br0">&#40;</span><span class="st0">&quot;m_ColorMap&quot;</span>, tex_ml<span class="br0">&#41;</span>;
+    mat_stl.<span class="me1">setTexture</span><span class="br0">&#40;</span><span class="st0">&quot;ColorMap&quot;</span>, tex_ml<span class="br0">&#41;</span>;
     cube.<span class="me1">setMaterial</span><span class="br0">&#40;</span>mat_stl<span class="br0">&#41;</span>;
     rootNode.<span class="me1">attachChild</span><span class="br0">&#40;</span>cube<span class="br0">&#41;</span>;
 &nbsp;
@@ -72,7 +72,7 @@ When we speak of Materials, we mean everything that influences what the surface 
     <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Abox+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object><span class="br0">&#40;</span><span class="kw1">new</span> Vector3f<span class="br0">&#40;</span>0f,0f,0f<span class="br0">&#41;</span>, 1f,1f,0.01f<span class="br0">&#41;</span>;
     Geometry window_frame <span class="sy0">=</span> <span class="kw1">new</span> Geometry<span class="br0">&#40;</span><span class="st0">&quot;window frame&quot;</span>, boxshape3<span class="br0">&#41;</span>;
     Material mat_tt <span class="sy0">=</span> <span class="kw1">new</span> Material<span class="br0">&#40;</span>assetManager, <span class="st0">&quot;Common/MatDefs/Misc/SimpleTextured.j3md&quot;</span><span class="br0">&#41;</span>;
-    mat_tt.<span class="me1">setTexture</span><span class="br0">&#40;</span><span class="st0">&quot;m_ColorMap&quot;</span>, assetManager.<span class="me1">loadTexture</span><span class="br0">&#40;</span><span class="st0">&quot;Textures/ColoredTex/Monkey.png&quot;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
+    mat_tt.<span class="me1">setTexture</span><span class="br0">&#40;</span><span class="st0">&quot;ColorMap&quot;</span>, assetManager.<span class="me1">loadTexture</span><span class="br0">&#40;</span><span class="st0">&quot;Textures/ColoredTex/Monkey.png&quot;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
     mat_tt.<span class="me1">getAdditionalRenderState</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">setBlendMode</span><span class="br0">&#40;</span>BlendMode.<span class="me1">Alpha</span><span class="br0">&#41;</span>;
     window_frame.<span class="me1">setMaterial</span><span class="br0">&#40;</span>mat_tt<span class="br0">&#41;</span>;
     rootNode.<span class="me1">attachChild</span><span class="br0">&#40;</span>window_frame<span class="br0">&#41;</span>;
@@ -81,8 +81,8 @@ When we speak of Materials, we mean everything that influences what the surface 
     <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Abox+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object><span class="br0">&#40;</span><span class="kw1">new</span> Vector3f<span class="br0">&#40;</span>3f,<span class="sy0">-</span>1f,0f<span class="br0">&#41;</span>, 1f,1f,1f<span class="br0">&#41;</span>;
     Geometry cube_leak <span class="sy0">=</span> <span class="kw1">new</span> Geometry<span class="br0">&#40;</span><span class="st0">&quot;Leak-through color cube&quot;</span>, boxshape4<span class="br0">&#41;</span>;
     Material mat_tl <span class="sy0">=</span> <span class="kw1">new</span> Material<span class="br0">&#40;</span>assetManager, <span class="st0">&quot;Common/MatDefs/Misc/ColoredTextured.j3md&quot;</span><span class="br0">&#41;</span>;
-    mat_tl.<span class="me1">setTexture</span><span class="br0">&#40;</span><span class="st0">&quot;m_ColorMap&quot;</span>, assetManager.<span class="me1">loadTexture</span><span class="br0">&#40;</span><span class="st0">&quot;Textures/ColoredTex/Monkey.png&quot;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
-    mat_tl.<span class="me1">setColor</span><span class="br0">&#40;</span><span class="st0">&quot;m_Color&quot;</span>, <span class="kw1">new</span> ColorRGBA<span class="br0">&#40;</span>1f,0f,1f, 1f<span class="br0">&#41;</span><span class="br0">&#41;</span>; <span class="co1">// purple</span>
+    mat_tl.<span class="me1">setTexture</span><span class="br0">&#40;</span><span class="st0">&quot;ColorMap&quot;</span>, assetManager.<span class="me1">loadTexture</span><span class="br0">&#40;</span><span class="st0">&quot;Textures/ColoredTex/Monkey.png&quot;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
+    mat_tl.<span class="me1">setColor</span><span class="br0">&#40;</span><span class="st0">&quot;Color&quot;</span>, <span class="kw1">new</span> ColorRGBA<span class="br0">&#40;</span>1f,0f,1f, 1f<span class="br0">&#41;</span><span class="br0">&#41;</span>; <span class="co1">// purple</span>
     cube_leak.<span class="me1">setMaterial</span><span class="br0">&#40;</span>mat_tl<span class="br0">&#41;</span>;
     rootNode.<span class="me1">attachChild</span><span class="br0">&#40;</span>cube_leak<span class="br0">&#41;</span>;
 &nbsp;
@@ -124,7 +124,7 @@ Move around with the WASD keys to have a closer look at the translucency, and th
 </p>
 
 </div>
-<!-- SECTION "Sample Code" [573-4443] -->
+<!-- SECTION "Sample Code" [573-4435] -->
 <h2><a name="simple_texture" id="simple_texture">Simple Texture</a></h2>
 <div class="level2">
 
@@ -137,7 +137,7 @@ Typically you want to give objects in your scene textures: It can be rock, grass
     Geometry cube <span class="sy0">=</span> <span class="kw1">new</span> Geometry<span class="br0">&#40;</span><span class="st0">&quot;My Textured Box&quot;</span>, boxshape1<span class="br0">&#41;</span>;
     Material mat_stl <span class="sy0">=</span> <span class="kw1">new</span> Material<span class="br0">&#40;</span>assetManager, <span class="st0">&quot;Common/MatDefs/Misc/SimpleTextured.j3md&quot;</span><span class="br0">&#41;</span>;
     Texture tex_ml <span class="sy0">=</span> assetManager.<span class="me1">loadTexture</span><span class="br0">&#40;</span><span class="st0">&quot;Interface/Logo/Monkey.jpg&quot;</span><span class="br0">&#41;</span>;
-    mat_stl.<span class="me1">setTexture</span><span class="br0">&#40;</span><span class="st0">&quot;m_ColorMap&quot;</span>, tex_ml<span class="br0">&#41;</span>;
+    mat_stl.<span class="me1">setTexture</span><span class="br0">&#40;</span><span class="st0">&quot;ColorMap&quot;</span>, tex_ml<span class="br0">&#41;</span>;
     cube.<span class="me1">setMaterial</span><span class="br0">&#40;</span>mat_stl<span class="br0">&#41;</span>;
     rootNode.<span class="me1">attachChild</span><span class="br0">&#40;</span>cube<span class="br0">&#41;</span>;</pre>
 <p>
@@ -145,7 +145,7 @@ JME3 creates MIP maps by default. A MIP map contains the same texture in several
 </p>
 
 </div>
-<!-- SECTION "Simple Texture" [4444-5469] -->
+<!-- SECTION "Simple Texture" [4436-5459] -->
 <h2><a name="simple_texture_with_transparency" id="simple_texture_with_transparency">Simple Texture with Transparency</a></h2>
 <div class="level2">
 
@@ -157,7 +157,7 @@ JME3 creates MIP maps by default. A MIP map contains the same texture in several
     <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Abox+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object><span class="br0">&#40;</span><span class="kw1">new</span> Vector3f<span class="br0">&#40;</span>0f,0f,0f<span class="br0">&#41;</span>, 1f,1f,0.01f<span class="br0">&#41;</span>;
     Geometry window_frame <span class="sy0">=</span> <span class="kw1">new</span> Geometry<span class="br0">&#40;</span><span class="st0">&quot;window frame&quot;</span>, boxshape3<span class="br0">&#41;</span>;
     Material mat_tt <span class="sy0">=</span> <span class="kw1">new</span> Material<span class="br0">&#40;</span>assetManager, <span class="st0">&quot;Common/MatDefs/Misc/SimpleTextured.j3md&quot;</span><span class="br0">&#41;</span>;
-    mat_tt.<span class="me1">setTexture</span><span class="br0">&#40;</span><span class="st0">&quot;m_ColorMap&quot;</span>, assetManager.<span class="me1">loadTexture</span><span class="br0">&#40;</span><span class="st0">&quot;Textures/ColoredTex/Monkey.png&quot;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
+    mat_tt.<span class="me1">setTexture</span><span class="br0">&#40;</span><span class="st0">&quot;ColorMap&quot;</span>, assetManager.<span class="me1">loadTexture</span><span class="br0">&#40;</span><span class="st0">&quot;Textures/ColoredTex/Monkey.png&quot;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
     mat_tt.<span class="me1">getAdditionalRenderState</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">setBlendMode</span><span class="br0">&#40;</span>BlendMode.<span class="me1">Alpha</span><span class="br0">&#41;</span>; <span class="co1">// activate transparency</span>
     window_frame.<span class="me1">setMaterial</span><span class="br0">&#40;</span>mat_tt<span class="br0">&#41;</span>;
     rootNode.<span class="me1">attachChild</span><span class="br0">&#40;</span>window_frame<span class="br0">&#41;</span>;</pre>
@@ -166,7 +166,7 @@ You can learn more about creating <acronym title="Portable Network Graphics">PNG
 </p>
 
 </div>
-<!-- SECTION "Simple Texture with Transparency" [5470-6633] -->
+<!-- SECTION "Simple Texture with Transparency" [5460-6621] -->
 <h2><a name="shininess_and_bumpiness" id="shininess_and_bumpiness">Shininess and Bumpiness</a></h2>
 <div class="level2">
 
@@ -195,11 +195,11 @@ Let&#039;s have a look at the part of the code example where you create the shin
 <li class="level1"><div class="li"> Create a material based on the <code>Lighting.j3md</code> default material.<pre class="code java">    Material mat_lit <span class="sy0">=</span> <span class="kw1">new</span> Material<span class="br0">&#40;</span>assetManager, <span class="st0">&quot;Common/MatDefs/Light/Lighting.j3md&quot;</span><span class="br0">&#41;</span>;</pre></div>
 <ol>
 <li class="level2"><div class="li"> You set a rocky texture as the Diffuse Map (<code>m_DiffuseMap</code>). <br/>
- (View <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://jmonkeyengine.googlecode.com/svn/branches/jme3/src/test-data/Textures/Terrain/Pond/Pond.png"><param name="text" value="<html><u>Pond.png</u></html>"><param name="textColor" value="blue"></object>)<pre class="code java">    mat_lit.<span class="me1">setTexture</span><span class="br0">&#40;</span><span class="st0">&quot;m_DiffuseMap&quot;</span>, 
+ (View <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://jmonkeyengine.googlecode.com/svn/branches/jme3/src/test-data/Textures/Terrain/Pond/Pond.png"><param name="text" value="<html><u>Pond.png</u></html>"><param name="textColor" value="blue"></object>)<pre class="code java">    mat_lit.<span class="me1">setTexture</span><span class="br0">&#40;</span><span class="st0">&quot;DiffuseMap&quot;</span>, 
         assetManager.<span class="me1">loadTexture</span><span class="br0">&#40;</span><span class="st0">&quot;Textures/Terrain/Pond/Pond.png&quot;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;</pre></div>
 </li>
 <li class="level2"><div class="li"> You set the appropriate Normal Map (<code>m_NormalMap</code>). The Normal Map must be generated with a special tool (e.g. Blender). <br/>
- (View <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://jmonkeyengine.googlecode.com/svn/branches/jme3/src/test-data/Textures/Terrain/Pond/Pond_normal.png"><param name="text" value="<html><u>Pond_normal.png</u></html>"><param name="textColor" value="blue"></object>)<pre class="code java">    mat_lit.<span class="me1">setTexture</span><span class="br0">&#40;</span><span class="st0">&quot;m_NormalMap&quot;</span>, 
+ (View <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://jmonkeyengine.googlecode.com/svn/branches/jme3/src/test-data/Textures/Terrain/Pond/Pond_normal.png"><param name="text" value="<html><u>Pond_normal.png</u></html>"><param name="textColor" value="blue"></object>)<pre class="code java">    mat_lit.<span class="me1">setTexture</span><span class="br0">&#40;</span><span class="st0">&quot;NormalMap&quot;</span>, 
         assetManager.<span class="me1">loadTexture</span><span class="br0">&#40;</span><span class="st0">&quot;Textures/Terrain/Pond/Pond_normal.png&quot;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;</pre></div>
 </li>
 <li class="level2"><div class="li"> You set the material&#039;s Shininess to a value between 0 and 127.<pre class="code java">    mat_lit.<span class="me1">setFloat</span><span class="br0">&#40;</span><span class="st0">&quot;m_Shininess&quot;</span>, 5f<span class="br0">&#41;</span>; <span class="co1">// [0,128]</span></pre></div>
@@ -217,7 +217,7 @@ Let&#039;s have a look at the part of the code example where you create the shin
 </ol>
 
 </div>
-<!-- SECTION "Shininess and Bumpiness" [6634-9195] -->
+<!-- SECTION "Shininess and Bumpiness" [6622-9179] -->
 <h2><a name="default_material_definitions" id="default_material_definitions">Default Material Definitions</a></h2>
 <div class="level2">
 
@@ -231,22 +231,22 @@ As you have seen, the following default materials can always be found in <code>j
 		<th class="col0 leftalign"> Default Definition                          </th><th class="col1"> Usage </th><th class="col2 leftalign"> Parameters  </th>
 	</tr>
 	<tr class="row1">
-		<td class="col0"> <code>Common/MatDefs/Misc/SimpleTextured.j3md</code> </td><td class="col1"> Textured: Use with mat.setTexture() and TextureKey. </td><td class="col2"> Texture: m_ColorMap <br/>
- Boolean m_ShowAlpha <br/>
+		<td class="col0"> <code>Common/MatDefs/Misc/SimpleTextured.j3md</code> </td><td class="col1"> Textured: Use with mat.setTexture() and TextureKey. </td><td class="col2"> Texture: ColorMap <br/>
+ Boolean ShowAlpha <br/>
  …</td>
 	</tr>
 	<tr class="row2">
-		<td class="col0 leftalign"> <code>Common/MatDefs/Misc/SolidColor.j3md</code>     </td><td class="col1"> Colored: Use with mat.setColor() and RGBAColor. </td><td class="col2"> Color: m_Color </td>
+		<td class="col0 leftalign"> <code>Common/MatDefs/Misc/SolidColor.j3md</code>     </td><td class="col1"> Colored: Use with mat.setColor() and RGBAColor. </td><td class="col2"> Color: Color </td>
 	</tr>
 	<tr class="row3">
 		<td class="col0 leftalign"> <code>Common/MatDefs/Light/Lighting.j3md</code>      </td><td class="col1"> Use with shiny Textures, Bump- and NormalMaps textures. <br/>
- Requires a light source. </td><td class="col2"> Color: m_Ambient, m_Diffuse, m_Specular <br/>
- Texture: m_DiffuseMap, m_NormalMap, m_SpecularMap <br/>
- Float: m_Shininess </td>
+ Requires a light source. </td><td class="col2"> Color: Ambient, Diffuse, Specular <br/>
+ Texture: DiffuseMap, NormalMap, SpecularMap <br/>
+ Float: Shininess </td>
 	</tr>
 	<tr class="row4">
-		<td class="col0 leftalign"> <code>Common/MatDefs/Light/Reflection.j3md</code>    </td><td class="col1"> Used for advanced reflecting scenes, e.g. with glass. </td><td class="col2"> Texture: m_Texture <br/>
- Boolean: m_SphereMap </td>
+		<td class="col0 leftalign"> <code>Common/MatDefs/Light/Reflection.j3md</code>    </td><td class="col1"> Used for advanced reflecting scenes, e.g. with glass. </td><td class="col2"> Texture: Texture <br/>
+ Boolean: SphereMap </td>
 	</tr>
 </table>
 
@@ -256,12 +256,12 @@ In a real game, you will create your custom Materials based these existing ones 
 </p>
 
 </div>
-<!-- SECTION "Default Material Definitions" [9196-10219] -->
+<!-- SECTION "Default Material Definitions" [9180-10179] -->
 <h2><a name="exercises" id="exercises">Exercises</a></h2>
 <div class="level2">
 
 </div>
-<!-- SECTION "Exercises" [10220-10242] -->
+<!-- SECTION "Exercises" [10180-10202] -->
 <h3><a name="exercise_1custom_materials" id="exercise_1custom_materials">Exercise 1: Custom Materials</a></h3>
 <div class="level3">
 
@@ -272,9 +272,9 @@ Look at the purple leak-through sample above again. It takes four lines to creat
 <ul>
 <li class="level1"><div class="li"> Note how it loads the <code>ColoredTextured.j3md</code> Material definition.</div>
 </li>
-<li class="level1"><div class="li"> Note how it sets to <code>m_Color</code> parameter to purple (<code>new ColorRGBA(1f,0f,1f,1f)</code>).</div>
+<li class="level1"><div class="li"> Note how it sets to <code>Color</code> parameter to purple (<code>new ColorRGBA(1f,0f,1f,1f)</code>).</div>
 </li>
-<li class="level1"><div class="li"> Note how it sets the <code>m_ColorMap</code> to a texture path.</div>
+<li class="level1"><div class="li"> Note how it sets the <code>ColorMap</code> to a texture path.</div>
 </li>
 </ul>
 
@@ -288,8 +288,8 @@ Create a file <code>assets/Materials/LeakThrough.j3m</code> with the following c
 </p>
 <pre class="code">Material Leak Through : Common/MatDefs/Misc/ColoredTextured.j3md {
      MaterialParameters {
-         m_Color : 1 0 1 1
-         m_ColorMap : Textures/ColoredTex/Monkey.png
+         Color : 1 0 1 1
+         ColorMap : Textures/ColoredTex/Monkey.png
      }
 }</pre>
 <ul>
@@ -297,7 +297,7 @@ Create a file <code>assets/Materials/LeakThrough.j3m</code> with the following c
 </li>
 <li class="level1"><div class="li"> Note that <code>Leak Through</code> is a name that you can choose.</div>
 </li>
-<li class="level1"><div class="li"> Note how it sets the same three properties, m_Color, m_ColorMap, and ColoredTextured.j3md.</div>
+<li class="level1"><div class="li"> Note how it sets the same three properties, Color, ColorMap, and ColoredTextured.j3md.</div>
 </li>
 </ul>
 
@@ -319,7 +319,7 @@ You have replaced the three lines of an on-the-fly material definition with one 
 </p>
 
 </div>
-<!-- SECTION "Exercise 1: Custom Materials" [10243-11702] -->
+<!-- SECTION "Exercise 1: Custom Materials" [10203-11650] -->
 <h3><a name="exercise_2bumpiness_and_shininess" id="exercise_2bumpiness_and_shininess">Exercise 2: Bumpiness and Shininess</a></h3>
 <div class="level3">
 
@@ -328,15 +328,15 @@ You have replaced the three lines of an on-the-fly material definition with one 
 Go back to the bumpy rock sample above:
 </p>
 <ol>
-<li class="level1"><div class="li"> Comment out the m_DiffuseMap line, and run the app. (Uncomment it again.)</div>
+<li class="level1"><div class="li"> Comment out the DiffuseMap line, and run the app. (Uncomment it again.)</div>
 </li>
-<li class="level1"><div class="li"> Comment out the m_NormalMap line, and run the app. (Uncomment it again.)</div>
+<li class="level1"><div class="li"> Comment out the NormalMap line, and run the app. (Uncomment it again.)</div>
 <ul>
 <li class="level2"><div class="li"> Compare: Which property of the rock is lost in either case?</div>
 </li>
 </ul>
 </li>
-<li class="level1"><div class="li"> Change the value of m_Shininess to values like 0, 63, 127. </div>
+<li class="level1"><div class="li"> Change the value of Shininess to values like 0, 63, 127. </div>
 <ul>
 <li class="level2"><div class="li"> What aspect of the Shininess changes?</div>
 </li>
@@ -345,7 +345,7 @@ Go back to the bumpy rock sample above:
 </ol>
 
 </div>
-<!-- SECTION "Exercise 2: Bumpiness and Shininess" [11703-12119] -->
+<!-- SECTION "Exercise 2: Bumpiness and Shininess" [11651-12061] -->
 <h2><a name="conclusion" id="conclusion">Conclusion</a></h2>
 <div class="level2">
 
@@ -395,5 +395,5 @@ See also
 </ul>
 
 </div>
-<!-- SECTION "Conclusion" [12120-] -->
+<!-- SECTION "Conclusion" [12062-] -->
 <p><em><a href="http://jmonkeyengine.org/wiki/doku.php/jme3:beginner:hello_material?do=export_xhtmlbody">view online version</a></em></p>

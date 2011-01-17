@@ -146,7 +146,7 @@ We create a <code>com.jme3.scene.Geometry</code>, apply a simple color material 
 </p>
 <pre class="code java">Geometry geom <span class="sy0">=</span> <span class="kw1">new</span> Geometry<span class="br0">&#40;</span><span class="st0">&quot;OurMesh&quot;</span>, m<span class="br0">&#41;</span>;
 Material mat <span class="sy0">=</span> <span class="kw1">new</span> Material<span class="br0">&#40;</span>assetManager, <span class="st0">&quot;Common/MatDefs/Misc/SolidColor.j3md&quot;</span><span class="br0">&#41;</span>;
-mat.<span class="me1">setColor</span><span class="br0">&#40;</span><span class="st0">&quot;m_Color&quot;</span>, ColorRGBA.<span class="me1">Blue</span><span class="br0">&#41;</span>;
+mat.<span class="me1">setColor</span><span class="br0">&#40;</span><span class="st0">&quot;Color&quot;</span>, ColorRGBA.<span class="me1">Blue</span><span class="br0">&#41;</span>;
 geom.<span class="me1">setMaterial</span><span class="br0">&#40;</span>mat<span class="br0">&#41;</span>;
 rootNode.<span class="me1">attachChild</span><span class="br0">&#40;</span>geom<span class="br0">&#41;</span>;</pre>
 <p>
@@ -154,7 +154,7 @@ Ta-daa!
 </p>
 
 </div>
-<!-- SECTION "Using the Mesh in a Scene" [3962-4390] -->
+<!-- SECTION "Using the Mesh in a Scene" [3962-4388] -->
 <h2><a name="optionalvertex_colors" id="optionalvertex_colors">Optional: Vertex Colors</a></h2>
 <div class="level2">
 
@@ -214,7 +214,7 @@ Now you see a gradient color extending from each vertex.
 </p>
 
 </div>
-<!-- SECTION "Optional: Vertex Colors" [4391-6526] -->
+<!-- SECTION "Optional: Vertex Colors" [4389-6524] -->
 <h3><a name="optionalpoint_mode" id="optionalpoint_mode">Optional: Point Mode</a></h3>
 <div class="level3">
 
@@ -238,7 +238,7 @@ This will result in a 10 px dot being rendered for each of the four vertices. Th
 </p>
 
 </div>
-<!-- SECTION "Optional: Point Mode" [6527-7180] -->
+<!-- SECTION "Optional: Point Mode" [6525-7178] -->
 <h2><a name="front_and_back_faces" id="front_and_back_faces">Front and Back Faces</a></h2>
 <div class="level2">
 
@@ -264,5 +264,5 @@ In case that your use case requires the backfaces to be visible, you have two op
 </ul>
 
 </div>
-<!-- SECTION "Front and Back Faces" [7181-] -->
+<!-- SECTION "Front and Back Faces" [7179-] -->
 <p><em><a href="http://jmonkeyengine.org/wiki/doku.php/jme3:advanced:custom_meshes?do=export_xhtmlbody">view online version</a></em></p>

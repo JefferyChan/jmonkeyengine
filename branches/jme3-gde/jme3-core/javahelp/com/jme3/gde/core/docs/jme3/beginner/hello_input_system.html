@@ -52,7 +52,7 @@ Every game has its custom keybindings, and this tutorial explains how you define
     <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Abox+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object><span class="br0">&#40;</span>Vector3f.<span class="me1">ZERO</span>, <span class="nu0">1</span>, <span class="nu0">1</span>, <span class="nu0">1</span><span class="br0">&#41;</span>;
     player <span class="sy0">=</span> <span class="kw1">new</span> Geometry<span class="br0">&#40;</span><span class="st0">&quot;Player&quot;</span>, b<span class="br0">&#41;</span>;
     Material mat <span class="sy0">=</span> <span class="kw1">new</span> Material<span class="br0">&#40;</span>assetManager, <span class="st0">&quot;Common/MatDefs/Misc/SolidColor.j3md&quot;</span><span class="br0">&#41;</span>;
-    mat.<span class="me1">setColor</span><span class="br0">&#40;</span><span class="st0">&quot;m_Color&quot;</span>, ColorRGBA.<span class="me1">Blue</span><span class="br0">&#41;</span>;
+    mat.<span class="me1">setColor</span><span class="br0">&#40;</span><span class="st0">&quot;Color&quot;</span>, ColorRGBA.<span class="me1">Blue</span><span class="br0">&#41;</span>;
     player.<span class="me1">setMaterial</span><span class="br0">&#40;</span>mat<span class="br0">&#41;</span>;
     rootNode.<span class="me1">attachChild</span><span class="br0">&#40;</span>player<span class="br0">&#41;</span>;
     initKeys<span class="br0">&#40;</span><span class="br0">&#41;</span>; <span class="co1">// load my custom keybinding</span>
@@ -113,7 +113,7 @@ Build and run the example.
 </ul>
 
 </div>
-<!-- SECTION "Sample Code" [634-3648] -->
+<!-- SECTION "Sample Code" [634-3646] -->
 <h2><a name="defining_mappings_and_triggers" id="defining_mappings_and_triggers">Defining Mappings and Triggers</a></h2>
 <div class="level2">
 
@@ -165,7 +165,7 @@ This code usually goes into the <code>simpleInitApp()</code> method. But since w
 </p>
 
 </div>
-<!-- SECTION "Defining Mappings and Triggers" [3649-5587] -->
+<!-- SECTION "Defining Mappings and Triggers" [3647-5585] -->
 <h2><a name="implementing_the_actions" id="implementing_the_actions">Implementing the Actions</a></h2>
 <div class="level2">
 
@@ -224,7 +224,7 @@ It&#039;s okay to use only one of the two Listeners, and not implement the other
 </p>
 
 </div>
-<!-- SECTION "Implementing the Actions" [5588-7517] -->
+<!-- SECTION "Implementing the Actions" [5586-7515] -->
 <h2><a name="analog_pressed_or_released" id="analog_pressed_or_released">Analog, Pressed, or Released?</a></h2>
 <div class="level2">
 
@@ -274,7 +274,7 @@ Mappings registered to the <strong>ActionListener</strong> are treated in an abs
         isRunning <span class="sy0">=</span> <span class="sy0">!</span>isRunning;
       <span class="br0">&#125;</span></pre>
 </div>
-<!-- SECTION "Analog, Pressed, or Released?" [7518-8892] -->
+<!-- SECTION "Analog, Pressed, or Released?" [7516-8890] -->
 <h2><a name="table_of_triggers" id="table_of_triggers">Table of Triggers</a></h2>
 <div class="level2">
 
@@ -317,7 +317,7 @@ You can find the list of input constants in the files <code>src/core/com/jme3/in
 </p>
 
 </div>
-<!-- SECTION "Table of Triggers" [8893-9955] -->
+<!-- SECTION "Table of Triggers" [8891-9953] -->
 <h2><a name="exercises" id="exercises">Exercises</a></h2>
 <div class="level2">
 <ol>
@@ -336,7 +336,7 @@ You can find the list of input constants in the files <code>src/core/com/jme3/in
 </ol>
 
 </div>
-<!-- SECTION "Exercises" [9956-10458] -->
+<!-- SECTION "Exercises" [9954-10456] -->
 <h2><a name="conclusion" id="conclusion">Conclusion</a></h2>
 <div class="level2">
 
@@ -351,5 +351,5 @@ Now you can already write a little interactive game! But wouldn&#039;t it be coo
 </p>
 
 </div>
-<!-- SECTION "Conclusion" [10459-] -->
+<!-- SECTION "Conclusion" [10457-] -->
 <p><em><a href="http://jmonkeyengine.org/wiki/doku.php/jme3:beginner:hello_input_system?do=export_xhtmlbody">view online version</a></em></p>

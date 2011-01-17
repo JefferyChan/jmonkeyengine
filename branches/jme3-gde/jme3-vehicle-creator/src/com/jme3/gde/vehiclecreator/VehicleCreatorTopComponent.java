@@ -10,7 +10,6 @@ import com.jme3.gde.core.scene.PreviewRequest;
 import com.jme3.gde.core.scene.SceneApplication;
 import com.jme3.gde.core.scene.SceneListener;
 import com.jme3.gde.core.scene.SceneRequest;
-import com.jme3.gde.core.scene.controller.SceneToolController;
 import com.jme3.gde.core.sceneexplorer.nodes.JmeNode;
 import com.jme3.gde.core.sceneexplorer.nodes.NodeUtility;
 import com.jme3.gde.core.sceneviewer.SceneViewerTopComponent;
@@ -24,6 +23,7 @@ import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
 import org.openide.util.ImageUtilities;
 import org.netbeans.api.settings.ConvertAsProperties;
+import org.openide.util.HelpCtx;
 
 /**
  * Top component which displays something.
@@ -40,6 +40,7 @@ public final class VehicleCreatorTopComponent extends TopComponent implements Sc
     private SceneRequest currentRequest;
     private boolean testing = false;
     DirectionalLight dirLight = new DirectionalLight();
+    private HelpCtx ctx = new HelpCtx("jme3.jmonkeyplatform.vehicle_creator");
 
     public VehicleCreatorTopComponent() {
         initComponents();
@@ -823,6 +824,12 @@ public final class VehicleCreatorTopComponent extends TopComponent implements Sc
         return PREFERRED_ID;
     }
 
+    @Override
+    public HelpCtx getHelpCtx() {
+        return ctx;
+    }
+
+
     private SuspensionSettings getSuspensionSettings() {
         SuspensionSettings settings = new SuspensionSettings();
         settings.setFriction((Float) frictionSpinner.getValue());
@@ -860,6 +867,7 @@ public final class VehicleCreatorTopComponent extends TopComponent implements Sc
         currentRequest.setWindowTitle("Vehicle Creator");
         currentRequest.setDataObject(file);
         currentRequest.setToolNode(editorController.getToolsNode());
+        currentRequest.setHelpCtx(ctx);
         SceneApplication.getApplication().requestScene(currentRequest);
     }
 

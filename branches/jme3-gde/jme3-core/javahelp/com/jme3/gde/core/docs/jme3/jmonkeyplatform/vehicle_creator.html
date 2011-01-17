@@ -1,0 +1,43 @@
+
+
+
+<h2><a name="vehicle_creator" id="vehicle_creator">Vehicle Creator</a></h2>
+<div class="level2">
+
+<p>
+
+Best results when car is facing in z direction (towards you)
+</p>
+
+<p>
+Usage:
+</p>
+<ol>
+<li class="level1"><div class="li"> Select a j3o that contains a vehicle model and press the vehicle button (or right-click → edit vehicle)</div>
+</li>
+<li class="level1"><div class="li"> The VehicleCreator automatically adds a PhysicsVehicleControl to the rootNode of the model if there is none</div>
+</li>
+<li class="level1"><div class="li"> Select the Geometry or Node that contains the chassis in the SceneExplorer and press “create hull shape from selected”</div>
+</li>
+<li class="level1"><div class="li"> Select a Geometry that contains a wheel and press “make selected spatial wheel”, select the “front wheel” checkboxes for front wheels</div>
+</li>
+<li class="level1"><div class="li"> Do so for all wheels</div>
+</li>
+</ol>
+
+<p>
+
+New wheels will get the current suspension settings, you can edit single wheels via the SceneExplorer (update VehicleControl if wheels dont show up) or apply settings created with the settings generator to wheel groups.
+</p>
+
+<p>
+Press the “test vehicle” button to drive the vehicle, use WASD to control, Enter to reset.
+</p>
+
+<p>
+Known Issues: Dont save while testing the vehicle, you will save the location and acceleration info in the j3o.
+
+</p>
+
+</div>
+<p><em><a href="http://jmonkeyengine.org/wiki/doku.php/jme3:jmonkeyplatform:vehicle_creator?do=export_xhtmlbody">view online version</a></em></p>

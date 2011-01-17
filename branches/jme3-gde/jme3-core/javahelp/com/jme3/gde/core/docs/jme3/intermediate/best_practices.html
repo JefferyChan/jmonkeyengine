@@ -505,18 +505,28 @@ Do you release your game as WebStart, Desktop JAR, or Applet? Each has its pros 
 		<th class="col0">Distribution</th><th class="col1">Pros</th><th class="col2">Cons</th>
 	</tr>
 	<tr class="row1">
-		<td class="col0">Web Start <br/>
- (JNLP)</td><td class="col1">The user accesses a <acronym title="Uniform Resource Locator">URL</acronym>, saves the game as one executable file. Easy process, no installer required. You can allow the game to be played offline.</td><td class="col2">Users need network connection to install the game. Downloading bigger games takes a while as opposed to running them from a CD. Your company must have a trusted certificate.</td>
+		<td class="col0">Desktop Launcher <br/>
+ (.EXE, .app, .jar+.sh)</td><td class="col1">This is the standard way of distributing desktop applications. The jMonkeyPlatform can be configured to automatically create zipped launchers for each operating system. Your company does not need a certificate.</td><td class="col2">You need to offer three separate, platform-dependent downloads.</td>
 	</tr>
 	<tr class="row2">
 		<td class="col0">Desktop Application <br/>
- (JAR)</td><td class="col1">Platform independent. Game can be distributed and started from any medium. Your company does not need a trusted certificate.</td><td class="col2">User must have Java configured to run JARs when they are opened; or user must know how to run JARs from command line; or you must provide a custom launcher script or JAR wrapper.</td>
+ (.JAR)</td><td class="col1">Platform independent desktop application. Your company does not need a certificate.</td><td class="col2">User must have Java configured to run JARs when they are opened; or user must know how to run JARs from command line; or you must provide a custom JAR wrapper.</td>
 	</tr>
 	<tr class="row3">
+		<td class="col0">Web Start <br/>
+ (.JNLP)</td><td class="col1">The user accesses a <acronym title="Uniform Resource Locator">URL</acronym>, saves the game as one executable file. Easy process, no installer required. You can allow the game to be played offline.</td><td class="col2">Users need network connection to install the game. Downloading bigger games takes a while as opposed to running them from a CD. Your company must have a trusted certificate.</td>
+	</tr>
+	<tr class="row4">
 		<td class="col0">Browser Applet <br/>
- (<acronym title="HyperText Markup Language">HTML</acronym>+JAR)</td><td class="col1">Easy to access and play game via most web browsers. Userfriendly solution for quick small games.</td><td class="col2">Game only runs in the browser. Game or settings cannot be saved to disk. Your company must have a trusted certificate. Some restrictions in default camera navigation (jME cannot capture mouse.)</td>
+ (.<acronym title="HyperText Markup Language">HTML</acronym>+.JAR)</td><td class="col1">Easy to access and play game via most web browsers. Userfriendly solution for quick small games.</td><td class="col2">Game only runs in the browser. Game or settings cannot be saved to disk. Your company must have a trusted certificate. Some restrictions in default camera navigation (jME cannot capture mouse.)</td>
 	</tr>
 </table>
+
+<p>
+
+Which ever method you choose, a Java-Application works on the three main operating systems: Windows, Mac <acronym title="Operating System">OS</acronym>, Linux.
+
+</p>
 
 </div>
 <!-- SECTION "Release Phase" [14197-] -->

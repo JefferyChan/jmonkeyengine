@@ -94,22 +94,22 @@ The tank material looks like that :
 <pre class="code">
 Material My Material : Common/MatDefs/Light/Lighting.j3md {
      MaterialParameters {
-        m_SpecularMap : Models/HoverTank/tank_specular.png
-        m_Shininess : 8
-        m_NormalMap : Models/HoverTank/tank_normals.png
-        m_DiffuseMap : Models/HoverTank/tank_diffuse.png
-        m_GlowMap : Models/HoverTank/tank_glow_map_highres.png
-        m_UseMaterialColors : true
-        m_Ambient  : 0.0 0.0 0.0 1.0
-        m_Diffuse  : 1.0 1.0 1.0 1.0
-        m_Specular : 1.0 1.0 1.0 1.0
+        SpecularMap : Models/HoverTank/tank_specular.png
+        Shininess : 8
+        NormalMap : Models/HoverTank/tank_normals.png
+        DiffuseMap : Models/HoverTank/tank_diffuse.png
+        GlowMap : Models/HoverTank/tank_glow_map_highres.png
+        UseMaterialColors : true
+        Ambient  : 0.0 0.0 0.0 1.0
+        Diffuse  : 1.0 1.0 1.0 1.0
+        Specular : 1.0 1.0 1.0 1.0
      }
 }
 </pre>
 
 <p>
 
-The glow map is defined here : <strong>m_GlowMap : Models/HoverTank/tank_glow_map_highres.png</strong>
+The glow map is defined here : <strong>GlowMap : Models/HoverTank/tank_glow_map_highres.png</strong>
 </p>
 
 </div>
@@ -140,7 +140,7 @@ Here is the result : <br/>
 </p>
 
 </div>
-<!-- SECTION "Bloom with a glow map" [1530-3252] -->
+<!-- SECTION "Bloom with a glow map" [1530-3232] -->
 <h1><a name="bloom_with_a_glow_color" id="bloom_with_a_glow_color">Bloom with a glow color</a></h1>
 <div class="level1">
 
@@ -155,7 +155,7 @@ In this case you&#039;ll need to use the glow color parameter.
 <h5><a name="usage1" id="usage1">Usage</a></h5>
 <div class="level5">
 <ol>
-<li class="level1"><div class="li"> Create a material for your object and set the m_GlowColor parameter</div>
+<li class="level1"><div class="li"> Create a material for your object and set the GlowColor parameter</div>
 </li>
 <li class="level1"><div class="li"> Create a FilterPostProcessor</div>
 </li>
@@ -168,8 +168,8 @@ In this case you&#039;ll need to use the glow color parameter.
 </ol>
 <pre class="code">
     Material mat = new Material(getAssetManager(), &quot;Common/MatDefs/Misc/SolidColor.j3md&quot;);
-    mat.setColor(&quot;m_Color&quot;, ColorRGBA.Green);
-    mat.setColor(&quot;m_GlowColor&quot;, ColorRGBA.Green);
+    mat.setColor(&quot;Color&quot;, ColorRGBA.Green);
+    mat.setColor(&quot;GlowColor&quot;, ColorRGBA.Green);
     fpp=new FilterPostProcessor(assetManager);
     bloom= new BloomFilter(BloomFilter.GlowMode.Objects);        
     fpp.addFilter(bloom);
@@ -184,7 +184,7 @@ Here is the result on Oto&#039;s plasma ball (before and after) : <br/>
 </p>
 
 </div>
-<!-- SECTION "Bloom with a glow color" [3253-4266] -->
+<!-- SECTION "Bloom with a glow color" [3233-4240] -->
 <h1><a name="hints_and_tricks" id="hints_and_tricks">Hints and tricks</a></h1>
 <div class="level1">
 
@@ -238,9 +238,9 @@ In your material definition you need to add those lines in the MaterialParameter
         ....
 
         // Texture of the glowing parts of the material
-        Texture2D m_GlowMap
+        Texture2D GlowMap
         // The glow color of the object
-        Color m_GlowColor
+        Color GlowColor
     }
 </pre>
 
@@ -261,8 +261,8 @@ Then add the following technique :
         }
 
         Defines {
-            HAS_GLOWMAP : m_GlowMap
-            HAS_GLOWCOLOR : m_GlowColor
+            HAS_GLOWMAP : GlowMap
+            HAS_GLOWCOLOR : GlowColor
         }
     }
 </pre>
@@ -282,7 +282,7 @@ If you are using a glow map, remove the texture from the material.
 
 </p>
 <pre class="code">
-material.clearTextureParam(&quot;m_GlowMap&quot;);
+material.clearTextureParam(&quot;GlowMap&quot;);
 </pre>
 
 <p>
@@ -290,9 +290,9 @@ If you are using a glow color, set it to black
 
 </p>
 <pre class="code">
-material.setColor(&quot;m_GlowColor&quot;,ColorRGBA.Black);
+material.setColor(&quot;GlowColor&quot;,ColorRGBA.Black);
 </pre>
 
 </div>
-<!-- SECTION "Hints and tricks" [4267-] -->
+<!-- SECTION "Hints and tricks" [4241-] -->
 <p><em><a href="http://jmonkeyengine.org/wiki/doku.php/jme3:advanced:bloom_and_glow?do=export_xhtmlbody">view online version</a></em></p>

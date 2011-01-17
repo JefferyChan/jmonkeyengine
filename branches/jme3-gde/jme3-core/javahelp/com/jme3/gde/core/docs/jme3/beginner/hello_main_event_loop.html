@@ -47,7 +47,7 @@ Now that you know how to load assets such as 3-D models, you want them to implem
         <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Abox+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object><span class="br0">&#40;</span>Vector3f.<span class="me1">ZERO</span>, <span class="nu0">1</span>, <span class="nu0">1</span>, <span class="nu0">1</span><span class="br0">&#41;</span>;
         player <span class="sy0">=</span> <span class="kw1">new</span> Geometry<span class="br0">&#40;</span><span class="st0">&quot;blue cube&quot;</span>, b<span class="br0">&#41;</span>;
         Material mat <span class="sy0">=</span> <span class="kw1">new</span> Material<span class="br0">&#40;</span>assetManager, <span class="st0">&quot;Common/MatDefs/Misc/SolidColor.j3md&quot;</span><span class="br0">&#41;</span>;
-        mat.<span class="me1">setColor</span><span class="br0">&#40;</span><span class="st0">&quot;m_Color&quot;</span>, ColorRGBA.<span class="me1">Blue</span><span class="br0">&#41;</span>;
+        mat.<span class="me1">setColor</span><span class="br0">&#40;</span><span class="st0">&quot;Color&quot;</span>, ColorRGBA.<span class="me1">Blue</span><span class="br0">&#41;</span>;
         player.<span class="me1">setMaterial</span><span class="br0">&#40;</span>mat<span class="br0">&#41;</span>;
         rootNode.<span class="me1">attachChild</span><span class="br0">&#40;</span>player<span class="br0">&#41;</span>;
     <span class="br0">&#125;</span>
@@ -64,7 +64,7 @@ Build and run the file: You see a constantly rotating cube.
 </p>
 
 </div>
-<!-- SECTION "Code Sample" [355-1560] -->
+<!-- SECTION "Code Sample" [355-1558] -->
 <h2><a name="understanding_the_code" id="understanding_the_code">Understanding the Code</a></h2>
 <div class="level2">
 
@@ -86,7 +86,7 @@ Now have a closer look at the <code>simpleUpdate()</code> method, this is the ma
 </ul>
 
 </div>
-<!-- SECTION "Understanding the Code" [1561-2266] -->
+<!-- SECTION "Understanding the Code" [1559-2264] -->
 <h2><a name="the_event_loop" id="the_event_loop">The Event Loop</a></h2>
 <div class="level2">
 
@@ -115,7 +115,7 @@ A rotating object is just a simple example. In the event loop, you can update sc
 </ul>
 
 </div>
-<!-- SECTION "The Event Loop" [2267-2982] -->
+<!-- SECTION "The Event Loop" [2265-2980] -->
 <h2><a name="exercises" id="exercises">Exercises</a></h2>
 <div class="level2">
 
@@ -140,7 +140,7 @@ Look back at the <a href="/com/jme3/gde/core/docs/jme3/beginner/hello_node.html"
 </p>
 
 </div>
-<!-- SECTION "Exercises" [2983-3522] -->
+<!-- SECTION "Exercises" [2981-3520] -->
 <h2><a name="conclusion" id="conclusion">Conclusion</a></h2>
 <div class="level2">
 
@@ -151,5 +151,5 @@ Now you are “listening to the heart beat” of the game and you can add some a
 </p>
 
 </div>
-<!-- SECTION "Conclusion" [3523-] -->
+<!-- SECTION "Conclusion" [3521-] -->
 <p><em><a href="http://jmonkeyengine.org/wiki/doku.php/jme3:beginner:hello_main_event_loop?do=export_xhtmlbody">view online version</a></em></p>

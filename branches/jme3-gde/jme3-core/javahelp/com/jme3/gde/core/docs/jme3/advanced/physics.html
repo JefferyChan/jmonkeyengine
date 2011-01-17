@@ -63,12 +63,12 @@ Full code samples are here:
 </li>
 <li class="level1"><div class="li"> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://code.google.com/p/jmonkeyengine/source/browse/branches/jme3/src/test/jme3test/bullet/TestSimplePhysics.java"><param name="text" value="<html><u>TestSimplePhysics.java</u></html>"><param name="textColor" value="blue"></object></div>
 </li>
-<li class="level1"><div class="li"> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://code.google.com/p/jmonkeyengine/source/browse/branches/jme3/src/test/jme3test/bullet/TestWalkingCharacter.java"><param name="text" value="<html><u>TestWalkingCharacter.java</u></html>"><param name="textColor" value="blue"></object></div>
+<li class="level1"><div class="li"> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://code.google.com/p/jmonkeyengine/source/browse/branches/jme3/src/test/jme3test/bullet/TestWalkingChar.java"><param name="text" value="<html><u>TestWalkingChar.java</u></html>"><param name="textColor" value="blue"></object></div>
 </li>
 </ul>
 
 </div>
-<!-- SECTION "Sample Code" [1433-2047] -->
+<!-- SECTION "Sample Code" [1433-2037] -->
 <h2><a name="physics_application" id="physics_application">Physics Application</a></h2>
 <div class="level2">
 <ul>
@@ -90,7 +90,7 @@ Full code samples are here:
 </ul>
 
 </div>
-<!-- SECTION "Physics Application" [2048-2616] -->
+<!-- SECTION "Physics Application" [2038-2606] -->
 <h3><a name="collision_shapes" id="collision_shapes">Collision Shapes</a></h3>
 <div class="level3">
 
@@ -140,7 +140,7 @@ Pick the right shape for the mesh for what you want to achieve: If you give a bo
 </p>
 
 </div>
-<!-- SECTION "Collision Shapes" [2617-4525] -->
+<!-- SECTION "Collision Shapes" [2607-4515] -->
 <h3><a name="collision_shape_code_samples" id="collision_shape_code_samples">Collision Shape Code Samples</a></h3>
 <div class="level3">
 
@@ -167,7 +167,7 @@ SphereCollisionShape, BoxCollisionShape, CapsuleCollisionShape are also not mesh
     <span class="kw1">new</span> BoxCollisionShape<span class="br0">&#40;</span><span class="kw1">new</span> Vector3f<span class="br0">&#40;</span>1f,2f,3f<span class="br0">&#41;</span><span class="br0">&#41;</span>, 1.5f<span class="br0">&#41;</span></pre><pre class="code java">CapsuleCollisionShape capsuleShape <span class="sy0">=</span> 
     <span class="kw1">new</span> CapsuleCollisionShape<span class="br0">&#40;</span>1f,2f<span class="br0">&#41;</span>;</pre>
 </div>
-<!-- SECTION "Collision Shape Code Samples" [4526-5738] -->
+<!-- SECTION "Collision Shape Code Samples" [4516-5728] -->
 <h2><a name="physics_objects" id="physics_objects">Physics Objects</a></h2>
 <div class="level2">
 
@@ -217,7 +217,7 @@ The bullet objects themselves devivide up into:
 </ul>
 
 </div>
-<!-- SECTION "Physics Objects" [5739-7299] -->
+<!-- SECTION "Physics Objects" [5729-7289] -->
 <h3><a name="physics_nodes_code_samples" id="physics_nodes_code_samples">Physics Nodes Code Samples</a></h3>
 <div class="level3">
 
@@ -236,7 +236,7 @@ model.<span class="me1">addControl</span><span class="br0">&#40;</span>character
 bulletAppState.<span class="me1">getPhysicsSpace</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">add</span><span class="br0">&#40;</span>character<span class="br0">&#41;</span>;  <span class="co1">// making the PhysicsNode physical</span>
 rootNode.<span class="me1">attachChild</span><span class="br0">&#40;</span>model<span class="br0">&#41;</span>;   <span class="co1">// making the whole thing appear in the scene</span></pre>
 </div>
-<!-- SECTION "Physics Nodes Code Samples" [7300-8185] -->
+<!-- SECTION "Physics Nodes Code Samples" [7290-8175] -->
 <h2><a name="physics_space" id="physics_space">Physics Space</a></h2>
 <div class="level2">
 
@@ -258,7 +258,7 @@ physicalNode.<span class="me1">removeFromParent</span><span class="br0">&#40;</s
 </ol>
 
 </div>
-<!-- SECTION "Physics Space" [8186-8904] -->
+<!-- SECTION "Physics Space" [8176-8894] -->
 <h2><a name="properties_of_physical_objects" id="properties_of_physical_objects">Properties of Physical Objects</a></h2>
 <div class="level2">
 
@@ -313,7 +313,7 @@ On a PhysicsNode, you can set the following physical properties.
 </table>
 
 </div>
-<!-- SECTION "Properties of Physical Objects" [8905-10122] -->
+<!-- SECTION "Properties of Physical Objects" [8895-10112] -->
 <h3><a name="kinematic_vs_dynamic_vs_static" id="kinematic_vs_dynamic_vs_static">Kinematic vs Dynamic vs Static</a></h3>
 <div class="level3">
 
@@ -328,7 +328,7 @@ Kinematic nodes are not affected by gravity, and they are not moved by other phy
 </p>
 
 </div>
-<!-- SECTION "Kinematic vs Dynamic vs Static" [10123-10885] -->
+<!-- SECTION "Kinematic vs Dynamic vs Static" [10113-10875] -->
 <h2><a name="forcesmoving_physical_objects" id="forcesmoving_physical_objects">Forces: Moving Physical Objects</a></h2>
 <div class="level2">
 
@@ -383,7 +383,7 @@ Use <code>applyContinuousTorque(false)</code> and <code>applyContinuousForce(fal
 </p>
 
 </div>
-<!-- SECTION "Forces: Moving Physical Objects" [10886-12813] -->
+<!-- SECTION "Forces: Moving Physical Objects" [10876-12803] -->
 <h2><a name="responding_to_a_physicscollisionevent" id="responding_to_a_physicscollisionevent">Responding to a PhysicsCollisionEvent</a></h2>
 <div class="level2">
 
@@ -409,7 +409,7 @@ If you want to respond to a collision event with a custom action however, then y
 </ul>
 
 </div>
-<!-- SECTION "Responding to a PhysicsCollisionEvent" [12814-13448] -->
+<!-- SECTION "Responding to a PhysicsCollisionEvent" [12804-13438] -->
 <h3><a name="overriding_the_collision_method" id="overriding_the_collision_method">Overriding the Collision() Method</a></h3>
 <div class="level3">
 
@@ -436,7 +436,7 @@ After you identify the colliding nodes, specify the action to trigger when this 
 </p>
 
 </div>
-<!-- SECTION "Overriding the Collision() Method" [13449-14561] -->
+<!-- SECTION "Overriding the Collision() Method" [13439-14551] -->
 <h3><a name="reading_details_from_a_physicscollisionevent" id="reading_details_from_a_physicscollisionevent">Reading Details From a PhysicsCollisionEvent</a></h3>
 <div class="level3">
 
@@ -476,7 +476,7 @@ Note that after the collision method has been called the object is not valid any
 </p>
 
 </div>
-<!-- SECTION "Reading Details From a PhysicsCollisionEvent" [14562-15664] -->
+<!-- SECTION "Reading Details From a PhysicsCollisionEvent" [14552-15654] -->
 <h2><a name="best_practices" id="best_practices">Best Practices</a></h2>
 <div class="level2">
 
@@ -495,5 +495,5 @@ If you get weird behaviour, such as physical nodes jittering wildy and being eje
 </p>
 
 </div>
-<!-- SECTION "Best Practices" [15665-] -->
+<!-- SECTION "Best Practices" [15655-] -->
 <p><em><a href="http://jmonkeyengine.org/wiki/doku.php/jme3:advanced:physics?do=export_xhtmlbody">view online version</a></em></p>

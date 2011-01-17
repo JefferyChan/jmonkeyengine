@@ -43,6 +43,7 @@
             <tocitem text="Importing Models" target="jme3.jmonkeyplatform.model_loader_and_viewer"/>
             <tocitem text="Using SceneComposer" target="jme3.jmonkeyplatform.scene_composer"/>
             <tocitem text="Using AssetPacks" target="jme3.jmonkeyplatform.asset_packs"/>
+            <tocitem text="Vehicle Creator" target="jme3.jmonkeyplatform.vehicle_creator"/>
         </tocitem>
         <tocitem text="Working with Materials">
             <tocitem text="Using the Material Editor" target="jme3.jmonkeyplatform.material_editing"/>

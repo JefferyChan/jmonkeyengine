@@ -120,7 +120,7 @@ Use the common Particle.j3md Material Definition to specify the shape of the par
 </p>
 <pre class="code java">    Material mat_flash <span class="sy0">=</span> <span class="kw1">new</span> Material<span class="br0">&#40;</span>
         assetManager, <span class="st0">&quot;Common/MatDefs/Misc/Particle.j3md&quot;</span><span class="br0">&#41;</span>;
-    mat_flash.<span class="me1">setTexture</span><span class="br0">&#40;</span><span class="st0">&quot;m_Texture&quot;</span>, 
+    mat_flash.<span class="me1">setTexture</span><span class="br0">&#40;</span><span class="st0">&quot;Texture&quot;</span>, 
         assetManager.<span class="me1">loadTexture</span><span class="br0">&#40;</span><span class="st0">&quot;Effects/Explosion/flash.png&quot;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
     flash.<span class="me1">setMaterial</span><span class="br0">&#40;</span>debris_mat<span class="br0">&#41;</span>;
     flash.<span class="me1">setImagesX</span><span class="br0">&#40;</span><span class="nu0">2</span><span class="br0">&#41;</span>; <span class="co1">// columns</span>
@@ -142,7 +142,7 @@ Have a look at the following default textures and you will see that you can easi
 </p>
 
 </div>
-<!-- SECTION "Create an Effect Material" [4020-5147] -->
+<!-- SECTION "Create an Effect Material" [4020-5145] -->
 <h3><a name="default_particle_textures" id="default_particle_textures">Default Particle Textures</a></h3>
 <div class="level3">
 
@@ -190,12 +190,12 @@ The following effect textures are available by default from <code>test-data.jar<
 </p>
 
 </div>
-<!-- SECTION "Default Particle Textures" [5148-6851] -->
+<!-- SECTION "Default Particle Textures" [5146-6849] -->
 <h2><a name="usage_example" id="usage_example">Usage Example</a></h2>
 <div class="level2">
 <pre class="code java">    ParticleEmitter fire <span class="sy0">=</span> <span class="kw1">new</span> ParticleEmitter<span class="br0">&#40;</span><span class="st0">&quot;Emitter&quot;</span>, ParticleMesh.<span class="me1">Type</span>.<span class="me1">Triangle</span>, <span class="nu0">30</span><span class="br0">&#41;</span>;
     Material mat_red <span class="sy0">=</span> <span class="kw1">new</span> Material<span class="br0">&#40;</span>assetManager, <span class="st0">&quot;Common/MatDefs/Misc/Particle.j3md&quot;</span><span class="br0">&#41;</span>;
-    mat_red.<span class="me1">setTexture</span><span class="br0">&#40;</span><span class="st0">&quot;m_Texture&quot;</span>, assetManager.<span class="me1">loadTexture</span><span class="br0">&#40;</span><span class="st0">&quot;Effects/Explosion/flame.png&quot;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
+    mat_red.<span class="me1">setTexture</span><span class="br0">&#40;</span><span class="st0">&quot;Texture&quot;</span>, assetManager.<span class="me1">loadTexture</span><span class="br0">&#40;</span><span class="st0">&quot;Effects/Explosion/flame.png&quot;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
     fire.<span class="me1">setMaterial</span><span class="br0">&#40;</span>mat_red<span class="br0">&#41;</span>;
     fire.<span class="me1">setImagesX</span><span class="br0">&#40;</span><span class="nu0">2</span><span class="br0">&#41;</span>; fire.<span class="me1">setImagesY</span><span class="br0">&#40;</span><span class="nu0">2</span><span class="br0">&#41;</span>; <span class="co1">// 2x2 texture animation</span>
     fire.<span class="me1">setEndColor</span><span class="br0">&#40;</span>  <span class="kw1">new</span> ColorRGBA<span class="br0">&#40;</span>1f, 0f, 0f, 1f<span class="br0">&#41;</span><span class="br0">&#41;</span>;   <span class="co1">// red</span>
@@ -220,5 +220,5 @@ See also: <a href="/com/jme3/gde/core/docs/jme3/advanced/effects_overview.html" 
 </p>
 
 </div>
-<!-- SECTION "Usage Example" [6852-] -->
+<!-- SECTION "Usage Example" [6850-] -->
 <p><em><a href="http://jmonkeyengine.org/wiki/doku.php/jme3:advanced:particle_emitters?do=export_xhtmlbody">view online version</a></em></p>

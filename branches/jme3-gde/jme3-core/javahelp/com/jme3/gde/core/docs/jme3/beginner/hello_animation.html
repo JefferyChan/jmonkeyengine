@@ -288,7 +288,7 @@ Add the following code snippet to <code>simpleInitApp()</code> to make the bones
 </p>
 <pre class="code java">     SkeletonDebugger skeletonDebug <span class="sy0">=</span> <span class="kw1">new</span> SkeletonDebugger<span class="br0">&#40;</span><span class="st0">&quot;skeleton&quot;</span>, control.<span class="me1">getSkeleton</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
      Material mat <span class="sy0">=</span> <span class="kw1">new</span> Material<span class="br0">&#40;</span>assetManager, <span class="st0">&quot;Common/MatDefs/Misc/WireColor.j3md&quot;</span><span class="br0">&#41;</span>;
-     mat.<span class="me1">setColor</span><span class="br0">&#40;</span><span class="st0">&quot;m_Color&quot;</span>, ColorRGBA.<span class="me1">Green</span><span class="br0">&#41;</span>;
+     mat.<span class="me1">setColor</span><span class="br0">&#40;</span><span class="st0">&quot;Color&quot;</span>, ColorRGBA.<span class="me1">Green</span><span class="br0">&#41;</span>;
      mat.<span class="me1">getAdditionalRenderState</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">setDepthTest</span><span class="br0">&#40;</span><span class="kw2">false</span><span class="br0">&#41;</span>;
      skeletonDebug.<span class="me1">setMaterial</span><span class="br0">&#40;</span>mat<span class="br0">&#41;</span>;
      player.<span class="me1">attachChild</span><span class="br0">&#40;</span>skeletonDebug<span class="br0">&#41;</span>;</pre>
@@ -297,7 +297,7 @@ Can you identify individual bones in the skeleton?
 </p>
 
 </div>
-<!-- SECTION "Exercises" [7291-8967] -->
+<!-- SECTION "Exercises" [7291-8965] -->
 <h2><a name="conclusion" id="conclusion">Conclusion</a></h2>
 <div class="level2">
 
@@ -318,5 +318,5 @@ See also: <a href="https://docs.google.com/leaf?id=0B9hhZie2D-fEYmRkMTYwN2YtMzQ0
 </p>
 
 </div>
-<!-- SECTION "Conclusion" [8968-] -->
+<!-- SECTION "Conclusion" [8966-] -->
 <p><em><a href="http://jmonkeyengine.org/wiki/doku.php/jme3:beginner:hello_animation?do=export_xhtmlbody">view online version</a></em></p>
