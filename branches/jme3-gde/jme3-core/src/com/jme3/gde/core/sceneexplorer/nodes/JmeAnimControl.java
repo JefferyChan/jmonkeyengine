@@ -34,10 +34,12 @@ package com.jme3.gde.core.sceneexplorer.nodes;
 import com.jme3.animation.AnimControl;
 import com.jme3.gde.core.scene.SceneApplication;
 import com.jme3.gde.core.sceneexplorer.nodes.properties.AnimationProperty;
+import com.jme3.scene.Spatial;
 import java.awt.Image;
 import java.io.IOException;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
+import org.openide.actions.DeleteAction;
 import org.openide.loaders.DataObject;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
@@ -101,26 +103,28 @@ public class JmeAnimControl extends AbstractSceneExplorerNode{
                     //                    SystemAction.get(CopyAction.class),
                     //                    SystemAction.get(CutAction.class),
                     //                    SystemAction.get(PasteAction.class),
-//                    SystemAction.get(DeleteAction.class)
+                    SystemAction.get(DeleteAction.class)
                 };
     }
 
     @Override
     public boolean canDestroy() {
-        return false;
+        return !readOnly;
     }
 
     @Override
     public void destroy() throws IOException {
+        super.destroy();
+        final Spatial spat=getParentNode().getLookup().lookup(Spatial.class);
         try {
             SceneApplication.getApplication().enqueue(new Callable<Void>() {
 
                 public Void call() throws Exception {
-//                    animControl.get
-//                    spatial.removeLight(light);
+                    spat.removeControl(animControl);
                     return null;
                 }
             }).get();
+            ((AbstractSceneExplorerNode)getParentNode()).refresh(true);
         } catch (InterruptedException ex) {
             Exceptions.printStackTrace(ex);
         } catch (ExecutionException ex) {

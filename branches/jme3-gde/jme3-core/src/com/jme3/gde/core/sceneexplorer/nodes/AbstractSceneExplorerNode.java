@@ -60,13 +60,13 @@ public abstract class AbstractSceneExplorerNode extends AbstractNode implements 
     public AbstractSceneExplorerNode(Children children, DataObject dataObject) {
         super(children, new ProxyLookup(dataObject.getLookup(), new SceneExplorerLookup(new InstanceContent())));
         this.dataObject=dataObject;
-        lookupContents = ((SceneExplorerLookup) getLookup()).getInstanceContent();
+        lookupContents = getLookup().lookup(SceneExplorerLookup.class).getInstanceContent();
     }
 
     public AbstractSceneExplorerNode(DataObject dataObject) {
         super(Children.LEAF, new ProxyLookup(dataObject.getLookup(), new SceneExplorerLookup(new InstanceContent())));
         this.dataObject=dataObject;
-        lookupContents = ((SceneExplorerLookup) getLookup()).getInstanceContent();
+        lookupContents = getLookup().lookup(SceneExplorerLookup.class).getInstanceContent();
     }
 
     public AbstractSceneExplorerNode(Children children) {

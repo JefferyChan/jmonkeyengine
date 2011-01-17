@@ -33,13 +33,20 @@ package com.jme3.gde.core.sceneexplorer.nodes;
 
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.PhysicsCharacterControl;
+import com.jme3.gde.core.scene.SceneApplication;
 import com.jme3.math.Matrix3f;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Spatial;
 import java.awt.Image;
+import java.io.IOException;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import org.openide.actions.DeleteAction;
 import org.openide.loaders.DataObject;
-import org.openide.nodes.Children;
 import org.openide.nodes.Sheet;
+import org.openide.util.Exceptions;
 import org.openide.util.ImageUtilities;
+import org.openide.util.actions.SystemAction;
 
 /**
  *
@@ -71,6 +78,40 @@ public class JmePhysicsCharacterControl extends AbstractSceneExplorerNode {
     @Override
     public Image getOpenedIcon(int type) {
         return smallImage;
+    }
+
+    protected SystemAction[] createActions() {
+        return new SystemAction[]{
+                    //                    SystemAction.get(CopyAction.class),
+                    //                    SystemAction.get(CutAction.class),
+                    //                    SystemAction.get(PasteAction.class),
+                    SystemAction.get(DeleteAction.class)
+                };
+    }
+
+    @Override
+    public boolean canDestroy() {
+        return !readOnly;
+    }
+
+    @Override
+    public void destroy() throws IOException {
+        super.destroy();
+        final Spatial spat=getParentNode().getLookup().lookup(Spatial.class);
+        try {
+            SceneApplication.getApplication().enqueue(new Callable<Void>() {
+
+                public Void call() throws Exception {
+                    spat.removeControl(geom);
+                    return null;
+                }
+            }).get();
+            ((AbstractSceneExplorerNode)getParentNode()).refresh(true);
+        } catch (InterruptedException ex) {
+            Exceptions.printStackTrace(ex);
+        } catch (ExecutionException ex) {
+            Exceptions.printStackTrace(ex);
+        }
     }
 
     @Override
