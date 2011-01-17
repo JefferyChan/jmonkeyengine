@@ -86,7 +86,7 @@ public class TestPostWaterLake extends SimpleApplication {
 
         FilterPostProcessor fpp = new FilterPostProcessor(assetManager);        
         final WaterFilter water = new WaterFilter(rootNode, lightDir);
-        water.setWaterHeight(-6);
+        water.setWaterHeight(-20);
         water.setUseFoam(false);
         water.setUseRipples(false);
         water.setDeepWaterColor(ColorRGBA.Brown);
