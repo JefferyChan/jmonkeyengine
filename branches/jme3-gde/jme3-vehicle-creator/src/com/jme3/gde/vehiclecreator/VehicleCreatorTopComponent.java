@@ -36,7 +36,6 @@ public final class VehicleCreatorTopComponent extends TopComponent implements Sc
     static final String ICON_PATH = "com/jme3/gde/vehiclecreator/objects_039.gif";
     private static final String PREFERRED_ID = "VehicleCreatorTopComponent";
     private VehicleEditorController editorController;
-    private VehicleCreatorCameraController cameraController;
     private SceneRequest currentRequest;
     private boolean testing = false;
 
@@ -861,8 +860,6 @@ public final class VehicleCreatorTopComponent extends TopComponent implements Sc
     public boolean sceneClose(SceneRequest request) {
         if (request == currentRequest) {
             currentRequest = null;
-            cameraController.disable();
-            cameraController = null;
             editorController.cleanupApplication();
             SceneApplication.getApplication().getStateManager().detach(editorController.getBulletState());
             setLoadedScene(null, false);
@@ -873,10 +870,6 @@ public final class VehicleCreatorTopComponent extends TopComponent implements Sc
     public void sceneRequested(SceneRequest request) {
         if (request == currentRequest) {
             SceneApplication.getApplication().removeSceneListener(this);
-            cameraController = new VehicleCreatorCameraController(SceneApplication.getApplication().getCamera(), SceneApplication.getApplication().getInputManager());
-            cameraController.setMaster(this);
-            cameraController.enable();
-            cameraController.setVehicle(currentRequest.getRootNode());
             editorController.prepareApplication();
             SceneApplication.getApplication().getStateManager().attach(editorController.getBulletState());
             setLoadedScene(currentRequest.getJmeNode(), true);

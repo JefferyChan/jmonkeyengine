@@ -17,6 +17,7 @@ import com.jme3.gde.core.assets.ProjectAssetManager;
 import com.jme3.gde.core.scene.SceneApplication;
 import com.jme3.gde.core.scene.controller.SceneToolController;
 import com.jme3.gde.core.sceneexplorer.nodes.JmeSpatial;
+import com.jme3.input.ChaseCamera;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
@@ -48,6 +49,7 @@ import org.openide.util.Utilities;
 public class VehicleEditorController implements LookupListener, ActionListener {
 
     private JmeSpatial jmeRootNode;
+    private Node rootNode;
     private JmeSpatial selectedSpat;
     private BinaryModelDataObject currentFileObject;
     private PhysicsVehicleControl vehicleControl;
@@ -55,6 +57,7 @@ public class VehicleEditorController implements LookupListener, ActionListener {
     private Result<PhysicsVehicleWheel> result2;
     private List<Geometry> list = new LinkedList<Geometry>();
     private SceneToolController toolController;
+    private VehicleCreatorCameraController cameraController;
     private Node toolsNode;
     private BulletAppState bulletState;
     private boolean testing = false;
@@ -64,6 +67,7 @@ public class VehicleEditorController implements LookupListener, ActionListener {
     public VehicleEditorController(JmeSpatial jmeRootNode, BinaryModelDataObject currentFileObject) {
         this.jmeRootNode = jmeRootNode;
         this.currentFileObject = currentFileObject;
+        rootNode = jmeRootNode.getLookup().lookup(Node.class);
         toolsNode = new Node("ToolsNode");
         toolController = new SceneToolController(toolsNode, currentFileObject.getLookup().lookup(ProjectAssetManager.class));
         toolController.setShowSelection(true);
@@ -97,10 +101,16 @@ public class VehicleEditorController implements LookupListener, ActionListener {
         SceneApplication.getApplication().getInputManager().addMapping("VehicleEditor_Space", new KeyTrigger(KeyInput.KEY_SPACE));
         SceneApplication.getApplication().getInputManager().addMapping("VehicleEditor_Reset", new KeyTrigger(KeyInput.KEY_RETURN));
         SceneApplication.getApplication().getInputManager().addListener(this, "VehicleEditor_Left", "VehicleEditor_Right", "VehicleEditor_Up", "VehicleEditor_Down", "VehicleEditor_Space", "VehicleEditor_Reset");
+        cameraController = new VehicleCreatorCameraController(SceneApplication.getApplication().getCamera(), SceneApplication.getApplication().getInputManager());
+        cameraController.setMaster(this);
+        cameraController.enable();
+        cameraController.setVehicle(rootNode);
     }
 
     public void cleanupApplication() {
         SceneApplication.getApplication().getInputManager().removeListener(this);
+        cameraController.disable();
+        cameraController = null;
     }
 
     public JmeSpatial getJmeRootNode() {
@@ -167,18 +177,18 @@ public class VehicleEditorController implements LookupListener, ActionListener {
             Exceptions.printStackTrace(ex);
         }
     }
-//    private ChaseCamera chaseCam;
+    private ChaseCamera chaseCam;
 
     public void doTestVehicle(Node vehicleNode) {
         testing = true;
         bulletState.getPhysicsSpace().addAll(toolsNode);
         bulletState.getPhysicsSpace().add(vehicleControl);
-//        if(chaseCam==null){
-//            chaseCam = new ChaseCamera(SceneApplication.getApplication().getCamera(), vehicleNode);
-//            chaseCam.setTrailingEnabled(true);
-//            chaseCam.registerWithInput(SceneApplication.getApplication().getInputManager());
-//        }
-//        chaseCam.setEnabled(true);
+        cameraController.disable();
+        if (chaseCam == null) {
+            chaseCam = new ChaseCamera(SceneApplication.getApplication().getCamera(), vehicleNode);
+            chaseCam.registerWithInput(SceneApplication.getApplication().getInputManager());
+        }
+        chaseCam.setEnabled(true);
     }
 
     public void stopVehicle() {
@@ -200,11 +210,15 @@ public class VehicleEditorController implements LookupListener, ActionListener {
 
     public void doStopVehicle() {
         testing = false;
-        bulletState.getPhysicsSpace().removeAll(toolsNode);
-        bulletState.getPhysicsSpace().remove(vehicleControl);
         vehicleControl.setPhysicsLocation(Vector3f.ZERO);
         vehicleControl.setPhysicsRotation(new Matrix3f());
-//        chaseCam.setEnabled(false);
+        vehicleControl.setLinearVelocity(Vector3f.ZERO);
+        vehicleControl.setAngularVelocity(Vector3f.ZERO);
+        vehicleControl.resetSuspension();
+        bulletState.getPhysicsSpace().removeAll(toolsNode);
+        bulletState.getPhysicsSpace().remove(vehicleControl);
+        chaseCam.setEnabled(false);
+        cameraController.enable();
     }
 
     public void centerSelected() {
@@ -513,16 +527,16 @@ public class VehicleEditorController implements LookupListener, ActionListener {
         }
         if (binding.equals("VehicleEditor_Left")) {
             if (value) {
-                steeringValue += -.5f;
-            } else {
                 steeringValue += .5f;
+            } else {
+                steeringValue += -.5f;
             }
             vehicleControl.steer(steeringValue);
         } else if (binding.equals("VehicleEditor_Right")) {
             if (value) {
-                steeringValue += .5f;
-            } else {
                 steeringValue += -.5f;
+            } else {
+                steeringValue += .5f;
             }
             vehicleControl.steer(steeringValue);
         } else if (binding.equals("VehicleEditor_Up")) {
