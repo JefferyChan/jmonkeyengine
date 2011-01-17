@@ -177,18 +177,18 @@ public class VehicleEditorController implements LookupListener, ActionListener {
             Exceptions.printStackTrace(ex);
         }
     }
-    private ChaseCamera chaseCam;
+//    private ChaseCamera chaseCam;
 
     public void doTestVehicle(Node vehicleNode) {
         testing = true;
         bulletState.getPhysicsSpace().addAll(toolsNode);
         bulletState.getPhysicsSpace().add(vehicleControl);
-        cameraController.disable();
-        if (chaseCam == null) {
-            chaseCam = new ChaseCamera(SceneApplication.getApplication().getCamera(), vehicleNode);
-            chaseCam.registerWithInput(SceneApplication.getApplication().getInputManager());
-        }
-        chaseCam.setEnabled(true);
+//        cameraController.disable();
+//        if (chaseCam == null) {
+//            chaseCam = new ChaseCamera(SceneApplication.getApplication().getCamera(), vehicleNode);
+//            chaseCam.registerWithInput(SceneApplication.getApplication().getInputManager());
+//        }
+//        chaseCam.setEnabled(true);
     }
 
     public void stopVehicle() {
@@ -217,8 +217,8 @@ public class VehicleEditorController implements LookupListener, ActionListener {
         vehicleControl.resetSuspension();
         bulletState.getPhysicsSpace().removeAll(toolsNode);
         bulletState.getPhysicsSpace().remove(vehicleControl);
-        chaseCam.setEnabled(false);
-        cameraController.enable();
+//        chaseCam.setEnabled(false);
+//        cameraController.enable();
     }
 
     public void centerSelected() {
