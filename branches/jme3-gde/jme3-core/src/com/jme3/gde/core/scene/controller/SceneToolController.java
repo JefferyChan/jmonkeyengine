@@ -38,7 +38,7 @@ import java.util.concurrent.Callable;
  */
 public class SceneToolController implements AppState {
 
-    private Node toolsNode;
+    protected Node toolsNode;
     protected boolean showSelection = false;
     protected boolean showGrid = false;
     protected Node cursor;
