@@ -215,6 +215,9 @@
             file="${jme3zip}"
             toDir="/var/www/nightly" overwrite="true" failonerror="true" verbose="true"
             />
+        <copydir
+            src="dist/javadoc/" dest="/var/wwworg/javadoc/" forceoverwrite="true"
+            />
     </target>
 
 </project>
