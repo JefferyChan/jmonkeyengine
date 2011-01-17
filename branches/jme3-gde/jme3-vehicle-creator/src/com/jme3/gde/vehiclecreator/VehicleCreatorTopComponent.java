@@ -39,7 +39,7 @@ public final class VehicleCreatorTopComponent extends TopComponent implements Sc
     private VehicleEditorController editorController;
     private SceneRequest currentRequest;
     private boolean testing = false;
-    DirectionalLight dirLight=new DirectionalLight();
+    DirectionalLight dirLight = new DirectionalLight();
 
     public VehicleCreatorTopComponent() {
         initComponents();
@@ -673,13 +673,12 @@ public final class VehicleCreatorTopComponent extends TopComponent implements Sc
     }//GEN-LAST:event_jButton7ActionPerformed
 
     private void motorForceSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_motorForceSpinnerStateChanged
-        editorController.setMotorForce((Float)motorForceSpinner.getValue());
+        editorController.setMotorForce((Float) motorForceSpinner.getValue());
     }//GEN-LAST:event_motorForceSpinnerStateChanged
 
     private void brakeForceSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_brakeForceSpinnerStateChanged
-        editorController.setBrakeForce((Float)brakeForceSpinner.getValue());
+        editorController.setBrakeForce((Float) brakeForceSpinner.getValue());
     }//GEN-LAST:event_brakeForceSpinnerStateChanged
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JSpinner axisSpinner;
     private javax.swing.JRadioButton boundingRadioButton;
@@ -842,16 +841,12 @@ public final class VehicleCreatorTopComponent extends TopComponent implements Sc
         settings.setRelease(dampValue * 2.0f * FastMath.sqrt(stiffness));
         settings.setStiffness(stiffness);
         settings.setFrontWheel(frontCheckBox.isSelected());
-        if("-Z".equals(axisSpinner.getValue())){
-            settings.setAxle(new Vector3f(1,0,0));
-        }
-        else if("X".equals(axisSpinner.getValue()))
-        {
-            settings.setAxle(new Vector3f(0,0,1));
-        }
-        else if("-X".equals(axisSpinner.getValue()))
-        {
-            settings.setAxle(new Vector3f(0,0,-1));
+        if ("-Z".equals(axisSpinner.getValue())) {
+            settings.setAxle(new Vector3f(1, 0, 0));
+        } else if ("X".equals(axisSpinner.getValue())) {
+            settings.setAxle(new Vector3f(0, 0, 1));
+        } else if ("-X".equals(axisSpinner.getValue())) {
+            settings.setAxle(new Vector3f(0, 0, -1));
         }
         settings.setCreateNode(createNodeCheckBox.isSelected());
         return settings;
@@ -904,7 +899,9 @@ public final class VehicleCreatorTopComponent extends TopComponent implements Sc
                         editorController = null;
                     }
                 } else {
-                    open();
+                    if (!isOpened()) {
+                        open();
+                    }
                     requestActive();
                     setActivatedNodes(new org.openide.nodes.Node[]{});
                     editorController.checkVehicle();
