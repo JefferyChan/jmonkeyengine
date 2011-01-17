@@ -14,6 +14,7 @@ import com.jme3.gde.core.scene.controller.SceneToolController;
 import com.jme3.gde.core.sceneexplorer.nodes.JmeNode;
 import com.jme3.gde.core.sceneexplorer.nodes.NodeUtility;
 import com.jme3.gde.core.sceneviewer.SceneViewerTopComponent;
+import com.jme3.light.DirectionalLight;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
@@ -38,6 +39,7 @@ public final class VehicleCreatorTopComponent extends TopComponent implements Sc
     private VehicleEditorController editorController;
     private SceneRequest currentRequest;
     private boolean testing = false;
+    DirectionalLight dirLight=new DirectionalLight();
 
     public VehicleCreatorTopComponent() {
         initComponents();
@@ -871,20 +873,22 @@ public final class VehicleCreatorTopComponent extends TopComponent implements Sc
 
     public boolean sceneClose(SceneRequest request) {
         if (request == currentRequest) {
-            currentRequest = null;
+            SceneApplication.getApplication().removeSceneListener(this);
+            currentRequest.getRootNode().getParent().removeLight(dirLight);
             editorController.cleanupApplication();
             SceneApplication.getApplication().getStateManager().detach(editorController.getBulletState());
             setLoadedScene(null, false);
+            currentRequest = null;
         }
         return true;
     }
 
     public void sceneRequested(SceneRequest request) {
         if (request == currentRequest) {
-            SceneApplication.getApplication().removeSceneListener(this);
             editorController.prepareApplication();
             SceneApplication.getApplication().getStateManager().attach(editorController.getBulletState());
             setLoadedScene(currentRequest.getJmeNode(), true);
+            currentRequest.getRootNode().getParent().addLight(dirLight);
         }
     }
 

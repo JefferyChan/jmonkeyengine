@@ -87,7 +87,6 @@ public final class TerrainEditorTopComponent extends TopComponent implements Sce
     TerrainToolController toolController;
     TerrainEditorController editorController;
     private SceneRequest currentRequest;
-    private SaveCookie saveCookie = new SaveCookieImpl();
     private javax.swing.JToggleButton currentSelectedButton;
 
     public enum TerrainEditButton {none, raiseTerrain, lowerTerrain, smoothTerrain, levelTerrain, paintTerrain, eraseTerrain};
@@ -540,13 +539,6 @@ public final class TerrainEditorTopComponent extends TopComponent implements Sce
         SceneApplication.getApplication().requestScene(request);
     }
 
-    public class SaveCookieImpl implements SaveCookie {
-
-        public void save() throws IOException {
-//            editorController.saveScene();
-        }
-    }
-
     public void sceneRequested(SceneRequest request) {
         if (request.equals(currentRequest)) {
 
@@ -616,19 +608,15 @@ public final class TerrainEditorTopComponent extends TopComponent implements Sce
 
     public boolean sceneClose(SceneRequest request) {
         if (request.equals(currentRequest)) {
-            /*if (checkSaved()) {
-                SceneApplication.getApplication().removeSceneListener(this);
-                currentRequest = null;
-                //setLoadedScene(null, false);
-                java.awt.EventQueue.invokeLater(new Runnable() {
+            SceneApplication.getApplication().removeSceneListener(this);
+            setLoadedScene(null, false);
+            currentRequest = null;
+            java.awt.EventQueue.invokeLater(new Runnable() {
 
-                    public void run() {
-                        cleanupControllers();
-                    }
-                });
-            } else {
-                return false;
-            }*/
+                public void run() {
+                    cleanupControllers();
+                }
+            });
         }
         return true;
     }
