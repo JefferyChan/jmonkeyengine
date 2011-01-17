@@ -93,6 +93,11 @@
             <tocitem text="Bloom and Glow" target="jme3.advanced.bloom_and_glow"/>
             <tocitem text="Particle Emitters" target="jme3.advanced.particle_emitters"/>
         </tocitem>
+        <tocitem text="Animation" expand="false">
+            <tocitem text="Animation" target="jme3.advanced.animation"/>
+            <tocitem text="Cinematics" target="jme3.advanced.cinematics"/>
+            <tocitem text="Motion Path" target="jme3.advanced.motion_path"/>
+        </tocitem>
         <tocitem text="Physics" expand="false">
             <tocitem text="Physics Overview" target="jme3.advanced.physics"/>
             <tocitem text="Hinges and Joints" target="jme3.advanced.hinges_and_joints"/>
