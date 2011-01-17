@@ -73,24 +73,25 @@ public class QuaternionPropertyEditor implements PropertyEditor {
     }
 
     public String getAsText() {
-        return "[" + quaternion.getX() + ", " + quaternion.getY() + ", " + quaternion.getZ() + ", " + quaternion.getW() + "]";
+        float[] angles=quaternion.toAngles(new float[3]);
+        return "[" + angles[0] + ", " + angles[1] + ", " + angles[2] + "]";
     }
 
     public void setAsText(String text) throws IllegalArgumentException {
         text = text.replace('[', ' ');
         text = text.replace(']', ' ');
         String[] values = text.split(",");
-        if (values.length != 4) {
+        if (values.length != 3) {
             throw (new IllegalArgumentException("String not correct"));
         }
-        float[] floats = new float[4];
+        float[] floats = new float[3];
         for (int i = 0; i < values.length; i++) {
             String string = values[i];
             floats[i] = Float.parseFloat(string);
         }
         Quaternion old=new Quaternion();
         old.set(quaternion);
-        quaternion.set(floats[0], floats[1], floats[2], floats[3]);
+        quaternion.fromAngles(floats);
         notifyListeners(old,quaternion);
     }
 
