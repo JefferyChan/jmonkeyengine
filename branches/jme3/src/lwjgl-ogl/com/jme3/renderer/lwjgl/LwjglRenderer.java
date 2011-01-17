@@ -2160,6 +2160,8 @@ public class LwjglRenderer implements Renderer {
     }
 
     public void renderMesh(Mesh mesh, int lod, int count) {
+        if (mesh.getVertexCount() == 0)
+            return;
         if (context.pointSize != mesh.getPointSize()) {
             glPointSize(mesh.getPointSize());
             context.pointSize = mesh.getPointSize();
