@@ -581,6 +581,7 @@ public class PhysicsRigidBody extends PhysicsCollisionObject {
             node = new Node("DebugShapeNode");
             node.attachChild(shape);
         }
+        int i = 0;
         for (Iterator<PhysicsJoint> it = joints.iterator(); it.hasNext();) {
             PhysicsJoint physicsJoint = it.next();
             Vector3f pivot = null;
@@ -590,9 +591,10 @@ public class PhysicsRigidBody extends PhysicsCollisionObject {
                 pivot = physicsJoint.getPivotB();
             }
             Arrow arrow = new Arrow(pivot);
-            Geometry geom = new Geometry("DebugBone", arrow);
+            Geometry geom = new Geometry("DebugBone" + i, arrow);
             geom.setMaterial(debugMaterialGreen);
             node.attachChild(geom);
+            i++;
         }
         return node;
     }

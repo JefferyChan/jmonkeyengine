@@ -12,11 +12,14 @@ import com.jme3.export.InputCapsule;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
 import com.jme3.export.OutputCapsule;
+import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
+import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.Control;
+import com.jme3.scene.debug.Arrow;
 import java.io.IOException;
 import java.util.Iterator;
 
@@ -85,7 +88,7 @@ public class PhysicsVehicleControl extends PhysicsVehicle implements PhysicsCont
             if (spatial instanceof Node) {
                 Node node = (Node) spatial;
                 Spatial wheelSpat = node.getChild(wheel.getWheelSpatial().getName());
-                if(wheelSpat!=null){
+                if (wheelSpat != null) {
                     newWheel.setWheelSpatial(wheelSpat);
                 }
             }
@@ -131,10 +134,51 @@ public class PhysicsVehicleControl extends PhysicsVehicle implements PhysicsCont
         }
     }
 
+    @Override
+    protected Spatial getDebugShape() {
+        return super.getDebugShape();
+    }
+
     public void render(RenderManager rm, ViewPort vp) {
         if (debugShape != null && enabled) {
+            Node debugNode = (Node) debugShape;
             debugShape.setLocalTranslation(motionState.getWorldLocation());
             debugShape.setLocalRotation(motionState.getWorldRotation());
+            int i = 0;
+            for (Iterator<PhysicsVehicleWheel> it = wheels.iterator(); it.hasNext();) {
+                PhysicsVehicleWheel physicsVehicleWheel = it.next();
+                Vector3f location = physicsVehicleWheel.getLocation().clone();
+                Vector3f direction = physicsVehicleWheel.getDirection().clone();
+                Vector3f axle = physicsVehicleWheel.getAxle().clone();
+                float restLength = physicsVehicleWheel.getRestLength();
+                float radius = physicsVehicleWheel.getRadius();
+                float skid = physicsVehicleWheel.getSkidInfo();
+
+                Geometry locGeom = (Geometry) debugNode.getChild("WheelLocationDebugShape" + i);
+                Geometry dirGeom = (Geometry) debugNode.getChild("WheelDirectionDebugShape" + i);
+                Geometry axleGeom = (Geometry) debugNode.getChild("WheelAxleDebugShape" + i);
+                Geometry wheelGeom = (Geometry) debugNode.getChild("WheelRadiusDebugShape" + i);
+
+                Arrow locArrow = (Arrow) locGeom.getMesh();
+                locArrow.setArrowExtent(location);
+                Arrow axleArrow = (Arrow) axleGeom.getMesh();
+                axleArrow.setArrowExtent(axle.normalizeLocal().multLocal(0.3f));
+                Arrow wheelArrow = (Arrow) wheelGeom.getMesh();
+                wheelArrow.setArrowExtent(direction.normalizeLocal().multLocal(radius));
+                Arrow dirArrow = (Arrow) dirGeom.getMesh();
+                dirArrow.setArrowExtent(direction.normalizeLocal().multLocal(restLength));
+
+                if (skid < 0.9f) {
+                    wheelGeom.setMaterial(debugMaterialRed);
+                } else {
+                    wheelGeom.setMaterial(debugMaterialGreen);
+                }
+
+                dirGeom.setLocalTranslation(location);
+                axleGeom.setLocalTranslation(location.addLocal(direction));
+                wheelGeom.setLocalTranslation(location);
+                i++;
+            }
             debugShape.updateLogicalState(0);
             debugShape.updateGeometricState();
             rm.renderScene(debugShape, vp);

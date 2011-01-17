@@ -127,7 +127,9 @@ public class PhysicsVehicle extends PhysicsRigidBody {
      */
     public void createVehicle(PhysicsSpace space) {
         physicsSpace = space;
-        if(space==null) return;
+        if (space == null) {
+            return;
+        }
         rayCaster = new DefaultVehicleRaycaster(space.getDynamicsWorld());
         vehicle = new RaycastVehicle(tuning, rBody, rayCaster);
         vehicle.setCoordinateSystem(0, 1, 2);
@@ -184,7 +186,7 @@ public class PhysicsVehicle extends PhysicsRigidBody {
         if (debugShape != null) {
             detachDebugShape();
         }
-        updateDebugShape();
+//        updateDebugShape();
         return wheel;
     }
 
@@ -195,7 +197,7 @@ public class PhysicsVehicle extends PhysicsRigidBody {
     public void removeWheel(int wheel) {
         wheels.remove(wheel);
         rebuildRigidBody();
-        updateDebugShape();
+//        updateDebugShape();
     }
 
     /**
@@ -496,6 +498,7 @@ public class PhysicsVehicle extends PhysicsRigidBody {
             node = new Node("DebugShapeNode");
             node.attachChild(shape);
         }
+        int i = 0;
         for (Iterator<PhysicsVehicleWheel> it = wheels.iterator(); it.hasNext();) {
             PhysicsVehicleWheel physicsVehicleWheel = it.next();
             Vector3f location = physicsVehicleWheel.getLocation().clone();
@@ -503,15 +506,15 @@ public class PhysicsVehicle extends PhysicsRigidBody {
             Vector3f axle = physicsVehicleWheel.getAxle().clone();
             float restLength = physicsVehicleWheel.getRestLength();
             float radius = physicsVehicleWheel.getRadius();
-            physicsVehicleWheel.getRadius();
+
             Arrow locArrow = new Arrow(location);
-            Arrow axleArrow = new Arrow(axle.normalizeLocal().mult(0.3f));
-            Arrow wheelArrow = new Arrow(direction.normalizeLocal().mult(radius));
+            Arrow axleArrow = new Arrow(axle.normalizeLocal().multLocal(0.3f));
+            Arrow wheelArrow = new Arrow(direction.normalizeLocal().multLocal(radius));
             Arrow dirArrow = new Arrow(direction.normalizeLocal().multLocal(restLength));
-            Geometry locGeom = new Geometry("WheelLocationDebugShape", locArrow);
-            Geometry dirGeom = new Geometry("WheelDirectionDebugShape", dirArrow);
-            Geometry axleGeom = new Geometry("WheelAxleDebugShape", axleArrow);
-            Geometry wheelGeom = new Geometry("WheelRadiusDebugShape", wheelArrow);
+            Geometry locGeom = new Geometry("WheelLocationDebugShape" + i, locArrow);
+            Geometry dirGeom = new Geometry("WheelDirectionDebugShape" + i, dirArrow);
+            Geometry axleGeom = new Geometry("WheelAxleDebugShape" + i, axleArrow);
+            Geometry wheelGeom = new Geometry("WheelRadiusDebugShape" + i, wheelArrow);
             dirGeom.setLocalTranslation(location);
             axleGeom.setLocalTranslation(location.add(direction));
             wheelGeom.setLocalTranslation(location.add(direction));
@@ -523,6 +526,7 @@ public class PhysicsVehicle extends PhysicsRigidBody {
             node.attachChild(dirGeom);
             node.attachChild(axleGeom);
             node.attachChild(wheelGeom);
+            i++;
         }
         return node;
     }

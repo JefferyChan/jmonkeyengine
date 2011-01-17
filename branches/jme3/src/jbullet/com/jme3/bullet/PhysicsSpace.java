@@ -462,7 +462,7 @@ public class PhysicsSpace {
     }
 
     /**
-     * adds all physics subnodes and joints in the given root node to the physics space
+     * adds all physics controls and joints in the given root node to the physics space
      * (e.g. after loading from disk)
      * @param node the rootnode containing the physics objects
      */
@@ -499,7 +499,7 @@ public class PhysicsSpace {
     }
 
     /**
-     * Removes all physics subnodes and joints in the given root node from the physics space
+     * Removes all physics controls and joints in the given root node from the physics space
      * (e.g. before saving to disk)
      * @param node the rootnode containing the physics objects
      */

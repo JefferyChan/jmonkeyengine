@@ -41,9 +41,11 @@ import com.jme3.export.OutputCapsule;
 import com.jme3.export.Savable;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.debug.Arrow;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
@@ -55,6 +57,8 @@ import java.util.List;
 public abstract class PhysicsCollisionObject implements Savable {
 
     protected Spatial debugShape;
+    protected Arrow debugArrow;
+    protected Geometry debugArrowGeom;
     protected Material debugMaterialBlue;
     protected Material debugMaterialRed;
     protected Material debugMaterialGreen;
@@ -168,6 +172,9 @@ public abstract class PhysicsCollisionObject implements Savable {
         debugMaterialRed.setColor("Color", ColorRGBA.Red);
         debugMaterialYellow = new Material(manager, "Common/MatDefs/Misc/WireColor.j3md");
         debugMaterialYellow.setColor("Color", ColorRGBA.Yellow);
+        debugArrow = new Arrow(Vector3f.UNIT_XYZ);
+        debugArrowGeom = new Geometry("DebugArrow", debugArrow);
+        debugArrowGeom.setMaterial(debugMaterialGreen);
         return attachDebugShape();
     }
 
@@ -176,6 +183,9 @@ public abstract class PhysicsCollisionObject implements Savable {
         debugMaterialGreen = material;
         debugMaterialRed = material;
         debugMaterialYellow = material;
+        debugArrow = new Arrow(Vector3f.UNIT_XYZ);
+        debugArrowGeom = new Geometry("DebugArrow", debugArrow);
+        debugArrowGeom.setMaterial(debugMaterialGreen);
         return attachDebugShape();
     }
 
