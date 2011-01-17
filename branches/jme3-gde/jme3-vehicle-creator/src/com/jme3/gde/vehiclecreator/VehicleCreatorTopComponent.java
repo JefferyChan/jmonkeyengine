@@ -13,7 +13,9 @@ import com.jme3.gde.core.scene.SceneRequest;
 import com.jme3.gde.core.scene.controller.SceneToolController;
 import com.jme3.gde.core.sceneexplorer.nodes.JmeNode;
 import com.jme3.gde.core.sceneexplorer.nodes.NodeUtility;
+import com.jme3.gde.core.sceneviewer.SceneViewerTopComponent;
 import com.jme3.math.FastMath;
+import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import java.util.logging.Logger;
 import org.openide.util.NbBundle;
@@ -340,7 +342,6 @@ public final class VehicleCreatorTopComponent extends TopComponent implements Sc
 
         axisSpinner.setModel(new javax.swing.SpinnerListModel(new String[] {"+Z", "-Z", "+X", "-X"}));
         axisSpinner.setToolTipText(org.openide.util.NbBundle.getMessage(VehicleCreatorTopComponent.class, "VehicleCreatorTopComponent.axisSpinner.toolTipText")); // NOI18N
-        axisSpinner.setEnabled(false);
         jToolBar15.add(axisSpinner);
 
         jToolBar16.setFloatable(false);
@@ -641,6 +642,7 @@ public final class VehicleCreatorTopComponent extends TopComponent implements Sc
             jButton5.setText("test vehicle");
             testing = false;
         } else {
+            SceneViewerTopComponent.findInstance().requestActive();
             editorController.testVehicle();
             jButton5.setText("stop testing");
             testing = true;
@@ -828,6 +830,17 @@ public final class VehicleCreatorTopComponent extends TopComponent implements Sc
         settings.setRelease(dampValue * 2.0f * FastMath.sqrt(stiffness));
         settings.setStiffness(stiffness);
         settings.setFrontWheel(frontCheckBox.isSelected());
+        if("-Z".equals(axisSpinner.getValue())){
+            settings.setAxle(new Vector3f(1,0,0));
+        }
+        else if("X".equals(axisSpinner.getValue()))
+        {
+            settings.setAxle(new Vector3f(0,0,1));
+        }
+        else if("-X".equals(axisSpinner.getValue()))
+        {
+            settings.setAxle(new Vector3f(0,0,-1));
+        }
         return settings;
     }
 
