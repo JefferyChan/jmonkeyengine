@@ -539,7 +539,7 @@ public class BitmapFont implements Savable {
         }
         b.setLineCount(lineNumber);
 
-        return maxLineWidth;
+        return Math.max(maxLineWidth,lineWidth);
     }
 
 }
