@@ -42,6 +42,7 @@ import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.NotifyDescriptor.Message;
+import org.openide.awt.UndoRedo;
 import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.InstanceContent;
@@ -51,7 +52,7 @@ import org.openide.util.lookup.InstanceContent;
  */
 @ConvertAsProperties(dtd = "-//com.jme3.gde.core.sceneviewer//SceneViewer//EN",
 autostore = false)
-public final class SceneViewerTopComponent extends TopComponent{
+public final class SceneViewerTopComponent extends TopComponent {
 
     private static SceneViewerTopComponent instance;
     /** path to the icon used by the component and its open action */
@@ -155,7 +156,6 @@ public final class SceneViewerTopComponent extends TopComponent{
     private void enableStatsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_enableStatsActionPerformed
         app.enableStats(enableStats.isSelected());
     }//GEN-LAST:event_enableStatsActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JToggleButton enableCamLight;
     private javax.swing.JToggleButton enableStats;
@@ -275,5 +275,10 @@ public final class SceneViewerTopComponent extends TopComponent{
     @Override
     protected String preferredID() {
         return PREFERRED_ID;
+    }
+
+    @Override
+    public UndoRedo getUndoRedo() {
+        return Lookup.getDefault().lookup(UndoRedo.class);
     }
 }

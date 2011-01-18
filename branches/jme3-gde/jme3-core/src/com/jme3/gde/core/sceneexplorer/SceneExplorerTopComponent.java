@@ -37,7 +37,6 @@ import com.jme3.gde.core.scene.SceneListener;
 import com.jme3.gde.core.scene.SceneRequest;
 import com.jme3.gde.core.sceneexplorer.nodes.AbstractSceneExplorerNode;
 import com.jme3.gde.core.sceneexplorer.nodes.JmeNode;
-import com.jme3.gde.core.sceneexplorer.nodes.JmeSpatial;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.logging.Logger;
@@ -51,11 +50,13 @@ import org.openide.actions.CopyAction;
 import org.openide.actions.CutAction;
 import org.openide.actions.DeleteAction;
 import org.openide.actions.PasteAction;
+import org.openide.awt.UndoRedo;
 import org.openide.explorer.ExplorerManager;
 import org.openide.explorer.ExplorerUtils;
 import org.openide.explorer.view.BeanTreeView;
 import org.openide.nodes.Node;
 import org.openide.util.HelpCtx;
+import org.openide.util.Lookup;
 import org.openide.util.LookupEvent;
 import org.openide.util.LookupListener;
 import org.openide.util.Utilities;
@@ -232,6 +233,12 @@ public final class SceneExplorerTopComponent extends TopComponent implements Exp
     protected String preferredID() {
         return PREFERRED_ID;
     }
+
+    @Override
+    public UndoRedo getUndoRedo() {
+        return Lookup.getDefault().lookup(UndoRedo.class);
+    }
+
     private transient ExplorerManager explorerManager = new ExplorerManager();
 
     public ExplorerManager getExplorerManager() {
