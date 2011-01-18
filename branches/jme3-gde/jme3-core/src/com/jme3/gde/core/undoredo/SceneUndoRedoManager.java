@@ -29,9 +29,10 @@
  *  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package com.jme3.gde.core.undoredo;
 
+import javax.swing.event.UndoableEditEvent;
+import javax.swing.undo.UndoableEdit;
 import org.openide.awt.UndoRedo;
 
 /**
@@ -40,4 +41,16 @@ import org.openide.awt.UndoRedo;
  */
 public class SceneUndoRedoManager extends UndoRedo.Manager {
 
+    public void addEdit(final Object source, final UndoableEdit edit) {
+        if (!java.awt.EventQueue.isDispatchThread()) {
+            java.awt.EventQueue.invokeLater(new Runnable() {
+
+                public void run() {
+                    undoableEditHappened(new UndoableEditEvent(source, edit));
+                }
+            });
+        } else {
+            undoableEditHappened(new UndoableEditEvent(source, edit));
+        }
+    }
 }

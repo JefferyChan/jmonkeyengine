@@ -29,7 +29,6 @@
  *  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package com.jme3.gde.core.undoredo;
 
 import com.jme3.gde.core.scene.SceneApplication;
@@ -44,11 +43,19 @@ import org.openide.util.Exceptions;
  * Unodablededit for scene operations, executes sceneUndo and sceneRedo on scene thread
  * @author normenhansen
  */
-public abstract class AbstractUndoableSceneEdit extends AbstractUndoableEdit{
-    
+public abstract class AbstractUndoableSceneEdit extends AbstractUndoableEdit {
+
     public abstract void sceneUndo();
 
     public abstract void sceneRedo();
+
+    public void awtUndo(){
+
+    }
+
+    public void awtRedo(){
+
+    }
 
     @Override
     public void undo() throws CannotUndoException {
@@ -66,6 +73,7 @@ public abstract class AbstractUndoableSceneEdit extends AbstractUndoableEdit{
         } catch (ExecutionException ex) {
             Exceptions.printStackTrace(ex);
         }
+        awtUndo();
     }
 
     @Override
@@ -84,7 +92,6 @@ public abstract class AbstractUndoableSceneEdit extends AbstractUndoableEdit{
         } catch (ExecutionException ex) {
             Exceptions.printStackTrace(ex);
         }
-    }
-
-
+        awtRedo();
+   }
 }
