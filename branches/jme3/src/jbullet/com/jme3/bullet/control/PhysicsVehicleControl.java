@@ -51,6 +51,7 @@ public class PhysicsVehicleControl extends PhysicsVehicle implements PhysicsCont
 
     public Control cloneForSpatial(Spatial spatial) {
         PhysicsVehicleControl control = new PhysicsVehicleControl(collisionShape, mass);
+        control.setAngularFactor(getAngularFactor());
         control.setAngularSleepingThreshold(getAngularSleepingThreshold());
         control.setAngularVelocity(getAngularVelocity());
         control.setCcdMotionThreshold(getCcdMotionThreshold());

@@ -530,6 +530,14 @@ public class PhysicsRigidBody extends PhysicsCollisionObject {
         return constructionInfo.angularSleepingThreshold;
     }
 
+    public float getAngularFactor(){
+        return rBody.getAngularFactor();
+    }
+
+    public void setAngularFactor(float factor){
+        rBody.setAngularFactor(factor);
+    }
+
     /**
      * do not use manually, joints are added automatically
      */
@@ -611,6 +619,7 @@ public class PhysicsRigidBody extends PhysicsCollisionObject {
         capsule.write(getGravity(), "gravity", Vector3f.ZERO);
         capsule.write(getFriction(), "friction", 0.5f);
         capsule.write(getRestitution(), "restitution", 0);
+        capsule.write(getAngularFactor(), "angularFactor", 1);
         capsule.write(kinematic, "kinematic", false);
 
         capsule.write(constructionInfo.linearDamping, "linearDamping", 0);
@@ -639,6 +648,7 @@ public class PhysicsRigidBody extends PhysicsCollisionObject {
         setKinematic(capsule.readBoolean("kinematic", false));
 
         setRestitution(capsule.readFloat("restitution", 0));
+        setAngularFactor(capsule.readFloat("angularFactor", 1));
         setDamping(capsule.readFloat("linearDamping", 0), capsule.readFloat("angularDamping", 0));
         setSleepingThresholds(capsule.readFloat("linearSleepingThreshold", 0.8f), capsule.readFloat("angularSleepingThreshold", 1.0f));
 
