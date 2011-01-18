@@ -39,16 +39,17 @@ import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.CompoundCollisionShape;
 import com.jme3.bullet.collision.shapes.MeshCollisionShape;
+import com.jme3.bullet.control.PhysicsRigidBodyControl;
+import com.jme3.bullet.control.PhysicsVehicleControl;
 import com.jme3.bullet.joints.PhysicsSliderJoint;
 import com.jme3.bullet.nodes.PhysicsNode;
-import com.jme3.bullet.nodes.PhysicsVehicleNode;
-import com.jme3.bullet.objects.PhysicsVehicle;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
+import com.jme3.math.Matrix3f;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
@@ -63,9 +64,9 @@ import com.jme3.texture.Texture;
  */
 public class TestAttachDriver extends SimpleApplication implements ActionListener {
 
-    private PhysicsVehicleNode vehicle;
-    private PhysicsNode driver;
-    private PhysicsNode bridge;
+    private PhysicsVehicleControl vehicle;
+    private PhysicsRigidBodyControl driver;
+    private PhysicsRigidBodyControl bridge;
     private PhysicsSliderJoint slider;
     private final float accelerationForce = 1000.0f;
     private final float brakeForce = 100.0f;
@@ -118,11 +119,11 @@ public class TestAttachDriver extends SimpleApplication implements ActionListene
         Box floor = new Box(Vector3f.ZERO, 100, 1f, 100);
         Geometry floorGeom = new Geometry("Floor", floor);
         floorGeom.setMaterial(mat);
+        floorGeom.setLocalTranslation(new Vector3f(0f, -3, 0f));
 
-        PhysicsNode tb = new PhysicsNode(floorGeom, new MeshCollisionShape(floorGeom.getMesh()), 0);
-        rootNode.attachChild(tb);
-        tb.setLocalTranslation(new Vector3f(0f, -3, 0f));
-        getPhysicsSpace().add(tb);
+        floorGeom.addControl(new PhysicsRigidBodyControl(new MeshCollisionShape(floorGeom.getMesh()), 0));
+        rootNode.attachChild(floorGeom);
+        getPhysicsSpace().add(floorGeom);
     }
 
     private void buildPlayer() {
@@ -136,7 +137,9 @@ public class TestAttachDriver extends SimpleApplication implements ActionListene
         compoundShape.addChildShape(box, new Vector3f(0, 1, 0));
 
         //create vehicle node
-        vehicle = new PhysicsVehicleNode(new Node(), compoundShape, 800);
+        Node vehicleNode=new Node("vehicleNode");
+        vehicle = new PhysicsVehicleControl(compoundShape, 800);
+        vehicleNode.addControl(vehicle);
 
         //setting suspension values for wheels, this can be a bit tricky
         //see also https://docs.google.com/Doc?docid=0AXVUZ5xw6XpKZGNuZG56a3FfMzU0Z2NyZnF4Zmo&hl=en
@@ -193,37 +196,46 @@ public class TestAttachDriver extends SimpleApplication implements ActionListene
 
         vehicle.attachDebugShape(assetManager);
 
-        rootNode.attachChild(vehicle);
+        rootNode.attachChild(vehicleNode);
         getPhysicsSpace().add(vehicle);
 
         //driver
-        driver=new PhysicsNode(new BoxCollisionShape(new Vector3f(0.2f,.5f,0.2f)));
+        Node driverNode=new Node("driverNode");
+        driverNode.setLocalTranslation(0,2,0);
+        driver=new PhysicsRigidBodyControl(new BoxCollisionShape(new Vector3f(0.2f,.5f,0.2f)));
         driver.attachDebugShape(assetManager);
-        driver.setLocalTranslation(0,2,0);
+        driverNode.addControl(driver);
 
-        rootNode.attachChild(driver);
+        rootNode.attachChild(driverNode);
         getPhysicsSpace().add(driver);
 
         //joint
-        slider=new PhysicsSliderJoint(driver.getRigidBody(), vehicle.getVehicle(), Vector3f.UNIT_Y.negate(), Vector3f.UNIT_Y, true);
+        slider=new PhysicsSliderJoint(driver, vehicle, Vector3f.UNIT_Y.negate(), Vector3f.UNIT_Y, true);
         slider.setUpperLinLimit(.1f);
         slider.setLowerLinLimit(-.1f);
 
         getPhysicsSpace().add(slider);
 
-        PhysicsNode pole1=new PhysicsNode(new BoxCollisionShape(new Vector3f(0.2f,1.25f,0.2f)),0);
-        pole1.attachDebugShape(assetManager);
-        PhysicsNode pole2=new PhysicsNode(new BoxCollisionShape(new Vector3f(0.2f,1.25f,0.2f)),0);
-        pole2.attachDebugShape(assetManager);
-        bridge=new PhysicsNode(new BoxCollisionShape(new Vector3f(2.5f,0.2f,0.2f)));
-        bridge.attachDebugShape(assetManager);
-        pole1.setLocalTranslation(new Vector3f(-2,-1,4));
-        pole2.setLocalTranslation(new Vector3f(2,-1,4));
-        bridge.setLocalTranslation(new Vector3f(0,1.4f,4));
+        Node pole1Node=new Node("pole1Node");
+        Node pole2Node=new Node("pole1Node");
+        Node bridgeNode=new Node("pole1Node");
+        pole1Node.setLocalTranslation(new Vector3f(-2,-1,4));
+        pole2Node.setLocalTranslation(new Vector3f(2,-1,4));
+        bridgeNode.setLocalTranslation(new Vector3f(0,1.4f,4));
 
-        rootNode.attachChild(pole1);
-        rootNode.attachChild(pole2);
-        rootNode.attachChild(bridge);
+        PhysicsRigidBodyControl pole1=new PhysicsRigidBodyControl(new BoxCollisionShape(new Vector3f(0.2f,1.25f,0.2f)),0);
+        pole1.attachDebugShape(assetManager);
+        pole1Node.addControl(pole1);
+        PhysicsRigidBodyControl pole2=new PhysicsRigidBodyControl(new BoxCollisionShape(new Vector3f(0.2f,1.25f,0.2f)),0);
+        pole2.attachDebugShape(assetManager);
+        pole2Node.addControl(pole2);
+        bridge=new PhysicsRigidBodyControl(new BoxCollisionShape(new Vector3f(2.5f,0.2f,0.2f)));
+        bridge.attachDebugShape(assetManager);
+        bridgeNode.addControl(bridge);
+
+        rootNode.attachChild(pole1Node);
+        rootNode.attachChild(pole2Node);
+        rootNode.attachChild(bridgeNode);
         getPhysicsSpace().add(pole1);
         getPhysicsSpace().add(pole2);
         getPhysicsSpace().add(bridge);
@@ -233,7 +245,7 @@ public class TestAttachDriver extends SimpleApplication implements ActionListene
     @Override
     public void simpleUpdate(float tpf) {
         Quaternion quat=new Quaternion();
-        cam.lookAt(vehicle.getWorldTranslation(), Vector3f.UNIT_Y);
+        cam.lookAt(vehicle.getPhysicsLocation(), Vector3f.UNIT_Y);
     }
 
     public void onAction(String binding, boolean value, float tpf) {
@@ -273,15 +285,13 @@ public class TestAttachDriver extends SimpleApplication implements ActionListene
         } else if (binding.equals("Reset")) {
             if (value) {
                 System.out.println("Reset");
-                vehicle.setLocalTranslation(0, 0, 0);
-                vehicle.setLocalRotation(new Quaternion());
+                vehicle.setPhysicsLocation(new Vector3f(0, 0, 0));
+                vehicle.setPhysicsRotation(new Matrix3f());
                 vehicle.setLinearVelocity(Vector3f.ZERO);
                 vehicle.setAngularVelocity(Vector3f.ZERO);
                 vehicle.resetSuspension();
-                bridge.setLocalTranslation(new Vector3f(0,1.4f,4));
-                bridge.setLocalRotation(Quaternion.DIRECTION_Z);
-
-            } else {
+                bridge.setPhysicsLocation(new Vector3f(0,1.4f,4));
+                bridge.setPhysicsRotation(Quaternion.DIRECTION_Z.toRotationMatrix());
             }
         }
     }

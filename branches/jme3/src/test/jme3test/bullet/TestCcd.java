@@ -38,6 +38,7 @@ import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.MeshCollisionShape;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
+import com.jme3.bullet.control.PhysicsRigidBodyControl;
 import com.jme3.bullet.nodes.PhysicsNode;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.ActionListener;
@@ -48,6 +49,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Geometry;
+import com.jme3.scene.Node;
 import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Sphere;
 import com.jme3.scene.shape.Sphere.TextureMode;
@@ -95,17 +97,19 @@ public class TestCcd extends SimpleApplication implements ActionListener{
         mat2.setColor("Color", ColorRGBA.Red);
 
         // An obstacle mesh, does not move (mass=0)
-        PhysicsNode node2 = new PhysicsNode(new MeshCollisionShape(new Box(Vector3f.ZERO,4,4,0.1f)), 0);
+        Node node2 = new Node();
         node2.setName("mesh");
         node2.setLocalTranslation(new Vector3f(2.5f, 0, 0f));
-        node2.attachDebugShape(assetManager);
+        node2.addControl(new PhysicsRigidBodyControl(new MeshCollisionShape(new Box(Vector3f.ZERO,4,4,0.1f)), 0));
+        node2.getControl(PhysicsRigidBodyControl.class).attachDebugShape(assetManager);
         rootNode.attachChild(node2);
         getPhysicsSpace().add(node2);
 
         // The floor, does not move (mass=0)
-        PhysicsNode node3 = new PhysicsNode(new BoxCollisionShape(new Vector3f(100, 1, 100)), 0);
+        Node node3 = new Node();
         node3.setLocalTranslation(new Vector3f(0f, -6, 0f));
-        node3.attachDebugShape(assetManager);
+        node3.addControl(new PhysicsRigidBodyControl(new BoxCollisionShape(new Vector3f(100, 1, 100)), 0));
+        node3.getControl(PhysicsRigidBodyControl.class).attachDebugShape(assetManager);
         rootNode.attachChild(node3);
         getPhysicsSpace().add(node3);
 
@@ -129,25 +133,25 @@ public class TestCcd extends SimpleApplication implements ActionListener{
         if (binding.equals("shoot") && !value) {
             Geometry bulletg = new Geometry("bullet", bullet);
             bulletg.setMaterial(mat);
-            PhysicsNode bulletNode = new PhysicsNode(bulletg, bulletCollisionShape, 1);
-            bulletNode.setCcdMotionThreshold(0.1f);
-            bulletNode.setName("bullet");
-            bulletNode.setLocalTranslation(cam.getLocation());
-            bulletNode.setShadowMode(ShadowMode.CastAndReceive);
-            bulletNode.setLinearVelocity(cam.getDirection().mult(40));
-            rootNode.attachChild(bulletNode);
-            getPhysicsSpace().add(bulletNode);
+            bulletg.setName("bullet");
+            bulletg.setLocalTranslation(cam.getLocation());
+            bulletg.setShadowMode(ShadowMode.CastAndReceive);
+            bulletg.addControl(new PhysicsRigidBodyControl(bulletCollisionShape, 1));
+            bulletg.getControl(PhysicsRigidBodyControl.class).setCcdMotionThreshold(0.1f);
+            bulletg.getControl(PhysicsRigidBodyControl.class).setLinearVelocity(cam.getDirection().mult(40));
+            rootNode.attachChild(bulletg);
+            getPhysicsSpace().add(bulletg);
         }
         else if(binding.equals("shoot2") && !value) {
             Geometry bulletg = new Geometry("bullet", bullet);
             bulletg.setMaterial(mat2);
-            PhysicsNode bulletNode = new PhysicsNode(bulletg, bulletCollisionShape, 1);
-            bulletNode.setName("bullet");
-            bulletNode.setLocalTranslation(cam.getLocation());
-            bulletNode.setShadowMode(ShadowMode.CastAndReceive);
-            bulletNode.setLinearVelocity(cam.getDirection().mult(40));
-            rootNode.attachChild(bulletNode);
-            getPhysicsSpace().add(bulletNode);
+            bulletg.setName("bullet");
+            bulletg.setLocalTranslation(cam.getLocation());
+            bulletg.setShadowMode(ShadowMode.CastAndReceive);
+            bulletg.addControl(new PhysicsRigidBodyControl(bulletCollisionShape, 1));
+            bulletg.getControl(PhysicsRigidBodyControl.class).setLinearVelocity(cam.getDirection().mult(40));
+            rootNode.attachChild(bulletg);
+            getPhysicsSpace().add(bulletg);
         }
     }
 

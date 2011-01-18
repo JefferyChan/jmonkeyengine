@@ -150,10 +150,10 @@ public class TestBrickWall extends SimpleApplication {
         Geometry floor = new Geometry("floor", floorBox);
         floor.setMaterial(mat3);
         floor.setShadowMode(ShadowMode.Receive);
-        PhysicsNode floorNode = new PhysicsNode(floor, new BoxCollisionShape(new Vector3f(10f, 0.1f, 5f)), 0);
-        floorNode.setLocalTranslation(0, -0.1f, 0);
-        this.rootNode.attachChild(floorNode);
-        this.getPhysicsSpace().add(floorNode);
+        floor.setLocalTranslation(0, -0.1f, 0);
+        floor.addControl(new PhysicsRigidBodyControl(new BoxCollisionShape(new Vector3f(10f, 0.1f, 5f)), 0));
+        this.rootNode.attachChild(floor);
+        this.getPhysicsSpace().add(floor);
     }
 
     public void initMaterial() {
@@ -181,12 +181,12 @@ public class TestBrickWall extends SimpleApplication {
 
         Geometry reBoxg = new Geometry("brick", brick);
         reBoxg.setMaterial(mat);
-        PhysicsNode brickNode = new PhysicsNode(reBoxg, new BoxCollisionShape(new Vector3f(bLength, bHeight, bWidth)), 1.5f);
-        brickNode.setLocalTranslation(ori);
-        brickNode.setShadowMode(ShadowMode.CastAndReceive);
-        brickNode.setFriction(0.6f);
-        this.rootNode.attachChild(brickNode);
-        this.getPhysicsSpace().add(brickNode);
+        reBoxg.setLocalTranslation(ori);
+        reBoxg.addControl(new PhysicsRigidBodyControl(new BoxCollisionShape(new Vector3f(bLength, bHeight, bWidth)), 1.5f));
+        reBoxg.setShadowMode(ShadowMode.CastAndReceive);
+        reBoxg.getControl(PhysicsRigidBodyControl.class).setFriction(0.6f);
+        this.rootNode.attachChild(reBoxg);
+        this.getPhysicsSpace().add(reBoxg);
     }
 
     protected void initCrossHairs() {

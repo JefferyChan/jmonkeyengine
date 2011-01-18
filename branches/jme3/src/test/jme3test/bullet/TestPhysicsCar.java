@@ -39,14 +39,15 @@ import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.CompoundCollisionShape;
 import com.jme3.bullet.collision.shapes.MeshCollisionShape;
-import com.jme3.bullet.nodes.PhysicsNode;
-import com.jme3.bullet.nodes.PhysicsVehicleNode;
+import com.jme3.bullet.control.PhysicsRigidBodyControl;
+import com.jme3.bullet.control.PhysicsVehicleControl;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
+import com.jme3.math.Matrix3f;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
@@ -58,7 +59,7 @@ import com.jme3.texture.Texture;
 public class TestPhysicsCar extends SimpleApplication implements ActionListener {
 
     private BulletAppState bulletAppState;
-    private PhysicsVehicleNode vehicle;
+    private PhysicsVehicleControl vehicle;
     private final float accelerationForce = 1000.0f;
     private final float brakeForce = 100.0f;
     private float steeringValue = 0;
@@ -109,11 +110,11 @@ public class TestPhysicsCar extends SimpleApplication implements ActionListener 
         Box floor = new Box(Vector3f.ZERO, 100, 1f, 100);
         Geometry floorGeom = new Geometry("Floor", floor);
         floorGeom.setMaterial(mat);
+        floorGeom.setLocalTranslation(new Vector3f(0f, -3, 0f));
 
-        PhysicsNode tb = new PhysicsNode(floorGeom, new MeshCollisionShape(floorGeom.getMesh()), 0);
-        rootNode.attachChild(tb);
-        tb.setLocalTranslation(new Vector3f(0f, -3, 0f));
-        getPhysicsSpace().add(tb);
+        floorGeom.addControl(new PhysicsRigidBodyControl(new MeshCollisionShape(floorGeom.getMesh()), 0));
+        rootNode.attachChild(floorGeom);
+        getPhysicsSpace().add(floorGeom);
     }
 
     private void buildPlayer() {
@@ -127,7 +128,9 @@ public class TestPhysicsCar extends SimpleApplication implements ActionListener 
         compoundShape.addChildShape(box, new Vector3f(0, 1, 0));
 
         //create vehicle node
-        vehicle = new PhysicsVehicleNode(new Node(), compoundShape, 800);
+        Node vehicleNode=new Node("vehicleNode");
+        vehicle = new PhysicsVehicleControl(compoundShape, 800);
+        vehicleNode.addControl(vehicle);
 
         //setting suspension values for wheels, this can be a bit tricky
         //see also https://docs.google.com/Doc?docid=0AXVUZ5xw6XpKZGNuZG56a3FfMzU0Z2NyZnF4Zmo&hl=en
@@ -183,7 +186,7 @@ public class TestPhysicsCar extends SimpleApplication implements ActionListener 
                 wheelDirection, wheelAxle, restLength, radius, false);
 
         vehicle.attachDebugShape(assetManager);
-        rootNode.attachChild(vehicle);
+        rootNode.attachChild(vehicleNode);
 
         getPhysicsSpace().add(vehicle);
     }
@@ -191,7 +194,7 @@ public class TestPhysicsCar extends SimpleApplication implements ActionListener 
     @Override
     public void simpleUpdate(float tpf) {
         Quaternion quat=new Quaternion();
-        cam.lookAt(vehicle.getWorldTranslation(), Vector3f.UNIT_Y);
+        cam.lookAt(vehicle.getPhysicsLocation(), Vector3f.UNIT_Y);
     }
 
     public void onAction(String binding, boolean value, float tpf) {
@@ -229,8 +232,8 @@ public class TestPhysicsCar extends SimpleApplication implements ActionListener 
         } else if (binding.equals("Reset")) {
             if (value) {
                 System.out.println("Reset");
-                vehicle.setLocalTranslation(0, 0, 0);
-                vehicle.setLocalRotation(new Quaternion());
+                vehicle.setPhysicsLocation(Vector3f.ZERO);
+                vehicle.setPhysicsRotation(new Matrix3f());
                 vehicle.setLinearVelocity(Vector3f.ZERO);
                 vehicle.setAngularVelocity(Vector3f.ZERO);
                 vehicle.resetSuspension();
