@@ -203,13 +203,13 @@ public class AwtMouseInput implements MouseInput, MouseListener, MouseWheelListe
     }
 
     public void mousePressed(MouseEvent arg0) {
-        MouseButtonEvent evt = new MouseButtonEvent(getJMEButtonIndex(arg0), true);
+        MouseButtonEvent evt = new MouseButtonEvent(getJMEButtonIndex(arg0), true, arg0.getX(), arg0.getY());
         evt.setTime(arg0.getWhen());
         eventQueue.add(evt);
     }
 
     public void mouseReleased(MouseEvent arg0) {
-        MouseButtonEvent evt = new MouseButtonEvent(getJMEButtonIndex(arg0), false);
+        MouseButtonEvent evt = new MouseButtonEvent(getJMEButtonIndex(arg0), false, arg0.getX(), arg0.getY());
         evt.setTime(arg0.getWhen());
         eventQueue.add(evt);
     }

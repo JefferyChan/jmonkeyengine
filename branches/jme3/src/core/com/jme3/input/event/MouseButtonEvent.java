@@ -34,12 +34,16 @@ package com.jme3.input.event;
 
 public class MouseButtonEvent extends InputEvent {
 
+    int x;
+    int y;
     int btnIndex;
     boolean pressed;
 
-    public MouseButtonEvent(int btnIndex, boolean pressed) {
+    public MouseButtonEvent(int btnIndex, boolean pressed, int x, int y) {
         this.btnIndex = btnIndex;
         this.pressed = pressed;
+        this.x = x;
+        this.y = y;
     }
 
     public int getButtonIndex() {
@@ -52,6 +56,14 @@ public class MouseButtonEvent extends InputEvent {
 
     public boolean isReleased() {
         return !pressed;
+    }
+    
+    public int getX() {
+        return x;
+    }
+    
+    public int getY() {
+        return y;
     }
     
     public String toString(){

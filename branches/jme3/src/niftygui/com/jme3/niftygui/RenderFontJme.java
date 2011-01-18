@@ -53,7 +53,6 @@ public class RenderFontJme implements RenderFont {
     public RenderFontJme(String name, NiftyJmeDisplay display) {
         this.display = display;
         font = display.getAssetManager().loadFont(name);
-        System.out.println(name);
         texture = font.getPage(0).getTextureParam("ColorMap").getTextureValue();
         text = new BitmapText(font);
         actualSize = font.getPreferredSize();
