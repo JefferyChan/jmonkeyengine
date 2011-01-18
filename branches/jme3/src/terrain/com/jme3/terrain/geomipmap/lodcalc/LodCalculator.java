@@ -51,4 +51,12 @@ public interface LodCalculator extends Savable, Cloneable {
     public boolean calculateLod(List<Vector3f> locations, HashMap<String,UpdatedTerrainPatch> updates);
 
     public LodCalculator clone();
+
+    /**
+     * If true, then this calculator can cause neighbouring terrain chunks to 
+     * have LOD levels that are greater than 1 apart.
+     * Entropy algorithms will want to return true for this. Straight distance
+     * calculations will just want to return false.
+     */
+    public boolean usesVariableLod();
 }

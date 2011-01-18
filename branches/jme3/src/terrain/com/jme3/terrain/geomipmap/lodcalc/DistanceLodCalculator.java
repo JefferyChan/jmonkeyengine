@@ -162,4 +162,8 @@ public class DistanceLodCalculator implements LodCalculator {
     public String toString() {
         return "DistanceLodCalculator " + lodThresholdCalculator.toString();
     }
+
+    public boolean usesVariableLod() {
+        return false;
+    }
 }

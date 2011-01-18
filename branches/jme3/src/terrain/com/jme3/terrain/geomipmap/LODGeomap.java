@@ -338,6 +338,234 @@ public class LODGeomap extends BufferGeomap {
 		
 		return buffer.delegate;
 	}
+
+    public IntBuffer writeIndexArrayLodVariable(IntBuffer store, int lod, int rightLod, int topLod, int leftLod, int bottomLod){
+
+		IntBuffer buffer2 = store;
+		int numIndexes = calculateNumIndexesLodDiff(lod);
+		if (store == null)
+			buffer2 = BufferUtils.createIntBuffer(numIndexes);
+		VerboseIntBuffer buffer = new VerboseIntBuffer(buffer2);
+
+
+		// generate center squares minus the edges
+		//System.out.println("for (x="+lod+"; x<"+(getWidth()-(2*lod))+"; x+="+lod+")");
+		//System.out.println("	for (z="+lod+"; z<"+(getWidth()-(1*lod))+"; z+="+lod+")");
+		for (int r=lod; r<getWidth()-(2*lod); r+=lod) { // row
+			int rowIdx = r*getWidth();
+			int nextRowIdx = (r+1*lod)*getWidth();
+			for (int c=lod; c<getWidth()-(1*lod); c+=lod) { // column
+				int idx = rowIdx+c;
+				buffer.put(idx);
+				idx = nextRowIdx+c;
+				buffer.put(idx);
+			}
+
+			// add degenerate triangles
+			if (r < getWidth()-(3*lod)) {
+				int idx = nextRowIdx+getWidth()-(1*lod)-1;
+				buffer.put(idx);
+				idx = nextRowIdx+(1*lod); // inset by 1
+				buffer.put(idx);
+				//System.out.println("");
+			}
+		}
+		//System.out.println("\nright:");
+
+		//int runningBufferCount = buffer.getCount();
+		//System.out.println("buffer start: "+runningBufferCount);
+
+
+		// right
+		int br = getWidth()*(getWidth()-lod)-1-lod;
+		buffer.put(br); // bottom right -1
+		int corner = getWidth()*getWidth()-1;
+		buffer.put(corner);	// bottom right corner
+		if (rightLod>lod) { // if lower LOD
+            int idx = corner;
+            int it = (getWidth()-1)/rightLod; // iterations
+            int lodDiff = rightLod/lod;
+			for (int i=it; i>0; i--) { // for each lod level of the neighbour
+                idx = getWidth()*(i*rightLod+1)-1;
+                for (int j=1; j<=lodDiff; j++) { // for each section in that lod level
+                    int idxB = idx - (getWidth()*(j*lod)) - lod;
+                    
+                    if (j == lodDiff && i == 1) {// the last one
+                        buffer.put(getWidth()-1);
+                    } else if (j == lodDiff) {
+                        buffer.put(idxB);
+                        buffer.put(idxB+lod);
+                    } else {
+                        buffer.put(idxB);
+                        buffer.put(idx);
+                    }
+                }
+            }
+            // reset winding order
+            buffer.put(getWidth()*(lod+1)-lod-1); // top-right +1row
+            buffer.put(getWidth()-1);// top-right
+
+		} else {
+			buffer.put(corner);//br+1);//degenerate to flip winding order
+			for (int row=getWidth()-lod; row>lod; row-=lod) {
+				int idx = row*getWidth()-1; // mult to get row
+				buffer.put(idx);
+				buffer.put(idx-lod);
+			}
+            buffer.put(getWidth()-1);
+		}
+
+
+		//System.out.println("\nbuffer right: "+(buffer.getCount()-runningBufferCount));
+		//runningBufferCount = buffer.getCount();
+
+
+		//System.out.println("\ntop:");
+
+		// top 			(the order gets reversed here so the diagonals line up)
+		if (topLod>lod) { // if lower LOD
+			if (rightLod>lod) {
+                // need to flip winding order
+				buffer.put(getWidth()-1);
+                buffer.put(getWidth()*lod -1);
+                buffer.put(getWidth()-1);
+            }
+			int idx = getWidth()-1;
+            int it = (getWidth()-1)/topLod; // iterations
+            int lodDiff = topLod/lod;
+			for (int i=it; i>0; i--) { // for each lod level of the neighbour
+                idx = (i*topLod);
+                for (int j=1; j<=lodDiff; j++) { // for each section in that lod level
+                    int idxB = lod*getWidth() +(i*topLod) - (j*lod);
+
+                    if (j == lodDiff && i == 1) {// the last one
+                        buffer.put(0);
+                    } else if (j == lodDiff) {
+                        buffer.put(idxB);
+                        buffer.put(idx-topLod);
+                    } else {
+                        buffer.put(idxB);
+                        buffer.put(idx);
+                    }
+                }
+            }
+		} else {
+			if (rightLod>lod)
+				buffer.put(getWidth()-1);
+			for (int col=getWidth()-1-lod; col>0; col-=lod) {
+				int idx = col + (lod*getWidth());
+				buffer.put(idx);
+				idx = col;
+				buffer.put(idx);
+			}
+			buffer.put(0);
+		}
+		buffer.put(0);
+
+		//System.out.println("\nbuffer top: "+(buffer.getCount()-runningBufferCount));
+		//runningBufferCount = buffer.getCount();
+
+		//System.out.println("\nleft:");
+
+		// left
+		if (leftLod>lod) { // if lower LOD
+
+			int idx = 0;
+            int it = (getWidth()-1)/leftLod; // iterations
+            int lodDiff = leftLod/lod;
+			for (int i=0; i<it; i++) { // for each lod level of the neighbour
+                idx = getWidth()*(i*leftLod);
+                for (int j=1; j<=lodDiff; j++) { // for each section in that lod level
+                    int idxB = idx +(getWidth()*(j*lod)) +lod;
+
+                    if (j == lodDiff && i == it-1) {// the last one
+                        buffer.put(getWidth()*getWidth() - getWidth());
+                    } else if (j == lodDiff) {
+                        buffer.put(idxB);
+                        buffer.put(idxB-lod);
+                    } else {
+                        buffer.put(idxB);
+                        buffer.put(idx);
+                    }
+                }
+            }
+
+		} else {
+				buffer.put(0);
+                buffer.put(getWidth()*lod + lod);
+                buffer.put(0);
+			for (int row=lod; row<getWidth()-lod; row+=lod) {
+				int idx = row*getWidth();
+				buffer.put(idx);
+				idx = row*getWidth()+lod;
+				buffer.put(idx);
+			}
+            buffer.put(getWidth()*(getWidth()-1));
+		}
+		//buffer.put(getWidth()*(getWidth()-1));
+
+
+		//System.out.println("\nbuffer left: "+(buffer.getCount()-runningBufferCount));
+		//runningBufferCount = buffer.getCount();
+
+		//if (true) return buffer.delegate;
+		//System.out.println("\nbottom");
+
+		// bottom
+		if (bottomLod>lod) { // if lower LOD
+			if (leftLod>lod) {
+				buffer.put(getWidth()*(getWidth()-1));
+                buffer.put(getWidth()*(getWidth()-lod));
+                buffer.put(getWidth()*(getWidth()-1));
+            }
+
+			int idx = getWidth()*getWidth() - getWidth();
+            int it = (getWidth()-1)/bottomLod; // iterations
+            int lodDiff = bottomLod/lod;
+			for (int i=0; i<it; i++) { // for each lod level of the neighbour
+                idx = getWidth()*getWidth() - getWidth() + (i*bottomLod);
+                for (int j=1; j<=lodDiff; j++) { // for each section in that lod level
+                    int idxB = idx - (getWidth()*lod) +j*lod;
+
+                    if (j == lodDiff && i == it-1) {// the last one
+                        buffer.put(getWidth()*getWidth()-1);
+                    } else if (j == lodDiff) {
+                        buffer.put(idxB);
+                        buffer.put(idx+bottomLod);
+                    } else {
+                        buffer.put(idxB);
+                        buffer.put(idx);
+                    }
+                }
+            }
+		} else {
+			if (leftLod>lod) {
+				buffer.put(getWidth()*(getWidth()-1));
+                buffer.put(getWidth()*getWidth() - (getWidth()*lod)+lod);
+                buffer.put(getWidth()*(getWidth()-1));
+			}
+			for (int col=lod; col<getWidth()-lod; col+=lod) {
+				int idx = getWidth()*(getWidth()-1-lod) + col; // up
+				buffer.put(idx);
+				idx = getWidth()*(getWidth()-1) + col; // down
+				buffer.put(idx);
+			}
+			//buffer.put(getWidth()*getWidth()-1-lod); // <-- THIS caused holes at the end!
+		}
+
+		buffer.put(getWidth()*getWidth()-1);
+
+		//System.out.println("\nbuffer bottom: "+(buffer.getCount()-runningBufferCount));
+		//runningBufferCount = buffer.getCount();
+
+		//System.out.println("\nBuffer size: "+buffer.getCount());
+
+		// fill in the rest of the buffer with degenerates, there should only be a couple
+		for (int i=buffer.getCount(); i<numIndexes; i++)
+			buffer.put(getWidth()*getWidth()-1);
+
+		return buffer.delegate;
+	}
 	
 	
 	/*private int calculateNumIndexesNormal(int lod) {
@@ -357,7 +585,8 @@ public class LODGeomap extends BufferGeomap {
 	 * This isn't that precise and there might be a couple extra.
 	 */
 	private int calculateNumIndexesLodDiff(int lod) {
-		
+		if (lod == 0)
+            lod = 1;
 		int length = getWidth()-1; // make it even for lod calc
 		int side = (length/lod)+1 -(2);
 		//System.out.println("side: "+side);

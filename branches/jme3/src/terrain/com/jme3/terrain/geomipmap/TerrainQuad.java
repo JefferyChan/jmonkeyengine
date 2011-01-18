@@ -119,11 +119,13 @@ public class TerrainQuad extends Node implements Terrain {
 	}
 	
 	public TerrainQuad(String name, int blockSize, int size, float[] heightMap) {
-		this(name, blockSize, size, Vector3f.UNIT_XYZ, heightMap, size, new Vector2f(), 0, null);
-        affectedAreaBBox = new BoundingBox(new Vector3f(0,0,0), size, Float.MAX_VALUE, size);
-        fixNormalEdges(affectedAreaBBox);
+		this(name, blockSize, size, heightMap, null);
 	}
-	
+
+    public TerrainQuad(String name, int blockSize, int size, float[] heightMap, LodCalculatorFactory lodCalculatorFactory) {
+        this(name, blockSize, size, Vector3f.UNIT_XYZ, heightMap, lodCalculatorFactory);
+    }
+
 	public TerrainQuad(String name, int blockSize, int size, Vector3f scale, float[] heightMap, LodCalculatorFactory lodCalculatorFactory) {
 		this(name, blockSize, size, scale, heightMap, size, new Vector2f(), 0, lodCalculatorFactory);
         affectedAreaBBox = new BoundingBox(new Vector3f(0,0,0), size, Float.MAX_VALUE, size);

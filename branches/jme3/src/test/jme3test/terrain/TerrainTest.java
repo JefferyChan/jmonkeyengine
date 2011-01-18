@@ -52,6 +52,8 @@ import com.jme3.terrain.geomipmap.TerrainLodControl;
 import com.jme3.terrain.heightmap.AbstractHeightMap;
 import com.jme3.terrain.heightmap.ImageBasedHeightMap;
 import com.jme3.terrain.geomipmap.TerrainQuad;
+import com.jme3.terrain.geomipmap.lodcalc.LodCalculatorFactory;
+import com.jme3.terrain.geomipmap.lodcalc.LodPerspectiveCalculatorFactory;
 import com.jme3.texture.Texture;
 import com.jme3.texture.Texture.WrapMode;
 import java.util.ArrayList;
@@ -138,7 +140,7 @@ public class TerrainTest extends SimpleApplication {
 		 * The total size is up to you. At 1025 it ran fine for me (200+FPS), however at
 		 * size=2049, it got really slow. But that is a jump from 2 million to 8 million triangles...
 		 */
-		terrain = new TerrainQuad("terrain", 65, 513, heightmap.getHeightMap());
+		terrain = new TerrainQuad("terrain", 65, 513, heightmap.getHeightMap(), new LodPerspectiveCalculatorFactory(getCamera(), 4));
 		List<Camera> cameras = new ArrayList<Camera>();
 		cameras.add(getCamera());
 		TerrainLodControl control = new TerrainLodControl(terrain, cameras);

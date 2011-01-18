@@ -73,8 +73,8 @@ import java.util.List;
  * Each patch needs to know its neighbour's LOD so it can seam its edges with them, in case the neighbour has a different
  * LOD. If this doesn't happen, you will see gaps.
  * 
- * The LOD value is most detailed at zero. It gets less detailed the heigher the LOD value until you reach maxLod, which
- * is a mathimatical limit on the number of times the 'size' of the patch can be divided by two. However there is a -1 to that
+ * The LOD value is most detailed at zero. It gets less detailed the higher the LOD value until you reach maxLod, which
+ * is a mathematical limit on the number of times the 'size' of the patch can be divided by two. However there is a -1 to that
  * for now until I add in a custom index buffer calculation for that max level, the current algorithm does not go that far.
  * 
  * You can supply a LodThresholdCalculator for use in determining when the LOD should change. It's API will no doubt change 
@@ -243,7 +243,12 @@ public class TerrainPatch extends Geometry {
 			boolean top = utp.getTopLod() > utp.getNewLod();
 			boolean right = utp.getRightLod() > utp.getNewLod();
 			boolean bottom = utp.getBottomLod() > utp.getNewLod();
-			IntBuffer ib = geomap.writeIndexArrayLodDiff(null, pow, right, top, left, bottom);
+            
+            IntBuffer ib = null;
+            if (lodCalculator.usesVariableLod())
+                ib = geomap.writeIndexArrayLodVariable(null, pow, (int) Math.pow(2, utp.getRightLod()), (int) Math.pow(2, utp.getTopLod()), (int) Math.pow(2, utp.getLeftLod()), (int) Math.pow(2, utp.getBottomLod()));
+            else
+                ib = geomap.writeIndexArrayLodDiff(null, pow, right, top, left, bottom);
 			utp.setNewIndexBuffer(ib);
 		}
 		

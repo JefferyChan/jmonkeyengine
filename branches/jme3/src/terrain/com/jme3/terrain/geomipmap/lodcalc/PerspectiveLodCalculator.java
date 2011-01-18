@@ -110,4 +110,8 @@ public class PerspectiveLodCalculator implements LodCalculator {
     public void read(JmeImporter im) throws IOException {
     }
 
+    public boolean usesVariableLod() {
+        return true;
+    }
+
 }
