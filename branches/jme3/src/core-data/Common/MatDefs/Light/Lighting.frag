@@ -39,7 +39,7 @@ varying vec4 SpecularSum;
 #ifdef COLORRAMP
   uniform sampler2D m_ColorRamp;
 #endif
-
+uniform float m_AlphaDiscardThreshold;
 #ifndef VERTEX_LIGHTING
 uniform float m_Shininess;
 
@@ -107,6 +107,8 @@ vec2 computeLighting(in vec3 wvPos, in vec3 wvNorm, in vec3 wvViewDir, in vec3 w
 
 void main(){
     vec2 newTexCoord;
+ 
+
     #if defined(PARALLAXMAP) || defined(NORMALMAP_PARALLAX)
        float h;
        #ifdef PARALLAXMAP
@@ -123,6 +125,18 @@ void main(){
        newTexCoord = texCoord;
     #endif
     
+   #ifdef DIFFUSEMAP
+      vec4 diffuseColor = texture2D(m_DiffuseMap, newTexCoord);
+    #else
+      vec4 diffuseColor = vec4(1.0);
+    #endif
+    float alpha = DiffuseSum.a * diffuseColor.a;
+    #ifdef ALPHAMAP
+       alpha = alpha * texture2D(m_AlphaMap, newTexCoord).r;
+    #endif
+    if(alpha<m_AlphaDiscardThreshold){
+        discard;
+    }
 
     // ***********************
     // Read from textures
@@ -141,22 +155,14 @@ void main(){
       #endif
     #endif
 
-    #ifdef DIFFUSEMAP
-      vec4 diffuseColor = texture2D(m_DiffuseMap, newTexCoord);
-    #else
-      vec4 diffuseColor = vec4(1.0);
-    #endif
-
+    
     #ifdef SPECULARMAP
       vec4 specularColor = texture2D(m_SpecularMap, newTexCoord);
     #else
       vec4 specularColor = vec4(1.0);
     #endif
 
-    float alpha = DiffuseSum.a * diffuseColor.a;
-    #ifdef ALPHAMAP
-       alpha = alpha * texture2D(m_AlphaMap, newTexCoord).r;
-    #endif
+   
     #ifdef VERTEX_LIGHTING
        vec2 light = vec2(AmbientSum.a, SpecularSum.a);
        #ifdef COLORRAMP

@@ -36,7 +36,6 @@ import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.AnalogListener;
 import com.jme3.input.controls.KeyTrigger;
-import com.jme3.post.ssao.SSAOConfig;
 import com.jme3.post.ssao.SSAOFilter;
 
 /**
@@ -45,28 +44,14 @@ import com.jme3.post.ssao.SSAOFilter;
  */
 public class SSAOUI {
 
-    private SSAOConfig ssaoConfig;
     SSAOFilter filter;
 
     public SSAOUI(InputManager inputManager, SSAOFilter filter) {
-        ssaoConfig = filter.getConfig();
-        this.filter=filter;
+        this.filter = filter;
         init(inputManager);
     }
 
-    /**
-     * 
-     * @param inputManager
-     * @param config
-     * @deprecated use SSAOUI(InputManager inputManager, SSAOFilter filter)
-     */
-    @Deprecated
-    public SSAOUI(InputManager inputManager, SSAOConfig config) {
-        this.ssaoConfig = config;
-        init(inputManager);
-    }
-
-    private void init(InputManager inputManager){
+    private void init(InputManager inputManager) {
         System.out.println("----------------- Water UI Debugger --------------------");
         System.out.println("-- Sample Radius : press Y to increase, H to decrease");
         System.out.println("-- AO Intensity : press U to increase, J to decrease");
@@ -94,19 +79,17 @@ public class SSAOUI {
             public void onAction(String name, boolean keyPressed, float tpf) {
 
                 if (name.equals("toggleUseAO") && keyPressed) {
-                    ssaoConfig.setUseAo(!ssaoConfig.isUseAo());
-                    System.out.println("use AO : " + ssaoConfig.isUseAo());
+                    filter.setUseAo(!filter.isUseAo());
+                    System.out.println("use AO : " + filter.isUseAo());
                 }
                 if (name.equals("toggleUseOnlyAo") && keyPressed) {
-                    ssaoConfig.setUseOnlyAo(!ssaoConfig.isUseOnlyAo());
-                    System.out.println("use Only AO : " + ssaoConfig.isUseOnlyAo());
+                    filter.setUseOnlyAo(!filter.isUseOnlyAo());
+                    System.out.println("use Only AO : " + filter.isUseOnlyAo());
 
                 }
                 if (name.equals("outputConfig") && keyPressed) {
-                    System.out.println("new SSAOFilter(" + ssaoConfig.getSampleRadius() + "f," + ssaoConfig.getIntensity() + "f," + ssaoConfig.getScale() + "f," + ssaoConfig.getBias() + "f);");
+                    System.out.println("new SSAOFilter(" + filter.getSampleRadius() + "f," + filter.getIntensity() + "f," + filter.getScale() + "f," + filter.getBias() + "f);");
                 }
-
-                filter.setConfig(ssaoConfig);
             }
         };
 
@@ -114,39 +97,38 @@ public class SSAOUI {
 
             public void onAnalog(String name, float value, float tpf) {
                 if (name.equals("sampleRadiusUp")) {
-                    ssaoConfig.setSampleRadius(ssaoConfig.getSampleRadius() + 0.01f);
-                    System.out.println("Sample Radius : " + ssaoConfig.getSampleRadius());
+                    filter.setSampleRadius(filter.getSampleRadius() + 0.01f);
+                    System.out.println("Sample Radius : " + filter.getSampleRadius());
                 }
                 if (name.equals("sampleRadiusDown")) {
-                    ssaoConfig.setSampleRadius(ssaoConfig.getSampleRadius() - 0.01f);
-                    System.out.println("Sample Radius : " + ssaoConfig.getSampleRadius());
+                    filter.setSampleRadius(filter.getSampleRadius() - 0.01f);
+                    System.out.println("Sample Radius : " + filter.getSampleRadius());
                 }
                 if (name.equals("intensityUp")) {
-                    ssaoConfig.setIntensity(ssaoConfig.getIntensity() + 0.01f);
-                    System.out.println("Intensity : " + ssaoConfig.getIntensity());
+                    filter.setIntensity(filter.getIntensity() + 0.01f);
+                    System.out.println("Intensity : " + filter.getIntensity());
                 }
                 if (name.equals("intensityDown")) {
-                    ssaoConfig.setIntensity(ssaoConfig.getIntensity() - 0.01f);
-                    System.out.println("Intensity : " + ssaoConfig.getIntensity());
+                    filter.setIntensity(filter.getIntensity() - 0.01f);
+                    System.out.println("Intensity : " + filter.getIntensity());
                 }
                 if (name.equals("scaleUp")) {
-                    ssaoConfig.setScale(ssaoConfig.getScale() + 0.01f);
-                    System.out.println("scale : " + ssaoConfig.getScale());
+                    filter.setScale(filter.getScale() + 0.01f);
+                    System.out.println("scale : " + filter.getScale());
                 }
                 if (name.equals("scaleDown")) {
-                    ssaoConfig.setScale(ssaoConfig.getScale() - 0.01f);
-                    System.out.println("scale : " + ssaoConfig.getScale());
+                    filter.setScale(filter.getScale() - 0.01f);
+                    System.out.println("scale : " + filter.getScale());
                 }
                 if (name.equals("biasUp")) {
-                    ssaoConfig.setBias(ssaoConfig.getBias() + 0.001f);
-                    System.out.println("bias : " + ssaoConfig.getBias());
+                    filter.setBias(filter.getBias() + 0.001f);
+                    System.out.println("bias : " + filter.getBias());
                 }
                 if (name.equals("biasDown")) {
-                    ssaoConfig.setBias(ssaoConfig.getBias() - 0.001f);
-                    System.out.println("bias : " + ssaoConfig.getBias());
+                    filter.setBias(filter.getBias() - 0.001f);
+                    System.out.println("bias : " + filter.getBias());
                 }
 
-                filter.setConfig(ssaoConfig);
             }
         };
         inputManager.addListener(acl, "toggleUseAO", "toggleUseOnlyAo", "outputConfig");

@@ -1,11 +1,11 @@
-const float c_EdgeWidth = 1.0;
-const float c_EdgeIntensity = 1.0;
+uniform float m_EdgeWidth;
+uniform float m_EdgeIntensity;
 
-const float c_NormalThreshold = 0.5;
-const float c_DepthThreshold = 0.1;
+uniform float m_NormalThreshold;
+uniform float m_DepthThreshold;
 
-const float c_NormalSensitivity = 1.0;
-const float c_DepthSensitivity = 10.0;
+uniform float m_NormalSensitivity;
+uniform float m_DepthSensitivity;
 
 varying vec2 texCoord;
 
@@ -25,7 +25,7 @@ vec4 fetchNormalDepth(vec2 tc){
 void main(){
     vec3 color = texture2D(m_Texture, texCoord).rgb;
 
-    vec2 edgeOffset = vec2(c_EdgeWidth) / g_Resolution;
+    vec2 edgeOffset = vec2(m_EdgeWidth) / g_Resolution;
 
     vec4 n1 = fetchNormalDepth(texCoord + vec2(-1.0, -1.0) * edgeOffset);
     vec4 n2 = fetchNormalDepth(texCoord + vec2( 1.0,  1.0) * edgeOffset);
@@ -39,11 +39,11 @@ void main(){
     float depthDelta = diagonalDelta.w;
 
     // Filter out very small changes, in order to produce nice clean results.
-    normalDelta = clamp((normalDelta - c_NormalThreshold) * c_NormalSensitivity, 0.0, 1.0);
-    depthDelta  = clamp((depthDelta - c_DepthThreshold) * c_DepthSensitivity,    0.0, 1.0);
+    normalDelta = clamp((normalDelta - m_NormalThreshold) * m_NormalSensitivity, 0.0, 1.0);
+    depthDelta  = clamp((depthDelta - m_DepthThreshold) * m_DepthSensitivity,    0.0, 1.0);
 
     // Does this pixel lie on an edge?
-    float edgeAmount = clamp(normalDelta + depthDelta, 0.0, 1.0) * c_EdgeIntensity;
+    float edgeAmount = clamp(normalDelta + depthDelta, 0.0, 1.0) * m_EdgeIntensity;
 
     // Apply the edge detection result to the main scene color.
     color *= (1.0 - edgeAmount);

@@ -15,6 +15,9 @@ MaterialDef Phong Lighting {
         // Output alpha from the diffuse map
         Boolean UseAlpha
 
+        // Apha threshold for fragment discarding
+        Float AlphaDiscardThreshold
+
         // Normal map is in BC5/ATI2n/LATC/3Dc compression format
         Boolean LATC
 
@@ -143,6 +146,27 @@ MaterialDef Phong Lighting {
             DepthWrite On
             PolyOffset 5 0
             ColorWrite Off
+        }
+
+    }
+
+  Technique PreNormalPass {
+
+        VertexShader GLSL100 :   Common/MatDefs/SSAO/normal.vert
+        FragmentShader GLSL100 : Common/MatDefs/SSAO/normal.frag
+
+        WorldParameters {
+            WorldViewProjectionMatrix
+            WorldViewMatrix
+            NormalMatrix
+        }
+
+        Defines {
+            DIFFUSEMAP_ALPHA : DiffuseMap
+        }
+
+        RenderState {
+
         }
 
     }

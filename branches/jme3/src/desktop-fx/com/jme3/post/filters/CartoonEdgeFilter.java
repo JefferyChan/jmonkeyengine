@@ -48,7 +48,12 @@ import com.jme3.texture.Image.Format;
 public class CartoonEdgeFilter extends Filter {
 
     private Pass normalPass;
-    private Material normalMaterial;
+    private float edgeWidth = 1.0f;
+    private float edgeIntensity = 1.0f;
+    private float normalThreshold = 0.5f;
+    private float depthThreshold = 0.1f;
+    private float normalSensitivity = 1.0f;
+    private float depthSensitivity = 10.0f;
 
     public CartoonEdgeFilter() {
         super("CartoonEdgeFilter");
@@ -64,9 +69,9 @@ public class CartoonEdgeFilter extends Filter {
         Renderer r = renderManager.getRenderer();
         r.setFrameBuffer(normalPass.getRenderFrameBuffer());
         renderManager.getRenderer().clearBuffers(true, true, true);
-        renderManager.setForcedMaterial(normalMaterial);
+        renderManager.setForcedTechnique("PreNormalPass");
         renderManager.renderViewPortQueues(viewPort, false);
-        renderManager.setForcedMaterial(null);
+        renderManager.setForcedTechnique(null);
         renderManager.getRenderer().setFrameBuffer(viewPort.getOutputFrameBuffer());
     }
 
@@ -81,13 +86,85 @@ public class CartoonEdgeFilter extends Filter {
         normalPass = new Pass();
         normalPass.init(renderManager.getRenderer(), w, h, Format.RGBA8, Format.Depth);
         material = new Material(manager, "Common/MatDefs/Post/CartoonEdge.j3md");
-        normalMaterial = new Material(manager, "Common/MatDefs/SSAO/normal.j3md");
+        material.setFloat("EdgeWidth", edgeWidth);
+        material.setFloat("EdgeIntensity", edgeIntensity);
+        material.setFloat("NormalThreshold", normalThreshold);
+        material.setFloat("DepthThreshold", depthThreshold);
+        material.setFloat("NormalSensitivity", normalSensitivity);
+        material.setFloat("DepthSensitivity", depthSensitivity);
     }
 
     @Override
     public void cleanUpFilter(Renderer r) {
         if (normalPass != null) {
             normalPass.cleanup(r);
+        }
+    }
+
+    public float getDepthSensitivity() {
+        return depthSensitivity;
+    }
+
+    public void setDepthSensitivity(float depthSensitivity) {
+        this.depthSensitivity = depthSensitivity;
+        if (material != null) {
+            material.setFloat("DepthSensitivity", depthSensitivity);
+        }
+    }
+
+    public float getDepthThreshold() {
+        return depthThreshold;
+    }
+
+    public void setDepthThreshold(float depthThreshold) {
+        this.depthThreshold = depthThreshold;
+        if (material != null) {
+            material.setFloat("DepthThreshold", depthThreshold);
+        }
+    }
+
+    public float getEdgeIntensity() {
+        return edgeIntensity;
+    }
+
+    public void setEdgeIntensity(float edgeIntensity) {
+        this.edgeIntensity = edgeIntensity;
+        if (material != null) {
+            material.setFloat("EdgeIntensity", edgeIntensity);
+        }
+    }
+
+    public float getEdgeWidth() {
+        return edgeWidth;
+    }
+
+    public void setEdgeWidth(float edgeWidth) {
+        this.edgeWidth = edgeWidth;
+        if (material != null) {
+            material.setFloat("EdgeWidth", edgeWidth);
+        }
+
+    }
+
+    public float getNormalSensitivity() {
+        return normalSensitivity;
+    }
+
+    public void setNormalSensitivity(float normalSensitivity) {
+        this.normalSensitivity = normalSensitivity;
+        if (material != null) {
+            material.setFloat("NormalSensitivity", normalSensitivity);
+        }
+    }
+
+    public float getNormalThreshold() {
+        return normalThreshold;
+    }
+
+    public void setNormalThreshold(float normalThreshold) {
+        this.normalThreshold = normalThreshold;
+        if (material != null) {
+            material.setFloat("NormalThreshold", normalThreshold);
         }
     }
 }

@@ -6,6 +6,12 @@ MaterialDef Cartoon Edge {
         Texture2D Texture
         Texture2D NormalsTexture
         Texture2D DepthTexture
+        Float EdgeWidth
+        Float EdgeIntensity
+        Float NormalThreshold
+        Float DepthThreshold
+        Float NormalSensitivity
+        Float DepthSensitivity
     }
 
     Technique {

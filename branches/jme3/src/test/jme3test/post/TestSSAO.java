@@ -38,7 +38,6 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.post.FilterPostProcessor;
-import com.jme3.post.ssao.SSAOConfig;
 import com.jme3.post.ssao.SSAOFilter;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Geometry;
@@ -74,8 +73,9 @@ public class TestSSAO extends SimpleApplication {
         cam.setRotation(new Quaternion(0.23602544f, 0.11321983f, -0.027698677f, 0.96473104f));
         //cam.setFrustumFar(1000);
 
-        Material mat = assetManager.loadMaterial("Common/Materials/WhiteColor.j3m");
-        Material matSoil = new Material(assetManager,"Common/MatDefs/Misc/SolidColor.j3md");
+        Material mat = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
+        mat.setColor("Color", ColorRGBA.White);
+        Material matSoil = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
         matSoil.setColor("Color", ColorRGBA.LightGray);
 
 
@@ -105,7 +105,7 @@ public class TestSSAO extends SimpleApplication {
         }
 
         FilterPostProcessor fpp=new FilterPostProcessor(assetManager);
-        fpp.setNumSamples(8);
+        //fpp.setNumSamples(8);
         SSAOFilter ssaoFilter= new SSAOFilter(0.92f,2.2f,0.29000017f,0.21200025f);
         fpp.addFilter(ssaoFilter);
         SSAOUI ui=new SSAOUI(inputManager, ssaoFilter);

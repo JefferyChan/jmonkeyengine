@@ -73,6 +73,7 @@ public abstract class Filter implements Savable {
 
         protected FrameBuffer renderFrameBuffer;
         protected Texture2D renderedTexture;
+        protected Texture2D depthTexture;
         protected Material passMaterial;
 
         public void init(Renderer renderer, int width, int height, Format textureFormat, Format depthBufferFormat, int numSamples) {
@@ -80,12 +81,17 @@ public abstract class Filter implements Savable {
             if (numSamples > 1 && caps.contains(Caps.FrameBufferMultisample) && caps.contains(Caps.OpenGL31)) {
                 renderFrameBuffer = new FrameBuffer(width, height, numSamples);
                 renderedTexture = new Texture2D(width, height, numSamples, textureFormat);
+              //  depthTexture = new Texture2D(width, height, numSamples, depthBufferFormat);
             } else {
                 renderFrameBuffer = new FrameBuffer(width, height, 1);
                 renderedTexture = new Texture2D(width, height, textureFormat);
+//                depthTexture = new Texture2D(width, height,  depthBufferFormat);
             }
+            
             renderFrameBuffer.setColorTexture(renderedTexture);
             renderFrameBuffer.setDepthBuffer(depthBufferFormat);
+  //          renderFrameBuffer.setDepthTexture(depthTexture);
+            
         }
 
         public void init(Renderer renderer, int width, int height, Format textureFormat, Format depthBufferFormat) {
@@ -111,6 +117,11 @@ public abstract class Filter implements Savable {
         public void setRenderFrameBuffer(FrameBuffer renderFrameBuffer) {
             this.renderFrameBuffer = renderFrameBuffer;
         }
+
+        public Texture2D getDepthTexture() {
+            return depthTexture;
+        }
+        
 
         public Texture2D getRenderedTexture() {
             return renderedTexture;

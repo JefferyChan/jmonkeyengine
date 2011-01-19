@@ -37,7 +37,6 @@ import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
 import com.jme3.export.OutputCapsule;
 import com.jme3.material.Material;
-import com.jme3.math.FastMath;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.post.Filter;
@@ -56,7 +55,6 @@ import java.io.IOException;
 public class SSAOFilter extends Filter {
 
     private Pass normalPass;
-    private Material normalMaterial;
     private Vector3f frustumCorner;
     private Vector2f frustumNearFar;
     private Vector2f[] samples = {new Vector2f(1.0f, 0.0f), new Vector2f(-1.0f, 0.0f), new Vector2f(0.0f, 1.0f), new Vector2f(0.0f, -1.0f)};
@@ -66,16 +64,6 @@ public class SSAOFilter extends Filter {
     private float bias = 0.1f;
     private boolean useOnlyAo = false;
     private boolean useAo = true;
-
-    /**
-     * 
-     * @param vp
-     * @deprecated use SSAOFilter()
-     */
-    @Deprecated
-    public SSAOFilter(ViewPort vp) {
-        this();
-    }
 
     /**
      * Create a Screen Space Ambiant Occlusion Filter
@@ -100,23 +88,6 @@ public class SSAOFilter extends Filter {
         this.bias = bias;
     }
 
-    /**
-     * 
-     * @param vp
-     * @param config
-     * @deprecated Use SSAOFilter(float sampleRadius,float intensity,float scale,float bias)
-     */
-    @Deprecated
-    public SSAOFilter(ViewPort vp, SSAOConfig config) {
-        this(vp);
-        sampleRadius = config.getSampleRadius();
-        intensity = config.getIntensity();
-        scale = config.getScale();
-        bias = config.getBias();
-        useOnlyAo = config.isUseOnlyAo();
-        useAo = config.useAo;
-    }
-
     @Override
     public boolean isRequiresDepthTexture() {
         return true;
@@ -124,20 +95,18 @@ public class SSAOFilter extends Filter {
 
     @Override
     public void preRender(RenderManager renderManager, ViewPort viewPort) {
-        
         Renderer r = renderManager.getRenderer();
-        r.setFrameBuffer(normalPass.getRenderFrameBuffer());        
+        r.setFrameBuffer(normalPass.getRenderFrameBuffer());
         renderManager.getRenderer().clearBuffers(true, true, true);
-        renderManager.setForcedMaterial(normalMaterial);
+        renderManager.setForcedTechnique("PreNormalPass");
         renderManager.renderViewPortQueues(viewPort, false);
-        renderManager.setForcedMaterial(null);
+        renderManager.setForcedTechnique(null);
         renderManager.getRenderer().setFrameBuffer(viewPort.getOutputFrameBuffer());
-       
     }
 
     @Override
     public Material getMaterial() {
-             
+
         material.setVector3("FrustumCorner", frustumCorner);
         material.setFloat("SampleRadius", sampleRadius);
         material.setFloat("Intensity", intensity);
@@ -155,39 +124,19 @@ public class SSAOFilter extends Filter {
         int screenWidth = w;
         int screenHeight = h;
         normalPass = new Pass();
-        normalPass.init(renderManager.getRenderer(),screenWidth, screenHeight, Format.RGBA8, Format.Depth);
-        
+        normalPass.init(renderManager.getRenderer(), screenWidth, screenHeight, Format.RGBA8, Format.Depth);
+
+
         frustumNearFar = new Vector2f();
-               
-        float farY = (vp.getCamera().getFrustumTop()/vp.getCamera().getFrustumNear()) * vp.getCamera().getFrustumFar();
-        float farX = farY * ((float)screenWidth / (float)screenHeight);
+
+        float farY = (vp.getCamera().getFrustumTop() / vp.getCamera().getFrustumNear()) * vp.getCamera().getFrustumFar();
+        float farX = farY * ((float) screenWidth / (float) screenHeight);
         frustumCorner = new Vector3f(farX, farY, vp.getCamera().getFrustumFar());
         frustumNearFar.x = vp.getCamera().getFrustumNear();
         frustumNearFar.y = vp.getCamera().getFrustumFar();
         material = new Material(manager, "Common/MatDefs/SSAO/ssao.j3md");
-        normalMaterial = new Material(manager, "Common/MatDefs/SSAO/normal.j3md");
         material.setTexture("Normals", normalPass.getRenderedTexture());
-    }
 
-    /**
-     * @deprecated use the proper attribute getter
-     */
-    @Deprecated
-    public SSAOConfig getConfig() {
-        return new SSAOConfig(sampleRadius, intensity, scale, bias, useOnlyAo, useAo);
-    }
-
-    /**
-     * @deprecated use the proper attribute setter
-     */
-    @Deprecated
-    public void setConfig(SSAOConfig config) {
-        sampleRadius = config.getSampleRadius();
-        intensity = config.getIntensity();
-        scale = config.getScale();
-        bias = config.getBias();
-        useOnlyAo = config.isUseOnlyAo();
-        useAo = config.useAo;
     }
 
     public float getBias() {
@@ -196,6 +145,9 @@ public class SSAOFilter extends Filter {
 
     public void setBias(float bias) {
         this.bias = bias;
+        if (material != null) {
+            material.setFloat("Bias", bias);
+        }
     }
 
     public float getIntensity() {
@@ -204,6 +156,10 @@ public class SSAOFilter extends Filter {
 
     public void setIntensity(float intensity) {
         this.intensity = intensity;
+        if (material != null) {
+            material.setFloat("Intensity", intensity);
+        }
+
     }
 
     public float getSampleRadius() {
@@ -212,6 +168,10 @@ public class SSAOFilter extends Filter {
 
     public void setSampleRadius(float sampleRadius) {
         this.sampleRadius = sampleRadius;
+        if (material != null) {
+            material.setFloat("SampleRadius", sampleRadius);
+        }
+
     }
 
     public float getScale() {
@@ -220,6 +180,10 @@ public class SSAOFilter extends Filter {
 
     public void setScale(float scale) {
         this.scale = scale;
+        if (material != null) {
+            material.setFloat("Scale", scale);
+        }
+
     }
 
     public boolean isUseAo() {
@@ -228,6 +192,10 @@ public class SSAOFilter extends Filter {
 
     public void setUseAo(boolean useAo) {
         this.useAo = useAo;
+        if (material != null) {
+            material.setBoolean("UseAo", useAo);
+        }
+
     }
 
     public boolean isUseOnlyAo() {
@@ -236,6 +204,9 @@ public class SSAOFilter extends Filter {
 
     public void setUseOnlyAo(boolean useOnlyAo) {
         this.useOnlyAo = useOnlyAo;
+        if (material != null) {
+            material.setBoolean("UseOnlyAo", useOnlyAo);
+        }
     }
 
     @Override
@@ -260,8 +231,8 @@ public class SSAOFilter extends Filter {
 
     @Override
     public void cleanUpFilter(Renderer r) {
-       if(normalPass!=null){
-           normalPass.cleanup(r);        
-       }
+        if (normalPass != null) {
+            normalPass.cleanup(r);
+        }
     }
 }

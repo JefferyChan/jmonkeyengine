@@ -94,7 +94,7 @@ public class TestMultiplesFilters extends SimpleApplication {
       //  fpp.setNumSamples(4);
         ssaoFilter = new SSAOFilter(0.92f, 2.2f, 0.46f, 0.2f);
         final WaterFilter water=new WaterFilter(rootNode,new Vector3f(-0.4790551f, -0.39247334f, -0.7851566f));
-        water.setWaterHeight(-6);
+        water.setWaterHeight(-20);
         SSAOUI ui=new SSAOUI(inputManager,ssaoFilter);
         final BloomFilter bloom = new BloomFilter();
         final ColorOverlayFilter overlay = new ColorOverlayFilter(ColorRGBA.LightGray);
