@@ -1615,7 +1615,7 @@ public class LwjglRenderer implements Renderer {
         }
 
         if (GLContext.getCapabilities().OpenGL30) {
-            if (!img.hasMipmaps() && mips) {
+            if (!img.hasMipmaps() && mips && img.getData()!=null) {
                 glGenerateMipmapEXT(target);
             }
         }
