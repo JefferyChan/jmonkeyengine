@@ -111,11 +111,6 @@ float fresnelTerm(in vec3 normal,in vec3 eyeVec){
     return saturate(fresnel * (1.0 - saturate(m_R0)) + m_R0 - m_RefractionStrength);
 }
 
-bool isnan(in float v){
-    return v!=v;
-}
-
-
 void main(){
     float sceneDepth = texture2D(m_DepthTexture, texCoord).r;
     float isAtFarPlane = step(0.99998, sceneDepth);
@@ -209,7 +204,9 @@ void main(){
         // XXX: Here's another way to fix the terrain edge issue,
         // But it requires GLSL 1.3 and still looks kinda incorrect
         // around edges
-        normal = isnan(normal.x) ? myNormal : normal;
+        // To make the shader 1.2 compatible we use a trick :
+        // we clamp the x value of the normal and compare it to it's former value instead of using isnan.
+        normal = clamp(normal.x,0.0,1.0)!=normal.x ? myNormal : normal;
         //if (position.y > level){
         //    gl_FragColor = vec4(color2 + normal*0.0001, 1.0);
         //    return;
