@@ -115,7 +115,7 @@ public class DebugShapeFactory {
     private static Geometry createDebugShape(CollisionShape shape) {
         Geometry geom = new Geometry();
         geom.setMesh(DebugShapeFactory.getDebugMesh(shape));
-        geom.setLocalScale(shape.getScale());
+//        geom.setLocalScale(shape.getScale());
         geom.updateModelBound();
         return geom;
     }
