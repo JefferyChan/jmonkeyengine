@@ -32,6 +32,8 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.VertexBuffer.Type;
+import com.jme3.scene.control.Control;
 import com.jme3.ui.Picture;
 import com.jme3.util.TangentBinormalGenerator;
 import java.beans.PropertyChangeEvent;
@@ -244,6 +246,7 @@ public class SceneEditorController implements PropertyChangeListener, NodeListen
                 undoParent = ((Node) selected);
             }
         }
+        AbstractSceneExplorerNode selectedSpat = this.selectedSpat;
         addSpatialUndo(undoParent, undoSpatial, undoLight, selectedSpat);
     }
 
@@ -337,6 +340,7 @@ public class SceneEditorController implements PropertyChangeListener, NodeListen
 
     public void doMoveSpatial(Spatial selected, Vector3f translation) {
         Vector3f localTranslation = selected.getLocalTranslation();
+        Vector3f before = new Vector3f(localTranslation);
         Node parent = selected.getParent();
         if (parent != null) {
             localTranslation.set(translation).subtractLocal(parent.getWorldTranslation());
@@ -346,7 +350,29 @@ public class SceneEditorController implements PropertyChangeListener, NodeListen
         } else {
             localTranslation.set(translation);
         }
+        Vector3f after = new Vector3f(localTranslation);
         selected.setLocalTranslation(localTranslation);
+        AbstractSceneExplorerNode selectedSpat = this.selectedSpat;
+        moveUndo(selected, before, after, selectedSpat);
+    }
+
+    private void moveUndo(final Spatial spatial, final Vector3f before, final Vector3f after, final AbstractSceneExplorerNode parentNode) {
+        if (spatial != null && before != null) {
+            Lookup.getDefault().lookup(SceneUndoRedoManager.class).addEdit(this, new AbstractUndoableSceneEdit() {
+
+                @Override
+                public void sceneUndo() throws CannotUndoException {
+                    //undo stuff here
+                    spatial.setLocalTranslation(before);
+                }
+
+                @Override
+                public void sceneRedo() throws CannotRedoException {
+                    //redo stuff here
+                    spatial.setLocalTranslation(after);
+                }
+            });
+        }
     }
 
     public void createTangentsForSelectedSpatial() {
@@ -379,7 +405,26 @@ public class SceneEditorController implements PropertyChangeListener, NodeListen
             Mesh mesh = geom.getMesh();
             if (mesh != null) {
                 TangentBinormalGenerator.generate(mesh);
+                createTrangentsUndo(mesh);
             }
+        }
+    }
+
+    private void createTrangentsUndo(final Mesh mesh) {
+        if (mesh != null) {
+            Lookup.getDefault().lookup(SceneUndoRedoManager.class).addEdit(this, new AbstractUndoableSceneEdit() {
+
+                @Override
+                public void sceneUndo() throws CannotUndoException {
+                    mesh.clearBuffer(Type.Tangent);
+                }
+
+                @Override
+                public void sceneRedo() throws CannotRedoException {
+                    TangentBinormalGenerator.generate(mesh);
+                }
+
+            });
         }
     }
 
@@ -421,6 +466,8 @@ public class SceneEditorController implements PropertyChangeListener, NodeListen
             parent.attachChild(selected);
         }
         refreshSelected();
+        AbstractSceneExplorerNode selectedSpat = this.selectedSpat;
+        addControlUndo(parent, control, selectedSpat);
     }
 
     public void createDynamicPhysicsMeshForSelectedSpatial(final float weight) {
@@ -461,6 +508,41 @@ public class SceneEditorController implements PropertyChangeListener, NodeListen
             parent.attachChild(selected);
         }
         refreshSelected();
+        AbstractSceneExplorerNode selectedSpat = this.selectedSpat;
+        addControlUndo(parent, control, selectedSpat);
+    }
+
+    private void addControlUndo(final Node undoParent, final Control undoControl, final AbstractSceneExplorerNode parentNode) {
+        if (undoParent != null && undoControl != null) {
+            Lookup.getDefault().lookup(SceneUndoRedoManager.class).addEdit(this, new AbstractUndoableSceneEdit() {
+
+                @Override
+                public void sceneUndo() throws CannotUndoException {
+                    //undo stuff here
+                    undoParent.removeControl(undoControl);
+                }
+
+                @Override
+                public void sceneRedo() throws CannotRedoException {
+                    //redo stuff here
+                    undoParent.addControl(undoControl);
+                }
+
+                @Override
+                public void awtRedo() {
+                    if (parentNode != null) {
+                        parentNode.refresh(true);
+                    }
+                }
+
+                @Override
+                public void awtUndo() {
+                    if (parentNode != null) {
+                        parentNode.refresh(true);
+                    }
+                }
+            });
+        }
     }
 
     public void addModel(final SpatialAssetDataObject file, final Vector3f location) {
