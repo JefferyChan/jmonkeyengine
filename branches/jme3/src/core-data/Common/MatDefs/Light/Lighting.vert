@@ -6,13 +6,14 @@ uniform mat4 g_WorldViewMatrix;
 uniform mat3 g_NormalMatrix;
 uniform mat4 g_ViewMatrix;
 
-//uniform vec4 m_Ambient;
+uniform vec4 m_Ambient;
 uniform vec4 m_Diffuse;
 uniform vec4 m_Specular;
 uniform float m_Shininess;
 
 uniform vec4 g_LightColor;
 uniform vec4 g_LightPosition;
+uniform vec4 g_AmbientLightColor;
 
 varying vec2 texCoord;
 
@@ -128,23 +129,22 @@ void main(){
 
    lightColor.w = 1.0;
    #ifdef MATERIAL_COLORS
-      AmbientSum  = vec4(0.0); //m_Ambient  * lightColor;
+      AmbientSum  = m_Ambient  * g_AmbientLightColor;
       DiffuseSum  = m_Diffuse  * lightColor;
       SpecularSum = m_Specular * lightColor;
     #else
-      AmbientSum  = vec4(0.0); //= g_LightColor;
+      AmbientSum  = vec4(0.2, 0.2, 0.2, 1.0); // Default: ambient color is dark gray
       DiffuseSum  = lightColor;
       SpecularSum = lightColor;
     #endif
 
     #ifdef VERTEX_COLOR
+      AmbientSum *= inColor;
       DiffuseSum *= inColor;
     #endif
 
     #ifdef VERTEX_LIGHTING
        vec2 light = computeLighting(wvPosition, wvNormal, viewDir, wvLightPos);
-       //DiffuseSum *= light.x;
-       //SpecularSum *= light.y;
 
        AmbientSum.a  = light.x;
        SpecularSum.a = light.y;

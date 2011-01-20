@@ -109,23 +109,6 @@ MaterialDef Phong Lighting {
         }
     }
 
-    Technique AmbientPass {
-
-        VertexShader GLSL100:   Common/MatDefs/Light/AmbientPass.vert
-        FragmentShader GLSL100: Common/MatDefs/Light/AmbientPass.frag
-
-        WorldParameters {
-            WorldViewProjectionMatrix
-            AmbientLightColor
-        }
-
-        Defines {
-            HAS_VERTEXCOLOR : UseVertexColor
-            HAS_DIFFUSEMAP : DiffuseMap
-            MATERIAL_COLORS : UseMaterialColors
-        }
-    }
-
     Technique PreShadow {
 
         VertexShader GLSL100 :   Common/MatDefs/Shadow/PreShadow.vert

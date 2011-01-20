@@ -92,6 +92,8 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
     private boolean transparent = false;
     private boolean receivesShadows = false;
     private int sortingId = -1;
+    
+    private transient ColorRGBA ambientLightColor = new ColorRGBA(0, 0, 0, 1);
 
     public static class MatParamTexture extends MatParam {
 
@@ -487,6 +489,18 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
         setParam(name, VarType.Vector3, value);
     }
 
+    private ColorRGBA getAmbientColor(LightList lightList){
+        ambientLightColor.set(0, 0, 0, 1);
+        for (int j = 0; j < lightList.size(); j++) {
+            Light l = lightList.get(j);
+            if (l instanceof AmbientLight) {
+                ambientLightColor.addLocal(l.getColor());
+            }
+        }
+        ambientLightColor.a = 1.0f;
+        return ambientLightColor;
+    }
+
     /**
      * Uploads the lights in the light list as two uniform arrays.<br/><br/>
      *      * <p>
@@ -566,19 +580,28 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
         LightList lightList = g.getWorldLightList();
         Uniform lightColor = shader.getUniform("g_LightColor");
         Uniform lightPos = shader.getUniform("g_LightPosition");
-
-        r.applyRenderState(additiveLight);
+        Uniform ambientColor = shader.getUniform("g_AmbientLightColor");
+        boolean isFirstLight = true;
+        boolean isSecondLight = false;
 
         for (int i = 0; i < lightList.size(); i++) {
-//                if (i == 1){
-//                    r.applyRenderState(additiveLight);
-//                }
-
             Light l = lightList.get(i);
             if (l instanceof AmbientLight) {
                 continue;
             }
 
+            if (isFirstLight){
+                // set ambient color for first light only
+                ambientColor.setValue(VarType.Vector4, getAmbientColor(lightList));
+                isFirstLight = false;
+                isSecondLight = true;
+            }else if (isSecondLight){
+                ambientColor.setValue(VarType.Vector4, ColorRGBA.Black);
+                // apply additive blending for 2nd and future lights
+                r.applyRenderState(additiveLight);
+                isSecondLight = false;
+            }
+            
             ColorRGBA color = l.getColor();
             ColorRGBA color2;
             if (lightColor.getValue() != null) {

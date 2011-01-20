@@ -36,6 +36,7 @@ import com.jme3.light.Light;
 import com.jme3.light.LightList;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
+import com.jme3.material.Technique;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Matrix3f;
 import com.jme3.math.Matrix4f;
@@ -96,8 +97,7 @@ public class RenderManager {
             camLeft = new Vector3f(),
             camDir = new Vector3f(),
             camLoc = new Vector3f();
-    private LightList worldLightList;
-    private ColorRGBA ambientLightColor = new ColorRGBA(0, 0, 0, 1);
+    
     //temp technique
     private String tmpTech;
 
@@ -370,15 +370,6 @@ public class RenderManager {
                     u.setValue(VarType.Float, timer.getFrameRate());
                     break;
                 case AmbientLightColor:
-                    ambientLightColor.set(0, 0, 0, 1);
-                    for (int j = 0; j < worldLightList.size(); j++) {
-                        Light l = worldLightList.get(j);
-                        if (l instanceof AmbientLight) {
-                            ambientLightColor.addLocal(l.getColor());
-                        }
-                    }
-                    ambientLightColor.a = 1.0f;
-                    u.setValue(VarType.Vector4, ambientLightColor);
                     break;
             }
         }
@@ -421,8 +412,6 @@ public class RenderManager {
             setWorldMatrix(g.getWorldMatrix());
         }
 
-        worldLightList = g.getWorldLightList();
-
         //if forcedTechnique we try to force it for render,
         //if it does not exists in the mat def, we check for forcedMaterial and render the geom if not null
         //else the geom is not rendered
@@ -443,6 +432,8 @@ public class RenderManager {
             // use forced material
             forcedMaterial.render(g, this);
         } else {
+            Technique t = g.getMaterial().getActiveTechnique();
+
             if (forcedRenderState != null) {
                 // TODO: Spec violation. Fix me.
 //                g.getMaterial().setAdditionalState(forcedRenderState);
@@ -587,24 +578,9 @@ public class RenderManager {
         RenderQueue rq = vp.getQueue();
         Camera cam = vp.getCamera();
         boolean depthRangeChanged = false;
-        boolean drawAmbient = true;
-
-        // NOTE we render all objects twice, once in AmbientPass mode
-        // and then again
 
         // render opaque objects with default depth range
         // opaque objects are sorted front-to-back, reducing overdraw
-        if (forcedMaterial != null || forcedTechnique != null) {
-            drawAmbient = false;
-
-
-        }
-        if (drawAmbient) {
-            forcedTechnique = "AmbientPass";
-            rq.renderQueue(Bucket.Opaque, this, cam, false);
-            forcedTechnique = null;
-        }
-
         rq.renderQueue(Bucket.Opaque, this, cam, flush);
 
         // render the sky, with depth range set to the farthest
@@ -622,12 +598,6 @@ public class RenderManager {
             if (depthRangeChanged) {
                 renderer.setDepthRange(0, 1);
                 depthRangeChanged = false;
-            }
-
-            if (drawAmbient) {
-                forcedTechnique = "AmbientPass";
-                rq.renderQueue(Bucket.Transparent, this, cam, false);
-                forcedTechnique = null;
             }
 
             rq.renderQueue(Bucket.Transparent, this, cam, flush);

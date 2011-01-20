@@ -118,7 +118,7 @@ public class LightScatteringFilter extends Filter {
 
     @Override
     public void initFilter(AssetManager manager, RenderManager renderManager, ViewPort vp, int w, int h) {
-        material = new Material(manager, "Common/MatDefs/Light/LightScattering.j3md");
+        material = new Material(manager, "Common/MatDefs/Post/LightScattering.j3md");
     }
 
     public float getBlurStart() {

@@ -168,5 +168,6 @@ public enum UniformBinding {
      * {@link AmbientLight}.
      * Type: vec4
      */
+    @Deprecated
     AmbientLightColor;
 }

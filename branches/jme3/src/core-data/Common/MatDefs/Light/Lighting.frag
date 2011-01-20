@@ -108,7 +108,6 @@ vec2 computeLighting(in vec3 wvPos, in vec3 wvNorm, in vec3 wvViewDir, in vec3 w
 void main(){
     vec2 newTexCoord;
  
-
     #if defined(PARALLAXMAP) || defined(NORMALMAP_PARALLAX)
        float h;
        #ifdef PARALLAXMAP
@@ -134,7 +133,7 @@ void main(){
     #ifdef ALPHAMAP
        alpha = alpha * texture2D(m_AlphaMap, newTexCoord).r;
     #endif
-    if(alpha<m_AlphaDiscardThreshold){
+    if(alpha < m_AlphaDiscardThreshold){
         discard;
     }
 
@@ -155,14 +154,12 @@ void main(){
       #endif
     #endif
 
-    
     #ifdef SPECULARMAP
       vec4 specularColor = texture2D(m_SpecularMap, newTexCoord);
     #else
       vec4 specularColor = vec4(1.0);
     #endif
 
-   
     #ifdef VERTEX_LIGHTING
        vec2 light = vec2(AmbientSum.a, SpecularSum.a);
        #ifdef COLORRAMP
@@ -170,8 +167,9 @@ void main(){
            light.y = texture2D(m_ColorRamp, vec2(light.y, 0.0)).r;
        #endif
 
-       gl_FragColor =  (AmbientSum + DiffuseSum) * light.x * diffuseColor
-                     + (SpecularSum) * light.y * specularColor;
+       gl_FragColor =  AmbientSum * diffuseColor + 
+                       DiffuseSum * diffuseColor  * light.x +
+                       SpecularSum * specularColor * light.y;
     #else
        vec4 lightDir = vLightDir;
        lightDir.xyz = normalize(lightDir.xyz);
@@ -181,8 +179,9 @@ void main(){
            diffuseColor.rgb  *= texture2D(m_ColorRamp, vec2(light.x, 0.0)).rgb;
            specularColor.rgb *= texture2D(m_ColorRamp, vec2(light.y, 0.0)).rgb;
        #endif
-       gl_FragColor = (AmbientSum + DiffuseSum * light.x) * diffuseColor
-                     + SpecularSum * light.y * specularColor;
+       gl_FragColor =  AmbientSum * diffuseColor +
+                       DiffuseSum * diffuseColor  * light.x +
+                       SpecularSum * specularColor * light.y;
     #endif
     gl_FragColor.a = alpha;
 }

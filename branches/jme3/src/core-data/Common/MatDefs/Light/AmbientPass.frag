@@ -1,3 +1,5 @@
+#error Ambient Pass is no longer used
+
 uniform vec4 g_AmbientLightColor;
 
 uniform vec4 m_Ambient;
