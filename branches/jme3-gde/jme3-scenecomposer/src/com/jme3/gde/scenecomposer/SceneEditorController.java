@@ -137,8 +137,11 @@ public class SceneEditorController implements PropertyChangeListener, NodeListen
         Spatial undoSpatial = null;
         if (selected instanceof Node) {
             if ("Node".equals(name)) {
-                ((Node) selected).attachChild(new Node("Node"));
+                Node node = new Node("Node");
+                ((Node) selected).attachChild(node);
                 refreshSelected();
+                undoSpatial = node;
+                undoParent = ((Node) selected);
             } else if ("Particle Emitter".equals(name)) {
                 ParticleEmitter emit = new ParticleEmitter("Emitter", ParticleMesh.Type.Triangle, 200);
                 emit.setShape(new EmitterSphereShape(Vector3f.ZERO, 1f));
@@ -495,6 +498,7 @@ public class SceneEditorController implements PropertyChangeListener, NodeListen
                 }
             }
             refreshSelected();
+            addSpatialUndo(selected, linkNode, null, selectedSpat);
         } catch (Exception ex) {
             Confirmation msg = new NotifyDescriptor.Confirmation(
                     "Error importing " + file.getName() + "\n" + ex.toString(),
@@ -541,6 +545,7 @@ public class SceneEditorController implements PropertyChangeListener, NodeListen
                     selected.worldToLocal(location, localVec);
                     linkNode.setLocalTranslation(localVec);
                 }
+                addSpatialUndo(selected, linkNode, null, selectedSpat);
             }
             refreshSelected();
         } catch (Exception ex) {
@@ -588,6 +593,7 @@ public class SceneEditorController implements PropertyChangeListener, NodeListen
                 }
             }
             refreshSelected();
+            addSpatialUndo(selected, file, null, selectedSpat);
         } catch (Exception ex) {
             Confirmation msg = new NotifyDescriptor.Confirmation(
                     "Error importing " + file.getName() + "\n" + ex.toString(),
