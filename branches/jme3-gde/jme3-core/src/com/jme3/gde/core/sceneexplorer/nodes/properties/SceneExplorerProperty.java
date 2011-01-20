@@ -33,6 +33,9 @@ package com.jme3.gde.core.sceneexplorer.nodes.properties;
 
 import com.jme3.effect.EmitterShape;
 import com.jme3.gde.core.scene.SceneApplication;
+import com.jme3.gde.core.sceneexplorer.nodes.AbstractSceneExplorerNode;
+import com.jme3.gde.core.undoredo.AbstractUndoableSceneEdit;
+import com.jme3.gde.core.undoredo.SceneUndoRedoManager;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Matrix3f;
@@ -45,6 +48,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import org.openide.nodes.PropertySupport;
 import org.openide.util.Exceptions;
+import org.openide.util.Lookup;
 
 /**
  *
@@ -52,7 +56,8 @@ import org.openide.util.Exceptions;
  */
 public class SceneExplorerProperty<T> extends PropertySupport.Reflection<T> {
 
-    private LinkedList<ScenePropertyChangeListener> listeners = new LinkedList<ScenePropertyChangeListener>();
+    protected LinkedList<ScenePropertyChangeListener> listeners = new LinkedList<ScenePropertyChangeListener>();
+    protected AbstractSceneExplorerNode aseNode;
 
     public SceneExplorerProperty(T instance, Class valueType, String getter, String setter) throws NoSuchMethodException {
         this(instance, valueType, getter, setter, null);
@@ -61,6 +66,10 @@ public class SceneExplorerProperty<T> extends PropertySupport.Reflection<T> {
     public SceneExplorerProperty(T instance, Class valueType, String getter, String setter, ScenePropertyChangeListener listener) throws NoSuchMethodException {
         super(instance, valueType, getter, setter);
         addPropertyChangeListener(listener);
+        if (listener instanceof AbstractSceneExplorerNode) {
+            aseNode = (AbstractSceneExplorerNode) listener;
+        }
+
         if (valueType == Vector3f.class) {
             setPropertyEditorClass(Vector3fPropertyEditor.class);
         } else if (valueType == Quaternion.class) {
@@ -110,7 +119,6 @@ public class SceneExplorerProperty<T> extends PropertySupport.Reflection<T> {
     @Override
     public void setValue(final T val) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
         try {
-            notifyListeners(null, val);
             SceneApplication.getApplication().enqueue(new Callable<Void>() {
 
                 public Void call() throws Exception {
@@ -125,8 +133,12 @@ public class SceneExplorerProperty<T> extends PropertySupport.Reflection<T> {
         }
     }
 
-    private void setSuperValue(T val) {
+    private void setSuperValue(T val, boolean undo) {
         try {
+            if (undo) {
+                addUndo(getSuperValue(), val);
+            }
+            notifyListeners(getSuperValue(), val);
             super.setValue(val);
         } catch (IllegalAccessException ex) {
             Exceptions.printStackTrace(ex);
@@ -135,6 +147,39 @@ public class SceneExplorerProperty<T> extends PropertySupport.Reflection<T> {
         } catch (InvocationTargetException ex) {
             Exceptions.printStackTrace(ex);
         }
+    }
+
+    private void setSuperValue(T val) {
+        setSuperValue(val, true);
+    }
+
+    protected void addUndo(final Object before, final Object after) {
+        Lookup.getDefault().lookup(SceneUndoRedoManager.class).addEdit(this, new AbstractUndoableSceneEdit() {
+
+            @Override
+            public void sceneUndo() {
+                setSuperValue((T)before, false);
+            }
+
+            @Override
+            public void sceneRedo() {
+                setSuperValue((T)after, false);
+            }
+
+            @Override
+            public void awtUndo() {
+                if (aseNode != null) {
+                    aseNode.refresh(true);
+                }
+            }
+
+            @Override
+            public void awtRedo() {
+                if (aseNode != null) {
+                    aseNode.refresh(true);
+                }
+            }
+        });
     }
 
     public void addPropertyChangeListener(ScenePropertyChangeListener listener) {
@@ -148,7 +193,6 @@ public class SceneExplorerProperty<T> extends PropertySupport.Reflection<T> {
     private void notifyListeners(Object before, Object after) {
         for (Iterator<ScenePropertyChangeListener> it = listeners.iterator(); it.hasNext();) {
             ScenePropertyChangeListener propertyChangeListener = it.next();
-            //TODO: check what the "programmatic name" is supposed to be here.. for now its Vector3f
             propertyChangeListener.propertyChange(getName(), before, after);
         }
     }

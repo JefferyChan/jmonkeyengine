@@ -256,21 +256,6 @@ public class JmeSpatial extends AbstractSceneExplorerNode {
         return trans;
     }
 
-    /**
-     * returns the PropertySet with the given name (mostly Class.name)
-     * @param name
-     * @return The PropertySet or null if no PropertySet by that name exists
-     */
-    public PropertySet getPropertySet(String name) {
-        for (int i = 0; i < getPropertySets().length; i++) {
-            PropertySet propertySet = getPropertySets()[i];
-            if (propertySet.getName().equals(name)) {
-                return propertySet;
-            }
-        }
-        return null;
-    }
-
     @Override
     protected Sheet createSheet() {
         //TODO: multithreading..

@@ -33,11 +33,18 @@ package com.jme3.gde.core.sceneexplorer.nodes;
 
 import com.jme3.gde.core.sceneexplorer.nodes.properties.SceneExplorerProperty;
 import com.jme3.gde.core.sceneexplorer.nodes.properties.ScenePropertyChangeListener;
+import com.jme3.gde.core.undoredo.AbstractUndoableSceneEdit;
+import com.jme3.gde.core.undoredo.SceneUndoRedoManager;
+import java.util.Iterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openide.loaders.DataObject;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
 import org.openide.util.Exceptions;
+import org.openide.util.Lookup;
+import org.openide.util.actions.SystemAction;
 import org.openide.util.lookup.InstanceContent;
 import org.openide.util.lookup.ProxyLookup;
 
@@ -45,7 +52,7 @@ import org.openide.util.lookup.ProxyLookup;
  *
  * @author normenhansen
  */
-public abstract class AbstractSceneExplorerNode extends AbstractNode implements SceneExplorerNode, ScenePropertyChangeListener{
+public abstract class AbstractSceneExplorerNode extends AbstractNode implements SceneExplorerNode, ScenePropertyChangeListener {
 
     protected Children jmeChildren;
     protected final InstanceContent lookupContents;
@@ -59,13 +66,13 @@ public abstract class AbstractSceneExplorerNode extends AbstractNode implements 
 
     public AbstractSceneExplorerNode(Children children, DataObject dataObject) {
         super(children, new ProxyLookup(dataObject.getLookup(), new SceneExplorerLookup(new InstanceContent())));
-        this.dataObject=dataObject;
+        this.dataObject = dataObject;
         lookupContents = getLookup().lookup(SceneExplorerLookup.class).getInstanceContent();
     }
 
     public AbstractSceneExplorerNode(DataObject dataObject) {
         super(Children.LEAF, new ProxyLookup(dataObject.getLookup(), new SceneExplorerLookup(new InstanceContent())));
-        this.dataObject=dataObject;
+        this.dataObject = dataObject;
         lookupContents = getLookup().lookup(SceneExplorerLookup.class).getInstanceContent();
     }
 
@@ -78,8 +85,8 @@ public abstract class AbstractSceneExplorerNode extends AbstractNode implements 
                 : new SceneExplorerLookup(new InstanceContent()));
         this.jmeChildren = children;
         lookupContents = getLookup().lookup(SceneExplorerLookup.class).getInstanceContent();
-        if(children instanceof SceneExplorerChildren){
-            this.dataObject=((SceneExplorerChildren) children).getDataObject();
+        if (children instanceof SceneExplorerChildren) {
+            this.dataObject = ((SceneExplorerChildren) children).getDataObject();
         }
     }
 
@@ -93,9 +100,24 @@ public abstract class AbstractSceneExplorerNode extends AbstractNode implements 
     }
 
     protected void fireSave(boolean modified) {
-        if(dataObject!=null){
+        if (dataObject != null) {
             dataObject.setModified(true);
         }
+    }
+
+    /**
+     * returns the PropertySet with the given name (mostly Class.name)
+     * @param name
+     * @return The PropertySet or null if no PropertySet by that name exists
+     */
+    public PropertySet getPropertySet(String name) {
+        for (int i = 0; i < getPropertySets().length; i++) {
+            PropertySet propertySet = getPropertySets()[i];
+            if (propertySet.getName().equals(name)) {
+                return propertySet;
+            }
+        }
+        return null;
     }
 
     /**
@@ -140,7 +162,7 @@ public abstract class AbstractSceneExplorerNode extends AbstractNode implements 
         return prop;
     }
 
-    public void propertyChange(String name, Object before, Object after) {
+    public void propertyChange(final String name, final Object before, final Object after) {
         fireSave(true);
         firePropertyChange(name, before, after);
     }
