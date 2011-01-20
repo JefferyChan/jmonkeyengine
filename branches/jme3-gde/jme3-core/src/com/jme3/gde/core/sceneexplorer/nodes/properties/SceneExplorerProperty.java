@@ -57,7 +57,6 @@ import org.openide.util.Lookup;
 public class SceneExplorerProperty<T> extends PropertySupport.Reflection<T> {
 
     protected LinkedList<ScenePropertyChangeListener> listeners = new LinkedList<ScenePropertyChangeListener>();
-    protected AbstractSceneExplorerNode aseNode;
 
     public SceneExplorerProperty(T instance, Class valueType, String getter, String setter) throws NoSuchMethodException {
         this(instance, valueType, getter, setter, null);
@@ -66,10 +65,6 @@ public class SceneExplorerProperty<T> extends PropertySupport.Reflection<T> {
     public SceneExplorerProperty(T instance, Class valueType, String getter, String setter, ScenePropertyChangeListener listener) throws NoSuchMethodException {
         super(instance, valueType, getter, setter);
         addPropertyChangeListener(listener);
-        if (listener instanceof AbstractSceneExplorerNode) {
-            aseNode = (AbstractSceneExplorerNode) listener;
-        }
-
         if (valueType == Vector3f.class) {
             setPropertyEditorClass(Vector3fPropertyEditor.class);
         } else if (valueType == Quaternion.class) {
@@ -168,16 +163,10 @@ public class SceneExplorerProperty<T> extends PropertySupport.Reflection<T> {
 
             @Override
             public void awtUndo() {
-                if (aseNode != null) {
-                    aseNode.refresh(true);
-                }
             }
 
             @Override
             public void awtRedo() {
-                if (aseNode != null) {
-                    aseNode.refresh(true);
-                }
             }
         });
     }
