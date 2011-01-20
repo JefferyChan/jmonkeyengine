@@ -56,7 +56,7 @@ MaterialDef Advanced Water {
 
     Technique {
         VertexShader   GLSL100 : Common/MatDefs/Post/Post.vert
-        FragmentShader GLSL130 : Common/MatDefs/Water/Water.frag
+        FragmentShader GLSL120 : Common/MatDefs/Water/Water.frag
 
         WorldParameters {
             WorldViewProjectionMatrix

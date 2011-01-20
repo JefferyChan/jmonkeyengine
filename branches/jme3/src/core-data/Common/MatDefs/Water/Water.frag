@@ -111,6 +111,11 @@ float fresnelTerm(in vec3 normal,in vec3 eyeVec){
     return saturate(fresnel * (1.0 - saturate(m_R0)) + m_R0 - m_RefractionStrength);
 }
 
+bool isnan(in float v){
+    return v!=v;
+}
+
+
 void main(){
     float sceneDepth = texture2D(m_DepthTexture, texCoord).r;
     float isAtFarPlane = step(0.99998, sceneDepth);
