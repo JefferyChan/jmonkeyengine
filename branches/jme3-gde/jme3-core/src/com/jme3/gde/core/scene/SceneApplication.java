@@ -38,6 +38,7 @@ import com.jme3.font.BitmapText;
 import com.jme3.gde.core.sceneexplorer.nodes.JmeSpatial;
 import com.jme3.gde.core.scene.processors.WireProcessor;
 import com.jme3.gde.core.sceneviewer.SceneViewerTopComponent;
+import com.jme3.gde.core.undoredo.SceneUndoRedoManager;
 import com.jme3.input.FlyByCamera;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.MouseAxisTrigger;
@@ -447,6 +448,7 @@ public class SceneApplication extends Application implements LookupProvider, Loo
         setHelpContext(null);
         resetCam();
         currentSceneRequest = null;
+        Lookup.getDefault().lookup(SceneUndoRedoManager.class).discardAllEdits();
         return true;
     }
 

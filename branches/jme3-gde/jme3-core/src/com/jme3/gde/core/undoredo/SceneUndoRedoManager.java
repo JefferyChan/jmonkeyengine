@@ -53,4 +53,22 @@ public class SceneUndoRedoManager extends UndoRedo.Manager {
             undoableEditHappened(new UndoableEditEvent(source, edit));
         }
     }
+
+    @Override
+    public void discardAllEdits() {
+        if (!java.awt.EventQueue.isDispatchThread()) {
+            java.awt.EventQueue.invokeLater(new Runnable() {
+
+                public void run() {
+                    superDiscardAllEdits();
+                }
+            });
+        } else {
+            super.discardAllEdits();
+        }
+    }
+
+    private void superDiscardAllEdits() {
+        super.discardAllEdits();
+    }
 }
