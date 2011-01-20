@@ -138,6 +138,7 @@ public class SceneEditorController implements PropertyChangeListener, NodeListen
         if (selected instanceof Node) {
             if ("Node".equals(name)) {
                 ((Node) selected).attachChild(new Node("Node"));
+                refreshSelected();
             } else if ("Particle Emitter".equals(name)) {
                 ParticleEmitter emit = new ParticleEmitter("Emitter", ParticleMesh.Type.Triangle, 200);
                 emit.setShape(new EmitterSphereShape(Vector3f.ZERO, 1f));
