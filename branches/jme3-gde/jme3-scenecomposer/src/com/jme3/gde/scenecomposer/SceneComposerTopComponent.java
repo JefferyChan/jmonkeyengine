@@ -585,9 +585,9 @@ public final class SceneComposerTopComponent extends TopComponent implements Sce
                 if (node == null) {
                     jList1.setListData(new String[]{});
                 } else if (node) {
-                    jList1.setListData(new String[]{"Node", "Particle Emitter", "Audio Node", "Picture", "Point Light", "Directional Light"});
+                    jList1.setListData(new String[]{"Node", "Particle Emitter", "Audio Node", "Picture", "Point Light", "Directional Light", "Ambient Light"});
                 } else {
-                    jList1.setListData(new String[]{"Point Light", "Directional Light"});
+                    jList1.setListData(new String[]{"Point Light", "Directional Light", "Ambient Light"});
                 }
             }
         });

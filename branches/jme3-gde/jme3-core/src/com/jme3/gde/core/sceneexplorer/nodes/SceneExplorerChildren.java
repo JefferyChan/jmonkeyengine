@@ -34,6 +34,7 @@ package com.jme3.gde.core.sceneexplorer.nodes;
 import com.jme3.effect.ParticleEmitter;
 import com.jme3.font.BitmapText;
 import com.jme3.gde.core.scene.SceneApplication;
+import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.light.Light;
 import com.jme3.light.LightList;
@@ -171,6 +172,9 @@ public class SceneExplorerChildren extends Children.Keys<Object> {
             }
             if (pair.getLight() instanceof DirectionalLight) {
                 return new Node[]{new JmeDirectionalLight(pair.getSpatial(), (DirectionalLight) pair.getLight()).setReadOnly(readOnly)};
+            }
+            if (pair.getLight() instanceof AmbientLight) {
+                return new Node[]{new JmeAmbientLight(pair.getSpatial(), (AmbientLight) pair.getLight()).setReadOnly(readOnly)};
             }
             return new Node[]{new JmeLight(pair.getSpatial(), pair.getLight()).setReadOnly(readOnly)};
         } else if (key instanceof MeshGeometryPair) {

@@ -9,17 +9,19 @@ import com.jme3.asset.DesktopAssetManager;
 import com.jme3.asset.ModelKey;
 import com.jme3.audio.AudioNode;
 import com.jme3.bullet.control.PhysicsRigidBodyControl;
-import com.jme3.bullet.nodes.PhysicsBaseNode;
-import com.jme3.bullet.nodes.PhysicsNode;
-import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.effect.EmitterSphereShape;
 import com.jme3.effect.ParticleEmitter;
 import com.jme3.effect.ParticleMesh;
 import com.jme3.gde.core.assets.ProjectAssetManager;
 import com.jme3.gde.core.assets.SpatialAssetDataObject;
 import com.jme3.gde.core.scene.SceneApplication;
+import com.jme3.gde.core.sceneexplorer.nodes.AbstractSceneExplorerNode;
 import com.jme3.gde.core.sceneexplorer.nodes.JmeSpatial;
+import com.jme3.gde.core.undoredo.AbstractUndoableSceneEdit;
+import com.jme3.gde.core.undoredo.SceneUndoRedoManager;
+import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
+import com.jme3.light.Light;
 import com.jme3.light.PointLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
@@ -37,6 +39,8 @@ import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
+import javax.swing.undo.CannotRedoException;
+import javax.swing.undo.CannotUndoException;
 import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.api.progress.ProgressHandleFactory;
 import org.openide.DialogDisplayer;
@@ -50,6 +54,7 @@ import org.openide.nodes.NodeListener;
 import org.openide.nodes.NodeMemberEvent;
 import org.openide.nodes.NodeReorderEvent;
 import org.openide.util.Exceptions;
+import org.openide.util.Lookup;
 
 /**
  *
@@ -127,6 +132,9 @@ public class SceneEditorController implements PropertyChangeListener, NodeListen
     }
 
     public void doAddSpatial(Spatial selected, String name, Vector3f point) {
+        Node undoParent = null;
+        Light undoLight = null;
+        Spatial undoSpatial = null;
         if (selected instanceof Node) {
             if ("Node".equals(name)) {
                 ((Node) selected).attachChild(new Node("Node"));
@@ -148,6 +156,8 @@ public class SceneEditorController implements PropertyChangeListener, NodeListen
                 }
                 ((Node) selected).attachChild(emit);
                 refreshSelected();
+                undoSpatial = emit;
+                undoParent = ((Node) selected);
             } else if ("Audio Node".equals(name)) {
                 AudioNode node = new AudioNode();
                 node.setName("Audio Node");
@@ -158,6 +168,8 @@ public class SceneEditorController implements PropertyChangeListener, NodeListen
                 }
                 ((Node) selected).attachChild(node);
                 refreshSelected();
+                undoSpatial = node;
+                undoParent = ((Node) selected);
             } else if ("Picture".equals(name)) {
                 Picture pic = new Picture("Picture");
                 Material mat = new Material(SceneApplication.getApplication().getAssetManager(), "Common/MatDefs/Misc/Particle.j3md");
@@ -169,6 +181,8 @@ public class SceneEditorController implements PropertyChangeListener, NodeListen
                 }
                 ((Node) selected).attachChild(pic);
                 refreshSelected();
+                undoSpatial = pic;
+                undoParent = ((Node) selected);
             } else if ("Point Light".equals(name)) {
                 PointLight light = new PointLight();
                 if (point != null) {
@@ -179,16 +193,22 @@ public class SceneEditorController implements PropertyChangeListener, NodeListen
                 light.setColor(ColorRGBA.White);
                 ((Node) selected).addLight(light);
                 refreshSelected();
+                undoLight = light;
+                undoParent = ((Node) selected);
             } else if ("Directional Light".equals(name)) {
                 DirectionalLight dl = new DirectionalLight();
                 dl.setDirection(new Vector3f(-1, -1, -1).normalizeLocal());
                 dl.setColor(ColorRGBA.White);
                 ((Node) selected).addLight(dl);
                 refreshSelected();
+                undoLight = dl;
+                undoParent = ((Node) selected);
             } else if ("Node".equals(name)) {
                 Node node = new Node("Node");
                 ((Node) selected).attachChild(node);
                 refreshSelected();
+                undoSpatial = node;
+                undoParent = ((Node) selected);
             }
         } else if (selected instanceof Geometry) {
             if ("Point Light".equals(name)) {
@@ -201,13 +221,89 @@ public class SceneEditorController implements PropertyChangeListener, NodeListen
                 light.setColor(ColorRGBA.White);
                 selected.addLight(light);
                 refreshSelected();
+                undoLight = light;
+                undoParent = ((Node) selected);
             } else if ("Directional Light".equals(name)) {
                 DirectionalLight dl = new DirectionalLight();
                 dl.setDirection(new Vector3f(-1, -1, -1).normalizeLocal());
                 dl.setColor(ColorRGBA.White);
                 selected.addLight(dl);
                 refreshSelected();
+                undoLight = dl;
+                undoParent = ((Node) selected);
+            } else if ("Ambient Light".equals(name)) {
+                AmbientLight dl = new AmbientLight();
+                dl.setColor(ColorRGBA.White);
+                selected.addLight(dl);
+                refreshSelected();
+                undoLight = dl;
+                undoParent = ((Node) selected);
             }
+        }
+        addSpatialUndo(undoParent, undoSpatial, undoLight, selectedSpat);
+    }
+
+    private void addSpatialUndo(final Node undoParent, final Spatial undoSpatial, final Light undoLight, final AbstractSceneExplorerNode parentNode) {
+        //add undo
+        if (undoParent != null && undoSpatial != null) {
+            Lookup.getDefault().lookup(SceneUndoRedoManager.class).addEdit(this, new AbstractUndoableSceneEdit() {
+
+                @Override
+                public void sceneUndo() throws CannotUndoException {
+                    //undo stuff here
+                    undoSpatial.removeFromParent();
+                }
+
+                @Override
+                public void sceneRedo() throws CannotRedoException {
+                    //redo stuff here
+                    undoParent.attachChild(undoSpatial);
+                }
+
+                @Override
+                public void awtRedo() {
+                    if (parentNode != null) {
+                        parentNode.refresh(true);
+                    }
+                }
+
+                @Override
+                public void awtUndo() {
+                    if (parentNode != null) {
+                        parentNode.refresh(true);
+                    }
+                }
+            });
+        }
+        if (undoParent != null && undoLight != null) {
+            Lookup.getDefault().lookup(SceneUndoRedoManager.class).addEdit(this, new AbstractUndoableSceneEdit() {
+
+                @Override
+                public void sceneUndo() throws CannotUndoException {
+                    //undo stuff here
+                    undoParent.removeLight(undoLight);
+                }
+
+                @Override
+                public void sceneRedo() throws CannotRedoException {
+                    //redo stuff here
+                    undoParent.addLight(undoLight);
+                }
+
+                @Override
+                public void awtRedo() {
+                    if (parentNode != null) {
+                        parentNode.refresh(true);
+                    }
+                }
+
+                @Override
+                public void awtUndo() {
+                    if (parentNode != null) {
+                        parentNode.refresh(true);
+                    }
+                }
+            });
         }
     }
 
@@ -310,8 +406,8 @@ public class SceneEditorController implements PropertyChangeListener, NodeListen
     }
 
     public void doCreatePhysicsMesh(Spatial selected) {
-        PhysicsRigidBodyControl control=selected.getControl(PhysicsRigidBodyControl.class);
-        if(control!=null){
+        PhysicsRigidBodyControl control = selected.getControl(PhysicsRigidBodyControl.class);
+        if (control != null) {
             selected.removeControl(control);
         }
         Node parent = selected.getParent();
@@ -335,7 +431,7 @@ public class SceneEditorController implements PropertyChangeListener, NodeListen
                     SceneApplication.getApplication().enqueue(new Callable() {
 
                         public Object call() throws Exception {
-                            doCreateDynamicPhysicsMesh(node,weight);
+                            doCreateDynamicPhysicsMesh(node, weight);
                             return null;
 
                         }
@@ -350,8 +446,8 @@ public class SceneEditorController implements PropertyChangeListener, NodeListen
     }
 
     public void doCreateDynamicPhysicsMesh(Spatial selected, float weight) {
-        PhysicsRigidBodyControl control=selected.getControl(PhysicsRigidBodyControl.class);
-        if(control!=null){
+        PhysicsRigidBodyControl control = selected.getControl(PhysicsRigidBodyControl.class);
+        if (control != null) {
             selected.removeControl(control);
         }
         Node parent = selected.getParent();
