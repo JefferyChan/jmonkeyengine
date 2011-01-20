@@ -32,13 +32,16 @@
 
 package com.jme3.gde.terraineditor;
 
+import com.jme3.gde.core.scene.SceneApplication;
 import com.jme3.gde.core.sceneexplorer.nodes.JmeSpatial;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.terrain.ProgressMonitor;
 import com.jme3.terrain.Terrain;
 import java.io.IOException;
+import java.util.concurrent.Callable;
 import org.openide.cookies.SaveCookie;
 import org.openide.filesystems.FileObject;
 import org.openide.loaders.DataObject;
@@ -201,6 +204,27 @@ public class TerrainEditorController {
     }
 
     public void doCleanup(){
+    }
+
+    /**
+     * pre-calculate the terrain's entropy values
+     */
+    public void generateEntropies(final ProgressMonitor progressMonitor) {
+        SceneApplication.getApplication().enqueue(new Callable<Object>() {
+
+            public Object call() throws Exception {
+                doGenerateEntropies(progressMonitor);
+                return null;
+            }
+        });
+    }
+
+    private void doGenerateEntropies(ProgressMonitor progressMonitor) {
+        Terrain terrain = (Terrain) getTerrain(null);
+        if (terrain == null)
+            return;
+
+        terrain.generateEntropy(progressMonitor);
     }
 
 }

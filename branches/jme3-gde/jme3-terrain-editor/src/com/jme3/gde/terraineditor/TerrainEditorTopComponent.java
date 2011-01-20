@@ -45,13 +45,23 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.terrain.ProgressMonitor;
 import com.jme3.terrain.geomipmap.TerrainQuad;
 import com.jme3.terrain.heightmap.AbstractHeightMap;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.logging.Logger;
+import javax.swing.SwingUtilities;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import org.netbeans.api.progress.ProgressHandle;
+import org.netbeans.api.progress.ProgressHandleFactory;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
@@ -61,8 +71,6 @@ import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.NotifyDescriptor.Confirmation;
 import org.openide.WizardDescriptor;
-import org.openide.awt.Toolbar;
-import org.openide.awt.ToolbarPool;
 import org.openide.cookies.SaveCookie;
 import org.openide.util.Exceptions;
 import org.openide.util.HelpCtx;
@@ -102,6 +110,64 @@ public final class TerrainEditorTopComponent extends TopComponent implements Sce
     }
 
 
+    class EntropyCalcProgressMonitor implements ProgressMonitor {
+
+        private ProgressHandle progressHandle;
+        private float progress = 0;
+        private float max = 0;
+        private final Object lock = new Object();
+
+        public void incrementProgress(float f) {
+            progress += f;
+            java.awt.EventQueue.invokeLater(new Runnable() {
+                public void run() {
+                    synchronized(lock) {
+                        progressHandle.progress((int)progress);
+                        Logger.getLogger(TerrainEditorTopComponent.class.getName()).info("######         generated entropy " + progress);
+                    }
+                }
+            });
+        }
+
+        public void setMonitorMax(float f) {
+            max = f;
+            java.awt.EventQueue.invokeLater(new Runnable() {
+                public void run() {
+                    synchronized(lock){
+                        if (progressHandle == null) {
+                            progressHandle = ProgressHandleFactory.createHandle("Calculating terrain entropies...");
+                            progressHandle.start((int) max);
+                        }
+                    }
+                }
+            });
+        }
+
+        public float getMonitorMax() {
+            return max;
+        }
+
+        public void progressComplete() {
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    progressHandle.finish();
+                }
+            });
+        }
+
+    }
+
+    private void setHintText(String text) {
+        hintTextArea.setText(text);
+    }
+
+    private void setHintText(TerrainEditButton terrainEditButton) {
+        if (TerrainEditButton.none.equals(terrainEditButton) )
+            hintTextArea.setText("");
+        else
+            hintTextArea.setText("Switch between camera and tool controls by holding down SHIFT");
+    }
+
 
     /** This method is called from within the constructor to
      * initialize the form.
@@ -119,12 +185,16 @@ public final class TerrainEditorTopComponent extends TopComponent implements Sce
         lowerTerrainButton = new javax.swing.JToggleButton();
         smoothTerrainButton = new javax.swing.JToggleButton();
         roughTerrainButton = new javax.swing.JToggleButton();
+        toolSettingsPanel = new javax.swing.JPanel();
         radiusLabel = new javax.swing.JLabel();
         radiusSlider = new javax.swing.JSlider();
-        heightLabel = new javax.swing.JLabel();
         heightSlider = new javax.swing.JSlider();
-        radiusTextField = new javax.swing.JTextField();
-        heightTextField = new javax.swing.JTextField();
+        heightLabel = new javax.swing.JLabel();
+        terrainOpsPanel = new javax.swing.JPanel();
+        genEntropiesButton = new javax.swing.JButton();
+        hintPanel = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        hintTextArea = new javax.swing.JTextArea();
 
         jToolBar1.setRollover(true);
 
@@ -179,6 +249,8 @@ public final class TerrainEditorTopComponent extends TopComponent implements Sce
         roughTerrainButton.setEnabled(false);
         jToolBar1.add(roughTerrainButton);
 
+        toolSettingsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(TerrainEditorTopComponent.class, "TerrainEditorTopComponent.toolSettingsPanel.border.title"))); // NOI18N
+
         org.openide.awt.Mnemonics.setLocalizedText(radiusLabel, org.openide.util.NbBundle.getMessage(TerrainEditorTopComponent.class, "TerrainEditorTopComponent.radiusLabel.text")); // NOI18N
 
         radiusSlider.setMajorTickSpacing(5);
@@ -194,8 +266,6 @@ public final class TerrainEditorTopComponent extends TopComponent implements Sce
             }
         });
 
-        org.openide.awt.Mnemonics.setLocalizedText(heightLabel, org.openide.util.NbBundle.getMessage(TerrainEditorTopComponent.class, "TerrainEditorTopComponent.heightLabel.text")); // NOI18N
-
         heightSlider.setMajorTickSpacing(20);
         heightSlider.setMaximum(200);
         heightSlider.setPaintTicks(true);
@@ -205,11 +275,85 @@ public final class TerrainEditorTopComponent extends TopComponent implements Sce
             }
         });
 
-        radiusTextField.setText(org.openide.util.NbBundle.getMessage(TerrainEditorTopComponent.class, "TerrainEditorTopComponent.radiusTextField.text")); // NOI18N
-        radiusTextField.setEnabled(false);
+        org.openide.awt.Mnemonics.setLocalizedText(heightLabel, org.openide.util.NbBundle.getMessage(TerrainEditorTopComponent.class, "TerrainEditorTopComponent.heightLabel.text")); // NOI18N
 
-        heightTextField.setEditable(false);
-        heightTextField.setText(org.openide.util.NbBundle.getMessage(TerrainEditorTopComponent.class, "TerrainEditorTopComponent.heightTextField.text")); // NOI18N
+        javax.swing.GroupLayout toolSettingsPanelLayout = new javax.swing.GroupLayout(toolSettingsPanel);
+        toolSettingsPanel.setLayout(toolSettingsPanelLayout);
+        toolSettingsPanelLayout.setHorizontalGroup(
+            toolSettingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(toolSettingsPanelLayout.createSequentialGroup()
+                .addGroup(toolSettingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(radiusLabel)
+                    .addComponent(heightLabel))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(toolSettingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(heightSlider, 0, 0, Short.MAX_VALUE)
+                    .addComponent(radiusSlider, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        toolSettingsPanelLayout.setVerticalGroup(
+            toolSettingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(toolSettingsPanelLayout.createSequentialGroup()
+                .addGroup(toolSettingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(radiusSlider, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(radiusLabel))
+                .addGap(21, 21, 21)
+                .addGroup(toolSettingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(heightLabel)
+                    .addComponent(heightSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        terrainOpsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(TerrainEditorTopComponent.class, "TerrainEditorTopComponent.terrainOpsPanel.border.title"))); // NOI18N
+
+        org.openide.awt.Mnemonics.setLocalizedText(genEntropiesButton, org.openide.util.NbBundle.getMessage(TerrainEditorTopComponent.class, "TerrainEditorTopComponent.genEntropiesButton.text")); // NOI18N
+        genEntropiesButton.setToolTipText(org.openide.util.NbBundle.getMessage(TerrainEditorTopComponent.class, "TerrainEditorTopComponent.genEntropiesButton.toolTipText")); // NOI18N
+        genEntropiesButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                genEntropiesButtonActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout terrainOpsPanelLayout = new javax.swing.GroupLayout(terrainOpsPanel);
+        terrainOpsPanel.setLayout(terrainOpsPanelLayout);
+        terrainOpsPanelLayout.setHorizontalGroup(
+            terrainOpsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(terrainOpsPanelLayout.createSequentialGroup()
+                .addComponent(genEntropiesButton)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        terrainOpsPanelLayout.setVerticalGroup(
+            terrainOpsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(terrainOpsPanelLayout.createSequentialGroup()
+                .addComponent(genEntropiesButton)
+                .addContainerGap(55, Short.MAX_VALUE))
+        );
+
+        hintPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(TerrainEditorTopComponent.class, "TerrainEditorTopComponent.hintPanel.border.title"))); // NOI18N
+
+        hintTextArea.setColumns(20);
+        hintTextArea.setEditable(false);
+        hintTextArea.setLineWrap(true);
+        hintTextArea.setRows(2);
+        hintTextArea.setTabSize(4);
+        hintTextArea.setWrapStyleWord(true);
+        hintTextArea.setFocusable(false);
+        hintTextArea.setRequestFocusEnabled(false);
+        jScrollPane1.setViewportView(hintTextArea);
+
+        javax.swing.GroupLayout hintPanelLayout = new javax.swing.GroupLayout(hintPanel);
+        hintPanel.setLayout(hintPanelLayout);
+        hintPanelLayout.setHorizontalGroup(
+            hintPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(hintPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 371, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        hintPanelLayout.setVerticalGroup(
+            hintPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -220,36 +364,24 @@ public final class TerrainEditorTopComponent extends TopComponent implements Sce
                     .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(radiusLabel)
-                            .addComponent(heightLabel))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(heightSlider, 0, 0, Short.MAX_VALUE)
-                            .addComponent(radiusSlider, javax.swing.GroupLayout.DEFAULT_SIZE, 151, Short.MAX_VALUE))))
-                .addGap(30, 30, 30)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(heightTextField)
-                    .addComponent(radiusTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 48, Short.MAX_VALUE))
-                .addContainerGap(451, Short.MAX_VALUE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(hintPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                .addComponent(toolSettingsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(terrainOpsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(radiusTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(11, 11, 11)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(radiusLabel)
-                            .addComponent(radiusSlider, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addGap(21, 21, 21)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(heightLabel)
-                    .addComponent(heightSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(heightTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(286, Short.MAX_VALUE))
+                .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(toolSettingsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(terrainOpsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(hintPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -263,16 +395,20 @@ public final class TerrainEditorTopComponent extends TopComponent implements Sce
 
         if (raiseTerrainButton.isSelected()) {
             toolController.setTerrainEditButtonState(TerrainEditButton.raiseTerrain);
+            setHintText(TerrainEditButton.raiseTerrain);
         } else {
             toolController.setTerrainEditButtonState(TerrainEditButton.none);
+            setHintText(TerrainEditButton.none);
         }
     }//GEN-LAST:event_raiseTerrainButtonActionPerformed
 
     private void lowerTerrainButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lowerTerrainButtonActionPerformed
         if (lowerTerrainButton.isSelected()) {
             toolController.setTerrainEditButtonState(TerrainEditButton.lowerTerrain);
+            setHintText(TerrainEditButton.lowerTerrain);
         } else {
             toolController.setTerrainEditButtonState(TerrainEditButton.none);
+            setHintText(TerrainEditButton.none);
         }
     }//GEN-LAST:event_lowerTerrainButtonActionPerformed
 
@@ -286,21 +422,33 @@ public final class TerrainEditorTopComponent extends TopComponent implements Sce
             toolController.setHeightToolHeight(heightSlider.getValue()); // should always be values upto and over 100, because it will be divided by 100
     }//GEN-LAST:event_heightSliderPropertyChange
 
+    private void genEntropiesButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_genEntropiesButtonActionPerformed
+        if (editorController != null) {
+            setHintText("Run entropy generation when you are finished modifying the terrain's height. It is a slow process but required for some LOD operations.");
+            EntropyCalcProgressMonitor monitor = new EntropyCalcProgressMonitor();
+            editorController.generateEntropies(monitor);
+        }
+    }//GEN-LAST:event_genEntropiesButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton createTerrainButton;
+    private javax.swing.JButton genEntropiesButton;
     private javax.swing.JLabel heightLabel;
     private javax.swing.JSlider heightSlider;
-    private javax.swing.JTextField heightTextField;
+    private javax.swing.JPanel hintPanel;
+    private javax.swing.JTextArea hintTextArea;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JToolBar.Separator jSeparator1;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JToggleButton lowerTerrainButton;
     private javax.swing.JLabel radiusLabel;
     private javax.swing.JSlider radiusSlider;
-    private javax.swing.JTextField radiusTextField;
     private javax.swing.JToggleButton raiseTerrainButton;
     private javax.swing.JToggleButton roughTerrainButton;
     private javax.swing.JToggleButton smoothTerrainButton;
     private javax.swing.ButtonGroup terrainModButtonGroup;
+    private javax.swing.JPanel terrainOpsPanel;
+    private javax.swing.JPanel toolSettingsPanel;
     // End of variables declaration//GEN-END:variables
     /**
      * Gets default instance. Do not use directly: reserved for *.settings files only,
@@ -332,18 +480,18 @@ public final class TerrainEditorTopComponent extends TopComponent implements Sce
             return;
         }
         
-            final Spatial node = selectedSpat.getLookup().lookup(Spatial.class);
-            if (node != null) {
-                
-                //setNeedsSave(true);
+        final Spatial node = selectedSpat.getLookup().lookup(Spatial.class);
+        if (node != null) {
 
-                if ("Terrain".equals(name)) {
-                    CreateTerrainWizardAction wiz = new CreateTerrainWizardAction(this);
-                    wiz.performAction();
-                } else {
-                    
-                }
+            //setNeedsSave(true);
+
+            if ("Terrain".equals(name)) {
+                CreateTerrainWizardAction wiz = new CreateTerrainWizardAction(this);
+                wiz.performAction();
+            } else {
+
             }
+        }
         
     }
     
@@ -589,34 +737,36 @@ public final class TerrainEditorTopComponent extends TopComponent implements Sce
 
     private boolean checkSaved() {
         if (editorController != null && editorController.isNeedSave()) {
-            Confirmation msg = new NotifyDescriptor.Confirmation(
-                    "Your Scene is not saved, do you want to save?",
-                    NotifyDescriptor.YES_NO_OPTION,
-                    NotifyDescriptor.WARNING_MESSAGE);
-            /*Object result = DialogDisplayer.getDefault().notify(msg);
-            if (NotifyDescriptor.CANCEL_OPTION.equals(result)) {
-                return false;
-            } else if (NotifyDescriptor.YES_OPTION.equals(result)) {
-                editorController.saveScene();
+                Confirmation msg = new NotifyDescriptor.Confirmation("Your Scene is not saved, do you want to save?", 
+                        NotifyDescriptor.YES_NO_CANCEL_OPTION, 
+                        NotifyDescriptor.WARNING_MESSAGE);
+                Object res = DialogDisplayer.getDefault().notify(msg);
+                if (NotifyDescriptor.CANCEL_OPTION.equals(res)) {
+                    return false;
+                } else if (NotifyDescriptor.YES_OPTION.equals(res)) {
+                    editorController.saveScene();
+                    return true;
+                } else if (NotifyDescriptor.NO_OPTION.equals(res)) {
+                    return true;
+                }
                 return true;
-            } else if (NotifyDescriptor.NO_OPTION.equals(result)) {
-                return true;
-            }*/
         }
         return true;
     }
 
     public boolean sceneClose(SceneRequest request) {
         if (request.equals(currentRequest)) {
-            SceneApplication.getApplication().removeSceneListener(this);
-            setLoadedScene(null, false);
-            currentRequest = null;
-            java.awt.EventQueue.invokeLater(new Runnable() {
+            if (checkSaved()) {
+                SceneApplication.getApplication().removeSceneListener(this);
+                setLoadedScene(null, false);
+                currentRequest = null;
+                java.awt.EventQueue.invokeLater(new Runnable() {
 
-                public void run() {
-                    cleanupControllers();
-                }
-            });
+                    public void run() {
+                        cleanupControllers();
+                    }
+                });
+            }
         }
         return true;
     }
