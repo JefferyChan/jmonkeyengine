@@ -56,6 +56,7 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.VertexBuffer;
 import com.jme3.scene.VertexBuffer.Type;
 import com.jme3.scene.debug.WireBox;
+import com.jme3.terrain.ProgressMonitor;
 import com.jme3.terrain.Terrain;
 import com.jme3.terrain.geomipmap.lodcalc.LodCalculatorFactory;
 import com.jme3.terrain.geomipmap.lodcalc.LodDistanceCalculatorFactory;
@@ -81,9 +82,11 @@ public class TerrainQuad extends Node implements Terrain {
 
 	protected Vector2f offset;
 
-	protected int totalSize;
+	protected int totalSize; // the size of this entire terrain tree (on one side)
 
-	protected int size;
+	protected int size; // size of this quad, can be between totalSize and patchSize
+
+    protected int patchSize; // size of the individual patches
 
 	protected Vector3f stepScale;
 
@@ -118,21 +121,21 @@ public class TerrainQuad extends Node implements Terrain {
 		super("Terrain");
 	}
 	
-	public TerrainQuad(String name, int blockSize, int size, float[] heightMap) {
-		this(name, blockSize, size, heightMap, null);
+	public TerrainQuad(String name, int patchSize, int totalSize, float[] heightMap) {
+		this(name, patchSize, totalSize, heightMap, null);
 	}
 
-    public TerrainQuad(String name, int blockSize, int size, float[] heightMap, LodCalculatorFactory lodCalculatorFactory) {
-        this(name, blockSize, size, Vector3f.UNIT_XYZ, heightMap, lodCalculatorFactory);
+    public TerrainQuad(String name, int patchSize, int totalSize, float[] heightMap, LodCalculatorFactory lodCalculatorFactory) {
+        this(name, patchSize, totalSize, Vector3f.UNIT_XYZ, heightMap, lodCalculatorFactory);
     }
 
-	public TerrainQuad(String name, int blockSize, int size, Vector3f scale, float[] heightMap, LodCalculatorFactory lodCalculatorFactory) {
-		this(name, blockSize, size, scale, heightMap, size, new Vector2f(), 0, lodCalculatorFactory);
+	public TerrainQuad(String name, int patchSize, int size, Vector3f scale, float[] heightMap, LodCalculatorFactory lodCalculatorFactory) {
+		this(name, patchSize, size, scale, heightMap, size, new Vector2f(), 0, lodCalculatorFactory);
         affectedAreaBBox = new BoundingBox(new Vector3f(0,0,0), size, Float.MAX_VALUE, size);
         fixNormalEdges(affectedAreaBBox);
 	}
 	
-	protected TerrainQuad(String name, int blockSize, int size,
+	protected TerrainQuad(String name, int patchSize, int size,
 				Vector3f stepScale, float[] heightMap, int totalSize,
 				Vector2f offset, float offsetAmount,
 				LodCalculatorFactory lodCalculatorFactory)
@@ -149,9 +152,10 @@ public class TerrainQuad extends Node implements Terrain {
 		this.offsetAmount = offsetAmount;
 		this.totalSize = totalSize;
 		this.size = size;
+        this.patchSize = patchSize;
 		this.stepScale = stepScale;
 		this.lodCalculatorFactory = lodCalculatorFactory;
-		split(blockSize, heightMap);
+		split(patchSize, heightMap);
 	}
 	 
 	public void setLodCalculatorFactory(LodCalculatorFactory lodCalculatorFactory) {
@@ -273,6 +277,36 @@ public class TerrainQuad extends Node implements Terrain {
         return this;
     }
 
+    public void generateEntropy(ProgressMonitor progressMonitor) {
+        // only check this on the root quad
+        if (isRootQuad())
+            if (progressMonitor != null) {
+                int numCalc = (totalSize-1)/(patchSize-1); // make it an even number
+                progressMonitor.setMonitorMax(numCalc*numCalc);
+            }
+
+        if (children != null) {
+			for (int i = children.size(); --i >= 0;) {
+				Spatial child = children.get(i);
+				if (child instanceof TerrainQuad) {
+					((TerrainQuad) child).generateEntropy(progressMonitor);
+				} else if (child instanceof TerrainPatch) {
+                    ((TerrainPatch) child).generateLodEntropies();
+                    if (progressMonitor != null)
+                        progressMonitor.incrementProgress(1);
+                }
+            }
+        }
+
+        // only do this on the root quad
+        if (isRootQuad())
+            if (progressMonitor != null)
+                progressMonitor.progressComplete();;
+    }
+
+    protected boolean isRootQuad() {
+        return (getParent() != null && !(getParent() instanceof TerrainQuad) );
+    }
 	
 	/**
 	 * Calculates the LOD of all child terrain patches.

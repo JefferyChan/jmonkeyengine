@@ -132,4 +132,12 @@ public interface Terrain {
      * @param locked or unlocked
      */
     public void setLocked(boolean locked);
+
+    /**
+     * Pre-calculate entropy values.
+     * Some terrain systems support entropy calculations to determine LOD
+     * changes. Often these entropy calculations are expensive and can be
+     * cached ahead of time. Use this method to do that.
+     */
+    public void generateEntropy(ProgressMonitor monitor);
 }

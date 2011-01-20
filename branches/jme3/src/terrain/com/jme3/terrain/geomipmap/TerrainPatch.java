@@ -192,17 +192,26 @@ public class TerrainPatch extends Geometry {
 		
 	}
 
-        public float[] getLodEntropies(){
-            if (lodEntropy == null){
-                lodEntropy = new float[getMaxLod()+1];
-                for (int i = 0; i <= getMaxLod(); i++){
-                    int curLod = (int) Math.pow(2, i);
-                    IntBuffer buf = geomap.writeIndexArrayLodDiff(null, curLod, false, false, false, false);
-                    lodEntropy[i] = EntropyComputeUtil.computeLodEntropy(mesh, buf);
-                }
-            }
-            return lodEntropy;
+    /**
+     * This calculation is slow, so don't use it often.
+     */
+    public void generateLodEntropies() {
+        float[] entropies = new float[getMaxLod()+1];
+        for (int i = 0; i <= getMaxLod(); i++){
+            int curLod = (int) Math.pow(2, i);
+            IntBuffer buf = geomap.writeIndexArrayLodDiff(null, curLod, false, false, false, false);
+            entropies[i] = EntropyComputeUtil.computeLodEntropy(mesh, buf);
         }
+
+        lodEntropy = entropies;
+    }
+
+    public float[] getLodEntropies(){
+        if (lodEntropy == null){
+            generateLodEntropies();
+        }
+        return lodEntropy;
+    }
 
 	public FloatBuffer getHeightmap() {
 		return geomap.getHeightData();
@@ -546,6 +555,7 @@ public class TerrainPatch extends Geometry {
         oc.write(lodCalculator, "lodCalculator", null);
         oc.write(lodCalculatorFactory, "lodCalculatorFactory", null);
         oc.write(geomap.getHeightData(), "heightmap", null);
+        oc.write(lodEntropy, "lodEntropy", null);
 
         setMesh(tempMesh); // add the mesh back
     }
@@ -563,6 +573,7 @@ public class TerrainPatch extends Geometry {
         lodCalculator = (LodCalculator) ic.readSavable("lodCalculator", new DistanceLodCalculator());
         lodCalculator.setTerrainPatch(this);
         lodCalculatorFactory = (LodCalculatorFactory) ic.readSavable("lodCalculatorFactory", null);
+        lodEntropy = ic.readFloatArray("lodEntropy", null);
         FloatBuffer heightBuffer = ic.readFloatBuffer("heightmap", null);
         geomap = new LODGeomap(size, heightBuffer);
         Mesh m = geomap.createMesh(stepScale, Vector2f.UNIT_XY, offset, offsetAmount, totalSize, false);
