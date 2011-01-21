@@ -39,6 +39,7 @@ import com.jme3.util.BufferUtils;
 import com.jme3.asset.AssetInfo;
 import com.jme3.asset.TextureKey;
 import com.jme3.texture.Image.Format;
+import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -106,8 +107,8 @@ public final class TGALoader implements AssetLoader {
         boolean flipH = false;
 
         // open a stream to the file
-        DataInputStream dis = new DataInputStream(in);
-        
+        DataInputStream dis = new DataInputStream(new BufferedInputStream(in));
+
         // ---------- Start Reading the TGA header ---------- //
         // length of the image id (1 byte)
         int idLength = dis.readUnsignedByte();
