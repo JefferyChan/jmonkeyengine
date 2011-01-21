@@ -128,6 +128,8 @@ public abstract class LwjglAbstractDisplay extends LwjglContext implements Runna
             if (!created.get()){
                 if (Display.isCreated())
                     Display.destroy();
+
+                return; // if we failed to create display, do not continue
             }
         }
         super.internalCreate();
