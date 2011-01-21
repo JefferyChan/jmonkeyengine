@@ -34,31 +34,31 @@ package com.jme3.font;
 
 import java.util.ArrayList;
 
-public class QuadList {
+class QuadList {
 
     private ArrayList<FontQuad> quads = new ArrayList<FontQuad>();
     private int actualSize = 0;
 
-    public FontQuad getQuad(int index){
+    FontQuad getQuad(int index){
         return quads.get(index);
     }
 
-    public int getQuantity(){
+    int getQuantity(){
         return quads.size();
     }
 
-    public void clear() {
+    void clear() {
         actualSize = 0;
     }
 
-    public int getActualSize() {
+    int getActualSize() {
         return actualSize;
     }
 
     /**
      * Sets the size of any remaining quads to 0, 0
      */
-    public void cleanTail(){
+    void cleanTail(){
         if (quads.size() > actualSize){
             for (int i = actualSize; i < quads.size(); i++){
                 quads.get(i).setSize(0, 0);
@@ -66,7 +66,7 @@ public class QuadList {
         }
     }
 
-    public FontQuad newQuad() {
+    FontQuad newQuad() {
         FontQuad q = null;
         if (actualSize == quads.size()) {
             q = new FontQuad();

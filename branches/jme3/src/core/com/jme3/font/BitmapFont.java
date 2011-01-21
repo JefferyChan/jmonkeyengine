@@ -169,7 +169,7 @@ public class BitmapFont implements Savable {
         return Math.max(maxLineWidth, lineWidth);
     }
 
-    public float updateText(StringBlock block, QuadList target, boolean rightToLeft, int page) {
+    float updateText(StringBlock block, QuadList target, boolean rightToLeft, int page) {
 
         CharSequence text = block.getCharacters();
         Align alignment = block.getAlignment();
@@ -336,7 +336,7 @@ public class BitmapFont implements Savable {
         return Math.max(lineWidth, maxLineWidth);
     }
 
-    public float updateTextRect(StringBlock b, QuadList target, int page) {
+    float updateTextRect(StringBlock b, QuadList target, int page) {
 
         String text = b.getText();
         float x = b.getTextBox().x;
@@ -393,7 +393,7 @@ public class BitmapFont implements Savable {
                         lineWidth = 0f;
 
 
-                        for (int j = 0; j <= target.getActualSize(); j++){
+                        for (int j = 0; j < target.getActualSize(); j++){
                             FontQuad q = target.getQuad(j);
                             BitmapCharacter localChar = q.getBitmapChar();
 
