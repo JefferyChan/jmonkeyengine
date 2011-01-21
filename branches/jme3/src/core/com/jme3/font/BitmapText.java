@@ -175,6 +175,7 @@ public class BitmapText extends Node {
     private void assemble() {
         float lineWidth = 0;
         // first generate quadlist
+        quadList.clear();
         if (block.getTextBox() == null) {
             lineWidth = font.updateText(block, quadList, rightToLeft);
         } else {

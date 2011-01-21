@@ -104,7 +104,9 @@ public class StringBlock implements Cloneable {
 
     public void setText(CharSequence text){
         this.text.setLength(0);
-        this.text.append(text);
+        if (text != null) {
+            this.text.append(text);
+        }
     }
 
     public Rectangle getTextBox() {

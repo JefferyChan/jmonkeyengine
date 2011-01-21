@@ -51,6 +51,7 @@ class BitmapTextPage extends Geometry {
     private final byte[] color;
     private final int page;
     private final QuadList quadList = new QuadList();
+    private final FontQuad EMPTY_QUAD = new FontQuad();
 
     BitmapTextPage(BitmapFont font, boolean arrayBased, int page) {
         super("BitmapFont", new Mesh());
@@ -141,10 +142,11 @@ class BitmapTextPage extends Geometry {
         sib = BufferUtils.ensureLargeEnough(sib, m.getTriangleCount() * 3);
         ib.updateData(sib);
 
+        int size = fpb.capacity()/12;
         // go for each quad and append it to the buffers
         if (pos != null) {
-            for (int i = 0; i < quadList.getQuantity(); i++) {
-                FontQuad fq = quadList.getQuad(i);
+            for (int i = 0; i < size; i++) {
+                FontQuad fq = i < quadList.getActualSize()? quadList.getQuad(i): EMPTY_QUAD;
                 fq.storeToArrays(pos, tc, idx, color, i);
                 fpb.put(pos);
                 ftb.put(tc);
@@ -152,8 +154,8 @@ class BitmapTextPage extends Geometry {
                 bcb.put(color);
             }
         } else {
-            for (int i = 0; i < quadList.getQuantity(); i++) {
-                FontQuad fq = quadList.getQuad(i);
+            for (int i = 0; i < size; i++) {
+                FontQuad fq = i < quadList.getActualSize()? quadList.getQuad(i): EMPTY_QUAD;
                 fq.appendPositions(fpb);
                 fq.appendTexCoords(ftb);
                 fq.appendIndices(sib, i);

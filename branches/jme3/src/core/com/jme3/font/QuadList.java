@@ -92,6 +92,7 @@ class QuadList {
                 store.quads.add(q);
             }
         }
+        store.actualSize = store.quads.size();
         return store;
     }
 }
