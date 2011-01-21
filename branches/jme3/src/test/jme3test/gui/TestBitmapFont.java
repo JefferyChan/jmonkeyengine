@@ -36,11 +36,14 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.font.BitmapFont;
 import com.jme3.font.BitmapText;
 import com.jme3.font.Rectangle;
+import com.jme3.input.KeyInput;
+import com.jme3.input.controls.ActionListener;
+import com.jme3.input.controls.KeyTrigger;
 
 public class TestBitmapFont extends SimpleApplication {
 
     private String txtB =
-    "ABCDEFGHIKLMN\nOPQRSTUVWXYZ1234567890`~!@#$%^&*()-=_+[]\\;',./{}|:<>?";
+    "ABCDEFGHIKLMN\nOPQRSTUVWXYZ1234567 890`~!@#$%^&*()-=_+[]\\;',./{}|:<>?";
 
     public static void main(String[] args){
         TestBitmapFont app = new TestBitmapFont();
@@ -49,19 +52,34 @@ public class TestBitmapFont extends SimpleApplication {
 
     @Override
     public void simpleInitApp() {
+        inputManager.addMapping("WordWrap", new KeyTrigger(KeyInput.KEY_1));
+        inputManager.addListener(keyListener, "WordWrap");
+        
         BitmapFont fnt = assetManager.loadFont("Interface/Fonts/Default.fnt");
-        BitmapText txt = new BitmapText(fnt, false);
+        txt = new BitmapText(fnt, false);
         txt.setBox(new Rectangle(0, 0, settings.getWidth(), settings.getHeight()));
         txt.setSize(fnt.getPreferredSize() * 2f);
         txt.setText(txtB);
-        txt.setLocalTranslation(0, settings.getHeight(), 0);
+        txt.setLocalTranslation(0, txt.getHeight(), 0);
         guiNode.attachChild(txt);
 
-        BitmapText txt4 = new BitmapText(fnt, false);
-        txt4.setSize(fnt.getPreferredSize() * 1.2f);
-        txt4.setText("Text without restriction. \nText without restriction. Text without restriction. Text without restriction");
-        txt4.setLocalTranslation(40, txt4.getLineHeight() * 2, 0);
-        guiNode.attachChild(txt4);
+        txt2 = new BitmapText(fnt, false);
+        txt2.setSize(fnt.getPreferredSize() * 1.2f);
+        txt2.setText("Text without restriction. \nText without restriction. Text without restriction. Text without restriction");
+        txt2.setLocalTranslation(40, txt2.getHeight(), 0);
+        guiNode.attachChild(txt2);
     }
+    
+    private ActionListener keyListener = new ActionListener() {
+        @Override
+        public void onAction(String name, boolean isPressed, float tpf) {
+            if (name.equals("WordWrap") && !isPressed) {
+                txt.setWordWrap(!txt.isWordWrap());
+            }            
+        }
+    };
+    
+    private BitmapText txt2;
+    private BitmapText txt;
 
 }

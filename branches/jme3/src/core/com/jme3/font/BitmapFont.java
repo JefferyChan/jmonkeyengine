@@ -169,7 +169,7 @@ public class BitmapFont implements Savable {
         return Math.max(maxLineWidth, lineWidth);
     }
 
-    float updateText(StringBlock block, QuadList target, boolean rightToLeft, int page) {
+    float updateText(StringBlock block, QuadList target, boolean rightToLeft) {
 
         CharSequence text = block.getCharacters();
         Align alignment = block.getAlignment();
@@ -280,22 +280,11 @@ public class BitmapFont implements Savable {
                     }
                 }
 
-                final float x0 = x;
-                final float wordWidth0 = wordWidth;
-
-                x += xAdvance * incrScale;
-                wordWidth += xAdvance;
-                lineWidth += xAdvance;
-
-                if (c.getPage() != page) {
-                    continue;
-                }
-
                 // Create the quad
                 FontQuad q = target.newQuad();
 
                 // Determine quad position
-                float quadPosX = x0 + (xOffset * incrScale);
+                float quadPosX = x + (xOffset * incrScale);
                 if (rightToLeft){
                     quadPosX -= width;
                 }
@@ -319,9 +308,12 @@ public class BitmapFont implements Savable {
                     wordNumber++;
                     wordWidth = xAdvance;
                 }
+                
+                x += xAdvance * incrScale;
+                wordWidth += xAdvance;
+                lineWidth += xAdvance;
 
                 // set data
-                q.setWordWidth(wordWidth0);
                 q.setWordWidth(wordWidth);
                 q.setBitmapChar(c);
                 q.setSizeScale(sizeScale);
@@ -336,7 +328,7 @@ public class BitmapFont implements Savable {
         return Math.max(lineWidth, maxLineWidth);
     }
 
-    float updateTextRect(StringBlock b, QuadList target, int page) {
+    float updateTextRect(StringBlock b, QuadList target, boolean wordWrap) {
 
         String text = b.getText();
         float x = b.getTextBox().x;
@@ -384,7 +376,7 @@ public class BitmapFont implements Savable {
                     x = b.getTextBox().x;
                     y -= charSet.getLineHeight() * sizeScale;
 //                    float offset = 0f;
-                    if ((lineWidth + xAdvance >= maxWidth) && (wordNumber != 1)){
+                    if ((lineWidth + xAdvance >= maxWidth) && (wordNumber != 1) && wordWrap){
                         // Next character extends past text box width
                         // We have to move the last word down one line
                         char newLineLastChar = 0;
@@ -480,21 +472,16 @@ public class BitmapFont implements Savable {
                 }
                 firstCharOfLine = false;
 
-                final float x0 = x;
-
-                x += xAdvance;
-                lineWidth += xAdvance;
-                if (c.getPage() != page) {
-                    continue;
-                }
-
                 // edit the quad
                 FontQuad q = target.newQuad();
 
-                float quadPosX = x0 + (xOffset);
+                float quadPosX = x + (xOffset);
                 float quadPosY = y - yOffset;
                 q.setPosition(quadPosX, quadPosY);
                 q.setSize(width, height);
+                
+                x += xAdvance;
+                lineWidth += xAdvance;
 
                 float u0 = (float) c.getX() / charSet.getWidth();
                 float v0 = (float) c.getY() / charSet.getHeight();

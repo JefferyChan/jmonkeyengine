@@ -34,6 +34,7 @@ package com.jme3.font;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
+import java.util.LinkedList;
 
 import com.jme3.material.Material;
 import com.jme3.scene.Geometry;
@@ -44,12 +45,12 @@ import com.jme3.util.BufferUtils;
 
 class BitmapTextPage extends Geometry {
     
-    private QuadList quadList = new QuadList();
     private final float[] pos;
     private final float[] tc;
     private final short[] idx;
     private final byte[] color;
-    private int page;
+    private final int page;
+    private final QuadList quadList = new QuadList();
 
     BitmapTextPage(BitmapFont font, boolean arrayBased, int page) {
         super("BitmapFont", new Mesh());
@@ -104,23 +105,11 @@ class BitmapTextPage extends Geometry {
     public BitmapTextPage clone() {
         BitmapTextPage clone = (BitmapTextPage) super.clone();
         clone.mesh = mesh.deepClone();
-        clone.quadList = new QuadList();
         return clone;
     }
 
-    float assemble(BitmapFont font, StringBlock block, boolean rightToLeft) {
-        float lineWidth = 0;
-        // first generate quadlist
-        if (block.getTextBox() == null) {
-            lineWidth = font.updateText(block, quadList, rightToLeft, page);
-        } else {
-            lineWidth = font.updateTextRect(block, quadList, page);
-        }
-        
-        // set size to zero of any quads at the end that
-        // were not updated
-        quadList.cleanTail();
-
+    void assemble(QuadList quads) {
+        quads.getPage(page, quadList);
         Mesh m = getMesh();
         m.setVertexCount(quadList.getQuantity() * 4);
         m.setTriangleCount(quadList.getQuantity() * 2);
@@ -176,7 +165,5 @@ class BitmapTextPage extends Geometry {
         ftb.rewind();
         sib.rewind();
         bcb.rewind();
-        
-        return lineWidth;
     }
 }

@@ -43,7 +43,9 @@ public class BitmapText extends Node {
     private float lineWidth = 0f;    
     private boolean needRefresh = true;
     private boolean rightToLeft = false;
+    private boolean wordWrap = true;
     private final BitmapTextPage[] textPages;
+    private QuadList quadList = new QuadList();
 
     public BitmapText(BitmapFont font) {
         this(font, false, false);
@@ -141,8 +143,21 @@ public class BitmapText extends Node {
         return lineWidth;
     }
     
+    public boolean isWordWrap() {
+        return wordWrap;
+    }
+    
     public void setAlignment(BitmapFont.Align align) {
         block.setAlignment(align);
+    }
+    
+    /**
+     * available only when bounding is set. <code>setBox()</code> method call is needed in advance. 
+     * @param wordWrap true when word need not be split at the end of the line.
+     */
+    public void setWordWrap(boolean wordWrap) {
+        this.wordWrap = wordWrap;
+        needRefresh = true;
     }
 
     public BitmapFont.Align getAlignment() {
@@ -158,8 +173,19 @@ public class BitmapText extends Node {
     }
 
     private void assemble() {
-        for (BitmapTextPage page : textPages) {
-            lineWidth = page.assemble(font, block, rightToLeft);
+        float lineWidth = 0;
+        // first generate quadlist
+        if (block.getTextBox() == null) {
+            lineWidth = font.updateText(block, quadList, rightToLeft);
+        } else {
+            lineWidth = font.updateTextRect(block, quadList, wordWrap);
+        }
+        // set size to zero of any quads at the end that
+        // were not updated
+        quadList.cleanTail();
+        
+        for (int i = 0; i < textPages.length; i++) {
+            textPages[i].assemble(quadList);
         }
         needRefresh = false;
     }

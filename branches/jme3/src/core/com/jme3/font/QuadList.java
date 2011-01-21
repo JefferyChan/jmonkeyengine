@@ -50,6 +50,11 @@ class QuadList {
     void clear() {
         actualSize = 0;
     }
+    
+    void removeAllQuads() {
+        quads.clear();
+        actualSize = 0;
+    }
 
     int getActualSize() {
         return actualSize;
@@ -77,5 +82,16 @@ class QuadList {
         }
         actualSize++;
         return q;
+    }
+
+    QuadList getPage(int page, QuadList store) {
+        store.removeAllQuads();
+        for (int i = 0; i < actualSize; i++) {
+            FontQuad q = quads.get(i);
+            if (q.getBitmapChar().getPage() == page) {
+                store.quads.add(q);
+            }
+        }
+        return store;
     }
 }
