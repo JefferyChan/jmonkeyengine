@@ -142,12 +142,18 @@ public class AnimControl extends AbstractControl implements Savable, Cloneable {
             }
             for (int i = meshes.length; i < clonedNode.getQuantity(); i++){
                 // go through attachment nodes, apply them to correct bone
-                Node clonedAttachNode = (Node) clonedNode.getChild(i);
-                Bone originalBone     = (Bone) clonedAttachNode.getUserData("AttachedBone");
-                Bone clonedBone       = clone.skeleton.getBone(originalBone.getName());
-                
-                clonedAttachNode.setUserData("AttachedBone", clonedBone);
-                clonedBone.setAttachmentsNode(clonedAttachNode);
+                Spatial child = clonedNode.getChild(i);
+                if (child instanceof Node){
+                    Node clonedAttachNode = (Node) child;
+                    Bone originalBone     = (Bone) clonedAttachNode.getUserData("AttachedBone");
+
+                    if (originalBone != null){
+                        Bone clonedBone       = clone.skeleton.getBone(originalBone.getName());
+
+                        clonedAttachNode.setUserData("AttachedBone", clonedBone);
+                        clonedBone.setAttachmentsNode(clonedAttachNode);
+                    }
+                }
             }
             clone.targets = meshes;
             clone.channels = new ArrayList<AnimChannel>();
