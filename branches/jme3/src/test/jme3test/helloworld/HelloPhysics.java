@@ -35,9 +35,7 @@ package jme3test.helloworld;
 import com.jme3.app.SimpleApplication;
 import com.jme3.asset.TextureKey;
 import com.jme3.bullet.BulletAppState;
-import com.jme3.bullet.collision.shapes.BoxCollisionShape;
-import com.jme3.bullet.collision.shapes.SphereCollisionShape;
-import com.jme3.bullet.nodes.PhysicsNode;
+import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.font.BitmapText;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.ActionListener;
@@ -56,7 +54,7 @@ import com.jme3.texture.Texture.WrapMode;
 
 /**
  * Example 12 - how to give objects physical properties so they bounce and fall.
- * @author double1984, reformatted and javadocced by zathras
+ * @author base code by double1984, updated by zathras
  */
 public class HelloPhysics extends SimpleApplication {
 
@@ -65,61 +63,60 @@ public class HelloPhysics extends SimpleApplication {
     app.start();
   }
 
+  /** Prepare the Physics Application State (jBullet) */
+  private BulletAppState bulletAppState;
+
   /** Activate custom rendering of shadows */
   BasicShadowRenderer bsr;
 
-  /** geometries and collisions shapes for bricks and cannon balls. */
-  private BulletAppState bulletAppState;
-  private static final Box  brick;
-  private static final BoxCollisionShape boxCollisionShape;
-  private static final Sphere cannonball;
-  private static final SphereCollisionShape cannonballCollisionShape;
-
-  /** brick dimensions */
-  private static final float brickLength = 0.48f;
-  private static final float brickWidth = 0.24f;
-  private static final float brickHeight = 0.12f;
-
-  /** Materials */
+  /** Prepare Materials */
   Material wall_mat;
   Material stone_mat;
   Material floor_mat;
 
+  /** Prepare geometries and physical nodes for bricks and cannon balls. */
+  private RigidBodyControl    brick_phy;
+  private static final Box    box;
+  private RigidBodyControl    ball_phy;
+  private static final Sphere sphere;
+  private RigidBodyControl    floor_phy;
+  private static final Box    floor;
+  
+  /** dimensions used for bricks and wall */
+  private static final float brickLength = 0.48f;
+  private static final float brickWidth  = 0.24f;
+  private static final float brickHeight = 0.12f;
+
   static {
-    /** initializing the cannon ball geometry that is reused later */
-    cannonball = new Sphere(32, 32, 0.4f, true, false);
-    cannonball.setTextureMode(TextureMode.Projected);
-    cannonballCollisionShape=new SphereCollisionShape(0.4f);
-    /** initializing the brick geometry that is reused later */
-    brick = new Box(Vector3f.ZERO, brickLength, brickHeight, brickWidth);
-    brick.scaleTextureCoordinates(new Vector2f(1f, .5f));
-    boxCollisionShape =
-     new BoxCollisionShape(new Vector3f(brickLength, brickHeight, brickWidth));
+    /** Initialize the cannon ball geometry */
+    sphere = new Sphere(32, 32, 0.4f, true, false);
+    sphere.setTextureMode(TextureMode.Projected);
+    /** Initialize the brick geometry */
+    box = new Box(Vector3f.ZERO, brickLength, brickHeight, brickWidth);
+    box.scaleTextureCoordinates(new Vector2f(1f, .5f));
+    /** Initialize the floor geometry */
+    floor = new Box(Vector3f.ZERO, 10f, 0.1f, 5f);
+    floor.scaleTextureCoordinates(new Vector2f(3, 6));
   }
 
   @Override
   public void simpleInitApp() {
-    /** Set up Physics */
+    /** Set up Physics Game */
     bulletAppState = new BulletAppState();
     stateManager.attach(bulletAppState);
-    /** Set up camera */
-    this.cam.setLocation(new Vector3f(0, 6f, 6f));
+    /** Configure cam to look at scene */
+    cam.setLocation(new Vector3f(0, 6f, 6f));
     cam.lookAt(Vector3f.ZERO, new Vector3f(0, 1, 0));
     cam.setFrustumFar(15);
-    /** Add shooting action */
+    /** Add InputManager action: Left click triggers shooting. */
     inputManager.addMapping("shoot", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
     inputManager.addListener(actionListener, "shoot");
-    /** Initialize the scene and physics space */
+    /** Initialize the scene, materials, and physics space */
     initMaterials();
     initWall();
     initFloor();
     initCrossHairs();
-    bulletAppState.getPhysicsSpace().setAccuracy(0.005f);
-    /** Activate custom shadows */
-    rootNode.setShadowMode(ShadowMode.Off);
-    bsr = new BasicShadowRenderer(assetManager, 256);
-    bsr.setDirection(new Vector3f(-1, -1, -1).normalizeLocal());
-    viewPort.addProcessor(bsr);
+    initShadows();
   }
 
   /**
@@ -158,21 +155,18 @@ public class HelloPhysics extends SimpleApplication {
 
   /** Make a solid floor and add it to the scene. */
   public void initFloor() {
-    Box floorBox = new Box(Vector3f.ZERO, 10f, 0.1f, 5f);
-    floorBox.scaleTextureCoordinates(new Vector2f(3, 6));
-    Geometry floor = new Geometry("floor", floorBox);
-    floor.setMaterial(floor_mat);
-    floor.setShadowMode(ShadowMode.Receive);
-    PhysicsNode floorNode = new PhysicsNode(
-     floor,
-     new BoxCollisionShape(new Vector3f(10f, 0.1f, 5f)),
-     0);
-    floorNode.setLocalTranslation(0, -0.1f, 0);
-    this.rootNode.attachChild(floorNode);
-    bulletAppState.getPhysicsSpace().add(floorNode);
+    Geometry floor_geo = new Geometry("Floor", floor);
+    floor_geo.setMaterial(floor_mat);
+    floor_geo.setShadowMode(ShadowMode.Receive);
+    floor_geo.setLocalTranslation(0, -0.1f, 0);
+    this.rootNode.attachChild(floor_geo);
+    /* Make the floor physical with mass 0.0f! */
+    floor_phy = new RigidBodyControl(0.0f);
+    floor_geo.addControl(floor_phy);
+    bulletAppState.getPhysicsSpace().add(floor_phy);
   }
 
-  /** A loop that builds a wall out of individual bricks. */
+  /** This loop builds a wall out of individual bricks. */
   public void initWall() {
     float startpt = brickLength / 4;
     float height = 0;
@@ -187,40 +181,49 @@ public class HelloPhysics extends SimpleApplication {
     }
   }
 
+  /** Activate shadow casting and light direction */
+    private void initShadows() {
+        bsr = new BasicShadowRenderer(assetManager, 256);
+        bsr.setDirection(new Vector3f(-1, -1, -1).normalizeLocal());
+        viewPort.addProcessor(bsr);
+        // Default mode is Off -- Every node declares own shadow mode!
+        rootNode.setShadowMode(ShadowMode.Off);
+    }
+
   /** This method creates one individual physical brick. */
-  public void makeBrick(Vector3f ori) {
-    /** create a new brick */
-    Geometry box_geo = new Geometry("brick", brick);
-    box_geo.setMaterial(wall_mat);
-    PhysicsNode brickNode = new PhysicsNode(
-     box_geo,      // geometry
-     boxCollisionShape, // collision shape
-     1.5f);       // mass
-    /** position the brick and activate shadows */
-    brickNode.setLocalTranslation(ori);
-    brickNode.setShadowMode(ShadowMode.CastAndReceive);
-    rootNode.attachChild(brickNode);
-    bulletAppState.getPhysicsSpace().add(brickNode);
+  public void makeBrick(Vector3f loc) {
+    /** Create a brick geometry and attach to scene graph. */
+    Geometry brick_geo = new Geometry("brick", box);
+    brick_geo.setMaterial(wall_mat);
+    rootNode.attachChild(brick_geo);
+    /** Position the brick geometry and activate shadows */
+    brick_geo.setLocalTranslation(loc);
+    brick_geo.setShadowMode(ShadowMode.CastAndReceive);
+    /** Make brick physical with a mass > 0.0f. */
+    brick_phy = new RigidBodyControl(2f);
+    /** Add physical brick to physics space. */
+    brick_geo.addControl(brick_phy);
+    bulletAppState.getPhysicsSpace().add(brick_phy);
   }
 
   /** This method creates one individual physical cannon ball.
    * By defaul, the ball is accelerated and flies
    * from the camera position in the camera direction.*/
    public void makeCannonBall() {
-    /** create a new cannon ball. */
-    Geometry ball_geo = new Geometry("cannon ball", cannonball);
+    /** Create a cannon ball geometry and attach to scene graph. */
+    Geometry ball_geo = new Geometry("cannon ball", sphere);
     ball_geo.setMaterial(stone_mat);
-    PhysicsNode cannonballNode = new PhysicsNode(
-       ball_geo,         // geometry
-       cannonballCollisionShape, // collision shape
-       1.0f);          // mass
-    /** position the cannon ball and activate shadows */
-    cannonballNode.setLocalTranslation(cam.getLocation());
-    cannonballNode.setShadowMode(ShadowMode.CastAndReceive);
-    /** Attach the cannon call to the scene and accelerate it. */
-    rootNode.attachChild(cannonballNode);
-    bulletAppState.getPhysicsSpace().add(cannonballNode);
-    cannonballNode.setLinearVelocity(cam.getDirection().mult(25));
+    rootNode.attachChild(ball_geo);
+    /** Position the cannon ball and activate shadows */
+    ball_geo.setLocalTranslation(cam.getLocation());
+    ball_geo.setShadowMode(ShadowMode.CastAndReceive);
+    /** Make the ball physcial with a mass > 0.0f */
+    ball_phy = new RigidBodyControl(1f);
+    /** Add physical ball to physics space. */
+    ball_geo.addControl(ball_phy);
+    bulletAppState.getPhysicsSpace().add(ball_phy);
+    /** Accelerate the physcial ball to shoot it. */
+    ball_phy.setLinearVelocity(cam.getDirection().mult(25));
   }
 
   /** A plus sign used as crosshairs to help the player with aiming.*/
@@ -229,7 +232,7 @@ public class HelloPhysics extends SimpleApplication {
     guiFont = assetManager.loadFont("Interface/Fonts/Default.fnt");
     BitmapText ch = new BitmapText(guiFont, false);
     ch.setSize(guiFont.getCharSet().getRenderedSize() * 2);
-    ch.setText("+"); // crosshairs
+    ch.setText("+");        // fake crosshairs :)
     ch.setLocalTranslation( // center
       settings.getWidth() / 2 - guiFont.getCharSet().getRenderedSize() / 3 * 2,
       settings.getHeight() / 2 + ch.getLineHeight() / 2, 0);
