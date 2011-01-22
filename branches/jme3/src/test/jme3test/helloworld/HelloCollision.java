@@ -37,6 +37,8 @@ import com.jme3.asset.plugins.ZipLocator;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
 import com.jme3.bullet.collision.shapes.CollisionShape;
+import com.jme3.bullet.control.CharacterControl;
+import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.nodes.PhysicsCharacterNode;
 import com.jme3.bullet.nodes.PhysicsNode;
 import com.jme3.bullet.util.CollisionShapeFactory;
@@ -59,8 +61,8 @@ public class HelloCollision extends SimpleApplication
 
   private Spatial sceneModel;
   private BulletAppState bulletAppState;
-  private PhysicsNode landscape;
-  private PhysicsCharacterNode player;
+  private RigidBodyControl landscape;
+  private CharacterControl player;
   private Vector3f walkDirection = new Vector3f();
   private boolean left = false, right = false, up = false, down = false;
 
@@ -77,13 +79,8 @@ public class HelloCollision extends SimpleApplication
     // We re-use the flyby camera for rotation, while positioning is handled by physics
     viewPort.setBackgroundColor(new ColorRGBA(0.7f,0.8f,1f,1f));
     flyCam.setMoveSpeed(100);
-    setupKeys();
-
-    // We add a light so we see the scene
-    DirectionalLight dl = new DirectionalLight();
-    dl.setColor(ColorRGBA.White.clone().multLocal(2)); // bright white light
-    dl.setDirection(new Vector3f(2.8f, -2.8f, -2.8f).normalize());
-    rootNode.addLight(dl);
+    setUpKeys();
+    setUpLight();
 
     // We load the scene from the zip file and adjust its size.
     assetManager.registerLocator("town.zip", ZipLocator.class.getName());
@@ -91,33 +88,42 @@ public class HelloCollision extends SimpleApplication
     sceneModel.setLocalScale(2f);
 
     // We set up collision detection for the scene by creating a
-    // compound collision shape and a physics node.
+    // compound collision shape and a static physics node with mass zero.
     CollisionShape sceneShape =
-    CollisionShapeFactory.createMeshShape((Node) sceneModel);
-    landscape = new PhysicsNode(sceneModel, sceneShape, 0);
+      CollisionShapeFactory.createMeshShape((Node) sceneModel);
+    landscape = new RigidBodyControl(sceneShape, 0);
+    sceneModel.addControl(landscape);
     
     // We set up collision detection for the player by creating
     // a capsule collision shape and a physics character node.
     // The physics character node offers extra settings for
     // size, stepheight, jumping, falling, and gravity.
     // We also put the player in its starting position.
-    player = new PhysicsCharacterNode(new CapsuleCollisionShape(1.5f, 6f, 1), .05f);
+    CapsuleCollisionShape capsuleShape = new CapsuleCollisionShape(1.5f, 6f, 1);
+    player = new CharacterControl(capsuleShape, 0.05f);
     player.setJumpSpeed(20);
     player.setFallSpeed(30);
     player.setGravity(30);
-    player.setLocalTranslation(new Vector3f(0, 10, 0));
+    player.setPhysicsLocation(new Vector3f(0, 10, 0));
 
     // We attach the scene and the player to the rootnode and the physics space,
     // to make them appear in the game world.
-    rootNode.attachChild(landscape);
-    rootNode.attachChild(player);
+    rootNode.attachChild(sceneModel);
     bulletAppState.getPhysicsSpace().add(landscape);
     bulletAppState.getPhysicsSpace().add(player);
   }
 
+    private void setUpLight() {
+        // We add a light so we see the scene
+        DirectionalLight dl = new DirectionalLight();
+        dl.setColor(ColorRGBA.White.clone().multLocal(2)); // bright white light
+        dl.setDirection(new Vector3f(2.8f, -2.8f, -2.8f).normalize());
+        rootNode.addLight(dl);
+    }
+
   /** We over-write some navigational key mappings here, so we can
    * add physics-controlled walking and jumping: */
-  private void setupKeys() {
+  private void setUpKeys() {
     inputManager.addMapping("Lefts",  new KeyTrigger(KeyInput.KEY_A));
     inputManager.addMapping("Rights", new KeyTrigger(KeyInput.KEY_D));
     inputManager.addMapping("Ups",    new KeyTrigger(KeyInput.KEY_W));
@@ -163,6 +169,6 @@ public class HelloCollision extends SimpleApplication
     if (up)    { walkDirection.addLocal(camDir); }
     if (down)  { walkDirection.addLocal(camDir.negate()); }
     player.setWalkDirection(walkDirection);
-    cam.setLocation(player.getLocalTranslation());
+    cam.setLocation(player.getPhysicsLocation());
   }
 }
