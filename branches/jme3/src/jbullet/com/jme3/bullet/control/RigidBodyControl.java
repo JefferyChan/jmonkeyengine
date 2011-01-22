@@ -5,18 +5,27 @@
 package com.jme3.bullet.control;
 
 import com.jme3.bullet.PhysicsSpace;
+import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.CollisionShape;
+import com.jme3.bullet.collision.shapes.CylinderCollisionShape;
+import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.objects.BulletRigidBody;
 import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.export.InputCapsule;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
 import com.jme3.export.OutputCapsule;
+import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
+import com.jme3.scene.Geometry;
+import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.Control;
+import com.jme3.scene.shape.Box;
+import com.jme3.scene.shape.Cylinder;
+import com.jme3.scene.shape.Sphere;
 import java.io.IOException;
 
 /**
@@ -104,6 +113,17 @@ public class RigidBodyControl extends BulletRigidBody implements PhysicsControl 
     protected void createCollisionShape() {
         if (spatial == null) {
             return;
+        }
+        if (spatial instanceof Geometry) {
+            Geometry geom = (Geometry) spatial;
+            Mesh mesh = geom.getMesh();
+            if (mesh instanceof Sphere) {
+                collisionShape = new SphereCollisionShape(((Sphere) mesh).getRadius());
+                return;
+            } else if (mesh instanceof Box) {
+                collisionShape = new BoxCollisionShape(new Vector3f(((Box) mesh).getXExtent(), ((Box) mesh).getYExtent(), ((Box) mesh).getZExtent()));
+                return;
+            }
         }
         if (mass > 0) {
             Node parent = spatial.getParent();
