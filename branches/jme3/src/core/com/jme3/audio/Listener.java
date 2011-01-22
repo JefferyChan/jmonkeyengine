@@ -40,8 +40,8 @@ public class Listener {
     private Vector3f location;
     private Vector3f velocity;
     private Quaternion rotation;
-    private float gain = 1;
-    private boolean needRefresh = true;
+    private float volume = 1;
+    private AudioRenderer renderer;
 
     public Listener(){
         location = new Vector3f();
@@ -53,16 +53,41 @@ public class Listener {
         location = source.location.clone();
         velocity = source.velocity.clone();
         rotation = source.rotation.clone();
-        gain = source.gain;
+        volume = source.volume;
     }
 
+    public void setRenderer(AudioRenderer renderer){
+        this.renderer = renderer;
+    }
+
+    /**
+     *
+     * @return
+     * @deprecated Use {@link Listener#getVolume() }
+     */
+    @Deprecated
     public float getGain() {
-        return gain;
+        return getVolume();
     }
 
+    /**
+     *
+     * @param gain
+     * @deprecated Use {@link Listener#setVolume(float) }
+     */
+    @Deprecated
     public void setGain(float gain) {
-        this.gain = gain;
-        needRefresh = true;
+        setVolume(gain);
+    }
+
+    public float getVolume() {
+        return volume;
+    }
+
+    public void setVolume(float volume) {
+        this.volume = volume;
+        if (renderer != null)
+            renderer.updateListenerParam(this, ListenerParam.Volume);
     }
     
     public Vector3f getLocation() {
@@ -91,25 +116,28 @@ public class Listener {
     
     public void setLocation(Vector3f location) {
         this.location.set(location);
-        needRefresh = true;
+        if (renderer != null)
+            renderer.updateListenerParam(this, ListenerParam.Position);
     }
 
     public void setRotation(Quaternion rotation) {
         this.rotation.set(rotation);
-        needRefresh = true;
+        if (renderer != null)
+            renderer.updateListenerParam(this, ListenerParam.Rotation);
     }
 
     public void setVelocity(Vector3f velocity) {
         this.velocity.set(velocity);
-        needRefresh = true;
+        if (renderer != null)
+            renderer.updateListenerParam(this, ListenerParam.Velocity);
     }
 
+    @Deprecated
     public boolean isRefreshNeeded(){
-        return needRefresh;
+        return true;
     }
 
     public void clearRefreshNeeded(){
-        needRefresh = false;
     }
 
 }

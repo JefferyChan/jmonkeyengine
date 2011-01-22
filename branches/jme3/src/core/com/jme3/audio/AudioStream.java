@@ -44,7 +44,7 @@ import java.util.logging.Logger;
  * from network, hard drive etc. It is assumed the data coming
  * from the input stream is uncompressed.
  *
- * @author Kirill
+ * @author Kirill Vainer
  */
 public class AudioStream extends AudioData implements Closeable{
 

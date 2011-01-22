@@ -34,7 +34,8 @@ package com.jme3.audio;
 
 /**
  * Interface to be implemented by audio renderers.
- * @author Kirill
+ *
+ * @author Kirill Vainer
  */
 public interface AudioRenderer {
 
@@ -56,6 +57,9 @@ public interface AudioRenderer {
     public void playSource(AudioNode src);
     public void pauseSource(AudioNode src);
     public void stopSource(AudioNode src);
+
+    public void updateSourceParam(AudioNode src, AudioParam param);
+    public void updateListenerParam(Listener listener, ListenerParam param);
 
     public void deleteAudioData(AudioData ad);
 

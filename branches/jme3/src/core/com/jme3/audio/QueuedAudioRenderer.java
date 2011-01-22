@@ -36,6 +36,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
 
+@Deprecated
 public class QueuedAudioRenderer implements AudioRenderer, Runnable {
 
     private static final float UPDATE_RATE = 0.01f;
@@ -43,6 +44,9 @@ public class QueuedAudioRenderer implements AudioRenderer, Runnable {
     private AudioRenderer wrapped;
     private final Thread thread = new Thread(this, "jME3 Audio Thread");
     private final Queue<Command> commandQueue = new LinkedList<Command>();
+
+    public void updateListenerParam(Listener listener, ListenerParam param) {
+    }
 
     private enum CmdType {
         Cleanup,
@@ -145,6 +149,10 @@ public class QueuedAudioRenderer implements AudioRenderer, Runnable {
                 wrapped.stopSource( (AudioNode) cmd.args[0] );
                 break;
         }
+    }
+
+    public void updateSourceParam(AudioNode node, AudioParam param){
+        
     }
 
     public void setListener(Listener listener){

@@ -155,6 +155,8 @@ public class Node extends Spatial implements Savable {
             
             // added this line so that nodes removed by Controls
             // don't cause IndexOutOfBoundsExceptions
+            // FIXME: This is sometimes unreliable, a more
+            // robust solution is needed
             cSize = children.size();
         }
     }

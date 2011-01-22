@@ -73,6 +73,7 @@ public class TestDoppler extends AudioApp {
             location += rate * tpf * 10;
         }
         ufo.setLocalTranslation(location, 0, 2);
+        ufo.updateGeometricState();
     }
 
 }
