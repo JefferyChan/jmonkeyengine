@@ -29,7 +29,6 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package com.jme3.scene.debug;
 
 import com.jme3.bounding.BoundingSphere;
@@ -41,7 +40,6 @@ import com.jme3.scene.VertexBuffer.Format;
 import com.jme3.scene.VertexBuffer.Type;
 import com.jme3.scene.VertexBuffer.Usage;
 import com.jme3.util.BufferUtils;
-import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 
@@ -50,11 +48,11 @@ public class WireSphere extends Mesh {
     private static final int samples = 30;
     private static final int zSamples = 10;
 
-    public WireSphere(){
+    public WireSphere() {
         this(1);
     }
 
-    public WireSphere(float radius){
+    public WireSphere(float radius) {
         updatePositions(radius);
         ShortBuffer ib = BufferUtils.createShortBuffer(samples * 2 * 2 + zSamples * samples * 2 /*+ 3 * 2*/);
         setBuffer(Type.Index, 2, ib);
@@ -67,11 +65,11 @@ public class WireSphere extends Mesh {
 
 //        int curNum = 3 * 2;
         int curNum = 0;
-        for (int j = 0; j < 2 + zSamples; j++){
-            for (int i = curNum; i < curNum + samples-1; i++){
-                ib.put((short) i).put((short) (i+1));
+        for (int j = 0; j < 2 + zSamples; j++) {
+            for (int i = curNum; i < curNum + samples - 1; i++) {
+                ib.put((short) i).put((short) (i + 1));
             }
-            ib.put((short) (curNum+samples-1)).put((short)curNum);
+            ib.put((short) (curNum + samples - 1)).put((short) curNum);
             curNum += samples;
         }
 
@@ -81,21 +79,21 @@ public class WireSphere extends Mesh {
         updateCounts();
     }
 
-    public void updatePositions(float radius){
+    public void updatePositions(float radius) {
         VertexBuffer pvb = getBuffer(Type.Position);
         FloatBuffer pb;
 
-        if (pvb == null){
+        if (pvb == null) {
             pvb = new VertexBuffer(Type.Position);
             pb = BufferUtils.createVector3Buffer(samples * 2 + samples * zSamples /*+ 6 * 3*/);
             pvb.setupData(Usage.Dynamic, 3, Format.Float, pb);
             setBuffer(pvb);
-        }else{
+        } else {
             pb = (FloatBuffer) pvb.getData();
         }
 
         pb.rewind();
-        
+
         // X axis
 //        pb.put(radius).put(0).put(0);
 //        pb.put(-radius).put(0).put(0);
@@ -107,40 +105,40 @@ public class WireSphere extends Mesh {
 //        // Z axis
 //        pb.put(0).put(0).put(radius);
 //        pb.put(0).put(0).put(-radius);
-        
+
         float rate = FastMath.TWO_PI / (float) samples;
         float angle = 0;
-        for (int i = 0; i < samples; i++){
-            float x = FastMath.cos(angle);
-            float y = FastMath.sin(angle);
-            pb.put(x * radius).put(y * radius).put(0);
+        for (int i = 0; i < samples; i++) {
+            float x = radius * FastMath.cos(angle);
+            float y = radius * FastMath.sin(angle);
+            pb.put(x).put(y).put(0);
             angle += rate;
         }
 
         angle = 0;
-        for (int i = 0; i < samples; i++){
-            float x = FastMath.cos(angle);
-            float y = FastMath.sin(angle);
-            pb.put(0).put(x * radius).put(y * radius);
+        for (int i = 0; i < samples; i++) {
+            float x = radius * FastMath.cos(angle);
+            float y = radius * FastMath.sin(angle);
+            pb.put(0).put(x).put(y);
             angle += rate;
         }
 
-        float zRate = (radius*2) / (float) (zSamples);
+        float zRate = (radius * 2) / (float) (zSamples);
         float zHeight = -radius + (zRate / 2f);
 
-        
+
         float rb = 1f / zSamples;
         float b = rb / 2f;
 
-        for (int k = 0; k < zSamples; k++){
+        for (int k = 0; k < zSamples; k++) {
             angle = 0;
-            float scale = FastMath.sin( b * FastMath.PI );
-            for (int i = 0; i < samples; i++){
-                float x = FastMath.cos(angle);
-                float y = FastMath.sin(angle);
-                
-                pb.put(x * scale * radius).put(zHeight).put(y * scale * radius);
-                
+            float scale = FastMath.sin(b * FastMath.PI);
+            for (int i = 0; i < samples; i++) {
+                float x = radius * FastMath.cos(angle);
+                float y = radius * FastMath.sin(angle);
+
+                pb.put(x * scale).put(zHeight).put(y * scale);
+
                 angle += rate;
             }
             zHeight += zRate;
@@ -148,8 +146,14 @@ public class WireSphere extends Mesh {
         }
     }
 
-    public void fromBoundingSphere(BoundingSphere bsph){
+    /**
+     * Create a WireSphere from a BoundingSphere
+     *
+     * @param bsph
+     *     BoundingSphere used to create the WireSphere
+     *
+     */
+    public void fromBoundingSphere(BoundingSphere bsph) {
         updatePositions(bsph.getRadius());
     }
-
 }
