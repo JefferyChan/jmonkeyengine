@@ -44,8 +44,8 @@ import com.jme3.bullet.collision.PhysicsCollisionListener;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
-import com.jme3.bullet.control.PhysicsCharacterControl;
-import com.jme3.bullet.control.PhysicsRigidBodyControl;
+import com.jme3.bullet.control.CharacterControl;
+import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.nodes.PhysicsNode;
 import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.effect.EmitterSphereShape;
@@ -94,7 +94,7 @@ public class TestWalkingChar extends SimpleApplication implements ActionListener
     private BulletAppState bulletAppState;
     static final Quaternion ROTATE_LEFT = new Quaternion().fromAngleAxis(-FastMath.HALF_PI, Vector3f.UNIT_Y);
     //character
-    PhysicsCharacterControl character;
+    CharacterControl character;
     Node model;
     //temp vectors
     Vector3f walkDirection = new Vector3f();
@@ -103,7 +103,7 @@ public class TestWalkingChar extends SimpleApplication implements ActionListener
     Vector3f modelRight = new Vector3f();
     //terrain
     TerrainQuad terrain;
-    PhysicsRigidBodyControl terrainPhysicsNode;
+    RigidBodyControl terrainPhysicsNode;
     //Materials
     Material matRock;
     Material matWire;
@@ -291,7 +291,7 @@ public class TestWalkingChar extends SimpleApplication implements ActionListener
         terrain.updateModelBound();
         terrain.setLocalScale(new Vector3f(2, 2, 2));
 
-        terrainPhysicsNode = new PhysicsRigidBodyControl(CollisionShapeFactory.createMeshShape(terrain), 0);
+        terrainPhysicsNode = new RigidBodyControl(CollisionShapeFactory.createMeshShape(terrain), 0);
         terrain.addControl(terrainPhysicsNode);
         rootNode.attachChild(terrain);
         getPhysicsSpace().add(terrainPhysicsNode);
@@ -299,7 +299,7 @@ public class TestWalkingChar extends SimpleApplication implements ActionListener
 
     private void createCharacter() {
         CapsuleCollisionShape capsule = new CapsuleCollisionShape(1.5f, 2f);
-        character = new PhysicsCharacterControl(capsule, 0.01f);
+        character = new CharacterControl(capsule, 0.01f);
         model = (Node) assetManager.loadModel("Models/Oto/Oto.mesh.xml");
         model.setLocalScale(0.5f);
         model.addControl(character);
@@ -409,7 +409,7 @@ public class TestWalkingChar extends SimpleApplication implements ActionListener
         bulletg.setMaterial(matBullet);
         bulletg.setShadowMode(ShadowMode.CastAndReceive);
         bulletg.setLocalTranslation(character.getPhysicsLocation().add(modelDirection.mult(1.8f).addLocal(modelRight.mult(0.9f))));
-        PhysicsRigidBodyControl bulletControl = new PhysicsRigidBodyControl(bulletCollisionShape, 1);
+        RigidBodyControl bulletControl = new RigidBodyControl(bulletCollisionShape, 1);
         bulletControl.setCcdMotionThreshold(0.1f);
         bulletControl.setLinearVelocity(modelDirection.mult(40));
         bulletg.addControl(bulletControl);

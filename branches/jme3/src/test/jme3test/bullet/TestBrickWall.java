@@ -37,9 +37,9 @@ import com.jme3.asset.TextureKey;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
-import com.jme3.bullet.control.PhysicsRigidBodyControl;
+import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.nodes.PhysicsNode;
-import com.jme3.bullet.objects.PhysicsRigidBody;
+import com.jme3.bullet.objects.BulletRigidBody;
 import com.jme3.font.BitmapText;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.ActionListener;
@@ -121,7 +121,7 @@ public class TestBrickWall extends SimpleApplication {
                 bulletg.setShadowMode(ShadowMode.CastAndReceive);
                 bulletg.setLocalTranslation(cam.getLocation());
 
-                PhysicsRigidBodyControl bulletNode = new PhysicsRigidBodyControl(bulletCollisionShape, 1);
+                RigidBodyControl bulletNode = new RigidBodyControl(bulletCollisionShape, 1);
                 bulletNode.setLinearVelocity(cam.getDirection().mult(25));
                 bulletg.addControl(bulletNode);
                 rootNode.attachChild(bulletg);
@@ -151,7 +151,7 @@ public class TestBrickWall extends SimpleApplication {
         floor.setMaterial(mat3);
         floor.setShadowMode(ShadowMode.Receive);
         floor.setLocalTranslation(0, -0.1f, 0);
-        floor.addControl(new PhysicsRigidBodyControl(new BoxCollisionShape(new Vector3f(10f, 0.1f, 5f)), 0));
+        floor.addControl(new RigidBodyControl(new BoxCollisionShape(new Vector3f(10f, 0.1f, 5f)), 0));
         this.rootNode.attachChild(floor);
         this.getPhysicsSpace().add(floor);
     }
@@ -182,9 +182,9 @@ public class TestBrickWall extends SimpleApplication {
         Geometry reBoxg = new Geometry("brick", brick);
         reBoxg.setMaterial(mat);
         reBoxg.setLocalTranslation(ori);
-        reBoxg.addControl(new PhysicsRigidBodyControl(new BoxCollisionShape(new Vector3f(bLength, bHeight, bWidth)), 1.5f));
+        reBoxg.addControl(new RigidBodyControl(new BoxCollisionShape(new Vector3f(bLength, bHeight, bWidth)), 1.5f));
         reBoxg.setShadowMode(ShadowMode.CastAndReceive);
-        reBoxg.getControl(PhysicsRigidBodyControl.class).setFriction(0.6f);
+        reBoxg.getControl(RigidBodyControl.class).setFriction(0.6f);
         this.rootNode.attachChild(reBoxg);
         this.getPhysicsSpace().add(reBoxg);
     }

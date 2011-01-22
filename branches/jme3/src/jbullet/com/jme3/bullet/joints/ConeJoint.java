@@ -35,7 +35,7 @@ import com.bulletphysics.dynamics.constraintsolver.ConeTwistConstraint;
 import com.bulletphysics.linearmath.Transform;
 import com.jme3.math.Matrix3f;
 import com.jme3.math.Vector3f;
-import com.jme3.bullet.objects.PhysicsRigidBody;
+import com.jme3.bullet.objects.BulletRigidBody;
 import com.jme3.bullet.util.Converter;
 import com.jme3.export.InputCapsule;
 import com.jme3.export.JmeExporter;
@@ -50,7 +50,7 @@ import java.io.IOException;
  * The x-axis serves as twist axis.
  * @author normenhansen
  */
-public class PhysicsConeJoint extends PhysicsJoint {
+public class ConeJoint extends PhysicsJoint {
 
     protected Matrix3f rotA, rotB;
     protected float swingSpan1 = 1e30f;
@@ -58,14 +58,14 @@ public class PhysicsConeJoint extends PhysicsJoint {
     protected float twistSpan = 1e30f;
     protected boolean angularOnly = false;
 
-    public PhysicsConeJoint() {
+    public ConeJoint() {
     }
 
     /**
      * @param pivotA local translation of the joint connection point in node A
      * @param pivotB local translation of the joint connection point in node B
      */
-    public PhysicsConeJoint(PhysicsRigidBody nodeA, PhysicsRigidBody nodeB, Vector3f pivotA, Vector3f pivotB) {
+    public ConeJoint(BulletRigidBody nodeA, BulletRigidBody nodeB, Vector3f pivotA, Vector3f pivotB) {
         super(nodeA, nodeB, pivotA, pivotB);
         this.rotA = new Matrix3f();
         this.rotB = new Matrix3f();
@@ -76,7 +76,7 @@ public class PhysicsConeJoint extends PhysicsJoint {
      * @param pivotA local translation of the joint connection point in node A
      * @param pivotB local translation of the joint connection point in node B
      */
-    public PhysicsConeJoint(PhysicsRigidBody nodeA, PhysicsRigidBody nodeB, Vector3f pivotA, Vector3f pivotB, Matrix3f rotA, Matrix3f rotB) {
+    public ConeJoint(BulletRigidBody nodeA, BulletRigidBody nodeB, Vector3f pivotA, Vector3f pivotB, Matrix3f rotA, Matrix3f rotB) {
         super(nodeA, nodeB, pivotA, pivotB);
         this.rotA = rotA;
         this.rotB = rotB;

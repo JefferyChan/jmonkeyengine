@@ -66,16 +66,16 @@ import com.jme3.bullet.collision.PhysicsCollisionGroupListener;
 import com.jme3.bullet.collision.PhysicsCollisionListener;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.collision.PhysicsRayTestResult;
-import com.jme3.bullet.control.PhysicsCharacterControl;
+import com.jme3.bullet.control.CharacterControl;
 import com.jme3.bullet.control.PhysicsControl;
-import com.jme3.bullet.control.PhysicsRigidBodyControl;
-import com.jme3.bullet.control.PhysicsGhostControl;
-import com.jme3.bullet.control.PhysicsVehicleControl;
+import com.jme3.bullet.control.RigidBodyControl;
+import com.jme3.bullet.control.GhostControl;
+import com.jme3.bullet.control.VehicleControl;
 import com.jme3.bullet.joints.PhysicsJoint;
-import com.jme3.bullet.objects.PhysicsGhostObject;
-import com.jme3.bullet.objects.PhysicsCharacter;
-import com.jme3.bullet.objects.PhysicsVehicle;
-import com.jme3.bullet.objects.PhysicsRigidBody;
+import com.jme3.bullet.objects.BulletGhostObject;
+import com.jme3.bullet.objects.BulletCharacter;
+import com.jme3.bullet.objects.BulletVehicle;
+import com.jme3.bullet.objects.BulletRigidBody;
 import com.jme3.bullet.util.Converter;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
@@ -126,8 +126,8 @@ public class PhysicsSpace {
     private CollisionDispatcher dispatcher;
     private ConstraintSolver solver;
     private DefaultCollisionConfiguration collisionConfiguration;
-    private Map<GhostObject, PhysicsGhostObject> physicsGhostNodes = new ConcurrentHashMap<GhostObject, PhysicsGhostObject>();
-    private Map<RigidBody, PhysicsRigidBody> physicsNodes = new ConcurrentHashMap<RigidBody, PhysicsRigidBody>();
+    private Map<GhostObject, BulletGhostObject> physicsGhostNodes = new ConcurrentHashMap<GhostObject, BulletGhostObject>();
+    private Map<RigidBody, BulletRigidBody> physicsNodes = new ConcurrentHashMap<RigidBody, BulletRigidBody>();
     private List<PhysicsJoint> physicsJoints = new LinkedList<PhysicsJoint>();
     private List<PhysicsCollisionListener> collisionListeners = new LinkedList<PhysicsCollisionListener>();
     private List<PhysicsCollisionEvent> collisionEvents = new LinkedList<PhysicsCollisionEvent>();
@@ -283,14 +283,14 @@ public class PhysicsSpace {
                 PhysicsCollisionObject node = null, node1 = null;
                 if (body0 instanceof RigidBody) {
                     RigidBody rBody = (RigidBody) body0;
-                    node = (PhysicsRigidBody) rBody.getUserPointer();
+                    node = (BulletRigidBody) rBody.getUserPointer();
                 } else if (body0 instanceof GhostObject) {
                     GhostObject rBody = (GhostObject) body0;
                     node = physicsGhostNodes.get(rBody);
                 }
                 if (body1 instanceof RigidBody) {
                     RigidBody rBody = (RigidBody) body1;
-                    node1 = (PhysicsRigidBody) rBody.getUserPointer();
+                    node1 = (BulletRigidBody) rBody.getUserPointer();
                 } else if (body1 instanceof GhostObject) {
                     GhostObject rBody = (GhostObject) body1;
                     node1 = physicsGhostNodes.get(rBody);
@@ -424,12 +424,12 @@ public class PhysicsSpace {
     }
 
     public void addCollisionObject(PhysicsCollisionObject obj) {
-        if (obj instanceof PhysicsGhostObject) {
-            addGhostNode((PhysicsGhostObject) obj);
-        } else if (obj instanceof PhysicsRigidBody) {
-            addNode((PhysicsRigidBody) obj);
-        } else if (obj instanceof PhysicsVehicle) {
-            addNode((PhysicsVehicle) obj);
+        if (obj instanceof BulletGhostObject) {
+            addGhostNode((BulletGhostObject) obj);
+        } else if (obj instanceof BulletRigidBody) {
+            addNode((BulletRigidBody) obj);
+        } else if (obj instanceof BulletVehicle) {
+            addNode((BulletVehicle) obj);
         }
     }
 
@@ -454,10 +454,10 @@ public class PhysicsSpace {
     }
 
     public void removeCollisionObject(PhysicsCollisionObject obj) {
-        if (obj instanceof PhysicsGhostObject) {
-            removeGhostNode((PhysicsGhostObject) obj);
-        } else if (obj instanceof PhysicsRigidBody) {
-            removeNode((PhysicsRigidBody) obj);
+        if (obj instanceof BulletGhostObject) {
+            removeGhostNode((BulletGhostObject) obj);
+        } else if (obj instanceof BulletRigidBody) {
+            removeNode((BulletRigidBody) obj);
         }
     }
 
@@ -467,8 +467,8 @@ public class PhysicsSpace {
      * @param node the rootnode containing the physics objects
      */
     public void addAll(Node node) {
-        if (node.getControl(PhysicsRigidBodyControl.class) != null) {
-            PhysicsRigidBodyControl physicsNode = node.getControl(PhysicsRigidBodyControl.class);
+        if (node.getControl(RigidBodyControl.class) != null) {
+            RigidBodyControl physicsNode = node.getControl(RigidBodyControl.class);
             if (!physicsNodes.containsValue(physicsNode)) {
                 physicsNode.setPhysicsSpace(this);
             }
@@ -504,8 +504,8 @@ public class PhysicsSpace {
      * @param node the rootnode containing the physics objects
      */
     public void removeAll(Node node) {
-        if (node.getControl(PhysicsRigidBodyControl.class) != null) {
-            PhysicsRigidBodyControl physicsNode = node.getControl(PhysicsRigidBodyControl.class);
+        if (node.getControl(RigidBodyControl.class) != null) {
+            RigidBodyControl physicsNode = node.getControl(RigidBodyControl.class);
             if (physicsNodes.containsValue(physicsNode)) {
                 physicsNode.setPhysicsSpace(null);
             }
@@ -535,39 +535,39 @@ public class PhysicsSpace {
         }
     }
 
-    private void addGhostNode(PhysicsGhostObject node) {
+    private void addGhostNode(BulletGhostObject node) {
         physicsGhostNodes.put(node.getGhostObject(), node);
-        if (node instanceof PhysicsCharacter) {
+        if (node instanceof BulletCharacter) {
 //            dynamicsWorld.addCollisionObject(node.getGhostObject(), CollisionFilterGroups.CHARACTER_FILTER, (short)(CollisionFilterGroups.STATIC_FILTER | CollisionFilterGroups.DEFAULT_FILTER));
             dynamicsWorld.addCollisionObject(node.getGhostObject());
-            dynamicsWorld.addAction(((PhysicsCharacter) node).getCharacterController());
+            dynamicsWorld.addAction(((BulletCharacter) node).getCharacterController());
         } else {
             dynamicsWorld.addCollisionObject(node.getGhostObject());
         }
     }
 
-    private void removeGhostNode(PhysicsGhostObject node) {
+    private void removeGhostNode(BulletGhostObject node) {
         physicsGhostNodes.remove(node.getGhostObject());
         dynamicsWorld.removeCollisionObject(node.getGhostObject());
-        if (node instanceof PhysicsCharacter) {
-            dynamicsWorld.removeAction(((PhysicsCharacter) node).getCharacterController());
+        if (node instanceof BulletCharacter) {
+            dynamicsWorld.removeAction(((BulletCharacter) node).getCharacterController());
         }
     }
 
-    private void addNode(PhysicsRigidBody node) {
+    private void addNode(BulletRigidBody node) {
         physicsNodes.put(node.getRigidBody(), node);
         dynamicsWorld.addRigidBody(node.getRigidBody());
-        if (node instanceof PhysicsVehicle) {
-            ((PhysicsVehicle) node).createVehicle(this);
-            dynamicsWorld.addVehicle(((PhysicsVehicle) node).getVehicle());
+        if (node instanceof BulletVehicle) {
+            ((BulletVehicle) node).createVehicle(this);
+            dynamicsWorld.addVehicle(((BulletVehicle) node).getVehicle());
         }
     }
 
-    private void removeNode(PhysicsRigidBody node) {
+    private void removeNode(BulletRigidBody node) {
         physicsNodes.remove(node.getRigidBody());
         dynamicsWorld.removeRigidBody(node.getRigidBody());
-        if (node instanceof PhysicsVehicle) {
-            dynamicsWorld.removeVehicle(((PhysicsVehicle) node).getVehicle());
+        if (node instanceof BulletVehicle) {
+            dynamicsWorld.removeVehicle(((BulletVehicle) node).getVehicle());
         }
     }
 

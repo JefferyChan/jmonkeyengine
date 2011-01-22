@@ -46,7 +46,7 @@ import com.jme3.bullet.collision.shapes.CompoundCollisionShape;
 import com.jme3.bullet.collision.shapes.CylinderCollisionShape;
 import com.jme3.bullet.collision.shapes.MeshCollisionShape;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
-import com.jme3.bullet.joints.PhysicsHingeJoint;
+import com.jme3.bullet.joints.HingeJoint;
 import com.jme3.bullet.nodes.PhysicsNode;
 import com.jme3.export.binary.BinaryExporter;
 import com.jme3.export.binary.BinaryImporter;
@@ -125,7 +125,7 @@ public class TestPhysicsReadWrite extends SimpleApplication{
 
         // Join the physics objects with a Point2Point joint
 //        PhysicsPoint2PointJoint joint=new PhysicsPoint2PointJoint(physicsSphere, physicsBox, new Vector3f(-2,0,0), new Vector3f(2,0,0));
-        PhysicsHingeJoint joint=new PhysicsHingeJoint(physicsSphere.getRigidBody(), physicsBox.getRigidBody(), new Vector3f(-2,0,0), new Vector3f(2,0,0), Vector3f.UNIT_Z,Vector3f.UNIT_Z);
+        HingeJoint joint=new HingeJoint(physicsSphere.getRigidBody(), physicsBox.getRigidBody(), new Vector3f(-2,0,0), new Vector3f(2,0,0), Vector3f.UNIT_Z,Vector3f.UNIT_Z);
         getPhysicsSpace().add(joint);
 
         //save and load the physicsRootNode

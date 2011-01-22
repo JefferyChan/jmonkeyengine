@@ -6,7 +6,7 @@ package com.jme3.bullet.control;
 
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.CollisionShape;
-import com.jme3.bullet.objects.PhysicsRigidBody;
+import com.jme3.bullet.objects.BulletRigidBody;
 import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.export.InputCapsule;
 import com.jme3.export.JmeExporter;
@@ -23,13 +23,13 @@ import java.io.IOException;
  *
  * @author normenhansen
  */
-public class PhysicsRigidBodyControl extends PhysicsRigidBody implements PhysicsControl {
+public class RigidBodyControl extends BulletRigidBody implements PhysicsControl {
 
     protected Spatial spatial;
     protected boolean enabled = true;
     protected PhysicsSpace space = null;
 
-    public PhysicsRigidBodyControl() {
+    public RigidBodyControl() {
     }
 
     /**
@@ -37,7 +37,7 @@ public class PhysicsRigidBodyControl extends PhysicsRigidBody implements Physics
      * automatically when the Control is added to a Spatial.
      * @param mass When not 0, a HullCollisionShape is generated, otherwise a MeshCollisionShape is used.
      */
-    public PhysicsRigidBodyControl(float mass) {
+    public RigidBodyControl(float mass) {
         this.mass = mass;
     }
 
@@ -46,16 +46,16 @@ public class PhysicsRigidBodyControl extends PhysicsRigidBody implements Physics
      * @param child
      * @param shape
      */
-    public PhysicsRigidBodyControl(CollisionShape shape) {
+    public RigidBodyControl(CollisionShape shape) {
         super(shape);
     }
 
-    public PhysicsRigidBodyControl(CollisionShape shape, float mass) {
+    public RigidBodyControl(CollisionShape shape, float mass) {
         super(shape, mass);
     }
 
     public Control cloneForSpatial(Spatial spatial) {
-        PhysicsRigidBodyControl control = new PhysicsRigidBodyControl(collisionShape, mass);
+        RigidBodyControl control = new RigidBodyControl(collisionShape, mass);
         control.setAngularFactor(getAngularFactor());
         control.setAngularSleepingThreshold(getAngularSleepingThreshold());
         control.setCcdMotionThreshold(getCcdMotionThreshold());

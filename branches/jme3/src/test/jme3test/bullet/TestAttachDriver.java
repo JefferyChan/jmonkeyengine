@@ -39,9 +39,9 @@ import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.CompoundCollisionShape;
 import com.jme3.bullet.collision.shapes.MeshCollisionShape;
-import com.jme3.bullet.control.PhysicsRigidBodyControl;
-import com.jme3.bullet.control.PhysicsVehicleControl;
-import com.jme3.bullet.joints.PhysicsSliderJoint;
+import com.jme3.bullet.control.RigidBodyControl;
+import com.jme3.bullet.control.VehicleControl;
+import com.jme3.bullet.joints.SliderJoint;
 import com.jme3.bullet.nodes.PhysicsNode;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
@@ -64,10 +64,10 @@ import com.jme3.texture.Texture;
  */
 public class TestAttachDriver extends SimpleApplication implements ActionListener {
 
-    private PhysicsVehicleControl vehicle;
-    private PhysicsRigidBodyControl driver;
-    private PhysicsRigidBodyControl bridge;
-    private PhysicsSliderJoint slider;
+    private VehicleControl vehicle;
+    private RigidBodyControl driver;
+    private RigidBodyControl bridge;
+    private SliderJoint slider;
     private final float accelerationForce = 1000.0f;
     private final float brakeForce = 100.0f;
     private float steeringValue = 0;
@@ -121,7 +121,7 @@ public class TestAttachDriver extends SimpleApplication implements ActionListene
         floorGeom.setMaterial(mat);
         floorGeom.setLocalTranslation(new Vector3f(0f, -3, 0f));
 
-        floorGeom.addControl(new PhysicsRigidBodyControl(new MeshCollisionShape(floorGeom.getMesh()), 0));
+        floorGeom.addControl(new RigidBodyControl(new MeshCollisionShape(floorGeom.getMesh()), 0));
         rootNode.attachChild(floorGeom);
         getPhysicsSpace().add(floorGeom);
     }
@@ -138,7 +138,7 @@ public class TestAttachDriver extends SimpleApplication implements ActionListene
 
         //create vehicle node
         Node vehicleNode=new Node("vehicleNode");
-        vehicle = new PhysicsVehicleControl(compoundShape, 800);
+        vehicle = new VehicleControl(compoundShape, 800);
         vehicleNode.addControl(vehicle);
 
         //setting suspension values for wheels, this can be a bit tricky
@@ -202,7 +202,7 @@ public class TestAttachDriver extends SimpleApplication implements ActionListene
         //driver
         Node driverNode=new Node("driverNode");
         driverNode.setLocalTranslation(0,2,0);
-        driver=new PhysicsRigidBodyControl(new BoxCollisionShape(new Vector3f(0.2f,.5f,0.2f)));
+        driver=new RigidBodyControl(new BoxCollisionShape(new Vector3f(0.2f,.5f,0.2f)));
         driver.attachDebugShape(assetManager);
         driverNode.addControl(driver);
 
@@ -210,7 +210,7 @@ public class TestAttachDriver extends SimpleApplication implements ActionListene
         getPhysicsSpace().add(driver);
 
         //joint
-        slider=new PhysicsSliderJoint(driver, vehicle, Vector3f.UNIT_Y.negate(), Vector3f.UNIT_Y, true);
+        slider=new SliderJoint(driver, vehicle, Vector3f.UNIT_Y.negate(), Vector3f.UNIT_Y, true);
         slider.setUpperLinLimit(.1f);
         slider.setLowerLinLimit(-.1f);
 
@@ -223,13 +223,13 @@ public class TestAttachDriver extends SimpleApplication implements ActionListene
         pole2Node.setLocalTranslation(new Vector3f(2,-1,4));
         bridgeNode.setLocalTranslation(new Vector3f(0,1.4f,4));
 
-        PhysicsRigidBodyControl pole1=new PhysicsRigidBodyControl(new BoxCollisionShape(new Vector3f(0.2f,1.25f,0.2f)),0);
+        RigidBodyControl pole1=new RigidBodyControl(new BoxCollisionShape(new Vector3f(0.2f,1.25f,0.2f)),0);
         pole1.attachDebugShape(assetManager);
         pole1Node.addControl(pole1);
-        PhysicsRigidBodyControl pole2=new PhysicsRigidBodyControl(new BoxCollisionShape(new Vector3f(0.2f,1.25f,0.2f)),0);
+        RigidBodyControl pole2=new RigidBodyControl(new BoxCollisionShape(new Vector3f(0.2f,1.25f,0.2f)),0);
         pole2.attachDebugShape(assetManager);
         pole2Node.addControl(pole2);
-        bridge=new PhysicsRigidBodyControl(new BoxCollisionShape(new Vector3f(2.5f,0.2f,0.2f)));
+        bridge=new RigidBodyControl(new BoxCollisionShape(new Vector3f(2.5f,0.2f,0.2f)));
         bridge.attachDebugShape(assetManager);
         bridgeNode.addControl(bridge);
 

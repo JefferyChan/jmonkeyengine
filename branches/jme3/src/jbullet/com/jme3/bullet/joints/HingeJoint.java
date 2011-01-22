@@ -33,7 +33,7 @@ package com.jme3.bullet.joints;
 
 import com.bulletphysics.dynamics.constraintsolver.HingeConstraint;
 import com.jme3.math.Vector3f;
-import com.jme3.bullet.objects.PhysicsRigidBody;
+import com.jme3.bullet.objects.BulletRigidBody;
 import com.jme3.bullet.util.Converter;
 import com.jme3.export.InputCapsule;
 import com.jme3.export.JmeExporter;
@@ -49,7 +49,7 @@ import java.io.IOException;
  * The user can specify limits and motor for the hinge.
  * @author normenhansen
  */
-public class PhysicsHingeJoint extends PhysicsJoint {
+public class HingeJoint extends PhysicsJoint {
 
     protected Vector3f axisA;
     protected Vector3f axisB;
@@ -58,7 +58,7 @@ public class PhysicsHingeJoint extends PhysicsJoint {
     protected float relaxationFactor = 1.0f;
     protected float limitSoftness = 0.9f;
 
-    public PhysicsHingeJoint() {
+    public HingeJoint() {
     }
 
     /**
@@ -66,7 +66,7 @@ public class PhysicsHingeJoint extends PhysicsJoint {
      * @param pivotA local translation of the joint connection point in node A
      * @param pivotB local translation of the joint connection point in node B
      */
-    public PhysicsHingeJoint(PhysicsRigidBody nodeA, PhysicsRigidBody nodeB, Vector3f pivotA, Vector3f pivotB, Vector3f axisA, Vector3f axisB) {
+    public HingeJoint(BulletRigidBody nodeA, BulletRigidBody nodeB, Vector3f pivotA, Vector3f pivotB, Vector3f axisA, Vector3f axisB) {
         super(nodeA, nodeB, pivotA, pivotB);
         this.axisA = axisA;
         this.axisB = axisB;

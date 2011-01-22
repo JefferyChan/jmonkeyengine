@@ -67,22 +67,22 @@ import java.util.Iterator;
  * </p>
  * @author normenhansen
  */
-public class PhysicsVehicle extends PhysicsRigidBody {
+public class BulletVehicle extends BulletRigidBody {
 
     protected RaycastVehicle vehicle;
     protected VehicleTuning tuning;
     protected VehicleRaycaster rayCaster;
-    protected ArrayList<PhysicsVehicleWheel> wheels = new ArrayList<PhysicsVehicleWheel>();
+    protected ArrayList<VehicleWheel> wheels = new ArrayList<VehicleWheel>();
     protected PhysicsSpace physicsSpace;
 
-    public PhysicsVehicle() {
+    public BulletVehicle() {
     }
 
-    public PhysicsVehicle(CollisionShape shape) {
+    public BulletVehicle(CollisionShape shape) {
         super(shape);
     }
 
-    public PhysicsVehicle(CollisionShape shape, float mass) {
+    public BulletVehicle(CollisionShape shape, float mass) {
         super(shape, mass);
     }
 
@@ -133,7 +133,7 @@ public class PhysicsVehicle extends PhysicsRigidBody {
         rayCaster = new DefaultVehicleRaycaster(space.getDynamicsWorld());
         vehicle = new RaycastVehicle(tuning, rBody, rayCaster);
         vehicle.setCoordinateSystem(0, 1, 2);
-        for (PhysicsVehicleWheel wheel : wheels) {
+        for (VehicleWheel wheel : wheels) {
             wheel.setWheelInfo(vehicle.addWheel(Converter.convert(wheel.getLocation()), Converter.convert(wheel.getDirection()), Converter.convert(wheel.getAxle()),
                     wheel.getRestLength(), wheel.getRadius(), tuning, wheel.isFrontWheel()));
         }
@@ -149,7 +149,7 @@ public class PhysicsVehicle extends PhysicsRigidBody {
      * @param isFrontWheel sets if this wheel is a front wheel (steering)
      * @return the PhysicsVehicleWheel object to get/set infos on the wheel
      */
-    public PhysicsVehicleWheel addWheel(Vector3f connectionPoint, Vector3f direction, Vector3f axle, float suspensionRestLength, float wheelRadius, boolean isFrontWheel) {
+    public VehicleWheel addWheel(Vector3f connectionPoint, Vector3f direction, Vector3f axle, float suspensionRestLength, float wheelRadius, boolean isFrontWheel) {
         return addWheel(null, connectionPoint, direction, axle, suspensionRestLength, wheelRadius, isFrontWheel);
     }
 
@@ -164,12 +164,12 @@ public class PhysicsVehicle extends PhysicsRigidBody {
      * @param isFrontWheel sets if this wheel is a front wheel (steering)
      * @return the PhysicsVehicleWheel object to get/set infos on the wheel
      */
-    public PhysicsVehicleWheel addWheel(Spatial spat, Vector3f connectionPoint, Vector3f direction, Vector3f axle, float suspensionRestLength, float wheelRadius, boolean isFrontWheel) {
-        PhysicsVehicleWheel wheel = null;
+    public VehicleWheel addWheel(Spatial spat, Vector3f connectionPoint, Vector3f direction, Vector3f axle, float suspensionRestLength, float wheelRadius, boolean isFrontWheel) {
+        VehicleWheel wheel = null;
         if (spat == null) {
-            wheel = new PhysicsVehicleWheel(connectionPoint, direction, axle, suspensionRestLength, wheelRadius, isFrontWheel);
+            wheel = new VehicleWheel(connectionPoint, direction, axle, suspensionRestLength, wheelRadius, isFrontWheel);
         } else {
-            wheel = new PhysicsVehicleWheel(spat, connectionPoint, direction, axle, suspensionRestLength, wheelRadius, isFrontWheel);
+            wheel = new VehicleWheel(spat, connectionPoint, direction, axle, suspensionRestLength, wheelRadius, isFrontWheel);
         }
         if (vehicle != null) {
             WheelInfo info = vehicle.addWheel(Converter.convert(connectionPoint), Converter.convert(direction), Converter.convert(axle),
@@ -205,7 +205,7 @@ public class PhysicsVehicle extends PhysicsRigidBody {
      * @param wheel the wheel index
      * @return the WheelInfo of the selected wheel
      */
-    public PhysicsVehicleWheel getWheel(int wheel) {
+    public VehicleWheel getWheel(int wheel) {
         return wheels.get(wheel);
     }
 
@@ -499,8 +499,8 @@ public class PhysicsVehicle extends PhysicsRigidBody {
             node.attachChild(shape);
         }
         int i = 0;
-        for (Iterator<PhysicsVehicleWheel> it = wheels.iterator(); it.hasNext();) {
-            PhysicsVehicleWheel physicsVehicleWheel = it.next();
+        for (Iterator<VehicleWheel> it = wheels.iterator(); it.hasNext();) {
+            VehicleWheel physicsVehicleWheel = it.next();
             Vector3f location = physicsVehicleWheel.getLocation().clone();
             Vector3f direction = physicsVehicleWheel.getDirection().clone();
             Vector3f axle = physicsVehicleWheel.getAxle().clone();
@@ -541,7 +541,7 @@ public class PhysicsVehicle extends PhysicsRigidBody {
         tuning.suspensionCompression = capsule.readFloat("suspensionCompression", 0.83f);
         tuning.suspensionDamping = capsule.readFloat("suspensionDamping", 0.88f);
         tuning.suspensionStiffness = capsule.readFloat("suspensionStiffness", 5.88f);
-        wheels = capsule.readSavableArrayList("wheelsList", new ArrayList<PhysicsVehicleWheel>());
+        wheels = capsule.readSavableArrayList("wheelsList", new ArrayList<VehicleWheel>());
         motionState.setVehicle(this);
         super.read(im);
     }
@@ -555,7 +555,7 @@ public class PhysicsVehicle extends PhysicsRigidBody {
         capsule.write(tuning.suspensionCompression, "suspensionCompression", 0.83f);
         capsule.write(tuning.suspensionDamping, "suspensionDamping", 0.88f);
         capsule.write(tuning.suspensionStiffness, "suspensionStiffness", 5.88f);
-        capsule.writeSavableArrayList(wheels, "wheelsList", new ArrayList<PhysicsVehicleWheel>());
+        capsule.writeSavableArrayList(wheels, "wheelsList", new ArrayList<VehicleWheel>());
         super.write(ex);
     }
 }

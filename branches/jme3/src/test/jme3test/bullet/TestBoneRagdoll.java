@@ -38,7 +38,7 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.asset.TextureKey;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
-import com.jme3.bullet.control.PhysicsRagdollControl;
+import com.jme3.bullet.control.RagdollControl;
 import com.jme3.bullet.nodes.PhysicsNode;
 import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
@@ -80,7 +80,7 @@ public class TestBoneRagdoll  extends SimpleApplication {
         skeletonDebug.setMaterial(mat2);
 
         //Note: PhysicsRagdollControl is still TODO, constructor will change
-        PhysicsRagdollControl ragdoll = new PhysicsRagdollControl();
+        RagdollControl ragdoll = new RagdollControl();
         
         model.addControl(ragdoll);
         ragdoll.attachDebugShape(assetManager);

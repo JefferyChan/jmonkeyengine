@@ -9,7 +9,7 @@ import com.jme3.bullet.PhysicsTickListener;
 import com.jme3.bullet.collision.PhysicsRayTestResult;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.PhysicsControl;
-import com.jme3.bullet.objects.PhysicsRigidBody;
+import com.jme3.bullet.objects.BulletRigidBody;
 import com.jme3.export.InputCapsule;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
@@ -28,7 +28,7 @@ import java.util.List;
  *
  * @author normenhansen
  */
-public class PhysicsHoverControl extends PhysicsRigidBody implements PhysicsControl, PhysicsTickListener {
+public class PhysicsHoverControl extends BulletRigidBody implements PhysicsControl, PhysicsTickListener {
 
     protected Spatial spatial;
     protected boolean enabled = true;

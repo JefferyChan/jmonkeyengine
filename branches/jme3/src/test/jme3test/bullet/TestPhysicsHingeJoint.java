@@ -36,7 +36,7 @@ import com.jme3.bullet.BulletAppState;
 import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
-import com.jme3.bullet.joints.PhysicsHingeJoint;
+import com.jme3.bullet.joints.HingeJoint;
 import com.jme3.bullet.nodes.PhysicsNode;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.AnalogListener;
@@ -47,7 +47,7 @@ import com.jme3.math.Vector3f;
 
 public class TestPhysicsHingeJoint extends SimpleApplication implements AnalogListener {
     private BulletAppState bulletAppState;
-    private PhysicsHingeJoint joint;
+    private HingeJoint joint;
 
     public static void main(String[] args) {
         TestPhysicsHingeJoint app = new TestPhysicsHingeJoint();
@@ -102,7 +102,7 @@ public class TestPhysicsHingeJoint extends SimpleApplication implements AnalogLi
         rootNode.attachChild(hammerNode);
         getPhysicsSpace().add(hammerNode);
 
-        joint=new PhysicsHingeJoint(holderNode.getRigidBody(), hammerNode.getRigidBody(), Vector3f.ZERO, new Vector3f(0f,-1,0f), Vector3f.UNIT_Z, Vector3f.UNIT_Z);
+        joint=new HingeJoint(holderNode.getRigidBody(), hammerNode.getRigidBody(), Vector3f.ZERO, new Vector3f(0f,-1,0f), Vector3f.UNIT_Z, Vector3f.UNIT_Z);
         getPhysicsSpace().add(joint);
     }
 

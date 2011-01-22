@@ -48,7 +48,7 @@ import java.io.IOException;
  * Stores info about one wheel of a PhysicsVehicle
  * @author normenhansen
  */
-public class PhysicsVehicleWheel implements Savable {
+public class VehicleWheel implements Savable {
 
     protected com.bulletphysics.dynamics.vehicle.WheelInfo wheelInfo;
     protected boolean frontWheel;
@@ -70,16 +70,16 @@ public class PhysicsVehicleWheel implements Savable {
     protected com.jme3.math.Matrix3f tmp_Matrix = new com.jme3.math.Matrix3f();
     protected final Quaternion tmp_inverseWorldRotation = new Quaternion();
 
-    public PhysicsVehicleWheel() {
+    public VehicleWheel() {
     }
 
-    public PhysicsVehicleWheel(Spatial spat, Vector3f location, Vector3f direction, Vector3f axle,
+    public VehicleWheel(Spatial spat, Vector3f location, Vector3f direction, Vector3f axle,
             float restLength, float radius, boolean frontWheel) {
         this(location, direction, axle, restLength, radius, frontWheel);
         wheelSpatial = spat;
     }
 
-    public PhysicsVehicleWheel(Vector3f location, Vector3f direction, Vector3f axle,
+    public VehicleWheel(Vector3f location, Vector3f direction, Vector3f axle,
             float restLength, float radius, boolean frontWheel) {
         this.location.set(location);
         this.direction.set(direction);
@@ -291,7 +291,7 @@ public class PhysicsVehicleWheel implements Savable {
             return null;
         } else if (wheelInfo.raycastInfo.groundObject instanceof RigidBody) {
             System.out.println("RigidBody");
-            return (PhysicsRigidBody) ((RigidBody) wheelInfo.raycastInfo.groundObject).getUserPointer();
+            return (BulletRigidBody) ((RigidBody) wheelInfo.raycastInfo.groundObject).getUserPointer();
         } else {
             return null;
         }

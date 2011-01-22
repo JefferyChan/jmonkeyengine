@@ -37,9 +37,9 @@ import com.jme3.bounding.BoundingBox;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.collision.shapes.MeshCollisionShape;
-import com.jme3.bullet.control.PhysicsVehicleControl;
+import com.jme3.bullet.control.VehicleControl;
 import com.jme3.bullet.nodes.PhysicsNode;
-import com.jme3.bullet.objects.PhysicsVehicleWheel;
+import com.jme3.bullet.objects.VehicleWheel;
 import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
@@ -61,8 +61,8 @@ import com.jme3.texture.Texture.WrapMode;
 public class TestFancyCar extends SimpleApplication implements ActionListener {
 
     private BulletAppState bulletAppState;
-    private PhysicsVehicleControl player;
-    private PhysicsVehicleWheel fr, fl, br, bl;
+    private VehicleControl player;
+    private VehicleWheel fr, fl, br, bl;
     private Node node_fr, node_fl, node_br, node_bl;
     private float wheelRadius;
     private float steeringValue = 0;
@@ -171,7 +171,7 @@ public class TestFancyCar extends SimpleApplication implements ActionListener {
         CollisionShape carHull = CollisionShapeFactory.createDynamicMeshShape(chasis);
 
         //Create a vehicle control
-        player = new PhysicsVehicleControl(carHull, mass);
+        player = new VehicleControl(carHull, mass);
         carNode.addControl(player);
 
         //Setting default values for wheels

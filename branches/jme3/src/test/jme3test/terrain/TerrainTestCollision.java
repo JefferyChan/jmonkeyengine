@@ -35,7 +35,7 @@ import jme3tools.converters.ImageToAwt;
 import com.jme3.app.SimpleBulletApplication;
 import com.jme3.bounding.BoundingBox;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
-import com.jme3.bullet.control.PhysicsRigidBodyControl;
+import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.nodes.PhysicsNode;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
@@ -143,7 +143,7 @@ public class TerrainTestCollision extends SimpleBulletApplication {
         /**
          * Create PhysicsRigidBodyControl for collision
          */
-        terrain.addControl(new PhysicsRigidBodyControl(0));
+        terrain.addControl(new RigidBodyControl(0));
         getPhysicsSpace().addAll(terrain);
 
         // Add 5 physics spheres to the world, with random sizes and positions

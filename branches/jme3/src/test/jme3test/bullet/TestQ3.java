@@ -38,7 +38,7 @@ import com.jme3.asset.plugins.HttpZipLocator;
 import com.jme3.asset.plugins.ZipLocator;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
-import com.jme3.bullet.control.PhysicsRigidBodyControl;
+import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.nodes.PhysicsCharacterNode;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
@@ -101,7 +101,7 @@ public class TestQ3 extends SimpleApplication implements ActionListener {
         gameLevel.setLocalScale(0.1f);
 
         // add a physics control, it will generate a MeshCollisionShape based on the gameLevel
-        gameLevel.addControl(new PhysicsRigidBodyControl(0));
+        gameLevel.addControl(new RigidBodyControl(0));
 
         player = new PhysicsCharacterNode(new SphereCollisionShape(5), .01f);
         player.setJumpSpeed(20);

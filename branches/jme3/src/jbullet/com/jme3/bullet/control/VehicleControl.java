@@ -6,8 +6,8 @@ package com.jme3.bullet.control;
 
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.CollisionShape;
-import com.jme3.bullet.objects.PhysicsVehicle;
-import com.jme3.bullet.objects.PhysicsVehicleWheel;
+import com.jme3.bullet.objects.BulletVehicle;
+import com.jme3.bullet.objects.VehicleWheel;
 import com.jme3.export.InputCapsule;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
@@ -27,13 +27,13 @@ import java.util.Iterator;
  *
  * @author normenhansen
  */
-public class PhysicsVehicleControl extends PhysicsVehicle implements PhysicsControl {
+public class VehicleControl extends BulletVehicle implements PhysicsControl {
 
     protected Spatial spatial;
     private boolean enabled = true;
     protected PhysicsSpace space = null;
 
-    public PhysicsVehicleControl() {
+    public VehicleControl() {
     }
 
     /**
@@ -41,16 +41,16 @@ public class PhysicsVehicleControl extends PhysicsVehicle implements PhysicsCont
      * @param child
      * @param shape
      */
-    public PhysicsVehicleControl(CollisionShape shape) {
+    public VehicleControl(CollisionShape shape) {
         super(shape);
     }
 
-    public PhysicsVehicleControl(CollisionShape shape, float mass) {
+    public VehicleControl(CollisionShape shape, float mass) {
         super(shape, mass);
     }
 
     public Control cloneForSpatial(Spatial spatial) {
-        PhysicsVehicleControl control = new PhysicsVehicleControl(collisionShape, mass);
+        VehicleControl control = new VehicleControl(collisionShape, mass);
         control.setAngularFactor(getAngularFactor());
         control.setAngularSleepingThreshold(getAngularSleepingThreshold());
         control.setAngularVelocity(getAngularVelocity());
@@ -75,9 +75,9 @@ public class PhysicsVehicleControl extends PhysicsVehicle implements PhysicsCont
         control.setSuspensionDamping(tuning.suspensionDamping);
         control.setMaxSuspensionForce(getMaxSuspensionForce());
 
-        for (Iterator<PhysicsVehicleWheel> it = wheels.iterator(); it.hasNext();) {
-            PhysicsVehicleWheel wheel = it.next();
-            PhysicsVehicleWheel newWheel = control.addWheel(wheel.getLocation(), wheel.getDirection(), wheel.getAxle(), wheel.getRestLength(), wheel.getRadius(), wheel.isFrontWheel());
+        for (Iterator<VehicleWheel> it = wheels.iterator(); it.hasNext();) {
+            VehicleWheel wheel = it.next();
+            VehicleWheel newWheel = control.addWheel(wheel.getLocation(), wheel.getDirection(), wheel.getAxle(), wheel.getRestLength(), wheel.getRadius(), wheel.isFrontWheel());
             newWheel.setFrictionSlip(wheel.getFrictionSlip());
             newWheel.setMaxSuspensionTravelCm(wheel.getMaxSuspensionTravelCm());
             newWheel.setSuspensionStiffness(wheel.getSuspensionStiffness());
@@ -146,8 +146,8 @@ public class PhysicsVehicleControl extends PhysicsVehicle implements PhysicsCont
             debugShape.setLocalTranslation(motionState.getWorldLocation());
             debugShape.setLocalRotation(motionState.getWorldRotation());
             int i = 0;
-            for (Iterator<PhysicsVehicleWheel> it = wheels.iterator(); it.hasNext();) {
-                PhysicsVehicleWheel physicsVehicleWheel = it.next();
+            for (Iterator<VehicleWheel> it = wheels.iterator(); it.hasNext();) {
+                VehicleWheel physicsVehicleWheel = it.next();
                 Vector3f location = physicsVehicleWheel.getLocation().clone();
                 Vector3f direction = physicsVehicleWheel.getDirection().clone();
                 Vector3f axle = physicsVehicleWheel.getAxle().clone();

@@ -10,9 +10,9 @@ import com.jme3.asset.AssetManager;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
-import com.jme3.bullet.joints.PhysicsConeJoint;
+import com.jme3.bullet.joints.ConeJoint;
 import com.jme3.bullet.joints.PhysicsJoint;
-import com.jme3.bullet.objects.PhysicsRigidBody;
+import com.jme3.bullet.objects.BulletRigidBody;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
 import com.jme3.math.FastMath;
@@ -32,18 +32,18 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class PhysicsRagdollControl implements PhysicsControl {
+public class RagdollControl implements PhysicsControl {
 
-    protected static final Logger logger = Logger.getLogger(PhysicsRagdollControl.class.getName());
+    protected static final Logger logger = Logger.getLogger(RagdollControl.class.getName());
     protected List<PhysicsBoneLink> boneLinks = new LinkedList<PhysicsBoneLink>();
     protected Skeleton skeleton;
     protected PhysicsSpace space;
     protected boolean enabled = true;
     protected boolean debug = false;
     protected Quaternion tmp_jointRotation = new Quaternion();
-    protected PhysicsRigidBody baseRigidBody;
+    protected BulletRigidBody baseRigidBody;
 
-    public PhysicsRagdollControl() {
+    public RagdollControl() {
     }
 
     public void update(float tpf) {
@@ -109,7 +109,7 @@ public class PhysicsRagdollControl implements PhysicsControl {
             if (childBone.getParent() == null) {
                 Vector3f parentPos = childBone.getModelSpacePosition().add(model.getWorldTranslation());
                 logger.log(Level.INFO, "Found root bone in skeleton {0}", skeleton);
-                baseRigidBody = new PhysicsRigidBody(new BoxCollisionShape(Vector3f.UNIT_XYZ.mult(.1f)), 1);
+                baseRigidBody = new BulletRigidBody(new BoxCollisionShape(Vector3f.UNIT_XYZ.mult(.1f)), 1);
                 baseRigidBody.setPhysicsLocation(parentPos);
                 boneLinks = boneRecursion(model, childBone, baseRigidBody, boneLinks, 1);
                 return;
@@ -123,7 +123,7 @@ public class PhysicsRagdollControl implements PhysicsControl {
 
     }
 
-    private List<PhysicsBoneLink> boneRecursion(Spatial model, Bone bone, PhysicsRigidBody parent, List<PhysicsBoneLink> list, int reccount) {
+    private List<PhysicsBoneLink> boneRecursion(Spatial model, Bone bone, BulletRigidBody parent, List<PhysicsBoneLink> list, int reccount) {
         ArrayList<Bone> children = bone.getChildren();
         bone.setUserControl(true);
         for (Iterator<Bone> it = children.iterator(); it.hasNext();) {
@@ -141,7 +141,7 @@ public class PhysicsRagdollControl implements PhysicsControl {
             float radius = height > 2f ? 0.4f : height * .2f;
             CapsuleCollisionShape shape = new CapsuleCollisionShape(radius, height - (radius ), 2);
 
-            PhysicsRigidBody shapeNode = new PhysicsRigidBody(shape, 10.0f / (float) reccount);
+            BulletRigidBody shapeNode = new BulletRigidBody(shape, 10.0f / (float) reccount);
             shapeNode.setPhysicsLocation(jointCenter);
             shapeNode.setPhysicsRotation(tmp_jointRotation.toRotationMatrix());
 
@@ -163,7 +163,7 @@ public class PhysicsRagdollControl implements PhysicsControl {
                 //local position from child
                 link.pivotB = new Vector3f(0, 0, -(height * .5f));
 
-                PhysicsConeJoint joint = new PhysicsConeJoint(parent, shapeNode, link.pivotA, link.pivotB);
+                ConeJoint joint = new ConeJoint(parent, shapeNode, link.pivotA, link.pivotB);
                 joint.setLimit(FastMath.HALF_PI, FastMath.HALF_PI, 0.01f);
 
                 link.joint = joint;
@@ -278,7 +278,7 @@ public class PhysicsRagdollControl implements PhysicsControl {
         Bone childBone;
         Bone parentBone;
         PhysicsJoint joint;
-        PhysicsRigidBody rigidBody;
+        BulletRigidBody rigidBody;
         Vector3f pivotA;
         Vector3f pivotB;
         float length;

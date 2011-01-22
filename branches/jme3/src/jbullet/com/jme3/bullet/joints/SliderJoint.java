@@ -36,7 +36,7 @@ import com.bulletphysics.linearmath.Transform;
 import com.jme3.export.JmeExporter;
 import com.jme3.math.Matrix3f;
 import com.jme3.math.Vector3f;
-import com.jme3.bullet.objects.PhysicsRigidBody;
+import com.jme3.bullet.objects.BulletRigidBody;
 import com.jme3.bullet.util.Converter;
 import com.jme3.export.InputCapsule;
 import com.jme3.export.JmeImporter;
@@ -48,18 +48,18 @@ import java.io.IOException;
  * The slider constraint allows the body to rotate around one axis and translate along this axis.
  * @author normenhansen
  */
-public class PhysicsSliderJoint extends PhysicsJoint {
+public class SliderJoint extends PhysicsJoint {
     protected Matrix3f rotA, rotB;
     protected boolean useLinearReferenceFrameA;
 
-    public PhysicsSliderJoint() {
+    public SliderJoint() {
     }
 
     /**
      * @param pivotA local translation of the joint connection point in node A
      * @param pivotB local translation of the joint connection point in node B
      */
-    public PhysicsSliderJoint(PhysicsRigidBody nodeA, PhysicsRigidBody nodeB, Vector3f pivotA, Vector3f pivotB, Matrix3f rotA, Matrix3f rotB, boolean useLinearReferenceFrameA) {
+    public SliderJoint(BulletRigidBody nodeA, BulletRigidBody nodeB, Vector3f pivotA, Vector3f pivotB, Matrix3f rotA, Matrix3f rotB, boolean useLinearReferenceFrameA) {
         super(nodeA, nodeB, pivotA, pivotB);
         this.rotA=rotA;
         this.rotB=rotB;
@@ -71,7 +71,7 @@ public class PhysicsSliderJoint extends PhysicsJoint {
      * @param pivotA local translation of the joint connection point in node A
      * @param pivotB local translation of the joint connection point in node B
      */
-    public PhysicsSliderJoint(PhysicsRigidBody nodeA, PhysicsRigidBody nodeB, Vector3f pivotA, Vector3f pivotB, boolean useLinearReferenceFrameA) {
+    public SliderJoint(BulletRigidBody nodeA, BulletRigidBody nodeB, Vector3f pivotA, Vector3f pivotB, boolean useLinearReferenceFrameA) {
         super(nodeA, nodeB, pivotA, pivotB);
         this.rotA=new Matrix3f();
         this.rotB=new Matrix3f();

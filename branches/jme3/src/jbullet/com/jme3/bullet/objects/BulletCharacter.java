@@ -47,7 +47,7 @@ import java.io.IOException;
  * Basic Bullet Chatacter
  * @author normenhansen
  */
-public class PhysicsCharacter extends PhysicsGhostObject {
+public class BulletCharacter extends BulletGhostObject {
 
     protected KinematicCharacterController character;
     protected float stepHeight;
@@ -58,10 +58,10 @@ public class PhysicsCharacter extends PhysicsGhostObject {
 
     private javax.vecmath.Vector3f tempVec=new javax.vecmath.Vector3f();
 
-    public PhysicsCharacter() {
+    public BulletCharacter() {
     }
 
-    public PhysicsCharacter(CollisionShape shape, float stepHeight) {
+    public BulletCharacter(CollisionShape shape, float stepHeight) {
         super(shape);
         if (!(shape.getCShape() instanceof ConvexShape)) {
             throw (new UnsupportedOperationException("Kinematic character nodes cannot have mesh collision shapes"));

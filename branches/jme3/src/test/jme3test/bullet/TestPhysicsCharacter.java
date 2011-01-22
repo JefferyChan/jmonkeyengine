@@ -29,7 +29,6 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package jme3test.bullet;
 
 import com.jme3.bullet.BulletAppState;
@@ -58,7 +57,7 @@ import com.jme3.scene.shape.Sphere.TextureMode;
  *
  * @author normenhansen
  */
-public class TestPhysicsCharacter extends SimpleApplication implements ActionListener {
+public class TestPhysicsCharacter extends SimpleApplication implements ActionListener{
 
     private BulletAppState bulletAppState;
     private PhysicsCharacterNode physicsCharacter;
@@ -70,7 +69,7 @@ public class TestPhysicsCharacter extends SimpleApplication implements ActionLis
     static {
         bullet = new Sphere(32, 32, 0.4f, true, false);
         bullet.setTextureMode(TextureMode.Projected);
-        bulletCollisionShape=new SphereCollisionShape(0.4f);
+        bulletCollisionShape = new SphereCollisionShape(0.4f);
     }
 
     public static void main(String[] args) {
@@ -133,7 +132,7 @@ public class TestPhysicsCharacter extends SimpleApplication implements ActionLis
         getPhysicsSpace().add(node3);
     }
 
-    private PhysicsSpace getPhysicsSpace(){
+    private PhysicsSpace getPhysicsSpace() {
         return bulletAppState.getPhysicsSpace();
     }
 

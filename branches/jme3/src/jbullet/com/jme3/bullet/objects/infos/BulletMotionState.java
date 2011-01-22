@@ -34,7 +34,7 @@ package com.jme3.bullet.objects.infos;
 import com.bulletphysics.linearmath.MotionState;
 import com.bulletphysics.linearmath.Transform;
 import com.jme3.bullet.nodes.PhysicsBaseNode;
-import com.jme3.bullet.objects.PhysicsVehicle;
+import com.jme3.bullet.objects.BulletVehicle;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.bullet.util.Converter;
@@ -46,7 +46,7 @@ import com.jme3.scene.Spatial;
  * allow multithreaded access from the jme scenegraph and the bullet physicsspace
  * @author normenhansen
  */
-public class PhysicsMotionState extends MotionState {
+public class BulletMotionState extends MotionState {
     //stores the bullet transform
 
     private Transform motionStateTrans = new Transform(Converter.convert(new Matrix3f()));
@@ -60,9 +60,9 @@ public class PhysicsMotionState extends MotionState {
     private boolean jmeLocationDirty = false;
     //temp variable for conversion
     private Quaternion tmp_inverseWorldRotation = new Quaternion();
-    protected PhysicsVehicle vehicle;
+    protected BulletVehicle vehicle;
 
-    public PhysicsMotionState() {
+    public BulletMotionState() {
     }
 
     /**
@@ -146,7 +146,7 @@ public class PhysicsMotionState extends MotionState {
     /**
      * @param vehicle the vehicle to set
      */
-    public void setVehicle(PhysicsVehicle vehicle) {
+    public void setVehicle(BulletVehicle vehicle) {
         this.vehicle = vehicle;
     }
 

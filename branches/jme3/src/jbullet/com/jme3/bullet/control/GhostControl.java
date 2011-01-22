@@ -6,7 +6,7 @@ package com.jme3.bullet.control;
 
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.CollisionShape;
-import com.jme3.bullet.objects.PhysicsCharacter;
+import com.jme3.bullet.objects.BulletGhostObject;
 import com.jme3.export.InputCapsule;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
@@ -23,32 +23,27 @@ import java.io.IOException;
  *
  * @author normenhansen
  */
-public class PhysicsCharacterControl extends PhysicsCharacter implements PhysicsControl {
+public class GhostControl extends BulletGhostObject implements PhysicsControl {
 
     protected Spatial spatial;
-    protected boolean enabled = true;
+    private boolean enabled = true;
     protected PhysicsSpace space = null;
 
-    public PhysicsCharacterControl() {
+    public GhostControl() {
     }
 
-    public PhysicsCharacterControl(CollisionShape shape, float stepHeight) {
-        super(shape, stepHeight);
+    public GhostControl(CollisionShape shape) {
+        super(shape);
     }
 
     public Control cloneForSpatial(Spatial spatial) {
-        PhysicsCharacterControl control = new PhysicsCharacterControl(collisionShape, stepHeight);
+        GhostControl control = new GhostControl(collisionShape);
         control.setCcdMotionThreshold(getCcdMotionThreshold());
         control.setCcdSweptSphereRadius(getCcdSweptSphereRadius());
         control.setCollideWithGroups(getCollideWithGroups());
         control.setCollisionGroup(getCollisionGroup());
-        control.setFallSpeed(getFallSpeed());
-        control.setGravity(getGravity());
-        control.setJumpSpeed(getJumpSpeed());
-        control.setMaxSlope(getMaxSlope());
         control.setPhysicsLocation(getPhysicsLocation());
         control.setPhysicsRotation(getPhysicsRotation());
-        control.setUpAxis(getUpAxis());
 
         control.setSpatial(spatial);
         return control;

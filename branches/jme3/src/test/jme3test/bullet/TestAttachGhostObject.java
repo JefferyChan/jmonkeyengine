@@ -36,9 +36,9 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
-import com.jme3.bullet.control.PhysicsGhostControl;
+import com.jme3.bullet.control.GhostControl;
 import com.jme3.bullet.control.PhysicsControl;
-import com.jme3.bullet.joints.PhysicsHingeJoint;
+import com.jme3.bullet.joints.HingeJoint;
 import com.jme3.bullet.nodes.PhysicsGhostNode;
 import com.jme3.bullet.nodes.PhysicsNode;
 import com.jme3.input.KeyInput;
@@ -54,7 +54,7 @@ import com.jme3.math.Vector3f;
  */
 public class TestAttachGhostObject extends SimpleApplication implements AnalogListener {
 
-    private PhysicsHingeJoint joint;
+    private HingeJoint joint;
     private PhysicsGhostNode gNode;
     private PhysicsNode collisionNode;
     private PhysicsNode hammerNode;
@@ -127,14 +127,14 @@ public class TestAttachGhostObject extends SimpleApplication implements AnalogLi
         rootNode.attachChild(gNode);
         getPhysicsSpace().add(gNode);
 
-        joint = new PhysicsHingeJoint(holderNode.getRigidBody(), hammerNode.getRigidBody(), Vector3f.ZERO, new Vector3f(0f, -1, 0f), Vector3f.UNIT_Z, Vector3f.UNIT_Z);
+        joint = new HingeJoint(holderNode.getRigidBody(), hammerNode.getRigidBody(), Vector3f.ZERO, new Vector3f(0f, -1, 0f), Vector3f.UNIT_Z, Vector3f.UNIT_Z);
         getPhysicsSpace().add(joint);
     }
 
     @Override
     public void simpleUpdate(float tpf) {
         hammerNode.getPhysicsLocation(tempVec);
-        gNode.getControl(PhysicsGhostControl.class).setPhysicsLocation(tempVec);
+        gNode.getControl(GhostControl.class).setPhysicsLocation(tempVec);
         if (gNode.getOverlappingObjects().contains(collisionNode.getControl(PhysicsControl.class))) {
             fpsText.setText("collide");
         }

@@ -38,7 +38,7 @@ import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.MeshCollisionShape;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
-import com.jme3.bullet.control.PhysicsRigidBodyControl;
+import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.nodes.PhysicsNode;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.ActionListener;
@@ -100,16 +100,16 @@ public class TestCcd extends SimpleApplication implements ActionListener{
         Node node2 = new Node();
         node2.setName("mesh");
         node2.setLocalTranslation(new Vector3f(2.5f, 0, 0f));
-        node2.addControl(new PhysicsRigidBodyControl(new MeshCollisionShape(new Box(Vector3f.ZERO,4,4,0.1f)), 0));
-        node2.getControl(PhysicsRigidBodyControl.class).attachDebugShape(assetManager);
+        node2.addControl(new RigidBodyControl(new MeshCollisionShape(new Box(Vector3f.ZERO,4,4,0.1f)), 0));
+        node2.getControl(RigidBodyControl.class).attachDebugShape(assetManager);
         rootNode.attachChild(node2);
         getPhysicsSpace().add(node2);
 
         // The floor, does not move (mass=0)
         Node node3 = new Node();
         node3.setLocalTranslation(new Vector3f(0f, -6, 0f));
-        node3.addControl(new PhysicsRigidBodyControl(new BoxCollisionShape(new Vector3f(100, 1, 100)), 0));
-        node3.getControl(PhysicsRigidBodyControl.class).attachDebugShape(assetManager);
+        node3.addControl(new RigidBodyControl(new BoxCollisionShape(new Vector3f(100, 1, 100)), 0));
+        node3.getControl(RigidBodyControl.class).attachDebugShape(assetManager);
         rootNode.attachChild(node3);
         getPhysicsSpace().add(node3);
 
@@ -136,9 +136,9 @@ public class TestCcd extends SimpleApplication implements ActionListener{
             bulletg.setName("bullet");
             bulletg.setLocalTranslation(cam.getLocation());
             bulletg.setShadowMode(ShadowMode.CastAndReceive);
-            bulletg.addControl(new PhysicsRigidBodyControl(bulletCollisionShape, 1));
-            bulletg.getControl(PhysicsRigidBodyControl.class).setCcdMotionThreshold(0.1f);
-            bulletg.getControl(PhysicsRigidBodyControl.class).setLinearVelocity(cam.getDirection().mult(40));
+            bulletg.addControl(new RigidBodyControl(bulletCollisionShape, 1));
+            bulletg.getControl(RigidBodyControl.class).setCcdMotionThreshold(0.1f);
+            bulletg.getControl(RigidBodyControl.class).setLinearVelocity(cam.getDirection().mult(40));
             rootNode.attachChild(bulletg);
             getPhysicsSpace().add(bulletg);
         }
@@ -148,8 +148,8 @@ public class TestCcd extends SimpleApplication implements ActionListener{
             bulletg.setName("bullet");
             bulletg.setLocalTranslation(cam.getLocation());
             bulletg.setShadowMode(ShadowMode.CastAndReceive);
-            bulletg.addControl(new PhysicsRigidBodyControl(bulletCollisionShape, 1));
-            bulletg.getControl(PhysicsRigidBodyControl.class).setLinearVelocity(cam.getDirection().mult(40));
+            bulletg.addControl(new RigidBodyControl(bulletCollisionShape, 1));
+            bulletg.getControl(RigidBodyControl.class).setLinearVelocity(cam.getDirection().mult(40));
             rootNode.attachChild(bulletg);
             getPhysicsSpace().add(bulletg);
         }

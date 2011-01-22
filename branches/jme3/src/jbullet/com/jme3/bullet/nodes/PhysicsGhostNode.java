@@ -34,8 +34,8 @@ package com.jme3.bullet.nodes;
 import com.jme3.scene.Spatial;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.collision.shapes.CollisionShape;
-import com.jme3.bullet.control.PhysicsGhostControl;
-import com.jme3.bullet.objects.PhysicsGhostObject;
+import com.jme3.bullet.control.GhostControl;
+import com.jme3.bullet.objects.BulletGhostObject;
 import com.jme3.export.InputCapsule;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
@@ -65,64 +65,64 @@ public class PhysicsGhostNode extends PhysicsBaseNode {
     }
 
     public PhysicsGhostNode(CollisionShape shape) {
-        collisionObject=new PhysicsGhostControl(shape);
-        addControl(((PhysicsGhostControl)collisionObject));
+        collisionObject=new GhostControl(shape);
+        addControl(((GhostControl)collisionObject));
     }
 
     public PhysicsGhostNode(Spatial child, CollisionShape shape) {
-        collisionObject=new PhysicsGhostControl(shape);
-        addControl(((PhysicsGhostControl)collisionObject));
+        collisionObject=new GhostControl(shape);
+        addControl(((GhostControl)collisionObject));
         attachChild(child);
     }
 
     @Override
     public void setCollisionShape(CollisionShape collisionShape) {
-        ((PhysicsGhostControl)collisionObject).setCollisionShape(collisionShape);
+        ((GhostControl)collisionObject).setCollisionShape(collisionShape);
     }
 
     @Override
     public void setLocalTransform(Transform t) {
         super.setLocalTransform(t);
-        ((PhysicsGhostObject)collisionObject).setPhysicsLocation(getWorldTranslation());
-        ((PhysicsGhostObject)collisionObject).setPhysicsRotation(getWorldRotation().toRotationMatrix());
+        ((BulletGhostObject)collisionObject).setPhysicsLocation(getWorldTranslation());
+        ((BulletGhostObject)collisionObject).setPhysicsRotation(getWorldRotation().toRotationMatrix());
     }
 
     @Override
     public void setLocalTranslation(Vector3f localTranslation) {
         super.setLocalTranslation(localTranslation);
-        ((PhysicsGhostObject)collisionObject).setPhysicsLocation(getWorldTranslation());
+        ((BulletGhostObject)collisionObject).setPhysicsLocation(getWorldTranslation());
     }
 
     @Override
     public void setLocalTranslation(float x, float y, float z) {
         super.setLocalTranslation(x, y, z);
-        ((PhysicsGhostObject)collisionObject).setPhysicsLocation(getWorldTranslation());
+        ((BulletGhostObject)collisionObject).setPhysicsLocation(getWorldTranslation());
     }
 
     @Override
     public void setLocalRotation(Matrix3f rotation) {
         super.setLocalRotation(rotation);
-        ((PhysicsGhostObject)collisionObject).setPhysicsRotation(getWorldRotation().toRotationMatrix());
+        ((BulletGhostObject)collisionObject).setPhysicsRotation(getWorldRotation().toRotationMatrix());
     }
 
     @Override
     public void setLocalRotation(Quaternion quaternion) {
         super.setLocalRotation(quaternion);
-        ((PhysicsGhostObject)collisionObject).setPhysicsRotation(getWorldRotation().toRotationMatrix());
+        ((BulletGhostObject)collisionObject).setPhysicsRotation(getWorldRotation().toRotationMatrix());
     }
 
     /**
      * used internally
      */
-    public PhysicsGhostObject getGhostObject() {
-        return ((PhysicsGhostControl)collisionObject);
+    public BulletGhostObject getGhostObject() {
+        return ((GhostControl)collisionObject);
     }
 
     /**
      * destroys this PhysicsGhostNode and removes it from memory
      */
     public void destroy() {
-        ((PhysicsGhostControl)collisionObject).destroy();
+        ((GhostControl)collisionObject).destroy();
     }
 
     /**
@@ -132,7 +132,7 @@ public class PhysicsGhostNode extends PhysicsBaseNode {
      * @return All CollisionObjects overlapping with this GhostNode.
      */
     public List<PhysicsCollisionObject> getOverlappingObjects() {
-        return ((PhysicsGhostControl)collisionObject).getOverlappingObjects();
+        return ((GhostControl)collisionObject).getOverlappingObjects();
     }
 
     /**
@@ -140,7 +140,7 @@ public class PhysicsGhostNode extends PhysicsBaseNode {
      * @return With how many other CollisionObjects this GhostNode is currently overlapping.
      */
     public int getOverlappingCount() {
-        return ((PhysicsGhostControl)collisionObject).getOverlappingCount();
+        return ((GhostControl)collisionObject).getOverlappingCount();
     }
 
     /**
@@ -149,27 +149,27 @@ public class PhysicsGhostNode extends PhysicsBaseNode {
      * @return The Overlapping CollisionObject at the given index.
      */
     public PhysicsCollisionObject getOverlapping(int index) {
-        return ((PhysicsGhostControl)collisionObject).getOverlapping(index);
+        return ((GhostControl)collisionObject).getOverlapping(index);
     }
 
     public void setCcdSweptSphereRadius(float radius) {
-        ((PhysicsGhostControl)collisionObject).setCcdSweptSphereRadius(radius);
+        ((GhostControl)collisionObject).setCcdSweptSphereRadius(radius);
     }
 
     public void setCcdMotionThreshold(float threshold) {
-        ((PhysicsGhostControl)collisionObject).setCcdMotionThreshold(threshold);
+        ((GhostControl)collisionObject).setCcdMotionThreshold(threshold);
     }
 
     public float getCcdSweptSphereRadius() {
-        return ((PhysicsGhostControl)collisionObject).getCcdSweptSphereRadius();
+        return ((GhostControl)collisionObject).getCcdSweptSphereRadius();
     }
 
     public float getCcdMotionThreshold() {
-        return ((PhysicsGhostControl)collisionObject).getCcdMotionThreshold();
+        return ((GhostControl)collisionObject).getCcdMotionThreshold();
     }
 
     public float getCcdSquareMotionThreshold() {
-        return ((PhysicsGhostControl)collisionObject).getCcdSquareMotionThreshold();
+        return ((GhostControl)collisionObject).getCcdSquareMotionThreshold();
     }
 
     @Override

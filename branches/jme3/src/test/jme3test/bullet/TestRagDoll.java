@@ -9,7 +9,7 @@ import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
-import com.jme3.bullet.joints.PhysicsConeJoint;
+import com.jme3.bullet.joints.ConeJoint;
 import com.jme3.bullet.joints.PhysicsJoint;
 import com.jme3.bullet.nodes.PhysicsNode;
 import com.jme3.input.controls.ActionListener;
@@ -106,7 +106,7 @@ public class TestRagDoll extends SimpleApplication implements ActionListener {
     private PhysicsJoint join(PhysicsNode A, PhysicsNode B, Vector3f connectionPoint) {
         Vector3f pivotA = A.worldToLocal(connectionPoint, new Vector3f());
         Vector3f pivotB = B.worldToLocal(connectionPoint, new Vector3f());
-        PhysicsConeJoint joint = new PhysicsConeJoint(A.getRigidBody(), B.getRigidBody(), pivotA, pivotB);
+        ConeJoint joint = new ConeJoint(A.getRigidBody(), B.getRigidBody(), pivotA, pivotB);
         joint.setLimit(1f, 1f, 0);
         return joint;
     }

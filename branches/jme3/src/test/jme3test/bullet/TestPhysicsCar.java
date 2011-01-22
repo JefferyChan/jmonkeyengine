@@ -39,8 +39,8 @@ import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.CompoundCollisionShape;
 import com.jme3.bullet.collision.shapes.MeshCollisionShape;
-import com.jme3.bullet.control.PhysicsRigidBodyControl;
-import com.jme3.bullet.control.PhysicsVehicleControl;
+import com.jme3.bullet.control.RigidBodyControl;
+import com.jme3.bullet.control.VehicleControl;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
@@ -59,7 +59,7 @@ import com.jme3.texture.Texture;
 public class TestPhysicsCar extends SimpleApplication implements ActionListener {
 
     private BulletAppState bulletAppState;
-    private PhysicsVehicleControl vehicle;
+    private VehicleControl vehicle;
     private final float accelerationForce = 1000.0f;
     private final float brakeForce = 100.0f;
     private float steeringValue = 0;
@@ -112,7 +112,7 @@ public class TestPhysicsCar extends SimpleApplication implements ActionListener 
         floorGeom.setMaterial(mat);
         floorGeom.setLocalTranslation(new Vector3f(0f, -3, 0f));
 
-        floorGeom.addControl(new PhysicsRigidBodyControl(new MeshCollisionShape(floorGeom.getMesh()), 0));
+        floorGeom.addControl(new RigidBodyControl(new MeshCollisionShape(floorGeom.getMesh()), 0));
         rootNode.attachChild(floorGeom);
         getPhysicsSpace().add(floorGeom);
     }
@@ -129,7 +129,7 @@ public class TestPhysicsCar extends SimpleApplication implements ActionListener 
 
         //create vehicle node
         Node vehicleNode=new Node("vehicleNode");
-        vehicle = new PhysicsVehicleControl(compoundShape, 800);
+        vehicle = new VehicleControl(compoundShape, 800);
         vehicleNode.addControl(vehicle);
 
         //setting suspension values for wheels, this can be a bit tricky

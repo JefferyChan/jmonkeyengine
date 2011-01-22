@@ -35,7 +35,7 @@ import com.bulletphysics.dynamics.constraintsolver.Point2PointConstraint;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
 import com.jme3.math.Vector3f;
-import com.jme3.bullet.objects.PhysicsRigidBody;
+import com.jme3.bullet.objects.BulletRigidBody;
 import com.jme3.bullet.util.Converter;
 import com.jme3.export.InputCapsule;
 import com.jme3.export.OutputCapsule;
@@ -48,16 +48,16 @@ import java.io.IOException;
  * A chain of rigidbodies can be connected using this constraint.
  * @author normenhansen
  */
-public class PhysicsPoint2PointJoint extends PhysicsJoint {
+public class Point2PointJoint extends PhysicsJoint {
 
-    public PhysicsPoint2PointJoint() {
+    public Point2PointJoint() {
     }
 
     /**
      * @param pivotA local translation of the joint connection point in node A
      * @param pivotB local translation of the joint connection point in node B
      */
-    public PhysicsPoint2PointJoint(PhysicsRigidBody nodeA, PhysicsRigidBody nodeB, Vector3f pivotA, Vector3f pivotB) {
+    public Point2PointJoint(BulletRigidBody nodeA, BulletRigidBody nodeB, Vector3f pivotA, Vector3f pivotB) {
         super(nodeA, nodeB, pivotA, pivotB);
         createJoint();
     }
