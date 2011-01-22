@@ -46,6 +46,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openide.nodes.PropertySupport;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
@@ -131,7 +133,16 @@ public class SceneExplorerProperty<T> extends PropertySupport.Reflection<T> {
     private void setSuperValue(T val, boolean undo) {
         try {
             if (undo) {
-                addUndo(getSuperValue(), val);
+                try {
+                    Object oldValue = getSuperValue();
+                    if (oldValue.getClass().getMethod("clone", null) != null) {
+                        addUndo(oldValue.getClass().getMethod("clone", null).invoke(oldValue, null), val);
+                        Logger.getLogger(SceneExplorerProperty.class.getName()).log(Level.INFO, "Add cloned undo {0}", oldValue.getClass().getMethod("clone", null).invoke(oldValue, null));
+                    }
+                } catch (Exception e) {
+                    addUndo(getSuperValue(), val);
+                    Logger.getLogger(SceneExplorerProperty.class.getName()).log(Level.INFO, "Add undo {0}", getSuperValue());
+                }
             }
             notifyListeners(getSuperValue(), val);
             super.setValue(val);
@@ -153,12 +164,13 @@ public class SceneExplorerProperty<T> extends PropertySupport.Reflection<T> {
 
             @Override
             public void sceneUndo() {
-                setSuperValue((T)before, false);
+                Logger.getLogger(SceneExplorerProperty.class.getName()).log(Level.INFO, "Do undo {0}", before);
+                setSuperValue((T) before, false);
             }
 
             @Override
             public void sceneRedo() {
-                setSuperValue((T)after, false);
+                setSuperValue((T) after, false);
             }
 
             @Override
