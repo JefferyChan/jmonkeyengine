@@ -4,6 +4,7 @@
  */
 package com.jme3.gde.vehiclecreator;
 
+import com.jme3.bullet.objects.VehicleWheel;
 import com.jme3.math.Vector3f;
 
 /**
@@ -25,6 +26,33 @@ public class SuspensionSettings {
     private float compression = 0.83f;
     private float release = 0.88f;
     private float friction = 10.5f;
+
+    public SuspensionSettings() {
+    }
+
+    public SuspensionSettings(VehicleWheel wheel) {
+        this.direction.set(wheel.getDirection());
+        this.axle.set(wheel.getAxle());
+        this.frontWheel = wheel.isFrontWheel();
+        this.radius = wheel.getRadius();
+        this.restLength = wheel.getRestLength();
+        this.maxForce = wheel.getMaxSuspensionForce();
+        this.stiffness = wheel.getSuspensionStiffness();
+        this.rollInfluence = wheel.getRollInfluence();
+        this.compression = wheel.getWheelsDampingCompression();
+        this.release = wheel.getWheelsDampingRelaxation();
+        this.friction = wheel.getFrictionSlip();
+    }
+
+    public void applyData(VehicleWheel wheel){
+        wheel.setRadius(getRadius());
+        wheel.setFrictionSlip(getFriction());
+        wheel.setRollInfluence(getRollInfluence());
+        wheel.setMaxSuspensionForce(getMaxForce());
+        wheel.setSuspensionStiffness(getStiffness());
+        wheel.setWheelsDampingCompression(getCompression());
+        wheel.setWheelsDampingRelaxation(getRelease());
+    }
 
     public float getBoundingScale() {
         return boundingScale;

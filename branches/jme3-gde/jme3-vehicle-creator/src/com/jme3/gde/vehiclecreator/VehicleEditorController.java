@@ -8,16 +8,17 @@ import com.jme3.asset.DesktopAssetManager;
 import com.jme3.bounding.BoundingBox;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
-import com.jme3.bullet.control.PhysicsRigidBodyControl;
-import com.jme3.bullet.control.PhysicsVehicleControl;
-import com.jme3.bullet.objects.PhysicsVehicleWheel;
+import com.jme3.bullet.control.RigidBodyControl;
+import com.jme3.bullet.control.VehicleControl;
+import com.jme3.bullet.objects.VehicleWheel;
 import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.gde.core.assets.BinaryModelDataObject;
 import com.jme3.gde.core.assets.ProjectAssetManager;
 import com.jme3.gde.core.scene.SceneApplication;
 import com.jme3.gde.core.scene.controller.SceneToolController;
 import com.jme3.gde.core.sceneexplorer.nodes.JmeSpatial;
-import com.jme3.input.ChaseCamera;
+import com.jme3.gde.core.undoredo.AbstractUndoableSceneEdit;
+import com.jme3.gde.core.undoredo.SceneUndoRedoManager;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
@@ -37,6 +38,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.openide.util.Exceptions;
+import org.openide.util.Lookup;
 import org.openide.util.Lookup.Result;
 import org.openide.util.LookupEvent;
 import org.openide.util.LookupListener;
@@ -52,9 +54,9 @@ public class VehicleEditorController implements LookupListener, ActionListener {
     private Node rootNode;
     private JmeSpatial selectedSpat;
     private BinaryModelDataObject currentFileObject;
-    private PhysicsVehicleControl vehicleControl;
+    private VehicleControl vehicleControl;
     private Result<JmeSpatial> result;
-    private Result<PhysicsVehicleWheel> result2;
+    private Result<VehicleWheel> result2;
     private List<Geometry> list = new LinkedList<Geometry>();
     private SceneToolController toolController;
     private VehicleCreatorCameraController cameraController;
@@ -75,17 +77,17 @@ public class VehicleEditorController implements LookupListener, ActionListener {
         result.addLookupListener(this);
         toolsNode.addLight(new DirectionalLight());
         Node track = (Node) new DesktopAssetManager(true).loadModel("Models/Racetrack/Raceway.j3o");
-        track.getChild("Plane-ogremesh").getControl(PhysicsRigidBodyControl.class).setPhysicsLocation(new Vector3f(30, 0, 0));
-        track.getChild("Plane-ogremesh").getControl(PhysicsRigidBodyControl.class).setPhysicsRotation(new Quaternion().fromAngleAxis(FastMath.HALF_PI * 0.68f, Vector3f.UNIT_Y).toRotationMatrix());
+        track.getChild("Plane-ogremesh").getControl(RigidBodyControl.class).setPhysicsLocation(new Vector3f(30, 0, 0));
+        track.getChild("Plane-ogremesh").getControl(RigidBodyControl.class).setPhysicsRotation(new Quaternion().fromAngleAxis(FastMath.HALF_PI * 0.68f, Vector3f.UNIT_Y).toRotationMatrix());
         toolsNode.attachChild(track);
         bulletState = new BulletAppState();
 
-        result2 = Utilities.actionsGlobalContext().lookupResult(PhysicsVehicleWheel.class);
+        result2 = Utilities.actionsGlobalContext().lookupResult(VehicleWheel.class);
         LookupListener listener = new LookupListener() {
 
             public void resultChanged(LookupEvent ev) {
-                for (Iterator<? extends PhysicsVehicleWheel> it = result2.allInstances().iterator(); it.hasNext();) {
-                    PhysicsVehicleWheel wheel = it.next();
+                for (Iterator<? extends VehicleWheel> it = result2.allInstances().iterator(); it.hasNext();) {
+                    VehicleWheel wheel = it.next();
                     toolController.updateSelection(wheel.getWheelSpatial());
                 }
             }
@@ -247,8 +249,31 @@ public class VehicleEditorController implements LookupListener, ActionListener {
         }
     }
 
-    public void doCenterSelected(Spatial selected) {
+    public void doCenterSelected(final Spatial selected) {
+        final Vector3f location=new Vector3f(selected.getLocalTranslation());
         selected.center();
+        Lookup.getDefault().lookup(SceneUndoRedoManager.class).addEdit(this, new AbstractUndoableSceneEdit() {
+
+            @Override
+            public void sceneUndo() {
+                //undo stuff here
+                selected.setLocalTranslation(location);
+            }
+
+            @Override
+            public void sceneRedo() {
+                //redo stuff here
+                selected.center();
+            }
+
+            @Override
+            public void awtRedo() {
+            }
+
+            @Override
+            public void awtUndo() {
+            }
+        });
     }
 
     public void addWheel(final SuspensionSettings settings) {
@@ -300,19 +325,35 @@ public class VehicleEditorController implements LookupListener, ActionListener {
 
         node.setLocalTranslation(selected.worldToLocal(selected.getWorldBound().getCenter(), new Vector3f()));
 
-        PhysicsVehicleWheel wheel = vehicleControl.addWheel(node, wheelLocation, settings.getDirection(), settings.getAxle(), settings.getRestLength(), settings.getRadius(), settings.isFrontWheel());
-        wheel.setFrictionSlip(settings.getFriction());
-        wheel.setRollInfluence(settings.getRollInfluence());
-        wheel.setMaxSuspensionForce(settings.getMaxForce());
-        wheel.setSuspensionStiffness(settings.getStiffness());
-        wheel.setWheelsDampingCompression(settings.getCompression());
-        wheel.setWheelsDampingRelaxation(settings.getRelease());
+        VehicleWheel wheel = vehicleControl.addWheel(node, wheelLocation, settings.getDirection(), settings.getAxle(), settings.getRestLength(), settings.getRadius(), settings.isFrontWheel());
+        settings.applyData(wheel);
         if (settings.isCreateNode()) {
             selected.center();
             Node parent = selected.getParent();
             ((Node) node).attachChild(selected);
             parent.attachChild(node);
         }
+
+//        Lookup.getDefault().lookup(SceneUndoRedoManager.class).addEdit(this, new AbstractUndoableSceneEdit() {
+//
+//            @Override
+//            public void sceneUndo() throws CannotUndoException {
+//                //undo stuff here
+//            }
+//
+//            @Override
+//            public void sceneRedo() throws CannotRedoException {
+//                //redo stuff here
+//            }
+//
+//            @Override
+//            public void awtRedo() {
+//            }
+//
+//            @Override
+//            public void awtUndo() {
+//            }
+//        });
     }
 
     public void checkVehicle() {
@@ -340,9 +381,9 @@ public class VehicleEditorController implements LookupListener, ActionListener {
     }
 
     public boolean doCheckVehicle(Node rootNode) {
-        PhysicsVehicleControl control = rootNode.getControl(PhysicsVehicleControl.class);
+        VehicleControl control = rootNode.getControl(VehicleControl.class);
         if (control == null) {
-            vehicleControl = new PhysicsVehicleControl(new BoxCollisionShape(Vector3f.UNIT_XYZ), 200);
+            vehicleControl = new VehicleControl(new BoxCollisionShape(Vector3f.UNIT_XYZ), 200);
             vehicleControl.attachDebugShape(SceneApplication.getApplication().getAssetManager());
             rootNode.addControl(vehicleControl);
             return true;
@@ -363,7 +404,7 @@ public class VehicleEditorController implements LookupListener, ActionListener {
 //            if (list.isEmpty()) {
 //                return;
 //            }
-            final PhysicsVehicleControl control = vehicleControl;
+            final VehicleControl control = vehicleControl;
             SceneApplication.getApplication().enqueue(new Callable() {
 
                 public Object call() throws Exception {
@@ -379,7 +420,7 @@ public class VehicleEditorController implements LookupListener, ActionListener {
         }
     }
 
-    public void doCreateHullShapeFromSelected(PhysicsVehicleControl control, Spatial spat) {
+    public void doCreateHullShapeFromSelected(VehicleControl control, Spatial spat) {
 //        Logger.getLogger(VehicleEditorController.class.getName()).log(Level.INFO, "Merging Geometries");
 //        Mesh mesh = new Mesh();
 //        GeometryBatchFactory.mergeGeometries(list, mesh);
@@ -390,7 +431,7 @@ public class VehicleEditorController implements LookupListener, ActionListener {
 
     public void applyWheelData(final int wheels, final SuspensionSettings settings) {
         try {
-            final PhysicsVehicleControl vehicleControl = this.vehicleControl;
+            final VehicleControl vehicleControl = this.vehicleControl;
             SceneApplication.getApplication().enqueue(new Callable() {
 
                 public Object call() throws Exception {
@@ -407,9 +448,9 @@ public class VehicleEditorController implements LookupListener, ActionListener {
         }
     }
 
-    public void doApplyWheelData(PhysicsVehicleControl control, int wheels, SuspensionSettings settings) {
+    public void doApplyWheelData(VehicleControl control, int wheels, SuspensionSettings settings) {
         for (int i = 0; i < control.getNumWheels(); i++) {
-            PhysicsVehicleWheel wheel = control.getWheel(i);
+            VehicleWheel wheel = control.getWheel(i);
             switch (wheels) {
                 case 0:
                     break;

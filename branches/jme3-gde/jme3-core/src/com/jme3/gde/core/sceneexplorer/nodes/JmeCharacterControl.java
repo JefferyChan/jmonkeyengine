@@ -32,7 +32,7 @@
 package com.jme3.gde.core.sceneexplorer.nodes;
 
 import com.jme3.bullet.collision.shapes.CollisionShape;
-import com.jme3.bullet.control.PhysicsRigidBodyControl;
+import com.jme3.bullet.control.CharacterControl;
 import com.jme3.gde.core.scene.SceneApplication;
 import com.jme3.math.Matrix3f;
 import com.jme3.math.Vector3f;
@@ -53,21 +53,21 @@ import org.openide.util.actions.SystemAction;
  * @author normenhansen
  */
 @org.openide.util.lookup.ServiceProvider(service=SceneExplorerNode.class)
-public class JmePhysicsRigidBodyControl extends AbstractSceneExplorerNode {
+public class JmeCharacterControl extends AbstractSceneExplorerNode {
 
     private static Image smallImage =
-            ImageUtilities.loadImage("com/jme3/gde/core/sceneexplorer/nodes/icons/physicscontrol.gif");
-    private PhysicsRigidBodyControl geom;
+            ImageUtilities.loadImage("com/jme3/gde/core/sceneexplorer/nodes/icons/player.gif");
+    private CharacterControl geom;
 
-    public JmePhysicsRigidBodyControl() {
+    public JmeCharacterControl() {
     }
 
-    public JmePhysicsRigidBodyControl(PhysicsRigidBodyControl spatial, DataObject dataObject) {
+    public JmeCharacterControl(CharacterControl spatial, DataObject dataObject) {
         super(dataObject);
-        getLookupContents().add(spatial);
         getLookupContents().add(this);
+        getLookupContents().add(spatial);
         this.geom = spatial;
-        setName("PhysicsControl");
+        setName("CharacterControl");
     }
 
     @Override
@@ -118,9 +118,9 @@ public class JmePhysicsRigidBodyControl extends AbstractSceneExplorerNode {
     protected Sheet createSheet() {
         Sheet sheet = super.createSheet();
         Sheet.Set set = Sheet.createPropertiesSet();
-        set.setDisplayName("PhysicsRigidBodyControl");
-        set.setName(PhysicsRigidBodyControl.class.getName());
-        PhysicsRigidBodyControl obj = geom;//getLookup().lookup(Spatial.class);
+        set.setDisplayName("CharacterControl");
+        set.setName(CharacterControl.class.getName());
+        CharacterControl obj = geom;//getLookup().lookup(Spatial.class);
         if (obj == null) {
             return sheet;
         }
@@ -132,16 +132,11 @@ public class JmePhysicsRigidBodyControl extends AbstractSceneExplorerNode {
         set.put(makeProperty(obj, int.class, "getCollisionGroup", "setCollisionGroup", "Collision Group"));
         set.put(makeProperty(obj, int.class, "getCollideWithGroups", "setCollideWithGroups", "Collide With Groups"));
         
-        set.put(makeProperty(obj, float.class, "getFriction", "setFriction", "Friction"));
-        set.put(makeProperty(obj, float.class, "getMass", "setMass", "Mass"));
-        set.put(makeProperty(obj, boolean.class, "isKinematic", "setKinematic", "Kinematic"));
-        set.put(makeProperty(obj, Vector3f.class, "getGravity", "setGravity", "Gravity"));
-        set.put(makeProperty(obj, float.class, "getLinearDamping", "setLinearDamping", "Linear Damping"));
-        set.put(makeProperty(obj, float.class, "getAngularDamping", "setAngularDamping", "Angular Damping"));
-        set.put(makeProperty(obj, float.class, "getRestitution", "setRestitution", "Restitution"));
-
-        set.put(makeProperty(obj, float.class, "getLinearSleepingThreshold", "setLinearSleepingThreshold", "Linear Sleeping Threshold"));
-        set.put(makeProperty(obj, float.class, "getAngularSleepingThreshold", "setAngularSleepingThreshold", "Angular Sleeping Threshold"));
+        set.put(makeProperty(obj, int.class, "getUpAxis", "setUpAxis", "Up Axis"));
+        set.put(makeProperty(obj, float.class, "getFallSpeed", "setFallSpeed", "Fall Speed"));
+        set.put(makeProperty(obj, float.class, "getJumpSpeed", "setJumpSpeed", "Jump Speed"));
+        set.put(makeProperty(obj, float.class, "getGravity", "setGravity", "Gravity"));
+        set.put(makeProperty(obj, float.class, "getMaxSlope", "setMaxSlope", "Max Slope"));
 
         sheet.put(set);
         return sheet;
@@ -149,14 +144,14 @@ public class JmePhysicsRigidBodyControl extends AbstractSceneExplorerNode {
     }
 
     public Class getExplorerObjectClass() {
-        return PhysicsRigidBodyControl.class;
+        return CharacterControl.class;
     }
 
     public Class getExplorerNodeClass() {
-        return JmePhysicsRigidBodyControl.class;
+        return JmeCharacterControl.class;
     }
 
     public org.openide.nodes.Node[] createNodes(Object key, DataObject key2, boolean cookie) {
-        return new org.openide.nodes.Node[]{new JmePhysicsRigidBodyControl((PhysicsRigidBodyControl) key, key2).setReadOnly(cookie)};
+        return new org.openide.nodes.Node[]{new JmeCharacterControl((CharacterControl) key, key2).setReadOnly(cookie)};
     }
 }

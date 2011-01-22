@@ -8,7 +8,7 @@ import com.jme3.asset.AssetManager;
 import com.jme3.asset.DesktopAssetManager;
 import com.jme3.asset.ModelKey;
 import com.jme3.audio.AudioNode;
-import com.jme3.bullet.control.PhysicsRigidBodyControl;
+import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.effect.EmitterSphereShape;
 import com.jme3.effect.ParticleEmitter;
 import com.jme3.effect.ParticleMesh;
@@ -455,13 +455,13 @@ public class SceneEditorController implements PropertyChangeListener, NodeListen
     }
 
     public void doCreatePhysicsMesh(Spatial selected) {
-        PhysicsRigidBodyControl control = selected.getControl(PhysicsRigidBodyControl.class);
+        RigidBodyControl control = selected.getControl(RigidBodyControl.class);
         if (control != null) {
             selected.removeControl(control);
         }
         Node parent = selected.getParent();
         selected.removeFromParent();
-        selected.addControl(new PhysicsRigidBodyControl(0));
+        selected.addControl(new RigidBodyControl(0));
         if (parent != null) {
             parent.attachChild(selected);
         }
@@ -497,13 +497,13 @@ public class SceneEditorController implements PropertyChangeListener, NodeListen
     }
 
     public void doCreateDynamicPhysicsMesh(Spatial selected, float weight) {
-        PhysicsRigidBodyControl control = selected.getControl(PhysicsRigidBodyControl.class);
+        RigidBodyControl control = selected.getControl(RigidBodyControl.class);
         if (control != null) {
             selected.removeControl(control);
         }
         Node parent = selected.getParent();
         selected.removeFromParent();
-        selected.addControl(new PhysicsRigidBodyControl(weight));
+        selected.addControl(new RigidBodyControl(weight));
         if (parent != null) {
             parent.attachChild(selected);
         }

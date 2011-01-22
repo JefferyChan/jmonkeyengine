@@ -32,7 +32,7 @@
 package com.jme3.gde.core.sceneexplorer.nodes;
 
 import com.jme3.bullet.collision.shapes.CollisionShape;
-import com.jme3.bullet.control.PhysicsGhostControl;
+import com.jme3.bullet.control.GhostControl;
 import com.jme3.gde.core.scene.SceneApplication;
 import com.jme3.math.Matrix3f;
 import com.jme3.math.Vector3f;
@@ -53,16 +53,16 @@ import org.openide.util.actions.SystemAction;
  * @author normenhansen
  */
 @org.openide.util.lookup.ServiceProvider(service=SceneExplorerNode.class)
-public class JmePhysicsGhostControl extends AbstractSceneExplorerNode {
+public class JmeGhostControl extends AbstractSceneExplorerNode {
 
     private static Image smallImage =
             ImageUtilities.loadImage("com/jme3/gde/core/sceneexplorer/nodes/icons/ghostcontrol.gif");
-    private PhysicsGhostControl geom;
+    private GhostControl geom;
 
-    public JmePhysicsGhostControl() {
+    public JmeGhostControl() {
     }
 
-    public JmePhysicsGhostControl(PhysicsGhostControl spatial, DataObject dataObject) {
+    public JmeGhostControl(GhostControl spatial, DataObject dataObject) {
         super(dataObject);
         getLookupContents().add(this);
         getLookupContents().add(spatial);
@@ -118,9 +118,9 @@ public class JmePhysicsGhostControl extends AbstractSceneExplorerNode {
     protected Sheet createSheet() {
         Sheet sheet = super.createSheet();
         Sheet.Set set = Sheet.createPropertiesSet();
-        set.setDisplayName("PhysicsGhostControl");
-        set.setName(PhysicsGhostControl.class.getName());
-        PhysicsGhostControl obj = geom;//getLookup().lookup(Spatial.class);
+        set.setDisplayName("GhostControl");
+        set.setName(GhostControl.class.getName());
+        GhostControl obj = geom;//getLookup().lookup(Spatial.class);
         if (obj == null) {
             return sheet;
         }
@@ -138,14 +138,14 @@ public class JmePhysicsGhostControl extends AbstractSceneExplorerNode {
     }
 
     public Class getExplorerObjectClass() {
-        return PhysicsGhostControl.class;
+        return GhostControl.class;
     }
 
     public Class getExplorerNodeClass() {
-        return JmePhysicsGhostControl.class;
+        return JmeGhostControl.class;
     }
 
     public org.openide.nodes.Node[] createNodes(Object key, DataObject key2, boolean cookie) {
-        return new org.openide.nodes.Node[]{new JmePhysicsGhostControl((PhysicsGhostControl) key, key2).setReadOnly(cookie)};
+        return new org.openide.nodes.Node[]{new JmeGhostControl((GhostControl) key, key2).setReadOnly(cookie)};
     }
 }

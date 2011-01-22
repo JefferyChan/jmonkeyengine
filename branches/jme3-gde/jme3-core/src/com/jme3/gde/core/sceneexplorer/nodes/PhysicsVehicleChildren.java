@@ -31,10 +31,9 @@
  */
 package com.jme3.gde.core.sceneexplorer.nodes;
 
-import com.jme3.bullet.control.PhysicsVehicleControl;
-import com.jme3.bullet.objects.PhysicsVehicleWheel;
+import com.jme3.bullet.control.VehicleControl;
+import com.jme3.bullet.objects.VehicleWheel;
 import com.jme3.gde.core.scene.SceneApplication;
-import com.jme3.scene.AssetLinkNode;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -48,9 +47,9 @@ import org.openide.util.Exceptions;
  */
 public class PhysicsVehicleChildren extends SceneExplorerChildren {
 
-    PhysicsVehicleControl control;
+    VehicleControl control;
 
-    public PhysicsVehicleChildren(PhysicsVehicleControl control) {
+    public PhysicsVehicleChildren(VehicleControl control) {
         this.control = control;
     }
 
@@ -91,9 +90,9 @@ public class PhysicsVehicleChildren extends SceneExplorerChildren {
 
     @Override
     protected Node[] createNodes(Object key) {
-        if (key instanceof PhysicsVehicleWheel) {
-            PhysicsVehicleWheel assetKey = (PhysicsVehicleWheel) key;
-            return new Node[]{new JmePhysicsVehicleWheel(control, assetKey)};
+        if (key instanceof VehicleWheel) {
+            VehicleWheel assetKey = (VehicleWheel) key;
+            return new Node[]{new JmeVehicleWheel(control, assetKey)};
         }
         return null;
     }

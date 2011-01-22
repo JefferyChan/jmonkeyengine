@@ -31,17 +31,18 @@
  */
 package com.jme3.gde.core.sceneexplorer.nodes;
 
-import com.jme3.bullet.control.PhysicsVehicleControl;
-import com.jme3.bullet.objects.PhysicsVehicleWheel;
+import com.jme3.bullet.collision.shapes.CollisionShape;
+import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.gde.core.scene.SceneApplication;
-import com.jme3.light.Light;
+import com.jme3.math.Matrix3f;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Spatial;
 import java.awt.Image;
 import java.io.IOException;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import org.openide.actions.DeleteAction;
-import org.openide.nodes.Children;
+import org.openide.loaders.DataObject;
 import org.openide.nodes.Sheet;
 import org.openide.util.Exceptions;
 import org.openide.util.ImageUtilities;
@@ -52,23 +53,21 @@ import org.openide.util.actions.SystemAction;
  * @author normenhansen
  */
 @org.openide.util.lookup.ServiceProvider(service=SceneExplorerNode.class)
-public class JmePhysicsVehicleWheel extends AbstractSceneExplorerNode{
+public class JmeRigidBodyControl extends AbstractSceneExplorerNode {
 
-    private PhysicsVehicleWheel wheel;
-    private PhysicsVehicleControl vehicle;
     private static Image smallImage =
-            ImageUtilities.loadImage("com/jme3/gde/core/sceneexplorer/nodes/icons/physicswheel.gif");
+            ImageUtilities.loadImage("com/jme3/gde/core/sceneexplorer/nodes/icons/physicscontrol.gif");
+    private RigidBodyControl geom;
 
-    public JmePhysicsVehicleWheel() {
+    public JmeRigidBodyControl() {
     }
 
-    public JmePhysicsVehicleWheel(PhysicsVehicleControl vehicle, PhysicsVehicleWheel wheel) {
-        super(Children.LEAF);
-        this.vehicle=vehicle;
-        this.wheel = wheel;
-        getLookupContents().add(wheel);
+    public JmeRigidBodyControl(RigidBodyControl spatial, DataObject dataObject) {
+        super(dataObject);
+        getLookupContents().add(spatial);
         getLookupContents().add(this);
-        setName("Wheel");
+        this.geom = spatial;
+        setName("PhysicsControl");
     }
 
     @Override
@@ -79,37 +78,6 @@ public class JmePhysicsVehicleWheel extends AbstractSceneExplorerNode{
     @Override
     public Image getOpenedIcon(int type) {
         return smallImage;
-    }
-
-    @Override
-    protected Sheet createSheet() {
-        //TODO: multithreading..
-        Sheet sheet = Sheet.createDefault();
-        Sheet.Set set = Sheet.createPropertiesSet();
-        set.setDisplayName("PhysicsVehicleWheel");
-        set.setName(Light.class.getName());
-        PhysicsVehicleWheel obj = wheel;
-        if (obj == null) {
-            return sheet;
-        }
-
-        set.put(makeProperty(obj, Vector3f.class, "getLocation", "Location"));
-        set.put(makeProperty(obj, Vector3f.class, "getAxle", "Axis"));
-        set.put(makeProperty(obj, Vector3f.class, "getDirection", "Direction"));
-        set.put(makeProperty(obj, boolean.class, "isFrontWheel", "setFrontWheel", "Front Wheel"));
-        set.put(makeProperty(obj, float.class, "getFrictionSlip", "setFrictionSlip", "Friction Slip"));
-        set.put(makeProperty(obj, float.class, "getMaxSuspensionForce", "setMaxSuspensionForce", "Max Suspension Force"));
-        set.put(makeProperty(obj, float.class, "getMaxSuspensionTravelCm", "setMaxSuspensionTravelCm", "Max Suspension Travel"));
-        set.put(makeProperty(obj, float.class, "getRadius", "setRadius", "Radius"));
-        set.put(makeProperty(obj, float.class, "getRestLength", "setRestLength", "Rest Length"));
-        set.put(makeProperty(obj, float.class, "getRollInfluence", "setRollInfluence", "Roll Influence"));
-        set.put(makeProperty(obj, float.class, "getSuspensionStiffness", "setSuspensionStiffness", "Suspension Stiffness"));
-        set.put(makeProperty(obj, float.class, "getWheelsDampingCompression", "setWheelsDampingCompression", "Damping Compression"));
-        set.put(makeProperty(obj, float.class, "getWheelsDampingRelaxation", "setWheelsDampingRelaxation", "Damping Relaxation"));
-
-        sheet.put(set);
-        return sheet;
-
     }
 
     protected SystemAction[] createActions() {
@@ -123,21 +91,18 @@ public class JmePhysicsVehicleWheel extends AbstractSceneExplorerNode{
 
     @Override
     public boolean canDestroy() {
-        return true;
+        return !readOnly;
     }
 
     @Override
     public void destroy() throws IOException {
+        super.destroy();
+        final Spatial spat=getParentNode().getLookup().lookup(Spatial.class);
         try {
             SceneApplication.getApplication().enqueue(new Callable<Void>() {
 
                 public Void call() throws Exception {
-                    for (int i= 0; i < vehicle.getNumWheels(); i++) {
-                        if(vehicle.getWheel(i)==wheel){
-                            vehicle.removeWheel(i);
-                            return null;
-                        }
-                    }
+                    spat.removeControl(geom);
                     return null;
                 }
             }).get();
@@ -149,12 +114,49 @@ public class JmePhysicsVehicleWheel extends AbstractSceneExplorerNode{
         }
     }
 
+    @Override
+    protected Sheet createSheet() {
+        Sheet sheet = super.createSheet();
+        Sheet.Set set = Sheet.createPropertiesSet();
+        set.setDisplayName("RigidBodyControl");
+        set.setName(RigidBodyControl.class.getName());
+        RigidBodyControl obj = geom;//getLookup().lookup(Spatial.class);
+        if (obj == null) {
+            return sheet;
+        }
+
+        set.put(makeProperty(obj, Vector3f.class, "getPhysicsLocation", "setPhysicsLocation", "Physics Location"));
+        set.put(makeProperty(obj, Matrix3f.class, "getPhysicsRotation", "setPhysicsRotation", "Physics Rotation"));
+
+        set.put(makeProperty(obj, CollisionShape.class, "getCollisionShape", "setCollisionShape", "Collision Shape"));
+        set.put(makeProperty(obj, int.class, "getCollisionGroup", "setCollisionGroup", "Collision Group"));
+        set.put(makeProperty(obj, int.class, "getCollideWithGroups", "setCollideWithGroups", "Collide With Groups"));
+        
+        set.put(makeProperty(obj, float.class, "getFriction", "setFriction", "Friction"));
+        set.put(makeProperty(obj, float.class, "getMass", "setMass", "Mass"));
+        set.put(makeProperty(obj, boolean.class, "isKinematic", "setKinematic", "Kinematic"));
+        set.put(makeProperty(obj, Vector3f.class, "getGravity", "setGravity", "Gravity"));
+        set.put(makeProperty(obj, float.class, "getLinearDamping", "setLinearDamping", "Linear Damping"));
+        set.put(makeProperty(obj, float.class, "getAngularDamping", "setAngularDamping", "Angular Damping"));
+        set.put(makeProperty(obj, float.class, "getRestitution", "setRestitution", "Restitution"));
+
+        set.put(makeProperty(obj, float.class, "getLinearSleepingThreshold", "setLinearSleepingThreshold", "Linear Sleeping Threshold"));
+        set.put(makeProperty(obj, float.class, "getAngularSleepingThreshold", "setAngularSleepingThreshold", "Angular Sleeping Threshold"));
+
+        sheet.put(set);
+        return sheet;
+
+    }
+
     public Class getExplorerObjectClass() {
-        return PhysicsVehicleWheel.class;
+        return RigidBodyControl.class;
     }
 
     public Class getExplorerNodeClass() {
-        return JmePhysicsVehicleWheel.class;
+        return JmeRigidBodyControl.class;
     }
 
+    public org.openide.nodes.Node[] createNodes(Object key, DataObject key2, boolean cookie) {
+        return new org.openide.nodes.Node[]{new JmeRigidBodyControl((RigidBodyControl) key, key2).setReadOnly(cookie)};
+    }
 }
