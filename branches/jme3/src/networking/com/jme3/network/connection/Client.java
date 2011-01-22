@@ -44,6 +44,7 @@ import com.jme3.network.service.ServiceManager;
 import java.io.IOException;
 import java.net.*;
 import java.nio.ByteBuffer;
+import java.nio.channels.CancelledKeyException;
 import java.nio.channels.DatagramChannel;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.SocketChannel;
@@ -77,6 +78,7 @@ public class Client extends ServiceManager implements MessageListener, Connectio
     protected SocketAddress     udpTarget;
 
     protected boolean           isConnector;
+
 
     /**
      * Constructs this client.
@@ -224,15 +226,19 @@ public class Client extends ServiceManager implements MessageListener, Connectio
     public void send(Message message) throws IOException {
         if (!isConnected) throw new IOException("Not connected yet. Use connect() first.");
 
-        if (message.isReliable()) {
-            messageQueue.add(message);
-            if (!isConnector) {
-                tcp.socketChannel.keyFor(tcp.selector).interestOps(SelectionKey.OP_READ | SelectionKey.OP_WRITE);
+        try {
+            if (message.isReliable()) {
+                messageQueue.add(message);
+                if (!isConnector) {
+                    tcp.socketChannel.keyFor(tcp.selector).interestOps(SelectionKey.OP_READ | SelectionKey.OP_WRITE);
+                } else {
+                    tcpChannel.keyFor(tcp.selector).interestOps(SelectionKey.OP_READ | SelectionKey.OP_WRITE);
+                }
             } else {
-                tcpChannel.keyFor(tcp.selector).interestOps(SelectionKey.OP_READ | SelectionKey.OP_WRITE);
+                udp.sendObject(message);
             }
-        } else {
-            udp.sendObject(message);
+        } catch (CancelledKeyException e) {
+            // Client was disconnected.
         }
     }
 
@@ -295,6 +301,29 @@ public class Client extends ServiceManager implements MessageListener, Connectio
         thread = null;
 
         log.log(Level.INFO, "[{0}][???] Disconnected.", label);
+        isConnected = false;
+    }
+
+    /**
+     * Disconnect from the server.
+     *
+     * @param msg The custom DisconnectMessage to use.
+     * @throws IOException When a disconnection error occurs.
+     */
+    public void disconnect(DisconnectMessage msg) throws IOException {
+        if (isConnector) return;
+        // Send a disconnect message to the server.
+        tcp.sendObject(msg);
+        udp.sendObject(msg);
+
+        // We can disconnect now.
+        thread.setKeepAlive(false);
+
+        // GC it.
+        thread = null;
+
+        log.log(Level.INFO, "[{0}][???] Disconnected.", label);
+        isConnected = false;
     }
 
     /**
@@ -326,7 +355,23 @@ public class Client extends ServiceManager implements MessageListener, Connectio
         log.log(Level.INFO, "[Server#?][???] {0} got kicked with reason: {1}.", new Object[]{this, reason});
     }
 
-    private void disconnect(Message message) throws IOException {
+    /**
+     * Kick this client from the server, with given kick reason.
+     *
+     * @param message The custom disconnect message.
+     * @throws IOException When a writing error occurs.
+     */
+    public void kick(DisconnectMessage message) throws IOException {
+        if (!isConnector) return;
+        message.setReliable(true);
+        send(message);
+
+        tcp.addToDisconnectionQueue(this);
+
+        log.log(Level.INFO, "[Server#?][???] {0} got kicked with reason: {1}.", new Object[]{this, message.getReason()});
+    }
+
+    private void disconnectInternal(DisconnectMessage message) throws IOException {
         DisconnectMessage dcMessage = (DisconnectMessage)message;
         String type = dcMessage.getType();
         String reason = dcMessage.getReason();
@@ -570,7 +615,7 @@ public class Client extends ServiceManager implements MessageListener, Connectio
 
     public void messageReceived(Message message) {
         try {
-            disconnect(message);
+            disconnectInternal((DisconnectMessage)message);
         } catch (IOException e) {
             log.log(Level.WARNING, "[{0}][???] Could not disconnect.", label);
         }

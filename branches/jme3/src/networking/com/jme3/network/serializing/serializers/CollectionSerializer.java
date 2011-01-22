@@ -55,7 +55,7 @@ public class CollectionSerializer extends Serializer {
         try {
             collection = (Collection)c.newInstance();
         } catch (Exception e) {
-            log.log(Level.WARNING, "[Serializer][???] Could not determine collection type. Using ArrayList.");
+            log.log(Level.FINE, "[Serializer][???] Could not determine collection type. Using ArrayList.");
             collection = new ArrayList(length);
         }
 

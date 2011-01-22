@@ -371,10 +371,22 @@ public class Server extends ServiceManager implements MessageListener {
      * @throws IOException When a writing error occurs.
      */
     public void stop() throws IOException {
+        stop(new DisconnectMessage());
+    }
+
+    /**
+     * Stops the server with custom message.
+     *
+     * @throws IOException When a writing error occurs.
+     */
+    public void stop(DisconnectMessage message) throws IOException {
         log.log(Level.INFO, "[{0}][???] Server is shutting down..", label);
-        DisconnectMessage message = new DisconnectMessage();
-        message.setType(DisconnectMessage.KICK);
-        message.setReason("Server is shutting down.");
+        if (message.getReason() == null) {
+            message.setReason("Server shut down.");
+        }
+        if (message.getType() == null) {
+            message.setType(DisconnectMessage.KICK);
+        }
         message.setReliable(true);
 
         broadcast(message);
