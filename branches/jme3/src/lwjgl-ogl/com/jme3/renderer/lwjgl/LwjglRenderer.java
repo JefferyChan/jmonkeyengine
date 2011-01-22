@@ -1759,7 +1759,7 @@ public class LwjglRenderer implements Renderer {
         }
 
         int usage = convertUsage(vb.getUsage());
-        vb.getData().clear();
+        vb.getData().rewind();
 
         if (created || vb.hasDataSizeChanged()) {
             // upload data based on format
@@ -2007,7 +2007,7 @@ public class LwjglRenderer implements Renderer {
         } else {
             if (useInstancing) {
                 ARBDrawInstanced.glDrawElementsInstancedARB(convertElementMode(mesh.getMode()),
-                        indexBuf.getData().capacity(),
+                        indexBuf.getData().limit(),
                         convertFormat(indexBuf.getFormat()),
                         0,
                         count);
@@ -2015,7 +2015,7 @@ public class LwjglRenderer implements Renderer {
                 glDrawRangeElements(convertElementMode(mesh.getMode()),
                         0,
                         vertCount,
-                        indexBuf.getData().capacity(),
+                        indexBuf.getData().limit(),
                         convertFormat(indexBuf.getFormat()),
                         0);
             }
