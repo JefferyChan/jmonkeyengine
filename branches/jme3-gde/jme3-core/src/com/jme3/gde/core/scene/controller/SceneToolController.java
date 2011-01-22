@@ -11,11 +11,11 @@ import com.jme3.asset.AssetManager;
 import com.jme3.bounding.BoundingBox;
 import com.jme3.bounding.BoundingVolume;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
-import com.jme3.bullet.control.PhysicsCharacterControl;
+import com.jme3.bullet.control.CharacterControl;
 import com.jme3.bullet.control.PhysicsControl;
-import com.jme3.bullet.control.PhysicsGhostControl;
-import com.jme3.bullet.control.PhysicsRigidBodyControl;
-import com.jme3.bullet.control.PhysicsVehicleControl;
+import com.jme3.bullet.control.GhostControl;
+import com.jme3.bullet.control.RigidBodyControl;
+import com.jme3.bullet.control.VehicleControl;
 import com.jme3.bullet.util.DebugShapeFactory;
 import com.jme3.gde.core.scene.SceneApplication;
 import com.jme3.material.Material;
@@ -197,15 +197,15 @@ public class SceneToolController implements AppState {
     }
 
     protected void attachPhysicsSelection(Spatial geom) {
-        PhysicsCollisionObject control = geom.getControl(PhysicsRigidBodyControl.class);
+        PhysicsCollisionObject control = geom.getControl(RigidBodyControl.class);
         if (control == null) {
-            control = geom.getControl(PhysicsVehicleControl.class);
+            control = geom.getControl(VehicleControl.class);
         }
         if (control == null) {
-            control = geom.getControl(PhysicsGhostControl.class);
+            control = geom.getControl(GhostControl.class);
         }
         if (control == null) {
-            control = geom.getControl(PhysicsCharacterControl.class);
+            control = geom.getControl(CharacterControl.class);
         }
         if (control == null) {
             return;
