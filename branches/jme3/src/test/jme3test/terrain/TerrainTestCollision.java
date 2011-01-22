@@ -32,11 +32,11 @@
 package jme3test.terrain;
 
 import jme3tools.converters.ImageToAwt;
-import com.jme3.app.SimpleBulletApplication;
-import com.jme3.bounding.BoundingBox;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
+import com.jme3.bounding.BoundingBox;
+import com.jme3.bullet.BulletAppState;
+import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.control.RigidBodyControl;
-import com.jme3.bullet.nodes.PhysicsNode;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
 import com.jme3.font.BitmapText;
@@ -74,7 +74,7 @@ import java.util.List;
  *
  * @author Brent Owens
  */
-public class TerrainTestCollision extends SimpleBulletApplication {
+public class TerrainTestCollision extends SimpleApplication {
 
     TerrainQuad terrain;
     Node terrainPhysicsNode;
@@ -85,6 +85,7 @@ public class TerrainTestCollision extends SimpleBulletApplication {
     PointLight pl;
     Geometry lightMdl;
     Geometry collisionMarker;
+    private BulletAppState bulletAppState;
 
     public static void main(String[] args) {
         TerrainTestCollision app = new TerrainTestCollision();
@@ -100,6 +101,9 @@ public class TerrainTestCollision extends SimpleBulletApplication {
 
     @Override
     public void simpleInitApp() {
+        bulletAppState = new BulletAppState();
+        bulletAppState.setThreadingType(BulletAppState.ThreadingType.PARALLEL);
+        stateManager.attach(bulletAppState);
         setupKeys();
         matRock = new Material(assetManager, "Common/MatDefs/Terrain/Terrain.j3md");
         matRock.setTexture("Alpha", assetManager.loadTexture("Textures/Terrain/splat/alphamap.png"));
@@ -123,9 +127,7 @@ public class TerrainTestCollision extends SimpleBulletApplication {
             heightmap = new ImageBasedHeightMap(ImageToAwt.convert(heightMapImage.getImage(), false, true, 0), 0.25f);
             heightmap.load();
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        } catch (Exception e) {        }
 
         terrain = new TerrainQuad("terrain", 65, 513, heightmap.getHeightMap());
         List<Camera> cameras = new ArrayList<Camera>();
@@ -144,20 +146,22 @@ public class TerrainTestCollision extends SimpleBulletApplication {
          * Create PhysicsRigidBodyControl for collision
          */
         terrain.addControl(new RigidBodyControl(0));
-        getPhysicsSpace().addAll(terrain);
+        bulletAppState.getPhysicsSpace().addAll(terrain);
+
 
         // Add 5 physics spheres to the world, with random sizes and positions
         // let them drop from the sky
         for (int i = 0; i < 5; i++) {
-            float r = (float) (5 * Math.random());
-            PhysicsNode physicsSphere = new PhysicsNode(new SphereCollisionShape(1 + r), 1);
-            float x = (float) (20 * Math.random()) - 20;
-            float y = (float) (20 * Math.random()) - 10;
-            float z = (float) (20 * Math.random()) - 20;
-            physicsSphere.setLocalTranslation(new Vector3f(x, 100 + y, z));
-            physicsSphere.attachDebugShape(getAssetManager());
-            rootNode.attachChild(physicsSphere);
-            getPhysicsSpace().add(physicsSphere);
+            float r = (float) (8 * Math.random());
+            Geometry sphere = new Geometry("cannonball",new Sphere(10, 10, r) );
+            sphere.setMaterial(matWire);
+            float x = (float) (20 * Math.random()) - 40; // random position
+            float y = (float) (20 * Math.random()) - 40; // random position
+            float z = (float) (20 * Math.random()) - 40; // random position
+            sphere.setLocalTranslation(new Vector3f(x, 100 + y, z));
+            sphere.addControl(new RigidBodyControl(new SphereCollisionShape(r),2));
+            rootNode.attachChild(sphere);
+            bulletAppState.getPhysicsSpace().add(sphere);
         }
 
         DirectionalLight dl = new DirectionalLight();
