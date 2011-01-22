@@ -514,10 +514,6 @@ public final class Ray implements Savable, Cloneable, Collidable {
         direction = (Vector3f)capsule.readSavable("direction", Vector3f.ZERO.clone());
     }
     
-    public Class<? extends Ray> getClassTag() {
-        return this.getClass();
-    }
-    
     @Override
     public Ray clone() {
         try {

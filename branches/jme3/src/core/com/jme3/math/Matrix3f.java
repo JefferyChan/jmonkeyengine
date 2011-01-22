@@ -1160,10 +1160,6 @@ public final class Matrix3f implements Savable, Cloneable {
         m22 = cap.readFloat("m22", 1);
     }
     
-    public Class<? extends Matrix3f> getClassTag() {
-        return this.getClass();
-    }
-
     /**
      * A function for creating a rotation matrix that rotates a vector called
      * "start" into another vector called "end".

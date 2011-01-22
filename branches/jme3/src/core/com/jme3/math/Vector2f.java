@@ -749,10 +749,6 @@ public final class Vector2f implements Savable, Cloneable {
         y = capsule.readFloat("y", 0);
     }
 
-    public Class<? extends Vector2f> getClassTag() {
-        return this.getClass();
-    }
-
     public void rotateAroundOrigin(float angle, boolean cw) {
         if (cw)
             angle = -angle;

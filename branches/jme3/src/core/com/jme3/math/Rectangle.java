@@ -186,10 +186,6 @@ public final class Rectangle implements Serializable, Savable, Cloneable {
         c = (Vector3f) capsule.readSavable("c", Vector3f.ZERO.clone());
     }
 
-    public Class<? extends Rectangle> getClassTag() {
-        return this.getClass();
-    }
-    
     @Override
     public Rectangle clone() {
         try {

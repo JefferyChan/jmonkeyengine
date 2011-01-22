@@ -1254,10 +1254,6 @@ public final class Quaternion implements Savable, Cloneable {
         w = cap.readFloat("w", 1);
     }
     
-//    public Class<? extends Quaternion> getClassTag() {
-//        return this.getClass();
-//    }
-
     /**
      * @return A new quaternion that describes a rotation that would point you
      *         in the exact opposite direction of this Quaternion.

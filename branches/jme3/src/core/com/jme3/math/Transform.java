@@ -285,10 +285,6 @@ public final class Transform implements Savable, Cloneable {
         scale = (Vector3f)capsule.readSavable("scale", Vector3f.UNIT_XYZ.clone());
     }
     
-    public Class<? extends Transform> getClassTag() {
-        return this.getClass();
-    }
-    
     @Override
     public Transform clone() {
         try {

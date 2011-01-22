@@ -110,10 +110,4 @@ public final class Pose implements Serializable, Savable {
         offsets = (Vector3f[]) in.readSavableArray("offsets", null);
         indices = in.readIntArray("indices", null);
     }
-
-    public Class getClassTag() {
-        return Pose.class;
-    }
-
-
 }

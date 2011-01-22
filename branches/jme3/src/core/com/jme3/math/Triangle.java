@@ -268,10 +268,6 @@ public class Triangle extends AbstractTriangle implements Savable {
         pointc = (Vector3f)e.getCapsule(this).readSavable("pointc", Vector3f.ZERO.clone());
     }
     
-    public Class<? extends Triangle> getClassTag() {
-        return this.getClass();
-    }
-
     @Override
     public Triangle clone() {
         try {

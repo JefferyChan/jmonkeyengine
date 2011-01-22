@@ -77,11 +77,6 @@ public final class PoseTrack extends Track implements Serializable{
             poses = (Pose[]) in.readSavableArray("poses", null);
             weights = in.readFloatArray("weights", null);
         }
-
-        public Class getClassTag() {
-            return PoseFrame.class;
-        }
-
     }
 
     public PoseTrack(int targetMeshIndex, float[] times, PoseFrame[] frames){
@@ -137,10 +132,4 @@ public final class PoseTrack extends Track implements Serializable{
         frames = (PoseFrame[]) in.readSavableArray("frames", null);
         times = in.readFloatArray("times", null);
     }
-
-    @Override
-    public Class getClassTag() {
-        return PoseTrack.class;
-    }
-
 }

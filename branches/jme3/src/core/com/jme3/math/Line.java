@@ -231,10 +231,6 @@ public class Line implements Savable, Cloneable {
         direction = (Vector3f)capsule.readSavable("direction", Vector3f.ZERO.clone());
     }
     
-    public Class<? extends Line> getClassTag() {
-        return this.getClass();
-    }
-
     @Override
     public Line clone() {
         try {

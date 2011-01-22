@@ -596,10 +596,6 @@ public class LineSegment implements Cloneable, Savable {
         extent = capsule.readFloat("extent", 0);
     }
 
-    public Class<? extends LineSegment> getClassTag() {
-        return this.getClass();
-    }
-
     @Override
     public LineSegment clone() {
         try {

@@ -223,10 +223,6 @@ public final class Ring implements Serializable, Savable, Cloneable {
         outerRadius = capsule.readFloat("outerRadius", 1f);
     }
 
-    public Class<? extends Ring> getClassTag() {
-        return this.getClass();
-    }
-
     @Override
     public Ring clone() {
         try {

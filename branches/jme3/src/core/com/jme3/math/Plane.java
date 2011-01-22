@@ -281,10 +281,6 @@ public class Plane implements Savable, Cloneable {
         constant = capsule.readFloat("constant", 0);
     }
 
-    public Class<? extends Plane> getClassTag() {
-        return this.getClass();
-    }
-    
     @Override
     public Plane clone() {
         try {

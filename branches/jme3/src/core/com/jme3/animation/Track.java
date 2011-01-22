@@ -66,10 +66,4 @@ public abstract class Track implements Serializable, Savable {
     public void read(JmeImporter im) throws IOException{
         targetMeshIndex = im.getCapsule(this).readInt("meshIndex", 0);
     }
-
-    public Class getClassTag(){
-        return Track.class;
-    }
-
-
 }

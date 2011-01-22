@@ -1898,10 +1898,6 @@ public final class Matrix4f implements Savable, Cloneable {
         m33 = cap.readFloat("m33", 1);
     }
     
-    public Class<? extends Matrix4f> getClassTag() {
-        return this.getClass();
-    }
-
     /**
      * @return true if this matrix is identity
      */
