@@ -110,7 +110,7 @@ public class TestSceneWater extends SimpleApplication {
 
 
         //setting the water plane
-        Vector3f waterLocation=new Vector3f(0,-6,0);
+        Vector3f waterLocation=new Vector3f(0,-20,0);
         waterProcessor.setPlane(new Plane(Vector3f.UNIT_Y, waterLocation.dot(Vector3f.UNIT_Y)));
         WaterUI waterUi=new WaterUI(inputManager, waterProcessor);
         waterProcessor.setWaterColor(ColorRGBA.Brown);
@@ -133,7 +133,7 @@ public class TestSceneWater extends SimpleApplication {
         water.setShadowMode(ShadowMode.Receive);
         water.setLocalRotation(new Quaternion().fromAngleAxis(-FastMath.HALF_PI, Vector3f.UNIT_X));
         water.setMaterial(waterProcessor.getMaterial());
-        water.setLocalTranslation(-200, -6, 250);
+        water.setLocalTranslation(-200, -20, 250);
 
         rootNode.attachChild(water);
 

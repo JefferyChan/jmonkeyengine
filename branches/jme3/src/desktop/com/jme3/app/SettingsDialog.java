@@ -44,12 +44,15 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.prefs.BackingStoreException;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
@@ -161,6 +164,14 @@ public final class SettingsDialog extends JDialog {
 
 //        setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
         setModal(true);
+
+        String appTitle = source.getTitle();
+        try {
+            source.load(appTitle);
+        } catch (BackingStoreException ex){
+            logger.log(Level.WARNING,
+                    "Failed to load settings", ex);
+        }
 
         GraphicsDevice device = GraphicsEnvironment
                                     .getLocalGraphicsEnvironment()
@@ -412,12 +423,15 @@ public final class SettingsDialog extends JDialog {
             source.setVSync(vsync);
             //source.setRenderer(renderer);
             source.setSamples(multisample);
-//            try {
-//                source.save();
-//            } catch (IOException ioe) {
-//                logger.log(Level.WARNING,
-//                        "Failed to save setting changes", ioe);
-//            }
+
+            String appTitle = source.getTitle();
+
+            try {
+                source.save(appTitle);
+            } catch (BackingStoreException ex){
+                logger.log(Level.WARNING,
+                        "Failed to save setting changes", ex);
+            }
         } else
             showError(
                     this,

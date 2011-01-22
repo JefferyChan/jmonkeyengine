@@ -178,11 +178,11 @@ public class AppSettings extends HashMap<String, Object> {
     }
 
     public void putInteger(String key, int value){
-        put(key, new Integer(value));
+        put(key, Integer.valueOf(value));
     }
 
     public void putBoolean(String key, boolean value){
-        put(key, new Boolean(value));
+        put(key, Boolean.valueOf(value));
     }
 
     public void putString(String key, String value){
@@ -307,7 +307,7 @@ public class AppSettings extends HashMap<String, Object> {
     }
 
     public void setSettingsDialogImage(String path){
-       settingsDialogImage=path;
+       settingsDialogImage = path;
     }
 
     public String getSettingsDialogImage() {

@@ -1192,6 +1192,11 @@ public class LwjglRenderer implements Renderer {
         Image image = tex.getImage();
         if (image.isUpdateNeeded()) {
             updateTexImageData(image, tex.getType(), tex.getMinFilter().usesMipMapLevels(), 0);
+            
+            // NOTE: For depth textures, sets nearest/no-mips mode
+            // Required to fix "framebuffer unsupported"
+            // for old NVIDIA drivers!
+            setupTextureParams(tex);
         }
 
         glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT,
