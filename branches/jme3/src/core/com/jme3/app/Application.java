@@ -129,8 +129,7 @@ public class Application implements SystemListener {
                 if (url == null) {
                     url = Application.class.getResource(assetCfg);
                     if (url == null) {
-                        logger.log(Level.SEVERE, "Unable to access AssetConfigURL in asset config:"
-                                +assetCfg);
+                        logger.log(Level.SEVERE, "Unable to access AssetConfigURL in asset config:{0}", assetCfg);
                         return;
                     }
                 }
@@ -445,7 +444,7 @@ public class Application implements SystemListener {
             task.invoke();
         } while (((task = taskQueue.poll()) != null));
     
-        if (speed == 0)
+        if (speed == 0 || paused)
             return;
 
         timer.update();

@@ -38,7 +38,6 @@ import com.jme3.input.FlyByCamera;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
-import com.jme3.material.RenderState;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
@@ -188,6 +187,7 @@ public abstract class SimpleApplication extends Application {
 
     @Override
     public void update() {
+        super.update(); // makes sure to execute AppTasks
         if (speed == 0 || paused)
             return;
         
