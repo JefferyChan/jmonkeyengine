@@ -809,6 +809,7 @@ public final class Quaternion implements Savable, Cloneable {
      * quaternion multiplication is not commutative so q * p != p * q.
      *
      * It IS safe for q and res to be the same object.
+     * It IS safe for this and res to be the same object.
      *
      * @param q
      *            the quaternion to multiply this quaternion by.
@@ -819,11 +820,12 @@ public final class Quaternion implements Savable, Cloneable {
     public Quaternion mult(Quaternion q, Quaternion res) {
         if (res == null)
             res = new Quaternion();
-        float qw = q.w, qx = q.x, qy = q.y, qz = q.z;
-        res.x = x * qw + y * qz - z * qy + w * qx;
-        res.y = -x * qz + y * qw + z * qx + w * qy;
-        res.z = x * qy - y * qx + z * qw + w * qz;
-        res.w = -x * qx - y * qy - z * qz + w * qw;
+        float qw = q.getW(), qx = q.getX(), qy = q.getY(), qz = q.getZ();
+        float lw = w, lx = x, ly = y, lz = z;
+        res.x = lx * qw + ly * qz - lz * qy + lw * qx;
+        res.y = -lx * qz + ly * qw + lz * qx + lw * qy;
+        res.z = lx * qy - ly * qx + lz * qw + lw * qz;
+        res.w = -lx * qx - ly * qy - lz * qz + lw * qw;
         return res;
     }
 
