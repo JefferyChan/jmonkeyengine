@@ -126,14 +126,33 @@ final public class FastMath {
      *            Begining value. 0% of f
      * @param endValue
      *            ending value. 100% of f
+     * @param store a vector3f to store the result
+     * @return The interpolated value between startValue and endValue.
+     */
+    public static Vector3f interpolateLinear(float scale, Vector3f startValue, Vector3f endValue, Vector3f store) {
+        if (store == null) {
+            store = new Vector3f();
+        }
+        store.x = interpolateLinear(scale, startValue.x, endValue.x);
+        store.y = interpolateLinear(scale, startValue.y, endValue.y);
+        store.z = interpolateLinear(scale, startValue.z, endValue.z);
+        return store;
+    }
+
+    /**
+     * Linear interpolation from startValue to endValue by the given percent.
+     * Basically: ((1 - percent) * startValue) + (percent * endValue)
+     *
+     * @param scale
+     *            scale value to use. if 1, use endValue, if 0, use startValue.
+     * @param startValue
+     *            Begining value. 0% of f
+     * @param endValue
+     *            ending value. 100% of f
      * @return The interpolated value between startValue and endValue.
      */
     public static Vector3f interpolateLinear(float scale, Vector3f startValue, Vector3f endValue) {
-        Vector3f res = new Vector3f();
-        res.x = interpolateLinear(scale, startValue.x, endValue.x);
-        res.y = interpolateLinear(scale, startValue.y, endValue.y);
-        res.z = interpolateLinear(scale, startValue.z, endValue.z);
-        return res;
+        return interpolateLinear(scale, startValue, endValue, null);
     }
 
     /**Interpolate a spline between at least 4 control points following the Catmull-Rom equation.
@@ -176,15 +195,75 @@ final public class FastMath {
      * @param p1 control point 1
      * @param p2 control point 2
      * @param p3 control point 3
+     * @param store a Vector3f to store the result
+     * @return catmull-Rom interpolation
+     */
+    public static Vector3f interpolateCatmullRom(float u, float T, Vector3f p0, Vector3f p1, Vector3f p2, Vector3f p3, Vector3f store) {
+        if (store == null) {
+            store = new Vector3f();
+        }
+        store.x = interpolateCatmullRom(u, T, p0.x, p1.x, p2.x, p3.x);
+        store.y = interpolateCatmullRom(u, T, p0.y, p1.y, p2.y, p3.y);
+        store.z = interpolateCatmullRom(u, T, p0.z, p1.z, p2.z, p3.z);
+        return store;
+    }
+
+    /**Interpolate a spline between at least 4 control points following the Catmull-Rom equation.
+     * here is the interpolation matrix
+     * m = [ 0.0  1.0  0.0   0.0 ]
+     *     [-T    0.0  T     0.0 ]
+     *     [ 2T   T-3  3-2T  -T  ]
+     *     [-T    2-T  T-2   T   ]
+     * where T is the tension of the curve
+     * the result is a value between p1 and p2, t=0 for p1, t=1 for p2
+     * @param u value from 0 to 1
+     * @param T The tension of the curve
+     * @param p0 control point 0
+     * @param p1 control point 1
+     * @param p2 control point 2
+     * @param p3 control point 3
      * @return catmull-Rom interpolation
      */
     public static Vector3f interpolateCatmullRom(float u, float T, Vector3f p0, Vector3f p1, Vector3f p2, Vector3f p3) {
-        Vector3f res = new Vector3f();
-        res.x = interpolateCatmullRom(u, T, p0.x, p1.x, p2.x, p3.x);
-        res.y = interpolateCatmullRom(u, T, p0.y, p1.y, p2.y, p3.y);
-        res.z = interpolateCatmullRom(u, T, p0.z, p1.z, p2.z, p3.z);
-        return res;
+        return interpolateCatmullRom(u, T, p0, p1, p2, p3, null);
     }
+
+    /**
+     * Compute the lenght on a catmull rom spline between control point 1 and 2
+     * @param p0 control point 0
+     * @param p1 control point 1
+     * @param p2 control point 2
+     * @param p3 control point 3
+     * @param startRange the starting range on the segment (use 0)
+     * @param endRange the end range on the segment (use 1)
+     * @param curveTension the curve tension
+     * @return the length of the segment
+     */
+    public static float getCatmullRomP1toP2Length(Vector3f p0, Vector3f p1, Vector3f p2, Vector3f p3, float startRange, float endRange, float curveTension) {
+
+        float epsilon = 0.001f;
+        float middleValue = (startRange + endRange) * 0.5f;
+        Vector3f start = p1.clone();
+        if (startRange != 0) {
+            FastMath.interpolateCatmullRom(startRange, curveTension, p0, p1, p2, p3, start);
+        }
+        Vector3f end = p2.clone();
+        if (endRange != 1) {
+            FastMath.interpolateCatmullRom(endRange, curveTension, p0, p1, p2, p3, end);
+        }
+        Vector3f middle = FastMath.interpolateCatmullRom(middleValue, curveTension, p0, p1, p2, p3);
+        float l = end.subtract(start).length();
+        float l1 = middle.subtract(start).length();
+        float l2 = end.subtract(middle).length();
+        float len = l1 + l2;
+        if (l + epsilon < len) {
+            l1 = getCatmullRomP1toP2Length(p0, p1, p2, p3, startRange, middleValue, curveTension);
+            l2 = getCatmullRomP1toP2Length(p0, p1, p2, p3, middleValue, endRange, curveTension);
+        }
+        l = l1 + l2;
+        return l;
+    }
+
 
     /**
      * Returns the arc cosine of an angle given in radians.<br>

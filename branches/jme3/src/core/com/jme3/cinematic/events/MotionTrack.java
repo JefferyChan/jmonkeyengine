@@ -58,7 +58,7 @@ public class MotionTrack extends AbstractCinematicEvent implements Control {
     protected Spatial spatial;
     protected int currentWayPoint;
     protected float currentValue;
-    protected Vector3f direction;
+    protected Vector3f direction = new Vector3f();
     protected Vector3f lookAt;
     protected Vector3f upVector;
     protected Quaternion rotation;
@@ -123,7 +123,7 @@ public class MotionTrack extends AbstractCinematicEvent implements Control {
         super(initialDuration);
         this.spatial = spatial;
         spatial.addControl(this);
-        this.path = path;        
+        this.path = path;
     }
 
     /**
@@ -148,7 +148,7 @@ public class MotionTrack extends AbstractCinematicEvent implements Control {
         super(initialDuration);
         this.spatial = spatial;
         spatial.addControl(this);
-        this.path = path;       
+        this.path = path;
         this.loopMode = loopMode;
     }
 
@@ -326,7 +326,7 @@ public class MotionTrack extends AbstractCinematicEvent implements Control {
      * @param direction
      */
     public void setDirection(Vector3f direction) {
-        this.direction = direction;
+        this.direction.set(direction);
     }
 
     /**

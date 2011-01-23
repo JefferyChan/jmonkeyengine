@@ -41,12 +41,15 @@ import com.jme3.export.Savable;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
+import com.jme3.math.Spline;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.VertexBuffer;
 import com.jme3.scene.shape.Box;
+import com.jme3.math.Spline.SplineType;
+import com.jme3.scene.shape.Curve;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -58,17 +61,20 @@ import java.util.List;
  */
 public class MotionPath implements Savable {
 
-    private List<Vector3f> wayPoints = new ArrayList<Vector3f>();
     private Node debugNode;
     private AssetManager assetManager;
     private List<MotionPathListener> listeners;
-    private List<Float> segmentsLength;
-    private float totalLength;
-    private List<Vector3f> CRcontrolPoints;
-    private float curveTension = 0.5f;
-    private boolean cycle = false;
+    private Spline spline = new Spline();
     private float eps = 0.0001f;
+    //temp variables to avoid crazy instanciation
+    private Vector3f temp = new Vector3f();
+    private Vector3f tmpVector = new Vector3f();
 
+    /**
+     *
+     * @deprecated replaced by com.jme3.scene.shape.Spline.SplineType
+     */
+    @Deprecated
     public enum PathInterpolation {
 
         /**
@@ -81,7 +87,6 @@ public class MotionPath implements Savable {
          */
         CatmullRom
     }
-    private PathInterpolation pathInterpolation = PathInterpolation.CatmullRom;
 
     /**
      * Create a motion Path
@@ -96,31 +101,33 @@ public class MotionPath implements Savable {
      * @return
      */
     public Vector3f interpolatePath(float tpf, MotionTrack control) {
-        Vector3f temp = null;
+
         float val;
-        switch (pathInterpolation) {
+        switch (spline.getType()) {
             case CatmullRom:
 
-                val = tpf * (totalLength / control.getDuration());
+                val = tpf * (spline.getTotalLength() / control.getDuration());
                 control.setCurrentValue(control.getCurrentValue() + eps);
-                temp = FastMath.interpolateCatmullRom(control.getCurrentValue(), curveTension, CRcontrolPoints.get(control.getCurrentWayPoint()), CRcontrolPoints.get(control.getCurrentWayPoint() + 1), CRcontrolPoints.get(control.getCurrentWayPoint() + 2), CRcontrolPoints.get(control.getCurrentWayPoint() + 3));
-                float dist = temp.subtract(control.getSpatial().getLocalTranslation()).length();
+                spline.interpolate(control.getCurrentValue(), control.getCurrentWayPoint(), temp);
+                float dist = getDist(control);
 
                 while (dist < val) {
                     control.setCurrentValue(control.getCurrentValue() + eps);
-                    temp = FastMath.interpolateCatmullRom(control.getCurrentValue(), curveTension, CRcontrolPoints.get(control.getCurrentWayPoint()), CRcontrolPoints.get(control.getCurrentWayPoint() + 1), CRcontrolPoints.get(control.getCurrentWayPoint() + 2), CRcontrolPoints.get(control.getCurrentWayPoint() + 3));
-                    dist = temp.subtract(control.getSpatial().getLocalTranslation()).length();
+                    spline.interpolate(control.getCurrentValue(), control.getCurrentWayPoint(), temp);
+                    dist = getDist(control);
                 }
                 if (control.needsDirection()) {
-                    control.setDirection(temp.subtract(control.getSpatial().getLocalTranslation()).normalizeLocal());
+                    tmpVector.set(temp);
+                    control.setDirection(tmpVector.subtractLocal(control.getSpatial().getLocalTranslation()).normalizeLocal());
                 }
                 break;
             case Linear:
-                val = control.getDuration() * segmentsLength.get(control.getCurrentWayPoint()) / totalLength;
+                val = control.getDuration() * spline.getSegmentsLength().get(control.getCurrentWayPoint()) / spline.getTotalLength();
                 control.setCurrentValue(Math.min(control.getCurrentValue() + tpf / val, 1.0f));
-                temp = FastMath.interpolateLinear(control.getCurrentValue(), wayPoints.get(control.getCurrentWayPoint()), wayPoints.get(control.getCurrentWayPoint() + 1));
+                spline.interpolate(control.getCurrentValue(), control.getCurrentWayPoint(), temp);
                 if (control.needsDirection()) {
-                    control.setDirection(wayPoints.get(control.getCurrentWayPoint() + 1).subtract(wayPoints.get(control.getCurrentWayPoint())).normalizeLocal());
+                    tmpVector.set(spline.getControlPoints().get(control.getCurrentWayPoint() + 1));
+                    control.setDirection(tmpVector.subtractLocal(spline.getControlPoints().get(control.getCurrentWayPoint())).normalizeLocal());
                 }
                 break;
             default:
@@ -129,18 +136,23 @@ public class MotionPath implements Savable {
         return temp;
     }
 
+    private float getDist(MotionTrack control) {
+        tmpVector.set(temp);
+        return tmpVector.subtractLocal(control.getSpatial().getLocalTranslation()).length();
+    }
+
     private void attachDebugNode(Node root) {
         if (debugNode == null) {
             debugNode = new Node();
             Material m = assetManager.loadMaterial("Common/Materials/RedColor.j3m");
-            for (Iterator<Vector3f> it = wayPoints.iterator(); it.hasNext();) {
+            for (Iterator<Vector3f> it = spline.getControlPoints().iterator(); it.hasNext();) {
                 Vector3f cp = it.next();
                 Geometry geo = new Geometry("box", new Box(cp, 0.3f, 0.3f, 0.3f));
                 geo.setMaterial(m);
                 debugNode.attachChild(geo);
 
             }
-            switch (pathInterpolation) {
+            switch (spline.getType()) {
                 case CatmullRom:
                     debugNode.attachChild(CreateCatmullRomPath());
                     break;
@@ -160,40 +172,7 @@ public class MotionPath implements Savable {
 
         Material mat = new Material(assetManager, "Common/MatDefs/Misc/WireColor.j3md");
         mat.setColor("Color", ColorRGBA.Blue);
-
-        float[] array = new float[wayPoints.size() * 3];
-        short[] indices = new short[(wayPoints.size() - 1) * 2];
-        int i = 0;
-        int cpt = 0;
-        int k = 0;
-        int j = 0;
-        for (Iterator<Vector3f> it = wayPoints.iterator(); it.hasNext();) {
-            Vector3f vector3f = it.next();
-            array[i] = vector3f.x;
-            i++;
-            array[i] = vector3f.y;
-            i++;
-            array[i] = vector3f.z;
-            i++;
-            if (it.hasNext()) {
-                k = j;
-                indices[cpt] = (short) k;
-                cpt++;
-                k++;
-                indices[cpt] = (short) k;
-                cpt++;
-                j++;
-            }
-        }
-
-        Mesh lineMesh = new Mesh();
-        lineMesh.setMode(Mesh.Mode.Lines);
-        lineMesh.setBuffer(VertexBuffer.Type.Position, 3, array);
-        lineMesh.setBuffer(VertexBuffer.Type.Index, (wayPoints.size() - 1) * 2, indices);
-        lineMesh.updateBound();
-        lineMesh.updateCounts();
-
-        Geometry lineGeometry = new Geometry("line", lineMesh);
+        Geometry lineGeometry = new Geometry("line", new Curve(spline, 0));
         lineGeometry.setMaterial(mat);
         return lineGeometry;
     }
@@ -202,120 +181,22 @@ public class MotionPath implements Savable {
 
         Material mat = new Material(assetManager, "Common/MatDefs/Misc/WireColor.j3md");
         mat.setColor("Color", ColorRGBA.Blue);
-        int nbSubSegments = 10;
-
-        float[] array = new float[(((wayPoints.size() - 1) * nbSubSegments) + 1) * 3];
-        short[] indices = new short[((wayPoints.size() - 1) * nbSubSegments) * 2];
-        int i = 0;
-        int cptCP = 0;
-        for (Iterator<Vector3f> it = wayPoints.iterator(); it.hasNext();) {
-            Vector3f vector3f = it.next();
-            array[i] = vector3f.x;
-            i++;
-            array[i] = vector3f.y;
-            i++;
-            array[i] = vector3f.z;
-            i++;
-            if (it.hasNext()) {
-                for (int j = 1; j < nbSubSegments; j++) {
-                    Vector3f temp = FastMath.interpolateCatmullRom((float) j / nbSubSegments, curveTension, CRcontrolPoints.get(cptCP),
-                            CRcontrolPoints.get(cptCP + 1), CRcontrolPoints.get(cptCP + 2), CRcontrolPoints.get(cptCP + 3));
-                    array[i] = temp.x;
-                    i++;
-                    array[i] = temp.y;
-                    i++;
-                    array[i] = temp.z;
-                    i++;
-                }
-            }
-            cptCP++;
-        }
-
-        i = 0;
-        int k = 0;
-        for (int j = 0; j < ((wayPoints.size() - 1) * nbSubSegments); j++) {
-            k = j;
-            indices[i] = (short) k;
-            i++;
-            k++;
-            indices[i] = (short) k;
-            i++;
-        }
-
-
-
-        Mesh lineMesh = new Mesh();
-        lineMesh.setMode(Mesh.Mode.Lines);
-        lineMesh.setBuffer(VertexBuffer.Type.Position, 3, array);
-        lineMesh.setBuffer(VertexBuffer.Type.Index, ((wayPoints.size() - 1) * nbSubSegments) * 2, indices);
-        lineMesh.updateBound();
-        lineMesh.updateCounts();
-
-        Geometry lineGeometry = new Geometry("line", lineMesh);
+        Geometry lineGeometry = new Geometry("line", new Curve(spline, 10));
         lineGeometry.setMaterial(mat);
         return lineGeometry;
-    }
-
-    private void initCatmullRomWayPoints(List<Vector3f> list) {
-        if (CRcontrolPoints == null) {
-            CRcontrolPoints = new ArrayList<Vector3f>();
-        } else {
-            CRcontrolPoints.clear();
-        }
-        int nb = list.size() - 1;
-
-        if (cycle) {
-            CRcontrolPoints.add(list.get(list.size() - 2));
-        } else {
-            CRcontrolPoints.add(list.get(0).subtract(list.get(1).subtract(list.get(0))));
-        }
-
-        for (Iterator<Vector3f> it = list.iterator(); it.hasNext();) {
-            Vector3f vector3f = it.next();
-            CRcontrolPoints.add(vector3f);
-        }
-        if (cycle) {
-            CRcontrolPoints.add(list.get(1));
-        } else {
-            CRcontrolPoints.add(list.get(nb).add(list.get(nb).subtract(list.get(nb - 1))));
-        }
-
     }
 
     @Override
     public void write(JmeExporter ex) throws IOException {
         OutputCapsule oc = ex.getCapsule(this);
-        oc.writeSavableArrayList((ArrayList) wayPoints, "wayPoints", null);
-        oc.write(pathInterpolation, "pathInterpolation", PathInterpolation.CatmullRom);
-        float list[] = new float[segmentsLength.size()];
-        for (int i = 0; i < segmentsLength.size(); i++) {
-            list[i] = segmentsLength.get(i);
-        }
-        oc.write(list, "segmentsLength", null);
-
-        oc.write(totalLength, "totalLength", 0);
-        oc.writeSavableArrayList((ArrayList) CRcontrolPoints, "CRControlPoints", null);
-        oc.write(curveTension, "curveTension", 0.5f);
-        oc.write(cycle, "cycle", false);
+        oc.write(spline, "spline", null);
     }
 
     @Override
     public void read(JmeImporter im) throws IOException {
         InputCapsule in = im.getCapsule(this);
+        spline = (Spline) in.readSavable("spline", null);
 
-        wayPoints = (ArrayList<Vector3f>) in.readSavableArrayList("wayPoints", null);
-        float list[] = in.readFloatArray("segmentsLength", null);
-        if (list != null) {
-            segmentsLength = new ArrayList<Float>();
-            for (int i = 0; i < list.length; i++) {
-                segmentsLength.add(new Float(list[i]));
-            }
-        }
-        pathInterpolation = in.readEnum("pathInterpolation", PathInterpolation.class, PathInterpolation.CatmullRom);
-        totalLength = in.readFloat("totalLength", 0);
-        CRcontrolPoints = (ArrayList<Vector3f>) in.readSavableArrayList("CRControlPoints", null);
-        curveTension = in.readFloat("curveTension", 0.5f);
-        cycle = in.readBoolean("cycle", false);
     }
 
     /**
@@ -323,50 +204,7 @@ public class MotionPath implements Savable {
      * @param wayPoint a position in world space
      */
     public void addWayPoint(Vector3f wayPoint) {
-        if (wayPoints.size() > 2 && this.cycle) {
-            wayPoints.remove(wayPoints.size() - 1);
-        }
-        wayPoints.add(wayPoint);
-        if (wayPoints.size() >= 2 && this.cycle) {
-            wayPoints.add(wayPoints.get(0));
-        }
-        if (wayPoints.size() > 1) {
-            computeTotalLentgh();
-        }
-    }
-
-    private void computeTotalLentgh() {
-        totalLength = 0;
-        float l = 0;
-        if (segmentsLength == null) {
-            segmentsLength = new ArrayList<Float>();
-        } else {
-            segmentsLength.clear();
-        }
-        if (pathInterpolation == PathInterpolation.Linear) {
-            if (wayPoints.size() > 1) {
-                for (int i = 0; i < wayPoints.size() - 1; i++) {
-                    l = wayPoints.get(i + 1).subtract(wayPoints.get(i)).length();
-                    segmentsLength.add(l);
-                    totalLength += l;
-                }
-            }
-        } else {
-            initCatmullRomWayPoints(wayPoints);
-            computeCatmulLength();
-        }
-    }
-
-    private void computeCatmulLength() {
-        float l = 0;
-        if (wayPoints.size() > 1) {
-            for (int i = 0; i < wayPoints.size() - 1; i++) {
-                l = getCatmullRomP1toP2Length(CRcontrolPoints.get(i),
-                        CRcontrolPoints.get(i + 1), CRcontrolPoints.get(i + 2), CRcontrolPoints.get(i + 3), 0, 1);
-                segmentsLength.add(l);
-                totalLength += l;
-            }
-        }
+        spline.addControlPoint(wayPoint);
     }
 
     /**
@@ -374,34 +212,7 @@ public class MotionPath implements Savable {
      * @return the length
      */
     public float getLength() {
-        return totalLength;
-    }
-    //Compute lenght of p1 to p2 arc segment
-    //TODO extract to FastMath class
-
-    private float getCatmullRomP1toP2Length(Vector3f p0, Vector3f p1, Vector3f p2, Vector3f p3, float startRange, float endRange) {
-
-        float epsilon = 0.001f;
-        float middleValue = (startRange + endRange) * 0.5f;
-        Vector3f start = p1;
-        if (startRange != 0) {
-            start = FastMath.interpolateCatmullRom(startRange, curveTension, p0, p1, p2, p3);
-        }
-        Vector3f end = p2;
-        if (endRange != 1) {
-            end = FastMath.interpolateCatmullRom(endRange, curveTension, p0, p1, p2, p3);
-        }
-        Vector3f middle = FastMath.interpolateCatmullRom(middleValue, curveTension, p0, p1, p2, p3);
-        float l = end.subtract(start).length();
-        float l1 = middle.subtract(start).length();
-        float l2 = end.subtract(middle).length();
-        float len = l1 + l2;
-        if (l + epsilon < len) {
-            l1 = getCatmullRomP1toP2Length(p0, p1, p2, p3, startRange, middleValue);
-            l2 = getCatmullRomP1toP2Length(p0, p1, p2, p3, middleValue, endRange);
-        }
-        l = l1 + l2;
-        return l;
+        return spline.getTotalLength();
     }
 
     /**
@@ -410,7 +221,7 @@ public class MotionPath implements Savable {
      * @return returns the waypoint position
      */
     public Vector3f getWayPoint(int i) {
-        return wayPoints.get(i);
+        return spline.getControlPoints().get(i);
     }
 
     /**
@@ -418,10 +229,7 @@ public class MotionPath implements Savable {
      * @param wayPoint the waypoint to remove
      */
     public void removeWayPoint(Vector3f wayPoint) {
-        wayPoints.remove(wayPoint);
-        if (wayPoints.size() > 1) {
-            computeTotalLentgh();
-        }
+        spline.removeControlPoint(wayPoint);
     }
 
     /**
@@ -429,7 +237,7 @@ public class MotionPath implements Savable {
      * @param i the index of the waypoint to remove
      */
     public void removeWayPoint(int i) {
-        removeWayPoint(wayPoints.get(i));
+        removeWayPoint(spline.getControlPoints().get(i));
     }
 
     /**
@@ -437,24 +245,50 @@ public class MotionPath implements Savable {
      * @return
      */
     public Iterator<Vector3f> iterator() {
-        return wayPoints.iterator();
+        return spline.getControlPoints().iterator();
     }
 
     /**
+     * @deprecated use getPathSplineType
      * return the type of path interpolation for this path
      * @return the path interpolation
      */
+    @Deprecated
     public PathInterpolation getPathInterpolation() {
-        return pathInterpolation;
+        if (spline.getType() == SplineType.CatmullRom) {
+            return PathInterpolation.CatmullRom;
+        }
+        return PathInterpolation.Linear;
     }
 
     /**
+     * @deprecated use setPathSplineType instead
      * sets the path interpolation for this path
      * @param pathInterpolation
      */
+    @Deprecated
     public void setPathInterpolation(PathInterpolation pathInterpolation) {
-        this.pathInterpolation = pathInterpolation;
-        computeTotalLentgh();
+        if (pathInterpolation == PathInterpolation.CatmullRom) {
+            setPathSplineType(SplineType.CatmullRom);
+        } else {
+            setPathSplineType(SplineType.Linear);
+        }
+    }
+
+    /**
+     * return the type of spline used for the path interpolation for this path
+     * @return the path interpolation spline type
+     */
+    public SplineType getPathSplineType() {
+        return spline.getType();
+    }
+
+    /**
+     * sets the type of spline used for the path interpolation for this path
+     * @param pathSplineType
+     */
+    public void setPathSplineType(SplineType pathSplineType) {
+        spline.setType(pathSplineType);
         if (debugNode != null) {
             Node parent = debugNode.getParent();
             debugNode.removeFromParent();
@@ -481,7 +315,7 @@ public class MotionPath implements Savable {
      */
     public void enableDebugShape(AssetManager manager, Node rootNode) {
         assetManager = manager;
-        computeTotalLentgh();
+        // computeTotalLentgh();
         attachDebugNode(rootNode);
     }
 
@@ -511,11 +345,11 @@ public class MotionPath implements Savable {
      * @return
      */
     public int getNbWayPoints() {
-        return wayPoints.size();
+        return spline.getControlPoints().size();
     }
 
     public void triggerWayPointReach(int wayPointIndex, MotionTrack control) {
-        if(listeners!=null){
+        if (listeners != null) {
             for (Iterator<MotionPathListener> it = listeners.iterator(); it.hasNext();) {
                 MotionPathListener listener = it.next();
                 listener.onWayPointReach(control, wayPointIndex);
@@ -528,7 +362,7 @@ public class MotionPath implements Savable {
      * @return
      */
     public float getCurveTension() {
-        return curveTension;
+        return spline.getCurveTension();
     }
 
     /**
@@ -536,8 +370,7 @@ public class MotionPath implements Savable {
      * @param curveTension
      */
     public void setCurveTension(float curveTension) {
-        this.curveTension = curveTension;
-        computeTotalLentgh();
+        spline.setCurveTension(curveTension);
         if (debugNode != null) {
             Node parent = debugNode.getParent();
             debugNode.removeFromParent();
@@ -553,26 +386,15 @@ public class MotionPath implements Savable {
      */
     public void setCycle(boolean cycle) {
 
-        if (wayPoints.size() >= 2) {
-            if (this.cycle && !cycle) {
-                wayPoints.remove(wayPoints.size() - 1);
-            }
-            if (!this.cycle && cycle) {
-                wayPoints.add(wayPoints.get(0));
-                System.out.println("adding first wp");
-            }
-            this.cycle = cycle;
-            computeTotalLentgh();
-            if (debugNode != null) {
-                Node parent = debugNode.getParent();
-                debugNode.removeFromParent();
-                debugNode.detachAllChildren();
-                debugNode = null;
-                attachDebugNode(parent);
-            }
-        } else {
-            this.cycle = cycle;
+        spline.setCycle(cycle);
+        if (debugNode != null) {
+            Node parent = debugNode.getParent();
+            debugNode.removeFromParent();
+            debugNode.detachAllChildren();
+            debugNode = null;
+            attachDebugNode(parent);
         }
+
     }
 
     /**
@@ -580,6 +402,6 @@ public class MotionPath implements Savable {
      * @return
      */
     public boolean isCycle() {
-        return cycle;
+        return spline.isCycle();
     }
 }
