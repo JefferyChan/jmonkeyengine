@@ -133,7 +133,7 @@ void main(){
       DiffuseSum  = m_Diffuse  * lightColor;
       SpecularSum = m_Specular * lightColor;
     #else
-      AmbientSum  = vec4(0.2, 0.2, 0.2, 1.0); // Default: ambient color is dark gray
+      AmbientSum  = vec4(0.2, 0.2, 0.2, 1.0) * g_AmbientLightColor; // Default: ambient color is dark gray
       DiffuseSum  = lightColor;
       SpecularSum = lightColor;
     #endif
