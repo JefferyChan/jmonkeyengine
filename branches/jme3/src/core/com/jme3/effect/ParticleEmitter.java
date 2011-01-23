@@ -40,6 +40,7 @@ import com.jme3.export.InputCapsule;
 import com.jme3.export.OutputCapsule;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
+import com.jme3.math.Matrix3f;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.RenderManager;
@@ -720,12 +721,21 @@ public class ParticleEmitter extends Geometry implements Control {
             getMaterial().setFloat("Quadratic", C);
         }
 
-        particleMesh.updateParticleData(particles, cam);
+        Matrix3f inverseRotation = Matrix3f.IDENTITY;
+        if (!worldSpace){
+            TempVars vars = TempVars.get();
+            assert vars.lock();
+            inverseRotation = getWorldRotation().toRotationMatrix(vars.tempMat3).invertLocal();
+        }
+        particleMesh.updateParticleData(particles, cam, inverseRotation);
+        if (!worldSpace){
+            assert TempVars.get().unlock();
+        }
     }
 
     public void preload(RenderManager rm, ViewPort vp){
         updateParticleState(0);
-        particleMesh.updateParticleData(particles, vp.getCamera());
+        particleMesh.updateParticleData(particles, vp.getCamera(), Matrix3f.IDENTITY);
     }
 
     @Override

@@ -32,6 +32,7 @@
 
 package com.jme3.effect;
 
+import com.jme3.math.Matrix3f;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Mesh;
 
@@ -44,6 +45,6 @@ public abstract class ParticleMesh extends Mesh {
 
     public abstract void initParticleData(ParticleEmitter emitter, int numParticles);
     public abstract void setImagesXY(int imagesX, int imagesY);
-    public abstract void updateParticleData(Particle[] particles, Camera cam);
+    public abstract void updateParticleData(Particle[] particles, Camera cam, Matrix3f inverseRotation);
 
 }
