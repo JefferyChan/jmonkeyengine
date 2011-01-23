@@ -570,6 +570,8 @@ public class ParticleEmitter extends Geometry implements Control {
 
         bbox.setMinMax(min, max);
         setBoundRefresh();
+
+        assert vars.unlock();
     }
 
     /**
