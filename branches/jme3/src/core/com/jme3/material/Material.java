@@ -279,8 +279,8 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
     private String checkSetParam(VarType type, String name) {
         MatParam paramDef = def.getMaterialParam(name);
         String newName=name;
-        if (paramDef == null) {
-            newName=name.replaceAll("m_", "");
+        if (paramDef == null && name.startsWith("m_")) {
+            newName=name.substring(2);
             paramDef = def.getMaterialParam(newName);
             if (paramDef == null) {
                 throw new IllegalArgumentException("Material parameter is not defined: " + name);

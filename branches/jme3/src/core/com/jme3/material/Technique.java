@@ -130,13 +130,12 @@ public class Technique implements Savable {
             needReload = true;
         }
         if (shader != null) {
-            shader.removeUniform("m_"+paramName);
+            shader.removeUniform(paramName);
         }
     }
 
     void updateUniformParam(String paramName, VarType type, Object value, boolean ifNotOwner) {
        
-        paramName="m_"+paramName;
         Uniform u = shader.getUniform(paramName);
 
 //        if (ifNotOwner && u.getLastChanger() == owner)
