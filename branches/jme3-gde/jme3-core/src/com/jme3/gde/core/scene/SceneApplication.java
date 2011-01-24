@@ -448,7 +448,15 @@ public class SceneApplication extends Application implements LookupProvider, Loo
         setHelpContext(null);
         resetCam();
         currentSceneRequest = null;
-        Lookup.getDefault().lookup(SceneUndoRedoManager.class).discardAllEdits();
+        java.awt.EventQueue.invokeLater(new Runnable() {
+
+            public void run() {
+                SceneUndoRedoManager manager=Lookup.getDefault().lookup(SceneUndoRedoManager.class);
+                if(manager!=null){
+                    manager.discardAllEdits();
+                }
+            }
+        });
         return true;
     }
 
