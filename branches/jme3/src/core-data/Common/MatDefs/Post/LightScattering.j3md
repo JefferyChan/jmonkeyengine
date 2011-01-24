@@ -14,8 +14,8 @@ MaterialDef Light Scattering {
     }
 
     Technique {
-        VertexShader GLSL150:   Common/MatDefs/Light/LightScattering15.vert
-        FragmentShader GLSL150: Common/MatDefs/Light/LightScattering15.frag
+        VertexShader GLSL150:   Common/MatDefs/Post/LightScattering15.vert
+        FragmentShader GLSL150: Common/MatDefs/Post/LightScattering15.frag
 
         WorldParameters {
             WorldViewProjectionMatrix
@@ -28,8 +28,8 @@ MaterialDef Light Scattering {
     }
 
     Technique {
-        VertexShader GLSL120:   Common/MatDefs/Light/LightScattering.vert
-        FragmentShader GLSL120: Common/MatDefs/Light/LightScattering.frag
+        VertexShader GLSL120:   Common/MatDefs/Post/LightScattering.vert
+        FragmentShader GLSL120: Common/MatDefs/Post/LightScattering.frag
 
         WorldParameters {
             WorldViewProjectionMatrix
