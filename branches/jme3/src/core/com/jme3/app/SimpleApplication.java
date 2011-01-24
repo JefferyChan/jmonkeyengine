@@ -191,7 +191,6 @@ public abstract class SimpleApplication extends Application {
         if (speed == 0 || paused)
             return;
         
-        super.update();
         float tpf = timer.getTimePerFrame() * speed;
 
         secondCounter += timer.getTimePerFrame();
