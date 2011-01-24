@@ -283,6 +283,6 @@ void main(){
     // Where the derivatives are undefined
     float coef=1.0;
     if(position.y<level)coef=0.0;
-    return vec4(mix(color, color2, coef), 1.0);
+    gl_FragColor = vec4(mix(color, color2, coef), 1.0);
     
 }
