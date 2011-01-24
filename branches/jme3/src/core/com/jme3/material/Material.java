@@ -72,6 +72,7 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
     private static final Logger logger = Logger.getLogger(Material.class.getName());
     private static final RenderState additiveLight = new RenderState();
     private static final RenderState depthOnly = new RenderState();
+    private static final Quaternion nullDirLight = new Quaternion(0, -1, 0, -1);
 
     static {
         depthOnly.setDepthTest(true);
@@ -80,8 +81,7 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
         depthOnly.setColorWrite(false);
 
         additiveLight.setBlendMode(RenderState.BlendMode.AlphaAdditive);
-        
-       // additiveLight.setDepthWrite(false);
+        additiveLight.setDepthWrite(false);
     }
     private MaterialDef def;
     private ListMap<String, MatParam> paramValues = new ListMap<String, MatParam>();
@@ -566,17 +566,6 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
     }
 
     protected void renderMultipassLighting(Shader shader, Geometry g, Renderer r) {
-//        if (r.getCaps().contains(Caps.MeshInstancing)){
-//            r.applyRenderState(depthOnly);
-//            r.setShader(shader);
-//            r.renderMesh(g.getMesh(), g.getLodLevel(), 1);
-
-//            int numLights = g.getWorldLightList().size();
-//            updateLightListUniforms(shader, g, numLights);
-//            r.applyRenderState(additiveLight);
-//            r.setShader(shader);
-//            r.renderMesh(g.getMesh(), g.getLodLevel(), numLights);
-//        }else{
         LightList lightList = g.getWorldLightList();
         Uniform lightColor = shader.getUniform("g_LightColor");
         Uniform lightPos = shader.getUniform("g_LightPosition");
@@ -649,7 +638,16 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
             r.setShader(shader);
             r.renderMesh(g.getMesh(), g.getLodLevel(), 1);
         }
-//        }
+
+        if (isFirstLight && lightList.size() > 0){
+            // There are only ambient lights in the scene. Render
+            // a dummy "normal light" so we can see the ambient
+            ambientColor.setValue(VarType.Vector4, getAmbientColor(lightList));
+            lightColor.setValue(VarType.Vector4, ColorRGBA.BlackNoAlpha);
+            lightPos.setValue(VarType.Vector4, nullDirLight);
+            r.setShader(shader);
+            r.renderMesh(g.getMesh(), g.getLodLevel(), 1);
+        }
     }
 
     public void selectTechnique(String name, RenderManager renderManager) {
@@ -710,8 +708,9 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
 
     private void autoSelectTechnique(RenderManager rm) {
         if (technique == null) {
-            // XXX: hack warning, choose "FixedFunc" if GLSL100
-            // not supported by renderer
+            // NOTE: Not really needed anymore since we have technique
+            // selection by caps. Rename all "FixedFunc" techniques to "Default"
+            // and remove this hack.
             if (!rm.getRenderer().getCaps().contains(Caps.GLSL100)) {
                 selectTechnique("FixedFunc", rm);
             } else {
@@ -804,8 +803,6 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
         if (rm.getForcedRenderState() != null) {
             r.applyRenderState(rm.getForcedRenderState());
         }
-
-
 
         // update camera and world matrices
         // NOTE: setWorldTransform should have been called already
