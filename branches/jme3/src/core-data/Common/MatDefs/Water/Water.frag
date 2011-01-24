@@ -206,7 +206,7 @@ void main(){
         // around edges
         // To make the shader 1.2 compatible we use a trick :
         // we clamp the x value of the normal and compare it to it's former value instead of using isnan.
-        normal = clamp(normal.x,0.0,1.0)!=normal.x ? myNormal : normal;
+        //normal = clamp(normal.x,0.0,1.0)!=normal.x ? myNormal : normal;
         //if (position.y > level){
         //    gl_FragColor = vec4(color2 + normal*0.0001, 1.0);
         //    return;
