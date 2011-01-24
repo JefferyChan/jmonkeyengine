@@ -321,11 +321,7 @@ public final class Shader extends GLObject implements Savable {
         Uniform uniform = uniforms.get(name);
         if (uniform == null){
             uniform = new Uniform();
-            if (name.startsWith("g_")) {
-                uniform.name = name;
-            } else {
-                uniform.name = "m_"+name;
-            }
+            uniform.name = name;
             uniforms.put(name, uniform);
         }
         return uniform;
