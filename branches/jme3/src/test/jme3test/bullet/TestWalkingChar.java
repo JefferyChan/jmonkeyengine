@@ -409,7 +409,7 @@ public class TestWalkingChar extends SimpleApplication implements ActionListener
         bulletg.setMaterial(matBullet);
         bulletg.setShadowMode(ShadowMode.CastAndReceive);
         bulletg.setLocalTranslation(character.getPhysicsLocation().add(modelDirection.mult(1.8f).addLocal(modelRight.mult(0.9f))));
-        RigidBodyControl bulletControl = new RigidBodyControl(bulletCollisionShape, 1);
+        RigidBodyControl bulletControl = new BombControl(bulletCollisionShape, 1);
         bulletControl.setCcdMotionThreshold(0.1f);
         bulletControl.setLinearVelocity(modelDirection.mult(40));
         bulletg.addControl(bulletControl);
@@ -418,17 +418,13 @@ public class TestWalkingChar extends SimpleApplication implements ActionListener
     }
 
     public void collision(PhysicsCollisionEvent event) {
-        if ("bullet".equals(event.getNodeA().getName())) {
+        if (event.getObjectA() instanceof BombControl) {
             final Spatial node = event.getNodeA();
-            getPhysicsSpace().remove(node);
-            node.removeFromParent();
             effect.killAllParticles();
             effect.setLocalTranslation(node.getLocalTranslation());
             effect.emitAllParticles();
-        } else if ("bullet".equals(event.getNodeB().getName())) {
+        } else if (event.getObjectB() instanceof BombControl) {
             final Spatial node = event.getNodeB();
-            getPhysicsSpace().remove(node);
-            node.removeFromParent();
             effect.killAllParticles();
             effect.setLocalTranslation(node.getLocalTranslation());
             effect.emitAllParticles();
