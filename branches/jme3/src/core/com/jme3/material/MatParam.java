@@ -37,6 +37,7 @@ import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
 import com.jme3.export.OutputCapsule;
 import com.jme3.export.Savable;
+import com.jme3.renderer.Renderer;
 import com.jme3.shader.Uniform;
 import com.jme3.shader.VarType;
 import java.io.IOException;
@@ -147,6 +148,14 @@ public class MatParam implements Savable, Cloneable {
     @Override
     public String toString(){
         return type.name()+" "+name;
+    }
+
+    public void apply(Renderer r, Technique technique) {
+        TechniqueDef techDef = technique.getDef();
+        if (techDef.isUsingShaders()) {
+            technique.updateUniformParam(getName(), getVarType(), getValue(), true);
+        }
+
     }
 }
 

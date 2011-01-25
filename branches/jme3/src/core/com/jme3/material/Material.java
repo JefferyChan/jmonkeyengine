@@ -126,6 +126,15 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
         public int getUnit() {
             return unit;
         }
+        
+        @Override
+        public void apply(Renderer r, Technique technique) {
+            TechniqueDef techDef = technique.getDef();
+            r.setTexture(getUnit(), getTextureValue());
+            if (techDef.isUsingShaders()) {
+                technique.updateUniformParam(getName(), getVarType(), getUnit(), true);
+            }
+        }
 
         @Override
         public void write(JmeExporter ex) throws IOException {
@@ -815,24 +824,7 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
         // setup textures and uniforms
         for (int i = 0; i < paramValues.size(); i++) {
             MatParam param = paramValues.getValue(i);
-            if (param instanceof MatParamTexture) {
-                MatParamTexture texParam = (MatParamTexture) param;
-                r.setTexture(texParam.getUnit(), texParam.getTextureValue());
-                if (techDef.isUsingShaders()) {
-                    
-                    technique.updateUniformParam(texParam.getName(),
-                            texParam.getVarType(),
-                            texParam.getUnit(), true);
-                }
-            } else {
-                if (!techDef.isUsingShaders()) {
-                    continue;
-                }
-
-                technique.updateUniformParam(param.getName(),
-                        param.getVarType(),
-                        param.getValue(), true);
-            }
+            param.apply(r, technique);
         }
 
         Shader shader = technique.getShader();
