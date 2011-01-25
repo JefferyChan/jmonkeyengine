@@ -15,10 +15,6 @@ varying vec2 texCoord;
 
 void main(void)
 {
-    vec4 outColor;
-    vec4 tex1;
-    vec4 tex2;
-    vec4 tex3;
 
     // get the alpha value at this 2D texture coord
     vec4 alpha   = texture2D( m_Alpha, texCoord.xy );
@@ -28,8 +24,8 @@ void main(void)
     vec3 blending = abs( vNormal );
     blending = (blending -0.2) * 0.7;
     blending = normalize(max(blending, 0.00001));      // Force weights to sum to 1.0 (very important!)
-    float mix = (blending.x + blending.y + blending.z);
-    blending /= vec3(mix, mix, mix);
+    float b = (blending.x + blending.y + blending.z);
+    blending /= vec3(b, b, b);
 
     // texture coords
     vec4 coords = vVertex;
@@ -38,30 +34,30 @@ void main(void)
     vec4 col2 = texture2D( m_Tex1, coords.xz * m_Tex1Scale );
     vec4 col3 = texture2D( m_Tex1, coords.xy * m_Tex1Scale );
     // blend the results of the 3 planar projections.
-    tex1 = col1 * blending.x + col2 * blending.y + col3 * blending.z;
+    vec4 tex1 = col1 * blending.x + col2 * blending.y + col3 * blending.z;
 
     col1 = texture2D( m_Tex2, coords.yz * m_Tex2Scale );
     col2 = texture2D( m_Tex2, coords.xz * m_Tex2Scale );
     col3 = texture2D( m_Tex2, coords.xy * m_Tex2Scale );
     // blend the results of the 3 planar projections.
-    tex2 = col1 * blending.x + col2 * blending.y + col3 * blending.z;
+    vec4 tex2 = col1 * blending.x + col2 * blending.y + col3 * blending.z;
 
     col1 = texture2D( m_Tex3, coords.yz * m_Tex3Scale );
     col2 = texture2D( m_Tex3, coords.xz * m_Tex3Scale );
     col3 = texture2D( m_Tex3, coords.xy * m_Tex3Scale );
     // blend the results of the 3 planar projections.
-    tex3 = col1 * blending.x + col2 * blending.y + col3 * blending.z;
+    vec4 tex3 = col1 * blending.x + col2 * blending.y + col3 * blending.z;
 
 #else
-	tex1    = texture2D( m_Tex1, texCoord.xy * m_Tex1Scale ); // Tile
-	tex2    = texture2D( m_Tex2, texCoord.xy * m_Tex2Scale ); // Tile
-	tex3    = texture2D( m_Tex3, texCoord.xy * m_Tex3Scale ); // Tile
+	vec4 tex1    = texture2D( m_Tex1, texCoord.xy * m_Tex1Scale ); // Tile
+	vec4 tex2    = texture2D( m_Tex2, texCoord.xy * m_Tex2Scale ); // Tile
+	vec4 tex3    = texture2D( m_Tex3, texCoord.xy * m_Tex3Scale ); // Tile
 	
 #endif
 
-    tex1 *= alpha.r; // Red channel
-	tex2 = mix( tex1, tex2, alpha.g ); // Green channel
-	outColor = mix( tex2, tex3, alpha.b ); // Blue channel
+    vec4 outColor = tex1 * alpha.r; // Red channel
+	outColor = mix( outColor, tex2, alpha.g ); // Green channel
+	outColor = mix( outColor, tex3, alpha.b ); // Blue channel
 	gl_FragColor = outColor;
 }
 
