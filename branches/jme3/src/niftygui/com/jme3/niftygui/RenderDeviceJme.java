@@ -175,11 +175,9 @@ public class RenderDeviceJme implements RenderDevice {
             return;
 
         RenderFontJme jmeFont = (RenderFontJme) font;
-        Texture2D texture = jmeFont.getTexture();
         BitmapText text = jmeFont.getText();
 
         niftyMat.setColor("Color", convertColor(color));
-        niftyMat.setTexture("Texture", texture);
         niftyMat.setInt("Mode", 4);
         niftyMat.getAdditionalRenderState().setBlendMode(convertBlend());
         text.setMaterial(niftyMat);

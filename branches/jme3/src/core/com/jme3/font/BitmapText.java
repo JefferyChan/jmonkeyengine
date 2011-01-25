@@ -31,6 +31,7 @@
  */
 package com.jme3.font;
 
+import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.queue.RenderQueue.Bucket;
@@ -180,9 +181,6 @@ public class BitmapText extends Node {
         } else {
             lineWidth = font.updateTextRect(block, quadList, wordWrap);
         }
-        // set size to zero of any quads at the end that
-        // were not updated
-        quadList.cleanTail();
         
         for (int i = 0; i < textPages.length; i++) {
             textPages[i].assemble(quadList);
@@ -191,9 +189,10 @@ public class BitmapText extends Node {
     }
     
     public void render(RenderManager rm) {
-        for (BitmapTextPage entry : textPages) {
-            //mat.render(entry, rm);
-            entry.getMaterial().render(entry, rm);
+        for (BitmapTextPage page : textPages) {
+            Material mat = page.getMaterial();
+            mat.setTexture("Texture", page.getTexture());
+            mat.render(page, rm);
         }
     }
 }

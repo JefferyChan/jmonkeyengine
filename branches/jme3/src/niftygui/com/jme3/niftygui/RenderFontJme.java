@@ -43,7 +43,6 @@ public class RenderFontJme implements RenderFont {
     private NiftyJmeDisplay display;
     private BitmapFont font;
     private BitmapText text;
-    private Texture texture;
     private float actualSize;
 
     /**
@@ -53,7 +52,6 @@ public class RenderFontJme implements RenderFont {
     public RenderFontJme(String name, NiftyJmeDisplay display) {
         this.display = display;
         font = display.getAssetManager().loadFont(name);
-        texture = font.getPage(0).getTextureParam("ColorMap").getTextureValue();
         text = new BitmapText(font);
         actualSize = font.getPreferredSize();
         text.setSize(actualSize);
@@ -61,10 +59,6 @@ public class RenderFontJme implements RenderFont {
 
     public BitmapText getText(){
         return text;
-    }
-
-    public Texture2D getTexture(){
-        return (Texture2D) texture;
     }
 
     /**

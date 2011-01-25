@@ -34,13 +34,13 @@ package com.jme3.font;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
-import java.util.LinkedList;
 
 import com.jme3.material.Material;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.VertexBuffer;
 import com.jme3.scene.VertexBuffer.Type;
+import com.jme3.texture.Texture2D;
 import com.jme3.util.BufferUtils;
 
 class BitmapTextPage extends Geometry {
@@ -50,6 +50,7 @@ class BitmapTextPage extends Geometry {
     private final short[] idx;
     private final byte[] color;
     private final int page;
+    private final Texture2D texture;
     private final QuadList quadList = new QuadList();
 
     BitmapTextPage(BitmapFont font, boolean arrayBased, int page) {
@@ -67,6 +68,7 @@ class BitmapTextPage extends Geometry {
         }
 
         setMaterial(mat);
+        this.texture = (Texture2D) mat.getTextureParam("ColorMap").getTextureValue();
 
         // initialize buffers
         Mesh m = getMesh();
@@ -99,6 +101,10 @@ class BitmapTextPage extends Geometry {
 
     BitmapTextPage(BitmapFont font) {
         this(font, false, 0);
+    }
+    
+    Texture2D getTexture() {
+        return texture;
     }
 
     @Override
