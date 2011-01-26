@@ -91,9 +91,9 @@ public class ChaseCamera implements ActionListener, AnalogListener, Control {
     private boolean targetMoves = false;
     private boolean enabled = true;
     private Camera cam = null;
-    private Vector3f targetDir;
+    private final Vector3f targetDir = new Vector3f();
     private float previousTargetRotation;
-    private Vector3f pos;
+    private final Vector3f pos = new Vector3f();
     protected boolean dragToRotate = true;
     protected Vector3f lookAtOffset = null;
     protected boolean invertYaxis=false;
@@ -197,8 +197,8 @@ public class ChaseCamera implements ActionListener, AnalogListener, Control {
     private void computePosition() {
 
         float hDistance = (distance) * FastMath.sin((FastMath.PI / 2) - vRotation);
-        pos = new Vector3f(hDistance * FastMath.cos(rotation), (distance) * FastMath.sin(vRotation), hDistance * FastMath.sin(rotation));
-        pos = pos.add(target.getWorldTranslation());
+        pos.set(hDistance * FastMath.cos(rotation), (distance) * FastMath.sin(vRotation), hDistance * FastMath.sin(rotation));
+        pos.addLocal(target.getWorldTranslation());
     }
 
     //rotate the camera around the target on the horizontal plane
@@ -253,7 +253,7 @@ public class ChaseCamera implements ActionListener, AnalogListener, Control {
         if (enabled) {
             if (smoothMotion) {
                 //computation of target direction
-                targetDir = target.getWorldTranslation().subtract(prevPos);
+                targetDir.set(target.getWorldTranslation()).subtractLocal(prevPos);
                 float dist = targetDir.length();
 
                 //Low pass filtering on the target postition to avoid shaking when physics are enabled.
