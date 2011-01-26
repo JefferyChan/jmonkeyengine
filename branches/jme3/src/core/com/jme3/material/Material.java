@@ -89,10 +89,10 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
     private HashMap<String, Technique> techniques = new HashMap<String, Technique>();
     private int nextTexUnit = 0;
     private RenderState additionalState = null;
+    private RenderState mergedRenderState = new RenderState();
     private boolean transparent = false;
     private boolean receivesShadows = false;
     private int sortingId = -1;
-    
     private transient ColorRGBA ambientLightColor = new ColorRGBA(0, 0, 0, 1);
 
     public static class MatParamTexture extends MatParam {
@@ -287,14 +287,14 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
 
     private String checkSetParam(VarType type, String name) {
         MatParam paramDef = def.getMaterialParam(name);
-        String newName=name;
+        String newName = name;
         if (paramDef == null && name.startsWith("m_")) {
-            newName=name.substring(2);
+            newName = name.substring(2);
             paramDef = def.getMaterialParam(newName);
             if (paramDef == null) {
                 throw new IllegalArgumentException("Material parameter is not defined: " + name);
             } else {
-                logger.log( Level.WARNING, "Material parameter {0} uses a deprecated naming convention use {1} instead ", new Object[]{name, newName});
+                logger.log(Level.WARNING, "Material parameter {0} uses a deprecated naming convention use {1} instead ", new Object[]{name, newName});
             }
         }
 
@@ -313,8 +313,8 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
      * @param value the value of the param
      */
     public void setParam(String name, VarType type, Object value) {
-        name=checkSetParam(type, name);
-        
+        name = checkSetParam(type, name);
+
         MatParam val = getParam(name);
         if (technique != null) {
             technique.notifySetParam(name, type, value);
@@ -331,7 +331,7 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
      * @param name the name of the parameter to clear
      */
     public void clearParam(String name) {
-        name=checkSetParam(null, name);
+        name = checkSetParam(null, name);
 
         MatParam matParam = getParam(name);
         if (matParam != null) {
@@ -364,8 +364,8 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
      */
     @Deprecated
     public void clearTextureParam(String name) {
-        name=checkSetParam(null, name);
-        
+        name = checkSetParam(null, name);
+
         MatParamTexture val = getTextureParam(name);
         if (val == null) {
             throw new IllegalArgumentException("The given texture parameter is not set.");
@@ -389,7 +389,7 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
             throw new NullPointerException();
         }
 
-        name=checkSetParam(type, name);       
+        name = checkSetParam(type, name);
         MatParamTexture val = getTextureParam(name);
         if (val == null) {
             paramValues.put(name, new MatParamTexture(type, name, value, nextTexUnit++));
@@ -498,7 +498,7 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
         setParam(name, VarType.Vector3, value);
     }
 
-    private ColorRGBA getAmbientColor(LightList lightList){
+    private ColorRGBA getAmbientColor(LightList lightList) {
         ambientLightColor.set(0, 0, 0, 1);
         for (int j = 0; j < lightList.size(); j++) {
             Light l = lightList.get(j);
@@ -588,18 +588,18 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
                 continue;
             }
 
-            if (isFirstLight){
+            if (isFirstLight) {
                 // set ambient color for first light only
                 ambientColor.setValue(VarType.Vector4, getAmbientColor(lightList));
                 isFirstLight = false;
                 isSecondLight = true;
-            }else if (isSecondLight){
+            } else if (isSecondLight) {
                 ambientColor.setValue(VarType.Vector4, ColorRGBA.Black);
                 // apply additive blending for 2nd and future lights
                 r.applyRenderState(additiveLight);
                 isSecondLight = false;
             }
-            
+
             ColorRGBA color = l.getColor();
             ColorRGBA color2;
             if (lightColor.getValue() != null) {
@@ -648,7 +648,7 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
             r.renderMesh(g.getMesh(), g.getLodLevel(), 1);
         }
 
-        if (isFirstLight && lightList.size() > 0){
+        if (isFirstLight && lightList.size() > 0) {
             // There are only ambient lights in the scene. Render
             // a dummy "normal light" so we can see the ambient
             ambientColor.setValue(VarType.Vector4, getAmbientColor(lightList));
@@ -749,7 +749,7 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
                 if (!techDef.isUsingShaders()) {
                     continue;
                 }
-                
+
                 technique.updateUniformParam(param.getName(),
                         param.getVarType(),
                         param.getValue(), true);
@@ -797,12 +797,13 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
         }
 
         if (techDef.getRenderState() != null) {
-            r.applyRenderState(techDef.getRenderState().cloneMerged(additionalState));
+            r.applyRenderState(techDef.getRenderState().copyMergedTo(additionalState, mergedRenderState));
 //            if (additionalState != null) {
 //                r.applyRenderState(additionalState);
 //            }
         } else {
-            r.applyRenderState(RenderState.DEFAULT.cloneMerged(additionalState));
+            r.applyRenderState(RenderState.DEFAULT.copyMergedTo(additionalState, mergedRenderState));
+
 //            if (additionalState != null) {
 //                r.applyRenderState(additionalState);
 //            } else {
@@ -812,6 +813,8 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
         if (rm.getForcedRenderState() != null) {
             r.applyRenderState(rm.getForcedRenderState());
         }
+
+
 
         // update camera and world matrices
         // NOTE: setWorldTransform should have been called already
@@ -879,10 +882,10 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
 
         // load the textures and update nextTexUnit
         for (Map.Entry<String, MatParam> entry : params.entrySet()) {
-            MatParam param = entry.getValue();         
+            MatParam param = entry.getValue();
             if (param instanceof MatParamTexture) {
                 MatParamTexture texVal = (MatParamTexture) param;
-                
+
                 if (nextTexUnit < texVal.getUnit() + 1) {
                     nextTexUnit = texVal.getUnit() + 1;
                 }
@@ -892,8 +895,8 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
                 if (texVal.texture == null || texVal.texture.getImage() == null) {
                     continue;
                 }
-            }            
-            param.setName(checkSetParam(param.getVarType(),param.getName()));
+            }
+            param.setName(checkSetParam(param.getVarType(), param.getName()));
             paramValues.put(param.getName(), param);
         }
     }

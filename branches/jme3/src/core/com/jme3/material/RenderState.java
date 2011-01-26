@@ -147,6 +147,7 @@ public class RenderState implements Cloneable, Savable {
         ADDITIONAL.applyAlphaFallOff = false;
         ADDITIONAL.applyPolyOffset = false;
     }
+    
     boolean pointSprite = false;
     boolean applyPointSprite = true;
     boolean wireframe = false;
@@ -351,44 +352,66 @@ public class RenderState implements Cloneable, Savable {
         return applyWireFrame;
     }
 
-    public RenderState cloneMerged(RenderState additionalState) {
+    public RenderState copyMergedTo(RenderState additionalState,RenderState state) {
         if (additionalState == null) {
             return this;
         }
-        RenderState state = this.clone();
 
         if (additionalState.isApplyPointSprite()) {
             state.pointSprite = additionalState.pointSprite;
+        }else{
+            state.pointSprite = pointSprite;
         }
         if (additionalState.isApplyWireFrame()) {
             state.wireframe = additionalState.wireframe;
+        }else{
+            state.wireframe = wireframe;
         }
+
         if (additionalState.isApplyCullMode()) {
             state.cullMode = additionalState.cullMode;
+        }else{
+            state.cullMode = cullMode;
         }
         if (additionalState.isApplyDepthWrite()) {
             state.depthWrite = additionalState.depthWrite;
+        }else{
+            state.depthWrite = depthWrite;
         }
         if (additionalState.isApplyDepthTest()) {
             state.depthTest = additionalState.depthTest;
+        }else{
+            state.depthTest = depthTest;
         }
         if (additionalState.isApplyColorWrite()) {
             state.colorWrite = additionalState.colorWrite;
+        }else{
+            state.colorWrite = colorWrite;
         }
         if (additionalState.isApplyBlendMode()) {
             state.blendMode = additionalState.blendMode;
+        }else{
+            state.blendMode = blendMode;
         }
         if (additionalState.isApplyAlphaTest()) {
             state.alphaTest = additionalState.alphaTest;
+        }else{
+            state.alphaTest = alphaTest;
         }
 
         if (additionalState.isApplyAlphaFallOff()) {
             state.alphaFallOff = additionalState.alphaFallOff;
+        }else{
+            state.alphaFallOff = alphaFallOff;
         }
         if (additionalState.isApplyPolyOffset()) {
             state.offsetEnabled = additionalState.offsetEnabled;
             state.offsetFactor = additionalState.offsetFactor;
             state.offsetUnits = additionalState.offsetUnits;
+        }else{
+            state.offsetEnabled = offsetEnabled;
+            state.offsetFactor = offsetFactor;
+            state.offsetUnits = offsetUnits;
         }
         return state;
     }
