@@ -48,14 +48,10 @@ public class BombControl extends RigidBodyControl implements PhysicsCollisionLis
     }
 
     public void setPhysicsSpace(PhysicsSpace space) {
-        if (space == null) {
-            if (this.space != null) {
-                this.space.removeCollisionListener(this);
-            }
-        } else {
+        super.setPhysicsSpace(space);
+        if (space != null) {
             space.addCollisionListener(this);
         }
-        super.setPhysicsSpace(space);
     }
 
     protected void createGhostObject() {
@@ -63,11 +59,14 @@ public class BombControl extends RigidBodyControl implements PhysicsCollisionLis
     }
 
     public void collision(PhysicsCollisionEvent event) {
+        if (space == null) {
+            return;
+        }
         if (event.getObjectA() == this || event.getObjectB() == this) {
             space.add(ghostObject);
             ghostObject.setPhysicsLocation(getPhysicsLocation(vector));
             space.addTickListener(this);
-            space.removeCollisionObject(this);
+            space.remove(this);
             spatial.removeFromParent();
         }
     }
@@ -87,6 +86,7 @@ public class BombControl extends RigidBodyControl implements PhysicsCollisionLis
                 ((BulletRigidBody) physicsCollisionObject).applyImpulse(vector2, Vector3f.ZERO);
             }
         }
+        space.removeCollisionListener(this);
         space.removeTickListener(this);
         space.remove(ghostObject);
     }
