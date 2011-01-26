@@ -1,4 +1,3 @@
-#version 110
 
 uniform float fExposure;
 uniform sampler2D m_Diffuse1;

@@ -1,4 +1,3 @@
-#version 110
 
 uniform vec3 v3LightPos;
 uniform float fg;
