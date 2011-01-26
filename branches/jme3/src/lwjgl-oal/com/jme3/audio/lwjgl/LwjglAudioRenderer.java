@@ -287,6 +287,8 @@ public class LwjglAudioRenderer implements AudioRenderer, Runnable {
                 } catch (InterruptedException ex) {
                 }
             }
+            if (audioDisabled)
+                return;
            
             assert src.getChannel() >= 0;
 
@@ -487,6 +489,8 @@ public class LwjglAudioRenderer implements AudioRenderer, Runnable {
                 } catch (InterruptedException ex) {
                 }
             }
+            if (audioDisabled)
+                return;
             
             switch (param){
                 case Position:
@@ -548,9 +552,6 @@ public class LwjglAudioRenderer implements AudioRenderer, Runnable {
     }
 
     public void setEnvironment(Environment env){
-        if (audioDisabled)
-            return;
-
         checkDead();
         synchronized (threadLock){
             while (!threadLock.get()){
@@ -559,6 +560,8 @@ public class LwjglAudioRenderer implements AudioRenderer, Runnable {
                 } catch (InterruptedException ex) {
                 }
             }
+            if (audioDisabled)
+                return;
             
             EFX10.alEffectf(reverbFx, EFX10.AL_REVERB_DENSITY,             env.getDensity());
             EFX10.alEffectf(reverbFx, EFX10.AL_REVERB_DIFFUSION,           env.getDiffusion());
@@ -751,9 +754,6 @@ public class LwjglAudioRenderer implements AudioRenderer, Runnable {
     }
 
     public void setListener(Listener listener) {
-        if (audioDisabled)
-            return;
-
         checkDead();
         synchronized (threadLock){
             while (!threadLock.get()){
@@ -762,6 +762,8 @@ public class LwjglAudioRenderer implements AudioRenderer, Runnable {
                 } catch (InterruptedException ex) {
                 }
             }
+            if (audioDisabled)
+                return;
 
             if (this.listener != null){
                 // previous listener no longer associated with current
@@ -775,9 +777,6 @@ public class LwjglAudioRenderer implements AudioRenderer, Runnable {
     }
 
     public void playSourceInstance(AudioNode src){
-        if (audioDisabled)
-            return;
-
         checkDead();
         synchronized (threadLock){
             while (!threadLock.get()){
@@ -786,6 +785,8 @@ public class LwjglAudioRenderer implements AudioRenderer, Runnable {
                 } catch (InterruptedException ex) {
                 }
             }
+            if (audioDisabled)
+                return;
             
             if (src.getAudioData() instanceof AudioStream)
                 throw new UnsupportedOperationException(
@@ -817,11 +818,6 @@ public class LwjglAudioRenderer implements AudioRenderer, Runnable {
 
     
     public void playSource(AudioNode src) {
-        if (audioDisabled)
-            return;
-
-        assert src.getStatus() == Status.Stopped || src.getChannel() == -1;
-
         checkDead();
         synchronized (threadLock){
             while (!threadLock.get()){
@@ -830,6 +826,10 @@ public class LwjglAudioRenderer implements AudioRenderer, Runnable {
                 } catch (InterruptedException ex) {
                 }
             }
+            if (audioDisabled)
+                return;
+
+            assert src.getStatus() == Status.Stopped || src.getChannel() == -1;
 
             if (src.getStatus() == Status.Playing){
                 return;
@@ -856,9 +856,6 @@ public class LwjglAudioRenderer implements AudioRenderer, Runnable {
 
     
     public void pauseSource(AudioNode src) {
-        if (audioDisabled)
-            return;
-
         checkDead();
         synchronized (threadLock){
             while (!threadLock.get()){
@@ -867,6 +864,8 @@ public class LwjglAudioRenderer implements AudioRenderer, Runnable {
                 } catch (InterruptedException ex) {
                 }
             }
+            if (audioDisabled)
+                return;
             
             if (src.getStatus() == Status.Playing){
                 assert src.getChannel() != -1;
@@ -879,9 +878,6 @@ public class LwjglAudioRenderer implements AudioRenderer, Runnable {
 
     
     public void stopSource(AudioNode src) {
-        if (audioDisabled)
-            return;
-
         synchronized (threadLock){
             while (!threadLock.get()){
                 try {
@@ -889,6 +885,8 @@ public class LwjglAudioRenderer implements AudioRenderer, Runnable {
                 } catch (InterruptedException ex) {
                 }
             }
+            if (audioDisabled)
+                return;
             
             if (src.getStatus() != Status.Stopped){
                 int chan = src.getChannel();

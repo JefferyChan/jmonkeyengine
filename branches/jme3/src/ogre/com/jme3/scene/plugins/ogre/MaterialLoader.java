@@ -149,7 +149,7 @@ public class MaterialLoader implements AssetLoader {
         }else{
             texture.setImage(loadedTexture.getImage());
             texture.setMinFilter(loadedTexture.getMinFilter());
-            texture.setTextureKey(loadedTexture.getTextureKey());
+            texture.setKey(loadedTexture.getKey());
 
             // XXX: Is this really neccessary?
             texture.setWrap(WrapMode.Repeat);

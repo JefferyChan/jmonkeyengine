@@ -32,6 +32,7 @@
 
 package com.jme3.asset;
 
+import com.jme3.asset.AssetCache.SmartAssetInfo;
 import com.jme3.audio.AudioKey;
 import com.jme3.audio.AudioData;
 import com.jme3.font.BitmapFont;
@@ -197,7 +198,21 @@ public class DesktopAssetManager implements AssetManager {
         if (eventListener != null)
             eventListener.assetRequested(key);
 
-        Object o = key.shouldCache() ? cache.getFromCache(key) : null;
+        AssetKey smartKey = null;
+        Object o = null;
+        if (key.shouldCache()){
+            if (key.useSmartCache()){
+                SmartAssetInfo smartInfo = cache.getFromSmartCache(key);
+                if (smartInfo != null){
+                    smartKey = smartInfo.smartKey.get();
+                    if (smartKey != null){
+                        o = smartInfo.asset;
+                    }
+                }
+            }else{
+                o = cache.getFromCache(key);
+            }
+        }
         if (o == null){
             AssetLoader loader = handler.aquireLoader(key);
             if (loader == null){
@@ -249,7 +264,19 @@ public class DesktopAssetManager implements AssetManager {
 
         // object o is the asset
         // create an instance for user
-        return (T) key.createClonedInstance(o);
+        T clone = (T) key.createClonedInstance(o);
+
+        if (key.useSmartCache()){
+            if (smartKey != null){
+                // smart asset was already cached, use original key
+                ((Asset)clone).setKey(smartKey);
+            }else{
+                // smart asset was cached on this call, use our key
+                ((Asset)clone).setKey(key);
+            }
+        }
+        
+        return clone;
     }
 
     public Object loadAsset(String name){

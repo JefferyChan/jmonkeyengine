@@ -68,6 +68,15 @@ public class TextureKey extends AssetKey<Texture> {
         return name + (flipY ? " (Flipped)" : "") + (asCube ? " (Cube)" : "") + (generateMips ? " (Mipmaped)" : "");
     }
 
+    /**
+     * Enable smart caching for textures
+     * @return
+     */
+    @Override
+    public boolean useSmartCache(){
+        return true;
+    }
+
     public Object createClonedInstance(Object asset){
         Texture tex = (Texture) asset;
         return tex.createSimpleClone();
@@ -97,7 +106,6 @@ public class TextureKey extends AssetKey<Texture> {
         if (img.hasMipmaps() || isGenerateMips())
             tex.setMinFilter(Texture.MinFilter.Trilinear);
 
-        tex.setTextureKey(this);
         tex.setAnisotropicFilter(getAnisotropy());
         tex.setName(getName());
         tex.setImage(img);

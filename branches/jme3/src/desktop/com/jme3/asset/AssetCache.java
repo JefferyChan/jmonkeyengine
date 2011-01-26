@@ -32,6 +32,7 @@
 
 package com.jme3.asset;
 
+import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.WeakHashMap;
 
@@ -44,7 +45,13 @@ import java.util.WeakHashMap;
  */
 public class AssetCache {
 
-    private final WeakHashMap<AssetKey, Asset> smartCache = new WeakHashMap<AssetKey, Asset>();
+    public static final class SmartAssetInfo {
+        public WeakReference<AssetKey> smartKey;
+        public Asset asset;
+    }
+
+    private final WeakHashMap<AssetKey, SmartAssetInfo> smartCache
+            = new WeakHashMap<AssetKey, SmartAssetInfo>();
     private final HashMap<AssetKey, Object> regularCache = new HashMap<AssetKey, Object>();
 
     /**
@@ -59,7 +66,11 @@ public class AssetCache {
                 // put in smart cache
                 Asset asset = (Asset) obj;
                 asset.setKey(null); // no circular references
-                smartCache.put(key, asset);
+                SmartAssetInfo smartInfo = new SmartAssetInfo();
+                smartInfo.asset = asset;
+                // use the original key as smart key
+                smartInfo.smartKey = new WeakReference<AssetKey>(key); 
+                smartCache.put(key, smartInfo);
             }else{
                 // put in regular cache
                 regularCache.put(key, obj);
@@ -91,8 +102,21 @@ public class AssetCache {
      */
     public Object getFromCache(AssetKey key){
         synchronized (regularCache){
-            return regularCache.get(key);
+            if (key.useSmartCache()) {
+                return smartCache.get(key).asset;
+            } else {
+                return regularCache.get(key);
+            }
         }
+    }
+
+    /**
+     * Retrieves smart asset info from the cache.
+     * @param key
+     * @return
+     */
+    public SmartAssetInfo getFromSmartCache(AssetKey key){
+        return smartCache.get(key);
     }
 
     /**

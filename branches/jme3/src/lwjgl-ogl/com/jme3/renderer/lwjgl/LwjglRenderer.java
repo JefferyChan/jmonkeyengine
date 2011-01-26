@@ -184,8 +184,10 @@ public class LwjglRenderer implements Renderer {
             }
         }
 
-
-        String versionStr = glGetString(GL_SHADING_LANGUAGE_VERSION);
+        String versionStr = null;
+        if (ctxCaps.OpenGL20){
+            versionStr = glGetString(GL_SHADING_LANGUAGE_VERSION);
+        }
         if (versionStr == null || versionStr.equals("")) {
             glslVer = -1;
             throw new UnsupportedOperationException("GLSL and OpenGL2 is "

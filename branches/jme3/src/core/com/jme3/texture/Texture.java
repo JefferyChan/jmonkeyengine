@@ -32,17 +32,15 @@
 
 package com.jme3.texture;
 
+import com.jme3.asset.Asset;
+import com.jme3.asset.AssetKey;
 import com.jme3.asset.TextureKey;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
 import com.jme3.export.InputCapsule;
 import com.jme3.export.OutputCapsule;
 import com.jme3.export.Savable;
-import com.jme3.renderer.GLObject;
-import com.jme3.renderer.Renderer;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * <code>Texture</code> defines a texture object to be used to display an
@@ -59,7 +57,7 @@ import java.util.logging.Logger;
  * @author Joshua Slack
  * @version $Id: Texture.java 4131 2009-03-19 20:15:28Z blaine.dev $
  */
-public abstract class Texture implements Savable, Cloneable {
+public abstract class Texture implements Asset, Savable, Cloneable {
 
     public enum Type {
 
@@ -400,10 +398,30 @@ public abstract class Texture implements Savable, Cloneable {
     /**
      * @param key The texture key that was used to load this texture
      */
+    public void setKey(AssetKey key){
+        this.key = (TextureKey) key;
+    }
+
+    public AssetKey getKey(){
+        return this.key;
+    }
+    
+    /**
+     * 
+     * @param key
+     * @deprecated Use {@link Texture#setKey(com.jme3.asset.AssetKey) }
+     */
+    @Deprecated
     public void setTextureKey(TextureKey key){
         this.key = key;
     }
 
+    /**
+     * 
+     * @return
+     * @deprecated Use {@link Texture#getKey() }
+     */
+    @Deprecated
     public TextureKey getTextureKey(){
         return key;
     }
@@ -581,7 +599,7 @@ public abstract class Texture implements Savable, Cloneable {
         rVal.setAnisotropicFilter(anisotropicFilter);
         rVal.setImage(image); // NOT CLONED.
 //        rVal.memReq = memReq;
-        rVal.setTextureKey(key);
+        rVal.setKey(key);
         rVal.setName(name);
 //        rVal.setBlendColor(blendColor != null ? blendColor.clone() : null);
 //        if (getTextureKey() != null) {
