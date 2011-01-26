@@ -190,7 +190,7 @@ public class Converter {
         for (int i = 0; i < mesh.numVertices * 3; i++) {
             vertices.put(i, mesh.vertexBase.getFloat(i*4));
         }
-
+        jmeMesh.getFloatBuffer(Type.Position).clear();
         jmeMesh.updateCounts();
         jmeMesh.updateBound();
 

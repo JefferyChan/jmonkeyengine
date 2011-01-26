@@ -200,6 +200,7 @@ public class DebugShapeFactory {
             vertices.put(vertexC.x).put(vertexC.y).put(vertexC.z);
         }
 
+        vertices.clear();
         return vertices;
     }
 }
@@ -245,6 +246,7 @@ class BufferedTriangleCallback extends TriangleCallback {
             verticesBuffer.put(v.x).put(v.y).put(v.z);
         }
 
+        vertices.clear();
         return verticesBuffer;
     }
 }
