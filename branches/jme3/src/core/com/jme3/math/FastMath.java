@@ -661,14 +661,15 @@ final public class FastMath {
      */
     public static Vector3f cartesianToSpherical(Vector3f cartCoords,
             Vector3f store) {
-        if (cartCoords.x == 0) {
-            cartCoords.x = FastMath.FLT_EPSILON;
+        float x = cartCoords.x;
+        if (x == 0) {
+            x = FastMath.FLT_EPSILON;
         }
-        store.x = FastMath.sqrt((cartCoords.x * cartCoords.x)
+        store.x = FastMath.sqrt((x * x)
                 + (cartCoords.y * cartCoords.y)
                 + (cartCoords.z * cartCoords.z));
-        store.y = FastMath.atan(cartCoords.z / cartCoords.x);
-        if (cartCoords.x < 0) {
+        store.y = FastMath.atan(cartCoords.z / x);
+        if (x < 0) {
             store.y += FastMath.PI;
         }
         store.z = FastMath.asin(cartCoords.y / store.x);
@@ -696,14 +697,15 @@ final public class FastMath {
      */
     public static Vector3f cartesianZToSpherical(Vector3f cartCoords,
             Vector3f store) {
-        if (cartCoords.x == 0) {
-            cartCoords.x = FastMath.FLT_EPSILON;
+        float x = cartCoords.x;
+        if (x == 0) {
+            x = FastMath.FLT_EPSILON;
         }
-        store.x = FastMath.sqrt((cartCoords.x * cartCoords.x)
+        store.x = FastMath.sqrt((x * x)
                 + (cartCoords.y * cartCoords.y)
                 + (cartCoords.z * cartCoords.z));
-        store.z = FastMath.atan(cartCoords.z / cartCoords.x);
-        if (cartCoords.x < 0) {
+        store.z = FastMath.atan(cartCoords.z / x);
+        if (x < 0) {
             store.z += FastMath.PI;
         }
         store.y = FastMath.asin(cartCoords.y / store.x);

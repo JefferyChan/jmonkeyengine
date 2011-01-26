@@ -632,21 +632,30 @@ public final class Quaternion implements Savable, Cloneable {
      *            the amount to interpolate between the two quaternions.
      */
     public Quaternion slerp(Quaternion q1, Quaternion q2, float t) {
+        float x1 = q1.getX();
+        float y1 = q1.getY();
+        float z1 = q1.getZ();
+        float w1 = q1.getW();
+        float x2 = q2.getX();
+        float y2 = q2.getY();
+        float z2 = q2.getZ();
+        float w2 = q2.getW();
+        
         // Create a local quaternion to store the interpolated quaternion
-        if (q1.x == q2.x && q1.y == q2.y && q1.z == q2.z && q1.w == q2.w) {
+        if (x1 == x2 && y1 == y2 && z1 == z2 && w1 == w2) {
             this.set(q1);
             return this;
         }
 
-        float result = (q1.x * q2.x) + (q1.y * q2.y) + (q1.z * q2.z)
-                + (q1.w * q2.w);
+        float result = (x1 * x2) + (y1 * y2) + (z1 * z2)
+                + (w1 * w2);
 
         if (result < 0.0f) {
             // Negate the second quaternion and the result of the dot product
-            q2.x = -q2.x;
-            q2.y = -q2.y;
-            q2.z = -q2.z;
-            q2.w = -q2.w;
+            x2 = -x2;
+            y2 = -y2;
+            z2 = -z2;
+            w2 = -w2;
             result = -result;
         }
 
@@ -670,10 +679,10 @@ public final class Quaternion implements Savable, Cloneable {
         // Calculate the x, y, z and w values for the quaternion by using a
         // special
         // form of linear interpolation for quaternions.
-        this.x = (scale0 * q1.x) + (scale1 * q2.x);
-        this.y = (scale0 * q1.y) + (scale1 * q2.y);
-        this.z = (scale0 * q1.z) + (scale1 * q2.z);
-        this.w = (scale0 * q1.w) + (scale1 * q2.w);
+        this.x = (scale0 * x1) + (scale1 * x2);
+        this.y = (scale0 * y1) + (scale1 * y2);
+        this.z = (scale0 * z1) + (scale1 * z2);
+        this.w = (scale0 * w1) + (scale1 * w2);
 
         // Return the interpolated quaternion
         return this;
@@ -688,49 +697,8 @@ public final class Quaternion implements Savable, Cloneable {
      * @param changeAmnt
      *            The amount diffrence
      */
-    public void slerp(Quaternion q2, float changeAmnt) {
-        if (this.x == q2.x && this.y == q2.y && this.z == q2.z
-                && this.w == q2.w) {
-            return;
-        }
-
-        float result = (this.x * q2.x) + (this.y * q2.y) + (this.z * q2.z)
-                + (this.w * q2.w);
-
-        if (result < 0.0f) {
-            // Negate the second quaternion and the result of the dot product
-            q2.x = -q2.x;
-            q2.y = -q2.y;
-            q2.z = -q2.z;
-            q2.w = -q2.w;
-            result = -result;
-        }
-
-        // Set the first and second scale for the interpolation
-        float scale0 = 1 - changeAmnt;
-        float scale1 = changeAmnt;
-
-        // Check if the angle between the 2 quaternions was big enough to
-        // warrant such calculations
-        if ((1 - result) > 0.1f) {
-            // Get the angle between the 2 quaternions, and then store the sin()
-            // of that angle
-            float theta = FastMath.acos(result);
-            float invSinTheta = 1f / FastMath.sin(theta);
-
-            // Calculate the scale for q1 and q2, according to the angle and
-            // it's sine value
-            scale0 = FastMath.sin((1 - changeAmnt) * theta) * invSinTheta;
-            scale1 = FastMath.sin((changeAmnt * theta)) * invSinTheta;
-        }
-
-        // Calculate the x, y, z and w values for the quaternion by using a
-        // special
-        // form of linear interpolation for quaternions.
-        this.x = (scale0 * this.x) + (scale1 * q2.x);
-        this.y = (scale0 * this.y) + (scale1 * q2.y);
-        this.z = (scale0 * this.z) + (scale1 * q2.z);
-        this.w = (scale0 * this.w) + (scale1 * q2.w);
+    public Quaternion slerp(Quaternion q2, float changeAmnt) {
+        return slerp(this, q2, changeAmnt);
     }
 
     /**
