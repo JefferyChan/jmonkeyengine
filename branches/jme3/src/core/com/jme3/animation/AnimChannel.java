@@ -182,6 +182,7 @@ public class AnimChannel {
      * Set the current animation that is played by this AnimChannel.
      * This resets the time to zero, and optionally blends the animation
      * over <code>blendTime</code> seconds with the currently playing animation.
+     * Notice that this method will reset the control's speed to 1.0.
      *
      * @param name The name of the animation to play
      * @param blendTime The blend time over which to blend the new animation
