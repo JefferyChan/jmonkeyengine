@@ -121,14 +121,29 @@ public abstract class SimpleApplication extends Application {
         super.start();
     }
 
+    /**
+     * Retrieves flyCam
+     * @return flyCam Camera object
+     *
+     */
     public FlyByCamera getFlyByCamera() {
         return flyCam;
     }
 
+    /**
+     * Retrieves guiNode
+     * @return guiNode Node object
+     *
+     */
     public Node getGuiNode() {
         return guiNode;
     }
 
+    /**
+     * Retrieves rootNode
+     * @return rootNode Node object
+     *
+     */
     public Node getRootNode() {
         return rootNode;
     }
@@ -137,10 +152,19 @@ public abstract class SimpleApplication extends Application {
         return showSettings;
     }
 
+    /**
+     * Toggles settings window to display at start-up
+     * @param showSettings Sets true/false
+     *
+     */
     public void setShowSettings(boolean showSettings) {
         this.showSettings = showSettings;
     }
 
+    /**
+     * Attaches FPS statistics to guiNode and displays it on the screen.
+     *
+     */
     public void loadFPSText(){
         guiFont = assetManager.loadFont("Interface/Fonts/Default.fnt");
         fpsText = new BitmapText(guiFont, false);
@@ -149,6 +173,11 @@ public abstract class SimpleApplication extends Application {
         guiNode.attachChild(fpsText);
     }
 
+     /**
+      * Attaches Statistics View to guiNode and displays it on the screen
+      * above FPS statistics line.
+      *
+      */
     public void loadStatsView(){
         statsView = new StatsView("Statistics View", assetManager, renderer.getStatistics());
 //         move it up so it appears above fps text
