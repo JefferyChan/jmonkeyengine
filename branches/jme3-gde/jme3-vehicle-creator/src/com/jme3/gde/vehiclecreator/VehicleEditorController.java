@@ -77,8 +77,10 @@ public class VehicleEditorController implements LookupListener, ActionListener {
         result.addLookupListener(this);
         toolsNode.addLight(new DirectionalLight());
         Node track = (Node) new DesktopAssetManager(true).loadModel("Models/Racetrack/Raceway.j3o");
-        track.getChild("Plane-ogremesh").getControl(RigidBodyControl.class).setPhysicsLocation(new Vector3f(30, 0, 0));
-        track.getChild("Plane-ogremesh").getControl(RigidBodyControl.class).setPhysicsRotation(new Quaternion().fromAngleAxis(FastMath.HALF_PI * 0.68f, Vector3f.UNIT_Y).toRotationMatrix());
+        track.getChild("Grass").getControl(RigidBodyControl.class).setPhysicsLocation(new Vector3f(30, -1, 0));
+        track.getChild("Grass").getControl(RigidBodyControl.class).setPhysicsRotation(new Quaternion().fromAngleAxis(FastMath.HALF_PI * 0.68f, Vector3f.UNIT_Y).toRotationMatrix());
+        track.getChild("Road").getControl(RigidBodyControl.class).setPhysicsLocation(new Vector3f(30, 0, 0));
+        track.getChild("Road").getControl(RigidBodyControl.class).setPhysicsRotation(new Quaternion().fromAngleAxis(FastMath.HALF_PI * 0.68f, Vector3f.UNIT_Y).toRotationMatrix());
         toolsNode.attachChild(track);
         bulletState = new BulletAppState();
 
