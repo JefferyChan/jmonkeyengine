@@ -33,7 +33,6 @@
 package com.jme3.gde.core.sceneexplorer.nodes;
 
 import com.jme3.light.AmbientLight;
-import com.jme3.light.PointLight;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
 import org.openide.cookies.SaveCookie;
@@ -46,16 +45,16 @@ import org.openide.nodes.Sheet;
  */
 @org.openide.util.lookup.ServiceProvider(service=SceneExplorerNode.class)
 public class JmeAmbientLight extends JmeLight{
-    AmbientLight pointLight;
+    AmbientLight AmbientLight;
 
     public JmeAmbientLight() {
     }
 
-    public JmeAmbientLight(Spatial spatial, AmbientLight pointLight) {
-        super(spatial, pointLight);
-        this.pointLight = pointLight;
-        lookupContents.add(pointLight);
-        setName("PointLight");
+    public JmeAmbientLight(Spatial spatial, AmbientLight AmbientLight) {
+        super(spatial, AmbientLight);
+        this.AmbientLight = AmbientLight;
+        lookupContents.add(AmbientLight);
+        setName("AmbientLight");
     }
 
     @Override
@@ -63,15 +62,12 @@ public class JmeAmbientLight extends JmeLight{
         //TODO: multithreading..
         Sheet sheet = super.createSheet();
         Sheet.Set set = Sheet.createPropertiesSet();
-        set.setDisplayName("PointLight");
-        set.setName(PointLight.class.getName());
-        AmbientLight obj = pointLight;//getLookup().lookup(Spatial.class);
+        set.setDisplayName("AmbientLight");
+        set.setName(AmbientLight.class.getName());
+        AmbientLight obj = AmbientLight;//getLookup().lookup(Spatial.class);
         if (obj == null) {
             return sheet;
         }
-
-        set.put(makeProperty(obj, Vector3f.class, "getPosition", "setPosition", "Position"));
-        set.put(makeProperty(obj, float.class, "getRadius", "setRadius", "Radius"));
 
         sheet.put(set);
         return sheet;
