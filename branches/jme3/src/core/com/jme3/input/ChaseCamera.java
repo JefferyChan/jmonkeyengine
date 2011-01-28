@@ -592,7 +592,7 @@ public class ChaseCamera implements ActionListener, AnalogListener, Control {
     }
 
     /**
-     * Sets the chasing sensitivity, the lower the value the slower the camera will go in the trail of the target when it moves
+     * Sets the chasing sensitivity, the lower the value the slower the camera will follow the target when it moves
      * @param chasingSensitivity
      */
     public void setChasingSensitivity(float chasingSensitivity) {
