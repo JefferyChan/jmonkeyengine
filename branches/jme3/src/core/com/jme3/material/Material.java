@@ -657,8 +657,6 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
             r.setShader(shader);
             r.renderMesh(g.getMesh(), g.getLodLevel(), 1);
         }
-        //re applying default render state at the end of the render to avoid depth write issues, MUST BE A BETTER WAY
-        r.applyRenderState(RenderState.DEFAULT);
     }
 
     public void selectTechnique(String name, RenderManager renderManager) {
@@ -798,24 +796,15 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
             return;
         }
 
-        if (techDef.getRenderState() != null) {
-            r.applyRenderState(techDef.getRenderState().copyMergedTo(additionalState, mergedRenderState));
-//            if (additionalState != null) {
-//                r.applyRenderState(additionalState);
-//            }
-        } else {
-            r.applyRenderState(RenderState.DEFAULT.copyMergedTo(additionalState, mergedRenderState));
-
-//            if (additionalState != null) {
-//                r.applyRenderState(additionalState);
-//            } else {
-//                r.applyRenderState(RenderState.DEFAULT);
-//            }
-        }
         if (rm.getForcedRenderState() != null) {
             r.applyRenderState(rm.getForcedRenderState());
+        }else{
+            if (techDef.getRenderState() != null) {
+                r.applyRenderState(techDef.getRenderState().copyMergedTo(additionalState, mergedRenderState));
+            } else {
+                r.applyRenderState(RenderState.DEFAULT.copyMergedTo(additionalState, mergedRenderState));
+            }
         }
-
 
 
         // update camera and world matrices
@@ -861,8 +850,6 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
         }
 
         r.renderMesh(geom.getMesh(), geom.getLodLevel(), 1);
-        //re applying default render state at the end of the render to avoid depth write issues, MUST BE A BETTER WAY
-        r.applyRenderState(RenderState.DEFAULT);
     }
 
     public void write(JmeExporter ex) throws IOException {

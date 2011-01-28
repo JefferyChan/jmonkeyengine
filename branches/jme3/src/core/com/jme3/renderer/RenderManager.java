@@ -97,7 +97,6 @@ public class RenderManager {
             camLeft = new Vector3f(),
             camDir = new Vector3f(),
             camLoc = new Vector3f();
-    
     //temp technique
     private String tmpTech;
 
@@ -422,7 +421,7 @@ public class RenderManager {
                 // use geometry's material
                 g.getMaterial().render(g, this);
                 g.getMaterial().selectTechnique(tmpTech, this);
-                //Revert this part from revision 6197
+                //Reverted this part from revision 6197
                 //If forcedTechnique does not exists, and frocedMaterial is not set, the geom MUST NOT be rendered
             } else if (forcedMaterial != null) {
                 // use forced material
@@ -431,26 +430,18 @@ public class RenderManager {
         } else if (forcedMaterial != null) {
             // use forced material
             forcedMaterial.render(g, this);
-        } else {
-            Technique t = g.getMaterial().getActiveTechnique();
-
-            if (forcedRenderState != null) {
-                // TODO: Spec violation. Fix me.
-//                g.getMaterial().setAdditionalState(forcedRenderState);
-//                // use geometry's material
-                g.getMaterial().render(g, this);
-//                g.getMaterial().setAdditionalState(null);
-            } else {
-                // use geometry's material
-                g.getMaterial().render(g, this);
-            }
+        } else {            
+            g.getMaterial().render(g, this);
         }
+        //re applying default render state at the end of the render to avoid depth write issues, MUST BE A BETTER WAY
+        renderer.applyRenderState(RenderState.DEFAULT);
     }
 
     public void renderGeometryList(GeometryList gl) {
         for (int i = 0; i < gl.size(); i++) {
             renderGeometry(gl.get(i));
         }
+
     }
 
     /**
