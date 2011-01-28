@@ -657,6 +657,8 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
             r.setShader(shader);
             r.renderMesh(g.getMesh(), g.getLodLevel(), 1);
         }
+        //re applying default render state at the end of the render to avoid depth write issues, MUST BE A BETTER WAY
+        r.applyRenderState(RenderState.DEFAULT);
     }
 
     public void selectTechnique(String name, RenderManager renderManager) {
@@ -859,6 +861,8 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
         }
 
         r.renderMesh(geom.getMesh(), geom.getLodLevel(), 1);
+        //re applying default render state at the end of the render to avoid depth write issues, MUST BE A BETTER WAY
+        r.applyRenderState(RenderState.DEFAULT);
     }
 
     public void write(JmeExporter ex) throws IOException {
