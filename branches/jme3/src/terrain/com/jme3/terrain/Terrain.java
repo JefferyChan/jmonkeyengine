@@ -32,6 +32,7 @@
 
 package com.jme3.terrain;
 
+import com.jme3.material.Material;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
@@ -140,4 +141,12 @@ public interface Terrain {
      * cached ahead of time. Use this method to do that.
      */
     public void generateEntropy(ProgressMonitor monitor);
+
+
+    /**
+     * Returns the material that this terrain uses.
+     * This does not necessarily have to guarantee the material
+     * return is the only material used in the whole terrain structure.
+     */
+    public Material getMaterial();
 }

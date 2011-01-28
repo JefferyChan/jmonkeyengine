@@ -32,6 +32,7 @@
 
 package com.jme3.terrain.geomipmap;
 
+import com.jme3.material.Material;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
@@ -64,6 +65,7 @@ import com.jme3.terrain.geomipmap.picking.BresenhamTerrainPicker;
 import com.jme3.terrain.geomipmap.picking.TerrainPickData;
 import com.jme3.terrain.geomipmap.picking.TerrainPicker;
 import com.jme3.util.BufferUtils;
+import com.jme3.util.TangentBinormalGenerator;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.List;
@@ -197,6 +199,7 @@ public class TerrainQuad extends Node implements Terrain {
      * Should only be called on the root quad
      */
     protected void updateNormals() {
+        
         if (needToRecalculateNormals()) {
             //TODO background-thread this if it ends up being expensive
             fixNormals(affectedAreaBBox); // the affected patches
@@ -306,6 +309,21 @@ public class TerrainQuad extends Node implements Terrain {
 
     protected boolean isRootQuad() {
         return (getParent() != null && !(getParent() instanceof TerrainQuad) );
+    }
+
+    public Material getMaterial() {
+        // get the material from one of the children. They all share the same material
+        if (children != null) {
+			for (int i = children.size(); --i >= 0;) {
+				Spatial child = children.get(i);
+				if (child instanceof TerrainQuad) {
+					return ((TerrainQuad)child).getMaterial();
+				} else if (child instanceof TerrainPatch) {
+                    return ((TerrainPatch)child).getMaterial();
+                }
+            }
+        }
+        return null;
     }
 	
 	/**
@@ -647,6 +665,21 @@ public class TerrainQuad extends Node implements Terrain {
 
 	}
 
+    public void generateDebugTangents(Material mat) {
+        for (int x = children.size(); --x >= 0;) {
+            Spatial child = children.get(x);
+            if (child instanceof TerrainQuad) {
+                ((TerrainQuad)child).generateDebugTangents(mat);
+            } else if (child instanceof TerrainPatch) {
+                Geometry debug = new Geometry( "Debug " + name,
+                    TangentBinormalGenerator.genTbnLines( ((TerrainPatch)child).getMesh(), 0.1f));
+                attachChild(debug);
+                debug.setLocalTranslation(child.getLocalTranslation());
+                debug.setCullHint(CullHint.Never);
+                debug.setMaterial(mat);
+            }
+        }
+    }
 	/**
 	 * <code>createQuadBlock</code> creates four child blocks from this page.
 	 */
@@ -681,6 +714,7 @@ public class TerrainQuad extends Node implements Terrain {
 		patch1.setModelBound(new BoundingBox());
 		patch1.updateModelBound();
 		patch1.setLodCalculator(lodCalculatorFactory);
+        TangentBinormalGenerator.generate(patch1);
 
 		// 2 lower left
 		float[] heightBlock2 = createHeightSubBlock(heightMap, 0, split - 1,
@@ -702,6 +736,7 @@ public class TerrainQuad extends Node implements Terrain {
 		patch2.setModelBound(new BoundingBox());
 		patch2.updateModelBound();
 		patch2.setLodCalculator(lodCalculatorFactory);
+        TangentBinormalGenerator.generate(patch2);
 
 		// 3 upper right
 		float[] heightBlock3 = createHeightSubBlock(heightMap, split - 1, 0,
@@ -723,6 +758,7 @@ public class TerrainQuad extends Node implements Terrain {
 		patch3.setModelBound(new BoundingBox());
 		patch3.updateModelBound();
 		patch3.setLodCalculator(lodCalculatorFactory);
+        TangentBinormalGenerator.generate(patch3);
 
 		// 4 lower right
 		float[] heightBlock4 = createHeightSubBlock(heightMap, split - 1,
@@ -744,6 +780,7 @@ public class TerrainQuad extends Node implements Terrain {
 		patch4.setModelBound(new BoundingBox());
 		patch4.updateModelBound();
 		patch4.setLodCalculator(lodCalculatorFactory);
+        TangentBinormalGenerator.generate(patch4);
 	}
 	
 	public float[] createHeightSubBlock(float[] heightMap, int x,

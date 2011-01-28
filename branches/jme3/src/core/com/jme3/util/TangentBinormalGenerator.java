@@ -228,14 +228,16 @@ public class TangentBinormalGenerator {
 
         populateFromBuffer(t[0], textureBuffer, index[0]);
         populateFromBuffer(t[1], textureBuffer, index[1]);
-
-        for (int i = 2; i < vertexBuffer.capacity() / 3; i++) {
+        
+        for (int i = 2; i < indexBuffer.size(); i++) {
             index[2] = indexBuffer.get(i);
             BufferUtils.populateFromBuffer(v[2], vertexBuffer, index[2]);
             BufferUtils.populateFromBuffer(t[2], textureBuffer, index[2]);
-
+            
+            boolean isDegenerate = isDegenerateTriangle(v[0], v[1], v[2]);
             TriangleData triData = processTriangle(index, v, t);
-            if (triData != null) {
+            
+            if (triData != null && !isDegenerate) {
                 vertices[index[0]].triangles.add(triData);
                 vertices[index[1]].triangles.add(triData);
                 vertices[index[2]].triangles.add(triData);
@@ -300,6 +302,12 @@ public class TangentBinormalGenerator {
 
         return vertices;
     }
+
+    // check if the area is greater than zero
+    private static boolean isDegenerateTriangle(Vector3f a, Vector3f b, Vector3f c) {
+        return (a.subtract(b).cross(c.subtract(b))).lengthSquared() == 0;
+    }
+
 
     private static TriangleData processTriangle(int[] index,
             Vector3f[] v, Vector2f[] t)
