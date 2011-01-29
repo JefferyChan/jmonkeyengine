@@ -47,6 +47,7 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Geometry;
+import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
 import com.jme3.terrain.geomipmap.TerrainLodControl;
 import com.jme3.terrain.heightmap.AbstractHeightMap;
@@ -55,6 +56,7 @@ import com.jme3.terrain.geomipmap.TerrainQuad;
 import com.jme3.terrain.geomipmap.lodcalc.LodPerspectiveCalculatorFactory;
 import com.jme3.texture.Texture;
 import com.jme3.texture.Texture.WrapMode;
+import com.jme3.util.SkyFactory;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -101,6 +103,7 @@ public class TerrainTestAdvanced extends SimpleApplication {
 		// TERRAIN TEXTURE material
 		matTerrain = new Material(assetManager, "Common/MatDefs/Terrain/TerrainLighting.j3md");
         matTerrain.setBoolean("useTriPlanarMapping", false);
+        matTerrain.setBoolean("WardIso", true);
 
 		// ALPHA map (for splat textures)
 		matTerrain.setTexture("AlphaMap", assetManager.loadTexture("Textures/Terrain/splat/alphamap.png"));
@@ -109,14 +112,11 @@ public class TerrainTestAdvanced extends SimpleApplication {
 		Texture heightMapImage = assetManager.loadTexture("Textures/Terrain/splat/mountains512.png");
 
 		// GRASS texture
-		Texture grass = assetManager.loadTexture("Textures/Terrain/Pond/Pond.png");//"Textures/Terrain/splat/grass.jpg");
+		Texture grass = assetManager.loadTexture("Textures/Terrain/splat/grass.jpg");
 		grass.setWrap(WrapMode.Repeat);
 		matTerrain.setTexture("DiffuseMap", grass);
 		matTerrain.setFloat("DiffuseMap_0_scale", grassScale);
-
-        Texture normalMap = assetManager.loadTexture("Textures/Terrain/Pond/Pond_normal.png");
-        matTerrain.setTexture("NormalMap_1", normalMap);
-        normalMap.setWrap(WrapMode.Repeat);
+        
 
 		// DIRT texture
 		Texture dirt = assetManager.loadTexture("Textures/Terrain/splat/dirt.jpg");
@@ -130,21 +130,27 @@ public class TerrainTestAdvanced extends SimpleApplication {
 		matTerrain.setTexture("DiffuseMap_2", rock);
 		matTerrain.setFloat("DiffuseMap_2_scale", rockScale);
 
+        
+        Texture normalMap0 = assetManager.loadTexture("Textures/Terrain/splat/grass_normal.png");
+        normalMap0.setWrap(WrapMode.Repeat);
+        Texture normalMap1 = assetManager.loadTexture("Textures/Terrain/splat/dirt_normal.png");
+        normalMap1.setWrap(WrapMode.Repeat);
+        Texture normalMap2 = assetManager.loadTexture("Textures/Terrain/splat/road_normal.png");
+        normalMap2.setWrap(WrapMode.Repeat);
+        matTerrain.setTexture("NormalMap", normalMap0);
+        matTerrain.setTexture("NormalMap_1", normalMap2);
+        matTerrain.setTexture("NormalMap_2", normalMap2);
+
 		// WIREFRAME material
 		matWire = new Material(assetManager, "Common/MatDefs/Misc/WireColor.j3md");
         matWire.setColor("Color", ColorRGBA.Green);
 
         lighting = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
         lighting.setTexture("DiffuseMap", grass);
-        lighting.setTexture("NormalMap", normalMap);
+        lighting.setTexture("NormalMap", normalMap1);
         lighting.setBoolean("WardIso", true);
 
-        /*Box box = new Box(10,10,10);
-        Geometry bigBox = new Geometry();
-        bigBox.setMesh(box);
-        bigBox.setLocalTranslation(-30, 30, 0);
-        bigBox.setMaterial(lighting);
-        rootNode.attachChild(bigBox);*/
+        createSky();
 
 		// CREATE HEIGHTMAP
 		AbstractHeightMap heightmap = null;
@@ -178,9 +184,6 @@ public class TerrainTestAdvanced extends SimpleApplication {
 		terrain.setLocalTranslation(0, -100, 0);
 		terrain.setLocalScale(2f, 1f, 2f);
 		rootNode.attachChild(terrain);
-
-        //Material debugMat = assetManager.loadMaterial("Common/Materials/VertexColor.j3m");
-        //terrain.generateDebugTangents(debugMat);
 
         DirectionalLight light = new DirectionalLight();
         light.setDirection((new Vector3f(-0.5f,-1f, -0.5f)).normalize());
@@ -251,4 +254,16 @@ public class TerrainTestAdvanced extends SimpleApplication {
             }
 		}
 	};
+
+    private void createSky() {
+        Texture west = assetManager.loadTexture("Textures/Sky/Lagoon/lagoon_west.jpg");
+        Texture east = assetManager.loadTexture("Textures/Sky/Lagoon/lagoon_east.jpg");
+        Texture north = assetManager.loadTexture("Textures/Sky/Lagoon/lagoon_north.jpg");
+        Texture south = assetManager.loadTexture("Textures/Sky/Lagoon/lagoon_south.jpg");
+        Texture up = assetManager.loadTexture("Textures/Sky/Lagoon/lagoon_up.jpg");
+        Texture down = assetManager.loadTexture("Textures/Sky/Lagoon/lagoon_down.jpg");
+
+        Spatial sky = SkyFactory.createSky(assetManager, west, east, north, south, up, down);
+        rootNode.attachChild(sky);
+    }
 }

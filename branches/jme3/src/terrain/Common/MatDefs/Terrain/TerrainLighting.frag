@@ -88,9 +88,20 @@ float lightComputeDiffuse(in vec3 norm, in vec3 lightdir, in vec3 viewdir){
 }
 
 float lightComputeSpecular(in vec3 norm, in vec3 viewdir, in vec3 lightdir, in float shiny){
-    // Standard Phong
-    vec3 R = reflect(-lightdir, norm);
-    return pow(max(tangDot(R, viewdir), 0.0), shiny);
+    #ifdef WARDISO
+        // Isotropic Ward
+        vec3 halfVec = normalize(viewdir + lightdir);
+        float NdotH  = max(0.001, tangDot(norm, halfVec));
+        float NdotV  = max(0.001, tangDot(norm, viewdir));
+        float NdotL  = max(0.001, tangDot(norm, lightdir));
+        float a      = tan(acos(NdotH));
+        float p      = max(shiny/128.0, 0.001);
+        return NdotL * (1.0 / (4.0*3.14159265*p*p)) * (exp(-(a*a)/(p*p)) / (sqrt(NdotV * NdotL)));
+    #else
+       // Standard Phong
+       vec3 R = reflect(-lightdir, norm);
+       return pow(max(tangDot(R, viewdir), 0.0), shiny);
+    #endif
 }
 
 vec2 computeLighting(in vec3 wvPos, in vec3 wvNorm, in vec3 wvViewDir, in vec3 wvLightDir){
@@ -127,36 +138,38 @@ vec2 computeLighting(in vec3 wvPos, in vec3 wvNorm, in vec3 wvViewDir, in vec3 w
 
   vec3 calculateNormal(in vec2 texCoord) {
     vec3 normal = vec3(0,0,1);
+    vec4 normalHeight = vec4(0,0,0,0);
+    vec3 n = vec3(0,0,0);
 
     vec4 alphaBlend = texture2D( m_AlphaMap, texCoord.xy );
 
     #ifdef NORMALMAP
-      vec4 normalHeight = texture2D(m_NormalMap, texCoord * m_DiffuseMap_0_scale);
-      vec3 n = (normalHeight.xyz * vec3(2.0) - vec3(1.0));
+      normalHeight = texture2D(m_NormalMap, texCoord * m_DiffuseMap_0_scale);
+      n = (normalHeight.xyz * vec3(2.0) - vec3(1.0));
       n.z = sqrt(1.0 - (n.x * n.x) - (n.y * n.y));
       n.y = -n.y;
       normal += n * alphaBlend.r;
     #endif
 
     #ifdef NORMALMAP_1
-      vec4 normalHeight = texture2D(m_NormalMap_1, texCoord * m_DiffuseMap_1_scale);
-      vec3 n = (normalHeight.xyz * vec3(2.0) - vec3(1.0));
+      normalHeight = texture2D(m_NormalMap_1, texCoord * m_DiffuseMap_1_scale);
+      n = (normalHeight.xyz * vec3(2.0) - vec3(1.0));
       n.z = sqrt(1.0 - (n.x * n.x) - (n.y * n.y));
       n.y = -n.y;
       normal += n * alphaBlend.g;
     #endif
 
     #ifdef NORMALMAP_2
-      vec4 normalHeight = texture2D(m_NormalMap_2, texCoord * m_DiffuseMap_2_scale);
-      vec3 n = (normalHeight.xyz * vec3(2.0) - vec3(1.0));
+      normalHeight = texture2D(m_NormalMap_2, texCoord * m_DiffuseMap_2_scale);
+      n = (normalHeight.xyz * vec3(2.0) - vec3(1.0));
       n.z = sqrt(1.0 - (n.x * n.x) - (n.y * n.y));
       n.y = -n.y;
       normal += n * alphaBlend.b;
     #endif
 
     #ifdef NORMALMAP_3
-      vec4 normalHeight = texture2D(m_NormalMap_3, texCoord * m_DiffuseMap_3_scale);
-      vec3 n = (normalHeight.xyz * vec3(2.0) - vec3(1.0));
+      normalHeight = texture2D(m_NormalMap_3, texCoord * m_DiffuseMap_3_scale);
+      n = (normalHeight.xyz * vec3(2.0) - vec3(1.0));
       n.z = sqrt(1.0 - (n.x * n.x) - (n.y * n.y));
       n.y = -n.y;
       normal += n * alphaBlend.a;
@@ -166,6 +179,15 @@ vec2 computeLighting(in vec3 wvPos, in vec3 wvNorm, in vec3 wvViewDir, in vec3 w
   }
 
   #ifdef TRI_PLANAR_MAPPING
+
+    vec4 getTriPlanarBlend(in vec4 coords, in vec3 blending, in sampler2D map, in float scale) {
+      vec4 col1 = texture2D( map, coords.yz * scale);
+      vec4 col2 = texture2D( map, coords.xz * scale);
+      vec4 col3 = texture2D( map, coords.xy * scale);
+      // blend the results of the 3 planar projections.
+      vec4 tex = col1 * blending.x + col2 * blending.y + col3 * blending.z;
+      return tex;
+    }
 
     vec4 calculateTriPlanarDiffuseBlend(in vec3 wNorm, in vec4 wVert, in vec2 texCoord) {
         // tri-planar texture bending factor for this fragment's normal
@@ -178,29 +200,20 @@ vec2 computeLighting(in vec3 wvPos, in vec3 wvNorm, in vec3 wvViewDir, in vec3 w
         // texture coords
         vec4 coords = wVert;
 
-        vec4 col1 = texture2D( m_DiffuseMap, coords.yz * m_DiffuseMap_0_scale);
-        vec4 col2 = texture2D( m_DiffuseMap, coords.xz * m_DiffuseMap_0_scale );
-        vec4 col3 = texture2D( m_DiffuseMap, coords.xy * m_DiffuseMap_0_scale );
         // blend the results of the 3 planar projections.
-        vec4 tex0 = col1 * blending.x + col2 * blending.y + col3 * blending.z;
+        vec4 tex0 = getTriPlanarBlend(coords, blending, m_DiffuseMap, m_DiffuseMap_0_scale);
 
         #ifdef DIFFUSEMAP_1
-          col1 = texture2D( m_DiffuseMap_1, coords.yz * m_DiffuseMap_1_scale);
-          col2 = texture2D( m_DiffuseMap_1, coords.xz * m_DiffuseMap_1_scale );
-          col3 = texture2D( m_DiffuseMap_1, coords.xy * m_DiffuseMap_1_scale );
-          vec4 tex1 = col1 * blending.x + col2 * blending.y + col3 * blending.z;
+          // blend the results of the 3 planar projections.
+          vec4 tex1 = getTriPlanarBlend(coords, blending, m_DiffuseMap_1, m_DiffuseMap_1_scale);
         #endif
         #ifdef DIFFUSEMAP_2
-          col1 = texture2D( m_DiffuseMap_2, coords.yz * m_DiffuseMap_2_scale);
-          col2 = texture2D( m_DiffuseMap_2, coords.xz * m_DiffuseMap_2_scale );
-          col3 = texture2D( m_DiffuseMap_2, coords.xy * m_DiffuseMap_2_scale );
-          vec4 tex2 = col1 * blending.x + col2 * blending.y + col3 * blending.z;
+          // blend the results of the 3 planar projections.
+          vec4 tex2 = getTriPlanarBlend(coords, blending, m_DiffuseMap_2, m_DiffuseMap_2_scale);
         #endif
         #ifdef DIFFUSEMAP_3
-          col1 = texture2D( m_DiffuseMap_3, coords.yz * m_DiffuseMap_3_scale);
-          col2 = texture2D( m_DiffuseMap_3, coords.xz * m_DiffuseMap_3_scale );
-          col3 = texture2D( m_DiffuseMap_3, coords.xy * m_DiffuseMap_3_scale );
-          vec4 tex3 = col1 * blending.x + col2 * blending.y + col3 * blending.z;
+          // blend the results of the 3 planar projections.
+          vec4 tex3 = getTriPlanarBlend(coords, blending, m_DiffuseMap_3, m_DiffuseMap_3_scale);
         #endif
 
         vec4 alphaBlend   = texture2D( m_AlphaMap, texCoord.xy );
@@ -226,9 +239,47 @@ vec2 computeLighting(in vec3 wvPos, in vec3 wvNorm, in vec3 wvViewDir, in vec3 w
       float b = (blending.x + blending.y + blending.z);
       blending /= vec3(b, b, b);
 
+      // texture coords
+      vec4 coords = wVert;
+      vec4 alphaBlend = texture2D( m_AlphaMap, texCoord.xy );
+
       vec3 normal = vec3(0,0,1);
-      //TODO
-      return normal;
+      vec3 n = vec3(0,0,0);
+      vec4 normalHeight = vec4(0,0,0,0);
+
+      #ifdef NORMALMAP
+          normalHeight = getTriPlanarBlend(coords, blending, m_NormalMap, m_DiffuseMap_0_scale);
+          n = (normalHeight.xyz * vec3(2.0) - vec3(1.0));
+          n.z = sqrt(1.0 - (n.x * n.x) - (n.y * n.y));
+          n.y = -n.y;
+          normal += n * alphaBlend.r;
+      #endif
+
+      #ifdef NORMALMAP_1
+          normalHeight = getTriPlanarBlend(coords, blending, m_NormalMap_1, m_DiffuseMap_1_scale);
+          n = (normalHeight.xyz * vec3(2.0) - vec3(1.0));
+          n.z = sqrt(1.0 - (n.x * n.x) - (n.y * n.y));
+          n.y = -n.y;
+          normal += n * alphaBlend.g;
+      #endif
+
+      #ifdef NORMALMAP_2
+          normalHeight = getTriPlanarBlend(coords, blending, m_NormalMap_2, m_DiffuseMap_2_scale);
+          n = (normalHeight.xyz * vec3(2.0) - vec3(1.0));
+          n.z = sqrt(1.0 - (n.x * n.x) - (n.y * n.y));
+          n.y = -n.y;
+          normal += n * alphaBlend.b;
+      #endif
+
+      #ifdef NORMALMAP_3
+          normalHeight = getTriPlanarBlend(coords, blending, m_NormalMap_3, m_DiffuseMap_3_scale);
+          n = (normalHeight.xyz * vec3(2.0) - vec3(1.0));
+          n.z = sqrt(1.0 - (n.x * n.x) - (n.y * n.y));
+          n.y = -n.y;
+          normal += n * alphaBlend.a;
+      #endif
+
+      return normalize(normal);
     }
   #endif
 

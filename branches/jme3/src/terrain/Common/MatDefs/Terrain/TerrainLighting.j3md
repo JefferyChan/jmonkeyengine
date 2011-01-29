@@ -5,6 +5,9 @@ MaterialDef Terrain Lighting {
         // use tri-planar mapping
         Boolean useTriPlanarMapping
 
+        // Use ward specular instead of phong
+        Boolean WardIso
+
         // Ambient color
         Color Ambient
 
@@ -69,6 +72,7 @@ MaterialDef Terrain Lighting {
 
         Defines {
             TRI_PLANAR_MAPPING : useTriPlanarMapping
+            WARDISO   : WardIso
 
             DIFFUSEMAP : DiffuseMap
             DIFFUSEMAP_1 : DiffuseMap_1
