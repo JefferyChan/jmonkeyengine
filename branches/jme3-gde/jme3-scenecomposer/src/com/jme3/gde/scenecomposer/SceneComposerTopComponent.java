@@ -19,7 +19,6 @@ import com.jme3.gde.core.sceneexplorer.nodes.NodeUtility;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import java.io.IOException;
 import java.util.Collection;
 import java.util.logging.Logger;
 import javax.swing.border.TitledBorder;
@@ -35,9 +34,10 @@ import org.openide.NotifyDescriptor;
 import org.openide.NotifyDescriptor.Confirmation;
 import org.openide.awt.Toolbar;
 import org.openide.awt.ToolbarPool;
-import org.openide.cookies.SaveCookie;
+import org.openide.awt.UndoRedo;
 import org.openide.filesystems.FileObject;
 import org.openide.util.HelpCtx;
+import org.openide.util.Lookup;
 import org.openide.util.LookupListener;
 import org.openide.util.Utilities;
 
@@ -106,6 +106,10 @@ public final class SceneComposerTopComponent extends TopComponent implements Sce
         jCheckBox1 = new javax.swing.JCheckBox();
         jTextField1 = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
+        radiusSpinner = new javax.swing.JSpinner();
+        heightSpinner = new javax.swing.JSpinner();
+        fixedCheckBox = new javax.swing.JCheckBox();
 
         sceneInfoPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(SceneComposerTopComponent.class, "SceneComposerTopComponent.sceneInfoPanel.border.title"))); // NOI18N
 
@@ -262,7 +266,7 @@ public final class SceneComposerTopComponent extends TopComponent implements Sce
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 518, Short.MAX_VALUE)
+            .add(0, 545, Short.MAX_VALUE)
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -287,7 +291,7 @@ public final class SceneComposerTopComponent extends TopComponent implements Sce
             toolsPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(toolsPanelLayout.createSequentialGroup()
                 .add(createTangentsButton)
-                .addContainerGap(56, Short.MAX_VALUE))
+                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         toolsPanelLayout.setVerticalGroup(
             toolsPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -312,20 +316,45 @@ public final class SceneComposerTopComponent extends TopComponent implements Sce
 
         org.openide.awt.Mnemonics.setLocalizedText(jLabel4, org.openide.util.NbBundle.getMessage(SceneComposerTopComponent.class, "SceneComposerTopComponent.jLabel4.text")); // NOI18N
 
+        org.openide.awt.Mnemonics.setLocalizedText(jButton1, org.openide.util.NbBundle.getMessage(SceneComposerTopComponent.class, "SceneComposerTopComponent.jButton1.text")); // NOI18N
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        radiusSpinner.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(0.5f), null, null, Float.valueOf(0.1f)));
+
+        heightSpinner.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(1.8f), null, null, Float.valueOf(0.1f)));
+
+        fixedCheckBox.setSelected(true);
+        org.openide.awt.Mnemonics.setLocalizedText(fixedCheckBox, org.openide.util.NbBundle.getMessage(SceneComposerTopComponent.class, "SceneComposerTopComponent.fixedCheckBox.text")); // NOI18N
+        fixedCheckBox.setEnabled(false);
+
         org.jdesktop.layout.GroupLayout jPanel4Layout = new org.jdesktop.layout.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel4Layout.createSequentialGroup()
-                .add(jCheckBox1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 184, Short.MAX_VALUE)
+                .add(createPhysicsMeshButton)
+                .addContainerGap(116, Short.MAX_VALUE))
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel4Layout.createSequentialGroup()
+                .add(jCheckBox1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 168, Short.MAX_VALUE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
                 .add(jTextField1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 54, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jLabel4)
-                .add(6, 6, 6))
+                .add(88, 88, 88))
             .add(jPanel4Layout.createSequentialGroup()
-                .add(createPhysicsMeshButton)
-                .addContainerGap(50, Short.MAX_VALUE))
+                .add(jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(jButton1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 226, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(jPanel4Layout.createSequentialGroup()
+                        .add(fixedCheckBox)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(radiusSpinner, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(heightSpinner, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(78, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -336,7 +365,14 @@ public final class SceneComposerTopComponent extends TopComponent implements Sce
                     .add(jCheckBox1)
                     .add(jTextField1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(jLabel4))
-                .addContainerGap(118, Short.MAX_VALUE))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
+                .add(jButton1)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(fixedCheckBox)
+                    .add(radiusSpinner, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(heightSpinner, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(43, Short.MAX_VALUE))
         );
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
@@ -348,10 +384,10 @@ public final class SceneComposerTopComponent extends TopComponent implements Sce
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(toolsPanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jPanel4, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 293, Short.MAX_VALUE)
+                .add(jPanel4, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(sceneInfoPanel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-            .add(jToolBar1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 1024, Short.MAX_VALUE)
+            .add(jToolBar1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 1051, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -422,16 +458,27 @@ public final class SceneComposerTopComponent extends TopComponent implements Sce
 
     private void createPhysicsMeshButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createPhysicsMeshButtonActionPerformed
         if (editorController != null) {
-            if(jCheckBox1.isSelected()){
-                try{
+            if (jCheckBox1.isSelected()) {
+                try {
                     editorController.createDynamicPhysicsMeshForSelectedSpatial(Float.parseFloat(jTextField1.getText()));
-                }catch(Exception e){
+                } catch (Exception e) {
                 }
-            }else{
+            } else {
                 editorController.createPhysicsMeshForSelectedSpatial();
             }
         }
     }//GEN-LAST:event_createPhysicsMeshButtonActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        if (editorController != null) {
+            boolean auto = !fixedCheckBox.isSelected();
+            float radius = (Float) radiusSpinner.getValue();
+            float height = (Float) heightSpinner.getValue();
+            editorController.createCharacterControlForSelectedSpatial(false, radius, height);
+        }
+
+    }//GEN-LAST:event_jButton1ActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addCursorButton;
     private javax.swing.JButton addObjectButton;
@@ -439,6 +486,9 @@ public final class SceneComposerTopComponent extends TopComponent implements Sce
     private javax.swing.JButton createPhysicsMeshButton;
     private javax.swing.JButton createTangentsButton;
     private javax.swing.JButton cursorToSelectionButton;
+    private javax.swing.JCheckBox fixedCheckBox;
+    private javax.swing.JSpinner heightSpinner;
+    private javax.swing.JButton jButton1;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -456,6 +506,7 @@ public final class SceneComposerTopComponent extends TopComponent implements Sce
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JButton moveToCursorButton;
     private javax.swing.JPanel palettePanel;
+    private javax.swing.JSpinner radiusSpinner;
     private javax.swing.JButton resetCursorButton;
     private javax.swing.JLabel sceneInfoLabel1;
     private javax.swing.JLabel sceneInfoLabel2;
@@ -506,6 +557,11 @@ public final class SceneComposerTopComponent extends TopComponent implements Sce
         //this call is for single components:
         //HelpCtx.setHelpIDString(this, "com.jme3.gde.core.sceneviewer");
         return ctx;
+    }
+
+    @Override
+    public UndoRedo getUndoRedo() {
+        return Lookup.getDefault().lookup(UndoRedo.class);
     }
 
     @Override
@@ -764,7 +820,6 @@ public final class SceneComposerTopComponent extends TopComponent implements Sce
 ////            }
 //        }
 //    }
-
     private void cleanupControllers() {
         if (camController != null) {
             camController.disable();

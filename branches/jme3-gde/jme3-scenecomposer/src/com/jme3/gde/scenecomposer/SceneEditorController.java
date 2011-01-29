@@ -8,6 +8,9 @@ import com.jme3.asset.AssetManager;
 import com.jme3.asset.DesktopAssetManager;
 import com.jme3.asset.ModelKey;
 import com.jme3.audio.AudioNode;
+import com.jme3.bounding.BoundingVolume;
+import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
+import com.jme3.bullet.control.CharacterControl;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.effect.EmitterSphereShape;
 import com.jme3.effect.ParticleEmitter;
@@ -423,7 +426,6 @@ public class SceneEditorController implements PropertyChangeListener, NodeListen
                 public void sceneRedo() throws CannotRedoException {
                     TangentBinormalGenerator.generate(mesh);
                 }
-
             });
         }
     }
@@ -432,25 +434,23 @@ public class SceneEditorController implements PropertyChangeListener, NodeListen
         if (selectedSpat == null) {
             return;
         }
-        if (selectedSpat != jmeRootNode) {
-            try {
-                final Spatial node = selectedSpat.getLookup().lookup(Spatial.class);
-                setNeedsSave(true);
-                if (node != null) {
-                    SceneApplication.getApplication().enqueue(new Callable() {
+        try {
+            final Spatial node = selectedSpat.getLookup().lookup(Spatial.class);
+            setNeedsSave(true);
+            if (node != null) {
+                SceneApplication.getApplication().enqueue(new Callable() {
 
-                        public Object call() throws Exception {
-                            doCreatePhysicsMesh(node);
-                            return null;
+                    public Object call() throws Exception {
+                        doCreatePhysicsMesh(node);
+                        return null;
 
-                        }
-                    }).get();
-                }
-            } catch (InterruptedException ex) {
-                Exceptions.printStackTrace(ex);
-            } catch (ExecutionException ex) {
-                Exceptions.printStackTrace(ex);
+                    }
+                }).get();
             }
+        } catch (InterruptedException ex) {
+            Exceptions.printStackTrace(ex);
+        } catch (ExecutionException ex) {
+            Exceptions.printStackTrace(ex);
         }
     }
 
@@ -461,6 +461,7 @@ public class SceneEditorController implements PropertyChangeListener, NodeListen
         }
         Node parent = selected.getParent();
         selected.removeFromParent();
+        control = new RigidBodyControl(0);
         selected.addControl(new RigidBodyControl(0));
         if (parent != null) {
             parent.attachChild(selected);
@@ -474,25 +475,23 @@ public class SceneEditorController implements PropertyChangeListener, NodeListen
         if (selectedSpat == null) {
             return;
         }
-        if (selectedSpat != jmeRootNode) {
-            try {
-                final Spatial node = selectedSpat.getLookup().lookup(Spatial.class);
-                setNeedsSave(true);
-                if (node != null) {
-                    SceneApplication.getApplication().enqueue(new Callable() {
+        try {
+            final Spatial node = selectedSpat.getLookup().lookup(Spatial.class);
+            setNeedsSave(true);
+            if (node != null) {
+                SceneApplication.getApplication().enqueue(new Callable() {
 
-                        public Object call() throws Exception {
-                            doCreateDynamicPhysicsMesh(node, weight);
-                            return null;
+                    public Object call() throws Exception {
+                        doCreateDynamicPhysicsMesh(node, weight);
+                        return null;
 
-                        }
-                    }).get();
-                }
-            } catch (InterruptedException ex) {
-                Exceptions.printStackTrace(ex);
-            } catch (ExecutionException ex) {
-                Exceptions.printStackTrace(ex);
+                    }
+                }).get();
             }
+        } catch (InterruptedException ex) {
+            Exceptions.printStackTrace(ex);
+        } catch (ExecutionException ex) {
+            Exceptions.printStackTrace(ex);
         }
     }
 
@@ -503,7 +502,54 @@ public class SceneEditorController implements PropertyChangeListener, NodeListen
         }
         Node parent = selected.getParent();
         selected.removeFromParent();
-        selected.addControl(new RigidBodyControl(weight));
+        control = new RigidBodyControl(weight);
+        selected.addControl(control);
+        if (parent != null) {
+            parent.attachChild(selected);
+        }
+        refreshSelected();
+        AbstractSceneExplorerNode selectedSpat = this.selectedSpat;
+        addControlUndo(parent, control, selectedSpat);
+    }
+
+    public void createCharacterControlForSelectedSpatial(final boolean auto, final float radius, final float height) {
+        if (selectedSpat == null) {
+            return;
+        }
+        try {
+            final Spatial node = selectedSpat.getLookup().lookup(Spatial.class);
+            setNeedsSave(true);
+            if (node != null) {
+                SceneApplication.getApplication().enqueue(new Callable() {
+
+                    public Object call() throws Exception {
+                        doCreateCharacterControl(node, auto, radius, height);
+                        return null;
+
+                    }
+                }).get();
+            }
+        } catch (InterruptedException ex) {
+            Exceptions.printStackTrace(ex);
+        } catch (ExecutionException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+    }
+
+    public void doCreateCharacterControl(Spatial selected, boolean auto, float radius, float height) {
+        CharacterControl control = selected.getControl(CharacterControl.class);
+        if (control != null) {
+            selected.removeControl(control);
+        }
+        Node parent = selected.getParent();
+        selected.removeFromParent();
+        if (!auto) {
+            control = new CharacterControl(new CapsuleCollisionShape(radius, height), 0.03f);
+        } else {
+            //TODO: auto-creation by bounding volume
+            control = new CharacterControl(new CapsuleCollisionShape(radius, height), 0.03f);
+        }
+        selected.addControl(control);
         if (parent != null) {
             parent.attachChild(selected);
         }
