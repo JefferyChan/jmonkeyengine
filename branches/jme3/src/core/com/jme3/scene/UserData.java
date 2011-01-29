@@ -29,7 +29,6 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package com.jme3.scene;
 
 import com.jme3.export.InputCapsule;
@@ -39,47 +38,50 @@ import com.jme3.export.OutputCapsule;
 import com.jme3.export.Savable;
 import java.io.IOException;
 
-final class UserData implements Savable {
+public final class UserData implements Savable {
 
-    private byte type;
-    private Object value;
+    protected byte type;
+    protected Object value;
 
     public UserData() {
     }
 
-    public UserData(int type, Object value){
-        assert type >= 0 && type <= 3;
-        this.type = (byte)type;
+    public UserData(byte type, Object value) {
+        assert type >= 0 && type <= 4;
+        this.type = type;
         this.value = value;
     }
 
-    public Object getValue(){
+    public Object getValue() {
         return value;
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return value.toString();
     }
 
-    public static int getObjectType(Object type){
-        if (type instanceof Integer)
+    public static byte getObjectType(Object type) {
+        if (type instanceof Integer) {
             return 0;
-        else if (type instanceof Float)
+        } else if (type instanceof Float) {
             return 1;
-        else if (type instanceof Boolean)
+        } else if (type instanceof Boolean) {
             return 2;
-        else if (type instanceof String)
+        } else if (type instanceof String) {
             return 3;
-        else
+        } else if (type instanceof Long) {
+            return 4;
+        } else {
             throw new IllegalArgumentException("Unsupported type: " + type.getClass().getName());
+        }
     }
 
     public void write(JmeExporter ex) throws IOException {
         OutputCapsule oc = ex.getCapsule(this);
-        oc.write(type, "type", 0);
+        oc.write(type, "type", (byte)0);
 
-        switch (type){
+        switch (type) {
             case 0:
                 int i = (Integer) value;
                 oc.write(i, "intVal", 0);
@@ -96,6 +98,10 @@ final class UserData implements Savable {
                 String s = (String) value;
                 oc.write(s, "strVal", null);
                 break;
+            case 4:
+                Long l = (Long) value;
+                oc.write(l, "longVal", 0l);
+                break;
             default:
                 throw new UnsupportedOperationException();
         }
@@ -103,9 +109,9 @@ final class UserData implements Savable {
 
     public void read(JmeImporter im) throws IOException {
         InputCapsule ic = im.getCapsule(this);
-        type = ic.readByte("type", (byte)0);
+        type = ic.readByte("type", (byte) 0);
 
-        switch (type){
+        switch (type) {
             case 0:
                 value = ic.readInt("intVal", 0);
                 break;
@@ -118,9 +124,11 @@ final class UserData implements Savable {
             case 3:
                 value = ic.readString("strVal", null);
                 break;
+            case 4:
+                value = ic.readLong("longVal", 0l);
+                break;
             default:
                 throw new UnsupportedOperationException();
         }
     }
-
 }
