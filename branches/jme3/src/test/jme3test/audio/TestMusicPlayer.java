@@ -68,9 +68,8 @@ public class TestMusicPlayer extends javax.swing.JFrame {
     private void initAudioPlayer(){
         AppSettings settings = new AppSettings(true);
         settings.setRenderer(null); // force dummy renderer (?)
-        settings.setAudioRenderer("JOAL");
+        settings.setAudioRenderer("LWJGL");
         ar = JmeSystem.newAudioRenderer(settings);
-        ar = new QueuedAudioRenderer(ar);
         ar.initialize();
         ar.setListener(listener);
     }

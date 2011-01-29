@@ -40,7 +40,9 @@ import com.jme3.system.AppSettings;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.lwjgl.opengl.ARBMultisample;
 import org.lwjgl.opengl.ContextAttribs;
+import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.PixelFormat;
 
 public class LwjglDisplay extends LwjglAbstractDisplay {
@@ -48,6 +50,7 @@ public class LwjglDisplay extends LwjglAbstractDisplay {
     private static final Logger logger = Logger.getLogger(LwjglDisplay.class.getName());
 
     private final AtomicBoolean needRestart = new AtomicBoolean(false);
+    private PixelFormat pixelFormat;
 
     protected DisplayMode getFullscreenDisplayMode(int width, int height, int bpp, int freq){
         try {
@@ -80,8 +83,25 @@ public class LwjglDisplay extends LwjglAbstractDisplay {
             displayMode = new DisplayMode(settings.getWidth(), settings.getHeight());
         }
 
+        PixelFormat pf = new PixelFormat(settings.getBitsPerPixel(),
+                                         0,
+                                         settings.getDepthBits(),
+                                         settings.getStencilBits(),
+                                         settings.getSamples());
+
         frameRate = settings.getFrameRate();
         logger.log(Level.INFO, "Selected display mode: {0}", displayMode);
+
+        boolean pixelFormatChanged = false;
+        if (created.get() && (pixelFormat.getBitsPerPixel() != pf.getBitsPerPixel()
+                            ||pixelFormat.getDepthBits() != pf.getDepthBits()
+                            ||pixelFormat.getStencilBits() != pf.getStencilBits()
+                            ||pixelFormat.getSamples() != pf.getSamples())){
+            Display.destroy();
+            renderer.resetGLObjects();
+            pixelFormatChanged = true;
+        }
+        pixelFormat = pf;
         
         Display.setTitle(settings.getTitle());
         if (displayMode != null)
@@ -90,13 +110,7 @@ public class LwjglDisplay extends LwjglAbstractDisplay {
         Display.setFullscreen(settings.isFullscreen());
         Display.setVSyncEnabled(settings.isVSync());
 
-        if (!created.get()){
-            PixelFormat pf = new PixelFormat(settings.getBitsPerPixel(),
-                                             0,
-                                             settings.getDepthBits(),
-                                             settings.getStencilBits(),
-                                             settings.getSamples());
-
+        if (!created.get() || pixelFormatChanged){
             if (settings.getBoolean("GraphicsDebug") || settings.getRenderer().equals(AppSettings.LWJGL_OPENGL3)){
                 ContextAttribs attr;
                 if (settings.getRenderer().equals(AppSettings.LWJGL_OPENGL3)){
@@ -108,9 +122,13 @@ public class LwjglDisplay extends LwjglAbstractDisplay {
                 if (settings.getBoolean("GraphicsDebug")){
                     attr = attr.withDebug(true);
                 }
-                Display.create(pf, attr);
+                Display.create(pixelFormat, attr);
             }else{
-                Display.create(pf);
+                Display.create(pixelFormat);
+            }
+            
+            if (pixelFormatChanged && pixelFormat.getSamples() > 1){
+                GL11.glEnable(ARBMultisample.GL_MULTISAMPLE_ARB);
             }
         }
     }
