@@ -40,5 +40,6 @@ public interface JoyInput extends Input {
     public static final int AXIS_POV_X = 254;
     public static final int AXIS_POV_Y = 255;
 
+    public void setJoyRumble(int joyId, float amount);
     public Joystick[] loadJoysticks(InputManager inputManager);
 }

@@ -158,12 +158,17 @@ class LwjglJoyInput implements JoyInput {
         return Sys.getTime() * LwjglTimer.LWJGL_TIME_TO_NANOS;
     }
 
+    public void setJoyRumble(int joyId, float amount){
+    }
+
     public Joystick[] loadJoysticks(InputManager inputManager) {
         int count = Controllers.getControllerCount();
         Joystick[] joysticks = new Joystick[count];
         for (int i = 0; i < count; i++){
             Controller c = Controllers.getController(i);
-            Joystick j = new Joystick(inputManager, i,
+            Joystick j = new Joystick(inputManager, 
+                                        this,
+                                        i,
                                         c.getName(),
                                         c.getButtonCount(),
                                         c.getAxisCount(),

@@ -6,16 +6,18 @@ import com.jme3.input.controls.JoyButtonTrigger;
 public final class Joystick {
 
     private InputManager inputManager;
+    private JoyInput joyInput;
     private int joyId;
     private int buttonCount;
     private int axisCount;
     private int axisXIndex, axisYIndex;
     private String name;
 
-    public Joystick(InputManager inputManager, int joyId,
-                    String name, int buttonCount, int axisCount,
+    public Joystick(InputManager inputManager, JoyInput joyInput,
+                    int joyId, String name, int buttonCount, int axisCount,
                     int xAxis, int yAxis){
         this.inputManager = inputManager;
+        this.joyInput = joyInput;
         this.joyId = joyId;
         this.name = name;
         this.buttonCount = buttonCount;
@@ -23,6 +25,10 @@ public final class Joystick {
 
         this.axisXIndex = xAxis;
         this.axisYIndex = yAxis;
+    }
+
+    public void rumble(float amount){
+        joyInput.setJoyRumble(joyId, amount);
     }
 
     public void assignButton(String mappingName, int buttonId){

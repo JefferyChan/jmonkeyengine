@@ -6,7 +6,7 @@ import com.jme3.input.Joystick;
 import com.jme3.input.RawInputListener;
 import com.jme3.input.event.JoyAxisEvent;
 import com.jme3.input.event.JoyButtonEvent;
-import com.jme3.math.FastMath;
+import com.jme3.util.IntMap;
 import java.util.HashMap;
 import net.java.games.input.Component;
 import net.java.games.input.Component.Identifier;
@@ -17,6 +17,7 @@ import net.java.games.input.Controller;
 import net.java.games.input.ControllerEnvironment;
 import net.java.games.input.Event;
 import net.java.games.input.EventQueue;
+import net.java.games.input.Rumbler;
 
 public class JInputJoyInput implements JoyInput {
 
@@ -27,6 +28,7 @@ public class JInputJoyInput implements JoyInput {
     private HashMap<Button, Integer>[] buttonIdsToIndices;
     private HashMap<Axis, Integer>[] axisIdsToIndices;
     private HashMap<Controller, Integer> controllerToIndices;
+    private IntMap<Controller> indicesToController;
 
     private int xAxis, yAxis;
 
@@ -55,12 +57,23 @@ public class JInputJoyInput implements JoyInput {
         }
     }
 
+    public void setJoyRumble(int joyId, float amount){
+        Controller c = indicesToController.get(joyId);
+        if (c == null)
+            throw new IllegalArgumentException();
+
+        for (Rumbler r : c.getRumblers()){
+            r.rumble(amount);
+        }
+    }
+
     public Joystick[] loadJoysticks(InputManager inputManager){
         ControllerEnvironment ce =
             ControllerEnvironment.getDefaultEnvironment();
 
         int joyIndex = 0;
         controllerToIndices = new HashMap<Controller, Integer>();
+        indicesToController = new IntMap<Controller>();
         Controller[] cs = ce.getControllers();
         for (int i = 0; i < cs.length; i++){
             Controller c = cs[i];
@@ -70,6 +83,7 @@ public class JInputJoyInput implements JoyInput {
                 continue;
 
             controllerToIndices.put(c, joyIndex);
+            indicesToController.put(joyIndex, c);
             joyIndex ++;
         }
 
@@ -90,6 +104,7 @@ public class JInputJoyInput implements JoyInput {
             axisIdsToIndices[joyIndex] = new HashMap<Axis, Integer>();
             loadIdentifiers(joyIndex, c);
             Joystick joy = new Joystick(inputManager,
+                                        this,
                                         joyIndex, c.getName(),
                                         buttonIdsToIndices[joyIndex].size(),
                                         axisIdsToIndices[joyIndex].size(),
