@@ -44,6 +44,9 @@ final class UserData implements Savable {
     private byte type;
     private Object value;
 
+    public UserData() {
+    }
+
     public UserData(int type, Object value){
         assert type >= 0 && type <= 3;
         this.type = (byte)type;
