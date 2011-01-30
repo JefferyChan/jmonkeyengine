@@ -119,7 +119,6 @@ or
 <pre class="code xml"><span class="sc3"><span class="re1">&lt;image</span> <span class="re0">filename</span>=<span class="st0">&quot;Textures/jme-logo.png&quot;</span> <span class="re2">&gt;</span><span class="re1">&lt;/image<span class="re2">&gt;</span></span></span></pre>
 <p>
 Nifty additionally offers predefined controls – learn more from the NiftyGUI page:
-Learn more from the NiftyGUI page:
 </p>
 <ul>
 <li class="level1"><div class="li"> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://sourceforge.net/apps/mediawiki/nifty-gui/index.php?title=Layout_Introduction"><param name="text" value="<html><u>http://sourceforge.net/apps/mediawiki/nifty-gui/index.php?title=Layout_Introduction</u></html>"><param name="textColor" value="blue"></object></div>
@@ -157,6 +156,18 @@ Here is an example that moves a panel when the startScreen opens. You place an &
   <span class="sc3"><span class="re1">&lt;/panel<span class="re2">&gt;</span></span></span>
 ...</pre>
 <p>
+Playing sounds using nifty is also possible with effects as triggers. Remember to first register the sound you&#039;re going to play:
+</p>
+<pre class="code xml">...
+  <span class="sc3"><span class="re1">&lt;registerSound</span> <span class="re0">id</span>=<span class="st0">&quot;click&quot;</span> <span class="re0">filename</span>=<span class="st0">&quot;Sounds/Gui/ButtonClick.ogg&quot;</span> <span class="re2">/&gt;</span></span>
+...
+  <span class="sc3"><span class="re1">&lt;label<span class="re2">&gt;</span></span></span>
+    <span class="sc3"><span class="re1">&lt;effect<span class="re2">&gt;</span></span></span>
+       <span class="sc3"><span class="re1">&lt;onClick</span> <span class="re0">name</span>=<span class="st0">&quot;playSound&quot;</span> <span class="re0">sound</span>=<span class="st0">&quot;click&quot;</span><span class="re2">/&gt;</span></span>
+    <span class="sc3"><span class="re1">&lt;/effect<span class="re2">&gt;</span></span></span>
+  <span class="sc3"><span class="re1">&lt;/label<span class="re2">&gt;</span></span></span>
+...</pre>
+<p>
 Learn more from the NiftyGUI page:
 </p>
 <ul>
@@ -165,7 +176,7 @@ Learn more from the NiftyGUI page:
 </ul>
 
 </div>
-<!-- SECTION "Layout in XML" [1173-3718] -->
+<!-- SECTION "Layout in XML" [1173-4011] -->
 <h3><a name="in_java" id="in_java">... in Java</a></h3>
 <div class="level3">
 
@@ -175,7 +186,7 @@ The Nifty team has started creating a “Builder Pattern” based way to create 
 </p>
 
 </div>
-<!-- SECTION "... in Java" [3719-4023] -->
+<!-- SECTION "... in Java" [4012-4316] -->
 <h2><a name="integrating_the_gui_into_the_game" id="integrating_the_gui_into_the_game">Integrating the GUI into the Game</a></h2>
 <div class="level2">
 
@@ -186,7 +197,7 @@ You can either overlay the running game with the <acronym title="Graphical User 
 </p>
 
 </div>
-<!-- SECTION "Integrating the GUI into the Game" [4024-4273] -->
+<!-- SECTION "Integrating the GUI into the Game" [4317-4566] -->
 <h3><a name="overlaying_the_user_interface" id="overlaying_the_user_interface">Overlaying the User Interface</a></h3>
 <div class="level3">
 
@@ -205,7 +216,7 @@ This code shows you how to overlay anything on the screen with the <acronym titl
         <span class="co1">// disable the fly cam</span>
         flyCam.<span class="me1">setDragToRotate</span><span class="br0">&#40;</span><span class="kw2">true</span><span class="br0">&#41;</span>;</pre>
 </div>
-<!-- SECTION "Overlaying the User Interface" [4274-4829] -->
+<!-- SECTION "Overlaying the User Interface" [4567-5122] -->
 <h3><a name="projecting_the_user_interface_onto_a_texture" id="projecting_the_user_interface_onto_a_texture">Projecting the User Interface Onto a Texture</a></h3>
 <div class="level3">
 
@@ -251,7 +262,7 @@ Again, check the <object classid="java:org.netbeans.modules.javahelp.BrowserDisp
 </p>
 
 </div>
-<!-- SECTION "Projecting the User Interface Onto a Texture" [4830-6419] -->
+<!-- SECTION "Projecting the User Interface Onto a Texture" [5123-6712] -->
 <h2><a name="interacting_with_the_gui_from_java" id="interacting_with_the_gui_from_java">Interacting with the GUI from Java</a></h2>
 <div class="level2">
 
@@ -360,7 +371,7 @@ Learn more: <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer
 </p>
 
 </div>
-<!-- SECTION "Interacting with the GUI from Java" [6420-9981] -->
+<!-- SECTION "Interacting with the GUI from Java" [6713-10274] -->
 <h2><a name="nifty_documentation" id="nifty_documentation">Nifty Documentation</a></h2>
 <div class="level2">
 
@@ -382,5 +393,5 @@ Learn more from the NiftyGUI page!
 </ul>
 
 </div>
-<!-- SECTION "Nifty Documentation" [9982-] -->
+<!-- SECTION "Nifty Documentation" [10275-] -->
 <p><em><a href="http://jmonkeyengine.org/wiki/doku.php/jme3:advanced:nifty_gui?do=export_xhtmlbody">view online version</a></em></p>

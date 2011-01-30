@@ -140,7 +140,50 @@ The SceneRequest object has to contain several things. A thing that you must sup
     <span class="kw1">return</span> <span class="kw2">true</span>;
 <span class="br0">&#125;</span></pre>
 </div>
-<!-- SECTION "Requesting the Scene" [3320-5282] -->
+<!-- SECTION "Requesting the Scene" [3320-5281] -->
+<h2><a name="undo_redo_support" id="undo_redo_support">Undo/Redo support</a></h2>
+<div class="level2">
+
+<p>
+jMP has a global undo/redo queue that activates the undo/redo buttons. To use it in your TopComponent, add the following method:
+
+</p>
+<pre class="code java">@Override 
+<span class="kw1">public</span> UndoRedo getUndoRedo<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span> 
+<span class="kw1">return</span> Lookup.<span class="me1">getDefault</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">lookup</span><span class="br0">&#40;</span>SceneUndoRedoManager.<span class="kw1">class</span><span class="br0">&#41;</span>; 
+<span class="br0">&#125;</span></pre>
+<p>
+To add a undo/redo event that modifies objects on the Scenegraph, theres a special version of AbstractUndoableEdit which executes the undo/redo calls on the scene thread. Simply implement that class and add it to the queue like this:
+
+</p>
+<pre class="code java">Lookup.<span class="me1">getDefault</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">lookup</span><span class="br0">&#40;</span>SceneUndoRedoManager.<span class="kw1">class</span><span class="br0">&#41;</span>.<span class="me1">addEdit</span><span class="br0">&#40;</span><span class="kw1">this</span>, <span class="kw1">new</span> AbstractUndoableSceneEdit<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span> 
+&nbsp;
+@Override 
+<span class="kw1">public</span> <span class="kw4">void</span> sceneUndo<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span> 
+    <span class="co1">//undo stuff in scene here</span>
+<span class="br0">&#125;</span> 
+&nbsp;
+@Override 
+<span class="kw1">public</span> <span class="kw4">void</span> sceneRedo<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span> 
+    <span class="co1">//redo stuff in scene here</span>
+<span class="br0">&#125;</span> 
+&nbsp;
+@Override 
+<span class="kw1">public</span> <span class="kw4">void</span> awtUndo<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span> 
+    <span class="co1">//undo stuff on awt thread here (updating of visual nodes etc, called post scene edit)</span>
+<span class="br0">&#125;</span> 
+&nbsp;
+@Override 
+<span class="kw1">public</span> <span class="kw4">void</span> awtRedo<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span> 
+    <span class="co1">//redo stuff on awt thread here</span>
+<span class="br0">&#125;</span> 
+<span class="br0">&#125;</span><span class="br0">&#41;</span>;</pre>
+<p>
+Note: Its important that you use the method addEdit(Object source, UndoableEdit edit);
+</p>
+
+</div>
+<!-- SECTION "Undo/Redo support" [5282-6376] -->
 <h2><a name="handy_things_in_jmonkeyplatform_core" id="handy_things_in_jmonkeyplatform_core">Handy things in jMonkeyPlatform Core</a></h2>
 <div class="level2">
 <ul>
@@ -155,5 +198,5 @@ The SceneRequest object has to contain several things. A thing that you must sup
 </ul>
 
 </div>
-<!-- SECTION "Handy things in jMonkeyPlatform Core" [5283-] -->
+<!-- SECTION "Handy things in jMonkeyPlatform Core" [6377-] -->
 <p><em><a href="http://jmonkeyengine.org/wiki/doku.php/jme3:jmonkeyplatform:development:scene?do=export_xhtmlbody">view online version</a></em></p>

@@ -31,11 +31,11 @@
  */
 package com.jme3.gde.core.sceneexplorer.nodes;
 
-import com.jme3.animation.AnimControl;
 import com.jme3.bounding.BoundingVolume;
 import com.jme3.export.binary.BinaryExporter;
 import com.jme3.gde.core.scene.SceneApplication;
-import com.jme3.gde.core.sceneexplorer.nodes.properties.AnimationProperty;
+import com.jme3.gde.core.sceneexplorer.nodes.actions.AddUserDataAction;
+import com.jme3.gde.core.sceneexplorer.nodes.properties.UserDataProperty;
 import com.jme3.light.LightList;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
@@ -48,13 +48,17 @@ import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
+import javax.swing.Action;
 import org.openide.actions.CopyAction;
 import org.openide.actions.CutAction;
 import org.openide.actions.DeleteAction;
 import org.openide.actions.PasteAction;
 import org.openide.actions.RenameAction;
+import org.openide.awt.Actions;
 import org.openide.loaders.DataObject;
 import org.openide.nodes.Node;
 import org.openide.nodes.Sheet;
@@ -116,23 +120,36 @@ public class JmeSpatial extends AbstractSceneExplorerNode {
     }
 
     @Override
+    public Action[] getActions(boolean context) {
+//        return super.getActions(context);
+        return new Action[]{
+                    Actions.alwaysEnabled(new AddUserDataAction(this), "Add User Data", "", false),
+                    SystemAction.get(RenameAction.class),
+                    SystemAction.get(CopyAction.class),
+                    SystemAction.get(CutAction.class),
+                    SystemAction.get(PasteAction.class),
+                    SystemAction.get(DeleteAction.class)
+                };
+    }
+
+    @Override
     public boolean canCopy() {
-        return !((SceneExplorerChildren)jmeChildren).readOnly;
+        return !((SceneExplorerChildren) jmeChildren).readOnly;
     }
 
     @Override
     public boolean canCut() {
-        return !((SceneExplorerChildren)jmeChildren).readOnly;
+        return !((SceneExplorerChildren) jmeChildren).readOnly;
     }
 
     @Override
     public boolean canDestroy() {
-        return !((SceneExplorerChildren)jmeChildren).readOnly;
+        return !((SceneExplorerChildren) jmeChildren).readOnly;
     }
 
     @Override
     public boolean canRename() {
-        return !((SceneExplorerChildren)jmeChildren).readOnly;
+        return !((SceneExplorerChildren) jmeChildren).readOnly;
     }
 
     @Override
@@ -258,8 +275,20 @@ public class JmeSpatial extends AbstractSceneExplorerNode {
 
     @Override
     protected Sheet createSheet() {
-        //TODO: multithreading..
         Sheet sheet = Sheet.createDefault();
+
+        //TODO: multithreading.. but we only read
+        Collection<String> dataKeys = spatial.getUserDataKeys();
+        if (dataKeys.size() > 0) {
+            Sheet.Set set = Sheet.createPropertiesSet();
+            set.setDisplayName("User Data");
+            set.setName(Spatial.class.getName() + "_UserData");
+            for (Iterator<String> it = dataKeys.iterator(); it.hasNext();) {
+                String string = it.next();
+                set.put(new UserDataProperty(spatial, string));
+            }
+            sheet.put(set);
+        }
         Sheet.Set set = Sheet.createPropertiesSet();
         set.setDisplayName("Spatial");
         set.setName(Spatial.class.getName());

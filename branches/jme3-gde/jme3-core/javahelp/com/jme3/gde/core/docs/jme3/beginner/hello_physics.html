@@ -52,9 +52,7 @@ Thanks to double1984 for contributing this fun sample!
 <span class="kw1">import</span> <span class="co2">com.jme3.app.SimpleApplication</span>;
 <span class="kw1">import</span> <span class="co2">com.jme3.asset.TextureKey</span>;
 <span class="kw1">import</span> <span class="co2">com.jme3.bullet.BulletAppState</span>;
-<span class="kw1">import</span> <span class="co2">com.jme3.bullet.collision.shapes.BoxCollisionShape</span>;
-<span class="kw1">import</span> <span class="co2">com.jme3.bullet.collision.shapes.SphereCollisionShape</span>;
-<span class="kw1">import</span> <span class="co2">com.jme3.bullet.nodes.PhysicsNode</span>;
+<span class="kw1">import</span> <span class="co2">com.jme3.bullet.control.RigidBodyControl</span>;
 <span class="kw1">import</span> <span class="co2">com.jme3.font.BitmapText</span>;
 <span class="kw1">import</span> <span class="co2">com.jme3.input.MouseInput</span>;
 <span class="kw1">import</span> <span class="co2">com.jme3.input.controls.ActionListener</span>;
@@ -73,7 +71,7 @@ Thanks to double1984 for contributing this fun sample!
 &nbsp;
 <span class="co3">/**
  * Example 12 - how to give objects physical properties so they bounce and fall.
- * @author double1984, reformatted and javadocced by zathras
+ * @author base code by double1984, updated by zathras
  */</span>
 <span class="kw1">public</span> <span class="kw1">class</span> HelloPhysics <span class="kw1">extends</span> SimpleApplication <span class="br0">&#123;</span>
 &nbsp;
@@ -82,61 +80,60 @@ Thanks to double1984 for contributing this fun sample!
     app.<span class="me1">start</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
   <span class="br0">&#125;</span>
 &nbsp;
+  <span class="co3">/** Prepare the Physics Application State (jBullet) */</span>
+  <span class="kw1">private</span> BulletAppState bulletAppState;
+&nbsp;
   <span class="co3">/** Activate custom rendering of shadows */</span>
   BasicShadowRenderer bsr;
 &nbsp;
-  <span class="co3">/** geometries and collisions shapes for bricks and cannon balls. */</span>
-  <span class="kw1">private</span> BulletAppState bulletAppState;
-  <span class="kw1">private</span> <span class="kw1">static</span> <span class="kw1">final</span> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Abox+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object>  brick;
-  <span class="kw1">private</span> <span class="kw1">static</span> <span class="kw1">final</span> BoxCollisionShape boxCollisionShape;
-  <span class="kw1">private</span> <span class="kw1">static</span> <span class="kw1">final</span> Sphere cannonball;
-  <span class="kw1">private</span> <span class="kw1">static</span> <span class="kw1">final</span> SphereCollisionShape cannonballCollisionShape;
-&nbsp;
-  <span class="co3">/** brick dimensions */</span>
-  <span class="kw1">private</span> <span class="kw1">static</span> <span class="kw1">final</span> <span class="kw4">float</span> brickLength <span class="sy0">=</span> 0.48f;
-  <span class="kw1">private</span> <span class="kw1">static</span> <span class="kw1">final</span> <span class="kw4">float</span> brickWidth <span class="sy0">=</span> 0.24f;
-  <span class="kw1">private</span> <span class="kw1">static</span> <span class="kw1">final</span> <span class="kw4">float</span> brickHeight <span class="sy0">=</span> 0.12f;
-&nbsp;
-  <span class="co3">/** Materials */</span>
+  <span class="co3">/** Prepare Materials */</span>
   Material wall_mat;
   Material stone_mat;
   Material floor_mat;
 &nbsp;
+  <span class="co3">/** Prepare geometries and physical nodes for bricks and cannon balls. */</span>
+  <span class="kw1">private</span> RigidBodyControl    brick_phy;
+  <span class="kw1">private</span> <span class="kw1">static</span> <span class="kw1">final</span> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Abox+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object>    box;
+  <span class="kw1">private</span> RigidBodyControl    ball_phy;
+  <span class="kw1">private</span> <span class="kw1">static</span> <span class="kw1">final</span> Sphere sphere;
+  <span class="kw1">private</span> RigidBodyControl    floor_phy;
+  <span class="kw1">private</span> <span class="kw1">static</span> <span class="kw1">final</span> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Abox+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object>    floor;
+&nbsp;
+  <span class="co3">/** dimensions used for bricks and wall */</span>
+  <span class="kw1">private</span> <span class="kw1">static</span> <span class="kw1">final</span> <span class="kw4">float</span> brickLength <span class="sy0">=</span> 0.48f;
+  <span class="kw1">private</span> <span class="kw1">static</span> <span class="kw1">final</span> <span class="kw4">float</span> brickWidth  <span class="sy0">=</span> 0.24f;
+  <span class="kw1">private</span> <span class="kw1">static</span> <span class="kw1">final</span> <span class="kw4">float</span> brickHeight <span class="sy0">=</span> 0.12f;
+&nbsp;
   <span class="kw1">static</span> <span class="br0">&#123;</span>
-    <span class="co3">/** initializing the cannon ball geometry that is reused later */</span>
-    cannonball <span class="sy0">=</span> <span class="kw1">new</span> Sphere<span class="br0">&#40;</span><span class="nu0">32</span>, <span class="nu0">32</span>, 0.4f, <span class="kw2">true</span>, <span class="kw2">false</span><span class="br0">&#41;</span>;
-    cannonball.<span class="me1">setTextureMode</span><span class="br0">&#40;</span>TextureMode.<span class="me1">Projected</span><span class="br0">&#41;</span>;
-    cannonballCollisionShape<span class="sy0">=</span><span class="kw1">new</span> SphereCollisionShape<span class="br0">&#40;</span>0.4f<span class="br0">&#41;</span>;
-    <span class="co3">/** initializing the brick geometry that is reused later */</span>
-    brick <span class="sy0">=</span> <span class="kw1">new</span> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Abox+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object><span class="br0">&#40;</span>Vector3f.<span class="me1">ZERO</span>, brickLength, brickHeight, brickWidth<span class="br0">&#41;</span>;
-    brick.<span class="me1">scaleTextureCoordinates</span><span class="br0">&#40;</span><span class="kw1">new</span> Vector2f<span class="br0">&#40;</span>1f, .5f<span class="br0">&#41;</span><span class="br0">&#41;</span>;
-    boxCollisionShape <span class="sy0">=</span>
-     <span class="kw1">new</span> BoxCollisionShape<span class="br0">&#40;</span><span class="kw1">new</span> Vector3f<span class="br0">&#40;</span>brickLength, brickHeight, brickWidth<span class="br0">&#41;</span><span class="br0">&#41;</span>;
+    <span class="co3">/** Initialize the cannon ball geometry */</span>
+    sphere <span class="sy0">=</span> <span class="kw1">new</span> Sphere<span class="br0">&#40;</span><span class="nu0">32</span>, <span class="nu0">32</span>, 0.4f, <span class="kw2">true</span>, <span class="kw2">false</span><span class="br0">&#41;</span>;
+    sphere.<span class="me1">setTextureMode</span><span class="br0">&#40;</span>TextureMode.<span class="me1">Projected</span><span class="br0">&#41;</span>;
+    <span class="co3">/** Initialize the brick geometry */</span>
+    box <span class="sy0">=</span> <span class="kw1">new</span> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Abox+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object><span class="br0">&#40;</span>Vector3f.<span class="me1">ZERO</span>, brickLength, brickHeight, brickWidth<span class="br0">&#41;</span>;
+    box.<span class="me1">scaleTextureCoordinates</span><span class="br0">&#40;</span><span class="kw1">new</span> Vector2f<span class="br0">&#40;</span>1f, .5f<span class="br0">&#41;</span><span class="br0">&#41;</span>;
+    <span class="co3">/** Initialize the floor geometry */</span>
+    floor <span class="sy0">=</span> <span class="kw1">new</span> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Abox+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object><span class="br0">&#40;</span>Vector3f.<span class="me1">ZERO</span>, 10f, 0.1f, 5f<span class="br0">&#41;</span>;
+    floor.<span class="me1">scaleTextureCoordinates</span><span class="br0">&#40;</span><span class="kw1">new</span> Vector2f<span class="br0">&#40;</span><span class="nu0">3</span>, <span class="nu0">6</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
   <span class="br0">&#125;</span>
 &nbsp;
   @Override
   <span class="kw1">public</span> <span class="kw4">void</span> simpleInitApp<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-    <span class="co3">/** Set up Physics */</span>
+    <span class="co3">/** Set up Physics Game */</span>
     bulletAppState <span class="sy0">=</span> <span class="kw1">new</span> BulletAppState<span class="br0">&#40;</span><span class="br0">&#41;</span>;
     stateManager.<span class="me1">attach</span><span class="br0">&#40;</span>bulletAppState<span class="br0">&#41;</span>;
-    <span class="co3">/** Set up camera */</span>
-    <span class="kw1">this</span>.<span class="me1">cam</span>.<span class="me1">setLocation</span><span class="br0">&#40;</span><span class="kw1">new</span> Vector3f<span class="br0">&#40;</span>0, 6f, 6f<span class="br0">&#41;</span><span class="br0">&#41;</span>;
+    <span class="co3">/** Configure cam to look at scene */</span>
+    cam.<span class="me1">setLocation</span><span class="br0">&#40;</span><span class="kw1">new</span> Vector3f<span class="br0">&#40;</span>0, 6f, 6f<span class="br0">&#41;</span><span class="br0">&#41;</span>;
     cam.<span class="me1">lookAt</span><span class="br0">&#40;</span>Vector3f.<span class="me1">ZERO</span>, <span class="kw1">new</span> Vector3f<span class="br0">&#40;</span>0, <span class="nu0">1</span>, 0<span class="br0">&#41;</span><span class="br0">&#41;</span>;
     cam.<span class="me1">setFrustumFar</span><span class="br0">&#40;</span><span class="nu0">15</span><span class="br0">&#41;</span>;
-    <span class="co3">/** Add shooting action */</span>
+    <span class="co3">/** Add InputManager action: Left click triggers shooting. */</span>
     inputManager.<span class="me1">addMapping</span><span class="br0">&#40;</span><span class="st0">&quot;shoot&quot;</span>, <span class="kw1">new</span> MouseButtonTrigger<span class="br0">&#40;</span>MouseInput.<span class="me1">BUTTON_LEFT</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
     inputManager.<span class="me1">addListener</span><span class="br0">&#40;</span>actionListener, <span class="st0">&quot;shoot&quot;</span><span class="br0">&#41;</span>;
-    <span class="co3">/** Initialize the scene and physics space */</span>
+    <span class="co3">/** Initialize the scene, materials, and physics space */</span>
     initMaterials<span class="br0">&#40;</span><span class="br0">&#41;</span>;
     initWall<span class="br0">&#40;</span><span class="br0">&#41;</span>;
     initFloor<span class="br0">&#40;</span><span class="br0">&#41;</span>;
     initCrossHairs<span class="br0">&#40;</span><span class="br0">&#41;</span>;
-    bulletAppState.<span class="me1">getPhysicsSpace</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">setAccuracy</span><span class="br0">&#40;</span>0.005f<span class="br0">&#41;</span>;
-    <span class="co3">/** Activate custom shadows */</span>
-    rootNode.<span class="me1">setShadowMode</span><span class="br0">&#40;</span>ShadowMode.<span class="me1">Off</span><span class="br0">&#41;</span>;
-    bsr <span class="sy0">=</span> <span class="kw1">new</span> BasicShadowRenderer<span class="br0">&#40;</span>assetManager, <span class="nu0">256</span><span class="br0">&#41;</span>;
-    bsr.<span class="me1">setDirection</span><span class="br0">&#40;</span><span class="kw1">new</span> Vector3f<span class="br0">&#40;</span><span class="sy0">-</span><span class="nu0">1</span>, <span class="sy0">-</span><span class="nu0">1</span>, <span class="sy0">-</span><span class="nu0">1</span><span class="br0">&#41;</span>.<span class="me1">normalizeLocal</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
-    viewPort.<span class="me1">addProcessor</span><span class="br0">&#40;</span>bsr<span class="br0">&#41;</span>;
+    initShadows<span class="br0">&#40;</span><span class="br0">&#41;</span>;
   <span class="br0">&#125;</span>
 &nbsp;
   <span class="co3">/**
@@ -157,39 +154,36 @@ Thanks to double1984 for contributing this fun sample!
     TextureKey key <span class="sy0">=</span> <span class="kw1">new</span> TextureKey<span class="br0">&#40;</span><span class="st0">&quot;Textures/Terrain/BrickWall/BrickWall.jpg&quot;</span><span class="br0">&#41;</span>;
     key.<span class="me1">setGenerateMips</span><span class="br0">&#40;</span><span class="kw2">true</span><span class="br0">&#41;</span>;
     Texture tex <span class="sy0">=</span> assetManager.<span class="me1">loadTexture</span><span class="br0">&#40;</span>key<span class="br0">&#41;</span>;
-    wall_mat.<span class="me1">setTexture</span><span class="br0">&#40;</span><span class="st0">&quot;m_ColorMap&quot;</span>, tex<span class="br0">&#41;</span>;
+    wall_mat.<span class="me1">setTexture</span><span class="br0">&#40;</span><span class="st0">&quot;ColorMap&quot;</span>, tex<span class="br0">&#41;</span>;
 &nbsp;
     stone_mat <span class="sy0">=</span> <span class="kw1">new</span> Material<span class="br0">&#40;</span>assetManager, <span class="st0">&quot;Common/MatDefs/Misc/SimpleTextured.j3md&quot;</span><span class="br0">&#41;</span>;
     TextureKey key2 <span class="sy0">=</span> <span class="kw1">new</span> TextureKey<span class="br0">&#40;</span><span class="st0">&quot;Textures/Terrain/Rock/Rock.PNG&quot;</span><span class="br0">&#41;</span>;
     key2.<span class="me1">setGenerateMips</span><span class="br0">&#40;</span><span class="kw2">true</span><span class="br0">&#41;</span>;
     Texture tex2 <span class="sy0">=</span> assetManager.<span class="me1">loadTexture</span><span class="br0">&#40;</span>key2<span class="br0">&#41;</span>;
-    stone_mat.<span class="me1">setTexture</span><span class="br0">&#40;</span><span class="st0">&quot;m_ColorMap&quot;</span>, tex2<span class="br0">&#41;</span>;
+    stone_mat.<span class="me1">setTexture</span><span class="br0">&#40;</span><span class="st0">&quot;ColorMap&quot;</span>, tex2<span class="br0">&#41;</span>;
 &nbsp;
     floor_mat <span class="sy0">=</span> <span class="kw1">new</span> Material<span class="br0">&#40;</span>assetManager, <span class="st0">&quot;Common/MatDefs/Misc/SimpleTextured.j3md&quot;</span><span class="br0">&#41;</span>;
     TextureKey key3 <span class="sy0">=</span> <span class="kw1">new</span> TextureKey<span class="br0">&#40;</span><span class="st0">&quot;Textures/Terrain/Pond/Pond.png&quot;</span><span class="br0">&#41;</span>;
     key3.<span class="me1">setGenerateMips</span><span class="br0">&#40;</span><span class="kw2">true</span><span class="br0">&#41;</span>;
     Texture tex3 <span class="sy0">=</span> assetManager.<span class="me1">loadTexture</span><span class="br0">&#40;</span>key3<span class="br0">&#41;</span>;
     tex3.<span class="me1">setWrap</span><span class="br0">&#40;</span>WrapMode.<span class="me1">Repeat</span><span class="br0">&#41;</span>;
-    floor_mat.<span class="me1">setTexture</span><span class="br0">&#40;</span><span class="st0">&quot;m_ColorMap&quot;</span>, tex3<span class="br0">&#41;</span>;
+    floor_mat.<span class="me1">setTexture</span><span class="br0">&#40;</span><span class="st0">&quot;ColorMap&quot;</span>, tex3<span class="br0">&#41;</span>;
   <span class="br0">&#125;</span>
 &nbsp;
   <span class="co3">/** Make a solid floor and add it to the scene. */</span>
   <span class="kw1">public</span> <span class="kw4">void</span> initFloor<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-    <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Abox+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object><span class="br0">&#40;</span>Vector3f.<span class="me1">ZERO</span>, 10f, 0.1f, 5f<span class="br0">&#41;</span>;
-    floorBox.<span class="me1">scaleTextureCoordinates</span><span class="br0">&#40;</span><span class="kw1">new</span> Vector2f<span class="br0">&#40;</span><span class="nu0">3</span>, <span class="nu0">6</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
-    Geometry floor <span class="sy0">=</span> <span class="kw1">new</span> Geometry<span class="br0">&#40;</span><span class="st0">&quot;floor&quot;</span>, floorBox<span class="br0">&#41;</span>;
-    floor.<span class="me1">setMaterial</span><span class="br0">&#40;</span>floor_mat<span class="br0">&#41;</span>;
-    floor.<span class="me1">setShadowMode</span><span class="br0">&#40;</span>ShadowMode.<span class="me1">Receive</span><span class="br0">&#41;</span>;
-    PhysicsNode floorNode <span class="sy0">=</span> <span class="kw1">new</span> PhysicsNode<span class="br0">&#40;</span>
-     floor,
-     <span class="kw1">new</span> BoxCollisionShape<span class="br0">&#40;</span><span class="kw1">new</span> Vector3f<span class="br0">&#40;</span>10f, 0.1f, 5f<span class="br0">&#41;</span><span class="br0">&#41;</span>,
-     0<span class="br0">&#41;</span>;
-    floorNode.<span class="me1">setLocalTranslation</span><span class="br0">&#40;</span>0, <span class="sy0">-</span>0.1f, 0<span class="br0">&#41;</span>;
-    <span class="kw1">this</span>.<span class="me1">rootNode</span>.<span class="me1">attachChild</span><span class="br0">&#40;</span>floorNode<span class="br0">&#41;</span>;
-    bulletAppState.<span class="me1">getPhysicsSpace</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">add</span><span class="br0">&#40;</span>floorNode<span class="br0">&#41;</span>;
+    Geometry floor_geo <span class="sy0">=</span> <span class="kw1">new</span> Geometry<span class="br0">&#40;</span><span class="st0">&quot;Floor&quot;</span>, floor<span class="br0">&#41;</span>;
+    floor_geo.<span class="me1">setMaterial</span><span class="br0">&#40;</span>floor_mat<span class="br0">&#41;</span>;
+    floor_geo.<span class="me1">setShadowMode</span><span class="br0">&#40;</span>ShadowMode.<span class="me1">Receive</span><span class="br0">&#41;</span>;
+    floor_geo.<span class="me1">setLocalTranslation</span><span class="br0">&#40;</span>0, <span class="sy0">-</span>0.1f, 0<span class="br0">&#41;</span>;
+    <span class="kw1">this</span>.<span class="me1">rootNode</span>.<span class="me1">attachChild</span><span class="br0">&#40;</span>floor_geo<span class="br0">&#41;</span>;
+    <span class="coMULTI">/* Make the floor physical with mass 0.0f! */</span>
+    floor_phy <span class="sy0">=</span> <span class="kw1">new</span> RigidBodyControl<span class="br0">&#40;</span>0.0f<span class="br0">&#41;</span>;
+    floor_geo.<span class="me1">addControl</span><span class="br0">&#40;</span>floor_phy<span class="br0">&#41;</span>;
+    bulletAppState.<span class="me1">getPhysicsSpace</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">add</span><span class="br0">&#40;</span>floor_phy<span class="br0">&#41;</span>;
   <span class="br0">&#125;</span>
 &nbsp;
-  <span class="co3">/** A loop that builds a wall out of individual bricks. */</span>
+  <span class="co3">/** This loop builds a wall out of individual bricks. */</span>
   <span class="kw1">public</span> <span class="kw4">void</span> initWall<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
     <span class="kw4">float</span> startpt <span class="sy0">=</span> brickLength <span class="sy0">/</span> <span class="nu0">4</span>;
     <span class="kw4">float</span> height <span class="sy0">=</span> 0;
@@ -204,40 +198,49 @@ Thanks to double1984 for contributing this fun sample!
     <span class="br0">&#125;</span>
   <span class="br0">&#125;</span>
 &nbsp;
+  <span class="co3">/** Activate shadow casting and light direction */</span>
+  <span class="kw1">private</span> <span class="kw4">void</span> initShadows<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+    bsr <span class="sy0">=</span> <span class="kw1">new</span> BasicShadowRenderer<span class="br0">&#40;</span>assetManager, <span class="nu0">256</span><span class="br0">&#41;</span>;
+    bsr.<span class="me1">setDirection</span><span class="br0">&#40;</span><span class="kw1">new</span> Vector3f<span class="br0">&#40;</span><span class="sy0">-</span><span class="nu0">1</span>, <span class="sy0">-</span><span class="nu0">1</span>, <span class="sy0">-</span><span class="nu0">1</span><span class="br0">&#41;</span>.<span class="me1">normalizeLocal</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
+    viewPort.<span class="me1">addProcessor</span><span class="br0">&#40;</span>bsr<span class="br0">&#41;</span>;
+    <span class="co1">// Default mode is Off -- Every node declares own shadow mode!</span>
+    rootNode.<span class="me1">setShadowMode</span><span class="br0">&#40;</span>ShadowMode.<span class="me1">Off</span><span class="br0">&#41;</span>;
+  <span class="br0">&#125;</span>
+&nbsp;
   <span class="co3">/** This method creates one individual physical brick. */</span>
-  <span class="kw1">public</span> <span class="kw4">void</span> makeBrick<span class="br0">&#40;</span>Vector3f ori<span class="br0">&#41;</span> <span class="br0">&#123;</span>
-    <span class="co3">/** create a new brick */</span>
-    Geometry box_geo <span class="sy0">=</span> <span class="kw1">new</span> Geometry<span class="br0">&#40;</span><span class="st0">&quot;brick&quot;</span>, brick<span class="br0">&#41;</span>;
-    box_geo.<span class="me1">setMaterial</span><span class="br0">&#40;</span>wall_mat<span class="br0">&#41;</span>;
-    PhysicsNode brickNode <span class="sy0">=</span> <span class="kw1">new</span> PhysicsNode<span class="br0">&#40;</span>
-     box_geo,      <span class="co1">// geometry</span>
-     boxCollisionShape, <span class="co1">// collision shape</span>
-     1.5f<span class="br0">&#41;</span>;       <span class="co1">// mass</span>
-    <span class="co3">/** position the brick and activate shadows */</span>
-    brickNode.<span class="me1">setLocalTranslation</span><span class="br0">&#40;</span>ori<span class="br0">&#41;</span>;
-    brickNode.<span class="me1">setShadowMode</span><span class="br0">&#40;</span>ShadowMode.<span class="me1">CastAndReceive</span><span class="br0">&#41;</span>;
-    rootNode.<span class="me1">attachChild</span><span class="br0">&#40;</span>brickNode<span class="br0">&#41;</span>;
-    bulletAppState.<span class="me1">getPhysicsSpace</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">add</span><span class="br0">&#40;</span>brickNode<span class="br0">&#41;</span>;
+  <span class="kw1">public</span> <span class="kw4">void</span> makeBrick<span class="br0">&#40;</span>Vector3f loc<span class="br0">&#41;</span> <span class="br0">&#123;</span>
+    <span class="co3">/** Create a brick geometry and attach to scene graph. */</span>
+    Geometry brick_geo <span class="sy0">=</span> <span class="kw1">new</span> Geometry<span class="br0">&#40;</span><span class="st0">&quot;brick&quot;</span>, box<span class="br0">&#41;</span>;
+    brick_geo.<span class="me1">setMaterial</span><span class="br0">&#40;</span>wall_mat<span class="br0">&#41;</span>;
+    rootNode.<span class="me1">attachChild</span><span class="br0">&#40;</span>brick_geo<span class="br0">&#41;</span>;
+    <span class="co3">/** Position the brick geometry and activate shadows */</span>
+    brick_geo.<span class="me1">setLocalTranslation</span><span class="br0">&#40;</span>loc<span class="br0">&#41;</span>;
+    brick_geo.<span class="me1">setShadowMode</span><span class="br0">&#40;</span>ShadowMode.<span class="me1">CastAndReceive</span><span class="br0">&#41;</span>;
+    <span class="co3">/** Make brick physical with a mass &gt; 0.0f. */</span>
+    brick_phy <span class="sy0">=</span> <span class="kw1">new</span> RigidBodyControl<span class="br0">&#40;</span>2f<span class="br0">&#41;</span>;
+    <span class="co3">/** Add physical brick to physics space. */</span>
+    brick_geo.<span class="me1">addControl</span><span class="br0">&#40;</span>brick_phy<span class="br0">&#41;</span>;
+    bulletAppState.<span class="me1">getPhysicsSpace</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">add</span><span class="br0">&#40;</span>brick_phy<span class="br0">&#41;</span>;
   <span class="br0">&#125;</span>
 &nbsp;
   <span class="co3">/** This method creates one individual physical cannon ball.
    * By defaul, the ball is accelerated and flies
    * from the camera position in the camera direction.*/</span>
-   <span class="kw1">public</span> <span class="kw4">void</span> makeCannonBall<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-    <span class="co3">/** create a new cannon ball. */</span>
-    Geometry ball_geo <span class="sy0">=</span> <span class="kw1">new</span> Geometry<span class="br0">&#40;</span><span class="st0">&quot;cannon ball&quot;</span>, cannonball<span class="br0">&#41;</span>;
+  <span class="kw1">public</span> <span class="kw4">void</span> makeCannonBall<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+    <span class="co3">/** Create a cannon ball geometry and attach to scene graph. */</span>
+    Geometry ball_geo <span class="sy0">=</span> <span class="kw1">new</span> Geometry<span class="br0">&#40;</span><span class="st0">&quot;cannon ball&quot;</span>, sphere<span class="br0">&#41;</span>;
     ball_geo.<span class="me1">setMaterial</span><span class="br0">&#40;</span>stone_mat<span class="br0">&#41;</span>;
-    PhysicsNode cannonballNode <span class="sy0">=</span> <span class="kw1">new</span> PhysicsNode<span class="br0">&#40;</span>
-       ball_geo,         <span class="co1">// geometry</span>
-       cannonballCollisionShape, <span class="co1">// collision shape</span>
-       1.0f<span class="br0">&#41;</span>;          <span class="co1">// mass</span>
-    <span class="co3">/** position the cannon ball and activate shadows */</span>
-    cannonballNode.<span class="me1">setLocalTranslation</span><span class="br0">&#40;</span>cam.<span class="me1">getLocation</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
-    cannonballNode.<span class="me1">setShadowMode</span><span class="br0">&#40;</span>ShadowMode.<span class="me1">CastAndReceive</span><span class="br0">&#41;</span>;
-    <span class="co3">/** Attach the cannon call to the scene and accelerate it. */</span>
-    rootNode.<span class="me1">attachChild</span><span class="br0">&#40;</span>cannonballNode<span class="br0">&#41;</span>;
-    bulletAppState.<span class="me1">getPhysicsSpace</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">add</span><span class="br0">&#40;</span>cannonballNode<span class="br0">&#41;</span>;
-    cannonballNode.<span class="me1">setLinearVelocity</span><span class="br0">&#40;</span>cam.<span class="me1">getDirection</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">mult</span><span class="br0">&#40;</span><span class="nu0">25</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
+    rootNode.<span class="me1">attachChild</span><span class="br0">&#40;</span>ball_geo<span class="br0">&#41;</span>;
+    <span class="co3">/** Position the cannon ball and activate shadows */</span>
+    ball_geo.<span class="me1">setLocalTranslation</span><span class="br0">&#40;</span>cam.<span class="me1">getLocation</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
+    ball_geo.<span class="me1">setShadowMode</span><span class="br0">&#40;</span>ShadowMode.<span class="me1">CastAndReceive</span><span class="br0">&#41;</span>;
+    <span class="co3">/** Make the ball physcial with a mass &gt; 0.0f */</span>
+    ball_phy <span class="sy0">=</span> <span class="kw1">new</span> RigidBodyControl<span class="br0">&#40;</span>1f<span class="br0">&#41;</span>;
+    <span class="co3">/** Add physical ball to physics space. */</span>
+    ball_geo.<span class="me1">addControl</span><span class="br0">&#40;</span>ball_phy<span class="br0">&#41;</span>;
+    bulletAppState.<span class="me1">getPhysicsSpace</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">add</span><span class="br0">&#40;</span>ball_phy<span class="br0">&#41;</span>;
+    <span class="co3">/** Accelerate the physcial ball to shoot it. */</span>
+    ball_phy.<span class="me1">setLinearVelocity</span><span class="br0">&#40;</span>cam.<span class="me1">getDirection</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">mult</span><span class="br0">&#40;</span><span class="nu0">25</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
   <span class="br0">&#125;</span>
 &nbsp;
   <span class="co3">/** A plus sign used as crosshairs to help the player with aiming.*/</span>
@@ -246,7 +249,7 @@ Thanks to double1984 for contributing this fun sample!
     guiFont <span class="sy0">=</span> assetManager.<span class="me1">loadFont</span><span class="br0">&#40;</span><span class="st0">&quot;Interface/Fonts/Default.fnt&quot;</span><span class="br0">&#41;</span>;
     BitmapText ch <span class="sy0">=</span> <span class="kw1">new</span> BitmapText<span class="br0">&#40;</span>guiFont, <span class="kw2">false</span><span class="br0">&#41;</span>;
     ch.<span class="me1">setSize</span><span class="br0">&#40;</span>guiFont.<span class="me1">getCharSet</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">getRenderedSize</span><span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="sy0">*</span> <span class="nu0">2</span><span class="br0">&#41;</span>;
-    ch.<span class="me1">setText</span><span class="br0">&#40;</span><span class="st0">&quot;+&quot;</span><span class="br0">&#41;</span>; <span class="co1">// crosshairs</span>
+    ch.<span class="me1">setText</span><span class="br0">&#40;</span><span class="st0">&quot;+&quot;</span><span class="br0">&#41;</span>;        <span class="co1">// fake crosshairs :)</span>
     ch.<span class="me1">setLocalTranslation</span><span class="br0">&#40;</span> <span class="co1">// center</span>
       settings.<span class="me1">getWidth</span><span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="sy0">/</span> <span class="nu0">2</span> <span class="sy0">-</span> guiFont.<span class="me1">getCharSet</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">getRenderedSize</span><span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="sy0">/</span> <span class="nu0">3</span> <span class="sy0">*</span> <span class="nu0">2</span>,
       settings.<span class="me1">getHeight</span><span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="sy0">/</span> <span class="nu0">2</span> <span class="sy0">+</span> ch.<span class="me1">getLineHeight</span><span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="sy0">/</span> <span class="nu0">2</span>, 0<span class="br0">&#41;</span>;
@@ -258,147 +261,241 @@ You should see a brick wall that is casting a shadow on a floor. Click to shoot 
 </p>
 
 </div>
-<!-- SECTION "Sample Code" [917-9001] -->
-<h2><a name="a_simple_physics_application" id="a_simple_physics_application">A Simple Physics Application</a></h2>
+<!-- SECTION "Sample Code" [917-9040] -->
+<h2><a name="a_basic_physics_application" id="a_basic_physics_application">A Basic Physics Application</a></h2>
 <div class="level2">
 
 <p>
 
-In the previous tutorials, we were using geometries (like cubes, spheres, and models) that we placed in the scene. These Geometries could be floating in mid-air and even overlap – they were not affected by “gravity” and had no physical mass.
+In the previous tutorials, we were using Geometries (boxes, spheres, and models) that we placed in the scene. Geometries can float in mid-air and even overlap – they are not affected by “gravity” and have no physical mass. This tutorial shows how to add physical properties to Geometries. 
 </p>
 
 <p>
-Look at the sample code here and note that we create and attach a BulletAppState to the SimpleApplication. 
+As always, we start with a standard com.jme3.app.SimpleApplication. To activate physics, we create a com.jme3.bullet.BulletAppState, and and attach it to the SimpleApplication&#039;s application state manager. 
 </p>
-<pre class="code java">  <span class="kw1">private</span> BulletAppState bulletAppState;
-...
+<pre class="code java"><span class="kw1">public</span> <span class="kw1">class</span> HelloPhysics <span class="kw1">extends</span> SimpleApplication <span class="br0">&#123;</span>
+  <span class="kw1">private</span> BulletAppState bulletAppState;
+&nbsp;
   <span class="kw1">public</span> <span class="kw4">void</span> simpleInitApp<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
     bulletAppState <span class="sy0">=</span> <span class="kw1">new</span> BulletAppState<span class="br0">&#40;</span><span class="br0">&#41;</span>;
-    stateManager.<span class="me1">attach</span><span class="br0">&#40;</span>bulletAppState<span class="br0">&#41;</span>;</pre>
+    stateManager.<span class="me1">attach</span><span class="br0">&#40;</span>bulletAppState<span class="br0">&#41;</span>;
+  <span class="br0">&#125;</span>
+<span class="br0">&#125;</span></pre>
 <p>
-The BulletAppState gives the game access to a Physics Space. A Physics Space allows us to use PhysicsNodes that add physical properties to Nodes. 
+The BulletAppState gives the game access to a Physics Space. The Physics Space allows us to use com.jme3.bullet.control.PhysicsControls that add physical properties to Nodes. 
 </p>
-<pre class="code java">    bulletAppState.<span class="me1">getPhysicsSpace</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">setAccuracy</span><span class="br0">&#40;</span>0.005f<span class="br0">&#41;</span>;</pre>
+
 </div>
-<!-- SECTION "A Simple Physics Application" [9002-9805] -->
-<h2><a name="creating_bricks_and_cannon_ballscollision_shapes" id="creating_bricks_and_cannon_ballscollision_shapes">Creating Bricks and Cannon Balls: Collision Shapes</a></h2>
+<!-- SECTION "A Basic Physics Application" [9041-9995] -->
+<h2><a name="creating_bricks_and_cannon_balls" id="creating_bricks_and_cannon_balls">Creating Bricks and Cannon Balls</a></h2>
 <div class="level2">
 
-<p>
-
-In this “shoot at the wall” example, we have two kinds of geometries: Cannon balls and bricks. For each Geometry, we must create a <code>CollisionShape</code>: A round shape for cannon balls, and a box shape for bricks. 
-</p>
-<pre class="code java">    <span class="co3">/** geometries and collisions shapes for bricks and cannon balls. */</span>
-    <span class="kw1">private</span> <span class="kw1">static</span> <span class="kw1">final</span> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Abox+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object>    brick;
-    <span class="kw1">private</span> <span class="kw1">static</span> <span class="kw1">final</span> BoxCollisionShape boxCollisionShape;
-    <span class="kw1">private</span> <span class="kw1">static</span> <span class="kw1">final</span> Sphere cannonball;
-    <span class="kw1">private</span> <span class="kw1">static</span> <span class="kw1">final</span> SphereCollisionShape cannonballCollisionShape;
-&nbsp;
-...
-&nbsp;
-    <span class="kw1">static</span> <span class="br0">&#123;</span>
-        <span class="co3">/** initializing the cannon ball geometry that is reused later */</span>
-        cannonball <span class="sy0">=</span> <span class="kw1">new</span> Sphere<span class="br0">&#40;</span><span class="nu0">32</span>, <span class="nu0">32</span>, 0.4f, <span class="kw2">true</span>, <span class="kw2">false</span><span class="br0">&#41;</span>;
-        cannonball.<span class="me1">setTextureMode</span><span class="br0">&#40;</span>TextureMode.<span class="me1">Projected</span><span class="br0">&#41;</span>;
-        cannonballCollisionShape<span class="sy0">=</span><span class="kw1">new</span> SphereCollisionShape<span class="br0">&#40;</span>0.4f<span class="br0">&#41;</span>;
-        <span class="co3">/** initializing the brick geometry that is reused later */</span>
-        brick <span class="sy0">=</span> <span class="kw1">new</span> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Abox+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object><span class="br0">&#40;</span>Vector3f.<span class="me1">ZERO</span>, brickLength, brickHeight, brickWidth<span class="br0">&#41;</span>;
-        brick.<span class="me1">scaleTextureCoordinates</span><span class="br0">&#40;</span><span class="kw1">new</span> Vector2f<span class="br0">&#40;</span>1f, .5f<span class="br0">&#41;</span><span class="br0">&#41;</span>;
-        boxCollisionShape <span class="sy0">=</span> 
-          <span class="kw1">new</span> BoxCollisionShape<span class="br0">&#40;</span><span class="kw1">new</span> Vector3f<span class="br0">&#40;</span>brickLength, brickHeight, brickWidth<span class="br0">&#41;</span><span class="br0">&#41;</span>;
-    <span class="br0">&#125;</span></pre>
 </div>
-<!-- SECTION "Creating Bricks and Cannon Balls: Collision Shapes" [9806-10998] -->
-<h2><a name="creating_bricks_and_cannon_ballsphysics_nodes" id="creating_bricks_and_cannon_ballsphysics_nodes">Creating Bricks and Cannon Balls: Physics Nodes</a></h2>
-<div class="level2">
+<!-- SECTION "Creating Bricks and Cannon Balls" [9996-10041] -->
+<h3><a name="geometries" id="geometries">Geometries</a></h3>
+<div class="level3">
 
 <p>
 
-Now that we have calcualted the collision shape, we use it to make physical nodes. 
+In this “shoot at the wall” example, we use Geometries such as cannon balls and bricks. A geometry just describes the shape and look of an object.
 </p>
+<pre class="code java">  <span class="co3">/** Prepare geometries and physical nodes for bricks and cannon balls. */</span>
+  <span class="kw1">private</span> <span class="kw1">static</span> <span class="kw1">final</span> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Abox+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object>    box;
+  <span class="kw1">private</span> <span class="kw1">static</span> <span class="kw1">final</span> Sphere sphere;
+  <span class="kw1">private</span> <span class="kw1">static</span> <span class="kw1">final</span> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Abox+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object>    floor;
+&nbsp;
+  <span class="co3">/** dimensions used for bricks and wall */</span>
+  <span class="kw1">private</span> <span class="kw1">static</span> <span class="kw1">final</span> <span class="kw4">float</span> brickLength <span class="sy0">=</span> 0.48f;
+  <span class="kw1">private</span> <span class="kw1">static</span> <span class="kw1">final</span> <span class="kw4">float</span> brickWidth  <span class="sy0">=</span> 0.24f;
+  <span class="kw1">private</span> <span class="kw1">static</span> <span class="kw1">final</span> <span class="kw4">float</span> brickHeight <span class="sy0">=</span> 0.12f;
+&nbsp;
+  <span class="kw1">static</span> <span class="br0">&#123;</span>
+    <span class="co3">/** Initialize the cannon ball geometry */</span>
+    sphere <span class="sy0">=</span> <span class="kw1">new</span> Sphere<span class="br0">&#40;</span><span class="nu0">32</span>, <span class="nu0">32</span>, 0.4f, <span class="kw2">true</span>, <span class="kw2">false</span><span class="br0">&#41;</span>;
+    sphere.<span class="me1">setTextureMode</span><span class="br0">&#40;</span>TextureMode.<span class="me1">Projected</span><span class="br0">&#41;</span>;
+    <span class="co3">/** Initialize the brick geometry */</span>
+    box <span class="sy0">=</span> <span class="kw1">new</span> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Abox+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object><span class="br0">&#40;</span>Vector3f.<span class="me1">ZERO</span>, brickLength, brickHeight, brickWidth<span class="br0">&#41;</span>;
+    box.<span class="me1">scaleTextureCoordinates</span><span class="br0">&#40;</span><span class="kw1">new</span> Vector2f<span class="br0">&#40;</span>1f, .5f<span class="br0">&#41;</span><span class="br0">&#41;</span>;
+    <span class="co3">/** Initialize the floor geometry */</span>
+    floor <span class="sy0">=</span> <span class="kw1">new</span> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Abox+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object><span class="br0">&#40;</span>Vector3f.<span class="me1">ZERO</span>, 10f, 0.1f, 5f<span class="br0">&#41;</span>;
+    floor.<span class="me1">scaleTextureCoordinates</span><span class="br0">&#40;</span><span class="kw1">new</span> Vector2f<span class="br0">&#40;</span><span class="nu0">3</span>, <span class="nu0">6</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
+  <span class="br0">&#125;</span></pre>
+</div>
+<!-- SECTION "Geometries" [10042-11096] -->
+<h3><a name="rigidbodycontrolbrick" id="rigidbodycontrolbrick">RigidBodyControl: Brick</a></h3>
+<div class="level3">
 
 <p>
-The <code>makeBrick()</code> methods creates a physics node <code>brickNode</code>. Our brick shall have 
+
+For each Geometry that we want to have physcial properties, we add a RigidBodyControl. 
+</p>
+<pre class="code java">  <span class="kw1">private</span> RigidBodyControl brick_phy;</pre>
+<p>
+The <code>makeBrick(loc)</code> methods creates a physics node <code>brickNode</code> at a location loc. Our brick shall have 
 </p>
 <ul>
-<li class="level1"><div class="li"> a visible Geometry <code>box_geo</code></div>
+<li class="level1"><div class="li"> a visible Geometry <code>brick_geo</code></div>
 </li>
-<li class="level1"><div class="li"> a collision shape <code>boxCollisionShape</code></div>
-</li>
-<li class="level1"><div class="li"> a mass of 1.5f. </div>
+<li class="level1"><div class="li"> physical properties <code>brick_phy</code></div>
+<ul>
+<li class="level2"><div class="li"> a mass of 2.0f. </div>
 </li>
 </ul>
-<pre class="code java">    <span class="kw1">public</span> <span class="kw4">void</span> makeBrick<span class="br0">&#40;</span>Vector3f ori<span class="br0">&#41;</span> <span class="br0">&#123;</span>
-        <span class="co3">/** create a new brick */</span>
-        Geometry box_geo <span class="sy0">=</span> <span class="kw1">new</span> Geometry<span class="br0">&#40;</span><span class="st0">&quot;brick&quot;</span>, brick<span class="br0">&#41;</span>;
-        box_geo.<span class="me1">setMaterial</span><span class="br0">&#40;</span>wall_mat<span class="br0">&#41;</span>;
-        PhysicsNode brickNode <span class="sy0">=</span> <span class="kw1">new</span> PhysicsNode<span class="br0">&#40;</span>
-          box_geo,           <span class="co1">// geometry</span>
-          boxCollisionShape, <span class="co1">// collision shape</span>
-          1.5f<span class="br0">&#41;</span>;             <span class="co1">// mass</span>
-        <span class="co3">/** position the brick and activate shadows */</span>
-        brickNode.<span class="me1">setLocalTranslation</span><span class="br0">&#40;</span>ori<span class="br0">&#41;</span>;
-        brickNode.<span class="me1">setShadowMode</span><span class="br0">&#40;</span>ShadowMode.<span class="me1">CastAndReceive</span><span class="br0">&#41;</span>;
-        rootNode.<span class="me1">attachChild</span><span class="br0">&#40;</span>brickNode<span class="br0">&#41;</span>;
-        bulletAppState.<span class="me1">getPhysicsSpace</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">add</span><span class="br0">&#40;</span>brickNode<span class="br0">&#41;</span>;
-    <span class="br0">&#125;</span></pre>
+</li>
+</ul>
+<pre class="code java">  <span class="kw1">public</span> <span class="kw4">void</span> makeBrick<span class="br0">&#40;</span>Vector3f loc<span class="br0">&#41;</span> <span class="br0">&#123;</span>
+    <span class="co3">/** Create a brick geometry and attach to scene graph. */</span>
+    Geometry brick_geo <span class="sy0">=</span> <span class="kw1">new</span> Geometry<span class="br0">&#40;</span><span class="st0">&quot;brick&quot;</span>, box<span class="br0">&#41;</span>;
+    brick_geo.<span class="me1">setMaterial</span><span class="br0">&#40;</span>wall_mat<span class="br0">&#41;</span>;
+    rootNode.<span class="me1">attachChild</span><span class="br0">&#40;</span>brick_geo<span class="br0">&#41;</span>;
+    <span class="co3">/** Position the brick geometry and activate shadows */</span>
+    brick_geo.<span class="me1">setLocalTranslation</span><span class="br0">&#40;</span>loc<span class="br0">&#41;</span>;
+    brick_geo.<span class="me1">setShadowMode</span><span class="br0">&#40;</span>ShadowMode.<span class="me1">CastAndReceive</span><span class="br0">&#41;</span>;
+    <span class="co3">/** Make brick physical with a mass &gt; 0.0f. */</span>
+    brick_phy <span class="sy0">=</span> <span class="kw1">new</span> RigidBodyControl<span class="br0">&#40;</span>2f<span class="br0">&#41;</span>;
+    <span class="co3">/** Add physical brick to physics space. */</span>
+    brick_geo.<span class="me1">addControl</span><span class="br0">&#40;</span>brick_phy<span class="br0">&#41;</span>;
+    bulletAppState.<span class="me1">getPhysicsSpace</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">add</span><span class="br0">&#40;</span>brick_phy<span class="br0">&#41;</span>;
+  <span class="br0">&#125;</span></pre>
 <p>
-We position the brick at the given vector <code>ori</code> and give it a material. We attach the brick to the rootNode and register it to the PhysicsSpace. Here we also activate an optional “Cast and Receive” shadow mode for each brick.
+This code sample does the following:
 </p>
+<ol>
+<li class="level1"><div class="li"> We use a box shape as brick, and give it a brick-colored material. </div>
+</li>
+<li class="level1"><div class="li"> We attach the brick to the rootNode and position it at the position loc in the scene graph.</div>
+</li>
+<li class="level1"><div class="li"> (Optionally, we activate a “Cast and Receive” shadow mode for each brick.)</div>
+</li>
+<li class="level1"><div class="li"> We create a RigidBodyControl for the brick, add it to the brick Geometry, and register it to the PhysicsSpace. </div>
+</li>
+</ol>
+
+</div>
+<!-- SECTION "RigidBodyControl: Brick" [11097-12528] -->
+<h3><a name="rigidbodycontrolcannonball" id="rigidbodycontrolcannonball">RigidBodyControl: Cannonball</a></h3>
+<div class="level3">
 
 <p>
+
 You will notice that the cannon ball is created in the same way: 
 </p>
-<pre class="code java">    <span class="kw1">public</span> <span class="kw4">void</span> makeCannonBall<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-        <span class="co3">/** create a new cannon ball. */</span>
-        Geometry ball_geo <span class="sy0">=</span> <span class="kw1">new</span> Geometry<span class="br0">&#40;</span><span class="st0">&quot;cannon ball&quot;</span>, cannonball<span class="br0">&#41;</span>;
-        ball_geo.<span class="me1">setMaterial</span><span class="br0">&#40;</span>stone_mat<span class="br0">&#41;</span>;
-        PhysicsNode cannonballNode <span class="sy0">=</span> <span class="kw1">new</span> PhysicsNode<span class="br0">&#40;</span>
-             ball_geo,                 <span class="co1">// geometry</span>
-             cannonballCollisionShape, <span class="co1">// collision shape</span>
-             1.0f<span class="br0">&#41;</span>;                    <span class="co1">// mass</span>
-        <span class="co3">/** position the cannon ball and activate shadows */</span>
-        cannonballNode.<span class="me1">setLocalTranslation</span><span class="br0">&#40;</span>cam.<span class="me1">getLocation</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
-        cannonballNode.<span class="me1">setShadowMode</span><span class="br0">&#40;</span>ShadowMode.<span class="me1">CastAndReceive</span><span class="br0">&#41;</span>;
-        <span class="co3">/** Attach the cannon call to the scene and accelerate it. */</span>
-        rootNode.<span class="me1">attachChild</span><span class="br0">&#40;</span>cannonballNode<span class="br0">&#41;</span>;
-        bulletAppState.<span class="me1">getPhysicsSpace</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">add</span><span class="br0">&#40;</span>cannonballNode<span class="br0">&#41;</span>;
-        cannonballNode.<span class="me1">setLinearVelocity</span><span class="br0">&#40;</span>cam.<span class="me1">getDirection</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">mult</span><span class="br0">&#40;</span><span class="nu0">25</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
-    <span class="br0">&#125;</span></pre>
+
 <p>
 The <code>makeCannonBall()</code> methods creates a physics node <code>cannonballNode</code>. The cannon ball shall have
 </p>
 <ul>
 <li class="level1"><div class="li"> a visible Geometry <code>ball_geo</code></div>
 </li>
-<li class="level1"><div class="li"> a collision shape <code>cannonballCollisionShape</code></div>
-</li>
-<li class="level1"><div class="li"> a mass of 1.0f. </div>
+<li class="level1"><div class="li"> physical properties <code>ball_phy</code></div>
+<ul>
+<li class="level2"><div class="li"> a mass of 1.0f. </div>
 </li>
 </ul>
+</li>
+</ul>
+<pre class="code java">  <span class="kw1">public</span> <span class="kw4">void</span> makeCannonBall<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+    <span class="co3">/** Create a cannon ball geometry and attach to scene graph. */</span>
+    Geometry ball_geo <span class="sy0">=</span> <span class="kw1">new</span> Geometry<span class="br0">&#40;</span><span class="st0">&quot;cannon ball&quot;</span>, sphere<span class="br0">&#41;</span>;
+    ball_geo.<span class="me1">setMaterial</span><span class="br0">&#40;</span>stone_mat<span class="br0">&#41;</span>;
+    rootNode.<span class="me1">attachChild</span><span class="br0">&#40;</span>ball_geo<span class="br0">&#41;</span>;
+    <span class="co3">/** Position the cannon ball and activate shadows */</span>
+    ball_geo.<span class="me1">setLocalTranslation</span><span class="br0">&#40;</span>cam.<span class="me1">getLocation</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
+    ball_geo.<span class="me1">setShadowMode</span><span class="br0">&#40;</span>ShadowMode.<span class="me1">CastAndReceive</span><span class="br0">&#41;</span>;
+    <span class="co3">/** Make the ball physcial with a mass &gt; 0.0f */</span>
+    ball_phy <span class="sy0">=</span> <span class="kw1">new</span> RigidBodyControl<span class="br0">&#40;</span>1f<span class="br0">&#41;</span>;
+    <span class="co3">/** Add physical ball to physics space. */</span>
+    ball_geo.<span class="me1">addControl</span><span class="br0">&#40;</span>ball_phy<span class="br0">&#41;</span>;
+    bulletAppState.<span class="me1">getPhysicsSpace</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">add</span><span class="br0">&#40;</span>ball_phy<span class="br0">&#41;</span>;
+    <span class="co3">/** Accelerate the physcial ball to shoot it. */</span>
+    ball_phy.<span class="me1">setLinearVelocity</span><span class="br0">&#40;</span>cam.<span class="me1">getDirection</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">mult</span><span class="br0">&#40;</span><span class="nu0">25</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
+  <span class="br0">&#125;</span></pre>
+<p>
+This code sample does the following:
+</p>
+<ol>
+<li class="level1"><div class="li"> We use a sphere shape as cannonball, and give it a stone material. </div>
+</li>
+<li class="level1"><div class="li"> We attach the ball to the rootNode and position it where the camera is.</div>
+</li>
+<li class="level1"><div class="li"> (Optionally, we activate a “Cast and Receive” shadow mode for the ball.)</div>
+</li>
+<li class="level1"><div class="li"> We create a RigidBodyControl for the ball, add it to the ball Geometry, and register it to the PhysicsSpace. </div>
+</li>
+<li class="level1"><div class="li"> Since are are shooting cannon balls here, we accelerate the ball in the direction the camera is looking, with a speed of 25f.</div>
+</li>
+</ol>
+
+</div>
+<!-- SECTION "RigidBodyControl: Cannonball" [12529-14108] -->
+<h3><a name="rigidbodycontrolfloor" id="rigidbodycontrolfloor">RigidBodyControl: Floor</a></h3>
+<div class="level3">
 
 <p>
 
-We give the cannon ball a material, register it to the PhysicsSpace, and attach it to the rootNode.
-We position the cannon ball at the camera location, and we accelerate it in the camera direction with a speed of 25. Here we also activate an optional “Cast and Receive” shadow mode for each cannon ball.
+The (static) floor has one important difference compared to the (dynamic) bricks and cannonballs: A mass of zero.
 </p>
 
+<p>
+As before, we write a custom <code>initFloor()</code> method that creates a flat box with a rock texture that we use as floor. The floor shall have:
+</p>
+<ul>
+<li class="level1"><div class="li"> a visible Geometry <code>floor_geo</code></div>
+</li>
+<li class="level1"><div class="li"> physical properties <code>floor_phy</code></div>
+<ul>
+<li class="level2"><div class="li"> A mass of 0.0f!</div>
+</li>
+</ul>
+</li>
+</ul>
+<pre class="code java">  <span class="kw1">private</span> RigidBodyControl    floor_phy;
+  ...
+  <span class="kw1">public</span> <span class="kw4">void</span> initFloor<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+    <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Abox+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object><span class="br0">&#40;</span>Vector3f.<span class="me1">ZERO</span>, 10f, 0.1f, 5f<span class="br0">&#41;</span>;
+    floorBox.<span class="me1">scaleTextureCoordinates</span><span class="br0">&#40;</span><span class="kw1">new</span> Vector2f<span class="br0">&#40;</span><span class="nu0">3</span>, <span class="nu0">6</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
+    floor_geo <span class="sy0">=</span> <span class="kw1">new</span> Geometry<span class="br0">&#40;</span><span class="st0">&quot;floor&quot;</span>, floorBox<span class="br0">&#41;</span>;
+    floor_geo.<span class="me1">setMaterial</span><span class="br0">&#40;</span>floor_mat<span class="br0">&#41;</span>;
+    floor_geo.<span class="me1">setShadowMode</span><span class="br0">&#40;</span>ShadowMode.<span class="me1">Receive</span><span class="br0">&#41;</span>;
+    floor_geo.<span class="me1">setLocalTranslation</span><span class="br0">&#40;</span>0, <span class="sy0">-</span>0.1f, 0<span class="br0">&#41;</span>;
+    <span class="kw1">this</span>.<span class="me1">rootNode</span>.<span class="me1">attachChild</span><span class="br0">&#40;</span>floor_geo<span class="br0">&#41;</span>;
+    <span class="coMULTI">/* Make the floor physical with mass 0.0f! */</span>
+    floor_phy <span class="sy0">=</span> <span class="kw1">new</span> RigidBodyControl<span class="br0">&#40;</span>0.0f<span class="br0">&#41;</span>;
+    floor_geo.<span class="me1">addControl</span><span class="br0">&#40;</span>floor_phy<span class="br0">&#41;</span>;
+    bulletAppState.<span class="me1">getPhysicsSpace</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">add</span><span class="br0">&#40;</span>floor_phy<span class="br0">&#41;</span>;
+&nbsp;</pre>
+<p>
+This code sample does the following:
+</p>
+<ol>
+<li class="level1"><div class="li"> We use a box shape as floor, and give it a floor material. </div>
+</li>
+<li class="level1"><div class="li"> We attach the floor to the rootNode and position it a bit below the origin – to prevent overlap with other physical nodes.</div>
+</li>
+<li class="level1"><div class="li"> (Optionally, we activate a “Receive” shadow mode for the floor. The floor does not cast any shadows, this saves computing time.)</div>
+</li>
+<li class="level1"><div class="li"> Static objects such as floors are mass-less and are not affected by gravity! Therefor we create a RigidBodyControl with a mass of 0.0f. </div>
+</li>
+<li class="level1"><div class="li"> We add the RigidBodyControl to the floor Geometry, and register it to the PhysicsSpace. </div>
+</li>
+</ol>
+
 </div>
-<!-- SECTION "Creating Bricks and Cannon Balls: Physics Nodes" [10999-13636] -->
+<!-- SECTION "RigidBodyControl: Floor" [14109-15717] -->
 <h2><a name="creating_the_scene" id="creating_the_scene">Creating the Scene</a></h2>
 <div class="level2">
 
 <p>
 
-Let&#039;s have a quick look at some custom helper methods: <code>initFloor()</code>, <code>initMaterial()</code>, <code>initCrossHairs()</code>, and <code>initWall()</code>. 
+Let&#039;s have a quick look at the remaining custom helper methods: <code>initMaterial()</code>, <code>initShadows()</code>, <code>initCrossHairs()</code>, and <code>initWall()</code>. 
 
 </p>
 <ul>
 <li class="level1"><div class="li"> <code>initMaterial()</code> – This method initializes all the materials we use in this demo.</div>
 </li>
-<li class="level1"><div class="li"> <code>initFloor()</code> – This method generates a flat box with a rock texture that we use as floor. Note that the floor is added to the physics space. We also activate an optional shadow mode that makes the floor receive shadows from other objects in the scene.</div>
+<li class="level1"><div class="li"> <code>initShadows()</code> – (Optional) We deactivate the rootNode&#039;s default ShadowMode and use a JME SceneProcessor called BasicShadowRenderer from the <code>com.jme3.shadow</code> package. For every relevant scene node (floor, cannon balls, bricks) we specify individually what shadow behaviour we want, Cast, Receive, or both.</div>
 </li>
-<li class="level1"><div class="li"> <code>initWall()</code> – A double loop that generates a wall by positioning brick objects: 15 rows high with 4 bricks per row.</div>
+<li class="level1"><div class="li"> <code>initWall()</code> – A double loop that generates a wall by positioning brick objects: 15 rows high with 4 bricks per row. It&#039;s important to space the bricks so the do not overlap.</div>
 </li>
 <li class="level1"><div class="li"> <code>initCrossHairs()</code> – This method simply displays a plus sign that we use as crosshairs for aiming. Note that screen elements such as crosshairs are attached to the <code>guiNode</code>, not the <code>rootNode</code>.</div>
 </li>
@@ -406,11 +503,11 @@ Let&#039;s have a quick look at some custom helper methods: <code>initFloor()</c
 
 <p>
 
-These methods are each called once from the <code>simpleInitApp()</code> method at the start of the game. This is how we set up our game&#039;s custom scene. 
+These methods are each called once from the <code>simpleInitApp()</code> method at the start of the game. As you see, you write any number of custom methods to set up your game&#039;s scene. 
 </p>
 
 </div>
-<!-- SECTION "Creating the Scene" [13637-14630] -->
+<!-- SECTION "Creating the Scene" [15718-16870] -->
 <h2><a name="the_cannon_ball_shooting_action" id="the_cannon_ball_shooting_action">The Cannon Ball Shooting Action</a></h2>
 <div class="level2">
 
@@ -437,42 +534,34 @@ The action of shooting a new cannon ball is defined as follows:
         <span class="br0">&#125;</span>
     <span class="br0">&#125;</span>;</pre>
 <p>
-In the moment the cannon ball PhysicsNode appears in the scene, it flies off with the velocity (and in the direction) that we have specified using <code>setLinearVelocity()</code> inside <code>makeCannonBall()</code>. The newly created cannon ball flies off, hits the wall, and exerts a physical force that shifts the individual bricks. 
+In the moment the cannonball appears in the scene, it flies off with the velocity (and in the direction) that we have specified using <code>setLinearVelocity()</code> inside <code>makeCannonBall()</code>. The newly created cannon ball flies off, hits the wall, and exerts a <em>physical force</em> that shifts the individual bricks. 
 </p>
 
 </div>
-<!-- SECTION "The Cannon Ball Shooting Action" [14631-15670] -->
-<h2><a name="shadows" id="shadows">Shadows</a></h2>
+<!-- SECTION "The Cannon Ball Shooting Action" [16871-17901] -->
+<h2><a name="excercises" id="excercises">Excercises</a></h2>
 <div class="level2">
 
 <p>
 
-You notice that this game also makes use of shadows.
-</p>
-<pre class="code java">    BasicShadowRenderer bsr;
-...
-    <span class="kw1">public</span> <span class="kw4">void</span> simpleInitApp<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-...
-        <span class="me1">rootNode</span>.<span class="me1">setShadowMode</span><span class="br0">&#40;</span>ShadowMode.<span class="me1">Off</span><span class="br0">&#41;</span>;
-        bsr <span class="sy0">=</span> <span class="kw1">new</span> BasicShadowRenderer<span class="br0">&#40;</span>assetManager, <span class="nu0">256</span><span class="br0">&#41;</span>;
-        bsr.<span class="me1">setDirection</span><span class="br0">&#40;</span><span class="kw1">new</span> Vector3f<span class="br0">&#40;</span><span class="sy0">-</span><span class="nu0">1</span>, <span class="sy0">-</span><span class="nu0">1</span>, <span class="sy0">-</span><span class="nu0">1</span><span class="br0">&#41;</span>.<span class="me1">normalizeLocal</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
-        viewPort.<span class="me1">addProcessor</span><span class="br0">&#40;</span>bsr<span class="br0">&#41;</span>;
-<span class="br0">&#125;</span></pre>
-<p>
-We deactivate the the rootNode&#039;s default ShadowMode and use a JME SceneProcessor called BasicShadowRenderer from the <code>com.jme3.shadow</code> package. 
+<strong>Exercise 1</strong> 
 </p>
 
 <p>
-For every relevant scene node (floor, cannon balls, bricks) we specify individually what shadow behaviour we want.
+What happens if you give a static node such as the floor a mass of more than 0.0f? 
 </p>
-<pre class="code java">floor.<span class="me1">setShadowMode</span><span class="br0">&#40;</span>ShadowMode.<span class="me1">Receive</span><span class="br0">&#41;</span>;
-...
-<span class="me1">brickNode</span>.<span class="me1">setShadowMode</span><span class="br0">&#40;</span>ShadowMode.<span class="me1">CastAndReceive</span><span class="br0">&#41;</span>;
-...
-<span class="me1">cannonballNode</span>.<span class="me1">setShadowMode</span><span class="br0">&#40;</span>ShadowMode.<span class="me1">CastAndReceive</span><span class="br0">&#41;</span>;</pre>
+
+<p>
+<strong>Exercise 2</strong> 
+</p>
+
+<p>
+Popular AAA games use a clever mix of physics, animation and prerendered graphics to give you the illusion of a real, “physical” world. Look at your favorite games and try to spot where and how the game designers trick you into believing that the whole scene is physical. – For example, a building “breaking” into 4-8 parts when falling apart is most likely being replaced by dynamic physics nodes only after it has been destroyed… Now that you start to implement game physics yourself, look behind the curtain.
+</p>
+
 </div>
-<!-- SECTION "Shadows" [15671-16493] -->
-<h2><a name="excercise" id="excercise">Excercise</a></h2>
+<!-- SECTION "Excercises" [17902-18560] -->
+<h2><a name="conclusion" id="conclusion">Conclusion</a></h2>
 <div class="level2">
 
 <p>
@@ -481,16 +570,6 @@ Using physics everywhere in a game sounds like a cool idea, but it is easily ove
 </p>
 
 <p>
-Popular AAA games use a clever mix of physics, animation and prerendered graphics to give you the illusion of a real, “physical” world. Look at your favorite games and try to spot where and how they game designer tricks you into believing that the whole scene is physical. – For example, a building “breaking” into 4-8 parts when falling apart is most likely being replaced by dynamic physics nodes only after it has been destroyed! Now that you start to implement game physics yourself, look behind the curtain.
-</p>
-
-</div>
-<!-- SECTION "Excercise" [16494-17314] -->
-<h2><a name="conclusion" id="conclusion">Conclusion</a></h2>
-<div class="level2">
-
-<p>
-
 You have learned how to add a PhysicsSpace to an application by attaching a <code>BulletAppState</code>. You know how to create PhysicsNodes from a geometry, a collision shape, and a mass value. You have learned that physical objects are not only attached to the rootNode but also registered to the PhysicsSpace. You are aware that overusing physics has a huge performance impact.
 </p>
 
@@ -506,5 +585,5 @@ This is the last beginner tutorial for now. Now you are ready to start <a href="
 </p>
 
 </div>
-<!-- SECTION "Conclusion" [17315-] -->
+<!-- SECTION "Conclusion" [18561-] -->
 <p><em><a href="http://jmonkeyengine.org/wiki/doku.php/jme3:beginner:hello_physics?do=export_xhtmlbody">view online version</a></em></p>

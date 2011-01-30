@@ -135,6 +135,10 @@ public abstract class AbstractSceneExplorerNode extends AbstractNode implements 
         }
     }
 
+    public void refreshProperties() {
+        setSheet(createSheet());
+    }
+
     protected Property makeProperty(Object obj, Class returntype, String method, String name) {
         Property prop = null;
         try {

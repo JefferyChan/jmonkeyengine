@@ -36,8 +36,20 @@ Press the “test vehicle” button to drive the vehicle, use WASD to control, E
 
 <p>
 Known Issues: Dont save while testing the vehicle, you will save the location and acceleration info in the j3o.
-
 </p>
 
+<p>
+Code Example to load vehicle:
+
+</p>
+<pre class="code java"><span class="co1">//load vehicle and access VehicleControl</span>
+Spatial car<span class="sy0">=</span>assetManager.<span class="me1">loadModel</span><span class="br0">&#40;</span><span class="st0">&quot;Models/MyCar.j3o&quot;</span><span class="br0">&#41;</span>;
+VehicleControl control<span class="sy0">=</span>car.<span class="me1">getControl</span><span class="br0">&#40;</span>VehicleControl.<span class="kw1">class</span><span class="br0">&#41;</span>;
+rootNode.<span class="me1">attachChild</span><span class="br0">&#40;</span>car<span class="br0">&#41;</span>;
+physicsSpace.<span class="me1">add</span><span class="br0">&#40;</span>control<span class="br0">&#41;</span>;
+ 
+<span class="co1">//then use the control to control the vehicle:</span>
+control.<span class="me1">setPhysicsLocation</span><span class="br0">&#40;</span><span class="kw1">new</span> Vector3f<span class="br0">&#40;</span><span class="nu0">10</span>,<span class="nu0">2</span>,<span class="nu0">10</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
+control.<span class="me1">accelerate</span><span class="br0">&#40;</span><span class="nu0">100</span><span class="br0">&#41;</span>;</pre>
 </div>
 <p><em><a href="http://jmonkeyengine.org/wiki/doku.php/jme3:jmonkeyplatform:vehicle_creator?do=export_xhtmlbody">view online version</a></em></p>
