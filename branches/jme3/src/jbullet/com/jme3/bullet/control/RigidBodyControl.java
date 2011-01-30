@@ -7,9 +7,8 @@ package com.jme3.bullet.control;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.CollisionShape;
-import com.jme3.bullet.collision.shapes.CylinderCollisionShape;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
-import com.jme3.bullet.objects.BulletRigidBody;
+import com.jme3.bullet.objects.PhysicsRigidBody;
 import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.export.InputCapsule;
 import com.jme3.export.JmeExporter;
@@ -24,7 +23,6 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.Control;
 import com.jme3.scene.shape.Box;
-import com.jme3.scene.shape.Cylinder;
 import com.jme3.scene.shape.Sphere;
 import java.io.IOException;
 
@@ -32,7 +30,7 @@ import java.io.IOException;
  *
  * @author normenhansen
  */
-public class RigidBodyControl extends BulletRigidBody implements PhysicsControl {
+public class RigidBodyControl extends PhysicsRigidBody implements PhysicsControl {
 
     protected Spatial spatial;
     protected boolean enabled = true;
@@ -44,7 +42,7 @@ public class RigidBodyControl extends BulletRigidBody implements PhysicsControl 
     /**
      * When using this constructor, the CollisionShape for the RigidBody is generated
      * automatically when the Control is added to a Spatial.
-     * @param mass When not 0, a HullCollisionShape is generated, otherwise a MeshCollisionShape is used.
+     * @param mass When not 0, a HullCollisionShape is generated, otherwise a MeshCollisionShape is used. For geometries with box or sphere meshes the proper box or sphere collision shape is used.
      */
     public RigidBodyControl(float mass) {
         this.mass = mass;

@@ -67,7 +67,7 @@ import java.util.Iterator;
  * </p>
  * @author normenhansen
  */
-public class BulletVehicle extends BulletRigidBody {
+public class PhysicsVehicle extends PhysicsRigidBody {
 
     protected RaycastVehicle vehicle;
     protected VehicleTuning tuning;
@@ -75,14 +75,14 @@ public class BulletVehicle extends BulletRigidBody {
     protected ArrayList<VehicleWheel> wheels = new ArrayList<VehicleWheel>();
     protected PhysicsSpace physicsSpace;
 
-    public BulletVehicle() {
+    public PhysicsVehicle() {
     }
 
-    public BulletVehicle(CollisionShape shape) {
+    public PhysicsVehicle(CollisionShape shape) {
         super(shape);
     }
 
-    public BulletVehicle(CollisionShape shape, float mass) {
+    public PhysicsVehicle(CollisionShape shape, float mass) {
         super(shape, mass);
     }
 

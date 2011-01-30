@@ -38,7 +38,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.VehicleControl;
-import com.jme3.bullet.objects.BulletVehicle;
+import com.jme3.bullet.objects.PhysicsVehicle;
 import com.jme3.export.InputCapsule;
 import com.jme3.export.OutputCapsule;
 import com.jme3.scene.Node;
@@ -390,7 +390,7 @@ public class PhysicsVehicleNode extends PhysicsNode {
     /**
      * used internally
      */
-    public BulletVehicle getVehicle() {
+    public PhysicsVehicle getVehicle() {
         return ((VehicleControl) collisionObject);
     }
 

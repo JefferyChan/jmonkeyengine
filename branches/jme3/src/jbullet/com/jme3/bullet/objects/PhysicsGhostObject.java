@@ -58,7 +58,7 @@ import java.util.List;
  * collision sensors/triggers, explosions etc.<br>
  * @author normenhansen
  */
-public class BulletGhostObject extends PhysicsCollisionObject {
+public class PhysicsGhostObject extends PhysicsCollisionObject {
 
     protected PairCachingGhostObject gObject;
     protected boolean locationDirty = false;
@@ -69,15 +69,15 @@ public class BulletGhostObject extends PhysicsCollisionObject {
     protected javax.vecmath.Quat4f tempRot = new javax.vecmath.Quat4f();
     private List<PhysicsCollisionObject> overlappingObjects = new LinkedList<PhysicsCollisionObject>();
 
-    public BulletGhostObject() {
+    public PhysicsGhostObject() {
     }
 
-    public BulletGhostObject(CollisionShape shape) {
+    public PhysicsGhostObject(CollisionShape shape) {
         collisionShape = shape;
         buildObject();
     }
 
-    public BulletGhostObject(Spatial child, CollisionShape shape) {
+    public PhysicsGhostObject(Spatial child, CollisionShape shape) {
         collisionShape = shape;
         buildObject();
     }

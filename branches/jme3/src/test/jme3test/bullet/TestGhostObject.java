@@ -39,7 +39,6 @@ import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.nodes.PhysicsGhostNode;
-import com.jme3.bullet.objects.BulletGhostObject;
 import com.jme3.bullet.nodes.PhysicsNode;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;

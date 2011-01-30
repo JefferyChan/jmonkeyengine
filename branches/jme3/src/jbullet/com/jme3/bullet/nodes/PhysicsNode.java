@@ -39,7 +39,7 @@ import com.jme3.scene.Spatial;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.joints.PhysicsJoint;
-import com.jme3.bullet.objects.BulletRigidBody;
+import com.jme3.bullet.objects.PhysicsRigidBody;
 import com.jme3.export.InputCapsule;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
@@ -106,32 +106,32 @@ public class PhysicsNode extends PhysicsBaseNode {
     @Override
     public void setLocalTransform(Transform t) {
         super.setLocalTransform(t);
-        ((BulletRigidBody)collisionObject).setPhysicsLocation(getWorldTranslation());
-        ((BulletRigidBody)collisionObject).setPhysicsRotation(getWorldRotation().toRotationMatrix());
+        ((PhysicsRigidBody)collisionObject).setPhysicsLocation(getWorldTranslation());
+        ((PhysicsRigidBody)collisionObject).setPhysicsRotation(getWorldRotation().toRotationMatrix());
     }
 
     @Override
     public void setLocalTranslation(Vector3f localTranslation) {
         super.setLocalTranslation(localTranslation);
-        ((BulletRigidBody)collisionObject).setPhysicsLocation(getWorldTranslation());
+        ((PhysicsRigidBody)collisionObject).setPhysicsLocation(getWorldTranslation());
     }
 
     @Override
     public void setLocalTranslation(float x, float y, float z) {
         super.setLocalTranslation(x, y, z);
-        ((BulletRigidBody)collisionObject).setPhysicsLocation(getWorldTranslation());
+        ((PhysicsRigidBody)collisionObject).setPhysicsLocation(getWorldTranslation());
     }
 
     @Override
     public void setLocalRotation(Matrix3f rotation) {
         super.setLocalRotation(rotation);
-        ((BulletRigidBody)collisionObject).setPhysicsRotation(getWorldRotation().toRotationMatrix());
+        ((PhysicsRigidBody)collisionObject).setPhysicsRotation(getWorldRotation().toRotationMatrix());
     }
 
     @Override
     public void setLocalRotation(Quaternion quaternion) {
         super.setLocalRotation(quaternion);
-        ((BulletRigidBody)collisionObject).setPhysicsRotation(getWorldRotation().toRotationMatrix());
+        ((PhysicsRigidBody)collisionObject).setPhysicsRotation(getWorldRotation().toRotationMatrix());
     }
 
     /**
@@ -139,7 +139,7 @@ public class PhysicsNode extends PhysicsBaseNode {
      * @param location the location of the actual physics object
      */
     public void setPhysicsLocation(Vector3f location) {
-        ((BulletRigidBody)collisionObject).setPhysicsLocation(location);
+        ((PhysicsRigidBody)collisionObject).setPhysicsLocation(location);
     }
 
     /**
@@ -147,7 +147,7 @@ public class PhysicsNode extends PhysicsBaseNode {
      * @param rotation the rotation of the actual physics object
      */
     public void setPhysicsRotation(Matrix3f rotation) {
-        ((BulletRigidBody)collisionObject).setPhysicsRotation(rotation);
+        ((PhysicsRigidBody)collisionObject).setPhysicsRotation(rotation);
     }
 
     /**
@@ -155,7 +155,7 @@ public class PhysicsNode extends PhysicsBaseNode {
      * @param location the location of the actual physics object is stored in this Vector3f
      */
     public void getPhysicsLocation(Vector3f location) {
-        ((BulletRigidBody)collisionObject).getPhysicsLocation(location);
+        ((PhysicsRigidBody)collisionObject).getPhysicsLocation(location);
     }
 
     /**
@@ -163,7 +163,7 @@ public class PhysicsNode extends PhysicsBaseNode {
      * @param rotation the rotation of the actual physics object is stored in this Matrix3f
      */
     public void getPhysicsRotation(Matrix3f rotation) {
-        ((BulletRigidBody)collisionObject).getPhysicsRotation(rotation);
+        ((PhysicsRigidBody)collisionObject).getPhysicsRotation(rotation);
     }
 
     /**
@@ -173,15 +173,15 @@ public class PhysicsNode extends PhysicsBaseNode {
      * @param kinematic
      */
     public void setKinematic(boolean kinematic) {
-        ((BulletRigidBody)collisionObject).setKinematic(kinematic);
+        ((PhysicsRigidBody)collisionObject).setKinematic(kinematic);
     }
 
     public boolean isKinematic() {
-        return ((BulletRigidBody)collisionObject).isKinematic();
+        return ((PhysicsRigidBody)collisionObject).isKinematic();
     }
 
     public void setCcdSweptSphereRadius(float radius) {
-        ((BulletRigidBody)collisionObject).setCcdSweptSphereRadius(radius);
+        ((PhysicsRigidBody)collisionObject).setCcdSweptSphereRadius(radius);
     }
 
     /**
@@ -190,23 +190,23 @@ public class PhysicsNode extends PhysicsBaseNode {
      * @param threshold
      */
     public void setCcdMotionThreshold(float threshold) {
-        ((BulletRigidBody)collisionObject).setCcdMotionThreshold(threshold);
+        ((PhysicsRigidBody)collisionObject).setCcdMotionThreshold(threshold);
     }
 
     public float getCcdSweptSphereRadius() {
-        return ((BulletRigidBody)collisionObject).getCcdSweptSphereRadius();
+        return ((PhysicsRigidBody)collisionObject).getCcdSweptSphereRadius();
     }
 
     public float getCcdMotionThreshold() {
-        return ((BulletRigidBody)collisionObject).getCcdMotionThreshold();
+        return ((PhysicsRigidBody)collisionObject).getCcdMotionThreshold();
     }
 
     public float getCcdSquareMotionThreshold() {
-        return ((BulletRigidBody)collisionObject).getCcdSquareMotionThreshold();
+        return ((PhysicsRigidBody)collisionObject).getCcdSquareMotionThreshold();
     }
 
     public float getMass() {
-        return ((BulletRigidBody)collisionObject).getMass();
+        return ((PhysicsRigidBody)collisionObject).getMass();
     }
 
     /**
@@ -214,15 +214,15 @@ public class PhysicsNode extends PhysicsBaseNode {
      * @param mass
      */
     public void setMass(float mass) {
-        ((BulletRigidBody)collisionObject).setMass(mass);
+        ((PhysicsRigidBody)collisionObject).setMass(mass);
     }
 
     public Vector3f getGravity() {
-        return ((BulletRigidBody)collisionObject).getGravity();
+        return ((PhysicsRigidBody)collisionObject).getGravity();
     }
 
     public Vector3f getGravity(Vector3f gravity) {
-        return ((BulletRigidBody)collisionObject).getGravity(gravity);
+        return ((PhysicsRigidBody)collisionObject).getGravity(gravity);
     }
 
     /**
@@ -232,11 +232,11 @@ public class PhysicsNode extends PhysicsBaseNode {
      * @param gravity the gravity vector to set
      */
     public void setGravity(Vector3f gravity) {
-        ((BulletRigidBody)collisionObject).setGravity(gravity);
+        ((PhysicsRigidBody)collisionObject).setGravity(gravity);
     }
 
     public float getFriction() {
-        return ((BulletRigidBody)collisionObject).getFriction();
+        return ((PhysicsRigidBody)collisionObject).getFriction();
     }
 
     /**
@@ -244,31 +244,31 @@ public class PhysicsNode extends PhysicsBaseNode {
      * @param friction the friction of this physics object
      */
     public void setFriction(float friction) {
-        ((BulletRigidBody)collisionObject).setFriction(friction);
+        ((PhysicsRigidBody)collisionObject).setFriction(friction);
     }
 
     public void setDamping(float linearDamping, float angularDamping) {
-        ((BulletRigidBody)collisionObject).setDamping(linearDamping, angularDamping);
+        ((PhysicsRigidBody)collisionObject).setDamping(linearDamping, angularDamping);
     }
 
     public void setLinearDamping(float linearDamping) {
-        ((BulletRigidBody)collisionObject).setLinearDamping(linearDamping);
+        ((PhysicsRigidBody)collisionObject).setLinearDamping(linearDamping);
     }
 
     public void setAngularDamping(float angularDamping) {
-        ((BulletRigidBody)collisionObject).setAngularDamping(angularDamping);
+        ((PhysicsRigidBody)collisionObject).setAngularDamping(angularDamping);
     }
 
     public float getLinearDamping() {
-        return ((BulletRigidBody)collisionObject).getLinearDamping();
+        return ((PhysicsRigidBody)collisionObject).getLinearDamping();
     }
 
     public float getAngularDamping() {
-        return ((BulletRigidBody)collisionObject).getAngularDamping();
+        return ((PhysicsRigidBody)collisionObject).getAngularDamping();
     }
 
     public float getRestitution() {
-        return ((BulletRigidBody)collisionObject).getRestitution();
+        return ((PhysicsRigidBody)collisionObject).getRestitution();
     }
 
     /**
@@ -276,7 +276,7 @@ public class PhysicsNode extends PhysicsBaseNode {
      * @param restitution
      */
     public void setRestitution(float restitution) {
-        ((BulletRigidBody)collisionObject).setRestitution(restitution);
+        ((PhysicsRigidBody)collisionObject).setRestitution(restitution);
     }
 
     /**
@@ -284,7 +284,7 @@ public class PhysicsNode extends PhysicsBaseNode {
      * @return the current linear velocity
      */
     public Vector3f getAngularVelocity() {
-        return ((BulletRigidBody)collisionObject).getAngularVelocity();
+        return ((PhysicsRigidBody)collisionObject).getAngularVelocity();
     }
 
     /**
@@ -292,7 +292,7 @@ public class PhysicsNode extends PhysicsBaseNode {
      * @param vec the vector to store the velocity in
      */
     public void getAngularVelocity(Vector3f vec) {
-        ((BulletRigidBody)collisionObject).getAngularVelocity(vec);
+        ((PhysicsRigidBody)collisionObject).getAngularVelocity(vec);
     }
 
     /**
@@ -300,7 +300,7 @@ public class PhysicsNode extends PhysicsBaseNode {
      * @param vec the angular velocity of this PhysicsNode
      */
     public void setAngularVelocity(Vector3f vec) {
-        ((BulletRigidBody)collisionObject).setAngularVelocity(vec);
+        ((PhysicsRigidBody)collisionObject).setAngularVelocity(vec);
     }
 
     /**
@@ -308,7 +308,7 @@ public class PhysicsNode extends PhysicsBaseNode {
      * @return the current linear velocity
      */
     public Vector3f getLinearVelocity() {
-        return ((BulletRigidBody)collisionObject).getLinearVelocity();
+        return ((PhysicsRigidBody)collisionObject).getLinearVelocity();
     }
 
     /**
@@ -316,7 +316,7 @@ public class PhysicsNode extends PhysicsBaseNode {
      * @param vec the vector to store the velocity in
      */
     public void getLinearVelocity(Vector3f vec) {
-        ((BulletRigidBody)collisionObject).getLinearVelocity(vec);
+        ((PhysicsRigidBody)collisionObject).getLinearVelocity(vec);
     }
 
     /**
@@ -324,17 +324,17 @@ public class PhysicsNode extends PhysicsBaseNode {
      * @param vec the linear velocity of this PhysicsNode
      */
     public void setLinearVelocity(Vector3f vec) {
-        ((BulletRigidBody)collisionObject).setLinearVelocity(vec);
+        ((PhysicsRigidBody)collisionObject).setLinearVelocity(vec);
     }
 
     @Override
     public void updateLogicalState(float tpf) {
         super.updateLogicalState(tpf);
         if (applyForce) {
-            ((BulletRigidBody)collisionObject).applyForce(continuousForce,continuousForceLocation);
+            ((PhysicsRigidBody)collisionObject).applyForce(continuousForce,continuousForceLocation);
         }
         if (applyTorque) {
-            ((BulletRigidBody)collisionObject).applyTorque(continuousTorque);
+            ((PhysicsRigidBody)collisionObject).applyTorque(continuousTorque);
         }
     }
 
@@ -474,7 +474,7 @@ public class PhysicsNode extends PhysicsBaseNode {
      * @param location the location of the force
      */
     public void applyForce(final Vector3f force, final Vector3f location) {
-        ((BulletRigidBody)collisionObject).applyForce(force, location);
+        ((PhysicsRigidBody)collisionObject).applyForce(force, location);
     }
 
     /**
@@ -485,7 +485,7 @@ public class PhysicsNode extends PhysicsBaseNode {
      * @param force the force
      */
     public void applyCentralForce(final Vector3f force) {
-        ((BulletRigidBody)collisionObject).applyCentralForce(force);
+        ((PhysicsRigidBody)collisionObject).applyCentralForce(force);
     }
 
     /**
@@ -496,7 +496,7 @@ public class PhysicsNode extends PhysicsBaseNode {
      * @param torque the torque
      */
     public void applyTorque(final Vector3f torque) {
-        ((BulletRigidBody)collisionObject).applyTorque(torque);
+        ((PhysicsRigidBody)collisionObject).applyTorque(torque);
     }
 
     /**
@@ -505,7 +505,7 @@ public class PhysicsNode extends PhysicsBaseNode {
      * @param rel_pos location relative to object
      */
     public void applyImpulse(final Vector3f impulse, final Vector3f rel_pos) {
-        ((BulletRigidBody)collisionObject).applyImpulse(impulse, rel_pos);
+        ((PhysicsRigidBody)collisionObject).applyImpulse(impulse, rel_pos);
     }
 
     /**
@@ -513,7 +513,7 @@ public class PhysicsNode extends PhysicsBaseNode {
      * @param vec
      */
     public void applyTorqueImpulse(final Vector3f vec) {
-        ((BulletRigidBody)collisionObject).applyTorqueImpulse(vec);
+        ((PhysicsRigidBody)collisionObject).applyTorqueImpulse(vec);
     }
 
     /**
@@ -521,22 +521,22 @@ public class PhysicsNode extends PhysicsBaseNode {
      *
      */
     public void clearForces() {
-        ((BulletRigidBody)collisionObject).clearForces();
+        ((PhysicsRigidBody)collisionObject).clearForces();
     }
 
     public void setCollisionShape(CollisionShape collisionShape) {
-        ((BulletRigidBody)collisionObject).setCollisionShape(collisionShape);
+        ((PhysicsRigidBody)collisionObject).setCollisionShape(collisionShape);
     }
 
     /**
      * reactivates this PhysicsNode when it has been deactivated because it was not moving
      */
     public void activate() {
-        ((BulletRigidBody)collisionObject).activate();
+        ((PhysicsRigidBody)collisionObject).activate();
     }
 
     public boolean isActive() {
-        return ((BulletRigidBody)collisionObject).isActive();
+        return ((PhysicsRigidBody)collisionObject).isActive();
     }
 
     /**
@@ -546,37 +546,37 @@ public class PhysicsNode extends PhysicsBaseNode {
      * @param angular the angular sleeping threshold
      */
     public void setSleepingThresholds(float linear, float angular) {
-        ((BulletRigidBody)collisionObject).setSleepingThresholds(linear, angular);
+        ((PhysicsRigidBody)collisionObject).setSleepingThresholds(linear, angular);
     }
 
     public void setLinearSleepingThreshold(float linearSleepingThreshold) {
-        ((BulletRigidBody)collisionObject).setLinearSleepingThreshold(linearSleepingThreshold);
+        ((PhysicsRigidBody)collisionObject).setLinearSleepingThreshold(linearSleepingThreshold);
     }
 
     public void setAngularSleepingThreshold(float angularSleepingThreshold) {
-        ((BulletRigidBody)collisionObject).setAngularSleepingThreshold(angularSleepingThreshold);
+        ((PhysicsRigidBody)collisionObject).setAngularSleepingThreshold(angularSleepingThreshold);
     }
 
     public float getLinearSleepingThreshold() {
-        return ((BulletRigidBody)collisionObject).getLinearSleepingThreshold();
+        return ((PhysicsRigidBody)collisionObject).getLinearSleepingThreshold();
     }
 
     public float getAngularSleepingThreshold() {
-        return ((BulletRigidBody)collisionObject).getAngularSleepingThreshold();
+        return ((PhysicsRigidBody)collisionObject).getAngularSleepingThreshold();
     }
 
     /**
      * do not use manually, joints are added automatically
      */
     public void addJoint(PhysicsJoint joint) {
-        ((BulletRigidBody)collisionObject).addJoint(joint);
+        ((PhysicsRigidBody)collisionObject).addJoint(joint);
     }
 
     /**
      *
      */
     public void removeJoint(PhysicsJoint joint) {
-        ((BulletRigidBody)collisionObject).removeJoint(joint);
+        ((PhysicsRigidBody)collisionObject).removeJoint(joint);
     }
 
     /**
@@ -585,21 +585,21 @@ public class PhysicsNode extends PhysicsBaseNode {
      * @return list of active joints connected to this physicsnode
      */
     public List<PhysicsJoint> getJoints() {
-        return ((BulletRigidBody)collisionObject).getJoints();
+        return ((PhysicsRigidBody)collisionObject).getJoints();
     }
 
     /**
      * used internally
      */
-    public BulletRigidBody getRigidBody() {
-        return ((BulletRigidBody)collisionObject);
+    public PhysicsRigidBody getRigidBody() {
+        return ((PhysicsRigidBody)collisionObject);
     }
 
     /**
      * destroys this PhysicsNode and removes it from memory
      */
     public void destroy() {
-        ((BulletRigidBody)collisionObject).destroy();
+        ((PhysicsRigidBody)collisionObject).destroy();
     }
 
     public void attachDebugShape(AssetManager manager) {

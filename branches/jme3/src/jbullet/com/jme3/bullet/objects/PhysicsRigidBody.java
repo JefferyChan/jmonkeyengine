@@ -42,7 +42,7 @@ import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.joints.PhysicsJoint;
-import com.jme3.bullet.objects.infos.BulletMotionState;
+import com.jme3.bullet.objects.infos.RigidBodyMotionState;
 import com.jme3.bullet.util.Converter;
 import com.jme3.export.InputCapsule;
 import com.jme3.export.JmeExporter;
@@ -61,11 +61,11 @@ import java.util.List;
  * <p>PhysicsRigidBody - Basic physics object</p>
  * @author normenhansen
  */
-public class BulletRigidBody extends PhysicsCollisionObject {
+public class PhysicsRigidBody extends PhysicsCollisionObject {
 
     protected RigidBodyConstructionInfo constructionInfo;
     protected RigidBody rBody;
-    protected BulletMotionState motionState = new BulletMotionState();
+    protected RigidBodyMotionState motionState = new RigidBodyMotionState();
     protected boolean rebuildBody = true;
     protected float mass = 1.0f;
     protected boolean kinematic = false;
@@ -77,7 +77,7 @@ public class BulletRigidBody extends PhysicsCollisionObject {
     protected javax.vecmath.Vector3f localInertia = new javax.vecmath.Vector3f();
     protected ArrayList<PhysicsJoint> joints = new ArrayList<PhysicsJoint>();
 
-    public BulletRigidBody() {
+    public PhysicsRigidBody() {
     }
 
     /**
@@ -85,12 +85,12 @@ public class BulletRigidBody extends PhysicsCollisionObject {
      * @param child
      * @param shape
      */
-    public BulletRigidBody(CollisionShape shape) {
+    public PhysicsRigidBody(CollisionShape shape) {
         collisionShape = shape;
         rebuildRigidBody();
     }
 
-    public BulletRigidBody(CollisionShape shape, float mass) {
+    public PhysicsRigidBody(CollisionShape shape, float mass) {
         collisionShape = shape;
         this.mass = mass;
         rebuildRigidBody();
@@ -140,7 +140,7 @@ public class BulletRigidBody extends PhysicsCollisionObject {
     /**
      * @return the motionState
      */
-    public BulletMotionState getMotionState() {
+    public RigidBodyMotionState getMotionState() {
         return motionState;
     }
 

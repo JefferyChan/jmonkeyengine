@@ -36,7 +36,7 @@ import com.bulletphysics.linearmath.Transform;
 import com.jme3.export.JmeExporter;
 import com.jme3.math.Matrix3f;
 import com.jme3.math.Vector3f;
-import com.jme3.bullet.objects.BulletRigidBody;
+import com.jme3.bullet.objects.PhysicsRigidBody;
 import com.jme3.bullet.util.Converter;
 import com.jme3.export.InputCapsule;
 import com.jme3.export.JmeImporter;
@@ -59,7 +59,7 @@ public class SliderJoint extends PhysicsJoint {
      * @param pivotA local translation of the joint connection point in node A
      * @param pivotB local translation of the joint connection point in node B
      */
-    public SliderJoint(BulletRigidBody nodeA, BulletRigidBody nodeB, Vector3f pivotA, Vector3f pivotB, Matrix3f rotA, Matrix3f rotB, boolean useLinearReferenceFrameA) {
+    public SliderJoint(PhysicsRigidBody nodeA, PhysicsRigidBody nodeB, Vector3f pivotA, Vector3f pivotB, Matrix3f rotA, Matrix3f rotB, boolean useLinearReferenceFrameA) {
         super(nodeA, nodeB, pivotA, pivotB);
         this.rotA=rotA;
         this.rotB=rotB;
@@ -71,7 +71,7 @@ public class SliderJoint extends PhysicsJoint {
      * @param pivotA local translation of the joint connection point in node A
      * @param pivotB local translation of the joint connection point in node B
      */
-    public SliderJoint(BulletRigidBody nodeA, BulletRigidBody nodeB, Vector3f pivotA, Vector3f pivotB, boolean useLinearReferenceFrameA) {
+    public SliderJoint(PhysicsRigidBody nodeA, PhysicsRigidBody nodeB, Vector3f pivotA, Vector3f pivotB, boolean useLinearReferenceFrameA) {
         super(nodeA, nodeB, pivotA, pivotB);
         this.rotA=new Matrix3f();
         this.rotB=new Matrix3f();

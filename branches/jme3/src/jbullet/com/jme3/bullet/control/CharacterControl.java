@@ -6,7 +6,7 @@ package com.jme3.bullet.control;
 
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.CollisionShape;
-import com.jme3.bullet.objects.BulletCharacter;
+import com.jme3.bullet.objects.PhysicsCharacter;
 import com.jme3.export.InputCapsule;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
@@ -23,7 +23,7 @@ import java.io.IOException;
  *
  * @author normenhansen
  */
-public class CharacterControl extends BulletCharacter implements PhysicsControl {
+public class CharacterControl extends PhysicsCharacter implements PhysicsControl {
 
     protected Spatial spatial;
     protected boolean enabled = true;

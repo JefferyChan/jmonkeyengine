@@ -35,7 +35,7 @@ import com.bulletphysics.dynamics.constraintsolver.Point2PointConstraint;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
 import com.jme3.math.Vector3f;
-import com.jme3.bullet.objects.BulletRigidBody;
+import com.jme3.bullet.objects.PhysicsRigidBody;
 import com.jme3.bullet.util.Converter;
 import com.jme3.export.InputCapsule;
 import com.jme3.export.OutputCapsule;
@@ -57,7 +57,7 @@ public class Point2PointJoint extends PhysicsJoint {
      * @param pivotA local translation of the joint connection point in node A
      * @param pivotB local translation of the joint connection point in node B
      */
-    public Point2PointJoint(BulletRigidBody nodeA, BulletRigidBody nodeB, Vector3f pivotA, Vector3f pivotB) {
+    public Point2PointJoint(PhysicsRigidBody nodeA, PhysicsRigidBody nodeB, Vector3f pivotA, Vector3f pivotB) {
         super(nodeA, nodeB, pivotA, pivotB);
         createJoint();
     }

@@ -34,19 +34,21 @@ package com.jme3.bullet.objects.infos;
 import com.bulletphysics.linearmath.MotionState;
 import com.bulletphysics.linearmath.Transform;
 import com.jme3.bullet.nodes.PhysicsBaseNode;
-import com.jme3.bullet.objects.BulletVehicle;
+import com.jme3.bullet.objects.PhysicsVehicle;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.bullet.util.Converter;
 import com.jme3.math.Matrix3f;
 import com.jme3.scene.Spatial;
+import java.util.Iterator;
+import java.util.LinkedList;
 
 /**
  * stores transform info of a PhysicsNode in a threadsafe manner to
  * allow multithreaded access from the jme scenegraph and the bullet physicsspace
  * @author normenhansen
  */
-public class BulletMotionState extends MotionState {
+public class RigidBodyMotionState extends MotionState {
     //stores the bullet transform
 
     private Transform motionStateTrans = new Transform(Converter.convert(new Matrix3f()));
@@ -60,9 +62,10 @@ public class BulletMotionState extends MotionState {
     private boolean jmeLocationDirty = false;
     //temp variable for conversion
     private Quaternion tmp_inverseWorldRotation = new Quaternion();
-    protected BulletVehicle vehicle;
+    protected PhysicsVehicle vehicle;
+//    protected LinkedList<PhysicsMotionStateListener> listeners = new LinkedList<PhysicsMotionStateListener>();
 
-    public BulletMotionState() {
+    public RigidBodyMotionState() {
     }
 
     /**
@@ -87,6 +90,10 @@ public class BulletMotionState extends MotionState {
         Converter.convert(worldTrans.origin, worldLocation);
         Converter.convert(worldTrans.basis, worldRotation);
         worldRotationQuat.fromRotationMatrix(worldRotation);
+//        for (Iterator<PhysicsMotionStateListener> it = listeners.iterator(); it.hasNext();) {
+//            PhysicsMotionStateListener physicsMotionStateListener = it.next();
+//            physicsMotionStateListener.stateChanged(worldLocation, worldRotation);
+//        }
         physicsLocationDirty = true;
         if (vehicle != null) {
             vehicle.updateWheels();
@@ -146,10 +153,17 @@ public class BulletMotionState extends MotionState {
     /**
      * @param vehicle the vehicle to set
      */
-    public void setVehicle(BulletVehicle vehicle) {
+    public void setVehicle(PhysicsVehicle vehicle) {
         this.vehicle = vehicle;
     }
 
+//    public void addMotionStateListener(PhysicsMotionStateListener listener){
+//        listeners.add(listener);
+//    }
+//
+//    public void removeMotionStateListener(PhysicsMotionStateListener listener){
+//        listeners.remove(listener);
+//    }
 //    public synchronized boolean applyTransform(com.jme3.math.Transform trans) {
 //        if (!physicsLocationDirty) {
 //            return false;

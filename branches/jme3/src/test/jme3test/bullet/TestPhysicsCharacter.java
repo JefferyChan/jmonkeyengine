@@ -35,9 +35,10 @@ import com.jme3.bullet.BulletAppState;
 import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
+import com.jme3.bullet.collision.shapes.HullCollisionShape;
 import com.jme3.bullet.collision.shapes.MeshCollisionShape;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
-import com.jme3.bullet.nodes.PhysicsCharacterNode;
+import com.jme3.bullet.control.CharacterControl;
 import com.jme3.bullet.nodes.PhysicsNode;
 import com.jme3.input.KeyInput;
 import com.jme3.input.MouseInput;
@@ -60,7 +61,7 @@ import com.jme3.scene.shape.Sphere.TextureMode;
 public class TestPhysicsCharacter extends SimpleApplication implements ActionListener{
 
     private BulletAppState bulletAppState;
-    private PhysicsCharacterNode physicsCharacter;
+    private CharacterControl physicsCharacter;
     private Vector3f walkDirection = new Vector3f();
     private Material mat;
     private static final Sphere bullet;
@@ -103,14 +104,13 @@ public class TestPhysicsCharacter extends SimpleApplication implements ActionLis
         mat.setColor("Color", ColorRGBA.Red);
 
         // Add a physics character to the world
-        physicsCharacter = new PhysicsCharacterNode(new SphereCollisionShape(1.2f), .1f);
-        physicsCharacter.setLocalTranslation(new Vector3f(3, 6, 0));
+        physicsCharacter = new CharacterControl(new SphereCollisionShape(1.2f), .1f);
+        physicsCharacter.setPhysicsLocation(new Vector3f(3, 6, 0));
         physicsCharacter.attachDebugShape(mat);
-        rootNode.attachChild(physicsCharacter);
         getPhysicsSpace().add(physicsCharacter);
 
         // Add a physics box to the world
-        PhysicsNode physicsBox = new PhysicsNode(new BoxCollisionShape(new Vector3f(1, 1, 1)), 1);
+        PhysicsNode physicsBox = new PhysicsNode(new HullCollisionShape(bullet), 1);
         physicsBox.setFriction(0.1f);
         physicsBox.setLocalTranslation(new Vector3f(.6f, 4, .5f));
         physicsBox.attachDebugShape(assetManager);
@@ -139,6 +139,7 @@ public class TestPhysicsCharacter extends SimpleApplication implements ActionLis
     @Override
     public void simpleUpdate(float tpf) {
         physicsCharacter.setWalkDirection(walkDirection);
+        cam.setLocation(physicsCharacter.getPhysicsLocation());
     }
 
     @Override
@@ -177,7 +178,7 @@ public class TestPhysicsCharacter extends SimpleApplication implements ActionLis
             Geometry bulletg = new Geometry("bullet", bullet);
             bulletg.setMaterial(mat);
             PhysicsNode bulletNode = new PhysicsNode(bulletg, bulletCollisionShape, 1);
-            bulletNode.setLocalTranslation(cam.getLocation());
+            bulletNode.setLocalTranslation(cam.getLocation().add(cam.getDirection().mult(2)));
             bulletNode.setShadowMode(ShadowMode.CastAndReceive);
             bulletNode.setLinearVelocity(cam.getDirection().mult(25));
             rootNode.attachChild(bulletNode);

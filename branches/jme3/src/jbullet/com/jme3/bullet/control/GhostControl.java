@@ -6,7 +6,7 @@ package com.jme3.bullet.control;
 
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.CollisionShape;
-import com.jme3.bullet.objects.BulletGhostObject;
+import com.jme3.bullet.objects.PhysicsGhostObject;
 import com.jme3.export.InputCapsule;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
@@ -23,7 +23,7 @@ import java.io.IOException;
  *
  * @author normenhansen
  */
-public class GhostControl extends BulletGhostObject implements PhysicsControl {
+public class GhostControl extends PhysicsGhostObject implements PhysicsControl {
 
     protected Spatial spatial;
     private boolean enabled = true;

@@ -12,7 +12,7 @@ import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
 import com.jme3.bullet.joints.ConeJoint;
 import com.jme3.bullet.joints.PhysicsJoint;
-import com.jme3.bullet.objects.BulletRigidBody;
+import com.jme3.bullet.objects.PhysicsRigidBody;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
 import com.jme3.math.FastMath;
@@ -41,7 +41,7 @@ public class RagdollControl implements PhysicsControl {
     protected boolean enabled = true;
     protected boolean debug = false;
     protected Quaternion tmp_jointRotation = new Quaternion();
-    protected BulletRigidBody baseRigidBody;
+    protected PhysicsRigidBody baseRigidBody;
 
     public RagdollControl() {
     }
@@ -109,7 +109,7 @@ public class RagdollControl implements PhysicsControl {
             if (childBone.getParent() == null) {
                 Vector3f parentPos = childBone.getModelSpacePosition().add(model.getWorldTranslation());
                 logger.log(Level.INFO, "Found root bone in skeleton {0}", skeleton);
-                baseRigidBody = new BulletRigidBody(new BoxCollisionShape(Vector3f.UNIT_XYZ.mult(.1f)), 1);
+                baseRigidBody = new PhysicsRigidBody(new BoxCollisionShape(Vector3f.UNIT_XYZ.mult(.1f)), 1);
                 baseRigidBody.setPhysicsLocation(parentPos);
                 boneLinks = boneRecursion(model, childBone, baseRigidBody, boneLinks, 1);
                 return;
@@ -123,7 +123,7 @@ public class RagdollControl implements PhysicsControl {
 
     }
 
-    private List<PhysicsBoneLink> boneRecursion(Spatial model, Bone bone, BulletRigidBody parent, List<PhysicsBoneLink> list, int reccount) {
+    private List<PhysicsBoneLink> boneRecursion(Spatial model, Bone bone, PhysicsRigidBody parent, List<PhysicsBoneLink> list, int reccount) {
         ArrayList<Bone> children = bone.getChildren();
         bone.setUserControl(true);
         for (Iterator<Bone> it = children.iterator(); it.hasNext();) {
@@ -141,7 +141,7 @@ public class RagdollControl implements PhysicsControl {
             float radius = height > 2f ? 0.4f : height * .2f;
             CapsuleCollisionShape shape = new CapsuleCollisionShape(radius, height - (radius ), 2);
 
-            BulletRigidBody shapeNode = new BulletRigidBody(shape, 10.0f / (float) reccount);
+            PhysicsRigidBody shapeNode = new PhysicsRigidBody(shape, 10.0f / (float) reccount);
             shapeNode.setPhysicsLocation(jointCenter);
             shapeNode.setPhysicsRotation(tmp_jointRotation.toRotationMatrix());
 
@@ -278,7 +278,7 @@ public class RagdollControl implements PhysicsControl {
         Bone childBone;
         Bone parentBone;
         PhysicsJoint joint;
-        BulletRigidBody rigidBody;
+        PhysicsRigidBody rigidBody;
         Vector3f pivotA;
         Vector3f pivotB;
         float length;

@@ -35,7 +35,7 @@ import com.jme3.scene.Spatial;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.GhostControl;
-import com.jme3.bullet.objects.BulletGhostObject;
+import com.jme3.bullet.objects.PhysicsGhostObject;
 import com.jme3.export.InputCapsule;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
@@ -83,38 +83,38 @@ public class PhysicsGhostNode extends PhysicsBaseNode {
     @Override
     public void setLocalTransform(Transform t) {
         super.setLocalTransform(t);
-        ((BulletGhostObject)collisionObject).setPhysicsLocation(getWorldTranslation());
-        ((BulletGhostObject)collisionObject).setPhysicsRotation(getWorldRotation().toRotationMatrix());
+        ((PhysicsGhostObject)collisionObject).setPhysicsLocation(getWorldTranslation());
+        ((PhysicsGhostObject)collisionObject).setPhysicsRotation(getWorldRotation().toRotationMatrix());
     }
 
     @Override
     public void setLocalTranslation(Vector3f localTranslation) {
         super.setLocalTranslation(localTranslation);
-        ((BulletGhostObject)collisionObject).setPhysicsLocation(getWorldTranslation());
+        ((PhysicsGhostObject)collisionObject).setPhysicsLocation(getWorldTranslation());
     }
 
     @Override
     public void setLocalTranslation(float x, float y, float z) {
         super.setLocalTranslation(x, y, z);
-        ((BulletGhostObject)collisionObject).setPhysicsLocation(getWorldTranslation());
+        ((PhysicsGhostObject)collisionObject).setPhysicsLocation(getWorldTranslation());
     }
 
     @Override
     public void setLocalRotation(Matrix3f rotation) {
         super.setLocalRotation(rotation);
-        ((BulletGhostObject)collisionObject).setPhysicsRotation(getWorldRotation().toRotationMatrix());
+        ((PhysicsGhostObject)collisionObject).setPhysicsRotation(getWorldRotation().toRotationMatrix());
     }
 
     @Override
     public void setLocalRotation(Quaternion quaternion) {
         super.setLocalRotation(quaternion);
-        ((BulletGhostObject)collisionObject).setPhysicsRotation(getWorldRotation().toRotationMatrix());
+        ((PhysicsGhostObject)collisionObject).setPhysicsRotation(getWorldRotation().toRotationMatrix());
     }
 
     /**
      * used internally
      */
-    public BulletGhostObject getGhostObject() {
+    public PhysicsGhostObject getGhostObject() {
         return ((GhostControl)collisionObject);
     }
 

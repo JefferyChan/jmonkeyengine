@@ -291,7 +291,7 @@ public class VehicleWheel implements Savable {
             return null;
         } else if (wheelInfo.raycastInfo.groundObject instanceof RigidBody) {
             System.out.println("RigidBody");
-            return (BulletRigidBody) ((RigidBody) wheelInfo.raycastInfo.groundObject).getUserPointer();
+            return (PhysicsRigidBody) ((RigidBody) wheelInfo.raycastInfo.groundObject).getUserPointer();
         } else {
             return null;
         }

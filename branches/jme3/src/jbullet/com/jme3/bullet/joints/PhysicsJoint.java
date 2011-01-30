@@ -35,7 +35,7 @@ import com.bulletphysics.dynamics.constraintsolver.TypedConstraint;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
 import com.jme3.math.Vector3f;
-import com.jme3.bullet.objects.BulletRigidBody;
+import com.jme3.bullet.objects.PhysicsRigidBody;
 import com.jme3.export.InputCapsule;
 import com.jme3.export.OutputCapsule;
 import com.jme3.export.Savable;
@@ -48,8 +48,8 @@ import java.io.IOException;
 public abstract class PhysicsJoint implements Savable {
 
     protected TypedConstraint constraint;
-    protected BulletRigidBody nodeA;
-    protected BulletRigidBody nodeB;
+    protected PhysicsRigidBody nodeA;
+    protected PhysicsRigidBody nodeB;
     protected Vector3f pivotA;
     protected Vector3f pivotB;
     protected boolean collisionBetweenLinkedBodys = true;
@@ -61,7 +61,7 @@ public abstract class PhysicsJoint implements Savable {
      * @param pivotA local translation of the joint connection point in node A
      * @param pivotB local translation of the joint connection point in node B
      */
-    public PhysicsJoint(BulletRigidBody nodeA, BulletRigidBody nodeB, Vector3f pivotA, Vector3f pivotB) {
+    public PhysicsJoint(PhysicsRigidBody nodeA, PhysicsRigidBody nodeB, Vector3f pivotA, Vector3f pivotB) {
         this.nodeA = nodeA;
         this.nodeB = nodeB;
         this.pivotA = pivotA;
@@ -97,11 +97,11 @@ public abstract class PhysicsJoint implements Savable {
         this.collisionBetweenLinkedBodys = collisionBetweenLinkedBodys;
     }
 
-    public BulletRigidBody getBodyA() {
+    public PhysicsRigidBody getBodyA() {
         return nodeA;
     }
 
-    public BulletRigidBody getBodyB() {
+    public PhysicsRigidBody getBodyB() {
         return nodeB;
     }
 
@@ -131,8 +131,8 @@ public abstract class PhysicsJoint implements Savable {
 
     public void read(JmeImporter im) throws IOException {
         InputCapsule capsule = im.getCapsule(this);
-        this.nodeA = ((BulletRigidBody) capsule.readSavable("nodeA", new BulletRigidBody()));
-        this.nodeB = (BulletRigidBody) capsule.readSavable("nodeB", new BulletRigidBody());
+        this.nodeA = ((PhysicsRigidBody) capsule.readSavable("nodeA", new PhysicsRigidBody()));
+        this.nodeB = (PhysicsRigidBody) capsule.readSavable("nodeB", new PhysicsRigidBody());
         this.pivotA = (Vector3f) capsule.readSavable("pivotA", new Vector3f());
         this.pivotB = (Vector3f) capsule.readSavable("pivotB", new Vector3f());
     }

@@ -38,8 +38,6 @@ import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
-import com.jme3.bullet.nodes.PhysicsNode;
-import com.jme3.bullet.objects.BulletRigidBody;
 import com.jme3.font.BitmapText;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.ActionListener;
@@ -120,8 +118,7 @@ public class TestBrickWall extends SimpleApplication {
                 bulletg.setMaterial(mat2);
                 bulletg.setShadowMode(ShadowMode.CastAndReceive);
                 bulletg.setLocalTranslation(cam.getLocation());
-
-                RigidBodyControl bulletNode = new RigidBodyControl(bulletCollisionShape, 1);
+                RigidBodyControl bulletNode = new BombControl(bulletCollisionShape, 1);
                 bulletNode.setLinearVelocity(cam.getDirection().mult(25));
                 bulletg.addControl(bulletNode);
                 rootNode.attachChild(bulletg);
@@ -182,7 +179,8 @@ public class TestBrickWall extends SimpleApplication {
         Geometry reBoxg = new Geometry("brick", brick);
         reBoxg.setMaterial(mat);
         reBoxg.setLocalTranslation(ori);
-        reBoxg.addControl(new RigidBodyControl(new BoxCollisionShape(new Vector3f(bLength, bHeight, bWidth)), 1.5f));
+        //for geometry with sphere mesh the physics system automatically uses a sphere collision shape
+        reBoxg.addControl(new RigidBodyControl(1.5f));
         reBoxg.setShadowMode(ShadowMode.CastAndReceive);
         reBoxg.getControl(RigidBodyControl.class).setFriction(0.6f);
         this.rootNode.attachChild(reBoxg);

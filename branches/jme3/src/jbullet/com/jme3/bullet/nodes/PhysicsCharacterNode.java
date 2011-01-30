@@ -35,8 +35,8 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.CharacterControl;
-import com.jme3.bullet.objects.BulletCharacter;
-import com.jme3.bullet.objects.BulletGhostObject;
+import com.jme3.bullet.objects.PhysicsCharacter;
+import com.jme3.bullet.objects.PhysicsGhostObject;
 import com.jme3.export.InputCapsule;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
@@ -69,38 +69,38 @@ public class PhysicsCharacterNode extends PhysicsBaseNode {
     }
 
     public void warp(Vector3f location) {
-        ((BulletCharacter)collisionObject).warp(location);
+        ((PhysicsCharacter)collisionObject).warp(location);
     }
 
     @Override
     public void setLocalTransform(Transform t) {
         super.setLocalTransform(t);
-        ((BulletGhostObject)collisionObject).setPhysicsLocation(getWorldTranslation());
-        ((BulletGhostObject)collisionObject).setPhysicsRotation(getWorldRotation().toRotationMatrix());
+        ((PhysicsGhostObject)collisionObject).setPhysicsLocation(getWorldTranslation());
+        ((PhysicsGhostObject)collisionObject).setPhysicsRotation(getWorldRotation().toRotationMatrix());
     }
 
     @Override
     public void setLocalTranslation(Vector3f localTranslation) {
         super.setLocalTranslation(localTranslation);
-        ((BulletGhostObject)collisionObject).setPhysicsLocation(getWorldTranslation());
+        ((PhysicsGhostObject)collisionObject).setPhysicsLocation(getWorldTranslation());
     }
 
     @Override
     public void setLocalTranslation(float x, float y, float z) {
         super.setLocalTranslation(x, y, z);
-        ((BulletGhostObject)collisionObject).setPhysicsLocation(getWorldTranslation());
+        ((PhysicsGhostObject)collisionObject).setPhysicsLocation(getWorldTranslation());
     }
 
     @Override
     public void setLocalRotation(Matrix3f rotation) {
         super.setLocalRotation(rotation);
-        ((BulletGhostObject)collisionObject).setPhysicsRotation(getWorldRotation().toRotationMatrix());
+        ((PhysicsGhostObject)collisionObject).setPhysicsRotation(getWorldRotation().toRotationMatrix());
     }
 
     @Override
     public void setLocalRotation(Quaternion quaternion) {
         super.setLocalRotation(quaternion);
-        ((BulletGhostObject)collisionObject).setPhysicsRotation(getWorldRotation().toRotationMatrix());
+        ((PhysicsGhostObject)collisionObject).setPhysicsRotation(getWorldRotation().toRotationMatrix());
     }
 
     /**
@@ -108,67 +108,67 @@ public class PhysicsCharacterNode extends PhysicsBaseNode {
      * @param vec the walk direction to set
      */
     public void setWalkDirection(Vector3f vec) {
-        ((BulletCharacter)collisionObject).setWalkDirection(vec);
+        ((PhysicsCharacter)collisionObject).setWalkDirection(vec);
     }
 
     public void setUpAxis(int axis) {
-        ((BulletCharacter)collisionObject).setUpAxis(axis);
+        ((PhysicsCharacter)collisionObject).setUpAxis(axis);
     }
 
     public int getUpAxis() {
-        return ((BulletCharacter)collisionObject).getUpAxis();
+        return ((PhysicsCharacter)collisionObject).getUpAxis();
     }
 
     public void setFallSpeed(float fallSpeed) {
-        ((BulletCharacter)collisionObject).setFallSpeed(fallSpeed);
+        ((PhysicsCharacter)collisionObject).setFallSpeed(fallSpeed);
     }
 
     public float getFallSpeed() {
-        return ((BulletCharacter)collisionObject).getFallSpeed();
+        return ((PhysicsCharacter)collisionObject).getFallSpeed();
     }
 
     public void setJumpSpeed(float jumpSpeed) {
-        ((BulletCharacter)collisionObject).setJumpSpeed(jumpSpeed);
+        ((PhysicsCharacter)collisionObject).setJumpSpeed(jumpSpeed);
     }
 
     public float getJumpSpeed() {
-        return ((BulletCharacter)collisionObject).getJumpSpeed();
+        return ((PhysicsCharacter)collisionObject).getJumpSpeed();
     }
 
     public void setGravity(float value) {
-        ((BulletCharacter)collisionObject).setGravity(value);
+        ((PhysicsCharacter)collisionObject).setGravity(value);
     }
 
     public float getGravity() {
-        return ((BulletCharacter)collisionObject).getGravity();
+        return ((PhysicsCharacter)collisionObject).getGravity();
     }
 
     public void setMaxSlope(float slopeRadians) {
-        ((BulletCharacter)collisionObject).setMaxSlope(slopeRadians);
+        ((PhysicsCharacter)collisionObject).setMaxSlope(slopeRadians);
     }
 
     public float getMaxSlope() {
-        return ((BulletCharacter)collisionObject).getMaxSlope();
+        return ((PhysicsCharacter)collisionObject).getMaxSlope();
     }
 
     public boolean onGround() {
-        return ((BulletCharacter)collisionObject).onGround();
+        return ((PhysicsCharacter)collisionObject).onGround();
     }
 
     public void jump() {
-        ((BulletCharacter)collisionObject).jump();
+        ((PhysicsCharacter)collisionObject).jump();
     }
 
     public void setCollisionShape(CollisionShape collisionShape) {
-        ((BulletCharacter)collisionObject).setCollisionShape(collisionShape);
+        ((PhysicsCharacter)collisionObject).setCollisionShape(collisionShape);
     }
 
-    public BulletCharacter getPhysicsCharacter() {
-        return ((BulletCharacter)collisionObject);
+    public PhysicsCharacter getPhysicsCharacter() {
+        return ((PhysicsCharacter)collisionObject);
     }
 
     public void destroy() {
-        ((BulletCharacter)collisionObject).destroy();
+        ((PhysicsCharacter)collisionObject).destroy();
     }
 
     @Override
