@@ -116,6 +116,7 @@ public class SceneExplorerProperty<T> extends PropertySupport.Reflection<T> {
     @Override
     public void setValue(final T val) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
         try {
+            notifyListeners(getSuperValue(), val);
             SceneApplication.getApplication().enqueue(new Callable<Void>() {
 
                 public Void call() throws Exception {
@@ -144,7 +145,6 @@ public class SceneExplorerProperty<T> extends PropertySupport.Reflection<T> {
                     Logger.getLogger(SceneExplorerProperty.class.getName()).log(Level.INFO, "Add undo {0}", getSuperValue());
                 }
             }
-            notifyListeners(getSuperValue(), val);
             super.setValue(val);
         } catch (IllegalAccessException ex) {
             Exceptions.printStackTrace(ex);

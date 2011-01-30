@@ -122,14 +122,19 @@ public class JmeSpatial extends AbstractSceneExplorerNode {
     @Override
     public Action[] getActions(boolean context) {
 //        return super.getActions(context);
-        return new Action[]{
-                    Actions.alwaysEnabled(new AddUserDataAction(this), "Add User Data", "", false),
-                    SystemAction.get(RenameAction.class),
-                    SystemAction.get(CopyAction.class),
-                    SystemAction.get(CutAction.class),
-                    SystemAction.get(PasteAction.class),
-                    SystemAction.get(DeleteAction.class)
-                };
+        if (((SceneExplorerChildren) jmeChildren).readOnly) {
+            return new Action[]{
+                        SystemAction.get(CopyAction.class),};
+        } else {
+            return new Action[]{
+                        Actions.alwaysEnabled(new AddUserDataAction(this), "Add User Data", "", false),
+                        SystemAction.get(RenameAction.class),
+                        SystemAction.get(CopyAction.class),
+                        SystemAction.get(CutAction.class),
+                        SystemAction.get(PasteAction.class),
+                        SystemAction.get(DeleteAction.class)
+                    };
+        }
     }
 
     @Override
@@ -285,7 +290,9 @@ public class JmeSpatial extends AbstractSceneExplorerNode {
             set.setName(Spatial.class.getName() + "_UserData");
             for (Iterator<String> it = dataKeys.iterator(); it.hasNext();) {
                 String string = it.next();
-                set.put(new UserDataProperty(spatial, string));
+                UserDataProperty prop = new UserDataProperty(spatial, string);
+                prop.addPropertyChangeListener(this);
+                set.put(prop);
             }
             sheet.put(set);
         }

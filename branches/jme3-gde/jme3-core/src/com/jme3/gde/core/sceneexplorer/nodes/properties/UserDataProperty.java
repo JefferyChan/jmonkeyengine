@@ -35,6 +35,9 @@ import com.jme3.gde.core.scene.SceneApplication;
 import com.jme3.scene.Spatial;
 import java.beans.PropertyEditor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import org.openide.nodes.PropertySupport;
@@ -49,6 +52,7 @@ public class UserDataProperty extends PropertySupport.ReadWrite<String> {
     private Spatial spatial;
     private String name = "null";
     private int type = 0;
+    private List<ScenePropertyChangeListener> listeners = new LinkedList<ScenePropertyChangeListener>();
 
     public UserDataProperty(Spatial node, String name) {
         super(name, String.class, name, "");
@@ -109,6 +113,7 @@ public class UserDataProperty extends PropertySupport.ReadWrite<String> {
                     return null;
                 }
             }).get();
+            notifyListeners(null, val);
         } catch (InterruptedException ex) {
             Exceptions.printStackTrace(ex);
         } catch (ExecutionException ex) {
@@ -120,5 +125,20 @@ public class UserDataProperty extends PropertySupport.ReadWrite<String> {
     public PropertyEditor getPropertyEditor() {
         return null;
 //        return new AnimationPropertyEditor(control);
+    }
+
+    public void addPropertyChangeListener(ScenePropertyChangeListener listener) {
+        listeners.add(listener);
+    }
+
+    public void removePropertyChangeListener(ScenePropertyChangeListener listener) {
+        listeners.remove(listener);
+    }
+
+    private void notifyListeners(Object before, Object after) {
+        for (Iterator<ScenePropertyChangeListener> it = listeners.iterator(); it.hasNext();) {
+            ScenePropertyChangeListener propertyChangeListener = it.next();
+            propertyChangeListener.propertyChange(getName(), before, after);
+        }
     }
 }

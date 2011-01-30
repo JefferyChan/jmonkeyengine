@@ -42,6 +42,7 @@ import com.jme3.gde.core.sceneexplorer.nodes.JmeSpatial;
 import com.jme3.scene.Spatial;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
+import org.openide.loaders.DataObject;
 
 /**
  *
@@ -88,6 +89,7 @@ public class UserDataDialog extends javax.swing.JDialog {
         } catch (ExecutionException ex) {
         }
         spat.refreshProperties();
+        spat.getLookup().lookup(DataObject.class).setModified(true);
         setVisible(false);
     }
 
