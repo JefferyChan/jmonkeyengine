@@ -12,7 +12,10 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Geometry;
+import com.jme3.scene.SceneGraphVisitor;
+import com.jme3.scene.SceneGraphVisitorAdapter;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.control.LodControl;
 import com.jme3.scene.shape.Quad;
 import com.jme3.shadow.PssmShadowRenderer;
 import com.jme3.shadow.PssmShadowRenderer.CompareMode;
@@ -28,7 +31,6 @@ public class TestTransparentShadow extends SimpleApplication {
     }
 
     public void simpleInitApp() {
-        GL11.glEnable(ARBMultisample.GL_SAMPLE_ALPHA_TO_COVERAGE_ARB);
 
         cam.setLocation(new Vector3f(2.0606942f, 3.20342f, 6.7860126f));
         cam.setRotation(new Quaternion(-0.017481906f, 0.98241085f, -0.12393151f, -0.13857932f));
@@ -51,6 +53,15 @@ public class TestTransparentShadow extends SimpleApplication {
         teaGeom.setQueueBucket(Bucket.Transparent);
         teaGeom.setShadowMode(ShadowMode.Cast);
 
+        teaGeom.depthFirstTraversal(new SceneGraphVisitorAdapter(){
+            @Override
+             public void visit(Geometry geom) {
+                 LodControl lodCtrl = new LodControl();
+                 lodCtrl.setTrisPerPixel(0.25f);
+                 geom.addControl(lodCtrl);
+             }
+        });
+        
         AmbientLight al = new AmbientLight();
         al.setColor(ColorRGBA.White.mult(2));
         rootNode.addLight(al);

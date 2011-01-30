@@ -67,11 +67,28 @@ public class LodControl extends AbstractControl implements Cloneable {
     public LodControl(){
     }
 
+    public float getDistTolerance() {
+        return distTolerance;
+    }
+
+    public void setDistTolerance(float distTolerance) {
+        this.distTolerance = distTolerance;
+    }
+
+    public float getTrisPerPixel() {
+        return trisPerPixel;
+    }
+
+    public void setTrisPerPixel(float trisPerPixel) {
+        this.trisPerPixel = trisPerPixel;
+    }
+
     @Override
     public void setSpatial(Spatial spatial){
         if (!(spatial instanceof Geometry))
             throw new IllegalArgumentException("LodControl can only be attached to Geometry!");
 
+        super.setSpatial(spatial);
         Geometry geom = (Geometry) spatial;
         Mesh mesh = geom.getMesh();
         numLevels = mesh.getNumLodLevels();
