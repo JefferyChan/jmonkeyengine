@@ -233,7 +233,7 @@ public class Server extends ServiceManager implements MessageListener {
         if (!isBound) throw new IOException("Not bound yet. Use bind() first.");
 
         // We don't have to check for reliable or not here, since client.send does that.
-        for (Client con : tcp.getConnectors()) {
+        for (Client con : clientManager.getConnectors()) {
             if (con == except) continue;
             con.send(message);
         }
