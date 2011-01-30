@@ -55,17 +55,29 @@ public class LodControl extends AbstractControl implements Cloneable {
     private int numLevels;
     private int[] numTris;
 
+    /**
+     * 
+     * @param geom
+     * @deprecated Use {@link LodControl#LodControl() }
+     */
+    @Deprecated
     public LodControl(Geometry geom){
-        super(geom);
+    }
+
+    public LodControl(){
+    }
+
+    @Override
+    public void setSpatial(Spatial spatial){
+        if (!(spatial instanceof Geometry))
+            throw new IllegalArgumentException("LodControl can only be attached to Geometry!");
+
+        Geometry geom = (Geometry) spatial;
         Mesh mesh = geom.getMesh();
         numLevels = mesh.getNumLodLevels();
         numTris = new int[numLevels];
         for (int i = numLevels - 1; i >= 0; i--)
             numTris[i] = mesh.getTriangleCount(i);
-
-    }
-
-    public LodControl(){
     }
 
     public Control cloneForSpatial(Spatial spatial) {
