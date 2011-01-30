@@ -901,7 +901,7 @@ public final class VehicleCreatorTopComponent extends TopComponent implements Sc
             public void run() {
                 if (!active) {
                     close();
-                    setActivatedNodes(new org.openide.nodes.Node[]{jmeNode});
+                    setActivatedNodes(new org.openide.nodes.Node[]{});
                     if (editorController != null) {
                         editorController.cleanup();
                         editorController = null;
@@ -911,7 +911,7 @@ public final class VehicleCreatorTopComponent extends TopComponent implements Sc
                         open();
                     }
                     requestActive();
-                    setActivatedNodes(new org.openide.nodes.Node[]{});
+                    setActivatedNodes(new org.openide.nodes.Node[]{jmeNode});
                     editorController.checkVehicle();
                 }
             }
