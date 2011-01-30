@@ -69,6 +69,7 @@ import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.NotifyDescriptor.Message;
 import org.openide.awt.StatusDisplayer;
+import org.openide.util.Exceptions;
 import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
 import org.openide.util.LookupEvent;
@@ -254,7 +255,7 @@ public class SceneApplication extends Application implements LookupProvider, Loo
                         + "(" + e + ")",
                         NotifyDescriptor.WARNING_MESSAGE);
                 DialogDisplayer.getDefault().notifyLater(mesg);
-                e.printStackTrace();
+                Exceptions.printStackTrace(e);
                 lastError = msg;
             }
         } catch (Error e) {
@@ -268,7 +269,7 @@ public class SceneApplication extends Application implements LookupProvider, Loo
                         + "(" + e + ")",
                         NotifyDescriptor.WARNING_MESSAGE);
                 DialogDisplayer.getDefault().notifyLater(mesg);
-                e.printStackTrace();
+                Exceptions.printStackTrace(e);
                 lastError = msg;
             }
         }

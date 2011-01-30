@@ -99,6 +99,7 @@ public class JmeParticleEmitter extends JmeGeometry{
         set.put(makeProperty(obj, float.class, "getVelocityVariation", "setVariation", "Velocity Variation"));
         set.put(makeProperty(obj, boolean.class, "isFacingVelocity", "setFacingVelocity", "Facing Velocity"));
         set.put(makeProperty(obj, boolean.class, "isRandomAngle", "setRandomAngle", "Random Angle"));
+        set.put(makeProperty(obj, boolean.class, "isInWorldSpace", "setInWorldSpace", "World Space"));
         set.put(makeProperty(obj, float.class, "getRotateSpeed", "setRotateSpeed", "Rotate Speed"));
         set.put(makeProperty(obj, boolean.class, "isSelectRandomImage", "setSelectRandomImage", "Select Random Image"));
         set.put(makeProperty(obj, int.class, "getImagesX", "setImagesX", "Images X"));
