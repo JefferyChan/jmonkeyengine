@@ -911,7 +911,7 @@ public final class VehicleCreatorTopComponent extends TopComponent implements Sc
                         open();
                     }
                     requestActive();
-                    setActivatedNodes(new org.openide.nodes.Node[]{jmeNode});
+//                    setActivatedNodes(new org.openide.nodes.Node[]{jmeNode});
                     editorController.checkVehicle();
                 }
             }
