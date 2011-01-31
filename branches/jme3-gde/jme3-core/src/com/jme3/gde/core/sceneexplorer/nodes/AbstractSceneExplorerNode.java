@@ -71,7 +71,7 @@ public abstract class AbstractSceneExplorerNode extends AbstractNode implements 
     }
 
     public AbstractSceneExplorerNode(DataObject dataObject) {
-        super(Children.LEAF, new ProxyLookup(dataObject.getLookup(), new SceneExplorerLookup(new InstanceContent())));
+        super(Children.LEAF, new ProxyLookup(dataObject != null ? dataObject.getLookup() : Lookup.EMPTY, new SceneExplorerLookup(new InstanceContent())));
         this.dataObject = dataObject;
         lookupContents = getLookup().lookup(SceneExplorerLookup.class).getInstanceContent();
     }
