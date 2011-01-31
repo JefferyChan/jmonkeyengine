@@ -51,25 +51,25 @@ import java.util.Map.Entry;
 /**
  * Produces the mesh for the TerrainPatch.
  * This LOD algorithm generates a single triangle strip by first building the center of the
- * mesh, minus one outer edge around it. Then it builds the edges in counter-clockwise order, 
+ * mesh, minus one outer edge around it. Then it builds the edges in counter-clockwise order,
  * starting at the bottom right and working up, then left across the top, then down across the
  * left, then right across the bottom.
- * It needs to know what its neighbour's LOD's are so it can stitch the edges. 
+ * It needs to know what its neighbour's LOD's are so it can stitch the edges.
  * It creates degenerate polygons in order to keep the winding order of the polygons and to move
  * the strip to a new position while still maintaining the continuity of the overall mesh. These
  * degenerates are removed quickly by the video card.
- * 
+ *
  * @author Brent Owens
  */
 public class LODGeomap extends BufferGeomap {
 	public LODGeomap(int size, FloatBuffer heightMap) {
 		super(heightMap, null, size, size, 1);
 	}
-	
+
 	public Mesh createMesh(Vector3f scale, Vector2f tcScale, Vector2f tcOffset, float offsetAmount, int totalSize, boolean center) {
 		return this.createMesh(scale, tcScale, tcOffset, offsetAmount, totalSize, center, 1, false,false,false,false);
 	}
-	
+
 	public Mesh createMesh(Vector3f scale, Vector2f tcScale, Vector2f tcOffset, float offsetAmount, int totalSize, boolean center, int lod, boolean rightLod, boolean topLod, boolean leftLod, boolean bottomLod){
 		FloatBuffer pb = writeVertexArray(null, scale, center);
 		FloatBuffer tb = writeTexCoordArray(null, tcOffset, tcScale, offsetAmount, totalSize);
@@ -90,7 +90,7 @@ public class LODGeomap extends BufferGeomap {
     protected void removeNormalBuffer() {
         ndata = null;
     }
-	
+
 	public FloatBuffer writeTexCoordArray(FloatBuffer store, Vector2f offset, Vector2f scale, float offsetAmount, int totalSize){
 		if (store!=null){
 			if (store.remaining() < getWidth()*getHeight()*2)
@@ -102,29 +102,26 @@ public class LODGeomap extends BufferGeomap {
 		if (offset == null)
 			offset = new Vector2f();
 
-        //flipping the coordinates to it is Y-up
-        offset.setX(-offset.x);
-
 		Vector2f tcStore = new Vector2f();
 
-        // go from top right to bottom left so we unflip the flipped texture
-		for (int y = getHeight()-1; y >= 0; y--){
-            for (int x = getWidth()-1; x >= 0; x--){
-				getUV(x,getHeight()-1-y,tcStore, offset, offsetAmount, totalSize);
+		for (int y = 0; y < getHeight(); y++){
+
+			for (int x = 0; x < getWidth(); x++){
+				getUV(x,y,tcStore, offset, offsetAmount, totalSize);
 				float tx = tcStore.x * scale.x;
 				float ty = tcStore.y * scale.y;
 				store.put( tx );
 				store.put( ty );
 			}
 		}
-		
+
 		return store;
 	}
-	
+
 	public Vector2f getUV(int x, int y, Vector2f store, Vector2f offset, float offsetAmount, int totalSize){
 		float offsetX = offset.x + (offsetAmount * 1.0f);//stepScale.x);
         float offsetY = offset.y + (offsetAmount * 1.0f);//stepScale.z);
-        
+
         store.set( ( ((float)x)+offsetX) / (float)totalSize, // calculates percentage of texture here
                    ( ((float)y)+offsetY) / (float)totalSize );
         return store;
@@ -133,9 +130,9 @@ public class LODGeomap extends BufferGeomap {
 	/**
 	 * Create the LOD index array that will seam its edges with its neighbour's LOD.
 	 * This is a scary method!!! It will break your mind.
-	 * 
+	 *
 	 * @param store to store the index buffer
-	 * @param lod level of detail of the mesh 
+	 * @param lod level of detail of the mesh
 	 * @param rightLod LOD of the right neighbour
 	 * @param topLod LOD of the top neighbour
 	 * @param leftLod LOD of the left neighbour
@@ -143,14 +140,14 @@ public class LODGeomap extends BufferGeomap {
 	 * @return the LOD-ified index buffer
 	 */
 	public IntBuffer writeIndexArrayLodDiff(IntBuffer store, int lod, boolean rightLod, boolean topLod, boolean leftLod, boolean bottomLod){
-		
+
 		IntBuffer buffer2 = store;
 		int numIndexes = calculateNumIndexesLodDiff(lod);
 		if (store == null)
 			buffer2 = BufferUtils.createIntBuffer(numIndexes);
 		VerboseIntBuffer buffer = new VerboseIntBuffer(buffer2);
-		
-		
+
+
 		// generate center squares minus the edges
 		//System.out.println("for (x="+lod+"; x<"+(getWidth()-(2*lod))+"; x+="+lod+")");
 		//System.out.println("	for (z="+lod+"; z<"+(getWidth()-(1*lod))+"; z+="+lod+")");
@@ -163,7 +160,7 @@ public class LODGeomap extends BufferGeomap {
 				idx = nextRowIdx+c;
 				buffer.put(idx);
 			}
-			
+
 			// add degenerate triangles
 			if (r < getWidth()-(3*lod)) {
 				int idx = nextRowIdx+getWidth()-(1*lod)-1;
@@ -174,11 +171,11 @@ public class LODGeomap extends BufferGeomap {
 			}
 		}
 		//System.out.println("\nright:");
-		
+
 		//int runningBufferCount = buffer.getCount();
 		//System.out.println("buffer start: "+runningBufferCount);
-		
-		
+
+
 		// right
 		int br = getWidth()*(getWidth()-lod)-1-lod;
 		buffer.put(br); // bottom right -1
@@ -190,13 +187,13 @@ public class LODGeomap extends BufferGeomap {
 				buffer.put(idx);
 				idx = (row-lod)*getWidth()-1;
 				buffer.put(idx);
-				if (row > lod+1) { //if not the last one 
+				if (row > lod+1) { //if not the last one
 					idx = (row-lod)*getWidth()-1-lod;
 					buffer.put(idx);
 					idx = (row-lod)*getWidth()-1;
 					buffer.put(idx);
 				} else {
-					
+
 				}
 			}
 		} else {
@@ -206,23 +203,23 @@ public class LODGeomap extends BufferGeomap {
 				buffer.put(idx);
 				buffer.put(idx-lod);
 			}
-			
+
 		}
-		
+
 		buffer.put(getWidth()-1);
-		
-		
+
+
 		//System.out.println("\nbuffer right: "+(buffer.getCount()-runningBufferCount));
 		//runningBufferCount = buffer.getCount();
-		
-		
+
+
 		//System.out.println("\ntop:");
-		
+
 		// top 			(the order gets reversed here so the diagonals line up)
 		if (topLod) { // if lower LOD
 			if (rightLod)
 				buffer.put(getWidth()-1);
-			for (int col=getWidth()-1; col>=lod; col-=2*lod) { 
+			for (int col=getWidth()-1; col>=lod; col-=2*lod) {
 				int idx = (lod*getWidth())+col-lod; // next row
 				buffer.put(idx);
 				idx = col-2*lod;
@@ -233,7 +230,7 @@ public class LODGeomap extends BufferGeomap {
 					idx = col-2*lod;
 					buffer.put(idx);
 				} else {
-					
+
 				}
 			}
 		} else {
@@ -248,12 +245,12 @@ public class LODGeomap extends BufferGeomap {
 			buffer.put(0);
 		}
 		buffer.put(0);
-		
+
 		//System.out.println("\nbuffer top: "+(buffer.getCount()-runningBufferCount));
 		//runningBufferCount = buffer.getCount();
-		
+
 		//System.out.println("\nleft:");
-		
+
 		// left
 		if (leftLod) { // if lower LOD
 			if (topLod)
@@ -269,7 +266,7 @@ public class LODGeomap extends BufferGeomap {
 					idx = (row+2*lod)*getWidth();
 					buffer.put(idx);
 				} else {
-					
+
 				}
 			}
 		} else {
@@ -283,17 +280,17 @@ public class LODGeomap extends BufferGeomap {
 				idx = row*getWidth()+lod;
 				buffer.put(idx);
 			}
-			
+
 		}
 		buffer.put(getWidth()*(getWidth()-1));
-		
-		
+
+
 		//System.out.println("\nbuffer left: "+(buffer.getCount()-runningBufferCount));
 		//runningBufferCount = buffer.getCount();
-		
+
 		//if (true) return buffer.delegate;
 		//System.out.println("\nbottom");
-		
+
 		// bottom
 		if (bottomLod) { // if lower LOD
 			if (leftLod)
@@ -312,7 +309,7 @@ public class LODGeomap extends BufferGeomap {
 					idx = getWidth()*(getWidth()-1)+col+2*lod;
 					buffer.put(idx);
 				} else {
-					
+
 				}
 			}
 		} else {
@@ -327,18 +324,18 @@ public class LODGeomap extends BufferGeomap {
 			}
 			//buffer.put(getWidth()*getWidth()-1-lod); // <-- THIS caused holes at the end!
 		}
-		
+
 		buffer.put(getWidth()*getWidth()-1);
-		
+
 		//System.out.println("\nbuffer bottom: "+(buffer.getCount()-runningBufferCount));
 		//runningBufferCount = buffer.getCount();
-		
+
 		//System.out.println("\nBuffer size: "+buffer.getCount());
-		
+
 		// fill in the rest of the buffer with degenerates, there should only be a couple
 		for (int i=buffer.getCount(); i<numIndexes; i++)
 			buffer.put(getWidth()*getWidth()-1);
-		
+
 		return buffer.delegate;
 	}
 
@@ -392,7 +389,7 @@ public class LODGeomap extends BufferGeomap {
                 idx = getWidth()*(i*rightLod+1)-1;
                 for (int j=1; j<=lodDiff; j++) { // for each section in that lod level
                     int idxB = idx - (getWidth()*(j*lod)) - lod;
-                    
+
                     if (j == lodDiff && i == 1) {// the last one
                         buffer.put(getWidth()-1);
                     } else if (j == lodDiff) {
@@ -569,8 +566,8 @@ public class LODGeomap extends BufferGeomap {
 
 		return buffer.delegate;
 	}
-	
-	
+
+
 	/*private int calculateNumIndexesNormal(int lod) {
 		int length = getWidth()-1;
 		int num = ((length/lod)+1)*((length/lod)+1)*2;
@@ -582,7 +579,7 @@ public class LODGeomap extends BufferGeomap {
 		System.out.println("Index buffer size: "+num);
 		return num;
 	}*/
-	
+
 	/**
 	 * calculate how many indexes there will be.
 	 * This isn't that precise and there might be a couple extra.
@@ -601,12 +598,12 @@ public class LODGeomap extends BufferGeomap {
 		int degenerates = 2*(side-(2)); // every row except the first and last
 		num += degenerates;
 		//System.out.println("degenerates: "+degenerates);
-		
+
 		//System.out.println("center, before edges: "+num);
-		
+
 		num += (getWidth()/lod)*2 *4;
 		num++;
-		
+
 		num+=10;// TODO remove me: extra
 		//System.out.println("Index buffer size: "+num);
 		return num;
@@ -699,7 +696,7 @@ public class LODGeomap extends BufferGeomap {
                         normal.set(n1.add(n2).add(n3).add(n4).normalizeLocal());
                     }
                 }
-                
+
                 BufferUtils.setInBuffer(normal, store, (r*getWidth()+c)); // save the normal
 
             }
@@ -791,7 +788,7 @@ public class LODGeomap extends BufferGeomap {
                 tempNorm2.set(oppositePoint2).subtractLocal(rootPoint)
                         .crossLocal(adjacentPoint2.subtractLocal(rootPoint)).normalizeLocal();
 
-                
+
                 // save the normals
                 Integer tri1A_idx = rowColIndexCount.get(r*getWidth()+c);
                 BufferUtils.setInBuffer(tempNorm1, allNormals, (r*getWidth()+c)+tri1A_idx++); // tri 1, vertex 1
@@ -839,7 +836,7 @@ public class LODGeomap extends BufferGeomap {
             BufferUtils.setInBuffer(sum, store, index++); // save it
             //BufferUtils.setInBuffer(Vector3f.UNIT_Y, store, index++);
         }
-        
+
         return store;
     }
 
@@ -866,6 +863,6 @@ public class LODGeomap extends BufferGeomap {
 			return count;
 		}
 	}
-	
+
 }
 
