@@ -90,6 +90,10 @@ public class PhysicsCharacter extends PhysicsGhostObject {
         character.setWalkDirection(Converter.convert(walkDirection, tempVec));
     }
 
+    public Vector3f getWalkDirection(){
+        return walkDirection;
+    }
+
     public void setUpAxis(int axis) {
         upAxis = axis;
         character.setUpAxis(axis);
