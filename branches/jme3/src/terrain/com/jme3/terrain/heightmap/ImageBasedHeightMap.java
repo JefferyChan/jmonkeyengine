@@ -158,7 +158,14 @@ public class ImageBasedHeightMap extends AbstractHeightMap {
     	this.dampen = dampen;
     }
 
+    /**
+     * Loads the image data from top left to bottom right
+     */
     public boolean load() {
+        return load(false, false);
+    }
+
+    public boolean load(boolean flipX, boolean flipY) {
 
         // FUTURE: Rescale image if not square?
         BufferedImage colorBufferedImage = ImageConverter.toBufferedImage(
@@ -187,9 +194,105 @@ public class ImageBasedHeightMap extends AbstractHeightMap {
 
         heightData = new float[(imageWidth * imageHeight)];
 
+        int startW = 0;
+        int endW = imageWidth-1;
+        if (flipX) {
+            startW = imageWidth-1;
+            endW = 0;
+        }
+        int startH = imageHeight-1;
+        int endH = 0;
+        if (flipY) {
+            startH = 0;
+            endH = imageHeight-1;
+        }
+
         int index = 0;
-        for (int h = 0; h < imageHeight; ++h)
-            for (int w = 0; w < imageWidth; ++w) {
+        if (flipY) {
+            for (int h = 0; h < imageHeight; ++h) {
+                if (flipX) {
+                    for (int w = imageWidth-1; w >= 0; --w) {
+                        int baseIndex = (h * imageWidth * bytesPerPixel)
+                                + (w * bytesPerPixel) + blueBase;
+                        float blue = data[baseIndex] >= 0 ? data[baseIndex]
+                                : (256 + (data[baseIndex]));
+                        float green = data[baseIndex + 1] >= 0 ? data[baseIndex + 1]
+                                : (256 + (data[baseIndex + 1]));
+                        float red = data[baseIndex + 2] >= 0 ? data[baseIndex + 2]
+                                : (256 + (data[baseIndex + 2]));
+
+                        float grayscale = (float) ((0.299 * red + 0.587 * green + 0.114 * blue) * dampen);
+
+                        heightData[index++] = grayscale;
+                    }
+                } else {
+                    for (int w = 0; w < imageWidth; ++w) {
+                        int baseIndex = (h * imageWidth * bytesPerPixel)
+                                + (w * bytesPerPixel) + blueBase;
+                        float blue = data[baseIndex] >= 0 ? data[baseIndex]
+                                : (256 + (data[baseIndex]));
+                        float green = data[baseIndex + 1] >= 0 ? data[baseIndex + 1]
+                                : (256 + (data[baseIndex + 1]));
+                        float red = data[baseIndex + 2] >= 0 ? data[baseIndex + 2]
+                                : (256 + (data[baseIndex + 2]));
+
+                        float grayscale = (float) ((0.299 * red + 0.587 * green + 0.114 * blue) * dampen);
+
+                        heightData[index++] = grayscale;
+                    }
+                }
+            }
+        } else {
+            for (int h = imageHeight-1; h >= 0; --h) {
+                if (flipX) {
+                    for (int w = imageWidth-1; w >= 0; --w) {
+                        int baseIndex = (h * imageWidth * bytesPerPixel)
+                                + (w * bytesPerPixel) + blueBase;
+                        float blue = data[baseIndex] >= 0 ? data[baseIndex]
+                                : (256 + (data[baseIndex]));
+                        float green = data[baseIndex + 1] >= 0 ? data[baseIndex + 1]
+                                : (256 + (data[baseIndex + 1]));
+                        float red = data[baseIndex + 2] >= 0 ? data[baseIndex + 2]
+                                : (256 + (data[baseIndex + 2]));
+
+                        float grayscale = (float) ((0.299 * red + 0.587 * green + 0.114 * blue) * dampen);
+
+                        heightData[index++] = grayscale;
+                    }
+                } else {
+                    for (int w = 0; w < imageWidth; ++w) {
+                        int baseIndex = (h * imageWidth * bytesPerPixel)
+                                + (w * bytesPerPixel) + blueBase;
+                        float blue = data[baseIndex] >= 0 ? data[baseIndex]
+                                : (256 + (data[baseIndex]));
+                        float green = data[baseIndex + 1] >= 0 ? data[baseIndex + 1]
+                                : (256 + (data[baseIndex + 1]));
+                        float red = data[baseIndex + 2] >= 0 ? data[baseIndex + 2]
+                                : (256 + (data[baseIndex + 2]));
+
+                        float grayscale = (float) ((0.299 * red + 0.587 * green + 0.114 * blue) * dampen);
+
+                        heightData[index++] = grayscale;
+                    }
+                }
+            }
+        }
+        /*
+        int index = 0;
+        int h = startH;
+        while (true) {
+            int w = startW;
+            while (true) {
+                if (flipX) {
+                    w--;
+                    if (w < endW)
+                        break;
+                }  else {
+                    w++;
+                    if (w >= endW)
+                        break;
+                }
+
                 int baseIndex = (h * imageWidth * bytesPerPixel)
                         + (w * bytesPerPixel) + blueBase;
                 float blue = data[baseIndex] >= 0 ? data[baseIndex]
@@ -203,6 +306,17 @@ public class ImageBasedHeightMap extends AbstractHeightMap {
 
                 heightData[index++] = grayscale;
             }
+            if (flipY) {
+                h++;
+                if (h >= endH)
+                    break;
+            }  else {
+                h--;
+                if (h < endH)
+                    break;
+            }
+        }
+        */
         return true;
     }
 }
