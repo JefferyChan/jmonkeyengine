@@ -102,12 +102,15 @@ public class LODGeomap extends BufferGeomap {
 		if (offset == null)
 			offset = new Vector2f();
 
+        //flipping the coordinates to it is Y-up
+        offset.setX(-offset.x);
+
 		Vector2f tcStore = new Vector2f();
-		
-		for (int y = 0; y < getHeight(); y++){
-			
-			for (int x = 0; x < getWidth(); x++){
-				getUV(x,y,tcStore, offset, offsetAmount, totalSize);
+
+        // go from top right to bottom left so we unflip the flipped texture
+		for (int y = getHeight()-1; y >= 0; y--){
+            for (int x = getWidth()-1; x >= 0; x--){
+				getUV(x,getHeight()-1-y,tcStore, offset, offsetAmount, totalSize);
 				float tx = tcStore.x * scale.x;
 				float ty = tcStore.y * scale.y;
 				store.put( tx );
