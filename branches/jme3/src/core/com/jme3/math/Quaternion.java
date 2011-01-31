@@ -888,16 +888,7 @@ public final class Quaternion implements Savable, Cloneable {
      * @return v
      */
     public Vector3f multLocal(Vector3f v) {
-        float tempX, tempY;
-        tempX = w * w * v.x + 2 * y * w * v.z - 2 * z * w * v.y + x * x * v.x
-                + 2 * y * x * v.y + 2 * z * x * v.z - z * z * v.x - y * y * v.x;
-        tempY = 2 * x * y * v.x + y * y * v.y + 2 * z * y * v.z + 2 * w * z
-                * v.x - z * z * v.y + w * w * v.y - 2 * x * w * v.z - x * x
-                * v.y;
-        v.z = 2 * x * z * v.x + 2 * y * z * v.y + z * z * v.z - 2 * w * y * v.x
-                - y * y * v.z + 2 * w * x * v.y - x * x * v.z + w * w * v.z;
-        v.x = tempX;
-        v.y = tempY;
+        mult(v, v);
         return v;
     }
 
@@ -966,15 +957,20 @@ public final class Quaternion implements Savable, Cloneable {
             store.set(0, 0, 0);
         } else {
             float vx = v.x, vy = v.y, vz = v.z;
-            store.x = w * w * vx + 2 * y * w * vz - 2 * z * w * vy + x * x
-                    * vx + 2 * y * x * vy + 2 * z * x * vz - z * z * vx - y
-                    * y * vx;
-            store.y = 2 * x * y * vx + y * y * vy + 2 * z * y * vz + 2 * w
-                    * z * vx - z * z * vy + w * w * vy - 2 * x * w * vz - x
-                    * x * vy;
-            store.z = 2 * x * z * vx + 2 * y * z * vy + z * z * vz - 2 * w
-                    * y * vx - y * y * vz + 2 * w * x * vy - x * x * vz + w
-                    * w * vz;
+            float ww = w*w;
+            float xx = x*x;
+            float yy = y*y;
+            float zz = z*z;
+            float xy = x*y;
+            float yz = y*z;
+            float zw = z*w;
+            float wx = w*x;
+            float wy = w*y;
+            float xz = x*z;
+            
+            store.x = ww * vx + 2 * wy * vz - 2 * zw * vy + xx * vx + 2 * xy * vy + 2 * xz * vz - zz * vx - yy * vx;
+            store.y = 2 * xy * vx + yy * vy + 2 * yz * vz + 2 * zw * vx - zz * vy + ww * vy - 2 * wx * vz - xx * vy;
+            store.z = 2 * xz * vx + 2 * yz * vy + zz * vz - 2 * wy * vx - yy * vz + 2 * wx * vy - xx * vz + ww * vz;
         }
         return store;
     }
