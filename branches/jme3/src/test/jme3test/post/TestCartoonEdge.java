@@ -61,7 +61,9 @@ public class TestCartoonEdge extends SimpleApplication {
         if (renderer.getCaps().contains(Caps.GLSL100)){
             fpp=new FilterPostProcessor(assetManager);
             //fpp.setNumSamples(4);
-            fpp.addFilter(new CartoonEdgeFilter());
+            CartoonEdgeFilter toon=new CartoonEdgeFilter();
+            toon.setEdgeColor(ColorRGBA.Yellow);
+            fpp.addFilter(toon);
             viewPort.addProcessor(fpp);
         }
     }

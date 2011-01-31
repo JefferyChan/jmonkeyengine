@@ -33,6 +33,7 @@ package com.jme3.post.filters;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.material.Material;
+import com.jme3.math.ColorRGBA;
 import com.jme3.post.Filter;
 import com.jme3.post.Filter.Pass;
 import com.jme3.renderer.RenderManager;
@@ -54,6 +55,7 @@ public class CartoonEdgeFilter extends Filter {
     private float depthThreshold = 0.1f;
     private float normalSensitivity = 1.0f;
     private float depthSensitivity = 10.0f;
+    private ColorRGBA edgeColor=new ColorRGBA(0, 0, 0, 1);
 
     public CartoonEdgeFilter() {
         super("CartoonEdgeFilter");
@@ -92,6 +94,7 @@ public class CartoonEdgeFilter extends Filter {
         material.setFloat("DepthThreshold", depthThreshold);
         material.setFloat("NormalSensitivity", normalSensitivity);
         material.setFloat("DepthSensitivity", depthSensitivity);
+        material.setColor("EdgeColor", edgeColor);
     }
 
     @Override
@@ -167,4 +170,25 @@ public class CartoonEdgeFilter extends Filter {
             material.setFloat("NormalThreshold", normalThreshold);
         }
     }
+
+    /**
+     * returns the edge color
+     * @return
+     */
+    public ColorRGBA getEdgeColor() {
+        return edgeColor;
+    }
+
+    /**
+     * Sets the edge color, default is black
+     * @param edgeColor
+     */
+    public void setEdgeColor(ColorRGBA edgeColor) {
+        this.edgeColor = edgeColor;
+        if(material!=null){
+            material.setColor("EdgeColor", edgeColor);
+        }
+    }
+
+
 }

@@ -6,6 +6,8 @@ uniform DEPTHTEXTURE m_DepthTexture;
 uniform sampler2D m_NormalsTexture;
 uniform vec2 g_Resolution;
 
+uniform vec4 m_EdgeColor;
+
 uniform float m_EdgeWidth;
 uniform float m_EdgeIntensity;
 
@@ -48,7 +50,8 @@ void main(){
     float edgeAmount = clamp(normalDelta + depthDelta, 0.0, 1.0) * m_EdgeIntensity;
 
     // Apply the edge detection result to the main scene color.
-    color *= (1.0 - edgeAmount);
+    //color *= (1.0 - edgeAmount);
+    color = mix (color,m_EdgeColor.rgb,edgeAmount);
 
     outFragColor = vec4(color, 1.0);
 }

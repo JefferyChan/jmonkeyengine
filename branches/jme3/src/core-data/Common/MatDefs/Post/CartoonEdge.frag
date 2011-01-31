@@ -1,3 +1,5 @@
+uniform vec4 m_EdgeColor;
+
 uniform float m_EdgeWidth;
 uniform float m_EdgeIntensity;
 
@@ -46,7 +48,8 @@ void main(){
     float edgeAmount = clamp(normalDelta + depthDelta, 0.0, 1.0) * m_EdgeIntensity;
 
     // Apply the edge detection result to the main scene color.
-    color *= (1.0 - edgeAmount);
+    //color *= (1.0 - edgeAmount);
+    color = mix (color,m_EdgeColor.rgb,edgeAmount);
    
     gl_FragColor = vec4(color, 1.0);
 }

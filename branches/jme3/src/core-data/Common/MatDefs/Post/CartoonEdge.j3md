@@ -1,4 +1,4 @@
-MaterialDef Cartoon Edge {
+zMaterialDef Cartoon Edge {
 
     MaterialParameters {
         Int NumSamples
@@ -6,6 +6,7 @@ MaterialDef Cartoon Edge {
         Texture2D Texture
         Texture2D NormalsTexture
         Texture2D DepthTexture
+        Color EdgeColor
         Float EdgeWidth
         Float EdgeIntensity
         Float NormalThreshold
@@ -14,7 +15,7 @@ MaterialDef Cartoon Edge {
         Float DepthSensitivity
     }
 
-    Technique {
+     Technique {
         VertexShader GLSL150:   Common/MatDefs/Post/Post15.vert
         FragmentShader GLSL150: Common/MatDefs/Post/CartoonEdge15.frag
 
@@ -30,6 +31,7 @@ MaterialDef Cartoon Edge {
         }
     }
 
+   
     Technique {
         VertexShader GLSL100:   Common/MatDefs/Post/Post.vert
         FragmentShader GLSL100: Common/MatDefs/Post/CartoonEdge.frag
