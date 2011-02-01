@@ -1,4 +1,4 @@
-zMaterialDef Cartoon Edge {
+MaterialDef Cartoon Edge {
 
     MaterialParameters {
         Int NumSamples
