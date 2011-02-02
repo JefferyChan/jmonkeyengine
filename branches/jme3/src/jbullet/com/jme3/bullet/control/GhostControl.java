@@ -11,8 +11,7 @@ import com.jme3.export.InputCapsule;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
 import com.jme3.export.OutputCapsule;
-import com.jme3.math.Quaternion;
-import com.jme3.math.Vector3f;
+import com.jme3.math.Matrix3f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Spatial;
@@ -20,14 +19,15 @@ import com.jme3.scene.control.Control;
 import java.io.IOException;
 
 /**
- *
+ * 
  * @author normenhansen
  */
 public class GhostControl extends PhysicsGhostObject implements PhysicsControl {
 
     protected Spatial spatial;
-    private boolean enabled = true;
+    protected boolean enabled = true;
     protected PhysicsSpace space = null;
+    private Matrix3f temp_matrix = new Matrix3f();
 
     public GhostControl() {
     }
@@ -68,6 +68,11 @@ public class GhostControl extends PhysicsGhostObject implements PhysicsControl {
     }
 
     public void update(float tpf) {
+        if (!enabled) {
+            return;
+        }
+        setPhysicsLocation(spatial.getWorldTranslation());
+        setPhysicsRotation(spatial.getWorldRotation().toRotationMatrix(temp_matrix));
     }
 
     public void render(RenderManager rm, ViewPort vp) {
