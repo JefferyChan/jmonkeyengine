@@ -28,6 +28,8 @@ public class CharacterControl extends PhysicsCharacter implements PhysicsControl
     protected Spatial spatial;
     protected boolean enabled = true;
     protected PhysicsSpace space = null;
+    protected Vector3f viewDirection = new Vector3f(Vector3f.UNIT_Z);
+    protected boolean useViewDirection = true;
 
     public CharacterControl() {
     }
@@ -72,6 +74,22 @@ public class CharacterControl extends PhysicsCharacter implements PhysicsControl
         return enabled;
     }
 
+    public void setViewDirection(Vector3f vec) {
+        viewDirection.set(vec);
+    }
+
+    public Vector3f getViewDirection() {
+        return viewDirection;
+    }
+
+    public boolean isUseViewDirection() {
+        return useViewDirection;
+    }
+
+    public void setUseViewDirection(boolean viewDirectionEnabled) {
+        this.useViewDirection = viewDirectionEnabled;
+    }
+
     public void update(float tpf) {
         if (enabled && spatial != null) {
             Quaternion localRotationQuat = spatial.getLocalRotation();
@@ -87,6 +105,9 @@ public class CharacterControl extends PhysicsCharacter implements PhysicsControl
 
                 spatial.setLocalTranslation(localLocation);
                 spatial.setLocalRotation(localRotationQuat);
+                if (useViewDirection) {
+                    spatial.lookAt(viewDirection, Vector3f.UNIT_Y);
+                }
             } else {
                 spatial.setLocalTranslation(getPhysicsLocation());
                 spatial.setLocalRotation(getPhysicsRotation());
@@ -120,6 +141,8 @@ public class CharacterControl extends PhysicsCharacter implements PhysicsControl
         super.write(ex);
         OutputCapsule oc = ex.getCapsule(this);
         oc.write(enabled, "enabled", true);
+        oc.write(useViewDirection, "viewDirectionEnabled", true);
+        oc.write(viewDirection, "viewDirection", new Vector3f(Vector3f.UNIT_Z));
         oc.write(spatial, "spatial", null);
     }
 
@@ -128,6 +151,8 @@ public class CharacterControl extends PhysicsCharacter implements PhysicsControl
         super.read(im);
         InputCapsule ic = im.getCapsule(this);
         enabled = ic.readBoolean("enabled", true);
+        useViewDirection = ic.readBoolean("viewDirectionEnabled", true);
+        viewDirection = (Vector3f) ic.readSavable("viewDirection", new Vector3f(Vector3f.UNIT_Z));
         spatial = (Spatial) ic.readSavable("spatial", null);
     }
 }
