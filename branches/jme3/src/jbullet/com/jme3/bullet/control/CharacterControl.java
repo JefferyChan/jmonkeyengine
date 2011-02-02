@@ -112,8 +112,10 @@ public class CharacterControl extends PhysicsCharacter implements PhysicsControl
                 tmp_inverseWorldRotation.set(spatial.getParent().getWorldRotation()).inverseLocal().multLocal(localLocation);
                 spatial.setLocalTranslation(localLocation);
 
-                localRotationQuat.lookAt(viewDirection, Vector3f.UNIT_Y);
-                spatial.setLocalRotation(localRotationQuat);
+                if (useViewDirection) {
+                    localRotationQuat.lookAt(viewDirection, Vector3f.UNIT_Y);
+                    spatial.setLocalRotation(localRotationQuat);
+                }
             } else {
                 spatial.setLocalTranslation(getPhysicsLocation());
                 localRotationQuat.lookAt(viewDirection, Vector3f.UNIT_Y);
