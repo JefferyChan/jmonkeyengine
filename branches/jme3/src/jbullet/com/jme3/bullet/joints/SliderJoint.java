@@ -425,6 +425,6 @@ public class SliderJoint extends PhysicsJoint {
         Converter.convert(pivotB, transB.origin);
         Converter.convert(rotB, transB.basis);
 
-        constraint = new SliderConstraint(nodeA.getRigidBody(), nodeB.getRigidBody(), transA, transB, useLinearReferenceFrameA);
+        constraint = new SliderConstraint(nodeA.getObjectId(), nodeB.getObjectId(), transA, transB, useLinearReferenceFrameA);
     }
 }

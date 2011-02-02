@@ -149,7 +149,7 @@ public class HingeJoint extends PhysicsJoint {
     }
 
     protected void createJoint() {
-        constraint = new HingeConstraint(nodeA.getRigidBody(), nodeB.getRigidBody(),
+        constraint = new HingeConstraint(nodeA.getObjectId(), nodeB.getObjectId(),
                 Converter.convert(pivotA), Converter.convert(pivotB),
                 Converter.convert(axisA), Converter.convert(axisB));
     }

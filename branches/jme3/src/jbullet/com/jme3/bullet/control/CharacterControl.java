@@ -49,7 +49,6 @@ public class CharacterControl extends PhysicsCharacter implements PhysicsControl
         control.setJumpSpeed(getJumpSpeed());
         control.setMaxSlope(getMaxSlope());
         control.setPhysicsLocation(getPhysicsLocation());
-        control.setPhysicsRotation(getPhysicsRotation());
         control.setUpAxis(getUpAxis());
 
         control.setSpatial(spatial);
@@ -63,7 +62,6 @@ public class CharacterControl extends PhysicsCharacter implements PhysicsControl
             return;
         }
         setPhysicsLocation(spatial.getWorldTranslation());
-        setPhysicsRotation(spatial.getWorldRotation().toRotationMatrix());
     }
 
     public void setEnabled(boolean enabled) {
@@ -99,18 +97,14 @@ public class CharacterControl extends PhysicsCharacter implements PhysicsControl
                 localLocation.subtractLocal(spatial.getParent().getWorldTranslation());
                 localLocation.divideLocal(spatial.getParent().getWorldScale());
                 tmp_inverseWorldRotation.set(spatial.getParent().getWorldRotation()).inverseLocal().multLocal(localLocation);
-
-                getPhysicsRotationQuat(localRotationQuat);
-                tmp_inverseWorldRotation.set(spatial.getParent().getWorldRotation()).inverseLocal().mult(localRotationQuat, localRotationQuat);
-
                 spatial.setLocalTranslation(localLocation);
-                if (useViewDirection) {
-                    localRotationQuat.lookAt(viewDirection, Vector3f.UNIT_Y);
-                }
+
+                localRotationQuat.lookAt(viewDirection, Vector3f.UNIT_Y);
                 spatial.setLocalRotation(localRotationQuat);
             } else {
                 spatial.setLocalTranslation(getPhysicsLocation());
-                spatial.setLocalRotation(getPhysicsRotation());
+                localRotationQuat.lookAt(viewDirection, Vector3f.UNIT_Y);
+                spatial.setLocalRotation(localRotationQuat);
             }
         }
     }
@@ -118,7 +112,6 @@ public class CharacterControl extends PhysicsCharacter implements PhysicsControl
     public void render(RenderManager rm, ViewPort vp) {
         if (debugShape != null && enabled) {
             debugShape.setLocalTranslation(getPhysicsLocation());
-            debugShape.setLocalRotation(getPhysicsRotation());
             debugShape.updateLogicalState(0);
             debugShape.updateGeometricState();
             rm.renderScene(debugShape, vp);

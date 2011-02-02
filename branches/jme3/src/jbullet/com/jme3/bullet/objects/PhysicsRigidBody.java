@@ -567,7 +567,7 @@ public class PhysicsRigidBody extends PhysicsCollisionObject {
     /**
      * used internally
      */
-    public RigidBody getRigidBody() {
+    public RigidBody getObjectId() {
         return rBody;
     }
 
@@ -614,8 +614,6 @@ public class PhysicsRigidBody extends PhysicsCollisionObject {
 
         capsule.write(getMass(), "mass", 1.0f);
 
-        capsule.write(collisionShape, "collisionShape", null);
-
         capsule.write(getGravity(), "gravity", Vector3f.ZERO);
         capsule.write(getFriction(), "friction", 0.5f);
         capsule.write(getRestitution(), "restitution", 0);
@@ -626,6 +624,9 @@ public class PhysicsRigidBody extends PhysicsCollisionObject {
         capsule.write(constructionInfo.angularDamping, "angularDamping", 0);
         capsule.write(constructionInfo.linearSleepingThreshold, "linearSleepingThreshold", 0.8f);
         capsule.write(constructionInfo.angularSleepingThreshold, "angularSleepingThreshold", 1.0f);
+
+        capsule.write(getCcdMotionThreshold(), "ccdMotionThreshold", 0);
+        capsule.write(getCcdSweptSphereRadius(), "ccdSweptSphereRadius", 0);
 
         capsule.write(getPhysicsLocation(new Vector3f()), "physicsLocation", new Vector3f());
         capsule.write(getPhysicsRotation(new Matrix3f()), "physicsRotation", new Matrix3f());
@@ -640,8 +641,6 @@ public class PhysicsRigidBody extends PhysicsCollisionObject {
         InputCapsule capsule = e.getCapsule(this);
         float mass = capsule.readFloat("mass", 1.0f);
         this.mass = mass;
-        CollisionShape shape = (CollisionShape) capsule.readSavable("collisionShape", new BoxCollisionShape(Vector3f.UNIT_XYZ));
-        collisionShape = shape;
         rebuildRigidBody();
         setGravity((Vector3f) capsule.readSavable("gravity", Vector3f.ZERO.clone()));
         setFriction(capsule.readFloat("friction", 0.5f));
@@ -651,6 +650,8 @@ public class PhysicsRigidBody extends PhysicsCollisionObject {
         setAngularFactor(capsule.readFloat("angularFactor", 1));
         setDamping(capsule.readFloat("linearDamping", 0), capsule.readFloat("angularDamping", 0));
         setSleepingThresholds(capsule.readFloat("linearSleepingThreshold", 0.8f), capsule.readFloat("angularSleepingThreshold", 1.0f));
+        setCcdMotionThreshold(capsule.readFloat("ccdMotionThreshold", 0));
+        setCcdSweptSphereRadius(capsule.readFloat("ccdSweptSphereRadius", 0));
 
         setPhysicsLocation((Vector3f) capsule.readSavable("physicsLocation", new Vector3f()));
         setPhysicsRotation((Matrix3f) capsule.readSavable("physicsRotation", new Matrix3f()));

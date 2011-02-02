@@ -68,25 +68,6 @@ public class GhostControl extends PhysicsGhostObject implements PhysicsControl {
     }
 
     public void update(float tpf) {
-        if (enabled && spatial != null) {
-            Quaternion localRotationQuat = spatial.getLocalRotation();
-            Vector3f localLocation = spatial.getLocalTranslation();
-            if (spatial.getParent() != null) {
-                getPhysicsLocation(localLocation);
-                localLocation.subtractLocal(spatial.getParent().getWorldTranslation());
-                localLocation.divideLocal(spatial.getParent().getWorldScale());
-                tmp_inverseWorldRotation.set(spatial.getParent().getWorldRotation()).inverseLocal().multLocal(localLocation);
-
-                getPhysicsRotationQuat(localRotationQuat);
-                tmp_inverseWorldRotation.set(spatial.getParent().getWorldRotation()).inverseLocal().mult(localRotationQuat, localRotationQuat);
-
-                spatial.setLocalTranslation(localLocation);
-                spatial.setLocalRotation(localRotationQuat);
-            } else {
-                spatial.setLocalTranslation(getPhysicsLocation());
-                spatial.setLocalRotation(getPhysicsRotation());
-            }
-        }
     }
 
     public void render(RenderManager rm, ViewPort vp) {

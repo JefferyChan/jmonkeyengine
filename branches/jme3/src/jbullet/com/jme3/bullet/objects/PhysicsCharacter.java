@@ -32,8 +32,11 @@
 package com.jme3.bullet.objects;
 
 import com.bulletphysics.collision.dispatch.CollisionFlags;
+import com.bulletphysics.collision.dispatch.PairCachingGhostObject;
 import com.bulletphysics.collision.shapes.ConvexShape;
 import com.bulletphysics.dynamics.character.KinematicCharacterController;
+import com.bulletphysics.linearmath.Transform;
+import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.math.Vector3f;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.util.Converter;
@@ -41,13 +44,15 @@ import com.jme3.export.InputCapsule;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
 import com.jme3.export.OutputCapsule;
+import com.jme3.math.Matrix3f;
+import com.jme3.math.Quaternion;
 import java.io.IOException;
 
 /**
  * Basic Bullet Chatacter
  * @author normenhansen
  */
-public class PhysicsCharacter extends PhysicsGhostObject {
+public class PhysicsCharacter extends PhysicsCollisionObject {
 
     protected KinematicCharacterController character;
     protected float stepHeight;
@@ -55,26 +60,37 @@ public class PhysicsCharacter extends PhysicsGhostObject {
     protected float fallSpeed = 55.0f;
     protected float jumpSpeed = 10.0f;
     protected int upAxis = 1;
-
-    private javax.vecmath.Vector3f tempVec=new javax.vecmath.Vector3f();
+    protected PairCachingGhostObject gObject;
+    protected boolean locationDirty = false;
+    //TEMP VARIABLES
+    protected final Quaternion tmp_inverseWorldRotation = new Quaternion();
+    private Transform tempTrans = new Transform(Converter.convert(new Matrix3f()));
+    private com.jme3.math.Transform physicsLocation = new com.jme3.math.Transform();
+    private javax.vecmath.Quat4f tempRot = new javax.vecmath.Quat4f();
+    private javax.vecmath.Vector3f tempVec = new javax.vecmath.Vector3f();
 
     public PhysicsCharacter() {
     }
 
     public PhysicsCharacter(CollisionShape shape, float stepHeight) {
-        super(shape);
+        this.collisionShape = shape;
         if (!(shape.getCShape() instanceof ConvexShape)) {
             throw (new UnsupportedOperationException("Kinematic character nodes cannot have mesh collision shapes"));
         }
         this.stepHeight = stepHeight;
-        character = new KinematicCharacterController(gObject, (ConvexShape) collisionShape.getCShape(), stepHeight);
+        buildObject();
     }
 
-    @Override
     protected void buildObject() {
-        super.buildObject();
+        if (gObject == null) {
+            gObject = new PairCachingGhostObject();
+            gObject.setCollisionFlags(gObject.getCollisionFlags() | CollisionFlags.NO_CONTACT_RESPONSE);
+        }
+        gObject.setCollisionShape(collisionShape.getCShape());
+        gObject.setUserPointer(this);
         gObject.setCollisionFlags(gObject.getCollisionFlags() & ~CollisionFlags.NO_CONTACT_RESPONSE);
         gObject.setCollisionFlags(gObject.getCollisionFlags() | CollisionFlags.CHARACTER_OBJECT);
+        character = new KinematicCharacterController(gObject, (ConvexShape) collisionShape.getCShape(), stepHeight);
     }
 
     public void warp(Vector3f location) {
@@ -90,7 +106,7 @@ public class PhysicsCharacter extends PhysicsGhostObject {
         character.setWalkDirection(Converter.convert(walkDirection, tempVec));
     }
 
-    public Vector3f getWalkDirection(){
+    public Vector3f getWalkDirection() {
         return walkDirection;
     }
 
@@ -155,19 +171,71 @@ public class PhysicsCharacter extends PhysicsGhostObject {
             throw (new UnsupportedOperationException("Kinematic character nodes cannot have mesh collision shapes"));
         }
         super.setCollisionShape(collisionShape);
-        character = new KinematicCharacterController(gObject, (ConvexShape) collisionShape.getCShape(), stepHeight);
+        buildObject();
+    }
+
+    /**
+     * This is normally only needed when using detached physics
+     * @param location the location of the actual physics object
+     */
+    public void setPhysicsLocation(Vector3f location) {
+        warp(location);
+    }
+
+    /**
+     * @return the physicsLocation
+     */
+    public Vector3f getPhysicsLocation(Vector3f trans) {
+        if (trans == null) {
+            trans = new Vector3f();
+        }
+        gObject.getWorldTransform(tempTrans);
+        Converter.convert(tempTrans.origin, physicsLocation.getTranslation());
+        return trans.set(physicsLocation.getTranslation());
+    }
+
+    /**
+     * @return the physicsLocation
+     */
+    public Vector3f getPhysicsLocation() {
+        gObject.getWorldTransform(tempTrans);
+        Converter.convert(tempTrans.origin, physicsLocation.getTranslation());
+        return physicsLocation.getTranslation();
+    }
+
+    public void setCcdSweptSphereRadius(float radius) {
+        gObject.setCcdSweptSphereRadius(radius);
+    }
+
+    public void setCcdMotionThreshold(float threshold) {
+        gObject.setCcdMotionThreshold(threshold);
+    }
+
+    public float getCcdSweptSphereRadius() {
+        return gObject.getCcdSweptSphereRadius();
+    }
+
+    public float getCcdMotionThreshold() {
+        return gObject.getCcdMotionThreshold();
+    }
+
+    public float getCcdSquareMotionThreshold() {
+        return gObject.getCcdSquareMotionThreshold();
     }
 
     /**
      * used internally
      */
-    public KinematicCharacterController getCharacterController() {
+    public KinematicCharacterController getControllerId() {
         return character;
     }
 
-    @Override
+    public PairCachingGhostObject getObjectId(){
+        return gObject;
+    }
+
     public void destroy() {
-        super.destroy();
+//        super.destroy();
     }
 
     @Override
@@ -180,6 +248,9 @@ public class PhysicsCharacter extends PhysicsGhostObject {
         capsule.write(fallSpeed, "fallSpeed", 55.0f);
         capsule.write(jumpSpeed, "jumpSpeed", 10.0f);
         capsule.write(upAxis, "upAxis", 1);
+        capsule.write(getCcdMotionThreshold(), "ccdMotionThreshold", 0);
+        capsule.write(getCcdSweptSphereRadius(), "ccdSweptSphereRadius", 0);
+        capsule.write(getPhysicsLocation(new Vector3f()), "physicsLocation", new Vector3f());
     }
 
     @Override
@@ -187,11 +258,15 @@ public class PhysicsCharacter extends PhysicsGhostObject {
         super.read(e);
         InputCapsule capsule = e.getCapsule(this);
         stepHeight = capsule.readFloat("stepHeight", 1.0f);
+        buildObject();
         character = new KinematicCharacterController(gObject, (ConvexShape) collisionShape.getCShape(), stepHeight);
         setGravity(capsule.readFloat("gravity", 9.8f));
         setMaxSlope(capsule.readFloat("maxSlope", 1.0f));
         setFallSpeed(capsule.readFloat("fallSpeed", 1.0f));
         setJumpSpeed(capsule.readFloat("jumpSpeed", 1.0f));
         setUpAxis(capsule.readInt("upAxis", 1));
+        setCcdMotionThreshold(capsule.readFloat("ccdMotionThreshold", 0));
+        setCcdSweptSphereRadius(capsule.readFloat("ccdSweptSphereRadius", 0));
+        setPhysicsLocation((Vector3f) capsule.readSavable("physicsLocation", new Vector3f()));
     }
 }

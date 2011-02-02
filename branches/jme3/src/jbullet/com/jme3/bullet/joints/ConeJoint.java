@@ -131,7 +131,7 @@ public class ConeJoint extends PhysicsJoint {
         Converter.convert(pivotB, transB.origin);
         Converter.convert(rotB, transB.basis);
 
-        constraint = new ConeTwistConstraint(nodeA.getRigidBody(), nodeB.getRigidBody(), transA, transB);
+        constraint = new ConeTwistConstraint(nodeA.getObjectId(), nodeB.getObjectId(), transA, transB);
         ((ConeTwistConstraint) constraint).setLimit(swingSpan1, swingSpan2, twistSpan);
         ((ConeTwistConstraint) constraint).setAngularOnly(angularOnly);
     }

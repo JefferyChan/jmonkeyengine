@@ -32,6 +32,7 @@
 package com.jme3.bullet.collision;
 
 import com.jme3.asset.AssetManager;
+import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.util.DebugShapeFactory;
 import com.jme3.export.InputCapsule;
@@ -263,6 +264,7 @@ public abstract class PhysicsCollisionObject implements Savable {
         capsule.write(collisionGroup, "collisionGroup", 0x00000001);
         capsule.write(collisionGroupsMask, "collisionGroupsMask", 0x00000001);
         capsule.write(debugShape, "debugShape", null);
+        capsule.write(collisionShape, "collisionShape", null);
     }
 
     @Override
@@ -271,5 +273,7 @@ public abstract class PhysicsCollisionObject implements Savable {
         collisionGroup = capsule.readInt("collisionGroup", 0x00000001);
         collisionGroupsMask = capsule.readInt("collisionGroupsMask", 0x00000001);
         debugShape = (Spatial) capsule.readSavable("debugShape", null);
+        CollisionShape shape = (CollisionShape) capsule.readSavable("collisionShape", null);
+        collisionShape = shape;
     }
 }

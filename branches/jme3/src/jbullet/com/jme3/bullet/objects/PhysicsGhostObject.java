@@ -187,7 +187,7 @@ public class PhysicsGhostObject extends PhysicsCollisionObject {
     /**
      * used internally
      */
-    public PairCachingGhostObject getGhostObject() {
+    public PairCachingGhostObject getObjectId() {
         return gObject;
     }
 
@@ -252,19 +252,20 @@ public class PhysicsGhostObject extends PhysicsCollisionObject {
     public void write(JmeExporter e) throws IOException {
         super.write(e);
         OutputCapsule capsule = e.getCapsule(this);
-        capsule.write(collisionShape, "collisionShape", null);
         capsule.write(getPhysicsLocation(new Vector3f()), "physicsLocation", new Vector3f());
         capsule.write(getPhysicsRotation(new Matrix3f()), "physicsRotation", new Matrix3f());
+        capsule.write(getCcdMotionThreshold(), "ccdMotionThreshold", 0);
+        capsule.write(getCcdSweptSphereRadius(), "ccdSweptSphereRadius", 0);
     }
 
     @Override
     public void read(JmeImporter e) throws IOException {
         super.read(e);
         InputCapsule capsule = e.getCapsule(this);
-        CollisionShape shape = (CollisionShape) capsule.readSavable("collisionShape", new SphereCollisionShape(1));
-        collisionShape = shape;
         buildObject();
         setPhysicsLocation((Vector3f) capsule.readSavable("physicsLocation", new Vector3f()));
         setPhysicsRotation(((Matrix3f) capsule.readSavable("physicsRotation", new Matrix3f())));
+        setCcdMotionThreshold(capsule.readFloat("ccdMotionThreshold", 0));
+        setCcdSweptSphereRadius(capsule.readFloat("ccdSweptSphereRadius", 0));
     }
 }

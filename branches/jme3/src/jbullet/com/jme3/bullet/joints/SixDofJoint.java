@@ -87,7 +87,7 @@ public class SixDofJoint extends PhysicsJoint {
         Converter.convert(pivotB, transB.origin);
         Converter.convert(rotB, transB.basis);
 
-        constraint = new Generic6DofConstraint(nodeA.getRigidBody(), nodeB.getRigidBody(), transA, transB, useLinearReferenceFrameA);
+        constraint = new Generic6DofConstraint(nodeA.getObjectId(), nodeB.getObjectId(), transA, transB, useLinearReferenceFrameA);
         gatherMotors();
     }
 
@@ -105,7 +105,7 @@ public class SixDofJoint extends PhysicsJoint {
         Transform transB = new Transform(Converter.convert(new Matrix3f()));
         Converter.convert(pivotB, transB.origin);
 
-        constraint = new Generic6DofConstraint(nodeA.getRigidBody(), nodeB.getRigidBody(), transA, transB, useLinearReferenceFrameA);
+        constraint = new Generic6DofConstraint(nodeA.getObjectId(), nodeB.getObjectId(), transA, transB, useLinearReferenceFrameA);
         gatherMotors();
     }
 
@@ -166,7 +166,7 @@ public class SixDofJoint extends PhysicsJoint {
 
         Transform transB = new Transform(Converter.convert(new Matrix3f()));
         Converter.convert(pivotB, transB.origin);
-        constraint = new Generic6DofConstraint(nodeA.getRigidBody(), nodeB.getRigidBody(), transA, transB, useLinearReferenceFrameA);
+        constraint = new Generic6DofConstraint(nodeA.getObjectId(), nodeB.getObjectId(), transA, transB, useLinearReferenceFrameA);
         gatherMotors();
 
         setAngularUpperLimit((Vector3f) capsule.readSavable("angularUpperLimit", new Vector3f(Vector3f.POSITIVE_INFINITY)));

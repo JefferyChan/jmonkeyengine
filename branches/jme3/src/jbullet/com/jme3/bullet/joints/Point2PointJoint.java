@@ -106,6 +106,6 @@ public class Point2PointJoint extends PhysicsJoint {
     }
 
     protected void createJoint() {
-        constraint = new Point2PointConstraint(nodeA.getRigidBody(), nodeB.getRigidBody(), Converter.convert(pivotA), Converter.convert(pivotB));
+        constraint = new Point2PointConstraint(nodeA.getObjectId(), nodeB.getObjectId(), Converter.convert(pivotA), Converter.convert(pivotB));
     }
 }
