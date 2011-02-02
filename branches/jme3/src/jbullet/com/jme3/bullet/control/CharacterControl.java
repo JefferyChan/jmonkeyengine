@@ -27,6 +27,7 @@ public class CharacterControl extends PhysicsCharacter implements PhysicsControl
 
     protected Spatial spatial;
     protected boolean enabled = true;
+    protected boolean added = false;
     protected PhysicsSpace space = null;
     protected Vector3f viewDirection = new Vector3f(Vector3f.UNIT_Z);
     protected boolean useViewDirection = true;
@@ -66,6 +67,18 @@ public class CharacterControl extends PhysicsCharacter implements PhysicsControl
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+        if (space != null) {
+            if (enabled && !added) {
+                if (spatial != null) {
+                    warp(spatial.getWorldTranslation());
+                }
+                space.addCollisionObject(this);
+                added = true;
+            } else if (!enabled && added) {
+                space.removeCollisionObject(this);
+                added = false;
+            }
+        }
     }
 
     public boolean isEnabled() {
@@ -122,9 +135,11 @@ public class CharacterControl extends PhysicsCharacter implements PhysicsControl
         if (space == null) {
             if (this.space != null) {
                 this.space.removeCollisionObject(this);
+                added = false;
             }
         } else {
             space.addCollisionObject(this);
+            added = true;
         }
         this.space = space;
     }

@@ -12,6 +12,7 @@ import com.jme3.export.InputCapsule;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
 import com.jme3.export.OutputCapsule;
+import com.jme3.math.Matrix3f;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
@@ -32,6 +33,8 @@ public class VehicleControl extends PhysicsVehicle implements PhysicsControl {
     protected Spatial spatial;
     private boolean enabled = true;
     protected PhysicsSpace space = null;
+    protected boolean added = false;
+    private Matrix3f temp_matrix = new Matrix3f();
 
     public VehicleControl() {
     }
@@ -118,6 +121,19 @@ public class VehicleControl extends PhysicsVehicle implements PhysicsControl {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+        if (space != null) {
+            if (enabled && !added) {
+                if(spatial!=null){
+                    setPhysicsLocation(spatial.getWorldTranslation());
+                    setPhysicsRotation(spatial.getWorldRotation().toRotationMatrix(temp_matrix));
+                }
+                space.addCollisionObject(this);
+                added = true;
+            } else if (!enabled && added) {
+                space.removeCollisionObject(this);
+                added = false;
+            }
+        }
     }
 
     public boolean isEnabled() {
@@ -184,9 +200,11 @@ public class VehicleControl extends PhysicsVehicle implements PhysicsControl {
         if (space == null) {
             if (this.space != null) {
                 this.space.removeCollisionObject(this);
+                added = false;
             }
         } else {
             space.addCollisionObject(this);
+            added = true;
         }
         this.space = space;
     }

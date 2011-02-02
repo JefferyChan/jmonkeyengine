@@ -14,6 +14,7 @@ import com.jme3.export.InputCapsule;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
 import com.jme3.export.OutputCapsule;
+import com.jme3.math.Matrix3f;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
@@ -34,7 +35,9 @@ public class RigidBodyControl extends PhysicsRigidBody implements PhysicsControl
 
     protected Spatial spatial;
     protected boolean enabled = true;
+    protected boolean added = false;
     protected PhysicsSpace space = null;
+    private Matrix3f temp_matrix = new Matrix3f();
 
     public RigidBodyControl() {
     }
@@ -146,6 +149,19 @@ public class RigidBodyControl extends PhysicsRigidBody implements PhysicsControl
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+        if (space != null) {
+            if (enabled && !added) {
+                if(spatial!=null){
+                    setPhysicsLocation(spatial.getWorldTranslation());
+                    setPhysicsRotation(spatial.getWorldRotation().toRotationMatrix(temp_matrix));
+                }
+                space.addCollisionObject(this);
+                added = true;
+            } else if (!enabled && added) {
+                space.removeCollisionObject(this);
+                added = false;
+            }
+        }
     }
 
     public boolean isEnabled() {
@@ -172,9 +188,11 @@ public class RigidBodyControl extends PhysicsRigidBody implements PhysicsControl
         if (space == null) {
             if (this.space != null) {
                 this.space.removeCollisionObject(this);
+                added = false;
             }
         } else {
             space.addCollisionObject(this);
+            added = true;
         }
         this.space = space;
     }
