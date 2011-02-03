@@ -201,13 +201,12 @@ public class PhysicsSpace {
         dynamicsWorld = new DiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration);
         dynamicsWorld.setGravity(new javax.vecmath.Vector3f(0, -9.81f, 0));
 
-        //register filter callback for groups / collision decision
-        setOverlapFilterCallback();
-
         broadphase.getOverlappingPairCache().setInternalGhostPairCallback(new GhostPairCallback());
         GImpactCollisionAlgorithm.registerAlgorithm(dispatcher);
 
         physicsSpaceTL.set(this);
+        //register filter callback for groups / collision decision
+        setOverlapFilterCallback();
         setTickCallback();
         setContactCallbacks();
     }
@@ -462,13 +461,13 @@ public class PhysicsSpace {
     }
 
     /**
-     * adds all physics controls and joints in the given root node to the physics space
-     * (e.g. after loading from disk)
-     * @param node the rootnode containing the physics objects
+     * adds all physics controls and joints in the given spatial node to the physics space
+     * (e.g. after loading from disk) - recursive if node
+     * @param spatial the rootnode containing the physics objects
      */
-    public void addAll(Node node) {
-        if (node.getControl(RigidBodyControl.class) != null) {
-            RigidBodyControl physicsNode = node.getControl(RigidBodyControl.class);
+    public void addAll(Spatial spatial) {
+        if (spatial.getControl(RigidBodyControl.class) != null) {
+            RigidBodyControl physicsNode = spatial.getControl(RigidBodyControl.class);
             if (!physicsNodes.containsValue(physicsNode)) {
                 physicsNode.setPhysicsSpace(this);
             }
@@ -487,27 +486,29 @@ public class PhysicsSpace {
                     addJoint(physicsJoint);
                 }
             }
-        } else if (node.getControl(PhysicsControl.class) != null) {
-            node.getControl(PhysicsControl.class).setPhysicsSpace(this);
+        } else if (spatial.getControl(PhysicsControl.class) != null) {
+            spatial.getControl(PhysicsControl.class).setPhysicsSpace(this);
         }
         //recursion
-        List<Spatial> children = node.getChildren();
-        for (Iterator<Spatial> it = children.iterator(); it.hasNext();) {
-            Spatial spatial = it.next();
-            if (spatial instanceof Node) {
-                addAll((Node) spatial);
+        if (spatial instanceof Node) {
+            List<Spatial> children = ((Node) spatial).getChildren();
+            for (Iterator<Spatial> it = children.iterator(); it.hasNext();) {
+                Spatial spat = it.next();
+                if (spat instanceof Node) {
+                    addAll((Node) spat);
+                }
             }
         }
     }
 
     /**
-     * Removes all physics controls and joints in the given root node from the physics space
-     * (e.g. before saving to disk)
-     * @param node the rootnode containing the physics objects
+     * Removes all physics controls and joints in the given spatial from the physics space
+     * (e.g. before saving to disk) - recursive if node
+     * @param spatial the rootnode containing the physics objects
      */
-    public void removeAll(Node node) {
-        if (node.getControl(RigidBodyControl.class) != null) {
-            RigidBodyControl physicsNode = node.getControl(RigidBodyControl.class);
+    public void removeAll(Spatial spatial) {
+        if (spatial.getControl(RigidBodyControl.class) != null) {
+            RigidBodyControl physicsNode = spatial.getControl(RigidBodyControl.class);
             if (physicsNodes.containsValue(physicsNode)) {
                 physicsNode.setPhysicsSpace(null);
             }
@@ -522,17 +523,21 @@ public class PhysicsSpace {
                 if (physicsNodes.containsValue(physicsJoint.getBodyB())) {
                     removeNode(physicsJoint.getBodyB());
                 }
-                removeJoint(physicsJoint);
+                if (physicsJoints.contains(physicsJoint)) {
+                    removeJoint(physicsJoint);
+                }
             }
-        } else if (node.getControl(PhysicsControl.class) != null) {
-            node.getControl(PhysicsControl.class).setPhysicsSpace(null);
+        } else if (spatial.getControl(PhysicsControl.class) != null) {
+            spatial.getControl(PhysicsControl.class).setPhysicsSpace(null);
         }
         //recursion
-        List<Spatial> children = node.getChildren();
-        for (Iterator<Spatial> it = children.iterator(); it.hasNext();) {
-            Spatial spatial = it.next();
-            if (spatial instanceof Node) {
-                removeAll((Node) spatial);
+        if (spatial instanceof Node) {
+            List<Spatial> children = ((Node) spatial).getChildren();
+            for (Iterator<Spatial> it = children.iterator(); it.hasNext();) {
+                Spatial spat = it.next();
+                if (spat instanceof Node) {
+                    removeAll((Node) spat);
+                }
             }
         }
     }
@@ -547,7 +552,7 @@ public class PhysicsSpace {
 
     private void addCharacterNode(PhysicsCharacter node) {
 //        dynamicsWorld.addCollisionObject(node.getObjectId());
-        dynamicsWorld.addCollisionObject(node.getObjectId(), CollisionFilterGroups.CHARACTER_FILTER, (short)(CollisionFilterGroups.STATIC_FILTER | CollisionFilterGroups.DEFAULT_FILTER));
+        dynamicsWorld.addCollisionObject(node.getObjectId(), CollisionFilterGroups.CHARACTER_FILTER, (short) (CollisionFilterGroups.STATIC_FILTER | CollisionFilterGroups.DEFAULT_FILTER));
         dynamicsWorld.addAction(node.getControllerId());
     }
 
@@ -566,11 +571,11 @@ public class PhysicsSpace {
     }
 
     private void removeNode(PhysicsRigidBody node) {
-        physicsNodes.remove(node.getObjectId());
-        dynamicsWorld.removeRigidBody(node.getObjectId());
         if (node instanceof PhysicsVehicle) {
             dynamicsWorld.removeVehicle(((PhysicsVehicle) node).getVehicle());
         }
+        physicsNodes.remove(node.getObjectId());
+        dynamicsWorld.removeRigidBody(node.getObjectId());
     }
 
     private void addJoint(PhysicsJoint joint) {

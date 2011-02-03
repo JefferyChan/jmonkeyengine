@@ -66,7 +66,6 @@ public class PhysicsCharacter extends PhysicsCollisionObject {
     protected final Quaternion tmp_inverseWorldRotation = new Quaternion();
     private Transform tempTrans = new Transform(Converter.convert(new Matrix3f()));
     private com.jme3.math.Transform physicsLocation = new com.jme3.math.Transform();
-    private javax.vecmath.Quat4f tempRot = new javax.vecmath.Quat4f();
     private javax.vecmath.Vector3f tempVec = new javax.vecmath.Vector3f();
 
     public PhysicsCharacter() {
@@ -88,12 +87,12 @@ public class PhysicsCharacter extends PhysicsCollisionObject {
     protected void buildObject() {
         if (gObject == null) {
             gObject = new PairCachingGhostObject();
-            gObject.setCollisionFlags(gObject.getCollisionFlags() | CollisionFlags.NO_CONTACT_RESPONSE);
         }
-        gObject.setCollisionShape(collisionShape.getCShape());
-        gObject.setUserPointer(this);
         gObject.setCollisionFlags(gObject.getCollisionFlags() & ~CollisionFlags.NO_CONTACT_RESPONSE);
         gObject.setCollisionFlags(gObject.getCollisionFlags() | CollisionFlags.CHARACTER_OBJECT);
+//        gObject.setCollisionFlags(gObject.getCollisionFlags() | CollisionFlags.KINEMATIC_OBJECT);
+        gObject.setCollisionShape(collisionShape.getCShape());
+        gObject.setUserPointer(this);
         character = new KinematicCharacterController(gObject, (ConvexShape) collisionShape.getCShape(), stepHeight);
     }
 
