@@ -49,7 +49,7 @@ import com.jme3.math.Quaternion;
 import java.io.IOException;
 
 /**
- * Basic Bullet Chatacter
+ * Basic Bullet Character
  * @author normenhansen
  */
 public class PhysicsCharacter extends PhysicsCollisionObject {
@@ -72,6 +72,10 @@ public class PhysicsCharacter extends PhysicsCollisionObject {
     public PhysicsCharacter() {
     }
 
+    /**
+     * @param shape The CollisionShape (no Mesh or CompoundCollisionShapes)
+     * @param stepHeight The quantization size for vertical movement
+     */
     public PhysicsCharacter(CollisionShape shape, float stepHeight) {
         this.collisionShape = shape;
         if (!(shape.getCShape() instanceof ConvexShape)) {
@@ -93,6 +97,10 @@ public class PhysicsCharacter extends PhysicsCollisionObject {
         character = new KinematicCharacterController(gObject, (ConvexShape) collisionShape.getCShape(), stepHeight);
     }
 
+    /**
+     * Sets the location of this physics character
+     * @param location
+     */
     public void warp(Vector3f location) {
         character.warp(Converter.convert(location, tempVec));
     }
@@ -106,6 +114,9 @@ public class PhysicsCharacter extends PhysicsCollisionObject {
         character.setWalkDirection(Converter.convert(walkDirection, tempVec));
     }
 
+    /**
+     * @return the currently set walkDirection
+     */
     public Vector3f getWalkDirection() {
         return walkDirection;
     }
@@ -175,7 +186,7 @@ public class PhysicsCharacter extends PhysicsCollisionObject {
     }
 
     /**
-     * This is normally only needed when using detached physics
+     * Set the physics location (same as warp())
      * @param location the location of the actual physics object
      */
     public void setPhysicsLocation(Vector3f location) {
@@ -230,12 +241,14 @@ public class PhysicsCharacter extends PhysicsCollisionObject {
         return character;
     }
 
+    /**
+     * used internally
+     */
     public PairCachingGhostObject getObjectId(){
         return gObject;
     }
 
     public void destroy() {
-//        super.destroy();
     }
 
     @Override

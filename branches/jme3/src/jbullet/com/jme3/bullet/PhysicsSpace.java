@@ -282,14 +282,14 @@ public class PhysicsSpace {
                     node = (PhysicsRigidBody) rBody.getUserPointer();
                 } else if (body0 instanceof GhostObject) {
                     GhostObject rBody = (GhostObject) body0;
-                    node = (PhysicsCollisionObject)rBody.getUserPointer();
+                    node = (PhysicsCollisionObject) rBody.getUserPointer();
                 }
                 if (body1 instanceof RigidBody) {
                     RigidBody rBody = (RigidBody) body1;
                     node1 = (PhysicsRigidBody) rBody.getUserPointer();
                 } else if (body1 instanceof GhostObject) {
                     GhostObject rBody = (GhostObject) body1;
-                    node1 = (PhysicsCollisionObject)rBody.getUserPointer();
+                    node1 = (PhysicsCollisionObject) rBody.getUserPointer();
                 }
                 if (node != null && node1 != null) {
                     synchronized (collisionEvents) {
@@ -483,7 +483,9 @@ public class PhysicsSpace {
                 if (!physicsNodes.containsValue(physicsJoint.getBodyB())) {
                     addNode(physicsJoint.getBodyB());
                 }
-                addJoint(physicsJoint);
+                if (!physicsJoints.contains(physicsJoint)) {
+                    addJoint(physicsJoint);
+                }
             }
         } else if (node.getControl(PhysicsControl.class) != null) {
             node.getControl(PhysicsControl.class).setPhysicsSpace(this);
