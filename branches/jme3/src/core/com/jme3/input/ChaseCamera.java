@@ -475,6 +475,9 @@ public class ChaseCamera implements ActionListener, AnalogListener, Control {
      */
     public void setSpatial(Spatial spatial) {
         target = spatial;
+        if (spatial == null) {
+            return;
+        }
         computePosition();
         prevPos = new Vector3f(target.getWorldTranslation());
         cam.setLocation(pos);
