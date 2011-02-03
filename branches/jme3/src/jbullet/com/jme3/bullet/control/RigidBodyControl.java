@@ -217,7 +217,7 @@ public class RigidBodyControl extends PhysicsRigidBody implements PhysicsControl
 
     public void update(float tpf) {
         if (enabled && spatial != null) {
-            if (!kinematicSpatial) {
+            if (!isKinematic()||!kinematicSpatial) {
                 getMotionState().applyTransform(spatial);
             } else {
                 super.setPhysicsLocation(spatial.getWorldTranslation());
