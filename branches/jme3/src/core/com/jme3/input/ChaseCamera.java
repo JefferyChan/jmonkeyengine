@@ -96,8 +96,7 @@ public class ChaseCamera implements ActionListener, AnalogListener, Control {
     private final Vector3f pos = new Vector3f();
     protected boolean dragToRotate = true;
     protected Vector3f lookAtOffset = null;
-    protected boolean invertYaxis=false;
-
+    protected boolean invertYaxis = false;
 
     /**
      * Constructs the chase camera
@@ -105,13 +104,31 @@ public class ChaseCamera implements ActionListener, AnalogListener, Control {
      * @param target the spatial to follow
      */
     public ChaseCamera(Camera cam, final Spatial target) {
-        this.target = target;
+        this(cam);
+        target.addControl(this);
+    }
+
+    /**
+     * Constructs the chase camera
+     * if you use this constructor you have to attach the cam later to a spatial
+     * doing spatial.addControl(chaseCamera);
+     * @param cam the application camera
+     */
+    public ChaseCamera(Camera cam) {
         this.cam = cam;
         initialUpVec = cam.getUp().clone();
-        computePosition();
-        target.addControl(this);
-        prevPos = new Vector3f(target.getWorldTranslation());
-        cam.setLocation(pos);
+    }
+
+    /**
+     * Constructs the chase camera, and registers inputs
+     * if you use this constructor you have to attach the cam later to a spatial
+     * doing spatial.addControl(chaseCamera);
+     * @param cam the application camera     
+     * @param inputManager the inputManager of the application to register inputs
+     */
+    public ChaseCamera(Camera cam, InputManager inputManager) {
+        this(cam);
+        registerWithInput(inputManager);
     }
 
     /**
@@ -171,14 +188,14 @@ public class ChaseCamera implements ActionListener, AnalogListener, Control {
      * Registers inputs with the input manager
      * @param inputManager
      */
-    public void registerWithInput(InputManager inputManager) {
+    public final void registerWithInput(InputManager inputManager) {
         String[] inputs = {"toggleRotate", "Down", "Up", "mouseLeft", "mouseRight", "ZoomIn", "ZoomOut"};
 
         this.inputManager = inputManager;
-        if(!invertYaxis){
+        if (!invertYaxis) {
             inputManager.addMapping("Down", new MouseAxisTrigger(MouseInput.AXIS_Y, true));
             inputManager.addMapping("Up", new MouseAxisTrigger(MouseInput.AXIS_Y, false));
-        }else{
+        } else {
             inputManager.addMapping("Down", new MouseAxisTrigger(MouseInput.AXIS_Y, false));
             inputManager.addMapping("Up", new MouseAxisTrigger(MouseInput.AXIS_Y, true));
         }
@@ -458,6 +475,9 @@ public class ChaseCamera implements ActionListener, AnalogListener, Control {
      */
     public void setSpatial(Spatial spatial) {
         target = spatial;
+        computePosition();
+        prevPos = new Vector3f(target.getWorldTranslation());
+        cam.setLocation(pos);
     }
 
     /**
@@ -780,15 +800,13 @@ public class ChaseCamera implements ActionListener, AnalogListener, Control {
         this.invertYaxis = invertYaxis;
         inputManager.deleteMapping("Down");
         inputManager.deleteMapping("Up");
-        if(!invertYaxis){
+        if (!invertYaxis) {
             inputManager.addMapping("Down", new MouseAxisTrigger(MouseInput.AXIS_Y, true));
             inputManager.addMapping("Up", new MouseAxisTrigger(MouseInput.AXIS_Y, false));
-        }else{
+        } else {
             inputManager.addMapping("Down", new MouseAxisTrigger(MouseInput.AXIS_Y, false));
             inputManager.addMapping("Up", new MouseAxisTrigger(MouseInput.AXIS_Y, true));
         }
-        inputManager.addListener(this, "Down","Up");
+        inputManager.addListener(this, "Down", "Up");
     }
-
-
 }
