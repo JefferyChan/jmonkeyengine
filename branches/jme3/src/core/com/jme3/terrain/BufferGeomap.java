@@ -77,12 +77,12 @@ public class BufferGeomap extends AbstractGeomap implements Geomap {
         return maxval;
     }
 
-    public int getValue(int x, int y) {
-        return (int) hdata.get(y*width+x);
+    public float getValue(int x, int y) {
+        return hdata.get(y*width+x);
     }
 
-    public int getValue(int i) {
-        return (int) hdata.get(i);
+    public float getValue(int i) {
+        return hdata.get(i);
     }
 
     public Vector3f getNormal(int x, int y, Vector3f store) {

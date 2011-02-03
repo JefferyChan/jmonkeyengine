@@ -78,11 +78,11 @@ public class SharedBufferGeomap extends AbstractGeomap implements SharedGeomap {
         return startY;
     }
 
-    public int getValue(int x, int y) {
+    public float getValue(int x, int y) {
         return parent.getValue(startX+x,startY+y);
     }
 
-    public int getValue(int i) {
+    public float getValue(int i) {
         int r = i % width;
         return getValue(r,(i-r)/width);
     }

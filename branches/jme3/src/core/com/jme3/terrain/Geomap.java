@@ -71,7 +71,7 @@ public interface Geomap {
      *
      * @throws NullPointerException If isLoaded() is false
      */
-    public int getValue(int x, int y);
+    public float getValue(int x, int y);
 
     /**
      * Returns the height value at the given index.
@@ -84,7 +84,7 @@ public interface Geomap {
      *
      * @throws NullPointerException If isLoaded() is false
      */
-    public int getValue(int i);
+    public float getValue(int i);
 
     /**
      * Returns the normal at a point
