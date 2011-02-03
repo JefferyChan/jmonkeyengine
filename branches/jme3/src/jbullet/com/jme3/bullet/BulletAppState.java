@@ -41,8 +41,12 @@ public class BulletAppState implements AppState, PhysicsTickListener {
     public BulletAppState() {
     }
 
+    public BulletAppState(BroadphaseType broadphaseType) {
+        this(new Vector3f(-10000f, -10000f, -10000f), new Vector3f(10000f, 10000f, 10000f), broadphaseType);
+    }
+
     public BulletAppState(Vector3f worldMin, Vector3f worldMax) {
-        this(worldMin, worldMax, BroadphaseType.DBVT);
+        this(worldMin, worldMax, BroadphaseType.AXIS_SWEEP_3);
     }
 
     public BulletAppState(Vector3f worldMin, Vector3f worldMax, BroadphaseType broadphaseType) {

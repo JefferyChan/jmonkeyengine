@@ -256,6 +256,26 @@ public class PhysicsSpace {
                     PhysicsTickListener physicsTickCallback = it.next();
                     physicsTickCallback.physicsTick(space, f);
                 }
+                //add recurring events
+                AppTask task = rQueue.poll();
+                while (task != null) {
+                    pQueue.add(task);
+                    task = rQueue.poll();
+                }
+                //execute task list
+                task = pQueue.poll();
+                while (task != null) {
+                    while (task.isCancelled()) {
+                        task = pQueue.poll();
+                    }
+                    try {
+                        task.invoke();
+                    } catch (Exception ex) {
+                        Logger.getLogger(PhysicsSpace.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    task = pQueue.poll();
+                }
+
             }
         };
         dynamicsWorld.setInternalTickCallback(callback, this);
@@ -332,26 +352,6 @@ public class PhysicsSpace {
             return;
         }
 
-        //add recurring events
-        AppTask task = rQueue.poll();
-        while (task != null) {
-            pQueue.add(task);
-            task = rQueue.poll();
-        }
-        //execute task list
-        task = pQueue.poll();
-        while (task != null) {
-            while (task.isCancelled()) {
-                task = pQueue.poll();
-            }
-            try {
-                task.invoke();
-            } catch (Exception ex) {
-                Logger.getLogger(PhysicsSpace.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            task = pQueue.poll();
-        }
-
         //step simulation
         dynamicsWorld.stepSimulation(time, maxSteps, accuracy);
     }
@@ -386,12 +386,25 @@ public class PhysicsSpace {
         return task;
     }
 
+    /**
+     * calls the callable on the next physics tick (ensuring e.g. force applying)
+     * @param <V>
+     * @param callable
+     * @return
+     */
     public <V> Future<V> enqueue(Callable<V> callable) {
         AppTask<V> task = new AppTask<V>(callable);
         pQueue.add(task);
         return task;
     }
 
+    /**
+     * can be called while executing as callable w/o causing the task to be executed
+     * immediately
+     * @param <V>
+     * @param callable
+     * @return
+     */
     public <V> Future<V> requeue(Callable<V> callable) {
         AppTask<V> task = new AppTask<V>(callable);
         rQueue.add(task);
