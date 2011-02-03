@@ -75,32 +75,29 @@ public class PhysicsCharacterNode extends PhysicsBaseNode {
     @Override
     public void setLocalTransform(Transform t) {
         super.setLocalTransform(t);
-        ((PhysicsGhostObject)collisionObject).setPhysicsLocation(getWorldTranslation());
-        ((PhysicsGhostObject)collisionObject).setPhysicsRotation(getWorldRotation().toRotationMatrix());
+        ((CharacterControl)collisionObject).setPhysicsLocation(getWorldTranslation());
     }
 
     @Override
     public void setLocalTranslation(Vector3f localTranslation) {
         super.setLocalTranslation(localTranslation);
-        ((PhysicsGhostObject)collisionObject).setPhysicsLocation(getWorldTranslation());
+        ((CharacterControl)collisionObject).setPhysicsLocation(getWorldTranslation());
     }
 
     @Override
     public void setLocalTranslation(float x, float y, float z) {
         super.setLocalTranslation(x, y, z);
-        ((PhysicsGhostObject)collisionObject).setPhysicsLocation(getWorldTranslation());
+        ((CharacterControl)collisionObject).setPhysicsLocation(getWorldTranslation());
     }
 
     @Override
     public void setLocalRotation(Matrix3f rotation) {
         super.setLocalRotation(rotation);
-        ((PhysicsGhostObject)collisionObject).setPhysicsRotation(getWorldRotation().toRotationMatrix());
     }
 
     @Override
     public void setLocalRotation(Quaternion quaternion) {
         super.setLocalRotation(quaternion);
-        ((PhysicsGhostObject)collisionObject).setPhysicsRotation(getWorldRotation().toRotationMatrix());
     }
 
     /**
