@@ -39,6 +39,7 @@ import com.bulletphysics.collision.broadphase.AxisSweep3;
 import com.bulletphysics.collision.broadphase.AxisSweep3_32;
 import com.bulletphysics.collision.broadphase.BroadphaseInterface;
 import com.bulletphysics.collision.broadphase.BroadphaseProxy;
+import com.bulletphysics.collision.broadphase.CollisionFilterGroups;
 import com.bulletphysics.collision.broadphase.DbvtBroadphase;
 import com.bulletphysics.collision.broadphase.OverlapFilterCallback;
 import com.bulletphysics.collision.broadphase.SimpleBroadphase;
@@ -57,7 +58,6 @@ import com.bulletphysics.dynamics.constraintsolver.ConstraintSolver;
 import com.bulletphysics.dynamics.constraintsolver.SequentialImpulseConstraintSolver;
 import com.bulletphysics.extras.gimpact.GImpactCollisionAlgorithm;
 import com.jme3.app.AppTask;
-import com.jme3.asset.AssetManager;
 import com.jme3.math.Vector3f;
 //import com.jme3.util.GameTaskQueue;
 //import com.jme3.util.GameTaskQueueManager;
@@ -546,15 +546,14 @@ public class PhysicsSpace {
     }
 
     private void addCharacterNode(PhysicsCharacter node) {
-        dynamicsWorld.addCollisionObject(node.getObjectId());
-        dynamicsWorld.addAction(((PhysicsCharacter) node).getControllerId());
+//        dynamicsWorld.addCollisionObject(node.getObjectId());
+        dynamicsWorld.addCollisionObject(node.getObjectId(), CollisionFilterGroups.CHARACTER_FILTER, (short)(CollisionFilterGroups.STATIC_FILTER | CollisionFilterGroups.DEFAULT_FILTER));
+        dynamicsWorld.addAction(node.getControllerId());
     }
 
     private void removeCharacterNode(PhysicsCharacter node) {
+        dynamicsWorld.removeAction(node.getControllerId());
         dynamicsWorld.removeCollisionObject(node.getObjectId());
-        if (node instanceof PhysicsCharacter) {
-            dynamicsWorld.removeAction(((PhysicsCharacter) node).getControllerId());
-        }
     }
 
     private void addNode(PhysicsRigidBody node) {
