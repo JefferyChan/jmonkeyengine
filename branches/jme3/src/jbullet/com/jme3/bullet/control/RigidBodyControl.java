@@ -26,6 +26,8 @@ import com.jme3.scene.control.Control;
 import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Sphere;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -38,6 +40,7 @@ public class RigidBodyControl extends PhysicsRigidBody implements PhysicsControl
     protected boolean added = false;
     protected PhysicsSpace space = null;
     private Matrix3f temp_matrix = new Matrix3f();
+    protected boolean kinematicSpatial = true;
 
     public RigidBodyControl() {
     }
@@ -168,13 +171,57 @@ public class RigidBodyControl extends PhysicsRigidBody implements PhysicsControl
         return enabled;
     }
 
+    @Override
+    public void setPhysicsLocation(Vector3f location) {
+        super.setPhysicsLocation(location);
+        if (kinematicSpatial) {
+            Logger.getLogger(RigidBodyControl.class.getName()).log(Level.WARNING, "When using setPhysicsLocation in kinematic mode call rigidBodyControl.setKinematicSpatial(false)!");
+        }
+    }
+
+    @Override
+    public void setPhysicsRotation(Matrix3f rotation) {
+        super.setPhysicsRotation(rotation);
+        if (kinematicSpatial) {
+            Logger.getLogger(RigidBodyControl.class.getName()).log(Level.WARNING, "When using setPhysicsRotation in kinematic mode call rigidBodyControl.setKinematicSpatial(false)!");
+        }
+    }
+
+    @Override
+    public void setKinematic(boolean kinematic) {
+        super.setKinematic(kinematic);
+        if (!kinematic) {
+            kinematicSpatial = false;
+        }
+    }
+
+    /**
+     * Checks if this control is in kinematic spatial mode.
+     * @return true if the spatial location is applied to this kinematic rigidbody
+     */
+    public boolean isKinematicSpatial() {
+        return kinematicSpatial;
+    }
+
+    /**
+     * Sets this control to kinematic spatial mode so that the spatials transform will
+     * be applied to the rigidbody in kinematic mode, defaults to true.
+     * @param kinematicSpatial
+     */
+    public void setKinematicSpatial(boolean kinematicSpatial) {
+        this.kinematicSpatial = kinematicSpatial;
+        if (kinematicSpatial) {
+            setKinematic(true);
+        }
+    }
+
     public void update(float tpf) {
         if (enabled && spatial != null) {
-            if (!isKinematic()) {
+            if (!kinematicSpatial) {
                 getMotionState().applyTransform(spatial);
             } else {
-                setPhysicsLocation(spatial.getWorldTranslation());
-                setPhysicsRotation(spatial.getWorldRotation().toRotationMatrix(temp_matrix));
+                super.setPhysicsLocation(spatial.getWorldTranslation());
+                super.setPhysicsRotation(spatial.getWorldRotation().toRotationMatrix(temp_matrix));
             }
         }
     }
@@ -207,6 +254,7 @@ public class RigidBodyControl extends PhysicsRigidBody implements PhysicsControl
         super.write(ex);
         OutputCapsule oc = ex.getCapsule(this);
         oc.write(enabled, "enabled", true);
+        oc.write(kinematicSpatial, "kinematicSpatial", true);
         oc.write(spatial, "spatial", null);
     }
 
@@ -215,6 +263,7 @@ public class RigidBodyControl extends PhysicsRigidBody implements PhysicsControl
         super.read(im);
         InputCapsule ic = im.getCapsule(this);
         enabled = ic.readBoolean("enabled", true);
+        kinematicSpatial = ic.readBoolean("kinematicSpatial", true);
         spatial = (Spatial) ic.readSavable("spatial", null);
     }
 }
