@@ -151,7 +151,7 @@ public class RigidBodyControl extends PhysicsRigidBody implements PhysicsControl
         this.enabled = enabled;
         if (space != null) {
             if (enabled && !added) {
-                if(spatial!=null){
+                if (spatial != null) {
                     setPhysicsLocation(spatial.getWorldTranslation());
                     setPhysicsRotation(spatial.getWorldRotation().toRotationMatrix(temp_matrix));
                 }
@@ -170,7 +170,12 @@ public class RigidBodyControl extends PhysicsRigidBody implements PhysicsControl
 
     public void update(float tpf) {
         if (enabled && spatial != null) {
-            getMotionState().applyTransform(spatial);
+            if (!isKinematic()) {
+                getMotionState().applyTransform(spatial);
+            } else {
+                setPhysicsLocation(spatial.getWorldTranslation());
+                setPhysicsRotation(spatial.getWorldRotation().toRotationMatrix(temp_matrix));
+            }
         }
     }
 
