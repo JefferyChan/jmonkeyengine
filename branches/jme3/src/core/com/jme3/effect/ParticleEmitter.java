@@ -796,6 +796,20 @@ public class ParticleEmitter extends Geometry implements Control {
         selectRandomImage = ic.readBoolean("selectRandomImage", false);
         randomAngle = ic.readBoolean("randomAngle", false);
         rotateSpeed = ic.readFloat("rotateSpeed", 0);
+        
+        switch (meshType){
+            case Point:
+                particleMesh = new ParticlePointMesh();
+                setMesh(particleMesh);
+                break;
+            case Triangle:
+                particleMesh = new ParticleTriMesh();
+                setMesh(particleMesh);
+                break;
+            default:
+                throw new IllegalStateException("Unrecognized particle type: "+meshType);
+        }
+        particleMesh.initParticleData(this, particles.length);
     }
 
 }
