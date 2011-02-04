@@ -190,9 +190,6 @@ public class RigidBodyControl extends PhysicsRigidBody implements PhysicsControl
     @Override
     public void setKinematic(boolean kinematic) {
         super.setKinematic(kinematic);
-        if (!kinematic) {
-            kinematicSpatial = false;
-        }
     }
 
     /**
@@ -210,18 +207,15 @@ public class RigidBodyControl extends PhysicsRigidBody implements PhysicsControl
      */
     public void setKinematicSpatial(boolean kinematicSpatial) {
         this.kinematicSpatial = kinematicSpatial;
-        if (kinematicSpatial) {
-            setKinematic(true);
-        }
     }
 
     public void update(float tpf) {
         if (enabled && spatial != null) {
-            if (!isKinematic()||!kinematicSpatial) {
-                getMotionState().applyTransform(spatial);
-            } else {
+            if (isKinematic() && kinematicSpatial) {
                 super.setPhysicsLocation(spatial.getWorldTranslation());
                 super.setPhysicsRotation(spatial.getWorldRotation().toRotationMatrix(temp_matrix));
+            } else {
+                getMotionState().applyTransform(spatial);
             }
         }
     }
