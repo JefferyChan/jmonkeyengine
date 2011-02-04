@@ -106,7 +106,7 @@ public class PhysicsSpace {
             };
     private ConcurrentLinkedQueue<AppTask<?>> pQueue = new ConcurrentLinkedQueue<AppTask<?>>();
     private static ThreadLocal<PhysicsSpace> physicsSpaceTL = new ThreadLocal<PhysicsSpace>();
-    private DynamicsWorld dynamicsWorld = null;
+    private DiscreteDynamicsWorld dynamicsWorld = null;
     private BroadphaseInterface broadphase;
     private BroadphaseType broadphaseType = BroadphaseType.DBVT;
     private CollisionDispatcher dispatcher;
@@ -556,6 +556,20 @@ public class PhysicsSpace {
      */
     public void setGravity(Vector3f gravity) {
         dynamicsWorld.setGravity(Converter.convert(gravity));
+    }
+
+    /**
+     * applies gravity value to all objects
+     */
+    public void applyGravity(){
+        dynamicsWorld.applyGravity();
+    }
+
+    /**
+     * clears forces of all objects
+     */
+    public void clearForces(){
+        dynamicsWorld.clearForces();
     }
 
     /**
