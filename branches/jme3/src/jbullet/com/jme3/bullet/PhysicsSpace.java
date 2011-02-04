@@ -44,6 +44,7 @@ import com.bulletphysics.collision.broadphase.DbvtBroadphase;
 import com.bulletphysics.collision.broadphase.OverlapFilterCallback;
 import com.bulletphysics.collision.broadphase.SimpleBroadphase;
 import com.bulletphysics.collision.dispatch.CollisionDispatcher;
+import com.bulletphysics.collision.dispatch.CollisionObject;
 import com.bulletphysics.collision.dispatch.CollisionWorld;
 import com.bulletphysics.collision.dispatch.CollisionWorld.LocalRayResult;
 import com.bulletphysics.collision.dispatch.DefaultCollisionConfiguration;
@@ -59,8 +60,6 @@ import com.bulletphysics.dynamics.constraintsolver.SequentialImpulseConstraintSo
 import com.bulletphysics.extras.gimpact.GImpactCollisionAlgorithm;
 import com.jme3.app.AppTask;
 import com.jme3.math.Vector3f;
-//import com.jme3.util.GameTaskQueue;
-//import com.jme3.util.GameTaskQueueManager;
 import com.jme3.bullet.collision.PhysicsCollisionEvent;
 import com.jme3.bullet.collision.PhysicsCollisionEventFactory;
 import com.jme3.bullet.collision.PhysicsCollisionGroupListener;
@@ -98,7 +97,7 @@ public class PhysicsSpace {
     public static final int AXIS_X = 0;
     public static final int AXIS_Y = 1;
     public static final int AXIS_Z = 2;
-    public static ThreadLocal<ConcurrentLinkedQueue<AppTask<?>>> rQueueTL =
+    private static ThreadLocal<ConcurrentLinkedQueue<AppTask<?>>> pQueueTL =
             new ThreadLocal<ConcurrentLinkedQueue<AppTask<?>>>() {
 
                 @Override
@@ -106,15 +105,6 @@ public class PhysicsSpace {
                     return new ConcurrentLinkedQueue<AppTask<?>>();
                 }
             };
-    public static ThreadLocal<ConcurrentLinkedQueue<AppTask<?>>> pQueueTL =
-            new ThreadLocal<ConcurrentLinkedQueue<AppTask<?>>>() {
-
-                @Override
-                protected ConcurrentLinkedQueue<AppTask<?>> initialValue() {
-                    return new ConcurrentLinkedQueue<AppTask<?>>();
-                }
-            };
-    private ConcurrentLinkedQueue<AppTask<?>> rQueue = new ConcurrentLinkedQueue<AppTask<?>>();
     private ConcurrentLinkedQueue<AppTask<?>> pQueue = new ConcurrentLinkedQueue<AppTask<?>>();
     private static ThreadLocal<PhysicsSpace> physicsSpaceTL = new ThreadLocal<PhysicsSpace>();
     private DynamicsWorld dynamicsWorld = null;
@@ -176,7 +166,6 @@ public class PhysicsSpace {
      * has to be called from the (designated) physics thread
      */
     public void create() {
-        rQueueTL.set(rQueue);
         pQueueTL.set(pQueue);
 
         collisionConfiguration = new DefaultCollisionConfiguration();
@@ -256,13 +245,8 @@ public class PhysicsSpace {
                     PhysicsTickListener physicsTickCallback = it.next();
                     physicsTickCallback.physicsTick(space, f);
                 }
-                //add recurring events
-                AppTask task = rQueue.poll();
-                while (task != null) {
-                    pQueue.add(task);
-                    task = rQueue.poll();
-                }
                 //execute task list
+                AppTask task = pQueue.poll();
                 task = pQueue.poll();
                 while (task != null) {
                     while (task.isCancelled()) {
@@ -295,27 +279,13 @@ public class PhysicsSpace {
         BulletGlobals.setContactProcessedCallback(new ContactProcessedCallback() {
 
             public boolean contactProcessed(ManifoldPoint cp, Object body0, Object body1) {
-                PhysicsCollisionObject node = null, node1 = null;
-                if (body0 instanceof RigidBody) {
-                    RigidBody rBody = (RigidBody) body0;
-                    node = (PhysicsRigidBody) rBody.getUserPointer();
-                } else if (body0 instanceof GhostObject) {
-                    GhostObject rBody = (GhostObject) body0;
-                    node = (PhysicsCollisionObject) rBody.getUserPointer();
-                }
-                if (body1 instanceof RigidBody) {
-                    RigidBody rBody = (RigidBody) body1;
-                    node1 = (PhysicsRigidBody) rBody.getUserPointer();
-                } else if (body1 instanceof GhostObject) {
-                    GhostObject rBody = (GhostObject) body1;
-                    node1 = (PhysicsCollisionObject) rBody.getUserPointer();
-                }
-                if (node != null && node1 != null) {
-                    synchronized (collisionEvents) {
-                        collisionEvents.add(eventFactory.getEvent(PhysicsCollisionEvent.TYPE_PROCESSED, node, node1, cp));
-                    }
-                } else {
-                    System.out.println("error finding node during collision");
+                if (body0 instanceof CollisionObject && body1 instanceof CollisionObject) {
+                    PhysicsCollisionObject node = null, node1 = null;
+                    CollisionObject rBody0 = (CollisionObject) body0;
+                    CollisionObject rBody1 = (CollisionObject) body1;
+                    node = (PhysicsCollisionObject) rBody0.getUserPointer();
+                    node1 = (PhysicsCollisionObject) rBody1.getUserPointer();
+                    collisionEvents.add(eventFactory.getEvent(PhysicsCollisionEvent.TYPE_PROCESSED, node, node1, cp));
                 }
                 return true;
             }
@@ -351,7 +321,6 @@ public class PhysicsSpace {
         if (getDynamicsWorld() == null) {
             return;
         }
-
         //step simulation
         dynamicsWorld.stepSimulation(time, maxSteps, accuracy);
     }
@@ -359,14 +328,12 @@ public class PhysicsSpace {
     public void distributeEvents() {
         //add collision callbacks
         synchronized (collisionEvents) {
-            for (PhysicsCollisionListener listener : collisionListeners) {
-                for (PhysicsCollisionEvent event : collisionEvents) {
-                    listener.collision(event);
-                }
-            }
-            //recycle events
             for (Iterator<PhysicsCollisionEvent> it = collisionEvents.iterator(); it.hasNext();) {
                 PhysicsCollisionEvent physicsCollisionEvent = it.next();
+                for (PhysicsCollisionListener listener : collisionListeners) {
+                    listener.collision(physicsCollisionEvent);
+                }
+                //recycle events
                 eventFactory.recycle(physicsCollisionEvent);
                 it.remove();
             }
@@ -380,12 +347,6 @@ public class PhysicsSpace {
         return task;
     }
 
-    public static <V> Future<V> requeueOnThisThread(Callable<V> callable) {
-        AppTask<V> task = new AppTask<V>(callable);
-        rQueueTL.get().add(task);
-        return task;
-    }
-
     /**
      * calls the callable on the next physics tick (ensuring e.g. force applying)
      * @param <V>
@@ -395,19 +356,6 @@ public class PhysicsSpace {
     public <V> Future<V> enqueue(Callable<V> callable) {
         AppTask<V> task = new AppTask<V>(callable);
         pQueue.add(task);
-        return task;
-    }
-
-    /**
-     * can be called while executing as callable w/o causing the task to be executed
-     * immediately
-     * @param <V>
-     * @param callable
-     * @return
-     */
-    public <V> Future<V> requeue(Callable<V> callable) {
-        AppTask<V> task = new AppTask<V>(callable);
-        rQueue.add(task);
         return task;
     }
 
@@ -433,13 +381,13 @@ public class PhysicsSpace {
 
     public void addCollisionObject(PhysicsCollisionObject obj) {
         if (obj instanceof PhysicsGhostObject) {
-            addGhostNode((PhysicsGhostObject) obj);
+            addGhostObject((PhysicsGhostObject) obj);
         } else if (obj instanceof PhysicsRigidBody) {
-            addNode((PhysicsRigidBody) obj);
+            addRigidBody((PhysicsRigidBody) obj);
         } else if (obj instanceof PhysicsVehicle) {
-            addNode((PhysicsVehicle) obj);
+            addRigidBody((PhysicsVehicle) obj);
         } else if (obj instanceof PhysicsCharacter) {
-            addCharacterNode((PhysicsCharacter) obj);
+            addCharacter((PhysicsCharacter) obj);
         }
     }
 
@@ -465,11 +413,11 @@ public class PhysicsSpace {
 
     public void removeCollisionObject(PhysicsCollisionObject obj) {
         if (obj instanceof PhysicsGhostObject) {
-            removeGhostNode((PhysicsGhostObject) obj);
+            removeGhostObject((PhysicsGhostObject) obj);
         } else if (obj instanceof PhysicsRigidBody) {
-            removeNode((PhysicsRigidBody) obj);
+            removeRigidBody((PhysicsRigidBody) obj);
         } else if (obj instanceof PhysicsCharacter) {
-            removeCharacterNode((PhysicsCharacter) obj);
+            removeCharacter((PhysicsCharacter) obj);
         }
     }
 
@@ -490,10 +438,10 @@ public class PhysicsSpace {
                 PhysicsJoint physicsJoint = it1.next();
                 //add connected physicsnodes if they are not already added
                 if (!physicsNodes.containsValue(physicsJoint.getBodyA())) {
-                    addNode(physicsJoint.getBodyA());
+                    addRigidBody(physicsJoint.getBodyA());
                 }
                 if (!physicsNodes.containsValue(physicsJoint.getBodyB())) {
-                    addNode(physicsJoint.getBodyB());
+                    addRigidBody(physicsJoint.getBodyB());
                 }
                 if (!physicsJoints.contains(physicsJoint)) {
                     addJoint(physicsJoint);
@@ -531,10 +479,10 @@ public class PhysicsSpace {
                 PhysicsJoint physicsJoint = it1.next();
                 //add connected physicsnodes if they are not already added
                 if (physicsNodes.containsValue(physicsJoint.getBodyA())) {
-                    removeNode(physicsJoint.getBodyA());
+                    removeRigidBody(physicsJoint.getBodyA());
                 }
                 if (physicsNodes.containsValue(physicsJoint.getBodyB())) {
-                    removeNode(physicsJoint.getBodyB());
+                    removeRigidBody(physicsJoint.getBodyB());
                 }
                 if (physicsJoints.contains(physicsJoint)) {
                     removeJoint(physicsJoint);
@@ -555,26 +503,26 @@ public class PhysicsSpace {
         }
     }
 
-    private void addGhostNode(PhysicsGhostObject node) {
+    private void addGhostObject(PhysicsGhostObject node) {
         dynamicsWorld.addCollisionObject(node.getObjectId());
     }
 
-    private void removeGhostNode(PhysicsGhostObject node) {
+    private void removeGhostObject(PhysicsGhostObject node) {
         dynamicsWorld.removeCollisionObject(node.getObjectId());
     }
 
-    private void addCharacterNode(PhysicsCharacter node) {
+    private void addCharacter(PhysicsCharacter node) {
 //        dynamicsWorld.addCollisionObject(node.getObjectId());
         dynamicsWorld.addCollisionObject(node.getObjectId(), CollisionFilterGroups.CHARACTER_FILTER, (short) (CollisionFilterGroups.STATIC_FILTER | CollisionFilterGroups.DEFAULT_FILTER));
         dynamicsWorld.addAction(node.getControllerId());
     }
 
-    private void removeCharacterNode(PhysicsCharacter node) {
+    private void removeCharacter(PhysicsCharacter node) {
         dynamicsWorld.removeAction(node.getControllerId());
         dynamicsWorld.removeCollisionObject(node.getObjectId());
     }
 
-    private void addNode(PhysicsRigidBody node) {
+    private void addRigidBody(PhysicsRigidBody node) {
         physicsNodes.put(node.getObjectId(), node);
         dynamicsWorld.addRigidBody(node.getObjectId());
         if (node instanceof PhysicsVehicle) {
@@ -583,7 +531,7 @@ public class PhysicsSpace {
         }
     }
 
-    private void removeNode(PhysicsRigidBody node) {
+    private void removeRigidBody(PhysicsRigidBody node) {
         if (node instanceof PhysicsVehicle) {
             dynamicsWorld.removeVehicle(((PhysicsVehicle) node).getVehicle());
         }
