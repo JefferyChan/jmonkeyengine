@@ -33,12 +33,14 @@
 package com.jme3.system.lwjgl;
 
 import com.jme3.renderer.Renderer;
+import com.jme3.renderer.lwjgl.LwjglGL1Renderer;
 import com.jme3.renderer.lwjgl.LwjglRenderer;
 import com.jme3.system.AppSettings;
 import com.jme3.system.SystemListener;
 import com.jme3.system.JmeContext;
 import com.jme3.system.Timer;
 import java.util.concurrent.atomic.AtomicBoolean;
+import org.lwjgl.opengl.GLContext;
 
 /**
  * A LWJGL implementation of a graphics context.
@@ -49,7 +51,7 @@ public abstract class LwjglContext implements JmeContext {
     protected final Object createdLock = new Object();
 
     protected AppSettings settings = new AppSettings(true);
-    protected LwjglRenderer renderer;
+    protected Renderer renderer;
     protected Timer timer;
     protected SystemListener listener;
 
@@ -68,8 +70,13 @@ public abstract class LwjglContext implements JmeContext {
     
     public void internalCreate(){
         timer = new LwjglTimer();
-        renderer = new LwjglRenderer();
-        renderer.initialize();
+        if (GLContext.getCapabilities().OpenGL20){
+            renderer = new LwjglRenderer();
+            ((LwjglRenderer)renderer).initialize();
+        }else{
+            renderer = new LwjglGL1Renderer();
+            ((LwjglGL1Renderer)renderer).initialize();
+        }
         synchronized (createdLock){
             created.set(true);
             createdLock.notifyAll();

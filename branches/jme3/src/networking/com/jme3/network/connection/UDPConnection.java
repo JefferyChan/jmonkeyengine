@@ -98,6 +98,10 @@ public class UDPConnection extends Connection {
         DatagramChannel socketChannel = (DatagramChannel)channel;
 
         InetSocketAddress address = (InetSocketAddress)datagramChannel.receive(readBuffer);
+        if (address == null){
+            System.out.println("Address is NULL!");
+            return;
+        }
 
         String reason = shouldFilterConnector(address);
         if (reason != null) {
@@ -112,7 +116,9 @@ public class UDPConnection extends Connection {
             client.setDatagramReceiver(address);
             client.setUDPConnection(this);
             client.setDatagramChannel(socketChannel);
-            connections.add(client);
+            synchronized (connections){
+                connections.add(client);
+            }
 
             key.attach(client);
         }
@@ -128,7 +134,9 @@ public class UDPConnection extends Connection {
             Message message = (Message)object;
 
             if (message instanceof DiscoverHostMessage) {
-                connections.remove(key.attachment());
+                synchronized (connections){
+                    connections.remove( (Client) key.attachment() );
+                }
                 log.log(Level.FINE, "[{0}][UDP] Responded to a discover host message by {1}.", new Object[]{label, address});
                 send(address, message);
                 return;
@@ -150,6 +158,9 @@ public class UDPConnection extends Connection {
             Serializer.writeClassAndObject(writeBuffer, object);
             writeBuffer.flip();
 
+            if (dest == null)
+                throw new NullPointerException();
+
             int bytes = datagramChannel.send(writeBuffer, dest);
 
             if (object instanceof Message) {
@@ -169,8 +180,10 @@ public class UDPConnection extends Connection {
     public void sendObject(Object object) throws IOException {
         if (target == null) {
             // This is a UDP server.
-            for (Client connector : connections) {
-                send(connector.getDatagramReceiver(), object);
+            synchronized (connections){
+                for (Client connector : connections) {
+                    send(connector.getDatagramReceiver(), object);
+                }
             }
         } else {
             send(target, object);
@@ -186,7 +199,9 @@ public class UDPConnection extends Connection {
         datagramChannel.close();
 
         if (target == null) {
-            connections.clear();
+            synchronized (connections){
+                connections.clear();
+            }
         }
     }
 

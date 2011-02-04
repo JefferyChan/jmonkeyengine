@@ -57,7 +57,7 @@ import java.util.logging.Logger;
 public abstract class Connection implements Runnable {
     protected String label;
     protected Logger log = Logger.getLogger(Connection.class.getName());
-    protected ArrayList<Client> connections = new ArrayList<Client>();
+    protected final ArrayList<Client> connections = new ArrayList<Client>();
 
     protected Selector selector;
     protected boolean alive = false;
@@ -265,10 +265,12 @@ public abstract class Connection implements Runnable {
         // Find the correct client.
 
         Client localClient = null;
-        for (Client locClient : connections) {
-            if (locClient.getPlayerID() == client.getPlayerID()) {
-                localClient = locClient;
-                break;
+        synchronized (connections){
+            for (Client locClient : connections) {
+                if (locClient.getPlayerID() == client.getPlayerID()) {
+                    localClient = locClient;
+                    break;
+                }
             }
         }
 
@@ -280,8 +282,10 @@ public abstract class Connection implements Runnable {
             if (key != null) key.cancel();
             chan.close();
         }
-        
-        connections.remove(localClient);
+
+        synchronized (connections){
+            connections.remove(localClient);
+        }
         fireClientDisconnected(client);
     }
 
