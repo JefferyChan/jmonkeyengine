@@ -89,7 +89,6 @@ import java.util.logging.Logger;
 
 /**
  * <p>PhysicsSpace - The central jbullet-jme physics space</p>
- * @see com.jmex.jbullet.nodes.PhysicsNode
  * @author normenhansen
  */
 public class PhysicsSpace {
@@ -125,6 +124,8 @@ public class PhysicsSpace {
     private Vector3f worldMax = new Vector3f(10000f, 10000f, 10000f);
     private float accuracy = 1f / 60f;
     private boolean deterministic = true;
+    private javax.vecmath.Vector3f rayVec1 = new javax.vecmath.Vector3f();
+    private javax.vecmath.Vector3f rayVec2 = new javax.vecmath.Vector3f();
 
     /**
      * Get the current PhysicsSpace <b>running on this thread</b><br/>
@@ -361,7 +362,7 @@ public class PhysicsSpace {
 
     /**
      * adds an object to the physics space
-     * @param obj the PhyiscsNode, PhysicsGhostNode or PhysicsJoint to add
+     * @param obj the PhysicsControl or Spatial with PhysicsControl to add
      */
     public void add(Object obj) {
         if (obj instanceof PhysicsControl) {
@@ -392,8 +393,8 @@ public class PhysicsSpace {
     }
 
     /**
-     * adds an object to the physics space
-     * @param obj the PhyiscsNode, PhysicsGhostNode or PhysicsJoint to remove
+     * removes an object from the physics space
+     * @param obj the PhysicsControl or Spatial with PhysicsControl to remove
      */
     public void remove(Object obj) {
         if (obj instanceof PhysicsControl) {
@@ -606,13 +607,13 @@ public class PhysicsSpace {
      */
     public List<PhysicsRayTestResult> rayTest(Vector3f from, Vector3f to) {
         List<PhysicsRayTestResult> results = new LinkedList<PhysicsRayTestResult>();
-        dynamicsWorld.rayTest(Converter.convert(from), Converter.convert(to), new InternalRayListener(results));
+        dynamicsWorld.rayTest(Converter.convert(from, rayVec1), Converter.convert(to, rayVec2), new InternalRayListener(results));
         return results;
     }
 
     public List<PhysicsRayTestResult> rayTest(Vector3f from, Vector3f to, List<PhysicsRayTestResult> results) {
         results.clear();
-        dynamicsWorld.rayTest(Converter.convert(from), Converter.convert(to), new InternalRayListener(results));
+        dynamicsWorld.rayTest(Converter.convert(from, rayVec1), Converter.convert(to, rayVec2), new InternalRayListener(results));
         return results;
     }
 
@@ -692,6 +693,10 @@ public class PhysicsSpace {
         return worldMin;
     }
 
+    /**
+     * only applies for AXIS_SWEEP broadphase
+     * @param worldMin
+     */
     public void setWorldMin(Vector3f worldMin) {
         this.worldMin.set(worldMin);
     }
@@ -700,6 +705,10 @@ public class PhysicsSpace {
         return worldMax;
     }
 
+    /**
+     * only applies for AXIS_SWEEP broadphase
+     * @param worldMax
+     */
     public void setWorldMax(Vector3f worldMax) {
         this.worldMax.set(worldMax);
     }
