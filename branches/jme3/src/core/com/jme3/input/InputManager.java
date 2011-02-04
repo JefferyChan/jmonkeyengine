@@ -29,7 +29,6 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package com.jme3.input;
 
 import com.jme3.input.controls.ActionListener;
@@ -68,11 +67,9 @@ import java.util.logging.Logger;
 public class InputManager implements RawInputListener {
 
     private static final Logger logger = Logger.getLogger(InputManager.class.getName());
-    
     private final KeyInput keys;
     private final MouseInput mouse;
     private final JoyInput joystick;
-
     private float frameTPF;
     private long lastLastUpdateTime = 0;
     private long lastUpdateTime = 0;
@@ -81,16 +78,13 @@ public class InputManager implements RawInputListener {
     private boolean eventsPermitted = false;
     private boolean mouseVisible = true;
     private boolean safeMode = false;
-
     private float axisDeadZone = 0.05f;
     private Vector2f cursorPos = new Vector2f();
     private Joystick[] joysticks;
-
     private final IntMap<ArrayList<Mapping>> bindings = new IntMap<ArrayList<Mapping>>();
     private final HashMap<String, Mapping> mappings = new HashMap<String, Mapping>();
     private final IntMap<Long> pressedButtons = new IntMap<Long>();
     private final IntMap<Float> axisValues = new IntMap<Float>();
-
     private ArrayList<RawInputListener> rawListeners = new ArrayList<RawInputListener>();
     private ArrayList<InputEvent> inputQueue = new ArrayList<InputEvent>();
 
@@ -100,7 +94,7 @@ public class InputManager implements RawInputListener {
         private final ArrayList<Integer> triggers = new ArrayList<Integer>();
         private final ArrayList<InputListener> listeners = new ArrayList<InputListener>();
 
-        public Mapping(String name){
+        public Mapping(String name) {
             this.name = name;
         }
     }
@@ -113,9 +107,10 @@ public class InputManager implements RawInputListener {
      * @param joyInput
      * @throws IllegalArgumentException If either mouseInput or keyInput are null.
      */
-    public InputManager(MouseInput mouse, KeyInput keys, JoyInput joystick){
-        if (keys == null || mouse == null)
+    public InputManager(MouseInput mouse, KeyInput keys, JoyInput joystick) {
+        if (keys == null || mouse == null) {
             throw new NullPointerException("Mouse or keyboard cannot be null");
+        }
 
         this.keys = keys;
         this.mouse = mouse;
@@ -123,7 +118,7 @@ public class InputManager implements RawInputListener {
 
         keys.setInputListener(this);
         mouse.setInputListener(this);
-        if (joystick != null){
+        if (joystick != null) {
             joystick.setInputListener(this);
             joysticks = joystick.loadJoysticks(this);
         }
@@ -131,163 +126,174 @@ public class InputManager implements RawInputListener {
         firstTime = keys.getInputTimeNanos();
     }
 
-    private void invokeActions(int hash, boolean pressed){
+    private void invokeActions(int hash, boolean pressed) {
         ArrayList<Mapping> maps = bindings.get(hash);
-        if (maps == null)
+        if (maps == null) {
             return;
+        }
 
         int size = maps.size();
-        for (int i = size - 1; i >= 0; i--){
+        for (int i = size - 1; i >= 0; i--) {
             Mapping mapping = maps.get(i);
             ArrayList<InputListener> listeners = mapping.listeners;
             int listenerSize = listeners.size();
-            for (int j = listenerSize - 1; j >= 0; j--){
+            for (int j = listenerSize - 1; j >= 0; j--) {
                 InputListener listener = listeners.get(j);
-                if (listener instanceof ActionListener){
-                    ((ActionListener)listener).onAction(mapping.name, pressed, frameTPF);
+                if (listener instanceof ActionListener) {
+                    ((ActionListener) listener).onAction(mapping.name, pressed, frameTPF);
                 }
             }
         }
     }
 
-    private float computeAnalogValue(long timeDelta){
-        if (safeMode || frameDelta == 0)
+    private float computeAnalogValue(long timeDelta) {
+        if (safeMode || frameDelta == 0) {
             return 1f;
-        else
-            return FastMath.clamp((float)timeDelta / (float)frameDelta, 0, 1);
+        } else {
+            return FastMath.clamp((float) timeDelta / (float) frameDelta, 0, 1);
+        }
     }
 
-    private void invokeTimedActions(int hash, long time, boolean pressed){
-        if (!bindings.containsKey(hash))
+    private void invokeTimedActions(int hash, long time, boolean pressed) {
+        if (!bindings.containsKey(hash)) {
             return;
+        }
 
-        if (pressed){
+        if (pressed) {
             pressedButtons.put(hash, time);
-        }else{
+        } else {
             Long pressTimeObj = pressedButtons.remove(hash);
-            if (pressTimeObj == null)
+            if (pressTimeObj == null) {
                 return; // under certain circumstances it can be null, ignore
-                        // the event then.
-            
-            long pressTime   = pressTimeObj;
-            long lastUpdate  = lastLastUpdateTime;
+            }                        // the event then.
+
+            long pressTime = pressTimeObj;
+            long lastUpdate = lastLastUpdateTime;
             long releaseTime = time;
             long timeDelta = releaseTime - Math.max(pressTime, lastUpdate);
 
-            if (timeDelta > 0)
-                invokeAnalogs(hash, computeAnalogValue(timeDelta), false );
+            if (timeDelta > 0) {
+                invokeAnalogs(hash, computeAnalogValue(timeDelta), false);
+            }
         }
     }
 
-    private void invokeUpdateActions(){
-        for (Entry<Long> pressedButton : pressedButtons){
+    private void invokeUpdateActions() {
+        for (Entry<Long> pressedButton : pressedButtons) {
             int hash = pressedButton.getKey();
 
-            long pressTime   = pressedButton.getValue();
+            long pressTime = pressedButton.getValue();
             long timeDelta = lastUpdateTime - Math.max(lastLastUpdateTime, pressTime);
 
-            if (timeDelta > 0)
-                invokeAnalogs(hash, computeAnalogValue(timeDelta), false );
+            if (timeDelta > 0) {
+                invokeAnalogs(hash, computeAnalogValue(timeDelta), false);
+            }
         }
-        
-        for (Entry<Float> axisValue : axisValues){
+
+        for (Entry<Float> axisValue : axisValues) {
             int hash = axisValue.getKey();
             float value = axisValue.getValue();
             invokeAnalogs(hash, value * frameTPF, true);
         }
     }
 
-    private void invokeAnalogs(int hash, float value, boolean isAxis){
+    private void invokeAnalogs(int hash, float value, boolean isAxis) {
         ArrayList<Mapping> maps = bindings.get(hash);
-        if (maps == null)
+        if (maps == null) {
             return;
+        }
 
-        if (!isAxis)
+        if (!isAxis) {
             value *= frameTPF;
+        }
 
         int size = maps.size();
-        for (int i = size - 1; i >= 0; i--){
+        for (int i = size - 1; i >= 0; i--) {
             Mapping mapping = maps.get(i);
             ArrayList<InputListener> listeners = mapping.listeners;
             int listenerSize = listeners.size();
-            for (int j = listenerSize - 1; j >= 0; j--){
+            for (int j = listenerSize - 1; j >= 0; j--) {
                 InputListener listener = listeners.get(j);
-                if (listener instanceof AnalogListener){
+                if (listener instanceof AnalogListener) {
                     // NOTE: multiply by TPF for any button bindings
-                    ((AnalogListener)listener).onAnalog(mapping.name, value, frameTPF);
+                    ((AnalogListener) listener).onAnalog(mapping.name, value, frameTPF);
                 }
             }
         }
     }
 
-    private void invokeAnalogsAndActions(int hash, float value, boolean applyTpf){
-        if (value < axisDeadZone){
+    private void invokeAnalogsAndActions(int hash, float value, boolean applyTpf) {
+        if (value < axisDeadZone) {
             invokeAnalogs(hash, value, !applyTpf);
             return;
         }
 
         ArrayList<Mapping> maps = bindings.get(hash);
-        if (maps == null)
+        if (maps == null) {
             return;
+        }
 
         boolean valueChanged = !axisValues.containsKey(hash);
-        if (applyTpf)
+        if (applyTpf) {
             value *= frameTPF;
+        }
 
         int size = maps.size();
-        for (int i = size - 1; i >= 0; i--){
+        for (int i = size - 1; i >= 0; i--) {
             Mapping mapping = maps.get(i);
             ArrayList<InputListener> listeners = mapping.listeners;
             int listenerSize = listeners.size();
-            for (int j = listenerSize - 1; j >= 0; j--){
+            for (int j = listenerSize - 1; j >= 0; j--) {
                 InputListener listener = listeners.get(j);
 
-                if (listener instanceof ActionListener && valueChanged)
-                    ((ActionListener)listener).onAction(mapping.name, true, frameTPF);
+                if (listener instanceof ActionListener && valueChanged) {
+                    ((ActionListener) listener).onAction(mapping.name, true, frameTPF);
+                }
 
-                if (listener instanceof AnalogListener)
-                    ((AnalogListener)listener).onAnalog(mapping.name, value, frameTPF);
+                if (listener instanceof AnalogListener) {
+                    ((AnalogListener) listener).onAnalog(mapping.name, value, frameTPF);
+                }
 
             }
         }
     }
 
-    public void beginInput(){
+    public void beginInput() {
     }
 
-    public void endInput(){
+    public void endInput() {
     }
 
-    private void onJoyAxisEventQueued(JoyAxisEvent evt){
+    private void onJoyAxisEventQueued(JoyAxisEvent evt) {
 //        for (int i = 0; i < rawListeners.size(); i++){
 //            rawListeners.get(i).onJoyAxisEvent(evt);
 //        }
 
-        int joyId   = evt.getJoyIndex();
-        int axis    = evt.getAxisIndex();
+        int joyId = evt.getJoyIndex();
+        int axis = evt.getAxisIndex();
         float value = evt.getValue();
-        if (value < axisDeadZone && value > -axisDeadZone){
+        if (value < axisDeadZone && value > -axisDeadZone) {
             int hash1 = JoyAxisTrigger.joyAxisHash(joyId, axis, true);
             int hash2 = JoyAxisTrigger.joyAxisHash(joyId, axis, false);
 
             Float val1 = axisValues.get(hash1);
             Float val2 = axisValues.get(hash2);
 
-            if (val1 != null && val1.floatValue() > axisDeadZone){
+            if (val1 != null && val1.floatValue() > axisDeadZone) {
                 invokeActions(hash1, false);
             }
-            if (val2 != null && val2.floatValue() > axisDeadZone){
+            if (val2 != null && val2.floatValue() > axisDeadZone) {
                 invokeActions(hash2, false);
             }
 
             axisValues.remove(hash1);
             axisValues.remove(hash2);
 
-        }else if (value < 0){
+        } else if (value < 0) {
             int hash = JoyAxisTrigger.joyAxisHash(joyId, axis, true);
             invokeAnalogsAndActions(hash, -value, true);
             axisValues.put(hash, -value);
-        }else{
+        } else {
             int hash = JoyAxisTrigger.joyAxisHash(joyId, axis, false);
             invokeAnalogsAndActions(hash, value, true);
             axisValues.put(hash, value);
@@ -295,13 +301,14 @@ public class InputManager implements RawInputListener {
     }
 
     public void onJoyAxisEvent(JoyAxisEvent evt) {
-        if (!eventsPermitted)
+        if (!eventsPermitted) {
             throw new UnsupportedOperationException("JoyInput has raised an event at an illegal time.");
+        }
 
         inputQueue.add(evt);
     }
 
-    private void onJoyButtonEventQueued(JoyButtonEvent evt){
+    private void onJoyButtonEventQueued(JoyButtonEvent evt) {
 //        for (int i = 0; i < rawListeners.size(); i++){
 //            rawListeners.get(i).onJoyButtonEvent(evt);
 //        }
@@ -312,40 +319,42 @@ public class InputManager implements RawInputListener {
     }
 
     public void onJoyButtonEvent(JoyButtonEvent evt) {
-        if (!eventsPermitted)
+        if (!eventsPermitted) {
             throw new UnsupportedOperationException("JoyInput has raised an event at an illegal time.");
+        }
 
         inputQueue.add(evt);
     }
 
-    private void onMouseMotionEventQueued(MouseMotionEvent evt){
+    private void onMouseMotionEventQueued(MouseMotionEvent evt) {
 //        for (int i = 0; i < rawListeners.size(); i++){
 //            rawListeners.get(i).onMouseMotionEvent(evt);
 //        }
 
-        if (evt.getDX() != 0){
+        if (evt.getDX() != 0) {
             float val = Math.abs(evt.getDX()) / 1024f;
             invokeAnalogsAndActions(MouseAxisTrigger.mouseAxisHash(MouseInput.AXIS_X, evt.getDX() < 0), val, false);
         }
-        if (evt.getDY() != 0){
+        if (evt.getDY() != 0) {
             float val = Math.abs(evt.getDY()) / 1024f;
             invokeAnalogsAndActions(MouseAxisTrigger.mouseAxisHash(MouseInput.AXIS_Y, evt.getDY() < 0), val, false);
         }
-        if (evt.getDeltaWheel() != 0){
+        if (evt.getDeltaWheel() != 0) {
             float val = Math.abs(evt.getDeltaWheel()) / 100f;
             invokeAnalogsAndActions(MouseAxisTrigger.mouseAxisHash(MouseInput.AXIS_WHEEL, evt.getDeltaWheel() < 0), val, false);
         }
     }
 
     public void onMouseMotionEvent(MouseMotionEvent evt) {
-        if (!eventsPermitted)
+        if (!eventsPermitted) {
             throw new UnsupportedOperationException("MouseInput has raised an event at an illegal time.");
+        }
 
         cursorPos.set(evt.getX(), evt.getY());
         inputQueue.add(evt);
     }
 
-    private void onMouseButtonEventQueued(MouseButtonEvent evt){
+    private void onMouseButtonEventQueued(MouseButtonEvent evt) {
 //        for (int i = 0; i < rawListeners.size(); i++){
 //            rawListeners.get(i).onMouseButtonEvent(evt);
 //        }
@@ -354,107 +363,121 @@ public class InputManager implements RawInputListener {
         invokeActions(hash, evt.isPressed());
         invokeTimedActions(hash, evt.getTime(), evt.isPressed());
     }
-    
+
     public void onMouseButtonEvent(MouseButtonEvent evt) {
-        if (!eventsPermitted)
+        if (!eventsPermitted) {
             throw new UnsupportedOperationException("MouseInput has raised an event at an illegal time.");
+        }
 
         inputQueue.add(evt);
     }
 
-    private void onKeyEventQueued(KeyInputEvent evt){
+    private void onKeyEventQueued(KeyInputEvent evt) {
 //        for (int i = 0; i < rawListeners.size(); i++){
 //            rawListeners.get(i).onKeyEvent(evt);
 //        }
 
-        if (evt.isRepeating())
+        if (evt.isRepeating()) {
             return; // repeat events not used for bindings
-
+        }
         int hash = KeyTrigger.keyHash(evt.getKeyCode());
         invokeActions(hash, evt.isPressed());
         invokeTimedActions(hash, evt.getTime(), evt.isPressed());
     }
 
-    public void onKeyEvent(KeyInputEvent evt){
-        if (!eventsPermitted)
+    public void onKeyEvent(KeyInputEvent evt) {
+        if (!eventsPermitted) {
             throw new UnsupportedOperationException("KeyInput has raised an event at an illegal time.");
+        }
 
         inputQueue.add(evt);
     }
 
-    public void setAxisDeadZone(float deadZone){
+    public void setAxisDeadZone(float deadZone) {
         this.axisDeadZone = deadZone;
     }
 
-    public void addListener(InputListener listener, String ... mappingNames){
-        for (String mappingName : mappingNames){
+    public void addListener(InputListener listener, String... mappingNames) {
+        for (String mappingName : mappingNames) {
             Mapping mapping = mappings.get(mappingName);
-            if (mapping == null){
+            if (mapping == null) {
                 mapping = new Mapping(mappingName);
                 mappings.put(mappingName, mapping);
             }
-            if (!mapping.listeners.contains(listener)){
+            if (!mapping.listeners.contains(listener)) {
                 mapping.listeners.add(listener);
             }
         }
     }
 
-    public void removeListener(InputListener listener){
-        for (Mapping mapping : mappings.values()){
+    public void removeListener(InputListener listener) {
+        for (Mapping mapping : mappings.values()) {
             mapping.listeners.remove(listener);
         }
     }
 
-    public void addMapping(String mappingName, Trigger ... triggers){
+    public void addMapping(String mappingName, Trigger... triggers) {
         Mapping mapping = mappings.get(mappingName);
-        if (mapping == null){
+        if (mapping == null) {
             mapping = new Mapping(mappingName);
             mappings.put(mappingName, mapping);
         }
 
-        for (Trigger trigger : triggers){
+        for (Trigger trigger : triggers) {
             int hash = trigger.hashCode();
             ArrayList<Mapping> names = bindings.get(hash);
-            if (names == null){
+            if (names == null) {
                 names = new ArrayList<Mapping>();
                 bindings.put(hash, names);
             }
-            if (!names.contains(mapping)){
+            if (!names.contains(mapping)) {
                 names.add(mapping);
                 mapping.triggers.add(hash);
-            }else{
+            } else {
                 logger.log(Level.WARNING, "Attempted to add mapping '{0}' twice to trigger.", mappingName);
             }
         }
     }
 
-    public void deleteMapping(String mappingName){
+    public void deleteMapping(String mappingName) {
         Mapping mapping = mappings.remove(mappingName);
-        if (mapping == null)
-            throw new IllegalArgumentException("Cannot find mapping: "+mappingName);
+        if (mapping == null) {
+            throw new IllegalArgumentException("Cannot find mapping: " + mappingName);
+        }
 
         ArrayList<Integer> triggers = mapping.triggers;
-        for (int i = triggers.size() - 1; i >= 0; i--){
+        for (int i = triggers.size() - 1; i >= 0; i--) {
             int hash = triggers.get(i);
             ArrayList<Mapping> maps = bindings.get(hash);
             maps.remove(mapping);
         }
     }
 
-   /**
-    * Clears all the input mappings from this InputManager. Consequently, also clears all of the
-    * InputListeners as well.
-    */
-   public void clearMappings() {
-       mappings.clear();
-       bindings.clear();
-       reset();
-   }
+    public void deleteTrigger(String mappingName, Trigger trigger) {
+        Mapping mapping = mappings.get(mappingName);
+        if (mapping == null) {
+            throw new IllegalArgumentException("Cannot find mapping: " + mappingName);
+        }
+
+        ArrayList<Mapping> maps = bindings.get(trigger.hashCode());
+        maps.remove(mapping);
+
+    }
+
+    /**
+     * Clears all the input mappings from this InputManager. Consequently, also clears all of the
+     * InputListeners as well.
+     */
+    public void clearMappings() {
+        mappings.clear();
+        bindings.clear();
+        reset();
+    }
 
     /**
      * Called to reset pressed keys or buttons when focus is restored.
      */
-    public void reset(){
+    public void reset() {
         pressedButtons.clear();
         axisValues.clear();
     }
@@ -462,91 +485,93 @@ public class InputManager implements RawInputListener {
     /**
      * @param visible whether the mouse cursor is visible or not.
      */
-    public boolean isCursorVisible(){
+    public boolean isCursorVisible() {
         return mouseVisible;
     }
 
     /**
      * @param visible whether the mouse cursor should be visible or not.
      */
-    public void setCursorVisible(boolean visible){
-        if (mouseVisible != visible){
+    public void setCursorVisible(boolean visible) {
+        if (mouseVisible != visible) {
             mouseVisible = visible;
             mouse.setCursorVisible(mouseVisible);
         }
     }
 
-    public Vector2f getCursorPosition(){
+    public Vector2f getCursorPosition() {
         return cursorPos;
     }
 
-    public Joystick[] getJoysticks(){
+    public Joystick[] getJoysticks() {
         return joysticks;
     }
 
-    public void addRawInputListener(RawInputListener listener){
+    public void addRawInputListener(RawInputListener listener) {
         rawListeners.add(listener);
     }
 
-    public void removeRawInputListener(RawInputListener listener){
+    public void removeRawInputListener(RawInputListener listener) {
         rawListeners.remove(listener);
     }
 
-    public void clearRawInputListeners(){
+    public void clearRawInputListeners() {
         rawListeners.clear();
     }
 
-    private void processQueue(){
+    private void processQueue() {
         int queueSize = inputQueue.size();
         int numRawListeners = rawListeners.size();
 
-        for (int i = 0; i < numRawListeners; i++){
+        for (int i = 0; i < numRawListeners; i++) {
             RawInputListener listener = rawListeners.get(i);
             listener.beginInput();
 
-            for (int j = 0; j < queueSize; j++){
+            for (int j = 0; j < queueSize; j++) {
                 InputEvent event = inputQueue.get(j);
-                if (event.isConsumed())
+                if (event.isConsumed()) {
                     continue;
+                }
 
-                if (event instanceof MouseMotionEvent){
-                    listener.onMouseMotionEvent( (MouseMotionEvent)event );
-                }else if (event instanceof KeyInputEvent){
-                    listener.onKeyEvent( (KeyInputEvent)event );
-                }else if (event instanceof MouseButtonEvent){
-                    listener.onMouseButtonEvent( (MouseButtonEvent)event );
-                }else if (event instanceof JoyAxisEvent){
-                    listener.onJoyAxisEvent( (JoyAxisEvent)event );
-                }else if (event instanceof JoyButtonEvent){
-                    listener.onJoyButtonEvent( (JoyButtonEvent)event );
-                }else{
+                if (event instanceof MouseMotionEvent) {
+                    listener.onMouseMotionEvent((MouseMotionEvent) event);
+                } else if (event instanceof KeyInputEvent) {
+                    listener.onKeyEvent((KeyInputEvent) event);
+                } else if (event instanceof MouseButtonEvent) {
+                    listener.onMouseButtonEvent((MouseButtonEvent) event);
+                } else if (event instanceof JoyAxisEvent) {
+                    listener.onJoyAxisEvent((JoyAxisEvent) event);
+                } else if (event instanceof JoyButtonEvent) {
+                    listener.onJoyButtonEvent((JoyButtonEvent) event);
+                } else {
                     assert false;
                 }
             }
-            
+
             listener.endInput();
         }
 
-        for (int i = 0; i < queueSize; i++){
+        for (int i = 0; i < queueSize; i++) {
             InputEvent event = inputQueue.get(i);
-            if (event.isConsumed())
+            if (event.isConsumed()) {
                 continue;
+            }
 
-            if (event instanceof MouseMotionEvent){
-                onMouseMotionEventQueued( (MouseMotionEvent)event );
-            }else if (event instanceof KeyInputEvent){
-                onKeyEventQueued( (KeyInputEvent)event );
-            }else if (event instanceof MouseButtonEvent){
-                onMouseButtonEventQueued( (MouseButtonEvent)event );
-            }else if (event instanceof JoyAxisEvent){
-                onJoyAxisEventQueued( (JoyAxisEvent)event );
-            }else if (event instanceof JoyButtonEvent){
-                onJoyButtonEventQueued( (JoyButtonEvent)event );
-            }else{
+            if (event instanceof MouseMotionEvent) {
+                onMouseMotionEventQueued((MouseMotionEvent) event);
+            } else if (event instanceof KeyInputEvent) {
+                onKeyEventQueued((KeyInputEvent) event);
+            } else if (event instanceof MouseButtonEvent) {
+                onMouseButtonEventQueued((MouseButtonEvent) event);
+            } else if (event instanceof JoyAxisEvent) {
+                onJoyAxisEventQueued((JoyAxisEvent) event);
+            } else if (event instanceof JoyButtonEvent) {
+                onJoyButtonEventQueued((JoyButtonEvent) event);
+            } else {
                 assert false;
             }
         }
-        
+
         inputQueue.clear();
     }
 
@@ -556,7 +581,7 @@ public class InputManager implements RawInputListener {
      *
      * @param tpf Time per frame value.
      */
-    public void update(float tpf){
+    public void update(float tpf) {
         frameTPF = tpf;
         safeMode = tpf < 0.015f;
         long currentTime = keys.getInputTimeNanos();
@@ -566,7 +591,9 @@ public class InputManager implements RawInputListener {
 
         keys.update();
         mouse.update();
-        if (joystick != null) joystick.update();
+        if (joystick != null) {
+            joystick.update();
+        }
 
         eventsPermitted = false;
 
@@ -576,5 +603,4 @@ public class InputManager implements RawInputListener {
         lastLastUpdateTime = lastUpdateTime;
         lastUpdateTime = currentTime;
     }
-
 }

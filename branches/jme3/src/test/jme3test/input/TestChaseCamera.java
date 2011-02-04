@@ -33,9 +33,12 @@ package jme3test.input;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.input.ChaseCamera;
+import com.jme3.input.KeyInput;
+import com.jme3.input.MouseInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.AnalogListener;
 import com.jme3.input.controls.KeyTrigger;
+import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.material.Material;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
@@ -43,8 +46,9 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.shape.Quad;
+import java.awt.event.KeyEvent;
 
-public class TestChaseCamera extends SimpleApplication implements AnalogListener,ActionListener {
+public class TestChaseCamera extends SimpleApplication implements AnalogListener, ActionListener {
 
     private Geometry teaGeom;
     private ChaseCamera chaseCam;
@@ -58,7 +62,7 @@ public class TestChaseCamera extends SimpleApplication implements AnalogListener
     public void simpleInitApp() {
         // Load a teapot model
         teaGeom = (Geometry) assetManager.loadModel("Models/Teapot/Teapot.obj");
-        pivot=new Node("pivot");
+        pivot = new Node("pivot");
         Material mat = new Material(assetManager, "Common/MatDefs/Misc/ShowNormals.j3md");
         teaGeom.setMaterial(mat);
         pivot.attachChild(teaGeom);
@@ -69,18 +73,41 @@ public class TestChaseCamera extends SimpleApplication implements AnalogListener
         ground.setLocalTranslation(-25, -1, 25);
         ground.setMaterial(mat);
         pivot.attachChild(ground);
+
         // Disable the flyby cam
         flyCam.setEnabled(false);
 
         // Enable a chase cam
-        chaseCam = new ChaseCamera(cam, teaGeom,inputManager);
-        chaseCam.setInvertYaxis(false);
-
-        chaseCam.setSmoothMotion(true);
-   //     chaseCam.setLookAtOffset(Vector3f.UNIT_Y.mult(3));
-        regsiterInput();
-        rootNode.attachChild(pivot);
+        chaseCam = new ChaseCamera(cam, teaGeom, inputManager);
         
+        //Uncomment this to invert the camera's vertical rotation Axis 
+        //chaseCam.setInvertVerticalAxis(true);
+
+        //Uncomment this to invert the camera's horizontal rotation Axis
+        //chaseCam.setInvertHorizontalAxis(true);
+
+        //Comment this to disable smooth camera motion
+        chaseCam.setSmoothMotion(true);
+        
+        //Uncomment this to disable trailing of the camera 
+        //WARNING, trailing only works with smooth motion enabled and is the default behavior
+        //chaseCam.setTrailingEnabled(false);
+
+        //Uncomment this to look 3 world units above the target
+        //chaseCam.setLookAtOffset(Vector3f.UNIT_Y.mult(3));
+
+        //Uncomment this to enable rotation when the middle mouse button is pressed (like Blender)
+        //WARNING : setting this trigger disable the rotation on right and left mouse button click
+        //chaseCam.setToggleRotationTrigger(new MouseButtonTrigger(MouseInput.BUTTON_MIDDLE));
+
+        //Uncomment this to set mutiple triggers to enable rotation of the cam
+        //Here spade bar and middle mouse button
+        //chaseCam.setToggleRotationTrigger(new MouseButtonTrigger(MouseInput.BUTTON_MIDDLE),new KeyTrigger(KeyInput.KEY_SPACE));
+        
+        //registering inputs for target's movement
+        regsiterInput();
+
+        rootNode.attachChild(pivot);
     }
 
     public void regsiterInput() {
@@ -105,13 +132,13 @@ public class TestChaseCamera extends SimpleApplication implements AnalogListener
         }
         if (name.equals("moveLeft")) {
             teaGeom.move(-5 * tpf, 0, 0);
-            
+
         }
 
     }
 
     public void onAction(String name, boolean keyPressed, float tpf) {
-        if(name.equals("displayPosition") && keyPressed){
+        if (name.equals("displayPosition") && keyPressed) {
             teaGeom.move(10, 10, 10);
 
         }
@@ -120,16 +147,11 @@ public class TestChaseCamera extends SimpleApplication implements AnalogListener
     @Override
     public void simpleUpdate(float tpf) {
         super.simpleUpdate(tpf);
-        
-      //  teaGeom.move(new Vector3f(0.001f, 0, 0));
-       // pivot.rotate(0, 0.00001f, 0);
-     //   rootNode.updateGeometricState();
+
+        //  teaGeom.move(new Vector3f(0.001f, 0, 0));
+        // pivot.rotate(0, 0.00001f, 0);
+        //   rootNode.updateGeometricState();
     }
-
-
-
-
-
 //    public void update() {
 //        super.update();
 //// render the viewports
