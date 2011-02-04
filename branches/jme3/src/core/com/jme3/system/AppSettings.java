@@ -46,7 +46,8 @@ public class AppSettings extends HashMap<String, Object> {
 
     private static final AppSettings defaults = new AppSettings(false);
 
-    public static final String LWJGL_OPENGL2 = "LWJGL-OpenGL2",
+    public static final String LWJGL_OPENGL1 = "LWJGL-OPENGL1",
+                               LWJGL_OPENGL2 = "LWJGL-OpenGL2",
                                LWJGL_OPENGL3 = "LWJGL-OpenGL3",
                                JOGL          = "JOGL",
                                NULL          = "NULL";

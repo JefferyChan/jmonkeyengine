@@ -70,12 +70,15 @@ public abstract class LwjglContext implements JmeContext {
     
     public void internalCreate(){
         timer = new LwjglTimer();
-        if (GLContext.getCapabilities().OpenGL20){
+        if (settings.getRenderer().equals(AppSettings.LWJGL_OPENGL2)
+         || settings.getRenderer().equals(AppSettings.LWJGL_OPENGL3)){
             renderer = new LwjglRenderer();
             ((LwjglRenderer)renderer).initialize();
-        }else{
+        }else if (settings.getRenderer().equals(AppSettings.LWJGL_OPENGL1)){
             renderer = new LwjglGL1Renderer();
             ((LwjglGL1Renderer)renderer).initialize();
+        }else{
+            throw new UnsupportedOperationException("Unsupported renderer: " + settings.getRenderer());
         }
         synchronized (createdLock){
             created.set(true);
