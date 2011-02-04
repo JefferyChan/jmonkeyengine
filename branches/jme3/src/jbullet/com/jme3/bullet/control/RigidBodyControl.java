@@ -79,6 +79,7 @@ public class RigidBodyControl extends PhysicsRigidBody implements PhysicsControl
         control.setFriction(getFriction());
         control.setGravity(getGravity());
         control.setKinematic(isKinematic());
+        control.setKinematicSpatial(isKinematicSpatial());
         control.setLinearSleepingThreshold(getLinearSleepingThreshold());
         control.setPhysicsLocation(getPhysicsLocation(null));
         control.setPhysicsRotation(getPhysicsRotation(null));
