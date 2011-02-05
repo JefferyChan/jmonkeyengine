@@ -439,10 +439,18 @@ public class PhysicsSpace {
                 PhysicsJoint physicsJoint = it1.next();
                 //add connected physicsnodes if they are not already added
                 if (!physicsNodes.containsValue(physicsJoint.getBodyA())) {
-                    addRigidBody(physicsJoint.getBodyA());
+                    if (physicsJoint.getBodyA() instanceof PhysicsControl) {
+                        add(physicsJoint.getBodyA());
+                    } else {
+                        addRigidBody(physicsJoint.getBodyA());
+                    }
                 }
                 if (!physicsNodes.containsValue(physicsJoint.getBodyB())) {
-                    addRigidBody(physicsJoint.getBodyB());
+                    if (physicsJoint.getBodyA() instanceof PhysicsControl) {
+                        add(physicsJoint.getBodyB());
+                    } else {
+                        addRigidBody(physicsJoint.getBodyB());
+                    }
                 }
                 if (!physicsJoints.contains(physicsJoint)) {
                     addJoint(physicsJoint);
@@ -480,10 +488,18 @@ public class PhysicsSpace {
                 PhysicsJoint physicsJoint = it1.next();
                 //add connected physicsnodes if they are not already added
                 if (physicsNodes.containsValue(physicsJoint.getBodyA())) {
-                    removeRigidBody(physicsJoint.getBodyA());
+                    if (physicsJoint.getBodyA() instanceof PhysicsControl) {
+                        remove(physicsJoint.getBodyA());
+                    } else {
+                        removeRigidBody(physicsJoint.getBodyA());
+                    }
                 }
                 if (physicsNodes.containsValue(physicsJoint.getBodyB())) {
-                    removeRigidBody(physicsJoint.getBodyB());
+                    if (physicsJoint.getBodyA() instanceof PhysicsControl) {
+                        remove(physicsJoint.getBodyB());
+                    } else {
+                        removeRigidBody(physicsJoint.getBodyB());
+                    }
                 }
                 if (physicsJoints.contains(physicsJoint)) {
                     removeJoint(physicsJoint);
@@ -561,14 +577,14 @@ public class PhysicsSpace {
     /**
      * applies gravity value to all objects
      */
-    public void applyGravity(){
+    public void applyGravity() {
         dynamicsWorld.applyGravity();
     }
 
     /**
      * clears forces of all objects
      */
-    public void clearForces(){
+    public void clearForces() {
         dynamicsWorld.clearForces();
     }
 
