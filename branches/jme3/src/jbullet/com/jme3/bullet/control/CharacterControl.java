@@ -140,6 +140,7 @@ public class CharacterControl extends PhysicsCharacter implements PhysicsControl
                 added = false;
             }
         } else {
+            if(this.space==space) return;
             space.addCollisionObject(this);
             added = true;
         }

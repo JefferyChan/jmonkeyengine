@@ -260,6 +260,7 @@ public class RagdollControl implements PhysicsControl {
             removeFromPhysicsSpace();
             this.space = space;
         } else {
+            if(this.space==space) return;
             this.space = space;
             addToPhysicsSpace();
         }

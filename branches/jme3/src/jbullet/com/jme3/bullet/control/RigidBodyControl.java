@@ -238,6 +238,7 @@ public class RigidBodyControl extends PhysicsRigidBody implements PhysicsControl
                 added = false;
             }
         } else {
+            if(this.space==space) return;
             space.addCollisionObject(this);
             added = true;
         }

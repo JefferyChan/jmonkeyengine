@@ -106,6 +106,7 @@ public class GhostControl extends PhysicsGhostObject implements PhysicsControl {
                 added = false;
             }
         } else {
+            if(this.space==space) return;
             space.addCollisionObject(this);
             added = true;
         }
