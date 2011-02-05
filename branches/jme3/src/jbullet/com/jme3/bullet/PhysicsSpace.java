@@ -544,13 +544,13 @@ public class PhysicsSpace {
         dynamicsWorld.addRigidBody(node.getObjectId());
         if (node instanceof PhysicsVehicle) {
             ((PhysicsVehicle) node).createVehicle(this);
-            dynamicsWorld.addVehicle(((PhysicsVehicle) node).getVehicle());
+            dynamicsWorld.addVehicle(((PhysicsVehicle) node).getVehicleId());
         }
     }
 
     private void removeRigidBody(PhysicsRigidBody node) {
         if (node instanceof PhysicsVehicle) {
-            dynamicsWorld.removeVehicle(((PhysicsVehicle) node).getVehicle());
+            dynamicsWorld.removeVehicle(((PhysicsVehicle) node).getVehicleId());
         }
         physicsNodes.remove(node.getObjectId());
         dynamicsWorld.removeRigidBody(node.getObjectId());

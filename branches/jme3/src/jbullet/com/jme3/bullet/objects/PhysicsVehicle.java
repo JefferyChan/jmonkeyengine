@@ -479,7 +479,7 @@ public class PhysicsVehicle extends PhysicsRigidBody {
     /**
      * used internally
      */
-    public RaycastVehicle getVehicle() {
+    public RaycastVehicle getVehicleId() {
         return vehicle;
     }
 
