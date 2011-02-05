@@ -51,9 +51,14 @@ public class GhostControl extends PhysicsGhostObject implements PhysicsControl {
     }
 
     public void setSpatial(Spatial spatial) {
+        if (getUserObject() == null || getUserObject() == this.spatial) {
+            setUserObject(spatial);
+        }
         this.spatial = spatial;
-        setUserObject(spatial);
         if (spatial == null) {
+            if (getUserObject() == spatial) {
+                setUserObject(null);
+            }
             return;
         }
         setPhysicsLocation(spatial.getWorldTranslation());
