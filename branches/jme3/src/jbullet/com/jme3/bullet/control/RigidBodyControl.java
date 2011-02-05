@@ -172,27 +172,6 @@ public class RigidBodyControl extends PhysicsRigidBody implements PhysicsControl
         return enabled;
     }
 
-    @Override
-    public void setPhysicsLocation(Vector3f location) {
-        super.setPhysicsLocation(location);
-        if (kinematicSpatial) {
-            Logger.getLogger(RigidBodyControl.class.getName()).log(Level.WARNING, "When using setPhysicsLocation in kinematic mode call rigidBodyControl.setKinematicSpatial(false)!");
-        }
-    }
-
-    @Override
-    public void setPhysicsRotation(Matrix3f rotation) {
-        super.setPhysicsRotation(rotation);
-        if (kinematicSpatial) {
-            Logger.getLogger(RigidBodyControl.class.getName()).log(Level.WARNING, "When using setPhysicsRotation in kinematic mode call rigidBodyControl.setKinematicSpatial(false)!");
-        }
-    }
-
-    @Override
-    public void setKinematic(boolean kinematic) {
-        super.setKinematic(kinematic);
-    }
-
     /**
      * Checks if this control is in kinematic spatial mode.
      * @return true if the spatial location is applied to this kinematic rigidbody
