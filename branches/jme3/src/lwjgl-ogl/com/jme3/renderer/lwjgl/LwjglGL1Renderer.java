@@ -1,5 +1,6 @@
 package com.jme3.renderer.lwjgl;
 
+import com.jme3.renderer.GL1Renderer;
 import com.jme3.shader.Shader;
 import com.jme3.shader.Shader.ShaderSource;
 import com.jme3.texture.FrameBuffer;
@@ -16,6 +17,7 @@ import com.jme3.texture.Image;
 import com.jme3.texture.Texture.WrapAxis;
 import com.jme3.texture.Texture;
 import com.jme3.light.LightList;
+import com.jme3.material.FixedFuncBinding;
 import java.nio.FloatBuffer;
 import com.jme3.math.Matrix4f;
 import java.util.logging.Level;
@@ -35,7 +37,7 @@ import jme3tools.converters.MipMapGenerator;
 
 import static org.lwjgl.opengl.GL11.*;
 
-public class LwjglGL1Renderer implements Renderer {
+public class LwjglGL1Renderer implements GL1Renderer {
 
     private static final Logger logger = Logger.getLogger(LwjglRenderer.class.getName());
 
@@ -81,6 +83,7 @@ public class LwjglGL1Renderer implements Renderer {
     }
 
     public void initialize() {
+        //glDisable(GL_DEPTH_TEST);
     }
 
     public void resetGLObjects() {
@@ -116,6 +119,15 @@ public class LwjglGL1Renderer implements Renderer {
 
     public void setBackgroundColor(ColorRGBA color) {
         glClearColor(color.r, color.g, color.b, color.a);
+    }
+
+    public void setFixedFuncBinding(FixedFuncBinding ffBinding, Object val){
+        switch (ffBinding){
+            case Color:
+                ColorRGBA color = (ColorRGBA) val;
+                glColor4f(color.r, color.g, color.b, color.a);
+                break;
+        }
     }
 
     public void applyRenderState(RenderState state) {
@@ -626,6 +638,8 @@ public class LwjglGL1Renderer implements Renderer {
 
         Buffer indexData = indexBuf.getData();
         indexData.clear();
+
+
         if (mesh.getMode() == Mode.Hybrid) {
             throw new UnsupportedOperationException();
             /*
@@ -684,8 +698,9 @@ public class LwjglGL1Renderer implements Renderer {
         Buffer data = idb != null ? idb.getData() : vb.getData();
         int comps = vb.getNumComponents();
         int type = convertVertexFormat(vb.getFormat());
+
+
         data.clear();
-        data.position(vb.getOffset());
 
         switch (vb.getBufferType()) {
             case Position:

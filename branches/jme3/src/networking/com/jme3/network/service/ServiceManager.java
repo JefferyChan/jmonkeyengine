@@ -64,11 +64,8 @@ public class ServiceManager {
         }
 
         try {
-            boolean fail = false;
-            for (Class interf : cls.getInterfaces()) {
-                if (!interf.getSimpleName().equals("Service")) fail = true;
-            }
-            if (fail) return null;
+            if (!Service.class.isAssignableFrom(cls))
+                return null;
 
             Constructor ctor;
             if (client) {

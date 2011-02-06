@@ -34,6 +34,7 @@ package com.jme3.system;
 
 import com.jme3.system.JmeSystem.Platform;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -69,13 +70,20 @@ public class Natives {
             return;
         }
         File targetFile = new File(workingDir, fullname);
-        OutputStream out = new FileOutputStream(targetFile);
-        int len;
-        while ((len = in.read(buf)) > 0) {
-            out.write(buf, 0, len);
+        try {
+            OutputStream out = new FileOutputStream(targetFile);
+            int len;
+            while ((len = in.read(buf)) > 0) {
+                out.write(buf, 0, len);
+            }
+            in.close();
+            out.close();
+        } catch (FileNotFoundException ex){
+            if (ex.getMessage().contains("used by another process"))
+                return;
+
+            throw ex;
         }
-        in.close();
-        out.close();
 
         logger.log(Level.FINE, "Copied {0} to {1}", new Object[]{fullname, targetFile});
     }

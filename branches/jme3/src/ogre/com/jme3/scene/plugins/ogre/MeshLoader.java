@@ -101,6 +101,7 @@ public class MeshLoader extends DefaultHandler implements AssetLoader {
     private int texCoordIdx = 0;
     private static volatile int nodeIdx = 0;
     private String ignoreUntilEnd = null;
+    private boolean bigindices = false;
 
     private List<Geometry> geoms = new ArrayList<Geometry>();
     private List<Boolean> usesSharedGeom = new ArrayList<Boolean>();
@@ -170,12 +171,14 @@ public class MeshLoader extends DefaultHandler implements AssetLoader {
 
         int numVerts;
         if (usesSharedGeom.size() > 0 && usesSharedGeom.get(geoms.size()-1)){
+            sharedgeom.getMesh().updateCounts();
             numVerts = sharedmesh.getVertexCount();
         }else{
+            mesh.updateCounts();
             numVerts = mesh.getVertexCount();
         }
         vb = new VertexBuffer(VertexBuffer.Type.Index);
-        if (numVerts < 65536){
+        if (!bigindices){
             sb = BufferUtils.createShortBuffer(numIndices);
             ib = null;
             vb.setupData(Usage.Static, 3, Format.UnsignedShort, sb);
@@ -226,6 +229,7 @@ public class MeshLoader extends DefaultHandler implements AssetLoader {
             mesh.setMode(Mesh.Mode.TriangleFan);
         }
 
+        bigindices = parseBool(use32bitIndices, false);
         boolean sharedverts = parseBool(usesharedvertices, false);
         if (sharedverts){
             usesSharedGeom.add(true);
@@ -618,6 +622,7 @@ public class MeshLoader extends DefaultHandler implements AssetLoader {
         }
 
         if (qName.equals("submesh")){
+            bigindices = false;
             geom = null;
             mesh = null;
         }else if (qName.equals("submeshes")){
