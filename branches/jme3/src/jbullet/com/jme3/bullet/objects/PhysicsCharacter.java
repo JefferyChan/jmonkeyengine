@@ -244,7 +244,7 @@ public class PhysicsCharacter extends PhysicsCollisionObject {
     /**
      * used internally
      */
-    public PairCachingGhostObject getObjectId(){
+    public PairCachingGhostObject getObjectId() {
         return gObject;
     }
 
@@ -256,7 +256,7 @@ public class PhysicsCharacter extends PhysicsCollisionObject {
         super.write(e);
         OutputCapsule capsule = e.getCapsule(this);
         capsule.write(stepHeight, "stepHeight", 1.0f);
-        capsule.write(getGravity(), "gravity", 9.8f);
+        capsule.write(getGravity(), "gravity", 9.8f * 3);
         capsule.write(getMaxSlope(), "maxSlope", 1.0f);
         capsule.write(fallSpeed, "fallSpeed", 55.0f);
         capsule.write(jumpSpeed, "jumpSpeed", 10.0f);
@@ -273,10 +273,10 @@ public class PhysicsCharacter extends PhysicsCollisionObject {
         stepHeight = capsule.readFloat("stepHeight", 1.0f);
         buildObject();
         character = new KinematicCharacterController(gObject, (ConvexShape) collisionShape.getCShape(), stepHeight);
-        setGravity(capsule.readFloat("gravity", 9.8f));
+        setGravity(capsule.readFloat("gravity", 9.8f * 3));
         setMaxSlope(capsule.readFloat("maxSlope", 1.0f));
-        setFallSpeed(capsule.readFloat("fallSpeed", 1.0f));
-        setJumpSpeed(capsule.readFloat("jumpSpeed", 1.0f));
+        setFallSpeed(capsule.readFloat("fallSpeed", 55.0f));
+        setJumpSpeed(capsule.readFloat("jumpSpeed", 10.0f));
         setUpAxis(capsule.readInt("upAxis", 1));
         setCcdMotionThreshold(capsule.readFloat("ccdMotionThreshold", 0));
         setCcdSweptSphereRadius(capsule.readFloat("ccdSweptSphereRadius", 0));
