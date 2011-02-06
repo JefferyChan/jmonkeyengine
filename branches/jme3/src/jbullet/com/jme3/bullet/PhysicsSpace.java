@@ -123,7 +123,7 @@ public class PhysicsSpace {
     private Vector3f worldMin = new Vector3f(-10000f, -10000f, -10000f);
     private Vector3f worldMax = new Vector3f(10000f, 10000f, 10000f);
     private float accuracy = 1f / 60f;
-    private boolean deterministic = true;
+    private boolean deterministic = false;
     private javax.vecmath.Vector3f rayVec1 = new javax.vecmath.Vector3f();
     private javax.vecmath.Vector3f rayVec2 = new javax.vecmath.Vector3f();
 
