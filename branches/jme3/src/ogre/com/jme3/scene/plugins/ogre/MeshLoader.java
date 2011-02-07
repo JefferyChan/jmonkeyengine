@@ -171,10 +171,10 @@ public class MeshLoader extends DefaultHandler implements AssetLoader {
 
         int numVerts;
         if (usesSharedGeom.size() > 0 && usesSharedGeom.get(geoms.size()-1)){
-            sharedgeom.getMesh().updateCounts();
+//            sharedgeom.getMesh().updateCounts();
             numVerts = sharedmesh.getVertexCount();
         }else{
-            mesh.updateCounts();
+//            mesh.updateCounts();
             numVerts = mesh.getVertexCount();
         }
         vb = new VertexBuffer(VertexBuffer.Type.Index);
