@@ -75,8 +75,16 @@ Full code samples are here:
 <!-- SECTION "Sample Code" [1523-2127] -->
 <h2><a name="physics_application" id="physics_application">Physics Application</a></h2>
 <div class="level2">
+
+<p>
+
+A short overview of how to write a jME application with Physics capabilities:
+
+</p>
 <ol>
-<li class="level1"><div class="li"> Extend <code>com.jme3.app.SimpleApplication</code> and create a BulletAppState to initialize a new physical game. <pre class="code java">  <span class="kw1">private</span> BulletAppState bulletAppState; 
+<li class="level1"><div class="li"> Extend <code>com.jme3.app.SimpleApplication</code></div>
+</li>
+<li class="level1"><div class="li"> Create a BulletAppState object and attach it to the state manager. <pre class="code java">  <span class="kw1">private</span> BulletAppState bulletAppState; 
   ...
   <span class="kw1">public</span> <span class="kw4">void</span> simpleInitApp<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
     bulletAppState <span class="sy0">=</span> <span class="kw1">new</span> BulletAppState<span class="br0">&#40;</span><span class="br0">&#41;</span>;
@@ -89,7 +97,7 @@ Full code samples are here:
 </li>
 </ul>
 </li>
-<li class="level1"><div class="li"> Add the Spatial to the physicsSpace.</div>
+<li class="level1"><div class="li"> Add the Spatial to the physicsSpace object.</div>
 </li>
 <li class="level1"><div class="li"> Add the Spatial to the rootNode as usual.</div>
 </li>
@@ -100,17 +108,17 @@ Full code samples are here:
 </ul>
 
 </div>
-<!-- SECTION "Physics Application" [2128-2799] -->
+<!-- SECTION "Physics Application" [2128-2892] -->
 <h3><a name="collision_shapes" id="collision_shapes">Collision Shapes</a></h3>
 <div class="level3">
 
 <p>
 
-Before you can create a Physics Node, you must create a CollisionShape from the <code>com.jme3.bullet.collision.shapes</code> package. (The only exceptions are simple Shapes such as Sphere and Box.)
+Before you can create a Physics Control, you must create a Collision Shape from the <code>com.jme3.bullet.collision.shapes</code> package. 
 </p>
 
 <p>
-The Collision Shape is a simplified shape for which physics are easier to calculate than for the real shape of the model. This speeds up the simulation greatly.
+The Collision Shape is a simplified shape for which physics are easier to calculate than for the real shape of the model. This approach speeds up the simulation greatly.
 
 </p>
 <table class="inline">
@@ -127,26 +135,26 @@ The Collision Shape is a simplified shape for which physics are easier to calcul
 		<td class="col0 leftalign"> CylinderCollisionShape    </td><td class="col1"> Tube-shaped pillars, disc-shaped wheels. Can roll on one side. </td>
 	</tr>
 	<tr class="row4">
-		<td class="col0 leftalign"> CapsuleCollisionShape     </td><td class="col1"> A compound of a cylinder plus two spheres at the top and bottom. Rotated upright, this shape is optimal for character nodes: A cylinder-shaped body does not get stuck at corners and vertical obstacles; the rounded top and bottom do not get stuck on stair steps and ground obstacles. </td>
+		<td class="col0 leftalign"> CapsuleCollisionShape     </td><td class="col1"> A compound of a cylinder plus two spheres at the top and bottom. Rotated upright, this shape is optimal for character nodes: A cylinder-shaped body does not get stuck at corners and vertical obstacles; the rounded top and bottom do not get stuck on stair steps and ground obstacles. Is locked to stay upright, does not roll. </td>
 	</tr>
 	<tr class="row5">
-		<td class="col0 leftalign"> CompoundCollisionShape    </td><td class="col1"> A CompoundCollisionShape allows combining box/sphere/cylinder shapes to form another, more sophisticated shape. </td>
+		<td class="col0 leftalign"> CompoundCollisionShape    </td><td class="col1"> A CompoundCollisionShape allows custom combinations of box/sphere/cylinder shapes to form another more complex shape. </td>
 	</tr>
 	<tr class="row6">
-		<td class="col0 leftalign"> MeshCollisionShape        </td><td class="col1"> A freeform mesh-accurate shape that wraps itself around a mesh. <br/>
- <strong>Limitations:</strong> Only non-mesh collision shapes (sphere, box, cylinder, compound) can collide with mesh-accurate collision shapes. You can use the mesh-accurate ones only for static obstacles – e.g. a complex game level. </td>
+		<td class="col0 leftalign"> MeshCollisionShape        </td><td class="col1"> A free-form mesh-accurate shape that wraps itself around a mesh. <br/>
+ <strong>Limitations:</strong> Only non-mesh collision shapes (sphere, box, cylinder, compound) can collide with mesh-accurate collision shapes. The Mesh Collision Shape only works for static obstacles, e.g. for a game level model. </td>
 	</tr>
 	<tr class="row7">
-		<td class="col0"> HeightFieldCollisionShape </td><td class="col1"> For static terrains, this shape is much faster than a mesh shape.</td>
+		<td class="col0 leftalign"> GImpactCollisionShape     </td><td class="col1"> This free-form Mesh Collision Shape can be used for moving objects. Uses <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://gimpact.sourceforge.net/"><param name="text" value="<html><u>http://gimpact.sourceforge.net/</u></html>"><param name="textColor" value="blue"></object>. <strong>Limitations:</strong> CPU intensive, use sparingly! We recommend using HullCollisionShapes or CompoundShapes made of simple shapes if you need improved performance. </td>
 	</tr>
 	<tr class="row8">
-		<td class="col0 leftalign"> GImpactCollisionShape     </td><td class="col1"> Can be used for moving mesh collision shapes (CPU intense! Use of basic shapes combined as CompoundCollisionShapes is preferred!) Uses <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://gimpact.sourceforge.net/"><param name="text" value="<html><u>http://gimpact.sourceforge.net/</u></html>"><param name="textColor" value="blue"></object>. </td>
+		<td class="col0"> HeightFieldCollisionShape </td><td class="col1"> Optimized Mesh Collision Shape for static terrains. This shape is much faster than a other Free-Form Mesh Shapes. Requires heightmap data.</td>
 	</tr>
 	<tr class="row9">
-		<td class="col0"> HullCollisionShape </td><td class="col1">?</td>
+		<td class="col0"> HullCollisionShape </td><td class="col1"> A collision shape that is based on a mesh but is a simplified convex version. </td>
 	</tr>
 	<tr class="row10">
-		<td class="col0"> SimplexCollisionShape </td><td class="col1">A simple point, line, triangle, or quad Collision Shape, defined by one to four points.</td>
+		<td class="col0"> SimplexCollisionShape </td><td class="col1">A physical point, line, triangle, or quad Collision Shape, defined by one to four points.</td>
 	</tr>
 	<tr class="row11">
 		<td class="col0"> PlaneCollisionShape </td><td class="col1"> A 2D plane that can be used as flat solid floor or wall. </td>
@@ -155,18 +163,21 @@ The Collision Shape is a simplified shape for which physics are easier to calcul
 
 <p>
 
-Pick the right shape for the mesh for what you want to achieve: If you give a box a sphere collision shape, it will roll… If you give a ball a box collision shape, it will sit on a slope…!
+Pick the right shape for the mesh for what you want to do: If you give a box a sphere collision shape, it will roll; if you give a ball a box collision shape, it will sit on a slope.
+</p>
 
+<p>
+Let&#039;s look at the constructor:
 </p>
 
 </div>
-<!-- SECTION "Collision Shapes" [2800-4995] -->
+<!-- SECTION "Collision Shapes" [2893-5357] -->
 <h3><a name="collision_shape_code_samples" id="collision_shape_code_samples">Collision Shape Code Samples</a></h3>
 <div class="level3">
 
 <p>
 
-MeshCompoundShape and MeshCollisionShape are both mesh-accurate and are meant for immobile scene objects, such as terrains, buildings, or whole shooter levels. Limitation: Only collisions of non-mesh-accurate shapes (sphere, box, etc) shapes can be detected on mesh-accurate shapes.
+MeshCompoundShape and MeshCollisionShape are both mesh-accurate and are intended for immobile scene objects, such as terrains, buildings, or whole shooter levels. Limitation: Only collisions of non-mesh-accurate shapes (sphere, box, etc) shapes can be detected against mesh-accurate shapes.
 </p>
 <pre class="code java">CompoundCollisionShape myComplexShape <span class="sy0">=</span> 
     CollisionShapeFactory.<span class="me1">createMeshShape</span><span class="br0">&#40;</span><span class="br0">&#40;</span>Node<span class="br0">&#41;</span> myComplexGeometry <span class="br0">&#41;</span>;</pre>
@@ -176,27 +187,42 @@ An angular, non-mesh-accurate compound shape:
 <pre class="code java">CompoundCollisionShape boxShape <span class="sy0">=</span> 
     CollisionShapeFactory.<span class="me1">createBoxCompoundShape</span><span class="br0">&#40;</span><span class="br0">&#40;</span>Node<span class="br0">&#41;</span> someBox<span class="br0">&#41;</span>;</pre>
 <p>
-SphereCollisionShape, BoxCollisionShape, CapsuleCollisionShape are also not mesh-accurate, but have better performance. Collisions between them and any other shape can be detected.
+SphereCollisionShape, BoxCollisionShape, CapsuleCollisionShape are also not mesh-accurate, but have better performance. The can be added to anything, and collisions between them and any other shape can be detected.
 </p>
-<pre class="code java">BoxCollisionShape boxShape <span class="sy0">=</span> 
-    <span class="kw1">new</span> BoxCollisionShape<span class="br0">&#40;</span><span class="kw1">new</span> Vector3f<span class="br0">&#40;</span>1f,2f,3f<span class="br0">&#41;</span><span class="br0">&#41;</span>, 1.5f<span class="br0">&#41;</span></pre><pre class="code java">CapsuleCollisionShape capsuleShape <span class="sy0">=</span> 
-    <span class="kw1">new</span> CapsuleCollisionShape<span class="br0">&#40;</span>1f,2f<span class="br0">&#41;</span>;</pre>
+<pre class="code java">SphereCollisionShape sphereShape <span class="sy0">=</span> 
+    <span class="kw1">new</span> SphereCollisionShape<span class="br0">&#40;</span>1.0f<span class="br0">&#41;</span>;</pre>
 </div>
-<!-- SECTION "Collision Shape Code Samples" [4996-5999] -->
+<!-- SECTION "Collision Shape Code Samples" [5358-6293] -->
 <h2><a name="physics_objects" id="physics_objects">Physics Objects</a></h2>
 <div class="level2">
 
 <p>
-Bullet physics objects are available in jME3 through a variety of classes.
+
+Available physics objects are:
+
 </p>
-
-</div>
-
-<h4><a name="bullet_objects" id="bullet_objects">Bullet Objects</a></h4>
-<div class="level4">
+<table class="inline">
+	<tr class="row0">
+		<th class="col0">Control</th><th class="col1">Purpose</th>
+	</tr>
+	<tr class="row1">
+		<td class="col0">RigidBodyControl</td><td class="col1">Use for physical parts of the scene, projectiles, and obstacles – things that are freely affected by physical forcs, be it by collision or by falling.</td>
+	</tr>
+	<tr class="row2">
+		<td class="col0">CharacterControl</td><td class="col1">Use for characters (persons, animals) that stand upright, orthogonally to the X/Z plane. When directional forces are applied to this type of node, it does not tip over (like a physical object would), but it moves in a stable manner (like a walking character would).</td>
+	</tr>
+	<tr class="row3">
+		<td class="col0">GhostControl</td>
+	</tr>
+	<tr class="row4">
+		<td class="col0">VehicleControl <br/>
+ PhysicsVehicleWheel</td><td class="col1"> Use for <a href="/com/jme3/gde/core/docs/jme3/advanced/vehicles.html" class="wikilink1" title="jme3:advanced:vehicles">Vehicles</a></td>
+	</tr>
+</table>
 
 <p>
-These are mostly standard bullet classes like RigidBody, GhostObject etc. and can be used to create new physics functions. Users will mostly use the next two types which internally use these objects.
+
+Bullet physics objects are available in jME3 through a variety of classes.
 </p>
 
 </div>
@@ -205,7 +231,8 @@ These are mostly standard bullet classes like RigidBody, GhostObject etc. and ca
 <div class="level4">
 
 <p>
-This is the new recommended way to do physics, these Controls can be applied to a Spatial to make it move according to the physics. These control classes directly extend the Bullet Objects. Controls present a flexible way to use physics in an Application.
+
+This is the recommended way to do physics. These Controls can be applied to a Spatial to make it move according to its physical properties. These control classes directly extend Bullet Objects. Controls present a flexible way to use physics in an application.
 </p>
 
 </div>
@@ -214,44 +241,54 @@ This is the new recommended way to do physics, these Controls can be applied to 
 <div class="level4">
 
 <p>
-These Nodes have Bullet Controllers attached and wrap their methods to “simulate” the old physics nodes that were available before alpha-4. The setLocalTranslation/Rotation() info is transferred to the Bullet Objects for simplicity.
-</p>
 
-<p>
-The bullet objects themselves devivide up into:
+(Legacy) These Nodes have Bullet Controllers attached and wrap their methods to “simulate” the old physics nodes that were available before alpha-4. The setLocalTranslation/Rotation() info is transferred to the Bullet Objects for simplicity. 
 </p>
-<ul>
-<li class="level1"><div class="li"> Use <code>RigidBodyControl</code> for physical parts of the scene, projectiles, and obstacles – things that are freely affected by physical forcs, be it by collision or by falling.</div>
-</li>
-<li class="level1"><div class="li"> Use <code>CharacterControl</code> for characters (persons, animals) that stand upright, orthogonally to the X/Z plane. When directional forces are applied to this type of node, it does not tip over (like a physical object would), but it moves in a stable manner (like a walking character would).</div>
-</li>
-<li class="level1"><div class="li"> Use <code>GhostControl</code> to e.g. check for collisions without having a visible Geometry.</div>
-</li>
-<li class="level1"><div class="li"> Use <code>VehicleControl</code> and <code>PhysicsVehicleWheel</code> to create <a href="/com/jme3/gde/core/docs/jme3/advanced/vehicles.html" class="wikilink1" title="jme3:advanced:vehicles">Vehicles</a>.</div>
-</li>
-</ul>
 
 </div>
-<!-- SECTION "Physics Objects" [6000-7567] -->
+
+<h4><a name="bullet_objects" id="bullet_objects">Bullet Objects</a></h4>
+<div class="level4">
+
+<p>
+
+These are mostly standard bullet classes like RigidBody, GhostObject etc., that the previous classes are built upon. Advanced users can use these classes to create custom physics functions. 
+</p>
+
+</div>
+<!-- SECTION "Physics Objects" [6294-7836] -->
 <h3><a name="physics_nodes_code_samples" id="physics_nodes_code_samples">Physics Nodes Code Samples</a></h3>
 <div class="level3">
 
 <p>
 
-The standard PhysicsNode constructors expect a Collision Shape and a mass.
+The various Physics Control constructors expect a Collision Shape (here thingShape) and a mass (a float).
 </p>
-<pre class="code java">RigidBodyControl myConrol<span class="sy0">=</span><span class="kw1">new</span> RigidBodyControl<span class="br0">&#40;</span> thingShape , 1f<span class="br0">&#41;</span>;
-mySpatial.<span class="me1">addContol</span><span class="br0">&#40;</span>myControl<span class="br0">&#41;</span>;</pre>
+<pre class="code java">RigidBodyControl myControl<span class="sy0">=</span><span class="kw1">new</span> RigidBodyControl<span class="br0">&#40;</span> thingShape , 1.0f <span class="br0">&#41;</span>;</pre>
 <p>
-The second PhysicsNode constructor only expects a collision shape and mass. To make this physical object visible in the scene, you must attach a Node with Geometric properties (e.g. a model) to the physical node:
+To make the Physics Control visible in the scene, you must attach the Control to a Geometry (e.g. a model named myGeometry):
 </p>
-<pre class="code java">CharacterControl characterControl <span class="sy0">=</span> <span class="kw1">new</span> CharacterControl<span class="br0">&#40;</span>capsuleShape, 0.01f<span class="br0">&#41;</span>;
+<pre class="code java">myGeometry.<span class="me1">addControl</span><span class="br0">&#40;</span>myControl<span class="br0">&#41;</span>;</pre>
+<p>
+This code sample creates a physical Character:
+</p>
+<pre class="code java"><span class="co1">// Load a normal model</span>
 Node model <span class="sy0">=</span> <span class="br0">&#40;</span>Node<span class="br0">&#41;</span> assetManager.<span class="me1">loadModel</span><span class="br0">&#40;</span><span class="st0">&quot;Models/myCharacterModel.mesh.xml&quot;</span><span class="br0">&#41;</span>;
-model.<span class="me1">addControl</span><span class="br0">&#40;</span>characterControl<span class="br0">&#41;</span>;      <span class="co1">// making the physical node visible </span>
-bulletAppState.<span class="me1">getPhysicsSpace</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">add</span><span class="br0">&#40;</span>character<span class="br0">&#41;</span>;  <span class="co1">// making the PhysicsNode physical</span>
-rootNode.<span class="me1">attachChild</span><span class="br0">&#40;</span>model<span class="br0">&#41;</span>;   <span class="co1">// making the whole thing appear in the scene</span></pre>
+rootNode.<span class="me1">attachChild</span><span class="br0">&#40;</span>model<span class="br0">&#41;</span>;
+<span class="co1">// Create a appropriate physical shape for it </span>
+CapsuleCollisionShape capsuleShape <span class="sy0">=</span> <span class="kw1">new</span> CapsuleCollisionShape<span class="br0">&#40;</span>1.5f, 6f, <span class="nu0">1</span><span class="br0">&#41;</span>;
+CharacterControl character_phys <span class="sy0">=</span> <span class="kw1">new</span> CharacterControl<span class="br0">&#40;</span>capsuleShape, 0.01f<span class="br0">&#41;</span>;
+<span class="co1">// Attach physical properties to model and PhysicsSpace</span>
+model.<span class="me1">addControl</span><span class="br0">&#40;</span>character_phys<span class="br0">&#41;</span>;    
+bulletAppState.<span class="me1">getPhysicsSpace</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">add</span><span class="br0">&#40;</span>character_phys<span class="br0">&#41;</span>;</pre>
+<p>
+Tip: Spheres and Boxes will fall back to their correct default Collision Shape if you don&#039;t specify a shape in the RigidBodyControl constructor. The following creates a box with Box Collision Shape:
+</p>
+<pre class="code java"><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Abox+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object><span class="br0">&#40;</span><span class="nu0">1</span>,<span class="nu0">1</span>,<span class="nu0">1</span><span class="br0">&#41;</span>;
+myBox.<span class="me1">addControl</span><span class="br0">&#40;</span><span class="kw1">new</span> RigidBodyControl<span class="br0">&#40;</span> 1.0f <span class="br0">&#41;</span><span class="br0">&#41;</span>;
+bulletAppState.<span class="me1">getPhysicsSpace</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">add</span><span class="br0">&#40;</span>myBox<span class="br0">&#41;</span>;</pre>
 </div>
-<!-- SECTION "Physics Nodes Code Samples" [7568-8434] -->
+<!-- SECTION "Physics Nodes Code Samples" [7837-9142] -->
 <h2><a name="physics_space" id="physics_space">Physics Space</a></h2>
 <div class="level2">
 
@@ -273,88 +310,139 @@ physicalNode.<span class="me1">removeFromParent</span><span class="br0">&#40;</s
 </ol>
 
 </div>
-<!-- SECTION "Physics Space" [8435-9153] -->
+<!-- SECTION "Physics Space" [9143-9861] -->
 <h2><a name="properties_of_physical_objects" id="properties_of_physical_objects">Properties of Physical Objects</a></h2>
 <div class="level2">
 
 <p>
 
-On a PhysicsNode, you can set the following physical properties.
+On a Physics Control, you can set the following physical properties.
 
 </p>
 <table class="inline">
 	<tr class="row0">
-		<th class="col0"> PhysicsNode Method </th><th class="col1"> Property </th>
+		<th class="col0"> RigidBody Method </th><th class="col1"> Property </th>
 	</tr>
 	<tr class="row1">
 		<td class="col0"> setFriction(1f) </td><td class="col1"> Friction. </td>
 	</tr>
 	<tr class="row2">
-		<td class="col0"> setMass(1f) </td><td class="col1"> Dynamic objects have masses &gt; 0.0f. <br/>
- Static immobile obstacles, including buildings and terrains, have mass 0.0f. </td>
+		<td class="col0"> setMass(1f) </td><td class="col1"> Sets the mass. Dynamic objects have masses &gt; 0.0f. <br/>
+ Static immobile obstacles (including buildings and terrains) have mass 0.0f. </td>
 	</tr>
 	<tr class="row3">
-		<td class="col0"> setRestitution(0.0f) </td><td class="col1"> How bouncy the object is, e.g. rubber ball. This setting has an impact on performance. </td>
+		<td class="col0"> setPhysicsLocation()</td><td class="col1">Positions the object. Do not use setLocalTranslation().</td>
 	</tr>
 	<tr class="row4">
-		<td class="col0"> setKinematic(true) </td><td class="col1"> A kinematic node is not affected by gravity, but it is solid and affects other physics objects. You can control its position using setLocalTranslation(), and you attach joints to it. </td>
+		<td class="col0"> setPhysicsRotation()</td><td class="col1">Rotates the object. Do not use setLocalRotate().</td>
 	</tr>
 	<tr class="row5">
-		<td class="col0"> setCcdMotionThreshold(0.1f) </td><td class="col1"> The amount of motion in 1 physics tick to trigger the continuous motion detection. </td>
+		<td class="col0"> setRestitution(0.0f) </td><td class="col1"> How bouncy the object is. For a rubber object set this &gt; 0.0f. This setting has an impact on performance. </td>
 	</tr>
 	<tr class="row6">
-		<td class="col0"> setGravity(new Vector3f(0f,-1f,0f)) </td><td class="col1"> You can change the gravity of a physics node after it was added to the physics space. </td>
+		<td class="col0"> setKinematic(true) </td><td class="col1"> A kinematic node is not affected by gravity, but it is solid and affects other physics objects. It has a mass and you can control its position using setPhysicsLocation(). You can attach joints to it. </td>
+	</tr>
+	<tr class="row7">
+		<td class="col0"> setGravity(new Vector3f(0f,-1f,0f)) </td><td class="col1"> You can change the gravity of a physics object after it was added to the physics space. </td>
+	</tr>
+	<tr class="row8">
+		<td class="col0"> setCcdMotionThreshold(0.1f) </td><td class="col1"> The amount of motion in 1 physics tick to trigger the continuous motion detection. </td>
 	</tr>
 </table>
 <table class="inline">
 	<tr class="row0">
-		<th class="col0"> PhysicsCharacterNode Method </th><th class="col1"> Property </th>
+		<th class="col0"> CharacterControl Method </th><th class="col1"> Property </th>
 	</tr>
 	<tr class="row1">
-		<td class="col0 leftalign"> setGravity(1f)   </td><td class="col1"> Gravity </td>
-	</tr>
-	<tr class="row2">
 		<td class="col0"> setFallSpeed(1f) </td><td class="col1"> Fall speed (down) </td>
 	</tr>
-	<tr class="row3">
+	<tr class="row2">
 		<td class="col0"> setJumpSpeed(1f) </td><td class="col1"> Jump speed (up) </td>
 	</tr>
+	<tr class="row3">
+		<td class="col0 leftalign"> setMaxSlope(1.5f)   </td><td class="col1"> How steep the slopes are that the character can still climb. </td>
+	</tr>
 	<tr class="row4">
-		<td class="col0 leftalign"> setMaxSlope(1.5f)   </td><td class="col1"> How steep the character can climb </td>
+		<td class="col0"> setUpAxis(1)</td><td class="col1"> 0 = X axis , 1 = Y axis , 2 = Z axis. E.g. for characters and vehicle, up is usually along the the Y axis. </td>
 	</tr>
 	<tr class="row5">
-		<td class="col0"> setUpAxis(1)</td><td class="col1"> 0 = X axis , 1 = Y axis , 2 = Z axis. E.g. for characters and vehicle, up is usually along the the Y axis. </td>
+		<td class="col0 leftalign"> setGravity(1f)   </td><td class="col1"> You can change the Gravity of a physics object after it was added to the physics space</td>
 	</tr>
 </table>
 
 </div>
-<!-- SECTION "Properties of Physical Objects" [9154-10371] -->
+<!-- SECTION "Properties of Physical Objects" [9862-11388] -->
 <h3><a name="kinematic_vs_dynamic_vs_static" id="kinematic_vs_dynamic_vs_static">Kinematic vs Dynamic vs Static</a></h3>
 <div class="level3">
 
 <p>
 
-All PhysicsNodes respond to collisions, and they cannot overlap. But you can create PhysicsNodes without mass. They are still treated as solid objects, but they cannot be dynamically pushed around – they act as static, immobile attached physical obstacles. 
+Physical objects…
 </p>
-<pre class="code java">airhook.<span class="me1">setKinematic</span><span class="br0">&#40;</span><span class="kw2">true</span><span class="br0">&#41;</span>;</pre>
-<p>
-Kinematic nodes are not affected by gravity, and they are not moved by other physical objects colliding with them. Colliding non-kinematic nodes will deflect from the kinematic node as expected. Kinematic nodes can be positioned, e.g. using setLocalTranslation() in the update() loop. You can basically hang them up in mid-air, and can attach other PhysicsNodes to them using <a href="/com/jme3/gde/core/docs/jme3/advanced/hinges_and_joints.html" class="wikilink1" title="jme3:advanced:hinges_and_joints">hinges and joints</a>. 
+<ul>
+<li class="level1"><div class="li"> must not overlap. </div>
+</li>
+<li class="level1"><div class="li"> can detect collisions and report several values about the impact. </div>
+</li>
+<li class="level1"><div class="li"> can respond dynamically or statically or kinematically to collisions.</div>
+</li>
+</ul>
 
+</div>
+
+<h4><a name="dynamic" id="dynamic">Dynamic</a></h4>
+<div class="level4">
+
+<p>
+
+A dynamic physics object is one that falls when in mid-air, it bounces off obstacles, and is pushed around when it collides with another physical object. It has a mass.
 </p>
 
 </div>
-<!-- SECTION "Kinematic vs Dynamic vs Static" [10372-11134] -->
+
+<h4><a name="static" id="static">Static</a></h4>
+<div class="level4">
+
+<p>
+
+You can create static physical objects without mass. They are still treated as solid objects, but they cannot be dynamically pushed around. They act as static, immobile attached physical obstacles such as terrains and building models. 
+</p>
+
+</div>
+
+<h4><a name="kinematic" id="kinematic">Kinematic</a></h4>
+<div class="level4">
+
+<p>
+
+Kinematic spatials have a mass, but they are not affected by gravity. When non-kinematic objects collide with a kinematic object, only the non-kinematic ones are pushed away by the collision. The intesity of their effect against other objects is determined by there speed and mass. 
+</p>
+
+<p>
+<code>E<sub>kin</sub> = mass * speed</code>
+</p>
+
+<p>
+Kinematic nodes can be positioned programmatically, e.g. using setLocalTranslation() in the update() loop, or by an Animation Path. 
+</p>
+
+<p>
+You can “hang them up in mid-air” and attach other PhysicsNodes to them using <a href="/com/jme3/gde/core/docs/jme3/advanced/hinges_and_joints.html" class="wikilink1" title="jme3:advanced:hinges_and_joints">hinges and joints</a>.  
+</p>
+<pre class="code java">airhook.<span class="me1">setKinematic</span><span class="br0">&#40;</span><span class="kw2">true</span><span class="br0">&#41;</span>;</pre>
+</div>
+<!-- SECTION "Kinematic vs Dynamic vs Static" [11389-12698] -->
 <h2><a name="forcesmoving_physical_objects" id="forcesmoving_physical_objects">Forces: Moving Physical Objects</a></h2>
 <div class="level2">
 
 <p>
 
-Use the following methods to move physics nodes.
+Use the following methods to move physics objects.
 
 </p>
 <table class="inline">
 	<tr class="row0">
-		<th class="col0"> Method </th><th class="col1"> Property </th>
+		<th class="col0"> Method </th><th class="col1"> Motion </th>
 	</tr>
 	<tr class="row1">
 		<td class="col0"> setAngularVelocity(new Vector3f(0f,0f,1f)) </td><td class="col1"> Set the current rotational speed of the object </td>
@@ -397,8 +485,44 @@ Use <code>applyContinuousTorque(false)</code> and <code>applyContinuousForce(fal
 <strong>Note:</strong> It is possible to position physics nodes using setLocalTranslation(), e.g. to place them in their start position in the scene. However you must be very careful not to cause an “impossible state” where one physical object overlaps with another! Within the game, you typically use the setters shown here exclusively.
 </p>
 
+<p>
+Physics also supports the following features:
+
+</p>
+<table class="inline">
+	<tr class="row0">
+		<th class="col0"> Method </th><th class="col1"> Property </th>
+	</tr>
+	<tr class="row1">
+		<td class="col0"> setCollisionShape(collisionShape)</td><td class="col1">Changes the collision shape.</td>
+	</tr>
+	<tr class="row2">
+		<td class="col0"> setCollideWithGroups() <br/>
+ setCollisionGroup() <br/>
+ addCollideWithGroup(COLLISION_GROUP_01) <br/>
+ removeCollideWithGroup(COLLISION_GROUP_01)</td><td class="col1">Collision Groups are integer bit masks – enums are available in CollisionObject. All physics objects are by default in COLLISION_GROUP_01. Two objects collide when the collideWithGroups set of one contains the collisionGroup of the other.</td>
+	</tr>
+	<tr class="row3">
+		<td class="col0"> attachDebugShape(assetManager) <br/>
+ updateDebugShape() <br/>
+ detachDebugShape() </td><td class="col1"> Displays a wireframe of the assumed physical shape around the object. Use this for debugging when analyzing unexpected behaviour. Does not work with detached physics, please switch to PARALLEL or SEQUENTIAL for debugging.</td>
+	</tr>
+	<tr class="row4">
+		<td class="col0"> setDamping(float, float)</td><td class="col1">The first value is the linear threshold and the second the angular.</td>
+	</tr>
+	<tr class="row5">
+		<td class="col0"> setAngularFactor()</td><td class="col1">?</td>
+	</tr>
+	<tr class="row6">
+		<td class="col0"> setCcdSweptSphereRadius()</td><td class="col1">?</td>
+	</tr>
+	<tr class="row7">
+		<td class="col0"> setSleepingThreshold(float,float)</td><td class="col1">Sets the sleeping thresholds wich define when the object gets deactivated to save ressources. Low values keep the object active when it barely moves. The first value is the linear threshold and the second the angular.</td>
+	</tr>
+</table>
+
 </div>
-<!-- SECTION "Forces: Moving Physical Objects" [11135-13062] -->
+<!-- SECTION "Forces: Moving Physical Objects" [12699-15849] -->
 <h2><a name="responding_to_a_physicscollisionevent" id="responding_to_a_physicscollisionevent">Responding to a PhysicsCollisionEvent</a></h2>
 <div class="level2">
 
@@ -424,7 +548,7 @@ If you want to respond to a collision event with a custom action however, then y
 </ul>
 
 </div>
-<!-- SECTION "Responding to a PhysicsCollisionEvent" [13063-13697] -->
+<!-- SECTION "Responding to a PhysicsCollisionEvent" [15850-16484] -->
 <h3><a name="overriding_the_collision_method" id="overriding_the_collision_method">Overriding the Collision() Method</a></h3>
 <div class="level3">
 
@@ -451,7 +575,7 @@ After you identify the colliding nodes, specify the action to trigger when this 
 </p>
 
 </div>
-<!-- SECTION "Overriding the Collision() Method" [13698-14810] -->
+<!-- SECTION "Overriding the Collision() Method" [16485-17597] -->
 <h3><a name="reading_details_from_a_physicscollisionevent" id="reading_details_from_a_physicscollisionevent">Reading Details From a PhysicsCollisionEvent</a></h3>
 <div class="level3">
 
@@ -491,7 +615,7 @@ Note that after the collision method has been called the object is not valid any
 </p>
 
 </div>
-<!-- SECTION "Reading Details From a PhysicsCollisionEvent" [14811-15913] -->
+<!-- SECTION "Reading Details From a PhysicsCollisionEvent" [17598-18700] -->
 <h2><a name="best_practices" id="best_practices">Best Practices</a></h2>
 <div class="level2">
 
@@ -510,5 +634,5 @@ If you get weird behaviour, such as physical nodes jittering wildy and being eje
 </p>
 
 </div>
-<!-- SECTION "Best Practices" [15914-] -->
+<!-- SECTION "Best Practices" [18701-] -->
 <p><em><a href="http://jmonkeyengine.org/wiki/doku.php/jme3:advanced:physics?do=export_xhtmlbody">view online version</a></em></p>

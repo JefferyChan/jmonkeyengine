@@ -1,0 +1,262 @@
+
+
+
+<h1><a name="combo_moves" id="combo_moves">Combo Moves</a></h1>
+<div class="level1">
+
+<p>
+The ComboMoves class allows you to define combinations of inputs that trigger special actions. Entering an input combo correctly can bring the player incremental rewards, such as an increased chance to hit, an increased effectiveness, or decreased change of being blocked, whatever the game designer chooses. <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://en.wikipedia.org/wiki/Combo_%28video_gaming%29"><param name="text" value="<html><u>More background info</u></html>"><param name="textColor" value="blue"></object>
+</p>
+
+<p>
+Combos are usually a series of inputs, in a fixed order: For example a keyboard combo can look  like: “press Down, then Down+Right together, then Right”. 
+</p>
+
+<p>
+Usage:
+</p>
+<ol>
+<li class="level1"><div class="li"> Create input triggers </div>
+</li>
+<li class="level1"><div class="li"> Define combos</div>
+</li>
+<li class="level1"><div class="li"> Detect combos in ActionListener </div>
+</li>
+<li class="level1"><div class="li"> Execute combos in update loop </div>
+</li>
+</ol>
+
+<p>
+
+Copy the two classes ComboMoveExecution.java and ComboMove.java into your application and adjust them to your package paths.
+</p>
+
+</div>
+<!-- SECTION "Combo Moves" [1-824] -->
+<h2><a name="example_code" id="example_code">Example Code</a></h2>
+<div class="level2">
+<ul>
+<li class="level1"><div class="li"> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://code.google.com/p/jmonkeyengine/source/browse/branches/jme3/src/test/jme3test/input/combomoves/TestComboMoves.java"><param name="text" value="<html><u>TestComboMoves.java</u></html>"><param name="textColor" value="blue"></object></div>
+</li>
+<li class="level1"><div class="li"> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://code.google.com/p/jmonkeyengine/source/browse/branches/jme3/src/test/jme3test/input/combomoves/ComboMoveExecution.java"><param name="text" value="<html><u>ComboMoveExecution.java</u></html>"><param name="textColor" value="blue"></object> ← required</div>
+</li>
+<li class="level1"><div class="li"> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://code.google.com/p/jmonkeyengine/source/browse/branches/jme3/src/test/jme3test/input/combomoves/ComboMove.java"><param name="text" value="<html><u>ComboMove.java</u></html>"><param name="textColor" value="blue"></object> ← required</div>
+</li>
+</ul>
+
+</div>
+<!-- SECTION "Example Code" [825-1324] -->
+<h2><a name="create_input_triggers" id="create_input_triggers">Create Input Triggers</a></h2>
+<div class="level2">
+
+<p>
+
+First you <a href="/com/jme3/gde/core/docs/jme3/advanced/input_handling.html" class="wikilink1" title="jme3:advanced:input_handling">define your game&#039;s inputs</a> as you usually do: Implement the com.jme3.input.controls.ActionListener interface for your class, and add triggers mappings such as com.jme3.input.controls.KeyTrigger and com.jme3.input.KeyInput. 
+</p>
+
+<p>
+For example:
+</p>
+<pre class="code java">inputManager.<span class="me1">addMapping</span><span class="br0">&#40;</span><span class="st0">&quot;Left&quot;</span>,    <span class="kw1">new</span> KeyTrigger<span class="br0">&#40;</span>KeyInput.<span class="me1">KEY_LEFT</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
+inputManager.<span class="me1">addMapping</span><span class="br0">&#40;</span><span class="st0">&quot;Right&quot;</span>,   <span class="kw1">new</span> KeyTrigger<span class="br0">&#40;</span>KeyInput.<span class="me1">KEY_RIGHT</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
+inputManager.<span class="me1">addMapping</span><span class="br0">&#40;</span><span class="st0">&quot;Up&quot;</span>,      <span class="kw1">new</span> KeyTrigger<span class="br0">&#40;</span>KeyInput.<span class="me1">KEY_UP</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
+inputManager.<span class="me1">addMapping</span><span class="br0">&#40;</span><span class="st0">&quot;Down&quot;</span>,    <span class="kw1">new</span> KeyTrigger<span class="br0">&#40;</span>KeyInput.<span class="me1">KEY_DOWN</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
+inputManager.<span class="me1">addMapping</span><span class="br0">&#40;</span><span class="st0">&quot;Attack1&quot;</span>, <span class="kw1">new</span> KeyTrigger<span class="br0">&#40;</span>KeyInput.<span class="me1">KEY_SPACE</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
+...
+<span class="me1">inputManager</span>.<span class="me1">addListener</span><span class="br0">&#40;</span><span class="kw1">this</span>, <span class="st0">&quot;Left&quot;</span>, <span class="st0">&quot;Right&quot;</span>, <span class="st0">&quot;Up&quot;</span>, <span class="st0">&quot;Down&quot;</span>, <span class="st0">&quot;Attack1&quot;</span><span class="br0">&#41;</span>;</pre>
+</div>
+<!-- SECTION "Create Input Triggers" [1325-2095] -->
+<h2><a name="define_combos" id="define_combos">Define Combos</a></h2>
+<div class="level2">
+
+<p>
+
+For each of  your combo moves, you specify the series of inputs that will trigger it. The order in which you define them is the order the player has to press them for the step to be recorded. When all steps have been recorded, the combo is triggered. 
+</p>
+
+<p>
+The following example shows how a fireball combo move is triggered by pressing the navigation keys for “down, down+right, right”, in this order.
+</p>
+<pre class="code java">ComboMove fireball <span class="sy0">=</span> <span class="kw1">new</span> ComboMove<span class="br0">&#40;</span><span class="st0">&quot;Fireball&quot;</span><span class="br0">&#41;</span>;
+fireball.<span class="me1">press</span><span class="br0">&#40;</span><span class="st0">&quot;Down&quot;</span><span class="br0">&#41;</span>.<span class="me1">notPress</span><span class="br0">&#40;</span><span class="st0">&quot;Right&quot;</span><span class="br0">&#41;</span>.<span class="me1">done</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
+fireball.<span class="me1">press</span><span class="br0">&#40;</span><span class="st0">&quot;Right&quot;</span>, <span class="st0">&quot;Down&quot;</span><span class="br0">&#41;</span>.<span class="me1">done</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
+fireball.<span class="me1">press</span><span class="br0">&#40;</span><span class="st0">&quot;Right&quot;</span><span class="br0">&#41;</span>.<span class="me1">notPress</span><span class="br0">&#40;</span><span class="st0">&quot;Down&quot;</span><span class="br0">&#41;</span>.<span class="me1">done</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
+fireball.<span class="me1">notPress</span><span class="br0">&#40;</span><span class="st0">&quot;Right&quot;</span>, <span class="st0">&quot;Down&quot;</span><span class="br0">&#41;</span>.<span class="me1">done</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
+fireball.<span class="me1">setUseFinalState</span><span class="br0">&#40;</span><span class="kw2">false</span><span class="br0">&#41;</span>;</pre>
+<p>
+Also create a ComboMoveExecution object for each ComboMove. You need it later to execute the detected combo.
+</p>
+<pre class="code java">ComboMoveExecution fireballExec <span class="sy0">=</span> <span class="kw1">new</span> ComboMoveExecution<span class="br0">&#40;</span>fireball<span class="br0">&#41;</span>;</pre>
+</div>
+<!-- SECTION "Define Combos" [2096-3004] -->
+<h3><a name="combomove_class_methods" id="combomove_class_methods">ComboMove Class Methods</a></h3>
+<div class="level3">
+
+<p>
+
+Use the following ComboMove methods to specify the combo:
+
+</p>
+<table class="inline">
+	<tr class="row0">
+		<th class="col0">ComboMove Method</th><th class="col1">Description</th>
+	</tr>
+	<tr class="row1">
+		<td class="col0">press(“A”).done(); <br/>
+ press(“A”,”B”).done();</td><td class="col1">Combo step is recorded if A is entered. <br/>
+ Combo step is recorded if A and B are entered simultaneously.</td>
+	</tr>
+	<tr class="row2">
+		<td class="col0">notPress(“A”).done(); <br/>
+ notPress(“A”,”B”).done();</td><td class="col1">Combo step is recorded if A is released. <br/>
+ Combo step is recorded if A and B are both released.</td>
+	</tr>
+	<tr class="row3">
+		<td class="col0">press(“A”).notPress(“B”).done();</td><td class="col1">Combo step is recorded if A is entered, and not B</td>
+	</tr>
+	<tr class="row4">
+		<td class="col0">press(“A”).notPress(“B”).timeElapsed(0.11f).done();</td><td class="col1">Combo step is recorded a certain time after A and not B is entered. <br/>
+ etc, etc …</td>
+	</tr>
+	<tr class="row5">
+		<td class="col0">setPriority(0.5f);</td><td class="col1">If there is an ambiguity, a high-priority combo will trigger instead of a low-priority combo. This prevents that a similar looking combo step “hijacks” another Combo. Use only once per ComboMove.</td>
+	</tr>
+	<tr class="row6">
+		<td class="col0">setUseFinalState(false); <br/>
+ setUseFinalState(true);</td><td class="col1">This is the final command of the series. <br/>
+ False: Do not wait on a final state, chain combo steps. (?) <br/>
+ True: This is the final state, do not chain combo steps. (?)</td>
+	</tr>
+</table>
+
+<p>
+
+The <code>press()</code> and <code>notPress()</code> methods accept sets of Input Triggers, e.g. <code>fireball.press(“A”,”B”,”C”).done()</code>.
+</p>
+
+<p>
+The following getters give you more information about the game state:
+
+</p>
+<table class="inline">
+	<tr class="row0">
+		<th class="col0">ComboMove Method</th><th class="col1">Usage</th>
+	</tr>
+	<tr class="row1">
+		<td class="col0">getCastTime()</td><td class="col1">Returns the time since the last step has been recorded. (?)</td>
+	</tr>
+	<tr class="row2">
+		<td class="col0">getMoveName()</td><td class="col1">Returns the string of the current combo</td>
+	</tr>
+	<tr class="row3">
+		<td class="col0">getPriority()</td><td class="col1">Returns the priority of this move</td>
+	</tr>
+</table>
+
+</div>
+<!-- SECTION "ComboMove Class Methods" [3005-4493] -->
+<h2><a name="detect_combos_in_actionlistener" id="detect_combos_in_actionlistener">Detect Combos in ActionListener</a></h2>
+<div class="level2">
+
+<p>
+
+Now that you have specified the combo steps, you want to detect them. You do that in the onAction() method that you get from the ActionListener interface.
+</p>
+
+<p>
+Create a HashSet <code>pressMappings</code> to track curently pressed mappings, and a ComboMove object <code>currentMove</code> to track the current move. 
+</p>
+
+<p>
+We also track the cast time of a combo to determine if it has timed out (see update loop below).
+</p>
+<pre class="code java"><span class="kw1">private</span> HashSet<span class="sy0">&lt;</span>String<span class="sy0">&gt;</span> pressedMappings <span class="sy0">=</span> <span class="kw1">new</span> HashSet<span class="sy0">&lt;</span>String<span class="sy0">&gt;</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
+<span class="kw1">private</span> ComboMove currentMove <span class="sy0">=</span> <span class="kw2">null</span>;
+<span class="kw1">private</span> <span class="kw4">float</span> currentMoveCastTime <span class="sy0">=</span> 0;
+<span class="kw1">private</span> <span class="kw4">float</span> time <span class="sy0">=</span> 0;
+...
+&nbsp;
+<span class="kw1">public</span> <span class="kw4">void</span> onAction<span class="br0">&#40;</span><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Astring+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object> name, <span class="kw4">boolean</span> isPressed, <span class="kw4">float</span> tpf<span class="br0">&#41;</span> <span class="br0">&#123;</span>
+    <span class="co1">// Record pressed mappings</span>
+    <span class="kw1">if</span> <span class="br0">&#40;</span>isPressed<span class="br0">&#41;</span><span class="br0">&#123;</span>
+        pressedMappings.<span class="me1">add</span><span class="br0">&#40;</span>name<span class="br0">&#41;</span>;
+    <span class="br0">&#125;</span><span class="kw1">else</span><span class="br0">&#123;</span>
+        pressedMappings.<span class="me1">remove</span><span class="br0">&#40;</span>name<span class="br0">&#41;</span>;
+    <span class="br0">&#125;</span>
+&nbsp;
+    <span class="co1">// The pressed mappings have changed: Update ComboExecution objects</span>
+    List<span class="sy0">&lt;</span>ComboMove<span class="sy0">&gt;</span> invokedMoves <span class="sy0">=</span> <span class="kw1">new</span> ArrayList<span class="sy0">&lt;</span>ComboMove<span class="sy0">&gt;</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
+    <span class="kw1">if</span> <span class="br0">&#40;</span>fireballExec.<span class="me1">updateState</span><span class="br0">&#40;</span>pressedMappings, time<span class="br0">&#41;</span><span class="br0">&#41;</span><span class="br0">&#123;</span>
+        invokedMoves.<span class="me1">add</span><span class="br0">&#40;</span>fireball<span class="br0">&#41;</span>;
+    <span class="br0">&#125;</span>
+    <span class="co1">// ... add more ComboExecs here...</span>
+&nbsp;
+    <span class="co1">// If any ComboMoves have been sucessfully triggered:</span>
+    <span class="kw1">if</span> <span class="br0">&#40;</span>invokedMoves.<span class="me1">size</span><span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="sy0">&gt;</span> 0<span class="br0">&#41;</span><span class="br0">&#123;</span>
+        <span class="co1">// identify the move with highest priority</span>
+        <span class="kw4">float</span> priority <span class="sy0">=</span> 0;
+        ComboMove toExec <span class="sy0">=</span> <span class="kw2">null</span>;
+        <span class="kw1">for</span> <span class="br0">&#40;</span>ComboMove move <span class="sy0">:</span> invokedMoves<span class="br0">&#41;</span><span class="br0">&#123;</span>
+            <span class="kw1">if</span> <span class="br0">&#40;</span>move.<span class="me1">getPriority</span><span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="sy0">&gt;</span> priority<span class="br0">&#41;</span><span class="br0">&#123;</span>
+                priority <span class="sy0">=</span> move.<span class="me1">getPriority</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
+                toExec <span class="sy0">=</span> move;
+            <span class="br0">&#125;</span>
+        <span class="br0">&#125;</span>
+        <span class="kw1">if</span> <span class="br0">&#40;</span>currentMove <span class="sy0">!=</span> <span class="kw2">null</span> <span class="sy0">&amp;&amp;</span> currentMove.<span class="me1">getPriority</span><span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="sy0">&gt;</span> toExec.<span class="me1">getPriority</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span><span class="br0">&#123;</span>
+            <span class="kw1">return</span>; <span class="co1">// skip lower-priority moves</span>
+        <span class="br0">&#125;</span>
+&nbsp;
+        <span class="co1">// If a ComboMove has been identified, store it in currentMove</span>
+        currentMove <span class="sy0">=</span> toExec;
+        currentMoveCastTime <span class="sy0">=</span> currentMove.<span class="me1">getCastTime</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
+    <span class="br0">&#125;</span>
+<span class="br0">&#125;</span></pre>
+</div>
+<!-- SECTION "Detect Combos in ActionListener" [4494-6317] -->
+<h2><a name="execute_combos_in_the_update_loop" id="execute_combos_in_the_update_loop">Execute Combos in the Update Loop</a></h2>
+<div class="level2">
+
+<p>
+
+Now that you have detected the current move, you want to execute it. You do that in the update loop.
+</p>
+<pre class="code java">@Override
+<span class="kw1">public</span> <span class="kw4">void</span> simpleUpdate<span class="br0">&#40;</span><span class="kw4">float</span> tpf<span class="br0">&#41;</span><span class="br0">&#123;</span>
+    time <span class="sy0">+=</span> tpf;
+    fireballExec.<span class="me1">updateExpiration</span><span class="br0">&#40;</span>time<span class="br0">&#41;</span>; 
+    <span class="co1">// ... update more ComboExecs here....</span>
+&nbsp;
+    <span class="kw1">if</span> <span class="br0">&#40;</span>currentMove <span class="sy0">!=</span> <span class="kw2">null</span><span class="br0">&#41;</span><span class="br0">&#123;</span>
+        currentMoveCastTime <span class="sy0">-=</span> tpf;
+        <span class="kw1">if</span> <span class="br0">&#40;</span>currentMoveCastTime <span class="sy0">&lt;=</span> 0<span class="br0">&#41;</span><span class="br0">&#123;</span>
+            <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Asystem+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object>.<span class="me1">out</span>.<span class="me1">println</span><span class="br0">&#40;</span><span class="st0">&quot;THIS COMBO WAS TRIGGERED: &quot;</span> <span class="sy0">+</span> currentMove.<span class="me1">getMoveName</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
+            <span class="co1">// TODO: for each combo, implement special actions here</span>
+            currentMoveCastTime <span class="sy0">=</span> 0;
+            currentMove <span class="sy0">=</span> <span class="kw2">null</span>;
+        <span class="br0">&#125;</span>
+    <span class="br0">&#125;</span>
+<span class="br0">&#125;</span></pre>
+<p>
+Test <code>currentMove.getMoveName()</code> and proceed to call methods that implement any special actions and bonuses. This is up to you and depends individually on your game.
+</p>
+
+</div>
+<!-- SECTION "Execute Combos in the Update Loop" [6318-7155] -->
+<h2><a name="why_combos" id="why_combos">Why Combos?</a></h2>
+<div class="level2">
+
+<p>
+
+Depending on the game genre, the designer can reward the players&#039; intrinsical or extrinsical skills:
+
+</p>
+<ul>
+<li class="level1"><div class="li"> (intrinsical:) RPGs typically calculate the success of an attack from the character&#039;s in-game training level: The player plays the role of a character whose skill level is defined in numbers. RPGs typically do not offer any Combos.</div>
+</li>
+<li class="level1"><div class="li"> (extrinsical:) Sport and fighter games typically choose to reward the player&#039;s “manual” skills: The success of a special move solely depends on the player&#039;s own dexterity. These games typically offer optional Combos.</div>
+</li>
+</ul>
+
+</div>
+<!-- SECTION "Why Combos?" [7156-] -->
+<p><em><a href="http://jmonkeyengine.org/wiki/doku.php/jme3:advanced:combo_moves?do=export_xhtmlbody">view online version</a></em></p>
