@@ -99,7 +99,10 @@ public class UDPConnection extends Connection {
 
         InetSocketAddress address = (InetSocketAddress)datagramChannel.receive(readBuffer);
         if (address == null){
-            System.out.println("Address is NULL!");
+            //System.out.println("Address is NULL!");
+		 //TODO: Fix disconnection issue
+            socketChannel.close();
+
             return;
         }
 
