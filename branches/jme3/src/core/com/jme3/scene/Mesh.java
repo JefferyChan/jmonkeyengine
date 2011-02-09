@@ -688,9 +688,11 @@ public class Mesh implements Savable, Cloneable {
 //        in.readStringSavableMap("buffers", null);
         buffers = (IntMap<VertexBuffer>) in.readIntSavableMap("buffers", null);
         Savable[] lodLevelsSavable = in.readSavableArray("lodLevels", null);
-        lodLevels = new VertexBuffer[lodLevelsSavable.length];
-        for (int i = 0; i < lodLevels.length; i++){
-            lodLevels[i] = (VertexBuffer) lodLevelsSavable[i];
+        if(lodLevelsSavable!=null){
+            lodLevels = new VertexBuffer[lodLevelsSavable.length];
+            for (int i = 0; i < lodLevels.length; i++){
+                lodLevels[i] = (VertexBuffer) lodLevelsSavable[i];
+            }
         }
     }
 
