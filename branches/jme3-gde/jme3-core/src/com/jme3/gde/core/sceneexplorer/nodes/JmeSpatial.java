@@ -34,6 +34,7 @@ package com.jme3.gde.core.sceneexplorer.nodes;
 import com.jme3.bounding.BoundingVolume;
 import com.jme3.export.binary.BinaryExporter;
 import com.jme3.gde.core.scene.SceneApplication;
+import com.jme3.gde.core.sceneexplorer.nodes.actions.AddLightAction;
 import com.jme3.gde.core.sceneexplorer.nodes.actions.AddUserDataAction;
 import com.jme3.gde.core.sceneexplorer.nodes.properties.UserDataProperty;
 import com.jme3.light.LightList;
@@ -127,6 +128,7 @@ public class JmeSpatial extends AbstractSceneExplorerNode {
                         SystemAction.get(CopyAction.class),};
         } else {
             return new Action[]{
+                        new AddLightAction(this),
                         Actions.alwaysEnabled(new AddUserDataAction(this), "Add User Data", "", false),
                         SystemAction.get(RenameAction.class),
                         SystemAction.get(CopyAction.class),

@@ -32,6 +32,9 @@
 package com.jme3.gde.core.sceneexplorer.nodes;
 
 import com.jme3.gde.core.scene.SceneApplication;
+import com.jme3.gde.core.sceneexplorer.nodes.actions.AddLightAction;
+import com.jme3.gde.core.sceneexplorer.nodes.actions.AddSpatialAction;
+import com.jme3.gde.core.sceneexplorer.nodes.actions.AddUserDataAction;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import java.awt.Image;
@@ -41,17 +44,25 @@ import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
+import javax.swing.Action;
+import org.openide.actions.CopyAction;
+import org.openide.actions.CutAction;
+import org.openide.actions.DeleteAction;
+import org.openide.actions.PasteAction;
+import org.openide.actions.RenameAction;
+import org.openide.awt.Actions;
 import org.openide.loaders.DataObject;
 import org.openide.nodes.Sheet;
 import org.openide.util.Exceptions;
 import org.openide.util.ImageUtilities;
+import org.openide.util.actions.SystemAction;
 import org.openide.util.datatransfer.PasteType;
 
 /**
  *
  * @author normenhansen
  */
-@org.openide.util.lookup.ServiceProvider(service=SceneExplorerNode.class)
+@org.openide.util.lookup.ServiceProvider(service = SceneExplorerNode.class)
 public class JmeNode extends JmeSpatial {
 
     private static Image smallImage =
@@ -142,6 +153,26 @@ public class JmeNode extends JmeSpatial {
         }
     }
 
+    @Override
+    public Action[] getActions(boolean context) {
+//        return super.getActions(context);
+        if (((SceneExplorerChildren) jmeChildren).readOnly) {
+            return new Action[]{
+                        SystemAction.get(CopyAction.class),};
+        } else {
+            return new Action[]{
+                        new AddSpatialAction(this),
+                        new AddLightAction(this),
+                        Actions.alwaysEnabled(new AddUserDataAction(this), "Add User Data", "", false),
+                        SystemAction.get(RenameAction.class),
+                        SystemAction.get(CopyAction.class),
+                        SystemAction.get(CutAction.class),
+                        SystemAction.get(PasteAction.class),
+                        SystemAction.get(DeleteAction.class)
+                    };
+        }
+    }
+
     public Class getExplorerObjectClass() {
         return Node.class;
     }
@@ -151,7 +182,7 @@ public class JmeNode extends JmeSpatial {
     }
 
     public org.openide.nodes.Node[] createNodes(Object key, DataObject key2, boolean cookie) {
-        SceneExplorerChildren children=new SceneExplorerChildren((com.jme3.scene.Spatial)key);
+        SceneExplorerChildren children = new SceneExplorerChildren((com.jme3.scene.Spatial) key);
         children.setReadOnly(cookie);
         children.setDataObject(key2);
         return new org.openide.nodes.Node[]{new JmeNode((Node) key, children).setReadOnly(cookie)};
