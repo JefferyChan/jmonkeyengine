@@ -67,7 +67,7 @@ public class TestLodStress extends SimpleApplication {
                 clonePot.setLocalTranslation(x * .5f, 0, y * .5f);
                 clonePot.setLocalScale(.15f);
                 
-                LodControl control = new LodControl(clonePot);
+                LodControl control = new LodControl();
                 clonePot.addControl(control);
                 rootNode.attachChild(clonePot);
             }

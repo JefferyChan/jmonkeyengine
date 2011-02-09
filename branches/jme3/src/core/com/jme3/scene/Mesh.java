@@ -668,6 +668,7 @@ public class Mesh implements Savable, Cloneable {
         out.write(pointSize, "pointSize", 1f);
 
         out.writeIntSavableMap(buffers, "buffers", null);
+        out.write(lodLevels, "lodLevels", null);
     }
 
     public void read(JmeImporter im) throws IOException {
@@ -686,6 +687,11 @@ public class Mesh implements Savable, Cloneable {
 
 //        in.readStringSavableMap("buffers", null);
         buffers = (IntMap<VertexBuffer>) in.readIntSavableMap("buffers", null);
+        Savable[] lodLevelsSavable = in.readSavableArray("lodLevels", null);
+        lodLevels = new VertexBuffer[lodLevelsSavable.length];
+        for (int i = 0; i < lodLevels.length; i++){
+            lodLevels[i] = (VertexBuffer) lodLevelsSavable[i];
+        }
     }
 
 }
