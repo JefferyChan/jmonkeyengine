@@ -68,7 +68,7 @@ public class GuiTrack extends AbstractCinematicEvent {
         this.screen = screen;
     }
 
-    public GuiTrack(String screen, int initialDuration, LoopMode loopMode) {
+    public GuiTrack(String screen, float initialDuration, LoopMode loopMode) {
         super(initialDuration, loopMode);
         this.screen = screen;
     }
