@@ -114,7 +114,7 @@ public abstract class PhysicsJoint implements Savable {
     }
 
     /**
-     * destroys this joint and removes it from its connected PhysicsNodes joint lists
+     * destroys this joint and removes it from its connected PhysicsRigidBodys joint lists
      */
     public void destroy() {
         getBodyA().removeJoint(this);

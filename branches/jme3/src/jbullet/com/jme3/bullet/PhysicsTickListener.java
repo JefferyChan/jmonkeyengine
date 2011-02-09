@@ -32,7 +32,7 @@
 package com.jme3.bullet;
 
 /**
- *
+ * Implement this interface to be called from the physics thread on a physics update.
  * @author normenhansen
  */
 public interface PhysicsTickListener {

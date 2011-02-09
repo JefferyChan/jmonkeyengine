@@ -284,7 +284,7 @@ public class VehicleWheel implements Savable {
 
     /**
      * returns the object this wheel is in contact with or null if no contact
-     * @return the CollisionObject (PhysicsNode, PhysicsGhostNode)
+     * @return the PhysicsCollisionObject (PhysicsRigidBody, PhysicsGhostObject)
      */
     public PhysicsCollisionObject getGroundObject() {
         if (wheelInfo.raycastInfo.groundObject == null) {

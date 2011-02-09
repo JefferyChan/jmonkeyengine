@@ -38,13 +38,29 @@ public class BulletAppState implements AppState, PhysicsTickListener {
     protected float tpf;
     protected Future physicsFuture;
 
+    /**
+     * Creates a new BulletAppState running a PhysicsSpace for physics simulation,
+     * use getStateManager().addState(bulletAppState) to enable physics for an Application.
+     */
     public BulletAppState() {
     }
 
+    /**
+     * Creates a new BulletAppState running a PhysicsSpace for physics simulation,
+     * use getStateManager().addState(bulletAppState) to enable physics for an Application.
+     * @param broadphaseType The type of broadphase collision detection, BroadphaseType.DVBT is the default
+     */
     public BulletAppState(BroadphaseType broadphaseType) {
         this(new Vector3f(-10000f, -10000f, -10000f), new Vector3f(10000f, 10000f, 10000f), broadphaseType);
     }
 
+    /**
+     * Creates a new BulletAppState running a PhysicsSpace for physics simulation,
+     * use getStateManager().addState(bulletAppState) to enable physics for an Application.
+     * An AxisSweep broadphase is used.
+     * @param worldMin The minimum world extent
+     * @param worldMax The maximum world extent
+     */
     public BulletAppState(Vector3f worldMin, Vector3f worldMax) {
         this(worldMin, worldMax, BroadphaseType.AXIS_SWEEP_3);
     }
@@ -154,6 +170,7 @@ public class BulletAppState implements AppState, PhysicsTickListener {
     }
 
     public void update(float tpf) {
+        if(!active) return;
         if (threadingType != ThreadingType.DETACHED) {
             pSpace.distributeEvents();
         }
@@ -161,6 +178,7 @@ public class BulletAppState implements AppState, PhysicsTickListener {
     }
 
     public void render(RenderManager rm) {
+        if(!active) return;
         if (threadingType == ThreadingType.PARALLEL) {
             physicsFuture = executor.submit(parallelPhysicsUpdate);
         } else if (threadingType == ThreadingType.SEQUENTIAL) {

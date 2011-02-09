@@ -199,7 +199,7 @@ public class PhysicsGhostObject extends PhysicsCollisionObject {
     /**
      * Another Object is overlapping with this GhostNode,
      * if and if only there CollisionShapes overlaps.
-     * They could be both regular PhysicsNodes or PhysicsGhostNode.
+     * They could be both regular PhysicsRigidBodys or PhysicsGhostObjects.
      * @return All CollisionObjects overlapping with this GhostNode.
      */
     public List<PhysicsCollisionObject> getOverlappingObjects() {

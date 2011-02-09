@@ -88,7 +88,7 @@ public class PhysicsCollisionEvent extends EventObject {
     }
 
     /**
-     * @return A Node if the UserObject of the PhysicsCollisionObject is a Spatial
+     * @return A Spatial if the UserObject of the PhysicsCollisionObject is a Spatial
      */
     public Spatial getNodeA() {
         if (nodeA.getUserObject() instanceof Spatial) {
@@ -98,7 +98,7 @@ public class PhysicsCollisionEvent extends EventObject {
     }
 
     /**
-     * @return A Node if the UserObject of the PhysicsCollisionObject is a Spatial
+     * @return A Spatial if the UserObject of the PhysicsCollisionObject is a Spatial
      */
     public Spatial getNodeB() {
         if (nodeB.getUserObject() instanceof Spatial) {

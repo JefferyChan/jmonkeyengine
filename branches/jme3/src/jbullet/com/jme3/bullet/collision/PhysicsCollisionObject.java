@@ -52,7 +52,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Base class for collision objects (PhysicsNode, PhysicsGhostNode)
+ * Base class for collision objects (PhysicsRigidBody, PhysicsGhostObject)
  * @author normenhansen
  */
 public abstract class PhysicsCollisionObject implements Savable {

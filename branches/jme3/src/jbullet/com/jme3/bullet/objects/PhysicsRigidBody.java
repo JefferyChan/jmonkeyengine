@@ -81,7 +81,7 @@ public class PhysicsRigidBody extends PhysicsCollisionObject {
     }
 
     /**
-     * Creates a new PhysicsNode with the supplied collision shape
+     * Creates a new PhysicsRigidBody with the supplied collision shape
      * @param child
      * @param shape
      */
@@ -281,7 +281,7 @@ public class PhysicsRigidBody extends PhysicsCollisionObject {
     }
 
     /**
-     * Sets the mass of this PhysicsNode, objects with mass=0 are static.
+     * Sets the mass of this PhysicsRigidBody, objects with mass=0 are static.
      * @param mass
      */
     public void setMass(float mass) {
@@ -312,7 +312,7 @@ public class PhysicsRigidBody extends PhysicsCollisionObject {
     }
 
     /**
-     * Set the local gravity of this PhysicsNode<br/>
+     * Set the local gravity of this PhysicsRigidBody<br/>
      * Set this after adding the node to the PhysicsSpace,
      * the PhysicsSpace assigns its current gravity to the physics node when its added.
      * @param gravity the gravity vector to set
@@ -363,7 +363,7 @@ public class PhysicsRigidBody extends PhysicsCollisionObject {
     }
 
     /**
-     * The "bouncyness" of the PhysicsNode, best performance if restitution=0
+     * The "bouncyness" of the PhysicsRigidBody, best performance if restitution=0
      * @param restitution
      */
     public void setRestitution(float restitution) {
@@ -372,7 +372,7 @@ public class PhysicsRigidBody extends PhysicsCollisionObject {
     }
 
     /**
-     * Get the current angular velocity of this PhysicsNode
+     * Get the current angular velocity of this PhysicsRigidBody
      * @return the current linear velocity
      */
     public Vector3f getAngularVelocity() {
@@ -380,7 +380,7 @@ public class PhysicsRigidBody extends PhysicsCollisionObject {
     }
 
     /**
-     * Get the current angular velocity of this PhysicsNode
+     * Get the current angular velocity of this PhysicsRigidBody
      * @param vec the vector to store the velocity in
      */
     public void getAngularVelocity(Vector3f vec) {
@@ -388,8 +388,8 @@ public class PhysicsRigidBody extends PhysicsCollisionObject {
     }
 
     /**
-     * Sets the angular velocity of this PhysicsNode
-     * @param vec the angular velocity of this PhysicsNode
+     * Sets the angular velocity of this PhysicsRigidBody
+     * @param vec the angular velocity of this PhysicsRigidBody
      */
     public void setAngularVelocity(Vector3f vec) {
         rBody.setAngularVelocity(Converter.convert(vec, tempVec));
@@ -397,7 +397,7 @@ public class PhysicsRigidBody extends PhysicsCollisionObject {
     }
 
     /**
-     * Get the current linear velocity of this PhysicsNode
+     * Get the current linear velocity of this PhysicsRigidBody
      * @return the current linear velocity
      */
     public Vector3f getLinearVelocity() {
@@ -405,7 +405,7 @@ public class PhysicsRigidBody extends PhysicsCollisionObject {
     }
 
     /**
-     * Get the current linear velocity of this PhysicsNode
+     * Get the current linear velocity of this PhysicsRigidBody
      * @param vec the vector to store the velocity in
      */
     public void getLinearVelocity(Vector3f vec) {
@@ -413,8 +413,8 @@ public class PhysicsRigidBody extends PhysicsCollisionObject {
     }
 
     /**
-     * Sets the linear velocity of this PhysicsNode
-     * @param vec the linear velocity of this PhysicsNode
+     * Sets the linear velocity of this PhysicsRigidBody
+     * @param vec the linear velocity of this PhysicsRigidBody
      */
     public void setLinearVelocity(Vector3f vec) {
         rBody.setLinearVelocity(Converter.convert(vec, tempVec));
@@ -422,7 +422,7 @@ public class PhysicsRigidBody extends PhysicsCollisionObject {
     }
 
     /**
-     * Apply a force to the PhysicsNode, only applies force if the next physics update call
+     * Apply a force to the PhysicsRigidBody, only applies force if the next physics update call
      * updates the physics space.<br>
      * To apply an impulse, use applyImpulse, use applyContinuousForce to apply continuous force.
      * @param force the force
@@ -434,9 +434,9 @@ public class PhysicsRigidBody extends PhysicsCollisionObject {
     }
 
     /**
-     * Apply a force to the PhysicsNode, only applies force if the next physics update call
+     * Apply a force to the PhysicsRigidBody, only applies force if the next physics update call
      * updates the physics space.<br>
-     * To apply an impulse, use applyImpulse, use applyContinuousForce to apply continuous force.
+     * To apply an impulse, use applyImpulse.
      * 
      * @param force the force
      */
@@ -446,9 +446,9 @@ public class PhysicsRigidBody extends PhysicsCollisionObject {
     }
 
     /**
-     * Apply a force to the PhysicsNode, only applies force if the next physics update call
+     * Apply a force to the PhysicsRigidBody, only applies force if the next physics update call
      * updates the physics space.<br>
-     * To apply an impulse, use applyImpulse, use applyContinuousForce to apply continuous force.
+     * To apply an impulse, use applyImpulse.
      * 
      * @param torque the torque
      */
@@ -458,7 +458,7 @@ public class PhysicsRigidBody extends PhysicsCollisionObject {
     }
 
     /**
-     * Apply an impulse to the PhysicsNode in the next physics update.
+     * Apply an impulse to the PhysicsRigidBody in the next physics update.
      * @param impulse applied impulse
      * @param rel_pos location relative to object
      */
@@ -468,7 +468,7 @@ public class PhysicsRigidBody extends PhysicsCollisionObject {
     }
 
     /**
-     * Apply a torque impulse to the PhysicsNode in the next physics update.
+     * Apply a torque impulse to the PhysicsRigidBody in the next physics update.
      * @param vec
      */
     public void applyTorqueImpulse(final Vector3f vec) {
@@ -477,7 +477,7 @@ public class PhysicsRigidBody extends PhysicsCollisionObject {
     }
 
     /**
-     * Clear all forces from the PhysicsNode
+     * Clear all forces from the PhysicsRigidBody
      * 
      */
     public void clearForces() {
@@ -490,7 +490,7 @@ public class PhysicsRigidBody extends PhysicsCollisionObject {
     }
 
     /**
-     * reactivates this PhysicsNode when it has been deactivated because it was not moving
+     * reactivates this PhysicsRigidBody when it has been deactivated because it was not moving
      */
     public void activate() {
         rBody.activate();
@@ -557,8 +557,8 @@ public class PhysicsRigidBody extends PhysicsCollisionObject {
 
     /**
      * Returns a list of connected joints. This list is only filled when
-     * the PhysicsNode is actually added to the physics space or loaded from disk.
-     * @return list of active joints connected to this physicsnode
+     * the PhysicsRigidBody is actually added to the physics space or loaded from disk.
+     * @return list of active joints connected to this PhysicsRigidBody
      */
     public List<PhysicsJoint> getJoints() {
         return joints;
@@ -572,7 +572,7 @@ public class PhysicsRigidBody extends PhysicsCollisionObject {
     }
 
     /**
-     * destroys this PhysicsNode and removes it from memory
+     * destroys this PhysicsRigidBody and removes it from memory
      */
     public void destroy() {
         rBody.destroy();

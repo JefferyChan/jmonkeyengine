@@ -19,7 +19,8 @@ import com.jme3.scene.control.Control;
 import java.io.IOException;
 
 /**
- * 
+ * A GhostControl moves with the spatial it is attached to and can be used to check
+ * overlaps with other physics objects (e.g. aggro radius).
  * @author normenhansen
  */
 public class GhostControl extends PhysicsGhostObject implements PhysicsControl {

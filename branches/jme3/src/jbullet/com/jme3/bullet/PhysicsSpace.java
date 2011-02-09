@@ -164,7 +164,7 @@ public class PhysicsSpace {
     }
 
     /**
-     * has to be called from the (designated) physics thread
+     * Has to be called from the (designated) physics thread
      */
     public void create() {
         pQueueTL.set(pQueue);
@@ -567,7 +567,7 @@ public class PhysicsSpace {
     }
 
     /**
-     * Sets the gravity of the PhysicsSpace, set before adding PhysicsNodes!
+     * Sets the gravity of the PhysicsSpace, set before adding physics objects!
      * @param gravity
      */
     public void setGravity(Vector3f gravity) {
