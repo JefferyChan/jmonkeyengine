@@ -39,5 +39,15 @@ package com.jme3.input.controls;
  * @author Kirill Vainer
  */
 public interface AnalogListener extends InputListener {
-    public void onAnalog(String name, float isPressed, float tpf);
+    /**
+     * Called to notify the implementation that an analog event has occured.
+     *
+     * The results of KeyTrigger and MouseButtonTrigger events will have tpf
+     *  == value.
+     *
+     * @param name - the name of the analog event
+     * @param value - how much the axis changed during this event
+     * @param tpf - how much time has passed since the last frame
+     */
+    public void onAnalog(String name, float value, float tpf);
 }
