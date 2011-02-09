@@ -85,11 +85,19 @@ public class BitmapText extends Node {
         return font;
     }
     
+    /**
+     * Changes text size
+     * @param size text size
+     */
     public void setSize(float size) {
         block.setSize(size);
         needRefresh = true;
     }
 
+    /**
+     *
+     * @param text charsequence to change text to
+     */
     public void setText(CharSequence text) {
         if (block.getText().equals(text)) {
             return;
@@ -99,14 +107,24 @@ public class BitmapText extends Node {
         needRefresh = true;
     }
 
+    /**
+     * @return returns text
+     */
     public String getText() {
         return block.getText();
     }
 
+    /**
+     * @return color of the text
+     */
     public ColorRGBA getColor() {
         return block.getColor();
     }
 
+    /**
+     * changes text color
+     * @param color new color of text
+     */
     public void setColor(ColorRGBA color) {
         if (block.getColor().equals(color)) {
             return;
@@ -116,15 +134,25 @@ public class BitmapText extends Node {
         needRefresh = true;
     }
 
+    /**
+     * Define area where bitmaptext will be rendered
+     * @param rect position and size box where text is rendered
+     */
     public void setBox(Rectangle rect) {
         block.setTextBox(rect);
         needRefresh = true;
     }
     
+    /**
+     * @return height of the line
+     */
     public float getLineHeight() {
         return font.getLineHeight(block);
     }
     
+    /**
+     * @return height of whole textblock
+     */
     public float getHeight() {
         if (needRefresh) {
             assemble();
@@ -137,6 +165,9 @@ public class BitmapText extends Node {
         return height;
     }
     
+    /**
+     * @return width of line
+     */
     public float getLineWidth() {
         if (needRefresh) {
             assemble();
