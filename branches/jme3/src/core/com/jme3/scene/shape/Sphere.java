@@ -96,8 +96,6 @@ public class Sphere extends Mesh {
      * Both zSamples and radialSamples increase the quality of the generated
      * sphere.
      * 
-     * @param name
-     *            Name of the sphere.
      * @param zSamples
      *            The number of samples along the Z.
      * @param radialSamples
@@ -112,10 +110,6 @@ public class Sphere extends Mesh {
     /**
      * Constructs a sphere. Additional arg to evenly space latitudinal slices
      * 
-     * @param name
-     *            Name of the sphere.
-     * @param center
-     *            Center of the sphere.
      * @param zSamples
      *            The number of samples along the Z.
      * @param radialSamples
@@ -124,6 +118,8 @@ public class Sphere extends Mesh {
      *            The radius of the sphere.
      * @param useEvenSlices
      *            Slice sphere evenly along the Z axis
+     * @param interior
+     *            Not yet documented
      */
     public Sphere(int zSamples, int radialSamples, float radius, boolean useEvenSlices, boolean interior) {
         updateGeometry(zSamples, radialSamples, radius, useEvenSlices, interior);
@@ -387,7 +383,6 @@ public class Sphere extends Mesh {
     /**
      * Changes the information of the sphere into the given values.
      * 
-     * @param center the center of the sphere.
      * @param zSamples the number of zSamples of the sphere.
      * @param radialSamples the number of radial samples of the sphere.
      * @param radius the radius of the sphere.
