@@ -103,6 +103,10 @@ public class AddLightAction extends AbstractAction implements Presenter.Popup {
 
     private class AddDirectionalAction extends AbstractAction {
 
+        public AddDirectionalAction() {
+            putValue(NAME, "Directional Light");
+        }
+
         public void actionPerformed(ActionEvent e) {
             SceneApplication.getApplication().enqueue(new Callable<Void>() {
 
@@ -120,6 +124,10 @@ public class AddLightAction extends AbstractAction implements Presenter.Popup {
     }
 
     private class AddPointAction extends AbstractAction {
+
+        public AddPointAction() {
+            putValue(NAME, "Point Light");
+        }
 
         public void actionPerformed(ActionEvent e) {
             SceneApplication.getApplication().enqueue(new Callable<Void>() {
