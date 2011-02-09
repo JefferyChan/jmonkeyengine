@@ -566,6 +566,12 @@ public class SceneApplication extends Application implements LookupProvider, Loo
         this.sceneActive = sceneActive;
     }
 
+    @Override
+    public void handleError(String errMsg, Throwable t) {
+        progressHandle.finish();
+        SceneViewerTopComponent.showOpenGLError(errMsg);
+    }
+
     public RenderManager getRenderManager() {
         return renderManager;
     }
