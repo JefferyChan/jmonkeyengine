@@ -34,7 +34,7 @@ public class StringUtil {
      * @return the padded number
      */
     public String padNum(long num, int totalLen) {
-        String numStr = new Long(num).toString();
+        String numStr = Long.toString(num);
         int len = totalLen - numStr.length();
         String pads = "";
         for (int i = 0; i < len; i++) {
@@ -51,7 +51,7 @@ public class StringUtil {
      * @return the padded number
      */
     public String padNumZero(long num, int totalLen) {
-        String numStr = new Long(num).toString();
+        String numStr = Long.toString(num);
         int len = totalLen - numStr.length();
         String pads = "";
         for (int i = 0; i < len; i++) {
@@ -68,7 +68,7 @@ public class StringUtil {
      * @return the padded number
      */
     public String padNum(int num, int totalLen) {
-        String numStr = new Integer(num).toString();
+        String numStr = Integer.toString(num);
         int len = totalLen - numStr.length();
         String pads = "";
         for (int i = 0; i < len; i++) {
@@ -85,7 +85,7 @@ public class StringUtil {
      * @return the padded number
      */
     public String padNumZero(int num, int totalLen) {
-        String numStr = new Long(num).toString();
+        String numStr = Integer.toString(num);
         int len = totalLen - numStr.length();
         String pads = "";
         for (int i = 0; i < len; i++) {
@@ -102,7 +102,7 @@ public class StringUtil {
      * @return the padded number
      */
     public String padNum(double num, int wholeLen, int decimalPlaces) {
-        String numStr = new Double(num).toString();
+        String numStr = Double.toString(num);
         int dpLoc = numStr.indexOf(".");
 
         int len = wholeLen - dpLoc;
@@ -129,7 +129,7 @@ public class StringUtil {
      * @return the padded number
      */
     public String padNumZero(double num, int wholeLen, int decimalPlaces) {
-        String numStr = new Double(num).toString();
+        String numStr = Double.toString(num);
         int dpLoc = numStr.indexOf(".");
 
         int len = wholeLen - dpLoc;
@@ -156,7 +156,7 @@ public class StringUtil {
      * @return the padded number
      */
     public String padNum(float num, int wholeLen, int decimalPlaces) {
-        String numStr = new Float(num).toString();
+        String numStr = Float.toString(num);
         int dpLoc = numStr.indexOf(".");
 
         int len = wholeLen - dpLoc;
@@ -183,7 +183,7 @@ public class StringUtil {
      * @return the padded number
      */
     public String padNumZero(float num, int wholeLen, int decimalPlaces) {
-        String numStr = new Float(num).toString();
+        String numStr = Float.toString(num);
         int dpLoc = numStr.indexOf(".");
 
         int len = wholeLen - dpLoc;
