@@ -53,7 +53,7 @@ public class DirectionalLight extends Light {
     }
 
     /**
-     * @return The direction of the light.
+     * @return The direction vector of the light.
      */
     public Vector3f getDirection() {
         return direction;
@@ -61,7 +61,8 @@ public class DirectionalLight extends Light {
 
     /**
      * Sets the direction of the light.
-     * @param dir
+     * @param dir Represents the vector direction the light is coming from.
+     * (1f, 0, 0) would represent a directional light coming from the X axis.
      */
     public void setDirection(Vector3f dir){
         direction.set(dir);
