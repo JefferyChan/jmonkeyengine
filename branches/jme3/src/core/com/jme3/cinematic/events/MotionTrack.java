@@ -32,6 +32,8 @@
 package com.jme3.cinematic.events;
 
 import com.jme3.animation.LoopMode;
+import com.jme3.app.Application;
+import com.jme3.cinematic.Cinematic;
 import com.jme3.cinematic.MotionPath;
 import com.jme3.cinematic.PlayState;
 import com.jme3.export.InputCapsule;
@@ -64,6 +66,8 @@ public class MotionTrack extends AbstractCinematicEvent implements Control {
     protected Quaternion rotation;
     protected Direction directionType = Direction.None;
     protected MotionPath path;
+    private boolean isControl=true;
+
 
     /**
      * Enum for the different type of target direction behavior
@@ -153,15 +157,24 @@ public class MotionTrack extends AbstractCinematicEvent implements Control {
     }
 
     public void update(float tpf) {
-        if (playState == PlayState.Playing) {
-            time += tpf * speed;
-            onUpdate(tpf);
-            if (time >= duration && loopMode == loopMode.DontLoop) {
-                stop();
+        if(isControl){
+            if (playState == PlayState.Playing) {
+                time += tpf * speed;
+                onUpdate(tpf);
+                if (time >= duration && loopMode == loopMode.DontLoop) {
+                    stop();
+                }
             }
         }
 
     }
+
+    @Override
+    public void initEvent(Application app, Cinematic cinematic) {
+        isControl=false;
+    }
+
+
 
     public void onUpdate(float tpf) {
         spatial.setLocalTranslation(path.interpolatePath(tpf, this));
