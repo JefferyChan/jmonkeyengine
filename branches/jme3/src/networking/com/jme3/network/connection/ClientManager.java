@@ -38,6 +38,7 @@ import com.jme3.network.message.ClientRegistrationMessage;
 import com.jme3.network.message.Message;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -49,6 +50,8 @@ import java.util.logging.Logger;
 public class ClientManager extends MessageAdapter implements ConnectionListener {
     protected Logger log = Logger.getLogger(ClientManager.class.getName());
     private ArrayList<Client> clients = new ArrayList<Client>();
+    private Hashtable<Integer, Client> clientsByClientID = new Hashtable<Integer, Client>();
+    
     private ArrayList<ClientRegistrationMessage> pendingMessages = new ArrayList<ClientRegistrationMessage>();
 
     private ArrayList<ConnectionListener> connectionListeners = new ArrayList<ConnectionListener>();
@@ -71,6 +74,10 @@ public class ClientManager extends MessageAdapter implements ConnectionListener 
             if (client.getPlayerID() == playerId) return client;
         }
         return null;
+    }
+
+    public Client getClientByClientID(int clientID) {
+        return clientsByClientID.get(clientID);
     }
 
     public boolean isClientConnected(Client client) {
@@ -125,6 +132,7 @@ public class ClientManager extends MessageAdapter implements ConnectionListener 
         // Remove pending message.
         pendingMessages.remove(existingMessage);
         clients.add(client);
+        clientsByClientID.put(client.getClientID(), client);
     }
 
     private void fillInUDPInfo(Client client, ClientRegistrationMessage msg) {

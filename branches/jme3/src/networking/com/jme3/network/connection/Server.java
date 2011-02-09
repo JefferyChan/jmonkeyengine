@@ -458,10 +458,7 @@ public class Server extends ServiceManager implements MessageListener {
      * @return The located client or null if the client was not on the list.
      */
     public Client getClientByID(int clientID) {
-        Client c = null;
-        if (getConnectors().contains(Integer.valueOf(clientID))) {
-           c = getConnectors().get(getConnectors().indexOf(Integer.valueOf(clientID)));
-        }
+        Client c = clientManager.getClientByClientID(clientID);
         return c;
     }
     
