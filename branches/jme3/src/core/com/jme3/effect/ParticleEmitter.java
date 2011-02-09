@@ -213,7 +213,7 @@ public class ParticleEmitter extends Geometry implements Control {
      */
     public void setFaceNormal(Vector3f faceNormal) {
         if (faceNormal == null || !Vector3f.isValidVector(faceNormal))
-            faceNormal.set(Vector3f.NAN);
+            this.faceNormal.set(Vector3f.NAN);
         else
             this.faceNormal = faceNormal;
     }
