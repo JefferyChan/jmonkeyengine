@@ -725,7 +725,6 @@ public class LODGeomap extends BufferGeomap {
 		}
 		public void put(int value) {
 			try {
-				//System.out.print(value+",");
 				delegate.put(value);
 				count++;
 			} catch (BufferOverflowException e) {

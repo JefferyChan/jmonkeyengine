@@ -54,8 +54,6 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.VertexBuffer;
-import com.jme3.scene.VertexBuffer.Type;
 import com.jme3.scene.debug.WireBox;
 import com.jme3.terrain.ProgressMonitor;
 import com.jme3.terrain.Terrain;
@@ -66,7 +64,6 @@ import com.jme3.terrain.geomipmap.picking.TerrainPickData;
 import com.jme3.terrain.geomipmap.picking.TerrainPicker;
 import com.jme3.util.BufferUtils;
 import com.jme3.util.TangentBinormalGenerator;
-import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -1358,6 +1355,8 @@ public class TerrainQuad extends Node implements Terrain {
                 //    left.fixNormalEdges(tp, findDownPatch(left), findTopPatch(left), findLeftPatch(left), null, null);
 
                 tp.fixNormalEdges(right, bottom, top, left, bottomRight, topLeft);
+                //if (right != null)
+                //    right.fixNormalEdges(findRightPatch(right), findDownPatch(right), findTopPatch(right), findLeftPatch(right), null, null);
 
             }
         } // for each child
