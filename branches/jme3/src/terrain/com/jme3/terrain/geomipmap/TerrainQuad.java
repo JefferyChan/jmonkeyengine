@@ -301,7 +301,7 @@ public class TerrainQuad extends Node implements Terrain {
         // only do this on the root quad
         if (isRootQuad())
             if (progressMonitor != null)
-                progressMonitor.progressComplete();;
+                progressMonitor.progressComplete();
     }
 
     protected boolean isRootQuad() {
