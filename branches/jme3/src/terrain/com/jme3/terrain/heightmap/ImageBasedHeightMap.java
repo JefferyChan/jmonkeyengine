@@ -50,7 +50,7 @@ import java.awt.image.WritableRaster;
  */
 public class ImageBasedHeightMap extends AbstractHeightMap {
 
-    static private class ImageConverter {
+    static protected class ImageConverter {
 
         // Posted by DrLaszloJamf to Java Technology Forums
         //
@@ -133,8 +133,8 @@ public class ImageBasedHeightMap extends AbstractHeightMap {
     }
     
     
-    private Image colorImage;
-    private float dampen = 1.0f;
+    protected Image colorImage;
+    protected float dampen = 1.0f;
 
     
     /**
