@@ -88,6 +88,9 @@ public class PhysicsHoverControl extends PhysicsRigidBody implements PhysicsCont
         return enabled;
     }
 
+    public void prePhysicsTick(PhysicsSpace space, float f) {
+    }
+
     public void physicsTick(PhysicsSpace space, float f) {
         List<PhysicsRayTestResult> results = space.rayTest(spatial.localToWorld(HOVER_HEIGHT_LF_START, tempVect1), spatial.localToWorld(HOVER_HEIGHT_LF, tempVect2));
         if (results.size() > 0) {

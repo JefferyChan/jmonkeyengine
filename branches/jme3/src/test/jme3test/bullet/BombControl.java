@@ -71,6 +71,9 @@ public class BombControl extends RigidBodyControl implements PhysicsCollisionLis
         }
     }
 
+    public void prePhysicsTick(PhysicsSpace space, float f) {
+    }
+    
     public void physicsTick(PhysicsSpace space, float f) {
         //get all overlapping objects and apply impulse to them
         for (Iterator<PhysicsCollisionObject> it = ghostObject.getOverlappingObjects().iterator(); it.hasNext();) {
@@ -105,4 +108,5 @@ public class BombControl extends RigidBodyControl implements PhysicsCollisionLis
         this.explosionRadius = explosionRadius;
         createGhostObject();
     }
+
 }
