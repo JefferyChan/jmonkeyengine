@@ -37,8 +37,18 @@ package com.jme3.bullet;
  */
 public interface PhysicsTickListener {
 
+    /**
+     * Called before the physics is actually stepped, use to apply forces etc.
+     * @param space
+     * @param f
+     */
     public void prePhysicsTick(PhysicsSpace space, float f);
 
+    /**
+     * Called after the physics has been stepped, use to check for forces etc.
+     * @param space
+     * @param f
+     */
     public void physicsTick(PhysicsSpace space, float f);
 
 }
