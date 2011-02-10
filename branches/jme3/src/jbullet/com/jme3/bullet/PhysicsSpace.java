@@ -258,7 +258,10 @@ public class PhysicsSpace {
                     }
                     task = pQueue.poll();
                 }
-
+                for (Iterator<PhysicsTickListener> it = tickListeners.iterator(); it.hasNext();) {
+                    PhysicsTickListener physicsTickCallback = it.next();
+                    physicsTickCallback.prePhysicsTick(space, f);
+                }
             }
         };
         dynamicsWorld.setPreTickCallback(callback2);

@@ -37,6 +37,8 @@ package com.jme3.bullet;
  */
 public interface PhysicsTickListener {
 
+    public void prePhysicsTick(PhysicsSpace space, float f);
+
     public void physicsTick(PhysicsSpace space, float f);
 
 }

@@ -257,6 +257,9 @@ public class BulletAppState implements AppState, PhysicsTickListener {
         this.speed = speed;
     }
 
+    public void prePhysicsTick(PhysicsSpace space, float f) {
+    }
+
     public void physicsTick(PhysicsSpace space, float f) {
     }
 
