@@ -1,0 +1,413 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+ lang="en" dir="ltr">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>
+    jme3:advanced:post-process_water – jME Wiki  </title>
+
+  <meta name="generator" content="DokuWiki Release 2009-02-14b" />
+<meta name="robots" content="noindex,follow" />
+<meta name="date" content="1970-01-01T00:00:00+0000" />
+<meta name="keywords" content="jme3,advanced,post-process_water" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/lib/exe/opensearch.php" title="jME Wiki" />
+<link rel="start" href="/wiki/" />
+<link rel="contents" href="/wiki/doku.php/jme3:advanced:post-process_water?do=index" title="Index" />
+<link rel="alternate" type="application/rss+xml" title="Recent Changes" href="/wiki/feed.php" />
+<link rel="alternate" type="application/rss+xml" title="Current Namespace" href="/wiki/feed.php?mode=list&amp;ns=jme3:advanced" />
+<link rel="alternate" type="text/html" title="Plain HTML" href="/wiki/doku.php/jme3:advanced:post-process_water?do=export_xhtml" />
+<link rel="alternate" type="text/plain" title="Wiki Markup" href="/wiki/doku.php/jme3:advanced:post-process_water?do=export_raw" />
+<link rel="stylesheet" media="all" type="text/css" href="/wiki/lib/exe/css.php?s=all&amp;t=A_Centered_Perspective" />
+<link rel="stylesheet" media="screen" type="text/css" href="/wiki/lib/exe/css.php?t=A_Centered_Perspective" />
+<link rel="stylesheet" media="print" type="text/css" href="/wiki/lib/exe/css.php?s=print&amp;t=A_Centered_Perspective" />
+<script type="text/javascript" charset="utf-8" src="/wiki/lib/exe/js.php?edit=0&amp;write=0" ></script>
+
+  <link rel="shortcut icon" href="/wiki/lib/tpl/A_Centered_Perspective/images/favicon.ico" />
+
+  
+</head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en-US">
+
+	<head profile="http://gmpg.org/xfn/11">
+
+		<link rel="shortcut icon" href="http://jmonkeyengine.org/favicon.ico" />
+
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+		<title>jMonkeyEngine.org &#124; Blog</title>
+
+		
+		<meta name="generator" content="WordPress 3.0.4" /> <!-- leave this for stats -->
+
+		<link rel="stylesheet" href="http://jmonkeyengine.org/wp-content/themes/bp-jme-1/style.css" type="text/css" media="screen" />
+
+					<link rel="alternate" type="application/rss+xml" title="jMonkeyEngine.org | Site Wide Activity RSS Feed" href="http://jmonkeyengine.org/activity/feed/" />
+		
+		
+		
+		<link rel="alternate" type="application/rss+xml" title="jMonkeyEngine.org Blog Posts RSS Feed" href="http://jmonkeyengine.org/feed/" />
+		<link rel="alternate" type="application/atom+xml" title="jMonkeyEngine.org Blog Posts Atom Feed" href="http://jmonkeyengine.org/feed/atom/" />
+
+		<link rel="pingback" href="http://jmonkeyengine.org/xmlrpc.php" />
+
+						
+	<script type="text/javascript">//<![CDATA[
+	// Google Analytics for WordPress by Yoast v4.06 | http://yoast.com/wordpress/google-analytics/
+	var _gaq = _gaq || [];
+	_gaq.push(['_setAccount','UA-17652261-1']);
+	_gaq.push(['_trackPageview']);
+	(function() {
+		var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+		ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+		var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+	})();
+	// End of Google Analytics for WordPress by Yoast v4.0
+	//]]></script>
+<link rel='stylesheet' id='fancybox-css'  href='http://jmonkeyengine.org/wp-content/plugins/fancy-gallery/fancybox/jquery.fancybox-1.3.4.css?ver=1.3.4' type='text/css' media='all' />
+<link rel='stylesheet' id='fancybox-ie-fix-css'  href='http://jmonkeyengine.org/wp-content/plugins/fancy-gallery/fancybox/jquery.fancybox-1.3.4.css-png-fix.php?ver=3.0.4' type='text/css' media='all' />
+<link rel='stylesheet' id='fancy-gallery-css'  href='http://jmonkeyengine.org/wp-content/plugins/fancy-gallery/fancy-gallery.css?ver=3.0.4' type='text/css' media='all' />
+<link rel='stylesheet' id='gsc_style-css'  href='http://jmonkeyengine.org/wp-content/plugins/google-custom-search/css/smoothness/jquery-ui-1.7.3.custom.css?ver=3.0.4' type='text/css' media='all' />
+<link rel='stylesheet' id='gsc_style_search_bar-css'  href='http://www.google.com/cse/style/look/minimalist.css?ver=3.0.4' type='text/css' media='all' />
+<link rel='stylesheet' id='gsc_style_search_bar_more-css'  href='http://jmonkeyengine.org/wp-content/plugins/google-custom-search/css/gsc.css?ver=3.0.4' type='text/css' media='all' />
+<link rel='stylesheet' id='toc_css-css'  href='http://jmonkeyengine.org/wp-content/plugins/seo-friendly-table-of-contents/style.css?ver=3.0.4' type='text/css' media='all' />
+<link rel='stylesheet' id='bpgc_screen-css'  href='http://jmonkeyengine.org/wp-content/plugins/bp-group-control/css/screen.css?ver=3.0.4' type='text/css' media='all' />
+<link rel='stylesheet' id='bp-post-buttons-css-css'  href='http://jmonkeyengine.org/wp-content/plugins/bp-post-buttons/include/style/bp_post_buttons.css?ver=3.0.4' type='text/css' media='all' />
+<link rel='stylesheet' id='wp_dlmp_styles-css'  href='http://jmonkeyengine.org/wp-content/plugins/download-monitor/page-addon/styles.css?ver=3.0.4' type='text/css' media='all' />
+<link rel='stylesheet' id='myStyleSheets-css'  href='http://jmonkeyengine.org/wp-content/plugins/uservoice-idea-list-widget/uv_styles.css?ver=3.0.4' type='text/css' media='all' />
+<link rel='stylesheet' id='activity-subscription-style-css'  href='http://jmonkeyengine.org/wp-content/plugins/buddypress-group-email-subscription/css/bp-activity-subscription-css.css?ver=3.0.4' type='text/css' media='all' />
+<script type='text/javascript' src='http://jmonkeyengine.org/wp-content/plugins/emailprotect/EMAILProtect.js?ver=0.8'></script>
+<script type='text/javascript' src='http://jmonkeyengine.org/wp-includes/js/jquery/jquery.js?ver=1.4.2'></script>
+<script type='text/javascript' src='http://jmonkeyengine.org/wp-content/plugins/fancy-gallery/fancybox/jquery.fancybox-1.3.4.pack.js?ver=1.3.4'></script>
+<script type='text/javascript' src='http://jmonkeyengine.org/wp-content/plugins/fancy-gallery/jquery.easing.1.3.js?ver=1.3'></script>
+<script type='text/javascript' src='http://jmonkeyengine.org/wp-content/plugins/fancy-gallery/jquery.mousewheel-3.0.4.pack.js?ver=3.0.4'></script>
+<script type='text/javascript' src='http://jmonkeyengine.org/wp-content/plugins/fancy-gallery/fancy-js.php?ver=3.0.4'></script>
+<script type='text/javascript' src='http://jmonkeyengine.org/wp-content/plugins/google-custom-search/js/gsc.js?ver=3.0.4'></script>
+<script type='text/javascript' src='http://www.google.com/jsapi?ver=3.0.4'></script>
+<script type='text/javascript'>
+/* <![CDATA[ */
+var BP_DTheme = {
+	my_favs: "My Favorites",
+	accepted: "Accepted",
+	rejected: "Rejected",
+	show_all_comments: "Show all comments for this thread",
+	show_all: "Show all",
+	comments: "comments",
+	close: "Close",
+	mention_explain: "@ is a unique identifier for  that you can type into any message on this site.  will be sent a notification and a link to your message any time you use it."
+};
+/* ]]> */
+</script>
+<script type='text/javascript' src='http://jmonkeyengine.org/wp-content/plugins/buddypress/bp-themes/bp-default/_inc/global.js?ver=3.0.4'></script>
+<script type='text/javascript' src='http://jmonkeyengine.org/wp-content/plugins/si-contact-form/captcha-secureimage/ctf_captcha.js?ver=3.0.4'></script>
+<script type='text/javascript' src='http://jmonkeyengine.org/wp-content/plugins/bp-group-control/js/screen.js?ver=3.0.4'></script>
+<script type='text/javascript' src='http://jmonkeyengine.org/wp-content/plugins/bp-post-buttons/include/js/insert_tags.js?ver=3.0.4'></script>
+<script type='text/javascript' src='http://jmonkeyengine.org/wp-content/plugins/buddypress-group-tags/group-tags.js?ver=3.0.4'></script>
+<script type='text/javascript' src='http://jmonkeyengine.org/wp-content/plugins/buddypress-share-it/bp-share-it.js?ver=3.0.4'></script>
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://jmonkeyengine.org/xmlrpc.php?rsd" />
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="http://jmonkeyengine.org/wp-includes/wlwmanifest.xml" /> 
+<link rel='index' title='jMonkeyEngine.org' href='http://jmonkeyengine.org/' />
+<meta name="generator" content="WordPress 3.0.4" />
+<link rel="stylesheet" type="text/css" href="http://jmonkeyengine.org/wp-content/plugins/buddypress-better-pagination/pagination.css" media="screen" />
+<link rel="stylesheet" type="text/css" href="http://jmonkeyengine.org/wp-content/plugins/buddypress-group-tags/group-tags.css" media="screen" />
+<link rel="stylesheet" type="text/css" href="http://jmonkeyengine.org/wp-content/plugins/buddypress-rate-forum-posts/css/rating.css" media="screen" />
+
+	<script type="text/javascript">var ajaxurl = "http://jmonkeyengine.org/wp-load.php";</script>
+
+
+<link href="http://jmonkeyengine.org/wp-content/plugins/buddypress-share-it/style.css" media="screen" rel="stylesheet" type="text/css"/>
+
+	<!-- This site is optimized with the Yoast WordPress SEO plugin v0.2.1 - http://yoast.com/wordpress/seo/ -->
+	<!-- / Yoast WordPress SEO plugin. -->
+
+
+<!--Plugin WP Overview (lite) 2011.0101.1111 Active-->
+		<style type="text/css">
+			#header { background-image: url(http://jmonkeyengine.org/wp-content/uploads/2010/09/header-new-31.gif); }
+						#header h1, #header #desc { display: none; }
+					</style>
+	<meta id="syntaxhighlighteranchor" name="syntaxhighlighter-version" content="3.1.1" />
+
+	<script type="text/javascript"> jQuery(document).ready( function() { jQuery("a.confirm").click( function() { if ( confirm( 'Are you sure?' ) ) return true; else return false; }); });</script>
+
+
+	</head>
+
+	<body class="" id="bp-default">
+
+		
+		<div id="header">
+
+			<h1 id="logo"><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://jmonkeyengine.org"><param name="text" value="<html><u>jMonkeyEngine.org</u></html>"><param name="textColor" value="blue"></object></h1>
+
+			<div id="search-bar">
+				<div id="custom-search" class="padder">
+				
+				<form action="http://jmonkeyengine.org/search" method="post" id="search-form">
+					<input type="text" id="search-terms" name="search-terms" value="" />
+					<select name="search-which" id="search-which" style="width: auto"><option value="wiki">Wiki</option><option value="forums">Forums</option><option value="posts">Blog</option><option value="groups">Groups</option><option value="members">Members</option><option value="links">Links</option></select>
+					<input type="submit" name="search-submit" id="search-submit" value="Search" />
+					<input type="hidden" id="_wpnonce" name="_wpnonce" value="2e64013ae6" /><input type="hidden" name="_wp_http_referer" value="/com/jme3/gde/core/docs/jme3/advanced/post-process_water.html" />				</form><!-- #search-form -->
+
+				<!--?php jme_display_search_box('custom-search', 'search-terms');?-->
+
+				
+				</div><!-- .padder -->
+			</div><!-- #search-bar -->
+
+						
+			<!--normen: add nav menu-->
+			<div id="access" class="menu-mainmenu-container"><ul id="menu-mainmenu" class="menu-header"><li id="menu-item-688" class="menu-item menu-item-type-custom menu-item-home menu-item-688"><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://jmonkeyengine.org/"><param name="text" value="<html><u>Home</u></html>"><param name="textColor" value="blue"></object>
+<ul class="sub-menu">
+	<li id="menu-item-705" class="menu-item menu-item-type-post_type menu-item-705"><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://jmonkeyengine.org/news-archives/"><param name="text" value="<html><u>News Archives</u></html>"><param name="textColor" value="blue"></object></li>
+	<li id="menu-item-437" class="menu-item menu-item-type-custom menu-item-437"><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://jmonkeyengine.org/activity/"><param name="text" value="<html><u>Activity</u></html>"><param name="textColor" value="blue"></object></li>
+	<li id="menu-item-641" class="menu-item menu-item-type-custom menu-item-641"><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://jmonkeyengine.org/members/"><param name="text" value="<html><u>Members</u></html>"><param name="textColor" value="blue"></object></li>
+	<li id="menu-item-474" class="menu-item menu-item-type-post_type menu-item-474"><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://jmonkeyengine.org/links/"><param name="text" value="<html><u>Links</u></html>"><param name="textColor" value="blue"></object></li>
+</ul>
+</li>
+<li id="menu-item-1342" class="menu-item menu-item-type-post_type menu-item-1342"><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://jmonkeyengine.org/gsoc-2011/"><param name="text" value="<html><u>GSoC 2011</u></html>"><param name="textColor" value="blue"></object>
+<ul class="sub-menu">
+	<li id="menu-item-1341" class="menu-item menu-item-type-post_type menu-item-1341"><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://jmonkeyengine.org/gsoc-2011/mentors/"><param name="text" value="<html><u>Mentors Guidelines</u></html>"><param name="textColor" value="blue"></object></li>
+	<li id="menu-item-1340" class="menu-item menu-item-type-post_type menu-item-1340"><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://jmonkeyengine.org/gsoc-2011/students/"><param name="text" value="<html><u>Students Guidelines</u></html>"><param name="textColor" value="blue"></object></li>
+</ul>
+</li>
+<li id="menu-item-696" class="menu-item menu-item-type-post_type menu-item-696"><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://jmonkeyengine.org/introduction/"><param name="text" value="<html><u>Introduction</u></html>"><param name="textColor" value="blue"></object>
+<ul class="sub-menu">
+	<li id="menu-item-944" class="menu-item menu-item-type-post_type menu-item-944"><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://jmonkeyengine.org/introduction/website-manual/"><param name="text" value="<html><u>Website Manual</u></html>"><param name="textColor" value="blue"></object></li>
+	<li id="menu-item-706" class="menu-item menu-item-type-post_type menu-item-706"><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://jmonkeyengine.org/introduction/team/"><param name="text" value="<html><u>Core Team</u></html>"><param name="textColor" value="blue"></object></li>
+	<li id="menu-item-1142" class="menu-item menu-item-type-post_type menu-item-1142"><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://jmonkeyengine.org/introduction/contributors-handbook/"><param name="text" value="<html><u>Contributor’s Handbook</u></html>"><param name="textColor" value="blue"></object>
+	<ul class="sub-menu">
+		<li id="menu-item-1140" class="menu-item menu-item-type-post_type menu-item-1140"><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://jmonkeyengine.org/introduction/contributors-handbook/anyones-contribution-guidelines/"><param name="text" value="<html><u>Anyone&#8217;s Contribution Guidelines</u></html>"><param name="textColor" value="blue"></object></li>
+		<li id="menu-item-1141" class="menu-item menu-item-type-post_type menu-item-1141"><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://jmonkeyengine.org/introduction/contributors-handbook/modelers-contribution-guidelines/"><param name="text" value="<html><u>Modeler&#8217;s Contribution Guidelines</u></html>"><param name="textColor" value="blue"></object></li>
+		<li id="menu-item-1138" class="menu-item menu-item-type-post_type menu-item-1138"><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://jmonkeyengine.org/introduction/contributors-handbook/web-developers-contribution-guidelines/"><param name="text" value="<html><u>Web Developer&#8217;s Contribution Guidelines</u></html>"><param name="textColor" value="blue"></object></li>
+		<li id="menu-item-1137" class="menu-item menu-item-type-post_type menu-item-1137"><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://jmonkeyengine.org/introduction/contributors-handbook/technical-writers-contribution-guidelines/"><param name="text" value="<html><u>Technical Writer&#8217;s Contribution Guidelines</u></html>"><param name="textColor" value="blue"></object></li>
+		<li id="menu-item-1139" class="menu-item menu-item-type-post_type menu-item-1139"><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://jmonkeyengine.org/introduction/contributors-handbook/programmers-contribution-guidelines/"><param name="text" value="<html><u>Programmer&#8217;s Contribution Guidelines</u></html>"><param name="textColor" value="blue"></object></li>
+	</ul>
+</li>
+	<li id="menu-item-470" class="menu-item menu-item-type-custom menu-item-470"><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://jmonkeyengine.com"><param name="text" value="<html><u>Product Showcase</u></html>"><param name="textColor" value="blue"></object></li>
+</ul>
+</li>
+<li id="menu-item-693" class="menu-item menu-item-type-custom menu-item-693"><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://jmonkeyengine.org/forums"><param name="text" value="<html><u>Forums</u></html>"><param name="textColor" value="blue"></object>
+<ul class="sub-menu">
+	<li id="menu-item-473" class="menu-item menu-item-type-custom menu-item-473"><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://jmonkeyengine.org/forums/"><param name="text" value="<html><u>Latest Topics</u></html>"><param name="textColor" value="blue"></object></li>
+	<li id="menu-item-513" class="menu-item menu-item-type-custom menu-item-513"><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://jmonkeyengine.org/forums-index"><param name="text" value="<html><u>All Categories</u></html>"><param name="textColor" value="blue"></object></li>
+	<li id="menu-item-330" class="menu-item menu-item-type-custom menu-item-330"><a href="#">Troubleshooting ></a>
+	<ul class="sub-menu">
+		<li id="menu-item-331" class="menu-item menu-item-type-custom menu-item-331"><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://jmonkeyengine.org/groups/general-2/forum/"><param name="text" value="<html><u>General</u></html>"><param name="textColor" value="blue"></object></li>
+		<li id="menu-item-819" class="menu-item menu-item-type-custom menu-item-819"><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://jmonkeyengine.org/groups/import-assets/forum/"><param name="text" value="<html><u>Import Assets</u></html>"><param name="textColor" value="blue"></object></li>
+		<li id="menu-item-332" class="menu-item menu-item-type-custom menu-item-332"><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://jmonkeyengine.org/groups/graphics/forum/"><param name="text" value="<html><u>Graphics</u></html>"><param name="textColor" value="blue"></object></li>
+		<li id="menu-item-333" class="menu-item menu-item-type-custom menu-item-333"><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://jmonkeyengine.org/groups/effects/forum/"><param name="text" value="<html><u>Effects</u></html>"><param name="textColor" value="blue"></object></li>
+		<li id="menu-item-334" class="menu-item menu-item-type-custom menu-item-334"><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://jmonkeyengine.org/groups/gui/forum/"><param name="text" value="<html><u>GUI</u></html>"><param name="textColor" value="blue"></object></li>
+		<li id="menu-item-335" class="menu-item menu-item-type-custom menu-item-335"><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://jmonkeyengine.org/groups/hardware/forum/"><param name="text" value="<html><u>Hardware</u></html>"><param name="textColor" value="blue"></object></li>
+		<li id="menu-item-336" class="menu-item menu-item-type-custom menu-item-336"><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://jmonkeyengine.org/groups/physics/forum/"><param name="text" value="<html><u>Physics</u></html>"><param name="textColor" value="blue"></object></li>
+		<li id="menu-item-338" class="menu-item menu-item-type-custom menu-item-338"><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://jmonkeyengine.org/groups/sound/forum/"><param name="text" value="<html><u>Sound</u></html>"><param name="textColor" value="blue"></object></li>
+		<li id="menu-item-337" class="menu-item menu-item-type-custom menu-item-337"><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://jmonkeyengine.org/groups/ai/forum/"><param name="text" value="<html><u>AI</u></html>"><param name="textColor" value="blue"></object></li>
+		<li id="menu-item-339" class="menu-item menu-item-type-custom menu-item-339"><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://jmonkeyengine.org/groups/networking/forum/"><param name="text" value="<html><u>Networking</u></html>"><param name="textColor" value="blue"></object></li>
+		<li id="menu-item-690" class="menu-item menu-item-type-custom menu-item-690"><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://jmonkeyengine.org/groups/spidermonkey/forum/"><param name="text" value="<html><u>SpiderMonkey</u></html>"><param name="textColor" value="blue"></object></li>
+		<li id="menu-item-689" class="menu-item menu-item-type-custom menu-item-689"><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://jmonkeyengine.org/groups/terramonkey/forum/"><param name="text" value="<html><u>TerraMonkey</u></html>"><param name="textColor" value="blue"></object></li>
+		<li id="menu-item-360" class="menu-item menu-item-type-custom menu-item-360"><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://jmonkeyengine.org/groups/jmonkeyplatform/forum/"><param name="text" value="<html><u>jMonkeyPlatform</u></html>"><param name="textColor" value="blue"></object></li>
+	</ul>
+</li>
+	<li id="menu-item-340" class="menu-item menu-item-type-custom menu-item-340"><a href="#">jMonkeyEngine 3 ></a>
+	<ul class="sub-menu">
+		<li id="menu-item-343" class="menu-item menu-item-type-custom menu-item-343"><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://jmonkeyengine.org/groups/development-discussion-jme3/forum/"><param name="text" value="<html><u>Dev Discussion</u></html>"><param name="textColor" value="blue"></object></li>
+		<li id="menu-item-344" class="menu-item menu-item-type-custom menu-item-344"><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://jmonkeyengine.org/groups/contribution-depot-jme3/forum/"><param name="text" value="<html><u>Contributions</u></html>"><param name="textColor" value="blue"></object></li>
+		<li id="menu-item-710" class="menu-item menu-item-type-custom menu-item-710"><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://jmonkeyengine.org/groups/documentation-jme3/"><param name="text" value="<html><u>Docs Discussion</u></html>"><param name="textColor" value="blue"></object></li>
+		<li id="menu-item-349" class="menu-item menu-item-type-custom menu-item-349"><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://jmonkeyengine.org/groups/jmonkeyplatform/forum/"><param name="text" value="<html><u>jMonkeyPlatform</u></html>"><param name="textColor" value="blue"></object></li>
+		<li id="menu-item-350" class="menu-item menu-item-type-custom menu-item-350"><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://jmonkeyengine.org/groups/android/forum/"><param name="text" value="<html><u>Android</u></html>"><param name="textColor" value="blue"></object></li>
+	</ul>
+</li>
+	<li id="menu-item-699" class="menu-item menu-item-type-custom menu-item-699"><a href="#">jMonkeyEngine 2 ></a>
+	<ul class="sub-menu">
+		<li id="menu-item-341" class="menu-item menu-item-type-custom menu-item-341"><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://jmonkeyengine.org/groups/development-discussion-jme2/forum/"><param name="text" value="<html><u>Discussion</u></html>"><param name="textColor" value="blue"></object></li>
+		<li id="menu-item-342" class="menu-item menu-item-type-custom menu-item-342"><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://jmonkeyengine.org/groups/contribution-depot-jme2/forum/"><param name="text" value="<html><u>Contributions</u></html>"><param name="textColor" value="blue"></object></li>
+		<li id="menu-item-353" class="menu-item menu-item-type-custom menu-item-353"><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://jmonkeyengine.org/groups/documentation/forum/"><param name="text" value="<html><u>Docs Discussion</u></html>"><param name="textColor" value="blue"></object></li>
+	</ul>
+</li>
+	<li id="menu-item-345" class="menu-item menu-item-type-custom menu-item-345"><a href="#">Project Relations ></a>
+	<ul class="sub-menu">
+		<li id="menu-item-346" class="menu-item menu-item-type-custom menu-item-346"><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://jmonkeyengine.org/groups/free-announcements/forum/"><param name="text" value="<html><u>Free Announcements</u></html>"><param name="textColor" value="blue"></object></li>
+		<li id="menu-item-347" class="menu-item menu-item-type-custom menu-item-347"><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://jmonkeyengine.org/groups/user-code-projects/forum/"><param name="text" value="<html><u>User Code &#038; Projects</u></html>"><param name="textColor" value="blue"></object></li>
+		<li id="menu-item-352" class="menu-item menu-item-type-custom menu-item-352"><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://jmonkeyengine.org/groups/site-project/forum/"><param name="text" value="<html><u>Site &#038; Project Feedback</u></html>"><param name="textColor" value="blue"></object></li>
+		<li id="menu-item-354" class="menu-item menu-item-type-custom menu-item-354"><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://jmonkeyengine.org/groups/features/forum/"><param name="text" value="<html><u>Feature Discussion</u></html>"><param name="textColor" value="blue"></object></li>
+		<li id="menu-item-348" class="menu-item menu-item-type-custom menu-item-348"><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://jmonkeyengine.org/groups/general/forum/"><param name="text" value="<html><u>Small Talk</u></html>"><param name="textColor" value="blue"></object></li>
+	</ul>
+</li>
+</ul>
+</li>
+<li id="menu-item-319" class="menu-item menu-item-type-custom menu-item-319"><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://jmonkeyengine.org/groups/tag/projects"><param name="text" value="<html><u>Projects</u></html>"><param name="textColor" value="blue"></object>
+<ul class="sub-menu">
+	<li id="menu-item-320" class="menu-item menu-item-type-custom menu-item-320"><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://jmonkeyengine.org/groups/tag/game"><param name="text" value="<html><u>Games</u></html>"><param name="textColor" value="blue"></object></li>
+	<li id="menu-item-1117" class="menu-item menu-item-type-custom menu-item-1117"><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://jmonkeyengine.org/groups/tag/tool"><param name="text" value="<html><u>Tools</u></html>"><param name="textColor" value="blue"></object></li>
+	<li id="menu-item-323" class="menu-item menu-item-type-custom menu-item-323"><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://jmonkeyengine.org/groups/tag/oss"><param name="text" value="<html><u>Open Source</u></html>"><param name="textColor" value="blue"></object></li>
+</ul>
+</li>
+<li id="menu-item-351" class="menu-item menu-item-type-custom menu-item-351"><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://jmonkeyengine.org/wiki/doku.php"><param name="text" value="<html><u>Documentation</u></html>"><param name="textColor" value="blue"></object>
+<ul class="sub-menu">
+	<li id="menu-item-324" class="menu-item menu-item-type-custom menu-item-324"><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://jmonkeyengine.org/wiki/doku.php/jme3"><param name="text" value="<html><u>jMonkeyEngine 3</u></html>"><param name="textColor" value="blue"></object>
+	<ul class="sub-menu">
+		<li id="menu-item-1257" class="menu-item menu-item-type-custom menu-item-1257"><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://jmonkeyengine.org/javadoc/"><param name="text" value="<html><u>jME3 JavaDoc</u></html>"><param name="textColor" value="blue"></object></li>
+		<li id="menu-item-711" class="menu-item menu-item-type-custom menu-item-711"><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://jmonkeyengine.org/groups/documentation-jme3/"><param name="text" value="<html><u>jME3 Docs Discussion</u></html>"><param name="textColor" value="blue"></object></li>
+	</ul>
+</li>
+	<li id="menu-item-367" class="menu-item menu-item-type-custom menu-item-367"><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://jmonkeyengine.org/wiki/doku.php/jme3:jmonkeyplatform"><param name="text" value="<html><u>jMonkeyPlatform</u></html>"><param name="textColor" value="blue"></object></li>
+	<li id="menu-item-325" class="menu-item menu-item-type-custom menu-item-325"><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://jmonkeyengine.org/wiki/doku.php/jme2"><param name="text" value="<html><u>jMonkeyEngine 2</u></html>"><param name="textColor" value="blue"></object>
+	<ul class="sub-menu">
+		<li id="menu-item-698" class="menu-item menu-item-type-custom menu-item-698"><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://jmonkeyengine.org/groups/documentation/forum/"><param name="text" value="<html><u>jME 2 Docs Discussion</u></html>"><param name="textColor" value="blue"></object></li>
+	</ul>
+</li>
+</ul>
+</li>
+<li id="menu-item-717" class="menu-item menu-item-type-post_type menu-item-717"><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://jmonkeyengine.org/downloads/"><param name="text" value="<html><u>Downloads</u></html>"><param name="textColor" value="blue"></object>
+<ul class="sub-menu">
+	<li id="menu-item-697" class="menu-item menu-item-type-custom menu-item-697"><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://code.google.com/p/jmonkeyengine/"><param name="text" value="<html><u>GoogleCode</u></html>"><param name="textColor" value="blue"></object></li>
+	<li id="menu-item-464" class="menu-item menu-item-type-custom menu-item-464"><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://code.google.com/p/jmonkeyengine/source/checkout"><param name="text" value="<html><u>SVN Checkout</u></html>"><param name="textColor" value="blue"></object></li>
+	<li id="menu-item-463" class="menu-item menu-item-type-custom menu-item-463"><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://jmonkeyengine.com/nightly/"><param name="text" value="<html><u>Nightly Builds</u></html>"><param name="textColor" value="blue"></object></li>
+</ul>
+</li>
+</ul></div>
+		</div><!-- #header -->
+
+				
+		<div id="container"><body class="dw-none">
+
+
+<!--div id="menubar" class="dokuwiki">   
+   
+		<a href="/wiki/doku.php/"  name="dokuwiki__top" accesskey="h" title="[ALT+H]" id="wikititle">jME Wiki</a>		<form action="/wiki/doku.php/" accept-charset="utf-8" class="search" id="dw__search"><div class="no"><input type="hidden" name="do" value="search" /><input type="text" id="qsearch__in" accesskey="f" name="id" class="edit" title="[F]" /><input type="submit" value="Search" class="button" title="Search" /><div id="qsearch__out" class="ajax_qsearch JSpopup"></div></div></form>		 
+            <div class="action-menus">
+        <div class="action-menu">
+			<div class="action-menu-title">
+				⚙
+			</div>
+			<div class="action-menu-content">
+          <a href="/wiki/doku.php/jme3:advanced:post-process_water?do=edit&amp;rev="  class="action source" accesskey="v" rel="nofollow">Show pagesource</a><a href="/wiki/doku.php/jme3:advanced:post-process_water?do=revisions"  class="action revisions" accesskey="o" rel="nofollow">Old revisions</a><a href="/wiki/doku.php/jme3:advanced:post-process_water?do=backlink"  class="action backlink" rel="nofollow">Backlinks</a>			</div>
+        </div>
+        <div class="action-menu">
+        <div class="action-menu-title">
+			⚒
+		</div>
+		<div class="action-menu-content">[unknown link type]<a href="/wiki/doku.php/jme3:advanced:post-process_water?do=recent"  class="action recent" accesskey="r" rel="nofollow">Recent changes</a><a href="/wiki/doku.php/jme3:advanced:post-process_water?do=index"  class="action index" accesskey="x" rel="nofollow">Index</a><a href="/wiki/doku.php/jme3:advanced:post-process_water?do=login&amp;sectok=db5c6573d4ab6e682655b13b570a5537"  class="action login" rel="nofollow">Login</a></div>
+        </div>
+    </div>
+    
+
+
+
+
+
+
+
+
+</div-->
+
+
+
+
+
+
+
+<div id="wrapper" class="dokuwiki">
+
+    	
+
+
+    
+
+
+      
+
+    
+    
+          <div id="page" class="page">
+        
+
+
+<h1><a name="this_topic_does_not_exist_yet" id="this_topic_does_not_exist_yet">This topic does not exist yet</a></h1>
+<div class="level1">
+
+<p>
+
+You&#039;ve followed a link to a topic that doesn&#039;t exist yet. If permissions allow, you may create it by using the <code>Create this page</code> button.
+</p>
+
+</div>
+
+
+		<div class="meta">
+		  <div class="user">
+		  		  </div>
+		  <div class="doc">
+		  		  </div>
+		</div>
+      </div>
+    
+     
+    <div id="trail">
+      <span class="bchead">You are here: </span><a href="/wiki/doku.php/jME%20Wiki"  title="jME Wiki">jME Wiki</a><a href="/wiki/doku.php/jme3"  title="jme3">jme3</a><a href="/wiki/doku.php/jme3:advanced:jme_wiki"  title="jme3:advanced:jme_wiki" class="wikilink2" rel="nofollow">advanced</a><a href="/wiki/doku.php/jme3:advanced:post-process_water"  title="jme3:advanced:post-process_water" class="wikilink2" rel="nofollow">post-process_water</a>    </div>
+    
+
+</div>
+
+    
+
+    		</div> <!-- #container -->
+
+				
+		<div id="footer">
+	    	<p>jMonkeyEngine.org is proudly powered by <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://wordpress.org"><param name="text" value="<html><u>BuddyPress</u></html>"><param name="textColor" value="blue"></object></p>
+
+					</div><!-- #footer -->
+
+		
+		<div id="wp-admin-bar"><div class="padder"><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://jmonkeyengine.org"><param name="text" value="<html><u>Sign Up</u></html>"><param name="textColor" value="blue"></object></li>
+	<li class="align-right" id="bp-adminbar-visitrandom-menu">
+		<a href="#">Visit</a>
+		<ul class="random-list">
+			<li><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://jmonkeyengine.org/members/?random-member"><param name="text" value="<html><u>Random Member</u></html>"><param name="textColor" value="blue"></object></li>
+
+			
+				<li class="alt"><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://jmonkeyengine.org/groups/?random-group"><param name="text" value="<html><u>Random Group</u></html>"><param name="textColor" value="blue"></object></li>
+
+			
+			
+			
+		</ul>
+	</li>
+
+	</ul></div></div><!-- #wp-admin-bar -->
+
+<script type='text/javascript' src='http://jmonkeyengine.org/wp-includes/js/jquery/ui.core.js?ver=1.7.3'></script>
+<script type='text/javascript' src='http://jmonkeyengine.org/wp-includes/js/jquery/ui.resizable.js?ver=1.7.3'></script>
+<script type='text/javascript' src='http://jmonkeyengine.org/wp-includes/js/jquery/ui.draggable.js?ver=1.7.3'></script>
+<script type='text/javascript' src='http://jmonkeyengine.org/wp-includes/js/jquery/ui.dialog.js?ver=1.7.3'></script>
+
+<!-- Generated in 6.327 seconds. -->
+
+	
+<!--Plugin WP Overview (lite) 2011.0101.1111 Active-->
+<!--stats_footer_test--><script src="http://stats.wordpress.com/e-201106.js" type="text/javascript"></script>
+<script type="text/javascript">
+st_go({blog:'14883676',v:'ext',post:'0'});
+var load_cmc = function(){linktracker_init(14883676,0,2);};
+if ( typeof addLoadEvent != 'undefined' ) addLoadEvent(load_cmc);
+else load_cmc();
+</script>
+
+	</body>
+
+</html>
+
+<div class="no"></div>
+</body>
+</html>
+
+<!-- Performance optimized by W3 Total Cache. Learn more: http://www.w3-edge.com/wordpress-plugins/
+
+Minified using disk
+Page Caching using disk (enhanced) (request URI contains query)
+
+Served from: jmonkeyengine.org @ 2011-02-10 12:25:33 -->
+<p><em><a href="http://jmonkeyengine.org/wiki/doku.php/jme3:advanced:post-process_water?do=export_xhtmlbody">view online version</a></em></p>

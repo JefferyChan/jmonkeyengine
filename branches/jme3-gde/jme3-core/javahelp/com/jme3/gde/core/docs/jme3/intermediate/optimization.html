@@ -1,0 +1,47 @@
+
+
+
+<h1><a name="optimization_reference" id="optimization_reference">Optimization reference</a></h1>
+<div class="level1">
+
+<p>
+
+This page is intended as a reference collection of optimization tricks that can be used to speed up JME3 applications.
+</p>
+
+</div>
+<!-- SECTION "Optimization reference" [1-159] -->
+<h2><a name="maintain_low_geometry_count" id="maintain_low_geometry_count">Maintain low Geometry count</a></h2>
+<div class="level2">
+
+<p>
+
+The more Geometry objects are added to the scene, the harder it gets to handle them in a speedy fashion.
+The reson for this is, that for every object a render command must be done, here is a bottleneck betwenn the CPU and the Graficcard.
+</p>
+
+<p>
+<strong>Possible optimization techniques</strong>
+</p>
+<ul>
+<li class="level1"><div class="li"> Use GeometryBatchFactory.optimize(node) to merge the meshes of the geometries contained in the given node into fewer batches (based on common Material used).</div>
+</li>
+</ul>
+
+<p>
+
+<strong>Side-effects</strong>
+</p>
+<ul>
+<li class="level1"><div class="li"> Using GeometryBatchFactory merges individual Geometries into a single mesh. Thereby it becomes hard to apply specific Materials or to remove a single Geometry. Therefore it should be used for static Geometry only that does not require frequent changes or individual materials/texturing.</div>
+</li>
+<li class="level1"><div class="li">Using Texture atlases might be a way to provide a limited individual texturing.</div>
+</li>
+</ul>
+<div class="tags"><span>
+	<a href="/wiki/doku.php/tag:performance?do=showtag&amp;tag=tag%3Aperformance" class="wikilink1" title="tag:performance" rel="tag">performance</a>
+</span></div>
+
+</div>
+<!-- SECTION "Maintain low Geometry count" [160-] -->
+<p><em><a href="http://jmonkeyengine.org/wiki/doku.php/jme3:intermediate:optimization?do=export_xhtmlbody">view online version</a></em></p>

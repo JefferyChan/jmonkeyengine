@@ -88,10 +88,12 @@
             <tocitem text="Effects Overview" target="jme3.advanced.effects_overview"/>
             <tocitem text="Sky" target="jme3.advanced.sky"/>
             <tocitem text="Terrain" target="jme3.advanced.terrain"/>
-            <tocitem text="Water" target="jme3.advanced.water"/>
+            <tocitem text="Simple Water" target="jme3.advanced.water"/>
+            <tocitem text="Post Process Water" target="jme3.advanced.post-process_water"/>
             <tocitem text="Light and Shadow" target="jme3.advanced.light_and_shadow"/>
             <tocitem text="Bloom and Glow" target="jme3.advanced.bloom_and_glow"/>
             <tocitem text="Particle Emitters" target="jme3.advanced.particle_emitters"/>
+            <tocitem text="About Shaders" target="jme3.advanced.jme3_shaders"/>
         </tocitem>
         <tocitem text="Animation" expand="false">
             <tocitem text="Animation" target="jme3.advanced.animation"/>
@@ -109,13 +111,16 @@
         </tocitem>
         <tocitem text="Miscellaneous" expand="false">
             <tocitem text="Input Handling" target="jme3.advanced.input_handling"/>
+            <tocitem text="NiftyGUI" target="jme3.advanced.nifty_gui"/>
+            <tocitem text="Custom Controls" target="jme3.advanced.custom_controls"/>
             <tocitem text="Creating a Swing Canvas" target="jme3.advanced.swing_canvas"/>
+            <tocitem text="Camera" target="jme3.advanced.camera"/>
             <tocitem text="Multiple Cameras" target="jme3.advanced.multiple_camera_views"/>
             <tocitem text="Game Localization" target="jme3.advanced.localization"/>
             <tocitem text="Custom Meshes" target="jme3.advanced.custom_meshes"/>
             <tocitem text="Custom Controls" target="jme3.advanced.custom_controls"/>
             <tocitem text="Combo Moves" target="jme3.advanced.combo_moves"/>
-            <tocitem text="NiftyGUI" target="jme3.advanced.nifty_gui"/>
+            <tocitem text="Optimization" target="jme3.intermediate.optimization"/>
         </tocitem>
     </tocitem>
     <tocitem text="jMP Plugin Development" expand="false">
