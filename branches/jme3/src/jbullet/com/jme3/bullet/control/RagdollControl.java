@@ -139,7 +139,7 @@ public class RagdollControl implements PhysicsControl {
 
             // TODO: joints act funny when bone is too thin??
             float radius = height > 2f ? 0.4f : height * .2f;
-            CapsuleCollisionShape shape = new CapsuleCollisionShape(radius, height - (radius ), 2);
+            CapsuleCollisionShape shape = new CapsuleCollisionShape(radius, height - (radius), 2);
 
             PhysicsRigidBody shapeNode = new PhysicsRigidBody(shape, 10.0f / (float) reccount);
             shapeNode.setPhysicsLocation(jointCenter);
@@ -218,6 +218,11 @@ public class RagdollControl implements PhysicsControl {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+        if(!enabled&&space!=null){
+            removeFromPhysicsSpace();
+        }else if(enabled && space!=null){
+            addToPhysicsSpace();
+        }
     }
 
     public boolean isEnabled() {
@@ -241,7 +246,10 @@ public class RagdollControl implements PhysicsControl {
     }
 
     public void render(RenderManager rm, ViewPort vp) {
-        if (debug) {
+        if (enabled && space != null && space.getDebugManager() != null) {
+            if (!debug) {
+                attachDebugShape(space.getDebugManager());
+            }
             for (Iterator<PhysicsBoneLink> it = boneLinks.iterator(); it.hasNext();) {
                 PhysicsBoneLink physicsBoneLink = it.next();
                 Spatial debugShape = physicsBoneLink.rigidBody.debugShape();
@@ -260,7 +268,9 @@ public class RagdollControl implements PhysicsControl {
             removeFromPhysicsSpace();
             this.space = space;
         } else {
-            if(this.space==space) return;
+            if (this.space == space) {
+                return;
+            }
             this.space = space;
             addToPhysicsSpace();
         }

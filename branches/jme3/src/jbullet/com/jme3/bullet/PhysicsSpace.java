@@ -48,7 +48,6 @@ import com.bulletphysics.collision.dispatch.CollisionObject;
 import com.bulletphysics.collision.dispatch.CollisionWorld;
 import com.bulletphysics.collision.dispatch.CollisionWorld.LocalRayResult;
 import com.bulletphysics.collision.dispatch.DefaultCollisionConfiguration;
-import com.bulletphysics.collision.dispatch.GhostObject;
 import com.bulletphysics.collision.dispatch.GhostPairCallback;
 import com.bulletphysics.collision.narrowphase.ManifoldPoint;
 import com.bulletphysics.dynamics.DiscreteDynamicsWorld;
@@ -59,6 +58,7 @@ import com.bulletphysics.dynamics.constraintsolver.ConstraintSolver;
 import com.bulletphysics.dynamics.constraintsolver.SequentialImpulseConstraintSolver;
 import com.bulletphysics.extras.gimpact.GImpactCollisionAlgorithm;
 import com.jme3.app.AppTask;
+import com.jme3.asset.AssetManager;
 import com.jme3.math.Vector3f;
 import com.jme3.bullet.collision.PhysicsCollisionEvent;
 import com.jme3.bullet.collision.PhysicsCollisionEventFactory;
@@ -126,6 +126,7 @@ public class PhysicsSpace {
     private boolean deterministic = false;
     private javax.vecmath.Vector3f rayVec1 = new javax.vecmath.Vector3f();
     private javax.vecmath.Vector3f rayVec2 = new javax.vecmath.Vector3f();
+    private AssetManager debugManager;
 
     /**
      * Get the current PhysicsSpace <b>running on this thread</b><br/>
@@ -195,10 +196,11 @@ public class PhysicsSpace {
         GImpactCollisionAlgorithm.registerAlgorithm(dispatcher);
 
         physicsSpaceTL.set(this);
-        //register filter callback for groups / collision decision
-        setOverlapFilterCallback();
+        //register filter callback for tick / collision
         setTickCallback();
         setContactCallbacks();
+        //register filter callback for collision groups
+        setOverlapFilterCallback();
     }
 
     private void setOverlapFilterCallback() {
@@ -238,14 +240,10 @@ public class PhysicsSpace {
 
     private void setTickCallback() {
         final PhysicsSpace space = this;
-        InternalTickCallback callback = new InternalTickCallback() {
+        InternalTickCallback callback2 = new InternalTickCallback() {
 
             @Override
             public void internalTick(DynamicsWorld dw, float f) {
-                for (Iterator<PhysicsTickListener> it = tickListeners.iterator(); it.hasNext();) {
-                    PhysicsTickListener physicsTickCallback = it.next();
-                    physicsTickCallback.physicsTick(space, f);
-                }
                 //execute task list
                 AppTask task = pQueue.poll();
                 task = pQueue.poll();
@@ -261,6 +259,17 @@ public class PhysicsSpace {
                     task = pQueue.poll();
                 }
 
+            }
+        };
+        dynamicsWorld.setPreTickCallback(callback2);
+        InternalTickCallback callback = new InternalTickCallback() {
+
+            @Override
+            public void internalTick(DynamicsWorld dw, float f) {
+                for (Iterator<PhysicsTickListener> it = tickListeners.iterator(); it.hasNext();) {
+                    PhysicsTickListener physicsTickCallback = it.next();
+                    physicsTickCallback.physicsTick(space, f);
+                }
             }
         };
         dynamicsWorld.setInternalTickCallback(callback, this);
@@ -694,9 +703,7 @@ public class PhysicsSpace {
      * Sets the deterministic mode of this physics space.
      * If the physicsSpace is deterministic, low fps values will
      * be compensated by stepping the physics space multiple times per frame.
-     * If not, low fps values will make the physics inaccurate. This switch
-     * has been added to avoid problems with "overloaded" physics spaces that drive
-     * their own fps down.
+     * If not, low fps values will make the physics inaccurate. Default is false.
      * @param deterministic
      */
     public void setDeterministic(boolean deterministic) {
@@ -741,6 +748,25 @@ public class PhysicsSpace {
      */
     public void setWorldMax(Vector3f worldMax) {
         this.worldMax.set(worldMax);
+    }
+
+    /**
+     * Enable debug display for physics
+     * @param manager AssetManager to use to create debug materials
+     */
+    public void enableDebug(AssetManager manager) {
+        debugManager = manager;
+    }
+
+    /**
+     * Disable debug display
+     */
+    public void disableDebug() {
+        debugManager = null;
+    }
+
+    public AssetManager getDebugManager() {
+        return debugManager;
     }
 
     /**

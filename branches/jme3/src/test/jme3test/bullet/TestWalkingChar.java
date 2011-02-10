@@ -41,12 +41,10 @@ import com.jme3.bounding.BoundingBox;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.PhysicsCollisionEvent;
 import com.jme3.bullet.collision.PhysicsCollisionListener;
-import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.control.CharacterControl;
 import com.jme3.bullet.control.RigidBodyControl;
-import com.jme3.bullet.nodes.PhysicsNode;
 import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.effect.EmitterSphereShape;
 import com.jme3.effect.ParticleEmitter;
@@ -57,7 +55,6 @@ import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
-import com.jme3.material.RenderState.BlendMode;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
@@ -70,7 +67,6 @@ import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.Spatial.CullHint;
 import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Sphere;
 import com.jme3.scene.shape.Sphere.TextureMode;
@@ -98,7 +94,7 @@ public class TestWalkingChar extends SimpleApplication implements ActionListener
     Node model;
     //temp vectors
     Vector3f walkDirection = new Vector3f();
-    Quaternion modelRotation = new Quaternion();
+//    Quaternion modelRotation = new Quaternion();
     Vector3f modelDirection = new Vector3f();
     Vector3f modelRight = new Vector3f();
     //terrain
@@ -199,11 +195,11 @@ public class TestWalkingChar extends SimpleApplication implements ActionListener
     private void addBrick(Vector3f ori) {
         Geometry reBoxg = new Geometry("brick", brick);
         reBoxg.setMaterial(matRock);
-        PhysicsNode brickNode = new PhysicsNode(reBoxg, new BoxCollisionShape(new Vector3f(bLength, bHeight, bWidth)), 1.5f);
-        brickNode.setLocalTranslation(ori);
-        brickNode.setShadowMode(ShadowMode.CastAndReceive);
-        this.rootNode.attachChild(brickNode);
-        this.getPhysicsSpace().add(brickNode);
+        reBoxg.setLocalTranslation(ori);
+        reBoxg.addControl(new RigidBodyControl(1.5f));
+        reBoxg.setShadowMode(ShadowMode.CastAndReceive);
+        this.rootNode.attachChild(reBoxg);
+        this.getPhysicsSpace().add(reBoxg);
     }
 
     private void prepareBullet() {
@@ -304,7 +300,6 @@ public class TestWalkingChar extends SimpleApplication implements ActionListener
         model.setLocalScale(0.5f);
         model.addControl(character);
         character.setPhysicsLocation(new Vector3f(-140, 10, -10));
-        character.attachDebugShape(assetManager);
         rootNode.attachChild(model);
         getPhysicsSpace().add(character);
     }
@@ -354,7 +349,7 @@ public class TestWalkingChar extends SimpleApplication implements ActionListener
                 animationChannel.setAnim("stand", 1f);
             }
         } else {
-            modelRotation.lookAt(walkDirection, Vector3f.UNIT_Y);
+            character.setViewDirection(modelDirection);
             if (airTime > .3f) {
                 if (!"stand".equals(animationChannel.getAnimationName())) {
                     animationChannel.setAnim("stand");
@@ -363,8 +358,6 @@ public class TestWalkingChar extends SimpleApplication implements ActionListener
                 animationChannel.setAnim("Walk", 0.7f);
             }
         }
-        model.getChild(0).setLocalRotation(modelRotation);
-        modelRotation.multLocal(modelDirection);
         modelRight.set(modelDirection);
         ROTATE_LEFT.multLocal(modelRight);
         character.setWalkDirection(walkDirection);

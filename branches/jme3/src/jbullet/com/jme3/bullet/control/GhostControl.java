@@ -96,7 +96,10 @@ public class GhostControl extends PhysicsGhostObject implements PhysicsControl {
     }
 
     public void render(RenderManager rm, ViewPort vp) {
-        if (debugShape != null && enabled) {
+        if (enabled && space != null && space.getDebugManager() != null) {
+            if (debugShape == null) {
+                attachDebugShape(space.getDebugManager());
+            }
             debugShape.setLocalTranslation(getPhysicsLocation());
             debugShape.setLocalRotation(getPhysicsRotation());
             debugShape.updateLogicalState(0);

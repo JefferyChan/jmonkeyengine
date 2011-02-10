@@ -36,14 +36,15 @@ import com.jme3.bullet.BulletAppState;
 import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
+import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.joints.HingeJoint;
-import com.jme3.bullet.nodes.PhysicsNode;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.AnalogListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Node;
 
 public class TestPhysicsHingeJoint extends SimpleApplication implements AnalogListener {
     private BulletAppState bulletAppState;
@@ -77,6 +78,7 @@ public class TestPhysicsHingeJoint extends SimpleApplication implements AnalogLi
     public void simpleInitApp() {
         bulletAppState = new BulletAppState();
         stateManager.attach(bulletAppState);
+        bulletAppState.getPhysicsSpace().enableDebug(assetManager);
         setupKeys();
         setupJoint();
     }
@@ -90,19 +92,17 @@ public class TestPhysicsHingeJoint extends SimpleApplication implements AnalogLi
         Material mat = new Material(getAssetManager(), "Common/MatDefs/Misc/WireColor.j3md");
         mat.setColor("Color", ColorRGBA.Yellow);
 
-        PhysicsNode holderNode=new PhysicsNode(new BoxCollisionShape(new Vector3f( .1f, .1f, .1f)),0);
-        holderNode.setLocalTranslation(new Vector3f(0f,0,0f));
-        holderNode.attachDebugShape(mat);
+        Node holderNode=PhysicsTestHelper.createPhysicsTestNode(assetManager, new BoxCollisionShape(new Vector3f( .1f, .1f, .1f)),0);
+        holderNode.getControl(RigidBodyControl.class).setPhysicsLocation(new Vector3f(0f,0,0f));
         rootNode.attachChild(holderNode);
         getPhysicsSpace().add(holderNode);
 
-        PhysicsNode hammerNode=new PhysicsNode(new BoxCollisionShape(new Vector3f( .3f, .3f, .3f)),1);
-        hammerNode.setLocalTranslation(new Vector3f(0f,-1,0f));
-        hammerNode.attachDebugShape(assetManager);
+        Node hammerNode=PhysicsTestHelper.createPhysicsTestNode(assetManager, new BoxCollisionShape(new Vector3f( .3f, .3f, .3f)),1);
+        hammerNode.getControl(RigidBodyControl.class).setPhysicsLocation(new Vector3f(0f,-1,0f));
         rootNode.attachChild(hammerNode);
         getPhysicsSpace().add(hammerNode);
 
-        joint=new HingeJoint(holderNode.getRigidBody(), hammerNode.getRigidBody(), Vector3f.ZERO, new Vector3f(0f,-1,0f), Vector3f.UNIT_Z, Vector3f.UNIT_Z);
+        joint=new HingeJoint(holderNode.getControl(RigidBodyControl.class), hammerNode.getControl(RigidBodyControl.class), Vector3f.ZERO, new Vector3f(0f,-1,0f), Vector3f.UNIT_Z, Vector3f.UNIT_Z);
         getPhysicsSpace().add(joint);
     }
 

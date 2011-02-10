@@ -201,7 +201,10 @@ public class RigidBodyControl extends PhysicsRigidBody implements PhysicsControl
     }
 
     public void render(RenderManager rm, ViewPort vp) {
-        if (debugShape != null && enabled) {
+        if (enabled && space != null && space.getDebugManager() != null) {
+            if (debugShape == null) {
+                attachDebugShape(space.getDebugManager());
+            }
             debugShape.setLocalTranslation(motionState.getWorldLocation());
             debugShape.setLocalRotation(motionState.getWorldRotation());
             debugShape.updateLogicalState(0);

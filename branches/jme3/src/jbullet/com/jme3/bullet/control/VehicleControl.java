@@ -157,7 +157,10 @@ public class VehicleControl extends PhysicsVehicle implements PhysicsControl {
     }
 
     public void render(RenderManager rm, ViewPort vp) {
-        if (debugShape != null && enabled) {
+        if (enabled && space != null && space.getDebugManager() != null) {
+            if (debugShape == null) {
+                attachDebugShape(space.getDebugManager());
+            }
             Node debugNode = (Node) debugShape;
             debugShape.setLocalTranslation(motionState.getWorldLocation());
             debugShape.setLocalRotation(motionState.getWorldRotation());

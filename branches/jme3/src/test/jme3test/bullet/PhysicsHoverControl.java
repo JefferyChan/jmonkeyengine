@@ -33,22 +33,22 @@ public class PhysicsHoverControl extends PhysicsRigidBody implements PhysicsCont
     protected Spatial spatial;
     protected boolean enabled = true;
     protected PhysicsSpace space = null;
-
     protected float steeringValue = 0;
     protected float accelerationValue = 0;
-
-    protected int xw = 4;
-    protected int zw = 6;
-    protected int yw = 4;
-    protected Vector3f HOVER_HEIGHT_LF_START = new Vector3f(xw, 2, zw);
-    protected Vector3f HOVER_HEIGHT_RF_START = new Vector3f(-xw, 2, zw);
-    protected Vector3f HOVER_HEIGHT_LR_START = new Vector3f(xw, 2, -zw);
-    protected Vector3f HOVER_HEIGHT_RR_START = new Vector3f(-xw, 2, -zw);
+    protected int xw = 3;
+    protected int zw = 5;
+    protected int yw = 2;
+    protected Vector3f HOVER_HEIGHT_LF_START = new Vector3f(xw, 1, zw);
+    protected Vector3f HOVER_HEIGHT_RF_START = new Vector3f(-xw, 1, zw);
+    protected Vector3f HOVER_HEIGHT_LR_START = new Vector3f(xw, 1, -zw);
+    protected Vector3f HOVER_HEIGHT_RR_START = new Vector3f(-xw, 1, -zw);
     protected Vector3f HOVER_HEIGHT_LF = new Vector3f(xw, -yw, zw);
     protected Vector3f HOVER_HEIGHT_RF = new Vector3f(-xw, -yw, zw);
     protected Vector3f HOVER_HEIGHT_LR = new Vector3f(xw, -yw, -zw);
     protected Vector3f HOVER_HEIGHT_RR = new Vector3f(-xw, -yw, -zw);
-    protected Vector3f HOVER_FORCE = new Vector3f(0, 6000f, 0);
+    protected Vector3f HOVER_FORCE = new Vector3f(0, 10000f, 0);
+    protected Vector3f tempVect1 = new Vector3f(0, 0, 0);
+    protected Vector3f tempVect2 = new Vector3f(0, 0, 0);
 
     public PhysicsHoverControl() {
     }
@@ -89,21 +89,25 @@ public class PhysicsHoverControl extends PhysicsRigidBody implements PhysicsCont
     }
 
     public void physicsTick(PhysicsSpace space, float f) {
-        List<PhysicsRayTestResult> results = space.rayTest(spatial.localToWorld(HOVER_HEIGHT_LF_START, null), spatial.localToWorld(HOVER_HEIGHT_LF, null));
+        List<PhysicsRayTestResult> results = space.rayTest(spatial.localToWorld(HOVER_HEIGHT_LF_START, tempVect1), spatial.localToWorld(HOVER_HEIGHT_LF, tempVect2));
         if (results.size() > 0) {
-            applyForce(HOVER_FORCE, HOVER_HEIGHT_LF.mult(results.get(0).getHitFraction()));
+            applyForce(HOVER_FORCE.mult(1 - results.get(0).getHitFraction()), HOVER_HEIGHT_LF);
+//            System.out.println("fract1:" + (1 - results.get(0).getHitFraction()));
         }
-        results = space.rayTest(spatial.localToWorld(HOVER_HEIGHT_RF_START, null), spatial.localToWorld(HOVER_HEIGHT_RF, null));
+        results = space.rayTest(spatial.localToWorld(HOVER_HEIGHT_RF_START, tempVect1), spatial.localToWorld(HOVER_HEIGHT_RF, tempVect2));
         if (results.size() > 0) {
-            applyForce(HOVER_FORCE, HOVER_HEIGHT_RF.mult(results.get(0).getHitFraction()));
+            applyForce(HOVER_FORCE.mult(1 - results.get(0).getHitFraction()), HOVER_HEIGHT_RF);
+//            System.out.println("fract2:" + (1 - results.get(0).getHitFraction()));
         }
-        results = space.rayTest(spatial.localToWorld(HOVER_HEIGHT_LR_START, null), spatial.localToWorld(HOVER_HEIGHT_LR, null));
+        results = space.rayTest(spatial.localToWorld(HOVER_HEIGHT_LR_START, tempVect1), spatial.localToWorld(HOVER_HEIGHT_LR, tempVect2));
         if (results.size() > 0) {
-            applyForce(HOVER_FORCE, HOVER_HEIGHT_LR.mult(results.get(0).getHitFraction()));
+            applyForce(HOVER_FORCE.mult(1 - results.get(0).getHitFraction()), HOVER_HEIGHT_LR);
+//            System.out.println("fract3:" + (1 - results.get(0).getHitFraction()));
         }
-        results = space.rayTest(spatial.localToWorld(HOVER_HEIGHT_RR_START, null), spatial.localToWorld(HOVER_HEIGHT_RR, null));
+        results = space.rayTest(spatial.localToWorld(HOVER_HEIGHT_RR_START, tempVect1), spatial.localToWorld(HOVER_HEIGHT_RR, tempVect2));
         if (results.size() > 0) {
-            applyForce(HOVER_FORCE, HOVER_HEIGHT_RR.mult(results.get(0).getHitFraction()));
+            applyForce(HOVER_FORCE.mult(1 - results.get(0).getHitFraction()), HOVER_HEIGHT_RR);
+//            System.out.println("fract4:" + (1 - results.get(0).getHitFraction()));
         }
 
         Vector3f angVel = getAngularVelocity();
@@ -116,15 +120,15 @@ public class PhysicsHoverControl extends PhysicsRigidBody implements PhysicsCont
 
         if (steeringValue != 0) {
             if (velocity < 1 && velocity > -1) {
-                applyTorque(new Vector3f(0, steeringValue, 0));
+                applyTorque(tempVect1.set(0, steeringValue, 0));
             }
             steeringValue = 0;
         } else {
             // counter the steering value!
             if (velocity > 0.2f) {
-                applyTorque(new Vector3f(0, -10000, 0));
+                applyTorque(tempVect1.set(0, -10000, 0));
             } else if (velocity < -0.2f) {
-                applyTorque(new Vector3f(0, 10000, 0));
+                applyTorque(tempVect1.set(0, 10000, 0));
             }
         }
         if (accelerationValue > 0) {
@@ -150,24 +154,25 @@ public class PhysicsHoverControl extends PhysicsRigidBody implements PhysicsCont
                 applyForce(vel.mult(2000), Vector3f.ZERO);
             }
         }
-        //counter too much rotation
-        float[] angles = new float[3];
-        q.toAngles(angles);
-        if (angles[0] > FastMath.QUARTER_PI/2f) {
-            applyTorque(new Vector3f(-30000, 0, 0));
-        }
-        if (angles[0] < -FastMath.QUARTER_PI/2f) {
-            applyTorque(new Vector3f(30000, 0, 0));
-        }
-        if (angles[2] > FastMath.QUARTER_PI/2f) {
-            applyTorque(new Vector3f(0, 0, -30000));
-        }
-        if (angles[2] < -FastMath.QUARTER_PI/2f) {
-            applyTorque(new Vector3f(0, 0, 30000));
-        }
+//        //counter too much rotation
+//        float[] angles = new float[3];
+//        q.toAngles(angles);
+//        if (angles[0] > FastMath.QUARTER_PI / 2f) {
+//            applyTorque(new Vector3f(-300, 0, 0));
+//        }
+//        if (angles[0] < -FastMath.QUARTER_PI / 2f) {
+//            applyTorque(new Vector3f(300, 0, 0));
+//        }
+//        if (angles[2] > FastMath.QUARTER_PI / 2f) {
+//            applyTorque(new Vector3f(0, 0, -300));
+//        }
+//        if (angles[2] < -FastMath.QUARTER_PI / 2f) {
+//            applyTorque(new Vector3f(0, 0, 300));
+//        }
     }
 
     public void update(float tpf) {
+//        physicsTick(space, tpf);
         if (enabled && spatial != null) {
             getMotionState().applyTransform(spatial);
         }
@@ -189,6 +194,7 @@ public class PhysicsHoverControl extends PhysicsRigidBody implements PhysicsCont
                 this.space.removeCollisionObject(this);
                 this.space.removeTickListener(this);
             }
+            this.space = space;
         } else {
             space.addCollisionObject(this);
             space.addTickListener(this);
@@ -225,5 +231,4 @@ public class PhysicsHoverControl extends PhysicsRigidBody implements PhysicsCont
     public void accelerate(float accelerationValue) {
         this.accelerationValue = accelerationValue;
     }
-
 }

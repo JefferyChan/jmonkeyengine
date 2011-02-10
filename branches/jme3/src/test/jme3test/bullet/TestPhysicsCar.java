@@ -34,12 +34,9 @@ package jme3test.bullet;
 
 import com.jme3.bullet.BulletAppState;
 import com.jme3.app.SimpleApplication;
-import com.jme3.asset.TextureKey;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.CompoundCollisionShape;
-import com.jme3.bullet.collision.shapes.MeshCollisionShape;
-import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.control.VehicleControl;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
@@ -48,13 +45,10 @@ import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Matrix3f;
-import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
-import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Cylinder;
-import com.jme3.texture.Texture;
 
 public class TestPhysicsCar extends SimpleApplication implements ActionListener {
 
@@ -75,8 +69,9 @@ public class TestPhysicsCar extends SimpleApplication implements ActionListener 
     public void simpleInitApp() {
         bulletAppState = new BulletAppState();
         stateManager.attach(bulletAppState);
+        bulletAppState.getPhysicsSpace().enableDebug(assetManager);
+        PhysicsTestHelper.createPhysicsTestWorld(rootNode, assetManager, bulletAppState.getPhysicsSpace());
         setupKeys();
-        setupFloor();
         buildPlayer();
     }
 
@@ -97,24 +92,6 @@ public class TestPhysicsCar extends SimpleApplication implements ActionListener 
         inputManager.addListener(this, "Downs");
         inputManager.addListener(this, "Space");
         inputManager.addListener(this, "Reset");
-    }
-
-    public void setupFloor() {
-        Material mat = new Material(assetManager, "Common/MatDefs/Misc/SimpleTextured.j3md");
-        TextureKey key = new TextureKey("Interface/Logo/Monkey.jpg", true);
-        key.setGenerateMips(true);
-        Texture tex = assetManager.loadTexture(key);
-        tex.setMinFilter(Texture.MinFilter.Trilinear);
-        mat.setTexture("ColorMap", tex);
-
-        Box floor = new Box(Vector3f.ZERO, 100, 1f, 100);
-        Geometry floorGeom = new Geometry("Floor", floor);
-        floorGeom.setMaterial(mat);
-        floorGeom.setLocalTranslation(new Vector3f(0f, -3, 0f));
-
-        floorGeom.addControl(new RigidBodyControl(new MeshCollisionShape(floorGeom.getMesh()), 0));
-        rootNode.attachChild(floorGeom);
-        getPhysicsSpace().add(floorGeom);
     }
 
     private void buildPlayer() {
@@ -185,7 +162,6 @@ public class TestPhysicsCar extends SimpleApplication implements ActionListener 
         vehicle.addWheel(wheels4, new Vector3f(xOff, yOff, -zOff),
                 wheelDirection, wheelAxle, restLength, radius, false);
 
-        vehicle.attachDebugShape(assetManager);
         rootNode.attachChild(vehicleNode);
 
         getPhysicsSpace().add(vehicle);
@@ -193,7 +169,6 @@ public class TestPhysicsCar extends SimpleApplication implements ActionListener 
 
     @Override
     public void simpleUpdate(float tpf) {
-        Quaternion quat=new Quaternion();
         cam.lookAt(vehicle.getPhysicsLocation(), Vector3f.UNIT_Y);
     }
 

@@ -39,7 +39,6 @@ import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.MeshCollisionShape;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
-import com.jme3.bullet.nodes.PhysicsNode;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.MouseButtonTrigger;
@@ -88,6 +87,7 @@ public class TestCcd extends SimpleApplication implements ActionListener{
     public void simpleInitApp() {
         bulletAppState = new BulletAppState();
         stateManager.attach(bulletAppState);
+        bulletAppState.getPhysicsSpace().enableDebug(assetManager);
         setupKeys();
 
         mat = new Material(getAssetManager(), "Common/MatDefs/Misc/WireColor.j3md");
@@ -101,7 +101,6 @@ public class TestCcd extends SimpleApplication implements ActionListener{
         node2.setName("mesh");
         node2.setLocalTranslation(new Vector3f(2.5f, 0, 0f));
         node2.addControl(new RigidBodyControl(new MeshCollisionShape(new Box(Vector3f.ZERO,4,4,0.1f)), 0));
-        node2.getControl(RigidBodyControl.class).attachDebugShape(assetManager);
         rootNode.attachChild(node2);
         getPhysicsSpace().add(node2);
 
@@ -109,7 +108,6 @@ public class TestCcd extends SimpleApplication implements ActionListener{
         Node node3 = new Node();
         node3.setLocalTranslation(new Vector3f(0f, -6, 0f));
         node3.addControl(new RigidBodyControl(new BoxCollisionShape(new Vector3f(100, 1, 100)), 0));
-        node3.getControl(RigidBodyControl.class).attachDebugShape(assetManager);
         rootNode.attachChild(node3);
         getPhysicsSpace().add(node3);
 

@@ -35,20 +35,14 @@ package jme3test.bullet;
 import com.jme3.animation.AnimControl;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.app.SimpleApplication;
-import com.jme3.asset.TextureKey;
 import com.jme3.bullet.PhysicsSpace;
-import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.control.RagdollControl;
-import com.jme3.bullet.nodes.PhysicsNode;
 import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
-import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.debug.SkeletonDebugger;
-import com.jme3.scene.shape.Box;
-import com.jme3.texture.Texture;
 
 /**
  * PHYSICS RAGDOLLS ARE NOT WORKING PROPERLY YET!
@@ -66,8 +60,9 @@ public class TestBoneRagdoll  extends SimpleApplication {
     public void simpleInitApp() {
         bulletAppState = new BulletAppState();
         stateManager.attach(bulletAppState);
+        bulletAppState.getPhysicsSpace().enableDebug(assetManager);
+        PhysicsTestHelper.createPhysicsTestWorld(rootNode, assetManager, bulletAppState.getPhysicsSpace());
         setupLight();
-        setupFloor();
 
         Node model = (Node) assetManager.loadModel("Models/Oto/Oto.mesh.xml");
 
@@ -83,28 +78,11 @@ public class TestBoneRagdoll  extends SimpleApplication {
         RagdollControl ragdoll = new RagdollControl();
         
         model.addControl(ragdoll);
-        ragdoll.attachDebugShape(assetManager);
         getPhysicsSpace().add(ragdoll);
         speed = .2f;
 
         rootNode.attachChild(model);
         rootNode.attachChild(skeletonDebug);
-    }
-
-    private void setupFloor() {
-        Material mat = new Material(assetManager, "Common/MatDefs/Misc/SimpleTextured.j3md");
-        TextureKey key = new TextureKey("Interface/Logo/Monkey.jpg", true);
-        key.setGenerateMips(true);
-        Texture tex = assetManager.loadTexture(key);
-        tex.setMinFilter(Texture.MinFilter.Trilinear);
-        mat.setTexture("ColorMap", tex);
-        // the floor, does not move (mass=0)
-        Geometry geom5 = new Geometry("box2", new Box(Vector3f.ZERO, 100f, 1f, 100f));
-        geom5.setMaterial(mat);
-        PhysicsNode node3 = new PhysicsNode(geom5, new BoxCollisionShape(new Vector3f(100f, 1f, 100f)), 0);
-        node3.setLocalTranslation(new Vector3f(0f, -6, 0f));
-        rootNode.attachChild(node3);
-        getPhysicsSpace().add(node3);
     }
 
     private void setupLight() {

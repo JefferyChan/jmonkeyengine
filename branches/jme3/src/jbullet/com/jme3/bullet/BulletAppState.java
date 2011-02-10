@@ -170,7 +170,9 @@ public class BulletAppState implements AppState, PhysicsTickListener {
     }
 
     public void update(float tpf) {
-        if(!active) return;
+        if (!active) {
+            return;
+        }
         if (threadingType != ThreadingType.DETACHED) {
             pSpace.distributeEvents();
         }
@@ -178,7 +180,9 @@ public class BulletAppState implements AppState, PhysicsTickListener {
     }
 
     public void render(RenderManager rm) {
-        if(!active) return;
+        if (!active) {
+            return;
+        }
         if (threadingType == ThreadingType.PARALLEL) {
             physicsFuture = executor.submit(parallelPhysicsUpdate);
         } else if (threadingType == ThreadingType.SEQUENTIAL) {

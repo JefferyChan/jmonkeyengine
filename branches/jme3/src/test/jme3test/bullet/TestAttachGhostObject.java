@@ -38,15 +38,15 @@ import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.control.GhostControl;
 import com.jme3.bullet.control.PhysicsControl;
+import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.joints.HingeJoint;
-import com.jme3.bullet.nodes.PhysicsGhostNode;
-import com.jme3.bullet.nodes.PhysicsNode;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.AnalogListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Node;
 
 /**
  * Tests attaching ghost nodes to physicsnodes via the scenegraph
@@ -55,9 +55,9 @@ import com.jme3.math.Vector3f;
 public class TestAttachGhostObject extends SimpleApplication implements AnalogListener {
 
     private HingeJoint joint;
-    private PhysicsGhostNode gNode;
-    private PhysicsNode collisionNode;
-    private PhysicsNode hammerNode;
+    private GhostControl ghostControl;
+    private Node collisionNode;
+    private Node hammerNode;
     private Vector3f tempVec = new Vector3f();
     private BulletAppState bulletAppState;
 
@@ -87,6 +87,7 @@ public class TestAttachGhostObject extends SimpleApplication implements AnalogLi
     public void simpleInitApp() {
         bulletAppState = new BulletAppState();
         stateManager.attach(bulletAppState);
+        bulletAppState.getPhysicsSpace().enableDebug(assetManager);
         setupKeys();
         setupJoint();
     }
@@ -100,42 +101,35 @@ public class TestAttachGhostObject extends SimpleApplication implements AnalogLi
         Material mat = new Material(getAssetManager(), "Common/MatDefs/Misc/WireColor.j3md");
         mat.setColor("Color", ColorRGBA.Gray);
 
-        PhysicsNode holderNode = new PhysicsNode(new BoxCollisionShape(new Vector3f(.1f, .1f, .1f)), 0);
-        holderNode.setLocalTranslation(new Vector3f(0f, 0, 0f));
-        holderNode.attachDebugShape(mat);
+        Node holderNode = PhysicsTestHelper.createPhysicsTestNode(assetManager, new BoxCollisionShape(new Vector3f(.1f, .1f, .1f)), 0);
+        holderNode.getControl(RigidBodyControl.class).setPhysicsLocation(new Vector3f(0f, 0, 0f));
         rootNode.attachChild(holderNode);
         getPhysicsSpace().add(holderNode);
 
-        //movable
-        hammerNode = new PhysicsNode(new BoxCollisionShape(new Vector3f(.3f, .3f, .3f)), 1);
-        hammerNode.setLocalTranslation(new Vector3f(0f, -1, 0f));
-        hammerNode.attachDebugShape(assetManager);
+        Node hammerNode = PhysicsTestHelper.createPhysicsTestNode(assetManager, new BoxCollisionShape(new Vector3f(.3f, .3f, .3f)), 1);
+        hammerNode.getControl(RigidBodyControl.class).setPhysicsLocation(new Vector3f(0f, -1, 0f));
         rootNode.attachChild(hammerNode);
         getPhysicsSpace().add(hammerNode);
 
         //immovable
-        collisionNode = new PhysicsNode(new BoxCollisionShape(new Vector3f(.3f, .3f, .3f)), 0);
-        collisionNode.setLocalTranslation(new Vector3f(1.8f, 0, 0f));
-        collisionNode.attachDebugShape(assetManager);
+        collisionNode = PhysicsTestHelper.createPhysicsTestNode(assetManager, new BoxCollisionShape(new Vector3f(.3f, .3f, .3f)), 0);
+        collisionNode.getControl(RigidBodyControl.class).setPhysicsLocation(new Vector3f(1.8f, 0, 0f));
         rootNode.attachChild(collisionNode);
         getPhysicsSpace().add(collisionNode);
 
         //ghost node
-        gNode = new PhysicsGhostNode(new SphereCollisionShape(0.7f));
-        gNode.attachDebugShape(mat);
+        ghostControl = new GhostControl(new SphereCollisionShape(0.7f));
 
-        rootNode.attachChild(gNode);
-        getPhysicsSpace().add(gNode);
+        hammerNode.addControl(ghostControl);
+        getPhysicsSpace().add(ghostControl);
 
-        joint = new HingeJoint(holderNode.getRigidBody(), hammerNode.getRigidBody(), Vector3f.ZERO, new Vector3f(0f, -1, 0f), Vector3f.UNIT_Z, Vector3f.UNIT_Z);
+        joint = new HingeJoint(holderNode.getControl(RigidBodyControl.class), hammerNode.getControl(RigidBodyControl.class), Vector3f.ZERO, new Vector3f(0f, -1, 0f), Vector3f.UNIT_Z, Vector3f.UNIT_Z);
         getPhysicsSpace().add(joint);
     }
 
     @Override
     public void simpleUpdate(float tpf) {
-        hammerNode.getPhysicsLocation(tempVec);
-        gNode.getControl(GhostControl.class).setPhysicsLocation(tempVec);
-        if (gNode.getOverlappingObjects().contains(collisionNode.getControl(PhysicsControl.class))) {
+        if (ghostControl.getOverlappingObjects().contains(collisionNode.getControl(PhysicsControl.class))) {
             fpsText.setText("collide");
         }
     }

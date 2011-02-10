@@ -130,7 +130,10 @@ public class CharacterControl extends PhysicsCharacter implements PhysicsControl
     }
 
     public void render(RenderManager rm, ViewPort vp) {
-        if (debugShape != null && enabled) {
+        if (enabled && space != null && space.getDebugManager() != null) {
+            if (debugShape == null) {
+                attachDebugShape(space.getDebugManager());
+            }
             debugShape.setLocalTranslation(getPhysicsLocation());
             debugShape.updateLogicalState(0);
             debugShape.updateGeometricState();
@@ -145,7 +148,9 @@ public class CharacterControl extends PhysicsCharacter implements PhysicsControl
                 added = false;
             }
         } else {
-            if(this.space==space) return;
+            if (this.space == space) {
+                return;
+            }
             space.addCollisionObject(this);
             added = true;
         }

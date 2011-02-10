@@ -34,23 +34,18 @@ package jme3test.bullet;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.PhysicsSpace;
-import com.jme3.bullet.collision.shapes.BoxCollisionShape;
-import com.jme3.bullet.collision.shapes.HullCollisionShape;
-import com.jme3.bullet.collision.shapes.MeshCollisionShape;
+import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.control.CharacterControl;
-import com.jme3.bullet.nodes.PhysicsNode;
 import com.jme3.input.KeyInput;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.material.Material;
-import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
-import com.jme3.renderer.queue.RenderQueue.ShadowMode;
-import com.jme3.scene.Geometry;
+import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Sphere;
 import com.jme3.scene.shape.Sphere.TextureMode;
 
@@ -58,7 +53,7 @@ import com.jme3.scene.shape.Sphere.TextureMode;
  *
  * @author normenhansen
  */
-public class TestPhysicsCharacter extends SimpleApplication implements ActionListener{
+public class TestPhysicsCharacter extends SimpleApplication implements ActionListener {
 
     private BulletAppState bulletAppState;
     private CharacterControl physicsCharacter;
@@ -97,39 +92,19 @@ public class TestPhysicsCharacter extends SimpleApplication implements ActionLis
     public void simpleInitApp() {
         bulletAppState = new BulletAppState();
         stateManager.attach(bulletAppState);
+        PhysicsTestHelper.createPhysicsTestWorld(rootNode, assetManager, bulletAppState.getPhysicsSpace());
 
         setupKeys();
 
-        mat = new Material(getAssetManager(), "Common/MatDefs/Misc/WireColor.j3md");
-        mat.setColor("Color", ColorRGBA.Red);
-
         // Add a physics character to the world
-        physicsCharacter = new CharacterControl(new SphereCollisionShape(1.2f), .1f);
+        physicsCharacter = new CharacterControl(new CapsuleCollisionShape(0.5f,1.8f), .1f);
         physicsCharacter.setPhysicsLocation(new Vector3f(3, 6, 0));
-        physicsCharacter.attachDebugShape(mat);
+
+        Spatial model = assetManager.loadModel("Models/Sinbad/Sinbad.mesh.xml");
+        model.scale(0.25f);
+        model.addControl(physicsCharacter);
         getPhysicsSpace().add(physicsCharacter);
-
-        // Add a physics box to the world
-        PhysicsNode physicsBox = new PhysicsNode(new HullCollisionShape(bullet), 1);
-        physicsBox.setFriction(0.1f);
-        physicsBox.setLocalTranslation(new Vector3f(.6f, 4, .5f));
-        physicsBox.attachDebugShape(assetManager);
-        rootNode.attachChild(physicsBox);
-        getPhysicsSpace().add(physicsBox);
-
-        // An obstacle mesh, does not move (mass=0)
-        PhysicsNode node2 = new PhysicsNode(new MeshCollisionShape(new Sphere(16, 16, 1.2f)), 0);
-        node2.setLocalTranslation(new Vector3f(2.5f, -4, 0f));
-        node2.attachDebugShape(assetManager);
-        rootNode.attachChild(node2);
-        getPhysicsSpace().add(node2);
-
-        // The floor, does not move (mass=0)
-        PhysicsNode node3 = new PhysicsNode(new BoxCollisionShape(new Vector3f(100, 1, 100)), 0);
-        node3.setLocalTranslation(new Vector3f(0f, -6, 0f));
-        node3.attachDebugShape(assetManager);
-        rootNode.attachChild(node3);
-        getPhysicsSpace().add(node3);
+        rootNode.attachChild(model);
     }
 
     private PhysicsSpace getPhysicsSpace() {
@@ -139,7 +114,8 @@ public class TestPhysicsCharacter extends SimpleApplication implements ActionLis
     @Override
     public void simpleUpdate(float tpf) {
         physicsCharacter.setWalkDirection(walkDirection);
-        cam.setLocation(physicsCharacter.getPhysicsLocation());
+        physicsCharacter.setViewDirection(walkDirection);
+        cam.lookAt(physicsCharacter.getPhysicsLocation(), Vector3f.UNIT_Y);
     }
 
     @Override
@@ -174,15 +150,6 @@ public class TestPhysicsCharacter extends SimpleApplication implements ActionLis
             }
         } else if (binding.equals("Space")) {
             physicsCharacter.jump();
-        } else if (binding.equals("shoot") && !value) {
-            Geometry bulletg = new Geometry("bullet", bullet);
-            bulletg.setMaterial(mat);
-            PhysicsNode bulletNode = new PhysicsNode(bulletg, bulletCollisionShape, 1);
-            bulletNode.setLocalTranslation(cam.getLocation().add(cam.getDirection().mult(2)));
-            bulletNode.setShadowMode(ShadowMode.CastAndReceive);
-            bulletNode.setLinearVelocity(cam.getDirection().mult(25));
-            rootNode.attachChild(bulletNode);
-            getPhysicsSpace().add(bulletNode);
         }
     }
 }

@@ -38,6 +38,7 @@ import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.CollisionShape;
+import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.nodes.PhysicsNode;
 import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.font.BitmapText;
@@ -57,7 +58,6 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Geometry;
-import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.terrain.geomipmap.TerrainLodControl;
 import com.jme3.terrain.geomipmap.TerrainQuad;
@@ -76,7 +76,6 @@ public class TestHoveringTank extends SimpleApplication implements AnalogListene
     private PhysicsHoverControl hoverControl;
     private Spatial spaceCraft;
     TerrainQuad terrain;
-    Node terrainPhysicsNode;
     Material matRock;
     Material matWire;
     boolean wireframe = false;
@@ -138,7 +137,6 @@ public class TestHoveringTank extends SimpleApplication implements AnalogListene
         CollisionShape colShape = CollisionShapeFactory.createDynamicMeshShape(spaceCraft);
 
         hoverControl = new PhysicsHoverControl(colShape, 1000);
-        hoverControl.attachDebugShape(assetManager);
         hoverControl.setCollisionGroup(PhysicsCollisionObject.COLLISION_GROUP_02);
 
         spaceCraft.setLocalTranslation(new Vector3f(-140, 14, -23));
@@ -276,10 +274,9 @@ public class TestHoveringTank extends SimpleApplication implements AnalogListene
         terrain.updateModelBound();
         terrain.setLocked(false); // unlock it so we can edit the height
 
-        terrainPhysicsNode = new PhysicsNode(CollisionShapeFactory.createMeshShape(terrain), 0);
-        terrainPhysicsNode.attachChild(terrain);
-        rootNode.attachChild(terrainPhysicsNode);
-        getPhysicsSpace().addAll(terrainPhysicsNode);
+        terrain.addControl(new RigidBodyControl(0));
+        rootNode.attachChild(terrain);
+        getPhysicsSpace().addAll(terrain);
 
     }
 }

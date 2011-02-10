@@ -39,17 +39,17 @@ import com.jme3.bullet.PhysicsSpace;
 
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
-import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Sphere;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
-import com.jme3.bullet.collision.shapes.CompoundCollisionShape;
 import com.jme3.bullet.collision.shapes.CylinderCollisionShape;
 import com.jme3.bullet.collision.shapes.MeshCollisionShape;
+import com.jme3.bullet.collision.shapes.PlaneCollisionShape;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
+import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.joints.HingeJoint;
-import com.jme3.bullet.nodes.PhysicsNode;
 import com.jme3.export.binary.BinaryExporter;
 import com.jme3.export.binary.BinaryImporter;
+import com.jme3.math.Plane;
 import com.jme3.scene.Node;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -74,58 +74,49 @@ public class TestPhysicsReadWrite extends SimpleApplication{
     public void simpleInitApp() {
         bulletAppState = new BulletAppState();
         stateManager.attach(bulletAppState);
+        bulletAppState.getPhysicsSpace().enableDebug(assetManager);
         physicsRootNode=new Node("PhysicsRootNode");
         rootNode.attachChild(physicsRootNode);
 
         // Add a physics sphere to the world
-        PhysicsNode physicsSphere=new PhysicsNode(new SphereCollisionShape(1),1);
-        physicsSphere.setName("physicssphere");
-        physicsSphere.setLocalTranslation(new Vector3f(3,6,0));
-        physicsSphere.attachDebugShape(getAssetManager());
-        physicsRootNode.attachChild(physicsSphere);
+        Node physicsSphere = PhysicsTestHelper.createPhysicsTestNode(assetManager, new SphereCollisionShape(1), 1);
+        physicsSphere.getControl(RigidBodyControl.class).setPhysicsLocation(new Vector3f(3, 6, 0));
+        rootNode.attachChild(physicsSphere);
         getPhysicsSpace().add(physicsSphere);
 
         // Add a physics sphere to the world using the collision shape from sphere one
-        PhysicsNode physicsSphere2=new PhysicsNode(physicsSphere.getCollisionShape(),1);
-        physicsSphere2.setLocalTranslation(new Vector3f(4,8,0));
-        physicsSphere2.attachDebugShape(getAssetManager());
-        physicsRootNode.attachChild(physicsSphere2);
+        Node physicsSphere2 = PhysicsTestHelper.createPhysicsTestNode(assetManager, physicsSphere.getControl(RigidBodyControl.class).getCollisionShape(), 1);
+        physicsSphere2.getControl(RigidBodyControl.class).setPhysicsLocation(new Vector3f(4, 8, 0));
+        rootNode.attachChild(physicsSphere2);
         getPhysicsSpace().add(physicsSphere2);
 
         // Add a physics box to the world
-        PhysicsNode physicsBox=new PhysicsNode(new BoxCollisionShape(new Vector3f(1,1,1)),1);
-        physicsBox.setFriction(0.1f);
-        physicsBox.setLocalTranslation(new Vector3f(.6f,4,.5f));
-        physicsBox.attachDebugShape(getAssetManager());
-        physicsRootNode.attachChild(physicsBox);
+        Node physicsBox = PhysicsTestHelper.createPhysicsTestNode(assetManager, new BoxCollisionShape(new Vector3f(1, 1, 1)), 1);
+        physicsBox.getControl(RigidBodyControl.class).setFriction(0.1f);
+        physicsBox.getControl(RigidBodyControl.class).setPhysicsLocation(new Vector3f(.6f, 4, .5f));
+        rootNode.attachChild(physicsBox);
         getPhysicsSpace().add(physicsBox);
 
         // Add a physics cylinder to the world
-        PhysicsNode physicsCylinder=new PhysicsNode(new CylinderCollisionShape(new Vector3f(1f,1f,1.5f)));
-        physicsCylinder.setLocalTranslation(new Vector3f(2,2,0));
-        physicsCylinder.attachDebugShape(getAssetManager());
-        physicsRootNode.attachChild(physicsCylinder);
+        Node physicsCylinder = PhysicsTestHelper.createPhysicsTestNode(assetManager, new CylinderCollisionShape(new Vector3f(1f, 1f, 1.5f)), 1);
+        physicsCylinder.getControl(RigidBodyControl.class).setPhysicsLocation(new Vector3f(2, 2, 0));
+        rootNode.attachChild(physicsCylinder);
         getPhysicsSpace().add(physicsCylinder);
 
         // an obstacle mesh, does not move (mass=0)
-        CompoundCollisionShape compShape=new CompoundCollisionShape();
-        compShape.addChildShape(new MeshCollisionShape(new Sphere(16,16,1.2f)), Vector3f.ZERO);
-        PhysicsNode node2=new PhysicsNode(compShape,0);
-        node2.setLocalTranslation(new Vector3f(2.5f,-4,0f));
-        node2.attachDebugShape(getAssetManager());
-        physicsRootNode.attachChild(node2);
+        Node node2 = PhysicsTestHelper.createPhysicsTestNode(assetManager, new MeshCollisionShape(new Sphere(16, 16, 1.2f)), 0);
+        node2.getControl(RigidBodyControl.class).setPhysicsLocation(new Vector3f(2.5f, -4, 0f));
+        rootNode.attachChild(node2);
         getPhysicsSpace().add(node2);
 
         // the floor mesh, does not move (mass=0)
-        PhysicsNode node3=new PhysicsNode(new MeshCollisionShape(new Box(Vector3f.ZERO,100f,0.2f,100f)),0);
-        node3.setLocalTranslation(new Vector3f(0f,-6,0f));
-        node3.attachDebugShape(getAssetManager());
-        physicsRootNode.attachChild(node3);
+        Node node3 = PhysicsTestHelper.createPhysicsTestNode(assetManager, new PlaneCollisionShape(new Plane(new Vector3f(0, 1, 0), 0)), 0);
+        node3.getControl(RigidBodyControl.class).setPhysicsLocation(new Vector3f(0f, -6, 0f));
+        rootNode.attachChild(node3);
         getPhysicsSpace().add(node3);
 
         // Join the physics objects with a Point2Point joint
-//        PhysicsPoint2PointJoint joint=new PhysicsPoint2PointJoint(physicsSphere, physicsBox, new Vector3f(-2,0,0), new Vector3f(2,0,0));
-        HingeJoint joint=new HingeJoint(physicsSphere.getRigidBody(), physicsBox.getRigidBody(), new Vector3f(-2,0,0), new Vector3f(2,0,0), Vector3f.UNIT_Z,Vector3f.UNIT_Z);
+        HingeJoint joint=new HingeJoint(physicsSphere.getControl(RigidBodyControl.class), physicsBox.getControl(RigidBodyControl.class), new Vector3f(-2,0,0), new Vector3f(2,0,0), Vector3f.UNIT_Z,Vector3f.UNIT_Z);
         getPhysicsSpace().add(joint);
 
         //save and load the physicsRootNode

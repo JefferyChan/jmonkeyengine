@@ -29,7 +29,6 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package jme3test.bullet;
 
 import com.jme3.bullet.BulletAppState;
@@ -38,11 +37,12 @@ import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.collision.shapes.MeshCollisionShape;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
-import com.jme3.bullet.nodes.PhysicsNode;
+import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
+import com.jme3.scene.Node;
 import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Sphere;
 
@@ -50,11 +50,11 @@ import com.jme3.scene.shape.Sphere;
  *
  * @author normenhansen
  */
-public class TestCollisionGroups extends SimpleApplication{
+public class TestCollisionGroups extends SimpleApplication {
 
     private BulletAppState bulletAppState;
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
         TestCollisionGroups app = new TestCollisionGroups();
         app.start();
     }
@@ -63,44 +63,41 @@ public class TestCollisionGroups extends SimpleApplication{
     public void simpleInitApp() {
         bulletAppState = new BulletAppState();
         stateManager.attach(bulletAppState);
+        bulletAppState.getPhysicsSpace().enableDebug(assetManager);
         Material mat = new Material(getAssetManager(), "Common/MatDefs/Misc/WireColor.j3md");
         mat.setColor("Color", ColorRGBA.Red);
         Material mat2 = new Material(getAssetManager(), "Common/MatDefs/Misc/WireColor.j3md");
         mat2.setColor("Color", ColorRGBA.Magenta);
 
         // Add a physics sphere to the world
-        PhysicsNode physicsSphere=new PhysicsNode(new SphereCollisionShape(1),1);
-        physicsSphere.setLocalTranslation(new Vector3f(3,6,0));
-        physicsSphere.attachDebugShape(assetManager);
+        Node physicsSphere = PhysicsTestHelper.createPhysicsTestNode(assetManager, new SphereCollisionShape(1), 1);
+        physicsSphere.getControl(RigidBodyControl.class).setPhysicsLocation(new Vector3f(3, 6, 0));
         rootNode.attachChild(physicsSphere);
         getPhysicsSpace().add(physicsSphere);
 
-        // Add a physics sphere to the world using the collision shape from sphere one
-        PhysicsNode physicsSphere2=new PhysicsNode(physicsSphere.getCollisionShape(),1);
-        physicsSphere2.setLocalTranslation(new Vector3f(4,8,0));
-        physicsSphere2.attachDebugShape(mat2);
-        physicsSphere2.addCollideWithGroup(PhysicsCollisionObject.COLLISION_GROUP_02);
+        // Add a physics sphere to the world
+        Node physicsSphere2 = PhysicsTestHelper.createPhysicsTestNode(assetManager, new SphereCollisionShape(1), 1);
+        physicsSphere2.getControl(RigidBodyControl.class).setPhysicsLocation(new Vector3f(4, 8, 0));
+        physicsSphere2.getControl(RigidBodyControl.class).addCollideWithGroup(PhysicsCollisionObject.COLLISION_GROUP_02);
         rootNode.attachChild(physicsSphere2);
         getPhysicsSpace().add(physicsSphere2);
 
         // an obstacle mesh, does not move (mass=0)
-        PhysicsNode node2=new PhysicsNode(new MeshCollisionShape(new Sphere(16,16,1.2f)),0);
-        node2.setLocalTranslation(new Vector3f(2.5f,-4,0f));
-        node2.attachDebugShape(mat);
-        node2.setCollisionGroup(PhysicsCollisionObject.COLLISION_GROUP_02);
-        node2.setCollideWithGroups(PhysicsCollisionObject.COLLISION_GROUP_02);
+        Node node2 = PhysicsTestHelper.createPhysicsTestNode(assetManager, new MeshCollisionShape(new Sphere(16, 16, 1.2f)), 0);
+        node2.getControl(RigidBodyControl.class).setPhysicsLocation(new Vector3f(2.5f, -4, 0f));
+        node2.getControl(RigidBodyControl.class).setCollisionGroup(PhysicsCollisionObject.COLLISION_GROUP_02);
+        node2.getControl(RigidBodyControl.class).setCollideWithGroups(PhysicsCollisionObject.COLLISION_GROUP_02);
         rootNode.attachChild(node2);
         getPhysicsSpace().add(node2);
 
         // the floor, does not move (mass=0)
-        PhysicsNode node3=new PhysicsNode(new MeshCollisionShape(new Box(Vector3f.ZERO,100f,0.2f,100f)),0);
-        node3.setLocalTranslation(new Vector3f(0f,-6,0f));
-        node3.attachDebugShape(assetManager);
+        Node node3 = PhysicsTestHelper.createPhysicsTestNode(assetManager, new MeshCollisionShape(new Box(Vector3f.ZERO, 100f, 0.2f, 100f)), 0);
+        node3.getControl(RigidBodyControl.class).setPhysicsLocation(new Vector3f(0f, -6, 0f));
         rootNode.attachChild(node3);
         getPhysicsSpace().add(node3);
     }
 
-    private PhysicsSpace getPhysicsSpace(){
+    private PhysicsSpace getPhysicsSpace() {
         return bulletAppState.getPhysicsSpace();
     }
 

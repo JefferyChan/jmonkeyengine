@@ -39,7 +39,7 @@ import com.jme3.asset.plugins.ZipLocator;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
-import com.jme3.bullet.nodes.PhysicsCharacterNode;
+import com.jme3.bullet.objects.PhysicsCharacter;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
@@ -56,7 +56,7 @@ public class TestQ3 extends SimpleApplication implements ActionListener {
 
     private BulletAppState bulletAppState;
     private Node gameLevel;
-    private PhysicsCharacterNode player;
+    private PhysicsCharacter player;
     private Vector3f walkDirection = new Vector3f();
     private static boolean useHttp = false;
     private boolean left=false,right=false,up=false,down=false;
@@ -103,15 +103,14 @@ public class TestQ3 extends SimpleApplication implements ActionListener {
         // add a physics control, it will generate a MeshCollisionShape based on the gameLevel
         gameLevel.addControl(new RigidBodyControl(0));
 
-        player = new PhysicsCharacterNode(new SphereCollisionShape(5), .01f);
+        player = new PhysicsCharacter(new SphereCollisionShape(5), .01f);
         player.setJumpSpeed(20);
         player.setFallSpeed(30);
         player.setGravity(30);
 
-        player.setLocalTranslation(new Vector3f(60, 10, -60));
+        player.setPhysicsLocation(new Vector3f(60, 10, -60));
 
         rootNode.attachChild(gameLevel);
-        rootNode.attachChild(player);
 
         getPhysicsSpace().addAll(gameLevel);
         getPhysicsSpace().add(player);
@@ -135,7 +134,7 @@ public class TestQ3 extends SimpleApplication implements ActionListener {
         if(down)
             walkDirection.addLocal(camDir.negate());
         player.setWalkDirection(walkDirection);
-        cam.setLocation(player.getLocalTranslation());
+        cam.setLocation(player.getPhysicsLocation());
     }
 
     private void setupKeys() {
