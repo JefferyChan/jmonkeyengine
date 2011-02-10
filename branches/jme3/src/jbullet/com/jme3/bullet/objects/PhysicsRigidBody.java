@@ -99,9 +99,20 @@ public class PhysicsRigidBody extends PhysicsCollisionObject {
      * Builds/rebuilds the phyiscs body when parameters have changed
      */
     protected void rebuildRigidBody() {
+        boolean removed = false;
+        if (rBody != null) {
+            if (rBody.isInWorld()) {
+                PhysicsSpace.getPhysicsSpace().remove(this);
+                removed = true;
+            }
+            rBody.destroy();
+        }
         preRebuild();
         rBody = new RigidBody(constructionInfo);
         postRebuild();
+        if (removed) {
+            PhysicsSpace.getPhysicsSpace().add(this);
+        }
     }
 
     protected void preRebuild() {
