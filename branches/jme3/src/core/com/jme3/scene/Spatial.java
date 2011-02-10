@@ -950,7 +950,7 @@ public abstract class Spatial implements Savable, Cloneable, Collidable {
      * @return The spatial on which this method is called, e.g <code>this</code>.
      */
     public Spatial rotate(Quaternion rot){
-        this.localTransform.getRotation().multLocal(rot);
+        rot.mult(localTransform.getRotation(), localTransform.getRotation());
         this.worldTransform.setRotation(this.localTransform.getRotation());
         setTransformRefresh();
 
