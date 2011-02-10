@@ -182,7 +182,11 @@ public class PhysicsCharacter extends PhysicsCollisionObject {
             throw (new UnsupportedOperationException("Kinematic character nodes cannot have mesh collision shapes"));
         }
         super.setCollisionShape(collisionShape);
-        buildObject();
+        if (gObject == null) {
+            buildObject();
+        }else{
+            gObject.setCollisionShape(collisionShape.getCShape());
+        }
     }
 
     /**

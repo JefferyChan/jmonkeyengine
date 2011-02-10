@@ -93,7 +93,11 @@ public class PhysicsGhostObject extends PhysicsCollisionObject {
     @Override
     public void setCollisionShape(CollisionShape collisionShape) {
         super.setCollisionShape(collisionShape);
-        buildObject();
+        if (gObject == null) {
+            buildObject();
+        }else{
+            gObject.setCollisionShape(collisionShape.getCShape());
+        }
     }
 
     /**

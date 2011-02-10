@@ -66,7 +66,6 @@ public class PhysicsRigidBody extends PhysicsCollisionObject {
     protected RigidBodyConstructionInfo constructionInfo;
     protected RigidBody rBody;
     protected RigidBodyMotionState motionState = new RigidBodyMotionState();
-    protected boolean rebuildBody = true;
     protected float mass = 1.0f;
     protected boolean kinematic = false;
     protected javax.vecmath.Vector3f tempVec = new javax.vecmath.Vector3f();
@@ -100,21 +99,9 @@ public class PhysicsRigidBody extends PhysicsCollisionObject {
      * Builds/rebuilds the phyiscs body when parameters have changed
      */
     protected void rebuildRigidBody() {
-        boolean removed = false;
-        if (rBody != null) {
-            if (rBody.isInWorld()) {
-                PhysicsSpace.getPhysicsSpace().remove(this);
-                removed = true;
-            }
-            rBody.destroy();
-        }
         preRebuild();
         rBody = new RigidBody(constructionInfo);
         postRebuild();
-        if (removed) {
-            PhysicsSpace.getPhysicsSpace().add(this);
-        }
-        rebuildBody = false;
     }
 
     protected void preRebuild() {
@@ -486,7 +473,13 @@ public class PhysicsRigidBody extends PhysicsCollisionObject {
 
     public void setCollisionShape(CollisionShape collisionShape) {
         super.setCollisionShape(collisionShape);
-        rebuildRigidBody();
+        if (rBody == null) {
+            rebuildRigidBody();
+        } else {
+            collisionShape.calculateLocalInertia(mass, localInertia);
+            constructionInfo.collisionShape = collisionShape.getCShape();
+            rBody.setCollisionShape(collisionShape.getCShape());
+        }
     }
 
     /**
@@ -530,11 +523,11 @@ public class PhysicsRigidBody extends PhysicsCollisionObject {
         return constructionInfo.angularSleepingThreshold;
     }
 
-    public float getAngularFactor(){
+    public float getAngularFactor() {
         return rBody.getAngularFactor();
     }
 
-    public void setAngularFactor(float factor){
+    public void setAngularFactor(float factor) {
         rBody.setAngularFactor(factor);
     }
 
