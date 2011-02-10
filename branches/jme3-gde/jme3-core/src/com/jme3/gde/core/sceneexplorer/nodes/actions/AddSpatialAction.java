@@ -139,7 +139,7 @@ public class AddSpatialAction extends AbstractAction implements Presenter.Popup 
             SceneApplication.getApplication().enqueue(new Callable<Void>() {
 
                 public Void call() throws Exception {
-                    AudioNode newItem = new AudioNode();
+                    AudioNode newItem = new AudioNode(SceneApplication.getApplication().getAssetManager(), "AudioNode");
                     node.attachChild(newItem);
                     addSpatialUndo(node, newItem);
                     setModified();

@@ -168,7 +168,7 @@ public class SceneEditorController implements PropertyChangeListener, NodeListen
                 undoSpatial = emit;
                 undoParent = ((Node) selected);
             } else if ("Audio Node".equals(name)) {
-                AudioNode node = new AudioNode();
+                AudioNode node = new AudioNode(SceneApplication.getApplication().getAssetManager(), "AudioNode");
                 node.setName("Audio Node");
                 if (point != null) {
                     Vector3f localVec = new Vector3f();
