@@ -52,6 +52,7 @@ public class ViewPort {
     protected final ColorRGBA backColor = new ColorRGBA(0,0,0,0);
     protected boolean clearEnabled = false;
     protected boolean clearDepth = true, clearColor = true, clearStencil = true;
+    private boolean enabled = true;
 
     public ViewPort(String name, Camera cam) {
         this.name = name;
@@ -152,6 +153,14 @@ public class ViewPort {
 
     public ColorRGBA getBackgroundColor(){
         return backColor;
+    }
+    
+    public void setEnabled(boolean enable) {
+        this.enabled = enable;
+    }
+    
+    public boolean isEnabled() {
+        return enabled;
     }
 
 }

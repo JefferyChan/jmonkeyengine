@@ -681,6 +681,9 @@ public class RenderManager {
     }
 
     public void renderViewPort(ViewPort vp, float tpf) {
+    	if (!vp.isEnabled()) {
+    		return;
+    	}
         List<SceneProcessor> processors = vp.getProcessors();
         if (processors.size() == 0) {
             processors = null;

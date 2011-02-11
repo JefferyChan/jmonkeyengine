@@ -33,6 +33,9 @@
 package jme3test.post;
 
 import com.jme3.app.SimpleApplication;
+import com.jme3.input.KeyInput;
+import com.jme3.input.controls.ActionListener;
+import com.jme3.input.controls.KeyTrigger;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
@@ -50,10 +53,12 @@ import com.jme3.texture.Texture2D;
 /**
  * This test renders a scene to a texture, then displays the texture on a cube.
  */
-public class TestRenderToTexture extends SimpleApplication {
+public class TestRenderToTexture extends SimpleApplication implements ActionListener {
 
+    private static final String TOGGLE_UPDATE = "Toggle Update";
     private Geometry offBox;
     private float angle = 0;
+    private ViewPort offView;
 
     public static void main(String[] args){
         TestRenderToTexture app = new TestRenderToTexture();
@@ -63,8 +68,7 @@ public class TestRenderToTexture extends SimpleApplication {
     public Texture setupOffscreenView(){
         Camera offCamera = new Camera(512, 512);
 
-        // create a pre-view. a view that is rendered before the main view
-        ViewPort offView = renderManager.createPreView("Offscreen View", offCamera);
+        offView = renderManager.createPreView("Offscreen View", offCamera);
         offView.setClearEnabled(true);
         offView.setBackgroundColor(ColorRGBA.DarkGray);
 
@@ -114,18 +118,30 @@ public class TestRenderToTexture extends SimpleApplication {
         mat.setTexture("ColorMap", offTex);
         quad.setMaterial(mat);
         rootNode.attachChild(quad);
+        inputManager.addMapping(TOGGLE_UPDATE, new KeyTrigger(KeyInput.KEY_SPACE));
+        inputManager.addListener(this, TOGGLE_UPDATE);
     }
 
     @Override
     public void simpleUpdate(float tpf){
         Quaternion q = new Quaternion();
-        angle += tpf;
-        angle %= FastMath.TWO_PI;
-        q.fromAngles(angle, 0, angle);
+        
+        if (offView.isEnabled()) {
+            angle += tpf;
+            angle %= FastMath.TWO_PI;
+            q.fromAngles(angle, 0, angle);
+            
+            offBox.setLocalRotation(q);
+            offBox.updateLogicalState(tpf);
+            offBox.updateGeometricState();
+        }
+    }
 
-        offBox.setLocalRotation(q);
-        offBox.updateLogicalState(tpf);
-        offBox.updateGeometricState();
+    @Override
+    public void onAction(String name, boolean isPressed, float tpf) {
+        if (name.equals(TOGGLE_UPDATE) && isPressed) {
+            offView.setEnabled(!offView.isEnabled());
+        }
     }
 
 
