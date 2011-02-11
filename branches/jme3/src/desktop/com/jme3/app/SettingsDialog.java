@@ -29,7 +29,6 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package com.jme3.app;
 
 import com.jme3.system.*;
@@ -79,49 +78,33 @@ import javax.swing.UIManager;
 public final class SettingsDialog extends JDialog {
 
     public static interface SelectionListener {
+
         public void onSelection(int selection);
     }
-
     private static final Logger logger = Logger.getLogger(SettingsDialog.class.getName());
-
     private static final long serialVersionUID = 1L;
-
     public static final int NO_SELECTION = 0,
-                            APPROVE_SELECTION = 1,
-                            CANCEL_SELECTION = 2;
-
+            APPROVE_SELECTION = 1,
+            CANCEL_SELECTION = 2;
     // connection to properties file.
     private final AppSettings source;
-
     // Title Image
     private URL imageFile = null;
-
     // Array of supported display modes
     private DisplayMode[] modes = null;
-
     // Array of windowed resolutions
-    private String[] windowedResolutions = { "320 x 240", "640 x 480", "800 x 600",
-            "1024 x 768", "1152 x 864", "1280 x 720" };
-
+    private String[] windowedResolutions = {"320 x 240", "640 x 480", "800 x 600",
+        "1024 x 768", "1152 x 864", "1280 x 720"};
     // UI components
     private JCheckBox vsyncBox = null;
-
     private JCheckBox fullscreenBox = null;
-
     private JComboBox displayResCombo = null;
-
     private JComboBox colorDepthCombo = null;
-
     private JComboBox displayFreqCombo = null;
-
 //    private JComboBox rendererCombo = null;
-
     private JComboBox antialiasCombo = null;
-
     private JLabel icon = null;
-    
     private int selection = 0;
-    
     private SelectionListener selectionListener = null;
 
     /**
@@ -137,8 +120,8 @@ public final class SettingsDialog extends JDialog {
      * @throws NullPointerException
      *             if the source is <code>null</code>
      */
-    public SettingsDialog(AppSettings source, String imageFile ) {
-        this( source, getURL(imageFile) );
+    public SettingsDialog(AppSettings source, String imageFile,boolean loadSettings) {
+        this(source, getURL(imageFile),loadSettings);
     }
 
     /**
@@ -155,9 +138,10 @@ public final class SettingsDialog extends JDialog {
      * @throws JmeException
      *             if the source is <code>null</code>
      */
-    public SettingsDialog(AppSettings source, URL imageFile) {
-        if (source == null)
+    public SettingsDialog(AppSettings source, URL imageFile,boolean loadSettings) {
+        if (source == null) {
             throw new NullPointerException("Settings source cannot be null");
+        }
 
         this.source = source;
         this.imageFile = imageFile;
@@ -165,33 +149,34 @@ public final class SettingsDialog extends JDialog {
 //        setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
         setModal(true);
 
-        String appTitle = source.getTitle();
-        try {
-            source.load(appTitle);
-        } catch (BackingStoreException ex){
-            logger.log(Level.WARNING,
-                    "Failed to load settings", ex);
+        
+        if (loadSettings) {
+            String appTitle = source.getTitle();
+            try {
+                source.load(appTitle);
+            } catch (BackingStoreException ex) {
+                logger.log(Level.WARNING,
+                        "Failed to load settings", ex);
+            }
         }
 
-        GraphicsDevice device = GraphicsEnvironment
-                                    .getLocalGraphicsEnvironment()
-                                    .getDefaultScreenDevice();
+        GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 
         modes = device.getDisplayModes();
         Arrays.sort(modes, new DisplayModeSorter());
-        
+
         createUI();
     }
 
-    public void setSelectionListener(SelectionListener sl){
+    public void setSelectionListener(SelectionListener sl) {
         this.selectionListener = sl;
     }
 
-    public int getUserSelection(){
+    public int getUserSelection() {
         return selection;
     }
 
-    private void setUserSelection(int selection){
+    private void setUserSelection(int selection) {
         this.selection = selection;
         selectionListener.onSelection(selection);
     }
@@ -245,6 +230,7 @@ public final class SettingsDialog extends JDialog {
         }
 
         addWindowListener(new WindowAdapter() {
+
             public void windowClosing(WindowEvent e) {
                 setUserSelection(CANCEL_SELECTION);
                 dispose();
@@ -269,9 +255,10 @@ public final class SettingsDialog extends JDialog {
         centerPanel.setLayout(new BorderLayout());
 
         KeyListener aListener = new KeyAdapter() {
+
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    if (verifyAndSaveCurrentSelection()){
+                    if (verifyAndSaveCurrentSelection()) {
                         setUserSelection(APPROVE_SELECTION);
                         dispose();
                     }
@@ -290,6 +277,7 @@ public final class SettingsDialog extends JDialog {
         fullscreenBox = new JCheckBox("Fullscreen?");
         fullscreenBox.setSelected(source.isFullscreen());
         fullscreenBox.addActionListener(new ActionListener() {
+
             public void actionPerformed(ActionEvent e) {
                 updateResolutionChoices();
             }
@@ -314,8 +302,9 @@ public final class SettingsDialog extends JDialog {
         // Set the button action listeners. Cancel disposes without saving, OK
         // saves.
         ok.addActionListener(new ActionListener() {
+
             public void actionPerformed(ActionEvent e) {
-                if (verifyAndSaveCurrentSelection()){
+                if (verifyAndSaveCurrentSelection()) {
                     setUserSelection(APPROVE_SELECTION);
                     dispose();
                 }
@@ -323,6 +312,7 @@ public final class SettingsDialog extends JDialog {
         });
 
         cancel.addActionListener(new ActionListener() {
+
             public void actionPerformed(ActionEvent e) {
                 setUserSelection(CANCEL_SELECTION);
                 dispose();
@@ -332,8 +322,9 @@ public final class SettingsDialog extends JDialog {
         buttonPanel.add(ok);
         buttonPanel.add(cancel);
 
-        if (icon != null)
+        if (icon != null) {
             centerPanel.add(icon, BorderLayout.NORTH);
+        }
         centerPanel.add(optionsPanel, BorderLayout.SOUTH);
 
         mainPanel.add(centerPanel, BorderLayout.CENTER);
@@ -356,36 +347,33 @@ public final class SettingsDialog extends JDialog {
         boolean fullscreen = fullscreenBox.isSelected();
         boolean vsync = vsyncBox.isSelected();
 
-        int width = Integer.parseInt(display.substring(0, display
-                .indexOf(" x ")));
+        int width = Integer.parseInt(display.substring(0, display.indexOf(" x ")));
         display = display.substring(display.indexOf(" x ") + 3);
         int height = Integer.parseInt(display);
 
         String depthString = (String) colorDepthCombo.getSelectedItem();
         int depth = -1;
-        if (depthString.equals("???")){
+        if (depthString.equals("???")) {
             depth = 0;
-        }else{
-            depth = Integer.parseInt(depthString.substring(0, depthString
-                .indexOf(' ')));
+        } else {
+            depth = Integer.parseInt(depthString.substring(0, depthString.indexOf(' ')));
         }
 
         String freqString = (String) displayFreqCombo.getSelectedItem();
         int freq = -1;
-        if (fullscreen){
-            if (freqString.equals("???")){
+        if (fullscreen) {
+            if (freqString.equals("???")) {
                 freq = 0;
-            }else{
-                freq = Integer.parseInt(freqString.substring(0, freqString
-                        .indexOf(' ')));
+            } else {
+                freq = Integer.parseInt(freqString.substring(0, freqString.indexOf(' ')));
             }
         }
 
         String aaString = (String) antialiasCombo.getSelectedItem();
         int multisample = -1;
-        if (aaString.equals("Disabled")){
+        if (aaString.equals("Disabled")) {
             multisample = 0;
-        }else{
+        } else {
             multisample = Integer.parseInt(aaString.substring(0, aaString.indexOf('x')));
         }
 
@@ -404,12 +392,10 @@ public final class SettingsDialog extends JDialog {
         boolean valid = false;
 
         // test valid display mode when going full screen
-        if (!fullscreen)
+        if (!fullscreen) {
             valid = true;
-        else {
-            GraphicsDevice device = GraphicsEnvironment
-                                        .getLocalGraphicsEnvironment()
-                                        .getDefaultScreenDevice();
+        } else {
+            GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
             valid = device.isFullScreenSupported();
         }
 
@@ -428,15 +414,16 @@ public final class SettingsDialog extends JDialog {
 
             try {
                 source.save(appTitle);
-            } catch (BackingStoreException ex){
+            } catch (BackingStoreException ex) {
                 logger.log(Level.WARNING,
                         "Failed to save setting changes", ex);
             }
-        } else
+        } else {
             showError(
                     this,
                     "Your monitor claims to not support the display mode you've selected.\n"
-                            + "The combination of bit depth and refresh rate is not supported.");
+                    + "The combination of bit depth and refresh rate is not supported.");
+        }
 
         return valid;
     }
@@ -455,6 +442,7 @@ public final class SettingsDialog extends JDialog {
         resolutionBox.setSelectedItem(source.getWidth() + " x "
                 + source.getHeight());
         resolutionBox.addActionListener(new ActionListener() {
+
             public void actionPerformed(ActionEvent e) {
                 updateDisplayChoices();
             }
@@ -471,7 +459,7 @@ public final class SettingsDialog extends JDialog {
      * @return the list of renderers.
      */
     private JComboBox setUpRendererChooser() {
-        String modes[] = { "NULL", "JOGL-OpenGL1", "LWJGL-OpenGL2", "LWJGL-OpenGL3", "LWJGL-OpenGL3.1" };
+        String modes[] = {"NULL", "JOGL-OpenGL1", "LWJGL-OpenGL2", "LWJGL-OpenGL3", "LWJGL-OpenGL3.1"};
         JComboBox nameBox = new JComboBox(modes);
         nameBox.setSelectedItem(source.getRenderer());
         return nameBox;
@@ -517,10 +505,10 @@ public final class SettingsDialog extends JDialog {
         if (!fullscreenBox.isSelected()) {
             displayResCombo.setModel(new DefaultComboBoxModel(
                     windowedResolutions));
-            colorDepthCombo.setModel(new DefaultComboBoxModel(new String[] {
-                    "24 bpp", "16 bpp" }));
+            colorDepthCombo.setModel(new DefaultComboBoxModel(new String[]{
+                        "24 bpp", "16 bpp"}));
             displayFreqCombo.setModel(new DefaultComboBoxModel(
-                    new String[] { "n/a" }));
+                    new String[]{"n/a"}));
             displayFreqCombo.setEnabled(false);
         } else {
             displayResCombo.setModel(new DefaultComboBoxModel(
@@ -530,17 +518,16 @@ public final class SettingsDialog extends JDialog {
         }
     }
 
-    private void updateAntialiasChoices(){
+    private void updateAntialiasChoices() {
         // maybe in the future will add support for determining this info
         // through pbuffer
-        String[] choices = new String[]{ "Disabled", "2x", "4x", "6x", "8x", "16x" };
+        String[] choices = new String[]{"Disabled", "2x", "4x", "6x", "8x", "16x"};
         antialiasCombo.setModel(new DefaultComboBoxModel(choices));
     }
 
     //
     // Utility methods
     //
-
     /**
      * Utility method for converting a String denoting a file into a URL.
      * 
@@ -567,8 +554,9 @@ public final class SettingsDialog extends JDialog {
         ArrayList<String> resolutions = new ArrayList<String>(modes.length);
         for (int i = 0; i < modes.length; i++) {
             String res = modes[i].getWidth() + " x " + modes[i].getHeight();
-            if (!resolutions.contains(res))
+            if (!resolutions.contains(res)) {
                 resolutions.add(res);
+            }
         }
 
         String[] res = new String[resolutions.size()];
@@ -585,16 +573,18 @@ public final class SettingsDialog extends JDialog {
             // Filter out all bit depths lower than 16 - Java incorrectly
             // reports
             // them as valid depths though the monitor does not support them
-            if (modes[i].getBitDepth() < 16 && modes[i].getBitDepth() > 0)
+            if (modes[i].getBitDepth() < 16 && modes[i].getBitDepth() > 0) {
                 continue;
+            }
 
             String res = modes[i].getWidth() + " x " + modes[i].getHeight();
             String depth = modes[i].getBitDepth() + " bpp";
-            if (res.equals(resolution) && !depths.contains(depth))
+            if (res.equals(resolution) && !depths.contains(depth)) {
                 depths.add(depth);
+            }
         }
 
-        if (depths.size() == 1 && depths.contains("-1 bpp")){
+        if (depths.size() == 1 && depths.contains("-1 bpp")) {
             // add some default depths, possible system is multi-depth supporting
             depths.clear();
             depths.add("24 bpp");
@@ -614,14 +604,15 @@ public final class SettingsDialog extends JDialog {
         for (int i = 0; i < modes.length; i++) {
             String res = modes[i].getWidth() + " x " + modes[i].getHeight();
             String freq;
-            if (modes[i].getRefreshRate() == DisplayMode.REFRESH_RATE_UNKNOWN){
+            if (modes[i].getRefreshRate() == DisplayMode.REFRESH_RATE_UNKNOWN) {
                 freq = "???";
-            }else{
+            } else {
                 freq = modes[i].getRefreshRate() + " Hz";
             }
-            
-            if (res.equals(resolution) && !freqs.contains(freq))
+
+            if (res.equals(resolution) && !freqs.contains(freq)) {
                 freqs.add(freq);
+            }
         }
 
         String[] res = new String[freqs.size()];
@@ -634,25 +625,29 @@ public final class SettingsDialog extends JDialog {
      * resolution, then bit depth, and then finally refresh rate.
      */
     private class DisplayModeSorter implements Comparator<DisplayMode> {
+
         /**
          * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
          */
         public int compare(DisplayMode a, DisplayMode b) {
             // Width
-            if (a.getWidth() != b.getWidth())
+            if (a.getWidth() != b.getWidth()) {
                 return (a.getWidth() > b.getWidth()) ? 1 : -1;
+            }
             // Height
-            if (a.getHeight() != b.getHeight())
+            if (a.getHeight() != b.getHeight()) {
                 return (a.getHeight() > b.getHeight()) ? 1 : -1;
+            }
             // Bit depth
-            if (a.getBitDepth() != b.getBitDepth())
+            if (a.getBitDepth() != b.getBitDepth()) {
                 return (a.getBitDepth() > b.getBitDepth()) ? 1 : -1;
+            }
             // Refresh rate
-            if (a.getRefreshRate() != b.getRefreshRate())
+            if (a.getRefreshRate() != b.getRefreshRate()) {
                 return (a.getRefreshRate() > b.getRefreshRate()) ? 1 : -1;
+            }
             // All fields are equal
             return 0;
         }
     }
-
 }

@@ -125,7 +125,7 @@ public class JmeSystem {
         return new DesktopAssetManager(null);
     }
 
-    public static boolean showSettingsDialog(AppSettings sourceSettings){
+    public static boolean showSettingsDialog(AppSettings sourceSettings, final boolean loadFromRegistry){
         if (SwingUtilities.isEventDispatchThread())
             throw new IllegalStateException("Cannot run from EDT");
 
@@ -150,7 +150,7 @@ public class JmeSystem {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 synchronized (lock) {
-                    SettingsDialog dialog = new SettingsDialog(settings, iconUrl);
+                    SettingsDialog dialog = new SettingsDialog(settings, iconUrl,loadFromRegistry);
                     dialog.setSelectionListener(selectionListener);
                     dialog.showDialog();
                 }

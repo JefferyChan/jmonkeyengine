@@ -29,7 +29,6 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package com.jme3.app;
 
 import com.jme3.font.BitmapFont;
@@ -68,54 +67,57 @@ public abstract class SimpleApplication extends Application {
 
     protected Node rootNode = new Node("Root Node");
     protected Node guiNode = new Node("Gui Node");
-
     protected float secondCounter = 0.0f;
     protected BitmapText fpsText;
     protected BitmapFont guiFont;
     protected StatsView statsView;
-
     protected FlyByCamera flyCam;
     protected boolean showSettings = true;
-
     private AppActionListener actionListener = new AppActionListener();
 
     private class AppActionListener implements ActionListener {
-        public void onAction(String name, boolean value, float tpf) {
-            if (!value)
-                return;
 
-            if (name.equals("SIMPLEAPP_Exit")){
-                    stop();
-                }else if (name.equals("SIMPLEAPP_CameraPos")){
-                    if (cam != null){
-                        Vector3f loc = cam.getLocation();
-                        Quaternion rot = cam.getRotation();
-                        System.out.println("Camera Position: ("+
-                                loc.x+", "+loc.y+", "+loc.z+")");
-                        System.out.println("Camera Rotation: "+rot);
-                        System.out.println("Camera Direction: "+cam.getDirection());
-                    }
-                }else if (name.equals("SIMPLEAPP_Memory")){
-                    BufferUtils.printCurrentDirectMemory(null);
+        public void onAction(String name, boolean value, float tpf) {
+            if (!value) {
+                return;
+            }
+
+            if (name.equals("SIMPLEAPP_Exit")) {
+                stop();
+            } else if (name.equals("SIMPLEAPP_CameraPos")) {
+                if (cam != null) {
+                    Vector3f loc = cam.getLocation();
+                    Quaternion rot = cam.getRotation();
+                    System.out.println("Camera Position: ("
+                            + loc.x + ", " + loc.y + ", " + loc.z + ")");
+                    System.out.println("Camera Rotation: " + rot);
+                    System.out.println("Camera Direction: " + cam.getDirection());
                 }
+            } else if (name.equals("SIMPLEAPP_Memory")) {
+                BufferUtils.printCurrentDirectMemory(null);
+            }
         }
     }
 
-    public SimpleApplication(){
+    public SimpleApplication() {
         super();
     }
 
     @Override
-    public void start(){
+    public void start() {
         // set some default settings in-case
         // settings dialog is not shown
-        if (settings == null)
+        boolean loadSettings = false;
+        if (settings == null) {
             setSettings(new AppSettings(true));
+            loadSettings = true;
+        }
 
         // show settings dialog
-        if (showSettings){
-            if (!JmeSystem.showSettingsDialog(settings))
+        if (showSettings) {
+            if (!JmeSystem.showSettingsDialog(settings, loadSettings)) {
                 return;
+            }
         }
 
         super.start();
@@ -165,7 +167,7 @@ public abstract class SimpleApplication extends Application {
      * Attaches FPS statistics to guiNode and displays it on the screen.
      *
      */
-    public void loadFPSText(){
+    public void loadFPSText() {
         guiFont = assetManager.loadFont("Interface/Fonts/Default.fnt");
         fpsText = new BitmapText(guiFont, false);
         fpsText.setLocalTranslation(0, fpsText.getLineHeight(), 0);
@@ -173,12 +175,12 @@ public abstract class SimpleApplication extends Application {
         guiNode.attachChild(fpsText);
     }
 
-     /**
-      * Attaches Statistics View to guiNode and displays it on the screen
-      * above FPS statistics line.
-      *
-      */
-    public void loadStatsView(){
+    /**
+     * Attaches Statistics View to guiNode and displays it on the screen
+     * above FPS statistics line.
+     *
+     */
+    public void loadStatsView() {
         statsView = new StatsView("Statistics View", assetManager, renderer.getStatistics());
 //         move it up so it appears above fps text
         statsView.setLocalTranslation(0, fpsText.getLineHeight(), 0);
@@ -186,7 +188,7 @@ public abstract class SimpleApplication extends Application {
     }
 
     @Override
-    public void initialize(){
+    public void initialize() {
         super.initialize();
 
         guiNode.setQueueBucket(Bucket.Gui);
@@ -196,18 +198,19 @@ public abstract class SimpleApplication extends Application {
         viewPort.attachScene(rootNode);
         guiViewPort.attachScene(guiNode);
 
-        if (inputManager != null){
+        if (inputManager != null) {
             flyCam = new FlyByCamera(cam);
             flyCam.setMoveSpeed(1f);
             flyCam.registerWithInput(inputManager);
 
-            if (context.getType() == Type.Display)
+            if (context.getType() == Type.Display) {
                 inputManager.addMapping("SIMPLEAPP_Exit", new KeyTrigger(KeyInput.KEY_ESCAPE));
-            
+            }
+
             inputManager.addMapping("SIMPLEAPP_CameraPos", new KeyTrigger(KeyInput.KEY_C));
             inputManager.addMapping("SIMPLEAPP_Memory", new KeyTrigger(KeyInput.KEY_M));
             inputManager.addListener(actionListener, "SIMPLEAPP_Exit",
-                                     "SIMPLEAPP_CameraPos", "SIMPLEAPP_Memory");
+                    "SIMPLEAPP_CameraPos", "SIMPLEAPP_Memory");
         }
 
         // call user code
@@ -217,15 +220,16 @@ public abstract class SimpleApplication extends Application {
     @Override
     public void update() {
         super.update(); // makes sure to execute AppTasks
-        if (speed == 0 || paused)
+        if (speed == 0 || paused) {
             return;
-        
+        }
+
         float tpf = timer.getTimePerFrame() * speed;
 
         secondCounter += timer.getTimePerFrame();
         int fps = (int) timer.getFrameRate();
-        if (secondCounter >= 1.0f){
-            fpsText.setText("Frames per second: "+fps);
+        if (secondCounter >= 1.0f) {
+            fpsText.setText("Frames per second: " + fps);
             secondCounter = 0.0f;
         }
 
@@ -248,10 +252,9 @@ public abstract class SimpleApplication extends Application {
 
     public abstract void simpleInitApp();
 
-    public void simpleUpdate(float tpf){
+    public void simpleUpdate(float tpf) {
     }
 
-    public void simpleRender(RenderManager rm){
+    public void simpleRender(RenderManager rm) {
     }
-
 }
