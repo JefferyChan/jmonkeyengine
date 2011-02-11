@@ -53,6 +53,7 @@ import com.jme3.texture.FrameBuffer;
 import com.jme3.texture.Image.Format;
 import com.jme3.util.BufferUtils;
 import com.jme3.util.Screenshots;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
@@ -111,6 +112,14 @@ public class OffScenePanel extends javax.swing.JPanel implements SceneProcessor 
                     }
                 }
                 return null;
+            }
+        });
+        java.awt.EventQueue.invokeLater(new Runnable() {
+
+            public void run() {
+                Dimension dim = new Dimension(x, y);
+                setPreferredSize(dim);
+                validate();
             }
         });
     }
