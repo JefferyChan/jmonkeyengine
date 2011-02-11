@@ -83,7 +83,6 @@ public class JmeAudioNode extends JmeNode {
         if (obj == null) {
             return sheet;
         }
-        obj.setAudioData(null, null);
 
         set.put(new AudioDataProperty(obj));
         set.put(makeProperty(obj, Vector3f.class, "getDirection", "setDirection", "Direction"));
