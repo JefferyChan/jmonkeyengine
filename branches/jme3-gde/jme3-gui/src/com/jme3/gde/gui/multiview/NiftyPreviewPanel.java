@@ -100,11 +100,9 @@ public class NiftyPreviewPanel extends PanelView {
                     width = 640;
                     height = 480;
                 } else if ("1024x768".equals(string)) {
-                    offPanel.resizeGLView(1024, 768);
                     width = 1024;
                     height = 768;
                 } else if ("1280x720".equals(string)) {
-                    offPanel.resizeGLView(1280, 720);
                     width = 1280;
                     height = 720;
                 } else {
@@ -132,11 +130,11 @@ public class NiftyPreviewPanel extends PanelView {
         this.addMouseMotionListener(new MouseMotionListener() {
 
             public void mouseDragged(MouseEvent e) {
-                inputHandler.addMouseEvent(e.getX(), e.getY(), e.getButton() == MouseEvent.NOBUTTON ? false : true);
+                inputHandler.addMouseEvent(e.getX(), e.getY()-24, e.getButton() == MouseEvent.NOBUTTON ? false : true);
             }
 
             public void mouseMoved(MouseEvent e) {
-                inputHandler.addMouseEvent(e.getX(), e.getY(), e.getButton() == MouseEvent.NOBUTTON ? false : true);
+                inputHandler.addMouseEvent(e.getX(), e.getY()-24, e.getButton() == MouseEvent.NOBUTTON ? false : true);
             }
         });
         this.addMouseListener(new MouseListener() {
@@ -145,7 +143,7 @@ public class NiftyPreviewPanel extends PanelView {
             }
 
             public void mousePressed(MouseEvent e) {
-                inputHandler.addMouseEvent(e.getX(), e.getY(), e.getButton() == MouseEvent.NOBUTTON ? false : true);
+                inputHandler.addMouseEvent(e.getX(), e.getY()-24, e.getButton() == MouseEvent.NOBUTTON ? false : true);
             }
 
             public void mouseReleased(MouseEvent e) {
