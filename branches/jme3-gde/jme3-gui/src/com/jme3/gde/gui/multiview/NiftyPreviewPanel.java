@@ -25,9 +25,9 @@ import java.io.File;
 import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.BoxLayout;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
 import org.netbeans.modules.xml.multiview.Error;
 import org.netbeans.modules.xml.multiview.ui.PanelView;
@@ -52,36 +52,16 @@ public class NiftyPreviewPanel extends PanelView {
     private String screen = "";
     private NiftyPreviewInputHandler inputHandler;
     private NiftyJmeDisplay niftyDisplay;
+    private JScrollPane scrollPanel;
 
     public NiftyPreviewPanel(NiftyGuiDataObject niftyObject, ToolBarDesignEditor comp) {
         super();
+        setRoot(Node.EMPTY);
         this.niftyObject = niftyObject;
         this.comp = comp;
-        prepareInputHandler();
-        setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
-        createToolbar();
-        offPanel = new OffScenePanel(640, 480);
-        add(offPanel);
-        setRoot(Node.EMPTY);
-        offPanel.startPreview();
-        try {
-            doc = XMLUtil.parse(new InputSource(niftyObject.getPrimaryFile().getInputStream()), false, false, null, null);
-            screen = XmlHelper.findChildElement(doc.getDocumentElement(), "screen").getAttribute("id");
-            if (screen == null) {
-                screen = "";
-            }
-            comp.setContentView(this);
-            comp.setRootContext(new NiftyFileNode(doc.getDocumentElement()));
-        } catch (Exception ex) {
-            Exceptions.printStackTrace(ex);
-        }
-        SceneApplication.getApplication().enqueue(new Callable<Object>() {
-
-            public Object call() throws Exception {
-                preparePreview();
-                return null;
-            }
-        });
+        comp.setContentView(this);
+        preparePreview();
+        updatePreView();
     }
 
     private void createToolbar() {
@@ -125,25 +105,71 @@ public class NiftyPreviewPanel extends PanelView {
         add(toolBar);
     }
 
+
+    public void updatePreView() {
+        updatePreView(screen);
+    }
+
+    public void updatePreView(final String screen) {
+        final ProjectAssetManager pm = niftyObject.getLookup().lookup(ProjectAssetManager.class);
+        if (pm == null) {
+            Logger.getLogger(NiftyPreviewPanel.class.getName()).log(Level.WARNING, "No Project AssetManager found!");
+        }
+        try {
+            doc = XMLUtil.parse(new InputSource(niftyObject.getPrimaryFile().getInputStream()), false, false, null, null);
+            NiftyFileNode rootContext = new NiftyFileNode(doc.getDocumentElement());
+            setRoot(rootContext);
+            comp.setRootContext(rootContext);
+        } catch (Exception ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        SceneApplication.getApplication().enqueue(new Callable<Object>() {
+
+            public Object call() throws Exception {
+                nifty.fromXml(pm.getRelativeAssetPath(niftyObject.getPrimaryFile().getPath()), screen);
+                return null;
+            }
+        });
+        java.awt.EventQueue.invokeLater(new Runnable() {
+
+            public void run() {
+                validateTree();
+            }
+        });
+    }
+
+    @Override
+    public void initComponents() {
+        super.initComponents();
+        setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.PAGE_AXIS));
+        createToolbar();
+        scrollPanel = new JScrollPane();
+        offPanel = new OffScenePanel(640, 480);
+        scrollPanel.getViewport().add(offPanel);
+        add(scrollPanel);
+        offPanel.startPreview();
+        prepareInputHandler();
+    }
+
     private void prepareInputHandler() {
         inputHandler = new NiftyPreviewInputHandler();
-        this.addMouseMotionListener(new MouseMotionListener() {
+        offPanel.addMouseMotionListener(new MouseMotionListener() {
 
             public void mouseDragged(MouseEvent e) {
-                inputHandler.addMouseEvent(e.getX(), e.getY()-24, e.getButton() == MouseEvent.NOBUTTON ? false : true);
+                inputHandler.addMouseEvent(e.getX(), e.getY(), e.getButton() == MouseEvent.NOBUTTON ? false : true);
             }
 
             public void mouseMoved(MouseEvent e) {
-                inputHandler.addMouseEvent(e.getX(), e.getY()-24, e.getButton() == MouseEvent.NOBUTTON ? false : true);
+                inputHandler.addMouseEvent(e.getX(), e.getY(), e.getButton() == MouseEvent.NOBUTTON ? false : true);
             }
         });
-        this.addMouseListener(new MouseListener() {
+        offPanel.addMouseListener(new MouseListener() {
 
             public void mouseClicked(MouseEvent e) {
             }
 
             public void mousePressed(MouseEvent e) {
-                inputHandler.addMouseEvent(e.getX(), e.getY()-24, e.getButton() == MouseEvent.NOBUTTON ? false : true);
+                inputHandler.addMouseEvent(e.getX(), e.getY(), e.getButton() == MouseEvent.NOBUTTON ? false : true);
             }
 
             public void mouseReleased(MouseEvent e) {
@@ -155,7 +181,7 @@ public class NiftyPreviewPanel extends PanelView {
             public void mouseExited(MouseEvent e) {
             }
         });
-        this.addKeyListener(new KeyListener() {
+        offPanel.addKeyListener(new KeyListener() {
 
             public void keyTyped(KeyEvent e) {
             }
@@ -170,52 +196,29 @@ public class NiftyPreviewPanel extends PanelView {
     }
 
     private void preparePreview() {
-        ViewPort guiViewPort = offPanel.getViewPort();
-        ProjectAssetManager pm = niftyObject.getLookup().lookup(ProjectAssetManager.class);
-        if (pm == null) {
-            Logger.getLogger(NiftyPreviewPanel.class.getName()).log(Level.WARNING, "No Project AssetManager found!");
-            return;
-        }
-        AssetManager assetManager = pm.getManager();
-        AudioRenderer audioRenderer = SceneApplication.getApplication().getAudioRenderer();
-        niftyDisplay = new NiftyJmeDisplay(assetManager,
-                inputHandler,
-                audioRenderer,
-                guiViewPort);
-        nifty = niftyDisplay.getNifty();
-        de.lessvoid.nifty.tools.resourceloader.ResourceLoader.addResourceLocation(new FileSystemLocation(new File(pm.getAssetFolderName())));
-
-        // attach the nifty display to the gui view port as a processor
-        guiViewPort.addProcessor(niftyDisplay);
-    }
-
-    public void updatePreView() {
-        updatePreView(screen);
-    }
-
-    public void updatePreView(final String screen) {
-        final ProjectAssetManager pm = niftyObject.getLookup().lookup(ProjectAssetManager.class);
-        if (pm == null) {
-            Logger.getLogger(NiftyPreviewPanel.class.getName()).log(Level.WARNING, "No Project AssetManager found!");
-        }
-        try {
-            doc = XMLUtil.parse(new InputSource(niftyObject.getPrimaryFile().getInputStream()), false, false, null, null);
-            comp.setRootContext(new NiftyFileNode(doc.getDocumentElement()));
-        } catch (Exception ex) {
-            Exceptions.printStackTrace(ex);
-        }
         SceneApplication.getApplication().enqueue(new Callable<Object>() {
 
             public Object call() throws Exception {
-                nifty.fromXml(pm.getRelativeAssetPath(niftyObject.getPrimaryFile().getPath()), screen);
+                ViewPort guiViewPort = offPanel.getViewPort();
+                ProjectAssetManager pm = niftyObject.getLookup().lookup(ProjectAssetManager.class);
+                if (pm == null) {
+                    Logger.getLogger(NiftyPreviewPanel.class.getName()).log(Level.WARNING, "No Project AssetManager found!");
+                    return null;
+                }
+                AssetManager assetManager = pm.getManager();
+                AudioRenderer audioRenderer = SceneApplication.getApplication().getAudioRenderer();
+                niftyDisplay = new NiftyJmeDisplay(assetManager,
+                        inputHandler,
+                        audioRenderer,
+                        guiViewPort);
+                nifty = niftyDisplay.getNifty();
+                de.lessvoid.nifty.tools.resourceloader.ResourceLoader.addResourceLocation(new FileSystemLocation(new File(pm.getAssetFolderName())));
+
+                // attach the nifty display to the gui view port as a processor
+                guiViewPort.addProcessor(niftyDisplay);
                 return null;
             }
         });
-    }
-
-    public void initComponents() {
-        super.initComponents();
-        setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.LINE_AXIS));
     }
 
     @Override
