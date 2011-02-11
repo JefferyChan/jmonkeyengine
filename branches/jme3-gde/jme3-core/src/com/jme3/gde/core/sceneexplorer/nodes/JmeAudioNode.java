@@ -86,7 +86,6 @@ public class JmeAudioNode extends JmeNode {
         obj.setAudioData(null, null);
 
         set.put(new AudioDataProperty(obj));
-        set.put(makeProperty(obj, int.class, "getChannel", "setChannel", "Channel"));
         set.put(makeProperty(obj, Vector3f.class, "getDirection", "setDirection", "Direction"));
         set.put(makeProperty(obj, boolean.class, "isDirectional", "setDirectional", "Directional"));
         set.put(makeProperty(obj, float.class, "getInnerAngle", "setInnerAngle", "Inner Angle"));
