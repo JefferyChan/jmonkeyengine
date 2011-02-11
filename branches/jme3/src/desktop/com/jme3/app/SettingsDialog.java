@@ -120,8 +120,8 @@ public final class SettingsDialog extends JDialog {
      * @throws NullPointerException
      *             if the source is <code>null</code>
      */
-    public SettingsDialog(AppSettings source, String imageFile,boolean loadSettings) {
-        this(source, getURL(imageFile),loadSettings);
+    public SettingsDialog(AppSettings source, String imageFile, boolean loadSettings) {
+        this(source, getURL(imageFile), loadSettings);
     }
 
     /**
@@ -138,7 +138,7 @@ public final class SettingsDialog extends JDialog {
      * @throws JmeException
      *             if the source is <code>null</code>
      */
-    public SettingsDialog(AppSettings source, URL imageFile,boolean loadSettings) {
+    public SettingsDialog(AppSettings source, URL imageFile, boolean loadSettings) {
         if (source == null) {
             throw new NullPointerException("Settings source cannot be null");
         }
@@ -149,15 +149,25 @@ public final class SettingsDialog extends JDialog {
 //        setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
         setModal(true);
 
-        
+        AppSettings registrySettings = new AppSettings(true);
+
+        String appTitle;
+        if(source.getTitle()!=null){
+            appTitle = source.getTitle();
+        }else{
+           appTitle = registrySettings.getTitle();
+        }
+        try {
+            registrySettings.load(appTitle);
+        } catch (BackingStoreException ex) {
+            logger.log(Level.WARNING,
+                    "Failed to load settings", ex);
+        }
+
         if (loadSettings) {
-            String appTitle = source.getTitle();
-            try {
-                source.load(appTitle);
-            } catch (BackingStoreException ex) {
-                logger.log(Level.WARNING,
-                        "Failed to load settings", ex);
-            }
+            source.copyFrom(registrySettings);
+        } else if(!registrySettings.isEmpty()) {
+            source.mergeFrom(registrySettings);
         }
 
         GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
@@ -287,9 +297,12 @@ public final class SettingsDialog extends JDialog {
 //        rendererCombo = setUpRendererChooser();
 //        rendererCombo.addKeyListener(aListener);
 
+       
+
         updateResolutionChoices();
         updateAntialiasChoices();
         displayResCombo.setSelectedItem(source.getWidth() + " x " + source.getHeight());
+        colorDepthCombo.setSelectedItem(source.getBitsPerPixel() + " bpp");
 
         optionsPanel.add(displayResCombo);
         optionsPanel.add(colorDepthCombo);
@@ -523,6 +536,7 @@ public final class SettingsDialog extends JDialog {
         // through pbuffer
         String[] choices = new String[]{"Disabled", "2x", "4x", "6x", "8x", "16x"};
         antialiasCombo.setModel(new DefaultComboBoxModel(choices));
+        antialiasCombo.setSelectedItem(choices[Math.min(source.getSamples()/2,5)]);
     }
 
     //

@@ -29,7 +29,6 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package com.jme3.system;
 
 import java.io.IOException;
@@ -45,15 +44,13 @@ import java.util.prefs.Preferences;
 public class AppSettings extends HashMap<String, Object> {
 
     private static final AppSettings defaults = new AppSettings(false);
-
     public static final String LWJGL_OPENGL1 = "LWJGL-OPENGL1",
-                               LWJGL_OPENGL2 = "LWJGL-OpenGL2",
-                               LWJGL_OPENGL3 = "LWJGL-OpenGL3",
-                               JOGL          = "JOGL",
-                               NULL          = "NULL";
-    public static final String LWJGL_OPENAL  = "LWJGL";
-
-    private String settingsDialogImage="/com/jme3/app/Monkey.png";
+            LWJGL_OPENGL2 = "LWJGL-OpenGL2",
+            LWJGL_OPENGL3 = "LWJGL-OpenGL3",
+            JOGL = "JOGL",
+            NULL = "NULL";
+    public static final String LWJGL_OPENAL = "LWJGL";
+    private String settingsDialogImage = "/com/jme3/app/Monkey.png";
 
     static {
         defaults.put("Width", 640);
@@ -68,7 +65,7 @@ public class AppSettings extends HashMap<String, Object> {
         defaults.put("Renderer", LWJGL_OPENGL2);
         defaults.put("AudioRenderer", LWJGL_OPENAL);
         defaults.put("DisableJoysticks", true);
-        defaults.put("UseInput", true);        
+        defaults.put("UseInput", true);
         defaults.put("VSync", false);
         defaults.put("FrameRate", -1);
 
@@ -77,52 +74,66 @@ public class AppSettings extends HashMap<String, Object> {
 //        defaults.put("FrameRate", 60);
     }
 
-    public AppSettings(boolean loadDefaults){
-        if (loadDefaults){
+    /**
+     * Create Application settings
+     * use loadDefault=true, to load jME default values.
+     * use false if you want to change some settings but you would like the application to remind other settings from previous launches
+     * @param loadDefaults
+     */
+    public AppSettings(boolean loadDefaults) {
+        if (loadDefaults) {
             putAll(defaults);
         }
     }
 
-    public void copyFrom(AppSettings other){
+    public void copyFrom(AppSettings other) {
         this.putAll(other);
     }
 
-    public void load(InputStream in) throws IOException{
+    public void mergeFrom(AppSettings other) {
+        for (String key : other.keySet()) {
+            if (get(key) == null) {
+                put(key, other.get(key));
+            }
+        }
+    }
+
+    public void load(InputStream in) throws IOException {
         Properties props = new Properties();
         props.load(in);
-        for (Map.Entry<Object, Object> entry : props.entrySet()){
+        for (Map.Entry<Object, Object> entry : props.entrySet()) {
             String key = (String) entry.getKey();
             String val = (String) entry.getValue();
             if (val != null) {
-               val = val.trim();
+                val = val.trim();
             }
-            if (key.endsWith("(int)")){
-                key = key.substring(0, key.length()-5);
+            if (key.endsWith("(int)")) {
+                key = key.substring(0, key.length() - 5);
                 int iVal = Integer.parseInt(val);
                 putInteger(key, iVal);
-            }else if (key.endsWith("(string)")){
-                putString(key.substring(0, key.length()-8), val);
-            }else if (key.endsWith("(bool)")){
+            } else if (key.endsWith("(string)")) {
+                putString(key.substring(0, key.length() - 8), val);
+            } else if (key.endsWith("(bool)")) {
                 boolean bVal = Boolean.parseBoolean(val);
-                putBoolean(key.substring(0, key.length()-6), bVal);
-            }else{
+                putBoolean(key.substring(0, key.length() - 6), bVal);
+            } else {
                 throw new IOException("Cannot parse key: " + key);
             }
         }
     }
 
-    public void save(OutputStream out) throws IOException{
+    public void save(OutputStream out) throws IOException {
         Properties props = new Properties();
-        for (Map.Entry<String, Object> entry : entrySet()){
+        for (Map.Entry<String, Object> entry : entrySet()) {
             Object val = entry.getValue();
             String type;
-            if (val instanceof Integer){
+            if (val instanceof Integer) {
                 type = "(int)";
-            }else if (val instanceof String){
+            } else if (val instanceof String) {
                 type = "(string)";
-            }else if (val instanceof Boolean){
+            } else if (val instanceof Boolean) {
                 type = "(bool)";
-            }else{
+            } else {
                 throw new UnsupportedEncodingException();
             }
             props.setProperty(entry.getKey() + type, val.toString());
@@ -130,160 +141,163 @@ public class AppSettings extends HashMap<String, Object> {
         props.store(out, "jME3 AppSettings");
     }
 
-    public void load(String preferencesKey) throws BackingStoreException{
+    public void load(String preferencesKey) throws BackingStoreException {
         Preferences prefs = Preferences.userRoot().node(preferencesKey);
         String[] keys = prefs.keys();
         if (keys != null) {
-           for (String key : keys) {
-               Object defaultValue = defaults.get(key);
-               if (defaultValue instanceof Integer) {
-                   put(key, prefs.getInt(key, (Integer)defaultValue));
-               } else if (defaultValue instanceof String) {
-                   put(key, prefs.get(key, (String)defaultValue));
-               } else if (defaultValue instanceof Boolean) {
-                   put(key, prefs.getBoolean(key, (Boolean)defaultValue));
-               }
-           }
+            for (String key : keys) {
+                Object defaultValue = defaults.get(key);
+                if (defaultValue instanceof Integer) {
+                    put(key, prefs.getInt(key, (Integer) defaultValue));
+                } else if (defaultValue instanceof String) {
+                    put(key, prefs.get(key, (String) defaultValue));
+                } else if (defaultValue instanceof Boolean) {
+                    put(key, prefs.getBoolean(key, (Boolean) defaultValue));
+                }
+            }
         }
     }
 
-    public void save(String preferencesKey) throws BackingStoreException{
-       Preferences prefs = Preferences.userRoot().node(preferencesKey);
-       for (String key : keySet()) {
-           prefs.put(key, get(key).toString());
-       }
+    public void save(String preferencesKey) throws BackingStoreException {
+        Preferences prefs = Preferences.userRoot().node(preferencesKey);
+        for (String key : keySet()) {
+            prefs.put(key, get(key).toString());
+        }
     }
 
-    public int getInteger(String key){
+    public int getInteger(String key) {
         Integer i = (Integer) get(key);
-        if (i == null)
+        if (i == null) {
             return 0;
+        }
 
         return i.intValue();
     }
 
-    public boolean getBoolean(String key){
+    public boolean getBoolean(String key) {
         Boolean b = (Boolean) get(key);
-        if (b == null)
+        if (b == null) {
             return false;
+        }
 
         return b.booleanValue();
     }
 
-    public String getString(String key){
+    public String getString(String key) {
         String s = (String) get(key);
-        if (s == null)
+        if (s == null) {
             return null;
+        }
 
         return s;
     }
 
-    public void putInteger(String key, int value){
+    public void putInteger(String key, int value) {
         put(key, Integer.valueOf(value));
     }
 
-    public void putBoolean(String key, boolean value){
+    public void putBoolean(String key, boolean value) {
         put(key, Boolean.valueOf(value));
     }
 
-    public void putString(String key, String value){
+    public void putString(String key, String value) {
         put(key, value);
     }
 
-    public void setFrameRate(int frameRate){
+    public void setFrameRate(int frameRate) {
         putInteger("FrameRate", frameRate);
     }
 
-    public void setUseInput(boolean use){
+    public void setUseInput(boolean use) {
         putBoolean("UseInput", use);
     }
-    
-    public void setUseJoysticks(boolean use){
+
+    public void setUseJoysticks(boolean use) {
         putBoolean("DisableJoysticks", !use);
     }
 
-    public void setRenderer(String renderer){
+    public void setRenderer(String renderer) {
         putString("Renderer", renderer);
     }
 
-    public void setAudioRenderer(String audioRenderer){
+    public void setAudioRenderer(String audioRenderer) {
         putString("AudioRenderer", audioRenderer);
     }
 
-    public void setWidth(int value){
+    public void setWidth(int value) {
         putInteger("Width", value);
     }
 
-    public void setHeight(int value){
+    public void setHeight(int value) {
         putInteger("Height", value);
     }
 
-    public void setResolution(int width, int height){
+    public void setResolution(int width, int height) {
         setWidth(width);
         setHeight(height);
     }
 
-    public void setFrequency(int value){
+    public void setFrequency(int value) {
         putInteger("Frequency", value);
     }
 
-    public void setBitsPerPixel(int value){
+    public void setBitsPerPixel(int value) {
         putInteger("BitsPerPixel", value);
     }
 
-    public void setSamples(int value){
+    public void setSamples(int value) {
         putInteger("Samples", value);
     }
 
-    public void setTitle(String title){
+    public void setTitle(String title) {
         putString("Title", title);
     }
 
-    public void setFullscreen(boolean value){
+    public void setFullscreen(boolean value) {
         putBoolean("Fullscreen", value);
     }
 
-    public void setVSync(boolean value){
+    public void setVSync(boolean value) {
         putBoolean("VSync", value);
     }
 
-    public int getFrameRate(){
+    public int getFrameRate() {
         return getInteger("FrameRate");
     }
 
-    public boolean useInput(){
+    public boolean useInput() {
         return getBoolean("UseInput");
     }
 
-    public String getRenderer(){
+    public String getRenderer() {
         return getString("Renderer");
     }
 
-    public int getWidth(){
+    public int getWidth() {
         return getInteger("Width");
     }
 
-    public int getHeight(){
+    public int getHeight() {
         return getInteger("Height");
     }
 
-    public int getBitsPerPixel(){
+    public int getBitsPerPixel() {
         return getInteger("BitsPerPixel");
     }
 
-    public int getFrequency(){
+    public int getFrequency() {
         return getInteger("Frequency");
     }
 
-    public int getDepthBits(){
+    public int getDepthBits() {
         return getInteger("DepthBits");
     }
 
-    public int getStencilBits(){
+    public int getStencilBits() {
         return getInteger("StencilBits");
     }
 
-    public int getSamples(){
+    public int getSamples() {
         return getInteger("Samples");
     }
 
@@ -291,11 +305,11 @@ public class AppSettings extends HashMap<String, Object> {
         return getString("Title");
     }
 
-    public boolean isVSync(){
+    public boolean isVSync() {
         return getBoolean("VSync");
     }
 
-    public boolean isFullscreen(){
+    public boolean isFullscreen() {
         return getBoolean("Fullscreen");
     }
 
@@ -307,12 +321,11 @@ public class AppSettings extends HashMap<String, Object> {
         return getString("AudioRenderer");
     }
 
-    public void setSettingsDialogImage(String path){
-       settingsDialogImage = path;
+    public void setSettingsDialogImage(String path) {
+        settingsDialogImage = path;
     }
 
     public String getSettingsDialogImage() {
         return settingsDialogImage;
     }
-    
 }
