@@ -34,7 +34,7 @@ public class NiftyPreviewInputHandler implements de.lessvoid.nifty.spi.input.Inp
     }
 
     public synchronized void addMouseEvent(int newMouseX, int newMouseY, boolean mouseDown) {
-        MouseInputEvent event = new MouseInputEvent(newMouseX, newMouseY, true);
+        MouseInputEvent event = new MouseInputEvent(newMouseX, newMouseY, mouseDown);
         mouseEvents.add(event);
     }
     public synchronized void addKeyEvent(int newKey, char newCharacter, boolean newKeyDown, boolean newShiftDown, boolean newControlDown) {

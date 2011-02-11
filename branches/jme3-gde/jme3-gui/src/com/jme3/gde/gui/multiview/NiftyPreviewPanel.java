@@ -13,6 +13,9 @@ import com.jme3.gde.gui.NiftyGuiDataObject;
 import com.jme3.renderer.ViewPort;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.tools.resourceloader.FileSystemLocation;
+import java.awt.Dimension;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -23,6 +26,9 @@ import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.BoxLayout;
+import javax.swing.JComboBox;
+import javax.swing.JPanel;
+import javax.swing.JToolBar;
 import org.netbeans.modules.xml.multiview.Error;
 import org.netbeans.modules.xml.multiview.ui.PanelView;
 import org.netbeans.modules.xml.multiview.ui.ToolBarDesignEditor;
@@ -45,6 +51,7 @@ public class NiftyPreviewPanel extends PanelView {
     private ToolBarDesignEditor comp;
     private String screen = "";
     private NiftyPreviewInputHandler inputHandler;
+    private NiftyJmeDisplay niftyDisplay;
 
     public NiftyPreviewPanel(NiftyGuiDataObject niftyObject, ToolBarDesignEditor comp) {
         super();
@@ -52,6 +59,7 @@ public class NiftyPreviewPanel extends PanelView {
         this.comp = comp;
         prepareInputHandler();
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
+        createToolbar();
         offPanel = new OffScenePanel(640, 480);
         add(offPanel);
         setRoot(Node.EMPTY);
@@ -74,6 +82,49 @@ public class NiftyPreviewPanel extends PanelView {
                 return null;
             }
         });
+    }
+
+    private void createToolbar() {
+        JToolBar toolBar = new JToolBar();
+        toolBar.setPreferredSize(new Dimension(10000, 24));
+        toolBar.setMaximumSize(new Dimension(10000, 24));
+        toolBar.setFloatable(false);
+        JComboBox comboBox = new JComboBox(new String[]{"640x480", "1024x768", "1280x720"});
+        comboBox.addItemListener(new ItemListener() {
+
+            public void itemStateChanged(ItemEvent e) {
+                String string = (String) e.getItem();
+                final int width;
+                final int height;
+                if ("640x480".equals(string)) {
+                    width = 640;
+                    height = 480;
+                } else if ("1024x768".equals(string)) {
+                    offPanel.resizeGLView(1024, 768);
+                    width = 1024;
+                    height = 768;
+                } else if ("1280x720".equals(string)) {
+                    offPanel.resizeGLView(1280, 720);
+                    width = 1280;
+                    height = 720;
+                } else {
+                    width = 640;
+                    height = 480;
+                }
+                offPanel.resizeGLView(width, height);
+                SceneApplication.getApplication().enqueue(new Callable<Object>() {
+
+                    public Object call() throws Exception {
+                        niftyDisplay.reshape(offPanel.getViewPort(), width, height);
+                        return null;
+                    }
+                });
+                updatePreView(screen);
+            }
+        });
+        toolBar.add(comboBox);
+        toolBar.add(new JPanel());
+        add(toolBar);
     }
 
     private void prepareInputHandler() {
@@ -129,7 +180,7 @@ public class NiftyPreviewPanel extends PanelView {
         }
         AssetManager assetManager = pm.getManager();
         AudioRenderer audioRenderer = SceneApplication.getApplication().getAudioRenderer();
-        NiftyJmeDisplay niftyDisplay = new NiftyJmeDisplay(assetManager,
+        niftyDisplay = new NiftyJmeDisplay(assetManager,
                 inputHandler,
                 audioRenderer,
                 guiViewPort);
@@ -149,7 +200,6 @@ public class NiftyPreviewPanel extends PanelView {
         if (pm == null) {
             Logger.getLogger(NiftyPreviewPanel.class.getName()).log(Level.WARNING, "No Project AssetManager found!");
         }
-        this.screen = screen;
         try {
             doc = XMLUtil.parse(new InputSource(niftyObject.getPrimaryFile().getInputStream()), false, false, null, null);
             comp.setRootContext(new NiftyFileNode(doc.getDocumentElement()));
@@ -177,7 +227,8 @@ public class NiftyPreviewPanel extends PanelView {
 
     @Override
     public void showSelection(Node[] nodes) {
-        updatePreView(nodes[0].getName());
+        this.screen = nodes[0].getName();
+        updatePreView();
     }
 
     public void cleanup() {

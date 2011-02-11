@@ -52,13 +52,12 @@ import com.jme3.scene.Spatial;
 import com.jme3.texture.FrameBuffer;
 import com.jme3.texture.Image.Format;
 import com.jme3.util.BufferUtils;
+import com.jme3.util.Screenshots;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferByte;
-import java.awt.image.WritableRaster;
 import java.nio.ByteBuffer;
 import java.util.concurrent.Callable;
 import java.util.logging.Level;
@@ -72,7 +71,7 @@ public class OffScenePanel extends javax.swing.JPanel implements SceneProcessor 
 
     private int width = 640, height = 480;
     private ByteBuffer cpuBuf;
-    private byte[] cpuArray;
+//    private byte[] cpuArray;
     private Node rootNode = new Node("Root Node");
     private FrameBuffer offBuffer;
     private ViewPort viewPort;
@@ -98,7 +97,22 @@ public class OffScenePanel extends javax.swing.JPanel implements SceneProcessor 
         this.width = width;
         this.height = height;
         initComponents();
-        setupImage();
+    }
+
+    public void resizeGLView(final int x, final int y) {
+        SceneApplication.getApplication().enqueue(new Callable<Object>() {
+
+            public Object call() throws Exception {
+                width = x;
+                height = y;
+                if (viewPort != null) {
+                    synchronized (imageLock) {
+                        setupOffBuffer();
+                    }
+                }
+                return null;
+            }
+        });
     }
 
     public void startPreview() {
@@ -106,7 +120,7 @@ public class OffScenePanel extends javax.swing.JPanel implements SceneProcessor 
 
             public Object call() throws Exception {
                 setupOffView();
-                setupOffBuffer(width, height);
+                setupOffBuffer();
                 setupScene();
                 return null;
             }
@@ -125,11 +139,6 @@ public class OffScenePanel extends javax.swing.JPanel implements SceneProcessor 
         Logger.getLogger(OffScenePanel.class.getName()).log(Level.INFO, "Component hidden");
     }
 
-    private void setupImage() {
-        image = new BufferedImage(width, height,
-                BufferedImage.TYPE_4BYTE_ABGR);
-    }
-
     private void setupScene() {
         //setup framebuffer's cam
         camera.setFrustumPerspective(45f, 1f, 1f, 1000f);
@@ -145,16 +154,18 @@ public class OffScenePanel extends javax.swing.JPanel implements SceneProcessor 
         viewPort.attachScene(rootNode);
     }
 
-    private void setupOffBuffer(int width, int height) {
+    private void setupOffBuffer() {
+        image = new BufferedImage(width, height,
+                BufferedImage.TYPE_4BYTE_ABGR);
         cpuBuf = BufferUtils.createByteBuffer(width * height * 4);
-        cpuArray = new byte[width * height * 4];
+//        cpuArray = new byte[width * height * 4];
         offBuffer = new FrameBuffer(width, height, 0);
         //setup framebuffer to use texture
         offBuffer.setDepthBuffer(Format.Depth);
         offBuffer.setColorBuffer(Format.RGBA8);
         //set viewport to render to offscreen framebuffer
         viewPort.setOutputFrameBuffer(offBuffer);
-        camera.resize(width, height, true);
+        camera.resize(width, height, false);
     }
 
     private void setupOffView() {
@@ -187,36 +198,32 @@ public class OffScenePanel extends javax.swing.JPanel implements SceneProcessor 
     }
 
     public void postFrame(FrameBuffer fb) {
-        cpuBuf.clear();
+//        cpuBuf.clear();
         SceneApplication.getApplication().getRenderer().readFrameBuffer(offBuffer, cpuBuf);
-
-        // copy native memory to java memory
-        cpuBuf.clear();
-        cpuBuf.get(cpuArray);
-        cpuBuf.clear();
-
-        // flip the components the way AWT likes them
-        for (int i = 0; i < width * height * 4; i += 4) {
-            byte b = cpuArray[i + 0];
-            byte g = cpuArray[i + 1];
-            byte r = cpuArray[i + 2];
-            byte a = cpuArray[i + 3];
-
-            cpuArray[i + 0] = a;
-            cpuArray[i + 1] = b;
-            cpuArray[i + 2] = g;
-            cpuArray[i + 3] = r;
-        }
+//
+//        // copy native memory to java memory
+//        cpuBuf.clear();
+//        cpuBuf.get(cpuArray);
+//        cpuBuf.clear();
+//
+//        // flip the components the way AWT likes them
+//        for (int i = 0; i < width * height * 4; i += 4) {
+//            byte b = cpuArray[i + 0];
+//            byte g = cpuArray[i + 1];
+//            byte r = cpuArray[i + 2];
+//            byte a = cpuArray[i + 3];
+//
+//            cpuArray[i + 0] = a;
+//            cpuArray[i + 1] = b;
+//            cpuArray[i + 2] = g;
+//            cpuArray[i + 3] = r;
+//        }
 
         synchronized (imageLock) {
-            WritableRaster wr = image.getRaster();
-            DataBufferByte db = (DataBufferByte) wr.getDataBuffer();
-            System.arraycopy(cpuArray, 0, db.getData(), 0, cpuArray.length);
-            tx.translate(0, -image.getHeight());
-            if (op == null) {
-                op = new AffineTransformOp(tx, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
-            }
-            image = op.filter(image, null);
+            Screenshots.convertScreenShot(cpuBuf, image);
+//            WritableRaster wr = image.getRaster();
+//            DataBufferByte db = (DataBufferByte) wr.getDataBuffer();
+//            System.arraycopy(cpuArray, 0, db.getData(), 0, cpuArray.length);
         }
         repaint();
     }
@@ -230,6 +237,10 @@ public class OffScenePanel extends javax.swing.JPanel implements SceneProcessor 
         Graphics2D g2d = (Graphics2D) gfx;
         synchronized (imageLock) {
             if (image != null) {
+                tx.translate(0, -image.getHeight());
+                if (op == null) {
+                    op = new AffineTransformOp(tx, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
+                }
                 g2d.drawImage(image, null, 0, 0);
             }
         }
