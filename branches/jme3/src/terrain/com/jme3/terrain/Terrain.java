@@ -149,4 +149,17 @@ public interface Terrain {
      * return is the only material used in the whole terrain structure.
      */
     public Material getMaterial();
+
+    /**
+     * Calculates the percentage along the terrain (in X-Z plane) that the
+     * supplied point (worldX,worldY) is, starting from the x=0, z=0 world
+     * position of the terrain.
+     * This method must take into account local translations and scale of the terrain.
+     * Used for painting onto an alpha image for texture splatting.
+     * 
+     * @param worldX world position on X axis
+     * @param worldY world position on Z axis
+     * @return a point (U,V in the range [0,1] )
+     */
+    public Vector2f getPointPercentagePosition(float worldX, float worldY);
 }

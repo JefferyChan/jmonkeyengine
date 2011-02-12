@@ -1000,6 +1000,15 @@ public class TerrainQuad extends Node implements Terrain {
         return (x >= 0 && x <= totalSize && z >= 0 && z <= totalSize);
     }
 
+    public Vector2f getPointPercentagePosition(float worldX, float worldY) {
+        Vector2f uv = new Vector2f(worldX,worldY);
+        uv.subtractLocal(getLocalTranslation().x, getLocalTranslation().z); // center it on 0,0
+        uv.addLocal(totalSize/2, totalSize/2); // shift the bottom left corner up to 0,0
+        uv.divideLocal(totalSize); // get the location as a percentage
+
+        return uv;
+    }
+
 
     public void adjustHeight(Vector2f xz, float delta) {
         int x = Math.round((xz.x / getLocalScale().x) + totalSize / 2);
@@ -1508,6 +1517,15 @@ public class TerrainQuad extends Node implements Terrain {
 	public boolean isUsingLOD() {
 		return usingLOD;
 	}
+
+    public int getPatchSize() {
+        return patchSize;
+    }
+
+    public int getTotalSize() {
+        return totalSize;
+    }
+    
 
 	public float[] getHeightMap() {
 

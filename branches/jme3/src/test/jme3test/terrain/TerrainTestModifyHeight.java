@@ -208,14 +208,14 @@ public class TerrainTestModifyHeight extends SimpleApplication {
                 if (pressed) {
                     Vector3f intersection = getWorldIntersection();
                     if (intersection != null) {
-                        adjustHeight(intersection, 8, 1);
+                        adjustHeight(intersection, 16, 1);
                     }
                 }
             } else if (name.equals("Lower")) {
                 if (pressed) {
                     Vector3f intersection = getWorldIntersection();
                     if (intersection != null) {
-                        adjustHeight(intersection, 8, -1);
+                        adjustHeight(intersection, 16, -1);
                     }
                 }
             }
@@ -231,7 +231,7 @@ public class TerrainTestModifyHeight extends SimpleApplication {
 
         float xStepAmount = terrain.getLocalScale().x;
         float zStepAmount = terrain.getLocalScale().z;
-
+long start = System.currentTimeMillis();
         for (int z=-radiusStepsZ; z<radiusStepsZ; z++) {
 			for (int x=-radiusStepsZ; x<radiusStepsX; x++) {
 
@@ -247,7 +247,7 @@ public class TerrainTestModifyHeight extends SimpleApplication {
 				}
 			}
 		}
-        System.out.println("---");
+        System.out.println("took: "+(System.currentTimeMillis()-start));
         terrain.updateModelBound();
     }
 
