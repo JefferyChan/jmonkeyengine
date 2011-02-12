@@ -39,6 +39,7 @@ import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
+import com.jme3.bullet.control.VehicleControl;
 import com.jme3.bullet.nodes.PhysicsNode;
 import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.font.BitmapText;
@@ -112,6 +113,7 @@ public class TestHoveringTank extends SimpleApplication implements AnalogListene
     public void simpleInitApp() {
         bulletAppState = new BulletAppState();
         stateManager.attach(bulletAppState);
+        bulletAppState.getPhysicsSpace().enableDebug(assetManager);
 
         cam.setFrustumFar(50f);
 
@@ -138,6 +140,7 @@ public class TestHoveringTank extends SimpleApplication implements AnalogListene
 
         hoverControl = new PhysicsHoverControl(colShape, 1000);
         hoverControl.setCollisionGroup(PhysicsCollisionObject.COLLISION_GROUP_02);
+//        hoverControl.add
 
         spaceCraft.setLocalTranslation(new Vector3f(-140, 14, -23));
         spaceCraft.setShadowMode(ShadowMode.CastAndReceive);
@@ -182,13 +185,13 @@ public class TestHoveringTank extends SimpleApplication implements AnalogListene
 
     public void onAnalog(String binding, float value, float tpf) {
         if (binding.equals("Lefts")) {
-            hoverControl.steer(50000f * value / tpf);
+            hoverControl.steer(50f * value);
         } else if (binding.equals("Rights")) {
-            hoverControl.steer(-50000f * value / tpf);
+            hoverControl.steer(-50f * value);
         } else if (binding.equals("Ups")) {
-            hoverControl.accelerate(8000f * value / tpf);
+            hoverControl.accelerate(10f * value);
         } else if (binding.equals("Downs")) {
-            hoverControl.accelerate(-8000f * value / tpf);
+            hoverControl.accelerate(-10f * value);
         }
     }
 

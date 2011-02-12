@@ -1,15 +1,41 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (c) 2009-2010 jMonkeyEngine
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ * * Redistributions of source code must retain the above copyright
+ *   notice, this list of conditions and the following disclaimer.
+ *
+ * * Redistributions in binary form must reproduce the above copyright
+ *   notice, this list of conditions and the following disclaimer in the
+ *   documentation and/or other materials provided with the distribution.
+ *
+ * * Neither the name of 'jMonkeyEngine' nor the names of its contributors
+ *   may be used to endorse or promote products derived from this software
+ *   without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+ * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+ * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+ * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package jme3test.bullet;
 
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.PhysicsTickListener;
-import com.jme3.bullet.collision.PhysicsRayTestResult;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.PhysicsControl;
-import com.jme3.bullet.objects.PhysicsRigidBody;
+import com.jme3.bullet.objects.PhysicsVehicle;
 import com.jme3.export.InputCapsule;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
@@ -22,13 +48,12 @@ import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.Control;
 import java.io.IOException;
-import java.util.List;
 
 /**
- *
+ * PhysicsHoverControl uses a RayCast Vehicle with "slippery wheels" to simulate a hovering tank
  * @author normenhansen
  */
-public class PhysicsHoverControl extends PhysicsRigidBody implements PhysicsControl, PhysicsTickListener {
+public class PhysicsHoverControl extends PhysicsVehicle implements PhysicsControl, PhysicsTickListener {
 
     protected Spatial spatial;
     protected boolean enabled = true;
@@ -46,9 +71,10 @@ public class PhysicsHoverControl extends PhysicsRigidBody implements PhysicsCont
     protected Vector3f HOVER_HEIGHT_RF = new Vector3f(-xw, -yw, zw);
     protected Vector3f HOVER_HEIGHT_LR = new Vector3f(xw, -yw, -zw);
     protected Vector3f HOVER_HEIGHT_RR = new Vector3f(-xw, -yw, -zw);
-    protected Vector3f HOVER_FORCE = new Vector3f(0, 10000f, 0);
     protected Vector3f tempVect1 = new Vector3f(0, 0, 0);
-    protected Vector3f tempVect2 = new Vector3f(0, 0, 0);
+    protected float rotationCounterForce = 10000f;
+    protected float speedCounterMult = 2000f;
+    protected float multiplier = 10000f;
 
     public PhysicsHoverControl() {
     }
@@ -60,10 +86,12 @@ public class PhysicsHoverControl extends PhysicsRigidBody implements PhysicsCont
      */
     public PhysicsHoverControl(CollisionShape shape) {
         super(shape);
+        createWheels();
     }
 
     public PhysicsHoverControl(CollisionShape shape, float mass) {
         super(shape, mass);
+        createWheels();
     }
 
     public Control cloneForSpatial(Spatial spatial) {
@@ -88,50 +116,33 @@ public class PhysicsHoverControl extends PhysicsRigidBody implements PhysicsCont
         return enabled;
     }
 
-    public void prePhysicsTick(PhysicsSpace space, float f) {
+    private void createWheels() {
+        addWheel(HOVER_HEIGHT_LF_START, new Vector3f(0, -1, 0), new Vector3f(-1, 0, 0), yw, yw, false);
+        addWheel(HOVER_HEIGHT_RF_START, new Vector3f(0, -1, 0), new Vector3f(-1, 0, 0), yw, yw, false);
+        addWheel(HOVER_HEIGHT_LR_START, new Vector3f(0, -1, 0), new Vector3f(-1, 0, 0), yw, yw, false);
+        addWheel(HOVER_HEIGHT_RR_START, new Vector3f(0, -1, 0), new Vector3f(-1, 0, 0), yw, yw, false);
+        for (int i = 0; i < 4; i++) {
+            getWheel(i).setFrictionSlip(0.001f);
+        }
     }
 
-    public void physicsTick(PhysicsSpace space, float f) {
-        List<PhysicsRayTestResult> results = space.rayTest(spatial.localToWorld(HOVER_HEIGHT_LF_START, tempVect1), spatial.localToWorld(HOVER_HEIGHT_LF, tempVect2));
-        if (results.size() > 0) {
-            applyForce(HOVER_FORCE.mult(1 - results.get(0).getHitFraction()), HOVER_HEIGHT_LF);
-//            System.out.println("fract1:" + (1 - results.get(0).getHitFraction()));
-        }
-        results = space.rayTest(spatial.localToWorld(HOVER_HEIGHT_RF_START, tempVect1), spatial.localToWorld(HOVER_HEIGHT_RF, tempVect2));
-        if (results.size() > 0) {
-            applyForce(HOVER_FORCE.mult(1 - results.get(0).getHitFraction()), HOVER_HEIGHT_RF);
-//            System.out.println("fract2:" + (1 - results.get(0).getHitFraction()));
-        }
-        results = space.rayTest(spatial.localToWorld(HOVER_HEIGHT_LR_START, tempVect1), spatial.localToWorld(HOVER_HEIGHT_LR, tempVect2));
-        if (results.size() > 0) {
-            applyForce(HOVER_FORCE.mult(1 - results.get(0).getHitFraction()), HOVER_HEIGHT_LR);
-//            System.out.println("fract3:" + (1 - results.get(0).getHitFraction()));
-        }
-        results = space.rayTest(spatial.localToWorld(HOVER_HEIGHT_RR_START, tempVect1), spatial.localToWorld(HOVER_HEIGHT_RR, tempVect2));
-        if (results.size() > 0) {
-            applyForce(HOVER_FORCE.mult(1 - results.get(0).getHitFraction()), HOVER_HEIGHT_RR);
-//            System.out.println("fract4:" + (1 - results.get(0).getHitFraction()));
-        }
-
+    public void prePhysicsTick(PhysicsSpace space, float f) {
         Vector3f angVel = getAngularVelocity();
-        float velocity = angVel.getY();
-        Quaternion q = new Quaternion().fromRotationMatrix(motionState.getWorldRotation());
-        Vector3f dir = q.getRotationColumn(2);
-        dir.y = 0;
-        dir.normalizeLocal();
-        Vector3f vel = getLinearVelocity();
+        float rotationVelocity = angVel.getY();
+        Vector3f dir = getForwardVector(new Vector3f());
+        Vector3f linearVelocity = getLinearVelocity();
 
         if (steeringValue != 0) {
-            if (velocity < 1 && velocity > -1) {
+            if (rotationVelocity < 1 && rotationVelocity > -1) {
                 applyTorque(tempVect1.set(0, steeringValue, 0));
             }
-            steeringValue = 0;
+//            steeringValue = 0;
         } else {
             // counter the steering value!
-            if (velocity > 0.2f) {
-                applyTorque(tempVect1.set(0, -10000, 0));
-            } else if (velocity < -0.2f) {
-                applyTorque(tempVect1.set(0, 10000, 0));
+            if (rotationVelocity > 0.2f) {
+                applyTorque(tempVect1.set(0, -rotationCounterForce, 0));
+            } else if (rotationVelocity < -0.2f) {
+                applyTorque(tempVect1.set(0, rotationCounterForce, 0));
             }
         }
         if (accelerationValue > 0) {
@@ -140,49 +151,38 @@ public class PhysicsHoverControl extends PhysicsRigidBody implements PhysicsCont
             // if we are not going where we want to go.
             // this will prevent "drifting" and thus improve control
             // of the vehicle
-            float d = dir.dot(vel.normalize());
-            Vector3f counter = dir.project(vel).normalizeLocal().negateLocal().multLocal(1 - d);
-            // adjust the "2000" value to increase or decrease counter-drifting
-            applyForce(counter.mult(2000), Vector3f.ZERO);
+            float d = dir.dot(linearVelocity.normalize());
+            Vector3f counter = dir.project(linearVelocity).normalizeLocal().negateLocal().multLocal(1 - d);
+            applyForce(counter.mult(speedCounterMult), Vector3f.ZERO);
 
-            if (vel.length() < 10) {
+            if (linearVelocity.length() < 10) {
                 applyForce(dir.mult(accelerationValue), Vector3f.ZERO);
             }
 
-            accelerationValue = 0;
+//            accelerationValue = 0;
         } else {
             // counter the acceleration value
-            if (vel.length() > FastMath.ZERO_TOLERANCE) {
-                vel.normalizeLocal().negateLocal();
-                applyForce(vel.mult(2000), Vector3f.ZERO);
+            if (linearVelocity.length() > FastMath.ZERO_TOLERANCE) {
+                linearVelocity.normalizeLocal().negateLocal();
+                applyForce(linearVelocity.mult(speedCounterMult), Vector3f.ZERO);
             }
         }
-//        //counter too much rotation
-//        float[] angles = new float[3];
-//        q.toAngles(angles);
-//        if (angles[0] > FastMath.QUARTER_PI / 2f) {
-//            applyTorque(new Vector3f(-300, 0, 0));
-//        }
-//        if (angles[0] < -FastMath.QUARTER_PI / 2f) {
-//            applyTorque(new Vector3f(300, 0, 0));
-//        }
-//        if (angles[2] > FastMath.QUARTER_PI / 2f) {
-//            applyTorque(new Vector3f(0, 0, -300));
-//        }
-//        if (angles[2] < -FastMath.QUARTER_PI / 2f) {
-//            applyTorque(new Vector3f(0, 0, 300));
-//        }
+    }
+
+    public void physicsTick(PhysicsSpace space, float f) {
     }
 
     public void update(float tpf) {
-//        physicsTick(space, tpf);
         if (enabled && spatial != null) {
             getMotionState().applyTransform(spatial);
         }
     }
 
     public void render(RenderManager rm, ViewPort vp) {
-        if (debugShape != null && enabled) {
+        if (enabled && space != null && space.getDebugManager() != null) {
+            if (debugShape == null) {
+                attachDebugShape(space.getDebugManager());
+            }
             debugShape.setLocalTranslation(motionState.getWorldLocation());
             debugShape.setLocalRotation(motionState.getWorldRotation());
             debugShape.updateLogicalState(0);
@@ -224,14 +224,16 @@ public class PhysicsHoverControl extends PhysicsRigidBody implements PhysicsCont
     /**
      * @param steeringValue the steeringValue to set
      */
+    @Override
     public void steer(float steeringValue) {
-        this.steeringValue = steeringValue;
+        this.steeringValue = steeringValue * multiplier;
     }
 
     /**
      * @param accelerationValue the accelerationValue to set
      */
+    @Override
     public void accelerate(float accelerationValue) {
-        this.accelerationValue = accelerationValue;
+        this.accelerationValue = accelerationValue * multiplier;
     }
 }
