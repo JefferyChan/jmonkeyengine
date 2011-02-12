@@ -349,6 +349,7 @@ public class TestWalkingChar extends SimpleApplication implements ActionListener
                 animationChannel.setAnim("stand", 1f);
             }
         } else {
+            modelDirection.set(walkDirection);
             character.setViewDirection(modelDirection);
             if (airTime > .3f) {
                 if (!"stand".equals(animationChannel.getAnimationName())) {
