@@ -106,7 +106,7 @@ public class TestPhysicsCar extends SimpleApplication implements ActionListener 
 
         //create vehicle node
         Node vehicleNode=new Node("vehicleNode");
-        vehicle = new VehicleControl(compoundShape, 800);
+        vehicle = new VehicleControl(compoundShape, 400);
         vehicleNode.addControl(vehicle);
 
         //setting suspension values for wheels, this can be a bit tricky
@@ -135,7 +135,7 @@ public class TestPhysicsCar extends SimpleApplication implements ActionListener 
         node1.attachChild(wheels1);
         wheels1.rotate(0, FastMath.HALF_PI, 0);
         wheels1.setMaterial(mat);
-        vehicle.addWheel(wheels1, new Vector3f(-xOff, yOff, zOff),
+        vehicle.addWheel(node1, new Vector3f(-xOff, yOff, zOff),
                 wheelDirection, wheelAxle, restLength, radius, true);
 
         Node node2 = new Node("wheel 2 node");
@@ -143,7 +143,7 @@ public class TestPhysicsCar extends SimpleApplication implements ActionListener 
         node2.attachChild(wheels2);
         wheels2.rotate(0, FastMath.HALF_PI, 0);
         wheels2.setMaterial(mat);
-        vehicle.addWheel(wheels2, new Vector3f(xOff, yOff, zOff),
+        vehicle.addWheel(node2, new Vector3f(xOff, yOff, zOff),
                 wheelDirection, wheelAxle, restLength, radius, true);
 
         Node node3 = new Node("wheel 3 node");
@@ -151,7 +151,7 @@ public class TestPhysicsCar extends SimpleApplication implements ActionListener 
         node3.attachChild(wheels3);
         wheels3.rotate(0, FastMath.HALF_PI, 0);
         wheels3.setMaterial(mat);
-        vehicle.addWheel(wheels3, new Vector3f(-xOff, yOff, -zOff),
+        vehicle.addWheel(node3, new Vector3f(-xOff, yOff, -zOff),
                 wheelDirection, wheelAxle, restLength, radius, false);
 
         Node node4 = new Node("wheel 4 node");
@@ -159,9 +159,13 @@ public class TestPhysicsCar extends SimpleApplication implements ActionListener 
         node4.attachChild(wheels4);
         wheels4.rotate(0, FastMath.HALF_PI, 0);
         wheels4.setMaterial(mat);
-        vehicle.addWheel(wheels4, new Vector3f(xOff, yOff, -zOff),
+        vehicle.addWheel(node4, new Vector3f(xOff, yOff, -zOff),
                 wheelDirection, wheelAxle, restLength, radius, false);
 
+        vehicleNode.attachChild(node1);
+        vehicleNode.attachChild(node2);
+        vehicleNode.attachChild(node3);
+        vehicleNode.attachChild(node4);
         rootNode.attachChild(vehicleNode);
 
         getPhysicsSpace().add(vehicle);
