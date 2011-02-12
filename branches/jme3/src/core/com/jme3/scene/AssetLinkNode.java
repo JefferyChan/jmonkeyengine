@@ -169,7 +169,7 @@ public class AssetLinkNode extends Node {
                 children.add(child);
                 assetChildren.put(modelKey, child);
             } else {
-                Logger.getLogger(this.getClass().getName()).log(Level.WARNING, "Could not load linked child spatial: " + modelKey.getName());
+                Logger.getLogger(this.getClass().getName()).log(Level.WARNING, "Could not load linked child spatial: {0}", modelKey.getName());
             }
         }
     }

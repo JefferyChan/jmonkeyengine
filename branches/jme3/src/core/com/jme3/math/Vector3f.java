@@ -392,6 +392,18 @@ public final class Vector3f implements Savable, Cloneable {
     }
 
     /**
+     * Returns true if this vector is a unit vector (length() ~= 1),
+     * returns false otherwise.
+     * 
+     * @return true if this vector is a unit vector (length() ~= 1),
+     * or false otherwise.
+     */
+    public boolean isUnitVector(){
+        float len = length();
+        return 0.99f < len && len < 1.01f;
+    }
+
+    /**
      * <code>length</code> calculates the magnitude of this vector.
      *
      * @return the length or magnitude of the vector.

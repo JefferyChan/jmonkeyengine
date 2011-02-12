@@ -78,6 +78,20 @@ public class CameraControl extends AbstractControl {
         this.camera = camera;
     }
 
+    /**
+     * @param camera The Camera to be synced.
+     */
+    public CameraControl(Camera camera, ControlDirection controlDir) {
+        this.camera = camera;
+        this.controlDir = controlDir;
+    }
+
+    /**
+     * @param spatial
+     * @param camera
+     * @param controlDir
+     * @deprecated Use the constructor that doesn't take a spatial argument
+     */
     public CameraControl(Spatial spatial, Camera camera, ControlDirection controlDir) {
         super(spatial);
         this.camera = camera;
@@ -87,7 +101,9 @@ public class CameraControl extends AbstractControl {
     /**
      * @param spatial The spatial to be synced.
      * @param camera The Camera to be synced.
+     * @deprecated Use the constructor that doesn't take a spatial argument
      */
+    @Deprecated
     public CameraControl(Spatial spatial, Camera camera) {
         super(spatial);
         this.camera = camera;
@@ -140,12 +156,14 @@ public class CameraControl extends AbstractControl {
 
     @Override
     public Control cloneForSpatial(Spatial newSpatial) {
-        final CameraControl control = new CameraControl(newSpatial, camera, controlDir);
+        CameraControl control = new CameraControl(camera, controlDir);
+        control.setSpatial(newSpatial);
         control.setEnabled(isEnabled());
         return control;
     }
 
     private static final String CONTROL_DIR_NAME = "controlDir";
+    
     @Override
     public void read(JmeImporter im) throws IOException {
         super.read(im);

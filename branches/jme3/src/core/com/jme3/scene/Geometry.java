@@ -53,7 +53,7 @@ public class Geometry extends Spatial {
      */
     protected Mesh mesh;
 
-    protected int lodLevel = 0;
+    protected transient int lodLevel = 0;
 
     protected Material material;
 

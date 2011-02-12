@@ -38,7 +38,10 @@ varying vec4 SpecularSum;
 void lightComputeDir(in vec3 worldPos, in vec4 color, in vec4 position, out vec4 lightDir){
     float posLight = step(0.5, color.w);
     vec3 tempVec = position.xyz * sign(posLight - 0.5) - (worldPos * posLight);
-    lightDir = vec4(normalize(tempVec), 1.0);
+
+    float dist = length(tempVec);
+    lightDir.w = clamp(1.0 - position.w * dist * posLight, 0.0, 1.0);
+    lightDir.xyz = tempVec / vec3(dist);
 }
 
 

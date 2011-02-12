@@ -86,11 +86,8 @@ public class Mesh implements Savable, Cloneable {
 
     private CollisionData collisionTree = null;
 
-//    private EnumMap<VertexBuffer.Type, VertexBuffer> buffers = new EnumMap<Type, VertexBuffer>(VertexBuffer.Type.class);
-//    private VertexBuffer[] buffers = new VertexBuffer[BUFFERS_SIZE];
     private IntMap<VertexBuffer> buffers = new IntMap<VertexBuffer>();
     private VertexBuffer[] lodLevels;
-    private int lodLevel = 0;
     private float pointSize = 1;
     private float lineWidth = 1;
 

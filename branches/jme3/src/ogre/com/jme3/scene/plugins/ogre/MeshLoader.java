@@ -387,12 +387,19 @@ public class MeshLoader extends DefaultHandler implements AssetLoader {
         }
 
         int texCoords = parseInt(attribs.getValue("texture_coords"), 0);
-        if (texCoords >= 1){
-            int dims = parseInt(attribs.getValue("texture_coord_dimensions_0"), 2);
+        for (int i = 0; i < texCoords; i++){
+            int dims = parseInt(attribs.getValue("texture_coord_dimensions_" + i), 2);
             if (dims < 1 || dims > 4)
                 throw new SAXException("Texture coord dimensions must be 1 <= dims <= 4");
 
-            vb = new VertexBuffer(Type.TexCoord);
+            if (i >= 2)
+                throw new SAXException("More than 2 texture coordinates not supported");
+
+            if (i == 0){
+                vb = new VertexBuffer(Type.TexCoord);
+            }else{
+                vb = new VertexBuffer(Type.TexCoord2);
+            }
             fb = BufferUtils.createFloatBuffer(mesh.getVertexCount() * dims);
             vb.setupData(Usage.Static, dims, Format.Float, fb);
             mesh.setBuffer(vb);
