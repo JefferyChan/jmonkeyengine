@@ -298,7 +298,7 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
             }
         }
 
-        if (type != null && paramDef.getVarType() != type) {
+        if (type != null && paramDef != null && paramDef.getVarType() != type) {
             logger.logp(Level.WARNING, "Material parameter being set: {0} with "
                     + "type {1} doesn't match definition type {2}",
                     name, type.name(), paramDef.getVarType());
