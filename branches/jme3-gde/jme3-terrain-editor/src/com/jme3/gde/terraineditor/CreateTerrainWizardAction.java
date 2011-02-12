@@ -31,7 +31,6 @@
  */
 package com.jme3.gde.terraineditor;
 
-import com.jme3.terrain.heightmap.AbstractHeightMap;
 import java.awt.Component;
 import java.awt.Dialog;
 import java.text.MessageFormat;
@@ -76,7 +75,8 @@ public final class CreateTerrainWizardAction extends CallableSystemAction {
         if (panels == null) {
             panels = new WizardDescriptor.Panel[]{
                         new CreateTerrainWizardPanel1(),
-                        new CreateTerrainWizardPanel2()
+                        new CreateTerrainWizardPanel2(),
+                        new CreateTerrainWizardPanel3()
                     };
             String[] steps = new String[panels.length];
             for (int i = 0; i < panels.length; i++) {
