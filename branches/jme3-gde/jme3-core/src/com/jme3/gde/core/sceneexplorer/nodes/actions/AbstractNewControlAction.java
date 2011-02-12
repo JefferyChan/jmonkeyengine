@@ -91,8 +91,8 @@ public abstract class AbstractNewControlAction implements NewControlAction {
                                     rootNode.refresh(true);
                                 }
                             });
+                            setModified();
                         }
-                        setModified();
                         return null;
                     }
                 });

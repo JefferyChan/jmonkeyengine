@@ -39,8 +39,6 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.VertexBuffer.Type;
 import com.jme3.util.TangentBinormalGenerator;
-import javax.swing.Action;
-import org.openide.loaders.DataObject;
 
 /**
  *
@@ -68,7 +66,7 @@ public class GenerateTangentsTool extends AbstractToolAction {
         Geometry geom = rootNode.getLookup().lookup(Geometry.class);
         Mesh mesh = geom.getMesh();
         if (mesh != null) {
-            mesh.getBuffer(Type.Tangent);
+            mesh.clearBuffer(Type.Tangent);
         }
     }
 

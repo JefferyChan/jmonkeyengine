@@ -91,8 +91,8 @@ public abstract class AbstractNewSpatialAction implements NewSpatialAction {
                                     rootNode.refresh(true);
                                 }
                             });
+                            setModified();
                         }
-                        setModified();
                         return null;
                     }
                 });

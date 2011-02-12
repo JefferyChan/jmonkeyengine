@@ -86,8 +86,8 @@ public abstract class AbstractToolAction implements ToolAction {
                                     rootNode.refresh(true);
                                 }
                             });
+                            setModified();
                         }
-                        setModified();
                         return null;
                     }
                 });
@@ -110,9 +110,7 @@ public abstract class AbstractToolAction implements ToolAction {
     protected abstract void doUndoTool(AbstractSceneExplorerNode rootNode);
 
 //    protected abstract void doAwtUndo();
-
 //    protected abstract void doAwtRedo();
-
     public Action getAction(AbstractSceneExplorerNode rootNode, DataObject dataObject) {
         return makeAction(rootNode, dataObject);
     }
