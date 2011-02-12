@@ -88,15 +88,11 @@ import jme3tools.converters.ImageToAwt;
 public class TestWalkingChar extends SimpleApplication implements ActionListener, PhysicsCollisionListener, AnimEventListener {
 
     private BulletAppState bulletAppState;
-    static final Quaternion ROTATE_LEFT = new Quaternion().fromAngleAxis(-FastMath.HALF_PI, Vector3f.UNIT_Y);
     //character
     CharacterControl character;
     Node model;
     //temp vectors
     Vector3f walkDirection = new Vector3f();
-//    Quaternion modelRotation = new Quaternion();
-    Vector3f modelDirection = new Vector3f();
-    Vector3f modelRight = new Vector3f();
     //terrain
     TerrainQuad terrain;
     RigidBodyControl terrainPhysicsNode;
@@ -326,7 +322,6 @@ public class TestWalkingChar extends SimpleApplication implements ActionListener
         camDir.y = 0;
         camLeft.y = 0;
         walkDirection.set(0, 0, 0);
-        modelDirection.set(0, 0, 2);
         if (left) {
             walkDirection.addLocal(camLeft);
         }
@@ -349,8 +344,7 @@ public class TestWalkingChar extends SimpleApplication implements ActionListener
                 animationChannel.setAnim("stand", 1f);
             }
         } else {
-            modelDirection.set(walkDirection);
-            character.setViewDirection(modelDirection);
+            character.setViewDirection(walkDirection);
             if (airTime > .3f) {
                 if (!"stand".equals(animationChannel.getAnimationName())) {
                     animationChannel.setAnim("stand");
@@ -359,8 +353,6 @@ public class TestWalkingChar extends SimpleApplication implements ActionListener
                 animationChannel.setAnim("Walk", 0.7f);
             }
         }
-        modelRight.set(modelDirection);
-        ROTATE_LEFT.multLocal(modelRight);
         character.setWalkDirection(walkDirection);
     }
 
@@ -402,10 +394,10 @@ public class TestWalkingChar extends SimpleApplication implements ActionListener
         Geometry bulletg = new Geometry("bullet", bullet);
         bulletg.setMaterial(matBullet);
         bulletg.setShadowMode(ShadowMode.CastAndReceive);
-        bulletg.setLocalTranslation(character.getPhysicsLocation().add(modelDirection.mult(1.8f).addLocal(modelRight.mult(0.9f))));
+        bulletg.setLocalTranslation(character.getPhysicsLocation().add(cam.getDirection().mult(2)));
         RigidBodyControl bulletControl = new BombControl(bulletCollisionShape, 1);
         bulletControl.setCcdMotionThreshold(0.1f);
-        bulletControl.setLinearVelocity(modelDirection.mult(40));
+        bulletControl.setLinearVelocity(cam.getDirection().mult(80));
         bulletg.addControl(bulletControl);
         rootNode.attachChild(bulletg);
         getPhysicsSpace().add(bulletControl);
