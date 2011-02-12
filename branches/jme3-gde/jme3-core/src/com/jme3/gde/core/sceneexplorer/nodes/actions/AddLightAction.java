@@ -59,9 +59,9 @@ import org.openide.util.actions.Presenter;
  */
 public class AddLightAction extends AbstractAction implements Presenter.Popup {
 
-    JmeSpatial jmeNode;
-    Spatial node;
-    DataObject dataObject;
+    protected JmeSpatial jmeNode;
+    protected Spatial node;
+    protected DataObject dataObject;
 
     public AddLightAction(JmeSpatial node) {
         this.jmeNode = node;

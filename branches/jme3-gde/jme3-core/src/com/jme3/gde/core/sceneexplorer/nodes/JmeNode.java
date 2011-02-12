@@ -32,9 +32,11 @@
 package com.jme3.gde.core.sceneexplorer.nodes;
 
 import com.jme3.gde.core.scene.SceneApplication;
+import com.jme3.gde.core.sceneexplorer.nodes.actions.AddControlAction;
 import com.jme3.gde.core.sceneexplorer.nodes.actions.AddLightAction;
 import com.jme3.gde.core.sceneexplorer.nodes.actions.AddSpatialAction;
 import com.jme3.gde.core.sceneexplorer.nodes.actions.AddUserDataAction;
+import com.jme3.gde.core.sceneexplorer.nodes.actions.UseToolAction;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import java.awt.Image;
@@ -162,8 +164,10 @@ public class JmeNode extends JmeSpatial {
         } else {
             return new Action[]{
                         new AddSpatialAction(this),
+                        new AddControlAction(this),
                         new AddLightAction(this),
                         Actions.alwaysEnabled(new AddUserDataAction(this), "Add User Data", "", false),
+                        new UseToolAction(this),
                         SystemAction.get(RenameAction.class),
                         SystemAction.get(CopyAction.class),
                         SystemAction.get(CutAction.class),

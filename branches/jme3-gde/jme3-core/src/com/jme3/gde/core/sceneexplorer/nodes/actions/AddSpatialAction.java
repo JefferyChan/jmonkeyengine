@@ -60,9 +60,9 @@ import org.openide.util.actions.Presenter;
  */
 public class AddSpatialAction extends AbstractAction implements Presenter.Popup {
 
-    JmeNode jmeNode;
-    Node node;
-    DataObject dataObject;
+    protected JmeNode jmeNode;
+    protected Node node;
+    protected DataObject dataObject;
 
     public AddSpatialAction(JmeNode node) {
         this.jmeNode = node;
@@ -78,6 +78,9 @@ public class AddSpatialAction extends AbstractAction implements Presenter.Popup 
         result.add(new JMenuItem(new AddNodeAction()));
         result.add(new JMenuItem(new AddEmitterAction()));
         result.add(new JMenuItem(new AddAudioNodeAction()));
+        for (NewSpatialAction di : Lookup.getDefault().lookupAll(NewSpatialAction.class)) {
+            result.add(new JMenuItem(di.getAction(jmeNode, dataObject)));
+        }
         return result;
     }
 
