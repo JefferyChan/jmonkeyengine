@@ -82,6 +82,7 @@ public class TerrainEditorController {
     private DataObject currentFileObject;
 
     // texture settings
+//    protected final String DEFAULT_TERRAIN_TEXTURE = "Common/MatDefs/Water/Textures/heightmap.jpg";
     protected final String DEFAULT_TERRAIN_TEXTURE = "com/jme3/gde/terraineditor/dirt.jpg";
     protected final float DEFAULT_TEXTURE_SCALE = 16f;
     private final int NUM_ALPHA_TEXTURES = 3;
