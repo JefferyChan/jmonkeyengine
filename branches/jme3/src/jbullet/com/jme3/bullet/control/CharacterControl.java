@@ -175,5 +175,6 @@ public class CharacterControl extends PhysicsCharacter implements PhysicsControl
         useViewDirection = ic.readBoolean("viewDirectionEnabled", true);
         viewDirection = (Vector3f) ic.readSavable("viewDirection", new Vector3f(Vector3f.UNIT_Z));
         spatial = (Spatial) ic.readSavable("spatial", null);
+        setUserObject(spatial);
     }
 }

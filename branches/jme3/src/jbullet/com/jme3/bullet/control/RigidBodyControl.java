@@ -243,5 +243,6 @@ public class RigidBodyControl extends PhysicsRigidBody implements PhysicsControl
         enabled = ic.readBoolean("enabled", true);
         kinematicSpatial = ic.readBoolean("kinematicSpatial", true);
         spatial = (Spatial) ic.readSavable("spatial", null);
+        setUserObject(spatial);
     }
 }

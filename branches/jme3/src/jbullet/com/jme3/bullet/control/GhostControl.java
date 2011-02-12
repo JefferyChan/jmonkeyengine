@@ -136,5 +136,6 @@ public class GhostControl extends PhysicsGhostObject implements PhysicsControl {
         InputCapsule ic = im.getCapsule(this);
         enabled = ic.readBoolean("enabled", true);
         spatial = (Spatial) ic.readSavable("spatial", null);
+        setUserObject(spatial);
     }
 }
