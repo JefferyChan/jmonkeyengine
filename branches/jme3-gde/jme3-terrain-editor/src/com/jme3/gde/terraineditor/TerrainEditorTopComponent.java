@@ -1094,7 +1094,7 @@ public final class TerrainEditorTopComponent extends TopComponent implements Sce
         }
 
         protected void setNormal(final int index, final String texturePath) {
-            setValueAt(index, index, 1);
+            setValueAt(index, index, 2);
             editorController.setNormalMap(index, texturePath);
             currentTextureCount = editorController.getNumUsedTextures();
         }

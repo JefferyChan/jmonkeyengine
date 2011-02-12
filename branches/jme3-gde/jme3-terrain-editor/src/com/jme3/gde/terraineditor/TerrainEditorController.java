@@ -351,10 +351,11 @@ public class TerrainEditorController {
 
         Terrain terrain = (Terrain) getTerrain(null);
         MatParam matParam = null;
-        if (alphaIdx == 0)
+        //TODO: add when supported
+//        if (alphaIdx == 0)
             matParam = terrain.getMaterial().getParam("AlphaMap");
-        else
-            matParam = terrain.getMaterial().getParam("AlphaMap_"+alphaIdx);
+//        else
+//            matParam = terrain.getMaterial().getParam("AlphaMap_"+alphaIdx);
 
         if (matParam == null || matParam.getValue() == null) {
             return null;
