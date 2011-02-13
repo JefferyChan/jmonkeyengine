@@ -4,20 +4,36 @@
  */
 package com.jme3.gde.welcome;
 
-import atmosphere.PlanetView;
+import atmosphere.Planet;
+import atmosphere.PlanetRendererState;
 import com.jme3.gde.core.assets.ProjectAssetManager;
 import com.jme3.gde.core.scene.PreviewRequest;
 import com.jme3.gde.core.scene.SceneApplication;
 import com.jme3.gde.core.scene.SceneListener;
 import com.jme3.gde.core.scene.SceneRequest;
 import com.jme3.gde.core.sceneexplorer.nodes.NodeUtility;
+import com.jme3.light.DirectionalLight;
+import com.jme3.material.Material;
+import com.jme3.math.ColorRGBA;
+import com.jme3.math.Vector3f;
+import com.jme3.niftygui.NiftyJmeDisplay;
+import com.jme3.renderer.queue.RenderQueue.Bucket;
+import com.jme3.renderer.queue.RenderQueue.ShadowMode;
+import com.jme3.scene.Geometry;
+import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
+import com.jme3.scene.shape.Sphere;
+import com.jme3.texture.Image;
+import com.jme3.texture.TextureCubeMap;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.controls.checkbox.CheckboxControl;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
+import java.net.URL;
 import java.util.concurrent.Callable;
 import org.netbeans.api.javahelp.Help;
+import org.openide.util.Exceptions;
 import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
 import org.openide.util.NbPreferences;
@@ -28,27 +44,55 @@ import org.openide.util.NbPreferences;
  */
 public class WelcomeScreen implements ScreenController {
 
-    PlanetView planetView;
+    PlanetRendererState planetView;
     SceneRequest request;
+    NiftyJmeDisplay niftyDisplay;
     Nifty nifty;
     Screen screen;
+    Spatial skyBox;
 
     public void startScreen() {
         final Node rootNode = new Node("Welcome Screen");
         request = new SceneRequest(this, NodeUtility.createNode(rootNode), new ProjectAssetManager(null));
         request.setHelpCtx(new HelpCtx("com.jme3.gde.core.about"));
         request.setWindowTitle("Welcome to jMonkeyPlatform");
+        final WelcomeScreen welcomeScreen = this;
+        final DirectionalLight dirLight = new DirectionalLight();
+        dirLight.setDirection(new Vector3f(.1f, 1, .1f).normalizeLocal());
+        dirLight.setColor(ColorRGBA.Gray);
         SceneApplication.getApplication().addSceneListener(new SceneListener() {
 
             @Override
             public void sceneRequested(SceneRequest request) {
                 if (request.getRequester() == WelcomeScreen.this) {
+                    //FIXME: planet location dont work?
+                    planetView = new PlanetRendererState(new Planet(100f, new Vector3f(0, 0, 0)), dirLight);
+                    SceneApplication.getApplication().getViewPort().getScenes().get(0).addLight(dirLight);
                     SceneApplication.getApplication().getStateManager().attach(planetView);
+                    SceneApplication.getApplication().getCamera().setLocation(new Vector3f(0,0,400));
+                    setupSkyBox();
+                    niftyDisplay = new NiftyJmeDisplay(SceneApplication.getApplication().getAssetManager(),
+                            SceneApplication.getApplication().getInputManager(),
+                            SceneApplication.getApplication().getAudioRenderer(),
+                            SceneApplication.getApplication().getGuiViewPort());
+                    nifty = niftyDisplay.getNifty();
+                    try {
+                        nifty.fromXml("Interface/WelcomeScreen.xml", new URL("nbres:/Interface/WelcomeScreen.xml").openStream(), "start", welcomeScreen);
+                    } catch (Exception ex) {
+                        Exceptions.printStackTrace(ex);
+                    }
+
+                    // attach the nifty display to the gui view port as a processor
+                    SceneApplication.getApplication().getGuiViewPort().addProcessor(niftyDisplay);
                 }
             }
 
             @Override
             public boolean sceneClose(SceneRequest request) {
+                SceneApplication.getApplication().getViewPort().getScenes().get(0).removeLight(dirLight);
+                skyBox.removeFromParent();
+                SceneApplication.getApplication().getGuiViewPort().removeProcessor(niftyDisplay);
+                nifty.exit();
                 SceneApplication.getApplication().getStateManager().detach(planetView);
                 SceneApplication.getApplication().removeSceneListener(this);
                 return true;
@@ -62,17 +106,32 @@ public class WelcomeScreen implements ScreenController {
 
             @Override
             public Object call() throws Exception {
-                planetView = new PlanetView(rootNode,
-                        SceneApplication.getApplication().getViewPort(),
-                        SceneApplication.getApplication().getCamera(),
-                        WelcomeScreen.this);
                 SceneApplication.getApplication().requestScene(request);
                 return null;
             }
         });
     }
 
-    public void setNoStartup(){
+    private void setupSkyBox() {
+        Mesh sphere = new Sphere(32, 32, 10f);
+        sphere.setStatic();
+        skyBox = new Geometry("SkyBox", sphere);
+        skyBox.setQueueBucket(Bucket.Sky);
+        skyBox.setShadowMode(ShadowMode.Off);
+
+        Image cube = SceneApplication.getApplication().getAssetManager().loadTexture("Textures/blue-glow-1024.dds").getImage();
+        TextureCubeMap cubemap = new TextureCubeMap(cube);
+
+        Material mat = new Material(SceneApplication.getApplication().getAssetManager(), "Common/MatDefs/Misc/Sky.j3md");
+        mat.setBoolean("SphereMap", false);
+        mat.setTexture("Texture", cubemap);
+        mat.setVector3("NormalScale", new Vector3f(1, 1, 1));
+        skyBox.setMaterial(mat);
+
+        ((Node)SceneApplication.getApplication().getViewPort().getScenes().get(0)).attachChild(skyBox);
+    }
+
+    public void setNoStartup() {
         NbPreferences.forModule(Installer.class).put("NO_WELCOME_SCREEN", "true");
     }
 
@@ -113,7 +172,7 @@ public class WelcomeScreen implements ScreenController {
     }
 
     public void quit() {
-        if(screen.findElementByName("mainLayer").findElementByName("mainPanel").findElementByName("buttonBar").findElementByName("checkboxPanel").findControl("checkbox", CheckboxControl.class).isChecked()){
+        if (screen.findElementByName("mainLayer").findElementByName("mainPanel").findElementByName("buttonBar").findElementByName("checkboxPanel").findControl("checkbox", CheckboxControl.class).isChecked()) {
             setNoStartup();
         }
         SceneApplication.getApplication().closeScene(request);
