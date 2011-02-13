@@ -65,8 +65,10 @@ public class DirectionalLight extends Light {
      * (1f, 0, 0) would represent a directional light coming from the X axis.
      */
     public void setDirection(Vector3f dir){
-        if (!dir.isUnitVector())
-            throw new IllegalArgumentException("Direction must be a unit vector");
+        if (!dir.isUnitVector()) {
+            dir.normalizeLocal();
+        }
+            
 
         direction.set(dir);
     }
