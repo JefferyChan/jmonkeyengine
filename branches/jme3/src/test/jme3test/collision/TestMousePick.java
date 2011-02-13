@@ -147,7 +147,7 @@ public class TestMousePick extends SimpleApplication {
 
         // We must add a light to make the model visible
         DirectionalLight sun = new DirectionalLight();
-        sun.setDirection(new Vector3f(-0.1f, -0.7f, -1.0f));
+        sun.setDirection(new Vector3f(-0.1f, -0.7f, -1.0f).normalizeLocal());
         golem.addLight(sun);
         return golem;
     }

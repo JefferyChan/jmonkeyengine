@@ -36,15 +36,11 @@ import com.jme3.app.SettingsDialog;
 import com.jme3.app.SettingsDialog.SelectionListener;
 import com.jme3.asset.AssetManager;
 import com.jme3.asset.DesktopAssetManager;
-import com.jme3.util.JmeFormatter;
 import com.jme3.audio.AudioRenderer;
 import java.io.IOException;
 import java.net.URL;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.FileHandler;
-import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
@@ -266,7 +262,8 @@ public class JmeSystem {
     public static JmeContext newContext(AppSettings settings, JmeContext.Type contextType) {
         initialize(settings);
         JmeContext ctx;
-        if (settings.getRenderer().equals("NULL")
+        if (settings.getRenderer() == null
+         || settings.getRenderer().equals("NULL")
          || contextType == JmeContext.Type.Headless){
             ctx = new NullContext();
             ctx.setSettings(settings);

@@ -26,7 +26,6 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.renderer.Caps;
 import com.jme3.renderer.GLObjectManager;
 import com.jme3.renderer.RenderContext;
-import com.jme3.renderer.Renderer;
 import com.jme3.renderer.Statistics;
 import com.jme3.util.BufferUtils;
 import java.nio.ByteBuffer;
@@ -62,6 +61,8 @@ public class LwjglGL1Renderer implements GL1Renderer {
     private Matrix4f viewMatrix = new Matrix4f();
 //    private Matrix4f projMatrix = new Matrix4f();
 
+    private boolean colorSet = false;
+
     protected void updateNameBuffer() {
         int len = stringBuf.length();
 
@@ -84,9 +85,13 @@ public class LwjglGL1Renderer implements GL1Renderer {
 
     public void initialize() {
         //glDisable(GL_DEPTH_TEST);
+        glShadeModel(GL_SMOOTH);
+        glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
     }
 
     public void resetGLObjects() {
+        colorSet = false;
+
         objManager.resetObjects();
         statistics.clearMemory();
         context.reset();
@@ -126,7 +131,15 @@ public class LwjglGL1Renderer implements GL1Renderer {
             case Color:
                 ColorRGBA color = (ColorRGBA) val;
                 glColor4f(color.r, color.g, color.b, color.a);
+                colorSet = true;
                 break;
+        }
+    }
+
+    public void clearSetFixedFuncBindings(){
+        if (colorSet){
+            glColor4f(1,1,1,1);
+            colorSet = false;
         }
     }
 
@@ -342,12 +355,11 @@ public class LwjglGL1Renderer implements GL1Renderer {
     public void setLighting(LightList list) {
         if (list == null || list.size() == 0) {
             // turn off lighting
-            glDisable(GL_LIGHTING);
+            //glDisable(GL_LIGHTING);
             return;
         }
 
 //        glEnable(GL_LIGHTING);
-//        glShadeModel(GL_SMOOTH);
 
         //TODO: ...
     }
@@ -495,8 +507,10 @@ public class LwjglGL1Renderer implements GL1Renderer {
     }
 
     public void setTexture(int unit, Texture tex) {
-        if (unit != 0)
-            throw new UnsupportedOperationException();
+        if (unit != 0 || tex.getType() != Texture.Type.TwoDimensional){
+            //throw new UnsupportedOperationException();
+            return;
+        }
 
         Image image = tex.getImage();
         if (image.isUpdateNeeded()) {
@@ -617,64 +631,6 @@ public class LwjglGL1Renderer implements GL1Renderer {
         glDrawArrays(convertElementMode(mode), 0, vertCount);
     }
 
-    private void drawElements(int mode, int format, Buffer data){
-        switch (format){
-            case GL_UNSIGNED_BYTE:
-                glDrawElements(mode, (ByteBuffer)data);
-                break;
-            case GL_UNSIGNED_SHORT:
-                glDrawElements(mode, (ShortBuffer)data);
-                break;
-            case GL_UNSIGNED_INT:
-                glDrawElements(mode, (IntBuffer)data);
-                break;
-            default:
-                throw new UnsupportedOperationException();
-        }
-    }
-
-    public void drawTriangleList(VertexBuffer indexBuf, Mesh mesh, int count) {
-        Mesh.Mode mode = mesh.getMode();
-
-        Buffer indexData = indexBuf.getData();
-        indexData.clear();
-
-
-        if (mesh.getMode() == Mode.Hybrid) {
-            throw new UnsupportedOperationException();
-            /*
-            int[] modeStart = mesh.getModeStart();
-            int[] elementLengths = mesh.getElementLengths();
-
-            int elMode = convertElementMode(Mode.Triangles);
-            int fmt = convertVertexFormat(indexBuf.getFormat());
-//            int elSize = indexBuf.getFormat().getComponentSize();
-//            int listStart = modeStart[0];
-            int stripStart = modeStart[1];
-            int fanStart = modeStart[2];
-            int curOffset = 0;
-            for (int i = 0; i < elementLengths.length; i++) {
-                if (i == stripStart) {
-                    elMode = convertElementMode(Mode.TriangleStrip);
-                } else if (i == fanStart) {
-                    elMode = convertElementMode(Mode.TriangleStrip);
-                }
-                int elementLength = elementLengths[i];
-                indexData.position(curOffset);
-
-                drawElements(elMode,
-                             fmt,
-                             indexData);
-                
-                curOffset += elementLength;
-            }*/
-        } else {
-            drawElements(convertElementMode(mode),
-                         convertVertexFormat(indexBuf.getFormat()),
-                         indexData);
-        }
-    }
-
     public void setVertexAttrib(VertexBuffer vb, VertexBuffer idb) {
         int arrayType = convertArrayType(vb.getBufferType());
         if (arrayType == -1) {
@@ -699,8 +655,7 @@ public class LwjglGL1Renderer implements GL1Renderer {
         int comps = vb.getNumComponents();
         int type = convertVertexFormat(vb.getFormat());
 
-
-        data.clear();
+        data.rewind();
 
         switch (vb.getBufferType()) {
             case Position:
@@ -737,6 +692,65 @@ public class LwjglGL1Renderer implements GL1Renderer {
         setVertexAttrib(vb, null);
     }
 
+    private void drawElements(int mode, int format, Buffer data){
+        switch (format){
+            case GL_UNSIGNED_BYTE:
+                glDrawElements(mode, (ByteBuffer)data);
+                break;
+            case GL_UNSIGNED_SHORT:
+                glDrawElements(mode, (ShortBuffer)data);
+                break;
+            case GL_UNSIGNED_INT:
+                glDrawElements(mode, (IntBuffer)data);
+                break;
+            default:
+                throw new UnsupportedOperationException();
+        }
+    }
+
+    public void drawTriangleList(VertexBuffer indexBuf, Mesh mesh, int count) {
+        Mesh.Mode mode = mesh.getMode();
+
+        Buffer indexData = indexBuf.getData();
+        indexData.rewind();
+
+        if (mesh.getMode() == Mode.Hybrid) {
+            throw new UnsupportedOperationException();
+            /*
+            int[] modeStart = mesh.getModeStart();
+            int[] elementLengths = mesh.getElementLengths();
+
+            int elMode = convertElementMode(Mode.Triangles);
+            int fmt = convertVertexFormat(indexBuf.getFormat());
+//            int elSize = indexBuf.getFormat().getComponentSize();
+//            int listStart = modeStart[0];
+            int stripStart = modeStart[1];
+            int fanStart = modeStart[2];
+            int curOffset = 0;
+            for (int i = 0; i < elementLengths.length; i++) {
+                if (i == stripStart) {
+                    elMode = convertElementMode(Mode.TriangleStrip);
+                } else if (i == fanStart) {
+                    elMode = convertElementMode(Mode.TriangleStrip);
+                }
+                int elementLength = elementLengths[i];
+                indexData.position(curOffset);
+
+                drawElements(elMode,
+                             fmt,
+                             indexData);
+                
+                curOffset += elementLength;
+            }*/
+        } else {
+            drawElements(convertElementMode(mode),
+                         convertVertexFormat(indexBuf.getFormat()),
+                         indexData);
+        }
+    }
+
+    
+
     public void clearVertexAttribs() {
         for (int i = 0; i < 16; i++) {
             VertexBuffer vb = context.boundAttribs[i];
@@ -750,7 +764,12 @@ public class LwjglGL1Renderer implements GL1Renderer {
 
     private void renderMeshDefault(Mesh mesh, int lod, int count) {
         VertexBuffer indices = null;
+
         VertexBuffer interleavedData = mesh.getBuffer(Type.InterleavedData);
+        if (interleavedData != null && interleavedData.isUpdateNeeded()) {
+            updateBufferData(interleavedData);
+        }
+
         IntMap<VertexBuffer> buffers = mesh.getBuffers();
         if (mesh.getNumLodLevels() > 0) {
             indices = mesh.getLodLevel(lod);
@@ -761,21 +780,17 @@ public class LwjglGL1Renderer implements GL1Renderer {
             VertexBuffer vb = entry.getValue();
 
             if (vb.getBufferType() == Type.InterleavedData
-                    || vb.getUsage() == Usage.CpuOnly) // ignore cpu-only buffers
-            {
+                    || vb.getUsage() == Usage.CpuOnly // ignore cpu-only buffers
+                    || vb.getBufferType() == Type.Index) {
                 continue;
             }
 
-            if (vb.getBufferType() == Type.Index) {
-                indices = vb;
+            if (vb.getStride() == 0) {
+                // not interleaved
+                setVertexAttrib(vb);
             } else {
-                if (vb.getStride() == 0) {
-                    // not interleaved
-                    setVertexAttrib(vb);
-                } else {
-                    // interleaved
-                    setVertexAttrib(vb, interleavedData);
-                }
+                // interleaved
+                setVertexAttrib(vb, interleavedData);
             }
         }
 
@@ -786,7 +801,7 @@ public class LwjglGL1Renderer implements GL1Renderer {
         }
         clearVertexAttribs();
         checkTexturingUsed();
-//        clearTextureUnits();
+        clearSetFixedFuncBindings();
     }
 
     public void renderMesh(Mesh mesh, int lod, int count) {
@@ -818,6 +833,8 @@ public class LwjglGL1Renderer implements GL1Renderer {
             dynamic = true;
         }
 
+        statistics.onMeshDrawn(mesh, lod);
+        
 //        if (!dynamic) {
             // dealing with a static object, generate display list
 //            renderMeshDisplayList(mesh);

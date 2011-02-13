@@ -1,7 +1,7 @@
 Material My Material : Common/MatDefs/Light/Lighting.j3md {
      MaterialParameters {
-        NormalMap : Scenes/Beach/Sand_Normal.png
         DiffuseMap : Scenes/Beach/Sand.jpg
+        NormalMap : Scenes/Beach/Sand_Normal.png
         UseMaterialColors : true
         Ambient : 0 0 0 1
         Diffuse : 1 1 1 1
