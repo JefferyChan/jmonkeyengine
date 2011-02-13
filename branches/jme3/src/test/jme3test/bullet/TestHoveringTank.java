@@ -113,7 +113,7 @@ public class TestHoveringTank extends SimpleApplication implements AnalogListene
         stateManager.attach(bulletAppState);
         bulletAppState.getPhysicsSpace().enableDebug(assetManager);
 
-        cam.setFrustumFar(50f);
+//        cam.setFrustumFar(50f);
 
         setupKeys();
         createTerrain();
@@ -148,7 +148,7 @@ public class TestHoveringTank extends SimpleApplication implements AnalogListene
 
         ChaseCamera chaseCam = new ChaseCamera(cam, inputManager);
         spaceCraft.addControl(chaseCam);
-        
+
         flyCam.setEnabled(false);
     }
 
@@ -182,19 +182,18 @@ public class TestHoveringTank extends SimpleApplication implements AnalogListene
     }
 
     public void onAnalog(String binding, float value, float tpf) {
-        if (binding.equals("Lefts")) {
-            hoverControl.steer(50f * value);
-        } else if (binding.equals("Rights")) {
-            hoverControl.steer(-50f * value);
-        } else if (binding.equals("Ups")) {
-            hoverControl.accelerate(100f * value);
-        } else if (binding.equals("Downs")) {
-            hoverControl.accelerate(-100f * value);
-        }
     }
 
     public void onAction(String binding, boolean value, float tpf) {
-        if (binding.equals("Reset")) {
+        if (binding.equals("Lefts")) {
+            hoverControl.steer(value ? 50f : 0);
+        } else if (binding.equals("Rights")) {
+            hoverControl.steer(value ? -50f : 0);
+        } else if (binding.equals("Ups")) {
+            hoverControl.accelerate(value ? 100f : 0);
+        } else if (binding.equals("Downs")) {
+            hoverControl.accelerate(value ? -100f : 0);
+        } else if (binding.equals("Reset")) {
             if (value) {
                 System.out.println("Reset");
                 hoverControl.setPhysicsLocation(new Vector3f(-140, 14, -23));

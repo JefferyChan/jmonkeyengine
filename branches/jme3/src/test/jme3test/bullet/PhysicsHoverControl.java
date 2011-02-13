@@ -72,9 +72,11 @@ public class PhysicsHoverControl extends PhysicsVehicle implements PhysicsContro
     protected Vector3f HOVER_HEIGHT_LR = new Vector3f(xw, -yw, -zw);
     protected Vector3f HOVER_HEIGHT_RR = new Vector3f(-xw, -yw, -zw);
     protected Vector3f tempVect1 = new Vector3f(0, 0, 0);
-    protected float rotationCounterForce = 10000f;
-    protected float speedCounterMult = 2000f;
-    protected float multiplier = 100000f;
+    protected Vector3f tempVect2 = new Vector3f(0, 0, 0);
+    protected Vector3f tempVect3 = new Vector3f(0, 0, 0);
+//    protected float rotationCounterForce = 10000f;
+//    protected float speedCounterMult = 2000f;
+//    protected float multiplier = 1000f;
 
     public PhysicsHoverControl() {
     }
@@ -129,42 +131,39 @@ public class PhysicsHoverControl extends PhysicsVehicle implements PhysicsContro
     public void prePhysicsTick(PhysicsSpace space, float f) {
         Vector3f angVel = getAngularVelocity();
         float rotationVelocity = angVel.getY();
-        Vector3f dir = getForwardVector(new Vector3f());
-        Vector3f linearVelocity = getLinearVelocity();
+        Vector3f dir = getForwardVector(tempVect2).multLocal(1,0,1).normalizeLocal();
+        getLinearVelocity(tempVect3);
+        Vector3f linearVelocity = tempVect3.multLocal(1, 0, 1);
 
         if (steeringValue != 0) {
             if (rotationVelocity < 1 && rotationVelocity > -1) {
                 applyTorque(tempVect1.set(0, steeringValue, 0));
             }
-            steeringValue = 0;
         } else {
             // counter the steering value!
             if (rotationVelocity > 0.2f) {
-                applyTorque(tempVect1.set(0, -rotationCounterForce, 0));
+                applyTorque(tempVect1.set(0, -mass*20, 0));
             } else if (rotationVelocity < -0.2f) {
-                applyTorque(tempVect1.set(0, rotationCounterForce, 0));
+                applyTorque(tempVect1.set(0, mass*20, 0));
             }
         }
         if (accelerationValue > 0) {
-
             // counter force that will adjust velocity
             // if we are not going where we want to go.
             // this will prevent "drifting" and thus improve control
             // of the vehicle
             float d = dir.dot(linearVelocity.normalize());
             Vector3f counter = dir.project(linearVelocity).normalizeLocal().negateLocal().multLocal(1 - d);
-            applyForce(counter.mult(speedCounterMult), Vector3f.ZERO);
+            applyForce(counter.multLocal(mass), Vector3f.ZERO);
 
-            if (linearVelocity.length() < 10) {
-                applyForce(dir.mult(accelerationValue), Vector3f.ZERO);
+            if (linearVelocity.length() < 30) {
+                applyForce(dir.multLocal(accelerationValue), Vector3f.ZERO);
             }
-
-            accelerationValue = 0;
         } else {
             // counter the acceleration value
             if (linearVelocity.length() > FastMath.ZERO_TOLERANCE) {
                 linearVelocity.normalizeLocal().negateLocal();
-                applyForce(linearVelocity.mult(speedCounterMult), Vector3f.ZERO);
+                applyForce(linearVelocity.mult(mass*10), Vector3f.ZERO);
             }
         }
     }
@@ -226,7 +225,7 @@ public class PhysicsHoverControl extends PhysicsVehicle implements PhysicsContro
      */
     @Override
     public void steer(float steeringValue) {
-        this.steeringValue = steeringValue * multiplier;
+        this.steeringValue = steeringValue * getMass();
     }
 
     /**
@@ -234,6 +233,6 @@ public class PhysicsHoverControl extends PhysicsVehicle implements PhysicsContro
      */
     @Override
     public void accelerate(float accelerationValue) {
-        this.accelerationValue = accelerationValue * multiplier;
+        this.accelerationValue = accelerationValue * getMass();
     }
 }
