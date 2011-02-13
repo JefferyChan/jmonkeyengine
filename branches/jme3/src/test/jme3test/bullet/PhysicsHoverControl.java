@@ -74,7 +74,7 @@ public class PhysicsHoverControl extends PhysicsVehicle implements PhysicsContro
     protected Vector3f tempVect1 = new Vector3f(0, 0, 0);
     protected float rotationCounterForce = 10000f;
     protected float speedCounterMult = 2000f;
-    protected float multiplier = 10000f;
+    protected float multiplier = 100000f;
 
     public PhysicsHoverControl() {
     }
@@ -136,7 +136,7 @@ public class PhysicsHoverControl extends PhysicsVehicle implements PhysicsContro
             if (rotationVelocity < 1 && rotationVelocity > -1) {
                 applyTorque(tempVect1.set(0, steeringValue, 0));
             }
-//            steeringValue = 0;
+            steeringValue = 0;
         } else {
             // counter the steering value!
             if (rotationVelocity > 0.2f) {
@@ -159,7 +159,7 @@ public class PhysicsHoverControl extends PhysicsVehicle implements PhysicsContro
                 applyForce(dir.mult(accelerationValue), Vector3f.ZERO);
             }
 
-//            accelerationValue = 0;
+            accelerationValue = 0;
         } else {
             // counter the acceleration value
             if (linearVelocity.length() > FastMath.ZERO_TOLERANCE) {
