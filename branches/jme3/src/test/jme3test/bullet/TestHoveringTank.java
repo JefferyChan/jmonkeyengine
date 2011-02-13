@@ -39,8 +39,6 @@ import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
-import com.jme3.bullet.control.VehicleControl;
-import com.jme3.bullet.nodes.PhysicsNode;
 import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.font.BitmapText;
 import com.jme3.input.ChaseCamera;
@@ -135,22 +133,23 @@ public class TestHoveringTank extends SimpleApplication implements AnalogListene
 
     private void buildPlayer() {
         spaceCraft = assetManager.loadModel("Models/HoverTank/Tank2.mesh.xml");
-
         CollisionShape colShape = CollisionShapeFactory.createDynamicMeshShape(spaceCraft);
-
-        hoverControl = new PhysicsHoverControl(colShape, 1000);
-        hoverControl.setCollisionGroup(PhysicsCollisionObject.COLLISION_GROUP_02);
-//        hoverControl.add
-
-        spaceCraft.setLocalTranslation(new Vector3f(-140, 14, -23));
         spaceCraft.setShadowMode(ShadowMode.CastAndReceive);
+        spaceCraft.setLocalTranslation(new Vector3f(-140, 14, -23));
+
+        hoverControl = new PhysicsHoverControl(colShape, 500);
+        hoverControl.setCollisionGroup(PhysicsCollisionObject.COLLISION_GROUP_02);
+
         spaceCraft.addControl(hoverControl);
+
 
         rootNode.attachChild(spaceCraft);
         getPhysicsSpace().add(hoverControl);
 
+        ChaseCamera chaseCam = new ChaseCamera(cam, inputManager);
+        spaceCraft.addControl(chaseCam);
+        
         flyCam.setEnabled(false);
-        ChaseCamera chaseCam = new ChaseCamera(cam, spaceCraft, inputManager);
     }
 
     public void makeMissile() {
@@ -168,19 +167,18 @@ public class TestHoveringTank extends SimpleApplication implements AnalogListene
 
         BoxCollisionShape boxShape = new BoxCollisionShape(extent);
 
-        PhysicsNode physMissile = new PhysicsNode(missile, boxShape, 20);
-        physMissile.setName("Missile");
-        physMissile.rotate(rot);
-        physMissile.setLocalTranslation(pos.addLocal(0, extent.y * 4.5f, 0));
+        missile.setName("Missile");
+        missile.rotate(rot);
+        missile.setLocalTranslation(pos.addLocal(0, extent.y * 4.5f, 0));
+        missile.setShadowMode(ShadowMode.CastAndReceive);
+        RigidBodyControl control = new BombControl(boxShape, 20);
+        control.setLinearVelocity(dir.mult(100));
+        control.setCollisionGroup(PhysicsCollisionObject.COLLISION_GROUP_03);
+        missile.addControl(control);
 
-        physMissile.clearForces();
-        physMissile.setLinearVelocity(dir.mult(100));
-        physMissile.setCollisionGroup(PhysicsCollisionObject.COLLISION_GROUP_03);
 
-        physMissile.setShadowMode(ShadowMode.CastAndReceive);
-
-        rootNode.attachChild(physMissile);
-        getPhysicsSpace().add(physMissile);
+        rootNode.attachChild(missile);
+        getPhysicsSpace().add(missile);
     }
 
     public void onAnalog(String binding, float value, float tpf) {
@@ -189,9 +187,9 @@ public class TestHoveringTank extends SimpleApplication implements AnalogListene
         } else if (binding.equals("Rights")) {
             hoverControl.steer(-50f * value);
         } else if (binding.equals("Ups")) {
-            hoverControl.accelerate(10f * value);
+            hoverControl.accelerate(100f * value);
         } else if (binding.equals("Downs")) {
-            hoverControl.accelerate(-10f * value);
+            hoverControl.accelerate(-100f * value);
         }
     }
 
