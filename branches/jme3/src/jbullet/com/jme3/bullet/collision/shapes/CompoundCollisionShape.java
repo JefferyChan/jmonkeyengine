@@ -69,7 +69,7 @@ public class CompoundCollisionShape extends CollisionShape {
     public void addChildShape(CollisionShape shape, Vector3f location) {
         Transform transA = new Transform(Converter.convert(new Matrix3f()));
         Converter.convert(location, transA.origin);
-        children.add(new ChildCollisionShape(location, new Matrix3f(), shape));
+        children.add(new ChildCollisionShape(location.clone(), new Matrix3f(), shape));
         ((CompoundShape) cShape).addChildShape(transA, shape.getCShape());
     }
 
@@ -85,7 +85,7 @@ public class CompoundCollisionShape extends CollisionShape {
         Transform transA = new Transform(Converter.convert(rotation));
         Converter.convert(location, transA.origin);
         Converter.convert(rotation, transA.basis);
-        children.add(new ChildCollisionShape(location, rotation, shape));
+        children.add(new ChildCollisionShape(location.clone(), rotation.clone(), shape));
         ((CompoundShape) cShape).addChildShape(transA, shape.getCShape());
     }
 
