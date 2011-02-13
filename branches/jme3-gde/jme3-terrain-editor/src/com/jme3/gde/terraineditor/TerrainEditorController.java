@@ -602,6 +602,7 @@ public class TerrainEditorController {
         defaultTexture.setWrap(WrapMode.Repeat);
         mat.setTexture("DiffuseMap", defaultTexture);
         mat.setFloat("DiffuseMap_0_scale", DEFAULT_TEXTURE_SCALE);
+        mat.setBoolean("WardIso", true);
 
         terrain.setMaterial(mat);
         terrain.setModelBound(new BoundingBox());
