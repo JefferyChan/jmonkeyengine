@@ -246,21 +246,32 @@ public class TestWalkingChar extends SimpleApplication implements ActionListener
     }
 
     private void createTerrain() {
-        matRock = new Material(assetManager, "Common/MatDefs/Terrain/Terrain.j3md");
-        matRock.setTexture("Alpha", assetManager.loadTexture("Textures/Terrain/splat/alphamap.png"));
+        matRock = new Material(assetManager, "Common/MatDefs/Terrain/TerrainLighting.j3md");
+        matRock.setBoolean("useTriPlanarMapping", false);
+        matRock.setBoolean("WardIso", true);
+        matRock.setTexture("AlphaMap", assetManager.loadTexture("Textures/Terrain/splat/alphamap.png"));
         Texture heightMapImage = assetManager.loadTexture("Textures/Terrain/splat/mountains512.png");
         Texture grass = assetManager.loadTexture("Textures/Terrain/splat/grass.jpg");
         grass.setWrap(WrapMode.Repeat);
-        matRock.setTexture("Tex1", grass);
-        matRock.setFloat("Tex1Scale", 64f);
+        matRock.setTexture("DiffuseMap", grass);
+        matRock.setFloat("DiffuseMap_0_scale", 64);
         Texture dirt = assetManager.loadTexture("Textures/Terrain/splat/dirt.jpg");
         dirt.setWrap(WrapMode.Repeat);
-        matRock.setTexture("Tex2", dirt);
-        matRock.setFloat("Tex2Scale", 32f);
+        matRock.setTexture("DiffuseMap_1", dirt);
+        matRock.setFloat("DiffuseMap_1_scale", 16);
         Texture rock = assetManager.loadTexture("Textures/Terrain/splat/road.jpg");
         rock.setWrap(WrapMode.Repeat);
-        matRock.setTexture("Tex3", rock);
-        matRock.setFloat("Tex3Scale", 128f);
+        matRock.setTexture("DiffuseMap_2", rock);
+        matRock.setFloat("DiffuseMap_2_scale", 128);
+        Texture normalMap0 = assetManager.loadTexture("Textures/Terrain/splat/grass_normal.png");
+        normalMap0.setWrap(WrapMode.Repeat);
+        Texture normalMap1 = assetManager.loadTexture("Textures/Terrain/splat/dirt_normal.png");
+        normalMap1.setWrap(WrapMode.Repeat);
+        Texture normalMap2 = assetManager.loadTexture("Textures/Terrain/splat/road_normal.png");
+        normalMap2.setWrap(WrapMode.Repeat);
+        matRock.setTexture("NormalMap", normalMap0);
+        matRock.setTexture("NormalMap_1", normalMap2);
+        matRock.setTexture("NormalMap_2", normalMap2);
         matWire = new Material(assetManager, "Common/MatDefs/Misc/WireColor.j3md");
         matWire.setColor("Color", ColorRGBA.Green);
 
