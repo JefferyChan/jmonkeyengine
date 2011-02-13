@@ -154,7 +154,7 @@ public class PhysicsHoverControl extends PhysicsVehicle implements PhysicsContro
             // of the vehicle
             float d = dir.dot(linearVelocity.normalize());
             Vector3f counter = dir.project(linearVelocity).normalizeLocal().negateLocal().multLocal(1 - d);
-            applyForce(counter.multLocal(mass), Vector3f.ZERO);
+            applyForce(counter.multLocal(mass*10), Vector3f.ZERO);
 
             if (linearVelocity.length() < 30) {
                 applyForce(dir.multLocal(accelerationValue), Vector3f.ZERO);
