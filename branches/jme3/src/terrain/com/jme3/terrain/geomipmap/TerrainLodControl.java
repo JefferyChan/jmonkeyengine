@@ -95,8 +95,10 @@ public class TerrainLodControl extends AbstractControl {
 	public Control cloneForSpatial(Spatial spatial) {
 		if (spatial instanceof Terrain) {
             List<Camera> cameraClone = new ArrayList<Camera>();
+            if (cameras != null) {
             for (Camera c : cameras)
                 cameraClone.add(c);
+            }
 			return new TerrainLodControl((Terrain)spatial, cameraClone);
         }
 		return null;
