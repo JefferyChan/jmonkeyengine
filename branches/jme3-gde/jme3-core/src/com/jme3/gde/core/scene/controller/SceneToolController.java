@@ -28,7 +28,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.debug.Arrow;
 import com.jme3.scene.debug.Grid;
-import com.jme3.scene.shape.Box;
+import com.jme3.scene.debug.WireBox;
 import java.util.concurrent.Callable;
 
 /**
@@ -188,7 +188,9 @@ public class SceneToolController implements AppState {
             BoundingBox bbox = (BoundingBox) bound;
             Vector3f extent = new Vector3f();
             bbox.getExtent(extent);
-            Geometry selectionGeometry = new Geometry("selection_geometry_sceneviewer", new Box(bbox.getCenter(), extent.x, extent.y, extent.z));
+            WireBox wireBox=new WireBox();
+            wireBox.fromBoundingBox(bbox);
+            Geometry selectionGeometry = new Geometry("selection_geometry_sceneviewer", wireBox);
             selectionGeometry.setMaterial(mat);
             selectionGeometry.setLocalTransform(geom.getWorldTransform());
             toolsNode.attachChild(selectionGeometry);

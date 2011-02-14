@@ -78,8 +78,7 @@ import org.openide.util.Utilities;
 import org.openide.util.lookup.Lookups;
 
 /**
- * TODO:
- * - unbloat this file by outsourcing stuff to other classes
+ * 
  * @author normenhansen
  */
 public class SceneApplication extends Application implements LookupProvider, LookupListener {
@@ -415,6 +414,7 @@ public class SceneApplication extends Application implements LookupProvider, Loo
         setHelpContext(null);
         resetCam();
         currentSceneRequest = null;
+        lastError = "";
         java.awt.EventQueue.invokeLater(new Runnable() {
 
             public void run() {
