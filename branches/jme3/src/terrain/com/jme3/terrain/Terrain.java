@@ -162,4 +162,18 @@ public interface Terrain {
      * @return a point (U,V in the range [0,1] )
      */
     public Vector2f getPointPercentagePosition(float worldX, float worldY);
+
+    /**
+     * Get the scale of the texture coordinates. Normally if the texture is
+     * laid on the terrain and not scaled so that the texture does not repeat,
+     * then each texture coordinate (on a vertex) will be 1/(terrain size).
+     * That is: the coverage between each consecutive texture coordinate will
+     * be a percentage of the total terrain size.
+     * So if the terrain is 512 vertexes wide, then each texture coord will cover
+     * 1/512 (or 0.00195) percent of the texture.
+     * This is used for converting between tri-planar texture scales and regular
+     * texture scales.
+     */
+    public float getTextureCoordinateScale();
+    
 }

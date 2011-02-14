@@ -322,6 +322,10 @@ public class TerrainQuad extends Node implements Terrain {
         }
         return null;
     }
+
+    public float getTextureCoordinateScale() {
+        return 1f/(float)totalSize;
+    }
 	
 	/**
 	 * Calculates the LOD of all child terrain patches.
