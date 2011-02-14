@@ -203,16 +203,12 @@ public class TerrainTestCollision extends SimpleApplication {
         inputManager.addMapping("Downs", new KeyTrigger(KeyInput.KEY_J));
         inputManager.addMapping("Space", new KeyTrigger(KeyInput.KEY_SPACE));
         inputManager.addMapping("Reset", new KeyTrigger(KeyInput.KEY_RETURN));
-        inputManager.addMapping("Raise", new KeyTrigger(KeyInput.KEY_1));
-        inputManager.addMapping("Lower", new KeyTrigger(KeyInput.KEY_2));
         inputManager.addListener(actionListener, "Lefts");
         inputManager.addListener(actionListener, "Rights");
         inputManager.addListener(actionListener, "Ups");
         inputManager.addListener(actionListener, "Downs");
         inputManager.addListener(actionListener, "Space");
         inputManager.addListener(actionListener, "Reset");
-        inputManager.addListener(actionListener, "Raise");
-        inputManager.addListener(actionListener, "Lower");
         inputManager.addMapping("shoot", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
         inputManager.addListener(actionListener, "shoot");
     }
@@ -259,16 +255,6 @@ public class TerrainTestCollision extends SimpleApplication {
                     Vector2f loc = new Vector2f(hit.getContactPoint().x, hit.getContactPoint().y);
                     System.out.println("collide " + hit.getContactPoint() + ", height: " + terrain.getHeight(loc));
                     collisionMarker.setLocalTranslation(hit.getContactPoint());
-                }
-            } else if (binding.equals("Raise")) {
-                if (keyPressed) {
-                    Vector2f loc = new Vector2f(collisionMarker.getWorldTranslation().x, collisionMarker.getWorldTranslation().z);
-                    terrain.adjustHeight(loc, 1);
-                }
-            } else if (binding.equals("Lower")) {
-                if (keyPressed) {
-                    Vector2f loc = new Vector2f(collisionMarker.getWorldTranslation().x, collisionMarker.getWorldTranslation().z);
-                    terrain.adjustHeight(loc, -1);
                 }
             }
         }
