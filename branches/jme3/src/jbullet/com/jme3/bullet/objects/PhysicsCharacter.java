@@ -89,7 +89,7 @@ public class PhysicsCharacter extends PhysicsCollisionObject {
             gObject = new PairCachingGhostObject();
         }
         gObject.setCollisionFlags(CollisionFlags.CHARACTER_OBJECT);
-//        gObject.setCollisionFlags(gObject.getCollisionFlags() | CollisionFlags.NO_CONTACT_RESPONSE);
+        gObject.setCollisionFlags(gObject.getCollisionFlags() & ~CollisionFlags.NO_CONTACT_RESPONSE);
 //        gObject.setCollisionFlags(gObject.getCollisionFlags() | CollisionFlags.CHARACTER_OBJECT);
 //        gObject.setCollisionFlags(gObject.getCollisionFlags() | CollisionFlags.STATIC_OBJECT);
         gObject.setCollisionShape(collisionShape.getCShape());
