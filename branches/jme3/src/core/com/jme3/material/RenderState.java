@@ -264,6 +264,17 @@ public class RenderState implements Cloneable, Savable {
         this.colorWrite = colorWrite;
     }
 
+    /**
+      * Offsets the on-screen z-order of the material's polygons, to combat visual artefacts like
+      * stitching, bleeding and z-fighting for overlapping polygons.
+      * Factor and units are summed to produce the depth offset. This offset is applied in screen space,
+      * typically with positive Z pointing into the screen.
+      * Typical values are (1.0f, 1.0f) or (-1.0f, -1.0f)
+      *
+      * @see <a href="http://www.opengl.org/resources/faq/technical/polygonoffset.htm" rel="nofollow">http://www.opengl.org/resources/faq/technical/polygonoffset.htm</a>
+      * @param factor scales the maximum Z slope, with respect to X or Y of the polygon
+      * @param units scales the minimum resolvable depth buffer value
+      **/
     public void setPolyOffset(float factor, float units) {
         applyPolyOffset = true;
         offsetEnabled = true;
