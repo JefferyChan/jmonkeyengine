@@ -84,7 +84,7 @@ public class TerrainEditorController {
     // texture settings
 //    protected final String DEFAULT_TERRAIN_TEXTURE = "Common/MatDefs/Water/Textures/heightmap.jpg";
     protected final String DEFAULT_TERRAIN_TEXTURE = "com/jme3/gde/terraineditor/dirt.jpg";
-    protected final float DEFAULT_TEXTURE_SCALE = 16f;
+    protected final float DEFAULT_TEXTURE_SCALE = 16.0625f;
     private final int NUM_ALPHA_TEXTURES = 3;
     private final int BASE_TEXTURE_COUNT = NUM_ALPHA_TEXTURES; // add any others here, like a global specular map
     protected final int MAX_TEXTURE_LAYERS = 7-BASE_TEXTURE_COUNT; // 16 max, minus the ones we are reserving
@@ -407,6 +407,30 @@ public class TerrainEditorController {
         else
             terrain.getMaterial().setTexture("DiffuseMap_"+layer, tex);
     }
+    
+    private void doSetDiffuseTexture(int layer, Texture tex) {
+        tex.setWrap(WrapMode.Repeat);
+        Terrain terrain = (Terrain) getTerrain(null);
+        if (layer == 0)
+            terrain.getMaterial().setTexture("DiffuseMap", tex);
+        else
+            terrain.getMaterial().setTexture("DiffuseMap_"+layer, tex);
+    }
+
+     public void setDiffuseTexture(final int layer, final Texture texture) {
+        try {
+            SceneApplication.getApplication().enqueue(new Callable() {
+                public Object call() throws Exception {
+                    doSetDiffuseTexture(layer, texture);
+                    return null;
+                }
+            }).get();
+        } catch (InterruptedException ex) {
+            Exceptions.printStackTrace(ex);
+        } catch (ExecutionException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+    }
 
     /**
      * Remove a whole texture layer: diffuse and normal map
@@ -522,6 +546,30 @@ public class TerrainEditorController {
 
     private void doSetNormalMap(int layer, String texturePath) {
         Texture tex = SceneApplication.getApplication().getAssetManager().loadTexture(texturePath);
+        tex.setWrap(WrapMode.Repeat);
+        Terrain terrain = (Terrain) getTerrain(null);
+        if (layer == 0)
+            terrain.getMaterial().setTexture("NormalMap", tex);
+        else
+            terrain.getMaterial().setTexture("NormalMap_"+layer, tex);
+    }
+
+    public void setNormalMap(final int layer, final Texture texture) {
+        try {
+            SceneApplication.getApplication().enqueue(new Callable() {
+                public Object call() throws Exception {
+                    doSetNormalMap(layer, texture);
+                    return null;
+                }
+            }).get();
+        } catch (InterruptedException ex) {
+            Exceptions.printStackTrace(ex);
+        } catch (ExecutionException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+    }
+
+    private void doSetNormalMap(int layer, Texture tex) {
         tex.setWrap(WrapMode.Repeat);
         Terrain terrain = (Terrain) getTerrain(null);
         if (layer == 0)
@@ -830,4 +878,46 @@ public class TerrainEditorController {
         }
         return count;
     }
+
+    public void setTriPlanarEnabled(final boolean selected) {
+        try {
+            SceneApplication.getApplication().enqueue(new Callable() {
+                public Object call() throws Exception {
+                    doSetTriPlanarEnabled(selected);
+                    return null;
+                }
+            }).get();
+        } catch (InterruptedException ex) {
+            Exceptions.printStackTrace(ex);
+        } catch (ExecutionException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+    }
+
+    /**
+     * Also adjusts the scale. Normal texture scale uses texture coordinates,
+     * which are each 1/(total size of the terrain). But for tri planar it doesn't
+     * use texture coordinates, so we need to re-calculate it to be the same scale.
+     * @param enabled
+     * @param terrainTotalSize
+     */
+    private void doSetTriPlanarEnabled(boolean enabled) {
+        Terrain terrain = (Terrain) getTerrain(null);
+        terrain.getMaterial().setBoolean("useTriPlanarMapping", enabled);
+        
+        float texCoordSize = 1/terrain.getTextureCoordinateScale();
+
+        if (enabled) {
+            for (int i=0; i<getNumUsedTextures(); i++) {
+                float scale = 1f/(float)(texCoordSize/doGetTextureScale(i));
+                doSetTextureScale(i, scale);
+            }
+        } else {
+            for (int i=0; i<getNumUsedTextures(); i++) {
+                float scale = (float)(texCoordSize*doGetTextureScale(i));
+                doSetTextureScale(i, scale);
+            }
+        }
+    }
+
 }
