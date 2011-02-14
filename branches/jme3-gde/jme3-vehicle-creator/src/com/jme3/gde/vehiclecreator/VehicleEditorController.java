@@ -163,22 +163,16 @@ public class VehicleEditorController implements LookupListener, ActionListener {
         if (jmeRootNode == null) {
             return;
         }
-        try {
-            final Node node = jmeRootNode.getLookup().lookup(Node.class);
-            if (node != null) {
-                SceneApplication.getApplication().enqueue(new Callable() {
+        final Node node = jmeRootNode.getLookup().lookup(Node.class);
+        if (node != null) {
+            SceneApplication.getApplication().enqueue(new Callable() {
 
-                    public Object call() throws Exception {
-                        doTestVehicle(node);
-                        return null;
+                public Object call() throws Exception {
+                    doTestVehicle(node);
+                    return null;
 
-                    }
-                }).get();
-            }
-        } catch (InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
-        } catch (ExecutionException ex) {
-            Exceptions.printStackTrace(ex);
+                }
+            });
         }
     }
 //    private ChaseCamera chaseCam;
@@ -252,7 +246,7 @@ public class VehicleEditorController implements LookupListener, ActionListener {
     }
 
     public void doCenterSelected(final Spatial selected) {
-        final Vector3f location=new Vector3f(selected.getLocalTranslation());
+        final Vector3f location = new Vector3f(selected.getLocalTranslation());
         selected.center();
         Lookup.getDefault().lookup(SceneUndoRedoManager.class).addEdit(this, new AbstractUndoableSceneEdit() {
 
