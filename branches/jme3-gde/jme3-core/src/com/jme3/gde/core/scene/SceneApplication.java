@@ -113,6 +113,7 @@ public class SceneApplication extends Application implements LookupProvider, Loo
     private ProgressHandle progressHandle = ProgressHandleFactory.createHandle("Opening SceneViewer..");
     private boolean sceneActive = true;
     private String lastError = "";
+    private boolean started = false;
 
     public SceneApplication() {
         progressHandle.start(7);
@@ -204,6 +205,7 @@ public class SceneApplication extends Application implements LookupProvider, Loo
             inputManager.addMapping("MouseButtonLeft", new MouseButtonTrigger(0));
             inputManager.addMapping("MouseButtonMiddle", new MouseButtonTrigger(2));
             inputManager.addMapping("MouseButtonRight", new MouseButtonTrigger(1));
+            started = true;
         } catch (Exception e) {
             getProgressHandle().finish();
             SceneViewerTopComponent.showOpenGLError(e.toString());
@@ -218,61 +220,25 @@ public class SceneApplication extends Application implements LookupProvider, Loo
         if (speed == 0) {
             return;
         }
-
-        try {
-            super.update();
-            float tpf = timer.getTimePerFrame();
-
-            camLight.setPosition(cam.getLocation());
-
-            secondCounter += tpf;
-            int fps = (int) timer.getFrameRate();
-            if (secondCounter >= 1.0f) {
-                fpsText.setText("Frames per second: " + fps);
-                secondCounter = 0.0f;
-            }
-
-            getStateManager().update(tpf);
-
-            rootNode.updateLogicalState(tpf);
-            guiNode.updateLogicalState(tpf);
-            toolsNode.updateLogicalState(tpf);
-            rootNode.updateGeometricState();
-            guiNode.updateGeometricState();
-            toolsNode.updateGeometricState();
-
-            getStateManager().render(renderManager);
-            renderManager.render(tpf);
-            getStateManager().postRender();
-        } catch (Exception e) {
-            String msg = e.getMessage();
-            if (msg == null) {
-                msg = "null";
-            }
-            if (!lastError.equals(msg)) {
-                Message mesg = new NotifyDescriptor.Message(
-                        "Exception in scene!\n"
-                        + "(" + e + ")",
-                        NotifyDescriptor.WARNING_MESSAGE);
-                DialogDisplayer.getDefault().notifyLater(mesg);
-                Exceptions.printStackTrace(e);
-                lastError = msg;
-            }
-        } catch (Error e) {
-            String msg = e.getMessage();
-            if (msg == null) {
-                msg = "null";
-            }
-            if (!lastError.equals(msg)) {
-                Message mesg = new NotifyDescriptor.Message(
-                        "Error in scene!\n"
-                        + "(" + e + ")",
-                        NotifyDescriptor.WARNING_MESSAGE);
-                DialogDisplayer.getDefault().notifyLater(mesg);
-                Exceptions.printStackTrace(e);
-                lastError = msg;
-            }
+        super.update();
+        float tpf = timer.getTimePerFrame();
+        camLight.setPosition(cam.getLocation());
+        secondCounter += tpf;
+        int fps = (int) timer.getFrameRate();
+        if (secondCounter >= 1.0f) {
+            fpsText.setText("Frames per second: " + fps);
+            secondCounter = 0.0f;
         }
+        getStateManager().update(tpf);
+        rootNode.updateLogicalState(tpf);
+        guiNode.updateLogicalState(tpf);
+        toolsNode.updateLogicalState(tpf);
+        rootNode.updateGeometricState();
+        guiNode.updateGeometricState();
+        toolsNode.updateGeometricState();
+        getStateManager().render(renderManager);
+        renderManager.render(tpf);
+        getStateManager().postRender();
     }
 
     @Override
@@ -452,8 +418,8 @@ public class SceneApplication extends Application implements LookupProvider, Loo
         java.awt.EventQueue.invokeLater(new Runnable() {
 
             public void run() {
-                SceneUndoRedoManager manager=Lookup.getDefault().lookup(SceneUndoRedoManager.class);
-                if(manager!=null){
+                SceneUndoRedoManager manager = Lookup.getDefault().lookup(SceneUndoRedoManager.class);
+                if (manager != null) {
                     manager.discardAllEdits();
                 }
             }
@@ -567,9 +533,21 @@ public class SceneApplication extends Application implements LookupProvider, Loo
     }
 
     @Override
-    public void handleError(String errMsg, Throwable t) {
+    public void handleError(String msg, Throwable t) {
         progressHandle.finish();
-        SceneViewerTopComponent.showOpenGLError(errMsg);
+        if (!started) {
+            SceneViewerTopComponent.showOpenGLError(msg);
+        } else {
+            if (!lastError.equals(msg)) {
+                Message mesg = new NotifyDescriptor.Message(
+                        "Error in scene!\n"
+                        + "(" + t + ")",
+                        NotifyDescriptor.WARNING_MESSAGE);
+                DialogDisplayer.getDefault().notifyLater(mesg);
+                Exceptions.printStackTrace(t);
+                lastError = msg;
+            }
+        }
     }
 
     public RenderManager getRenderManager() {
