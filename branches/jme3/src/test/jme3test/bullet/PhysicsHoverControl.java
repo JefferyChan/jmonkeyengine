@@ -131,7 +131,7 @@ public class PhysicsHoverControl extends PhysicsVehicle implements PhysicsContro
     public void prePhysicsTick(PhysicsSpace space, float f) {
         Vector3f angVel = getAngularVelocity();
         float rotationVelocity = angVel.getY();
-        Vector3f dir = getForwardVector(tempVect2).multLocal(1,0,1).normalizeLocal();
+        Vector3f dir = getForwardVector(tempVect2).multLocal(1, 0, 1).normalizeLocal();
         getLinearVelocity(tempVect3);
         Vector3f linearVelocity = tempVect3.multLocal(1, 0, 1);
 
@@ -142,9 +142,9 @@ public class PhysicsHoverControl extends PhysicsVehicle implements PhysicsContro
         } else {
             // counter the steering value!
             if (rotationVelocity > 0.2f) {
-                applyTorque(tempVect1.set(0, -mass*20, 0));
+                applyTorque(tempVect1.set(0, -mass * 20, 0));
             } else if (rotationVelocity < -0.2f) {
-                applyTorque(tempVect1.set(0, mass*20, 0));
+                applyTorque(tempVect1.set(0, mass * 20, 0));
             }
         }
         if (accelerationValue > 0) {
@@ -154,7 +154,7 @@ public class PhysicsHoverControl extends PhysicsVehicle implements PhysicsContro
             // of the vehicle
             float d = dir.dot(linearVelocity.normalize());
             Vector3f counter = dir.project(linearVelocity).normalizeLocal().negateLocal().multLocal(1 - d);
-            applyForce(counter.multLocal(mass*10), Vector3f.ZERO);
+            applyForce(counter.multLocal(mass * 10), Vector3f.ZERO);
 
             if (linearVelocity.length() < 30) {
                 applyForce(dir.multLocal(accelerationValue), Vector3f.ZERO);
@@ -163,7 +163,7 @@ public class PhysicsHoverControl extends PhysicsVehicle implements PhysicsContro
             // counter the acceleration value
             if (linearVelocity.length() > FastMath.ZERO_TOLERANCE) {
                 linearVelocity.normalizeLocal().negateLocal();
-                applyForce(linearVelocity.mult(mass*10), Vector3f.ZERO);
+                applyForce(linearVelocity.mult(mass * 10), Vector3f.ZERO);
             }
         }
     }
@@ -202,6 +202,10 @@ public class PhysicsHoverControl extends PhysicsVehicle implements PhysicsContro
             space.addTickListener(this);
         }
         this.space = space;
+    }
+
+    public PhysicsSpace getPhysicsSpace() {
+        return space;
     }
 
     @Override
