@@ -157,6 +157,10 @@ public class CharacterControl extends PhysicsCharacter implements PhysicsControl
         this.space = space;
     }
 
+    public PhysicsSpace getPhysicsSpace() {
+        return space;
+    }
+
     @Override
     public void write(JmeExporter ex) throws IOException {
         super.write(ex);

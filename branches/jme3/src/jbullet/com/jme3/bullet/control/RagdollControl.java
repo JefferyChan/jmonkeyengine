@@ -276,6 +276,10 @@ public class RagdollControl implements PhysicsControl {
         }
     }
 
+    public PhysicsSpace getPhysicsSpace() {
+        return space;
+    }
+
     public void write(JmeExporter ex) throws IOException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
