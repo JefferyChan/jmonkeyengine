@@ -1,10 +1,7 @@
 package com.jme3.bullet.control;
 
-import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.Bone;
-import com.jme3.animation.BoneAnimation;
-import com.jme3.animation.BoneTrack;
 import com.jme3.animation.Skeleton;
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.PhysicsSpace;
@@ -16,7 +13,6 @@ import com.jme3.bullet.objects.PhysicsRigidBody;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
 import com.jme3.math.FastMath;
-import com.jme3.math.Matrix3f;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;

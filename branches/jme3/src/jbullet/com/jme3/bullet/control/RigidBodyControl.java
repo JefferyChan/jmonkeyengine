@@ -39,7 +39,6 @@ public class RigidBodyControl extends PhysicsRigidBody implements PhysicsControl
     protected boolean enabled = true;
     protected boolean added = false;
     protected PhysicsSpace space = null;
-    private Matrix3f temp_matrix = new Matrix3f();
     protected boolean kinematicSpatial = true;
 
     public RigidBodyControl() {
@@ -157,7 +156,7 @@ public class RigidBodyControl extends PhysicsRigidBody implements PhysicsControl
             if (enabled && !added) {
                 if (spatial != null) {
                     setPhysicsLocation(spatial.getWorldTranslation());
-                    setPhysicsRotation(spatial.getWorldRotation().toRotationMatrix(temp_matrix));
+                    setPhysicsRotation(spatial.getWorldRotation());
                 }
                 space.addCollisionObject(this);
                 added = true;
@@ -193,7 +192,7 @@ public class RigidBodyControl extends PhysicsRigidBody implements PhysicsControl
         if (enabled && spatial != null) {
             if (isKinematic() && kinematicSpatial) {
                 super.setPhysicsLocation(spatial.getWorldTranslation());
-                super.setPhysicsRotation(spatial.getWorldRotation().toRotationMatrix(temp_matrix));
+                super.setPhysicsRotation(spatial.getWorldRotation());
             } else {
                 getMotionState().applyTransform(spatial);
             }

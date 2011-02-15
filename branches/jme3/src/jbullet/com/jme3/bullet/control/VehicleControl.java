@@ -34,7 +34,6 @@ public class VehicleControl extends PhysicsVehicle implements PhysicsControl {
     private boolean enabled = true;
     protected PhysicsSpace space = null;
     protected boolean added = false;
-    private Matrix3f temp_matrix = new Matrix3f();
 
     public VehicleControl() {
     }
@@ -125,7 +124,7 @@ public class VehicleControl extends PhysicsVehicle implements PhysicsControl {
             if (enabled && !added) {
                 if(spatial!=null){
                     setPhysicsLocation(spatial.getWorldTranslation());
-                    setPhysicsRotation(spatial.getWorldRotation().toRotationMatrix(temp_matrix));
+                    setPhysicsRotation(spatial.getWorldRotation());
                 }
                 space.addCollisionObject(this);
                 added = true;

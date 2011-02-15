@@ -29,7 +29,6 @@ public class GhostControl extends PhysicsGhostObject implements PhysicsControl {
     protected boolean enabled = true;
     protected boolean added = false;
     protected PhysicsSpace space = null;
-    private Matrix3f temp_matrix = new Matrix3f();
 
     public GhostControl() {
     }
@@ -72,7 +71,7 @@ public class GhostControl extends PhysicsGhostObject implements PhysicsControl {
             if (enabled && !added) {
                 if(spatial!=null){
                     setPhysicsLocation(spatial.getWorldTranslation());
-                    setPhysicsRotation(spatial.getWorldRotation().toRotationMatrix(temp_matrix));
+                    setPhysicsRotation(spatial.getWorldRotation());
                 }
                 space.addCollisionObject(this);
                 added = true;
@@ -92,7 +91,7 @@ public class GhostControl extends PhysicsGhostObject implements PhysicsControl {
             return;
         }
         setPhysicsLocation(spatial.getWorldTranslation());
-        setPhysicsRotation(spatial.getWorldRotation().toRotationMatrix(temp_matrix));
+        setPhysicsRotation(spatial.getWorldRotation());
     }
 
     public void render(RenderManager rm, ViewPort vp) {
