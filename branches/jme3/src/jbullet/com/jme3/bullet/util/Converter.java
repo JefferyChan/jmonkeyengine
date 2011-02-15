@@ -33,6 +33,7 @@ package com.jme3.bullet.util;
 
 import com.bulletphysics.collision.shapes.IndexedMesh;
 import com.bulletphysics.dom.HeightfieldTerrainShape;
+import com.jme3.math.FastMath;
 import com.jme3.scene.mesh.IndexBuffer;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.VertexBuffer.Type;
@@ -99,6 +100,77 @@ public class Converter {
         com.jme3.math.Quaternion newQuat = new com.jme3.math.Quaternion();
         convert(oldQuat, newQuat);
         return newQuat;
+    }
+
+    public static com.jme3.math.Quaternion convert(javax.vecmath.Matrix3f oldMatrix, com.jme3.math.Quaternion newQuaternion) {
+        // the trace is the sum of the diagonal elements; see
+        // http://mathworld.wolfram.com/MatrixTrace.html
+        float t = oldMatrix.m00 + oldMatrix.m11 + oldMatrix.m22;
+        float w, x, y, z;
+        // we protect the division by s by ensuring that s>=1
+        if (t >= 0) { // |w| >= .5
+            float s = FastMath.sqrt(t + 1); // |s|>=1 ...
+            w = 0.5f * s;
+            s = 0.5f / s;                 // so this division isn't bad
+            x = (oldMatrix.m21 - oldMatrix.m12) * s;
+            y = (oldMatrix.m02 - oldMatrix.m20) * s;
+            z = (oldMatrix.m10 - oldMatrix.m01) * s;
+        } else if ((oldMatrix.m00 > oldMatrix.m11) && (oldMatrix.m00 > oldMatrix.m22)) {
+            float s = FastMath.sqrt(1.0f + oldMatrix.m00 - oldMatrix.m11 - oldMatrix.m22); // |s|>=1
+            x = s * 0.5f; // |x| >= .5
+            s = 0.5f / s;
+            y = (oldMatrix.m10 + oldMatrix.m01) * s;
+            z = (oldMatrix.m02 + oldMatrix.m20) * s;
+            w = (oldMatrix.m21 - oldMatrix.m12) * s;
+        } else if (oldMatrix.m11 > oldMatrix.m22) {
+            float s = FastMath.sqrt(1.0f + oldMatrix.m11 - oldMatrix.m00 - oldMatrix.m22); // |s|>=1
+            y = s * 0.5f; // |y| >= .5
+            s = 0.5f / s;
+            x = (oldMatrix.m10 + oldMatrix.m01) * s;
+            z = (oldMatrix.m21 + oldMatrix.m12) * s;
+            w = (oldMatrix.m02 - oldMatrix.m20) * s;
+        } else {
+            float s = FastMath.sqrt(1.0f + oldMatrix.m22 - oldMatrix.m00 - oldMatrix.m11); // |s|>=1
+            z = s * 0.5f; // |z| >= .5
+            s = 0.5f / s;
+            x = (oldMatrix.m02 + oldMatrix.m20) * s;
+            y = (oldMatrix.m21 + oldMatrix.m12) * s;
+            w = (oldMatrix.m10 - oldMatrix.m01) * s;
+        }
+        return newQuaternion.set(x, y, z, w);
+    }
+
+    public static javax.vecmath.Matrix3f convert(com.jme3.math.Quaternion oldQuaternion, javax.vecmath.Matrix3f newMatrix) {
+        float norm = oldQuaternion.getW() * oldQuaternion.getW() + oldQuaternion.getX() * oldQuaternion.getX() + oldQuaternion.getY() * oldQuaternion.getY() + oldQuaternion.getZ() * oldQuaternion.getZ();
+        float s = (norm == 1f) ? 2f : (norm > 0f) ? 2f / norm : 0;
+
+        // compute xs/ys/zs first to save 6 multiplications, since xs/ys/zs
+        // will be used 2-4 times each.
+        float xs = oldQuaternion.getX() * s;
+        float ys = oldQuaternion.getY() * s;
+        float zs = oldQuaternion.getZ() * s;
+        float xx = oldQuaternion.getX() * xs;
+        float xy = oldQuaternion.getX() * ys;
+        float xz = oldQuaternion.getX() * zs;
+        float xw = oldQuaternion.getW() * xs;
+        float yy = oldQuaternion.getY() * ys;
+        float yz = oldQuaternion.getY() * zs;
+        float yw = oldQuaternion.getW() * ys;
+        float zz = oldQuaternion.getZ() * zs;
+        float zw = oldQuaternion.getW() * zs;
+
+        // using s=2/norm (instead of 1/norm) saves 9 multiplications by 2 here
+        newMatrix.m00 = 1 - (yy + zz);
+        newMatrix.m01 = (xy - zw);
+        newMatrix.m02 = (xz + yw);
+        newMatrix.m10 = (xy + zw);
+        newMatrix.m11 = 1 - (xx + zz);
+        newMatrix.m12 = (yz - xw);
+        newMatrix.m20 = (xz - yw);
+        newMatrix.m21 = (yz + xw);
+        newMatrix.m22 = 1 - (xx + yy);
+
+        return newMatrix;
     }
 
     public static com.jme3.math.Matrix3f convert(javax.vecmath.Matrix3f oldMatrix) {
@@ -184,11 +256,11 @@ public class Converter {
         FloatBuffer vertices = jmeMesh.getFloatBuffer(Type.Position);
 
         for (int i = 0; i < mesh.numTriangles * 3; i++) {
-            indicess.put(i, mesh.triangleIndexBase.getInt(i*4));
+            indicess.put(i, mesh.triangleIndexBase.getInt(i * 4));
         }
 
         for (int i = 0; i < mesh.numVertices * 3; i++) {
-            vertices.put(i, mesh.vertexBase.getFloat(i*4));
+            vertices.put(i, mesh.vertexBase.getFloat(i * 4));
         }
         jmeMesh.getFloatBuffer(Type.Position).clear();
         jmeMesh.updateCounts();
@@ -197,8 +269,7 @@ public class Converter {
         return jmeMesh;
     }
 
-	public static Mesh convert(HeightfieldTerrainShape heightfieldShape) {
-		return null; //TODO!!
-	}
-
+    public static Mesh convert(HeightfieldTerrainShape heightfieldShape) {
+        return null; //TODO!!
+    }
 }

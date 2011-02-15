@@ -82,7 +82,7 @@ public class RigidBodyControl extends PhysicsRigidBody implements PhysicsControl
         control.setKinematicSpatial(isKinematicSpatial());
         control.setLinearSleepingThreshold(getLinearSleepingThreshold());
         control.setPhysicsLocation(getPhysicsLocation(null));
-        control.setPhysicsRotation(getPhysicsRotation(null));
+        control.setPhysicsRotation(getPhysicsRotationMatrix(null));
         control.setRestitution(getRestitution());
 
         if (mass > 0) {

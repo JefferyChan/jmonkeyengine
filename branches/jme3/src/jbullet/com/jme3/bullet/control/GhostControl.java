@@ -45,7 +45,7 @@ public class GhostControl extends PhysicsGhostObject implements PhysicsControl {
         control.setCollideWithGroups(getCollideWithGroups());
         control.setCollisionGroup(getCollisionGroup());
         control.setPhysicsLocation(getPhysicsLocation());
-        control.setPhysicsRotation(getPhysicsRotation());
+        control.setPhysicsRotation(getPhysicsRotationMatrix());
 
         control.setSpatial(spatial);
         return control;
@@ -101,7 +101,7 @@ public class GhostControl extends PhysicsGhostObject implements PhysicsControl {
                 attachDebugShape(space.getDebugManager());
             }
             debugShape.setLocalTranslation(getPhysicsLocation());
-            debugShape.setLocalRotation(getPhysicsRotation());
+            debugShape.setLocalRotation(getPhysicsRotationMatrix());
             debugShape.updateLogicalState(0);
             debugShape.updateGeometricState();
             rm.renderScene(debugShape, vp);

@@ -68,7 +68,7 @@ public class VehicleControl extends PhysicsVehicle implements PhysicsControl {
         control.setLinearSleepingThreshold(getLinearSleepingThreshold());
         control.setLinearVelocity(getLinearVelocity());
         control.setPhysicsLocation(getPhysicsLocation());
-        control.setPhysicsRotation(getPhysicsRotation());
+        control.setPhysicsRotation(getPhysicsRotationMatrix());
         control.setRestitution(getRestitution());
 
         control.setFrictionSlip(getFrictionSlip());

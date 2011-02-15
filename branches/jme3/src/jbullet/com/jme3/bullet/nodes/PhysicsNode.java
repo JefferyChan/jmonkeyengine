@@ -163,7 +163,7 @@ public class PhysicsNode extends PhysicsBaseNode {
      * @param rotation the rotation of the actual physics object is stored in this Matrix3f
      */
     public void getPhysicsRotation(Matrix3f rotation) {
-        ((PhysicsRigidBody)collisionObject).getPhysicsRotation(rotation);
+        ((PhysicsRigidBody)collisionObject).getPhysicsRotationMatrix(rotation);
     }
 
     /**

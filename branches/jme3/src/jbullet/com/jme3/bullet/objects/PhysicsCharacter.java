@@ -90,8 +90,6 @@ public class PhysicsCharacter extends PhysicsCollisionObject {
         }
         gObject.setCollisionFlags(CollisionFlags.CHARACTER_OBJECT);
         gObject.setCollisionFlags(gObject.getCollisionFlags() & ~CollisionFlags.NO_CONTACT_RESPONSE);
-//        gObject.setCollisionFlags(gObject.getCollisionFlags() | CollisionFlags.CHARACTER_OBJECT);
-//        gObject.setCollisionFlags(gObject.getCollisionFlags() | CollisionFlags.STATIC_OBJECT);
         gObject.setCollisionShape(collisionShape.getCShape());
         gObject.setUserPointer(this);
         character = new KinematicCharacterController(gObject, (ConvexShape) collisionShape.getCShape(), stepHeight);

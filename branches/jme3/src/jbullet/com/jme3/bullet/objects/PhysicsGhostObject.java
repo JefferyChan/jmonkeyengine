@@ -101,7 +101,7 @@ public class PhysicsGhostObject extends PhysicsCollisionObject {
     }
 
     /**
-     * This is normally only needed when using detached physics
+     * Sets the physics object location
      * @param location the location of the actual physics object
      */
     public void setPhysicsLocation(Vector3f location) {
@@ -111,10 +111,20 @@ public class PhysicsGhostObject extends PhysicsCollisionObject {
     }
 
     /**
-     * This is normally only needed when using detached physics
+     * Sets the physics object rotation
      * @param rotation the rotation of the actual physics object
      */
     public void setPhysicsRotation(Matrix3f rotation) {
+        gObject.getWorldTransform(tempTrans);
+        Converter.convert(rotation, tempTrans.basis);
+        gObject.setWorldTransform(tempTrans);
+    }
+
+    /**
+     * Sets the physics object rotation
+     * @param rotation the rotation of the actual physics object
+     */
+    public void setPhysicsRotation(Quaternion rotation) {
         gObject.getWorldTransform(tempTrans);
         Converter.convert(rotation, tempTrans.basis);
         gObject.setWorldTransform(tempTrans);
@@ -142,7 +152,7 @@ public class PhysicsGhostObject extends PhysicsCollisionObject {
     /**
      * @return the physicsLocation
      */
-    public Quaternion getPhysicsRotationQuat(Quaternion rot) {
+    public Quaternion getPhysicsRotation(Quaternion rot) {
         if (rot == null) {
             rot = new Quaternion();
         }
@@ -154,7 +164,7 @@ public class PhysicsGhostObject extends PhysicsCollisionObject {
     /**
      * @return the physicsLocation
      */
-    public Matrix3f getPhysicsRotation(Matrix3f rot) {
+    public Matrix3f getPhysicsRotationMatrix(Matrix3f rot) {
         if (rot == null) {
             rot = new Matrix3f();
         }
@@ -175,13 +185,13 @@ public class PhysicsGhostObject extends PhysicsCollisionObject {
     /**
      * @return the physicsLocation
      */
-    public Quaternion getPhysicsRotationQuat() {
+    public Quaternion getPhysicsRotation() {
         gObject.getWorldTransform(tempTrans);
         Converter.convert(tempTrans.getRotation(tempRot), physicsLocation.getRotation());
         return physicsLocation.getRotation();
     }
 
-    public Matrix3f getPhysicsRotation() {
+    public Matrix3f getPhysicsRotationMatrix() {
         gObject.getWorldTransform(tempTrans);
         Converter.convert(tempTrans.getRotation(tempRot), physicsLocation.getRotation());
         return physicsLocation.getRotation().toRotationMatrix();
@@ -256,7 +266,7 @@ public class PhysicsGhostObject extends PhysicsCollisionObject {
         super.write(e);
         OutputCapsule capsule = e.getCapsule(this);
         capsule.write(getPhysicsLocation(new Vector3f()), "physicsLocation", new Vector3f());
-        capsule.write(getPhysicsRotation(new Matrix3f()), "physicsRotation", new Matrix3f());
+        capsule.write(getPhysicsRotationMatrix(new Matrix3f()), "physicsRotation", new Matrix3f());
         capsule.write(getCcdMotionThreshold(), "ccdMotionThreshold", 0);
         capsule.write(getCcdSweptSphereRadius(), "ccdSweptSphereRadius", 0);
     }

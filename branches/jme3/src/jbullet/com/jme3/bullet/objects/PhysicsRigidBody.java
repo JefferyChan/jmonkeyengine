@@ -39,7 +39,6 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
-import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.joints.PhysicsJoint;
 import com.jme3.bullet.objects.infos.RigidBodyMotionState;
@@ -49,6 +48,7 @@ import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
 import com.jme3.export.OutputCapsule;
 import com.jme3.math.Matrix3f;
+import com.jme3.math.Quaternion;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.debug.Arrow;
@@ -165,7 +165,18 @@ public class PhysicsRigidBody extends PhysicsCollisionObject {
     }
 
     /**
-     * Gets the physics object location
+     * Sets the physics object rotation
+     * @param rotation the rotation of the actual physics object
+     */
+    public void setPhysicsRotation(Quaternion rotation) {
+        rBody.getCenterOfMassTransform(tempTrans);
+        Converter.convert(rotation, tempTrans.basis);
+        rBody.setCenterOfMassTransform(tempTrans);
+        motionState.setWorldTransform(tempTrans);
+    }
+
+    /**
+     * Gets the physics object location, instantiates a new Vector3f object
      * @param location the location of the actual physics object is stored in this Vector3f
      */
     public Vector3f getPhysicsLocation() {
@@ -176,12 +187,12 @@ public class PhysicsRigidBody extends PhysicsCollisionObject {
      * Gets the physics object rotation
      * @param rotation the rotation of the actual physics object is stored in this Matrix3f
      */
-    public Matrix3f getPhysicsRotation() {
-        return getPhysicsRotation(null);
+    public Matrix3f getPhysicsRotationMatrix() {
+        return getPhysicsRotationMatrix(null);
     }
 
     /**
-     * Gets the physics object location
+     * Gets the physics object location, no object instantiation
      * @param location the location of the actual physics object is stored in this Vector3f
      */
     public Vector3f getPhysicsLocation(Vector3f location) {
@@ -193,12 +204,33 @@ public class PhysicsRigidBody extends PhysicsCollisionObject {
     }
 
     /**
-     * Gets the physics object rotation
+     * Gets the physics object rotation as a matrix, no conversions and no object instantiation
      * @param rotation the rotation of the actual physics object is stored in this Matrix3f
      */
-    public Matrix3f getPhysicsRotation(Matrix3f rotation) {
+    public Matrix3f getPhysicsRotationMatrix(Matrix3f rotation) {
         if (rotation == null) {
             rotation = new Matrix3f();
+        }
+        rBody.getCenterOfMassTransform(tempTrans);
+        return Converter.convert(tempTrans.basis, rotation);
+    }
+
+    /**
+     * Gets the physics object rotation as a quaternion, converts the bullet Matrix3f value,
+     * instantiates new object
+     * @param rotation the rotation of the actual physics object is stored in this Quaternion
+     */
+    public Quaternion getPhysicsRotation(){
+        return getPhysicsRotation(null);
+    }
+
+    /**
+     * Gets the physics object rotation as a quaternion, converts the bullet Matrix3f value
+     * @param rotation the rotation of the actual physics object is stored in this Quaternion
+     */
+    public Quaternion getPhysicsRotation(Quaternion rotation){
+        if (rotation == null) {
+            rotation = new Quaternion();
         }
         rBody.getCenterOfMassTransform(tempTrans);
         return Converter.convert(tempTrans.basis, rotation);
@@ -633,7 +665,7 @@ public class PhysicsRigidBody extends PhysicsCollisionObject {
         capsule.write(getCcdSweptSphereRadius(), "ccdSweptSphereRadius", 0);
 
         capsule.write(getPhysicsLocation(new Vector3f()), "physicsLocation", new Vector3f());
-        capsule.write(getPhysicsRotation(new Matrix3f()), "physicsRotation", new Matrix3f());
+        capsule.write(getPhysicsRotationMatrix(new Matrix3f()), "physicsRotation", new Matrix3f());
 
         capsule.writeSavableArrayList(joints, "joints", null);
     }
