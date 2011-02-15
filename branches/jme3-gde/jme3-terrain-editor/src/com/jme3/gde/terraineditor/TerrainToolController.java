@@ -65,6 +65,8 @@ public class TerrainToolController extends SceneToolController {
     private TerrainEditorController editorController;
     private float heightToolRadius;
     private float heightToolHeight;
+    private float heightAmount;
+    private float paintAmount;
     private int selectedTextureIndex = -1;
 
     public TerrainToolController(Node toolsNode, AssetManager manager, JmeNode rootNode) {
@@ -81,6 +83,8 @@ public class TerrainToolController extends SceneToolController {
      */
     public void setHeightToolHeight(float heightToolHeight) {
         this.heightToolHeight = heightToolHeight;
+        this.heightAmount = heightToolHeight/100f;
+        this.paintAmount = heightToolHeight/200f;
     }
 
     public void setHeightToolRadius(float radius) {
@@ -200,16 +204,16 @@ public class TerrainToolController extends SceneToolController {
     public void doTerrainEditToolActivated() {
 
         if (TerrainEditButton.raiseTerrain == getCurrentEditButtonState() ) {
-            editorController.doModifyTerrainHeight(getMarkerLocation(), heightToolRadius, heightToolHeight/100f);
+            editorController.doModifyTerrainHeight(getMarkerLocation(), heightToolRadius, heightAmount);
         }
         else if (TerrainEditButton.lowerTerrain == getCurrentEditButtonState() ) {
-            editorController.doModifyTerrainHeight(getMarkerLocation(), heightToolRadius, -heightToolHeight/100f);
+            editorController.doModifyTerrainHeight(getMarkerLocation(), heightToolRadius, -heightAmount);
         }
         else if(TerrainEditButton.paintTerrain == getCurrentEditButtonState()) {
-            editorController.doPaintTexture(selectedTextureIndex, getMarkerLocation(), heightToolRadius, heightToolHeight/200f);
+            editorController.doPaintTexture(selectedTextureIndex, getMarkerLocation(), heightToolRadius, paintAmount);
         }
         else if (TerrainEditButton.eraseTerrain == getCurrentEditButtonState() ) {
-            editorController.doPaintTexture(selectedTextureIndex, getMarkerLocation(), heightToolRadius, -heightToolHeight/200f);
+            editorController.doPaintTexture(selectedTextureIndex, getMarkerLocation(), heightToolRadius, -paintAmount);
         }
     }
 }

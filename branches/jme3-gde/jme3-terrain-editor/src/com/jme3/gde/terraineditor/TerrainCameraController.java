@@ -63,7 +63,7 @@ public class TerrainCameraController extends AbstractCameraController {
 
     private boolean terrainEditToolActivated = false;
     protected Application app;
-    private float toolModifyRate = 0.02f; // how frequently (in seconds) it should update
+    private float toolModifyRate = 0.01f; // how frequently (in seconds) it should update
     private long lastModifyTime;
 
     public TerrainCameraController(Camera cam) {

@@ -794,7 +794,7 @@ public class TerrainEditorController {
         boolean erase = toolWeight<0;
         if (erase)
             toolWeight *= -1;
-        Logger.getLogger(TerrainEditorController.class.getName()).info("paint: selectedTextureIndex: "+selectedTextureIndex+",  texIndex:"+texIndex);
+        
         doPaintAction(texIndex, image, UV, true, brushSize, erase, toolWeight);
 
         tex.getImage().setUpdateNeeded();
@@ -831,27 +831,29 @@ public class TerrainEditorController {
         int miny = (int) (uv.y*height - radius*height);
         int maxy = (int) (uv.y*height + radius*height);
 
+        float radiusSquared = radius*radius;
+        float radiusFalloff = radius*fadeFalloff;
         // go through each pixel, in the radius of the tool, in the image
         for (int y = miny; y < maxy; y++){
             for (int x = minx; x < maxx; x++){
                 
                 texuv.set((float)x / width, (float)y / height);// gets the position in percentage so it can compare with the mouse UV coordinate
 
-                float dist = texuv.distance(uv);
-                if (dist < radius ) { // if the pixel is within the distance of the radius, set a color (distance times intensity)
+                float dist = texuv.distanceSquared(uv);
+                if (dist < radiusSquared ) { // if the pixel is within the distance of the radius, set a color (distance times intensity)
                 	manipulatePixel(image, x, y, color, false); // gets the color at that location (false means don't write to the buffer)
 
                 	// calculate the fade falloff intensity
-                	float intensity = 1;
-                	if (dist > radius*fadeFalloff) {
-                		float dr = radius - (radius*fadeFalloff); // falloff to radius length
-                		float d2 = dist-(radius*fadeFalloff); // dist minus falloff
+                	float intensity = 0.1f;
+                	if (dist > radiusFalloff) {
+                		float dr = radius - radiusFalloff; // falloff to radius length
+                		float d2 = dist - radiusFalloff; // dist minus falloff
                 		d2 = d2/dr; // dist percentage of falloff length
                 		intensity = 1-d2; // fade out more the farther away it is
                 	}
 
-                	if (dragged)
-                		intensity = intensity/10; // magical divide it by 10 to reduce its intensity when mouse is dragged
+                	//if (dragged)
+                	//	intensity = intensity*0.1f; // magical divide it by 10 to reduce its intensity when mouse is dragged
 
                 	if (erase) {
                         switch (texIndex) {
@@ -897,7 +899,7 @@ public class TerrainEditorController {
      */
     protected void manipulatePixel(Image image, int x, int y, ColorRGBA color, boolean write){
         ByteBuffer buf = image.getData(0);
-        buf.rewind();// needed? probably not
+        //buf.rewind();// needed? probably not
         int width = image.getWidth();
 
         if ((y * width + x) * 4 >= buf.capacity())
@@ -941,8 +943,26 @@ public class TerrainEditorController {
 
     /**
      * How many textures are currently being used.
+     * Blocking call on GL thread
      */
     protected int getNumUsedTextures() {
+        try {
+            Integer count =
+              SceneApplication.getApplication().enqueue(new Callable<Integer>() {
+                public Integer call() throws Exception {
+                    return doGetNumUsedTextures();
+                }
+            }).get();
+            return count;
+        } catch (InterruptedException ex) {
+            Exceptions.printStackTrace(ex);
+        } catch (ExecutionException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        return -1;
+    }
+
+    private int doGetNumUsedTextures() {
         Terrain terrain = (Terrain) getTerrain(null);
         if (terrain == null)
             return 0;
@@ -989,12 +1009,12 @@ public class TerrainEditorController {
         float texCoordSize = 1/terrain.getTextureCoordinateScale();
 
         if (enabled) {
-            for (int i=0; i<getNumUsedTextures(); i++) {
+            for (int i=0; i<doGetNumUsedTextures(); i++) {
                 float scale = 1f/(float)(texCoordSize/doGetTextureScale(i));
                 doSetTextureScale(i, scale);
             }
         } else {
-            for (int i=0; i<getNumUsedTextures(); i++) {
+            for (int i=0; i<doGetNumUsedTextures(); i++) {
                 float scale = (float)(texCoordSize*doGetTextureScale(i));
                 doSetTextureScale(i, scale);
             }

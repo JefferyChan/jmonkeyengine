@@ -31,7 +31,6 @@
  */
 package com.jme3.gde.terraineditor;
 
-import com.jme3.asset.AssetManager;
 import com.jme3.gde.core.assets.AssetDataObject;
 import com.jme3.gde.core.assets.ProjectAssetManager;
 import com.jme3.gde.core.scene.PreviewRequest;
@@ -50,13 +49,13 @@ import com.jme3.terrain.ProgressMonitor;
 import com.jme3.terrain.Terrain;
 import com.jme3.terrain.heightmap.AbstractHeightMap;
 import com.jme3.texture.Texture;
-import com.jme3.util.SkyFactory;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Vector;
 import java.util.logging.Logger;
 import javax.swing.AbstractCellEditor;
 import javax.swing.DefaultListSelectionModel;
@@ -765,7 +764,6 @@ public final class TerrainEditorTopComponent extends TopComponent implements Sce
     public void generateSkybox(WizardDescriptor wiz) {
 
         Spatial sky = null;
-        AssetManager assetManager = SceneApplication.getApplication().getAssetManager();
         final Spatial node = selectedSpat.getLookup().lookup(Spatial.class);
 
         if ((Boolean)wiz.getProperty("multipleTextures")) {
@@ -955,9 +953,6 @@ public final class TerrainEditorTopComponent extends TopComponent implements Sce
             toolController.setHeightToolRadius(radiusSlider.getValue());
             toolController.setHeightToolHeight(heightSlider.getValue()); // should always be values upto and over 100, because it will be divided by 100
 
-            // update texture counts
-            currentTextureCount = editorController.getNumUsedTextures();
-
         }
     }
 
@@ -1122,7 +1117,7 @@ public final class TerrainEditorTopComponent extends TopComponent implements Sce
         protected void updateScales() {
             for (int i=0; i<editorController.getNumUsedTextures(); i++) {
                 float scale = editorController.getTextureScale(i);
-                setValueAt(""+scale, i, 3);
+                setValueAt(""+scale, i, 3); // don't call this one's setValueAt, it will re-set the scales
             }
         }
 
