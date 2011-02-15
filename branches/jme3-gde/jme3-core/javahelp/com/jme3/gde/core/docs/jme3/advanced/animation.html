@@ -80,17 +80,85 @@ To reset a controller, call <code>control.clearChannels();</code>
 
 </div>
 <!-- SECTION "Channels" [1639-2257] -->
-<h2><a name="setting_animation_properties" id="setting_animation_properties">Setting Animation Properties</a></h2>
+<h2><a name="animation_control_properties" id="animation_control_properties">Animation Control Properties</a></h2>
 <div class="level2">
 
 <p>
 
-The following properties are set per channel.
+The following information is available for an AnimControl.
 
 </p>
 <table class="inline">
 	<tr class="row0">
-		<th class="col0">Channel Property</th><th class="col1">Usage</th>
+		<th class="col0">AnimControl Property</th><th class="col1">Usage</th>
+	</tr>
+	<tr class="row1">
+		<td class="col0">createChannel()</td><td class="col1">Returns a new channel, controlling all bones by default.</td>
+	</tr>
+	<tr class="row2">
+		<td class="col0">getNumChannels()</td><td class="col1">The number of channels registered to this Control.</td>
+	</tr>
+	<tr class="row3">
+		<td class="col0">getChannel(0)</td><td class="col1">Gets individual channels by index number. At most <code>getNumChannels()</code>.</td>
+	</tr>
+	<tr class="row4">
+		<td class="col0">clearChannels()</td><td class="col1">Clear all channels in this control.</td>
+	</tr>
+	<tr class="row5">
+		<td class="col0">addListener(animEventListener) <br/>
+ removeListener(animEventListener) <br/>
+ clearListeners() </td><td class="col1">Adds or removes listeners to receive animation related events.</td>
+	</tr>
+</table>
+<table class="inline">
+	<tr class="row0">
+		<th class="col0">AnimControl Property</th><th class="col1">Usage</th>
+	</tr>
+	<tr class="row1">
+		<td class="col0">setAnimations(aniHashMap)</td><td class="col1">Sets the animations that this AnimControl is capable of playing. The animations must be compatible with the skeleton given in the constructor.</td>
+	</tr>
+	<tr class="row2">
+		<td class="col0">addAnim(boneAnim) <br/>
+ removeAnim(boneAnim)</td><td class="col1">Adds or removes an animation from this Control.</td>
+	</tr>
+	<tr class="row3">
+		<td class="col0">getAnimationNames()</td><td class="col1">A String Collection of names of all animations that this Control can play for this model.</td>
+	</tr>
+	<tr class="row4">
+		<td class="col0">getAnim(“anim”)</td><td class="col1">Retrieve an animation from the list of animations.</td>
+	</tr>
+	<tr class="row5">
+		<td class="col0">getAnimationLength(“anim”)</td><td class="col1">Returns the length of the given named animation in seconds</td>
+	</tr>
+</table>
+<table class="inline">
+	<tr class="row0">
+		<th class="col0">AnimControl Property</th><th class="col1">Usage</th>
+	</tr>
+	<tr class="row1">
+		<td class="col0">getSkeleton()</td><td class="col1">The Skeleton object controlled by this Control.</td>
+	</tr>
+	<tr class="row2">
+		<td class="col0">getTargets()</td><td class="col1">The Skin objects controlled by this Control, as Mesh array.</td>
+	</tr>
+	<tr class="row3">
+		<td class="col0">getAttachmentsNode(“bone”)</td><td class="col1">Returns the attachment node of a bone. Attach models and effects to this node to make them follow this bone&#039;s motions.</td>
+	</tr>
+</table>
+
+</div>
+<!-- SECTION "Animation Control Properties" [2258-3710] -->
+<h2><a name="animation_channel_properties" id="animation_channel_properties">Animation Channel Properties</a></h2>
+<div class="level2">
+
+<p>
+
+The following properties are set per AnimChannel.
+
+</p>
+<table class="inline">
+	<tr class="row0">
+		<th class="col0">AnimChannel Property</th><th class="col1">Usage</th>
 	</tr>
 	<tr class="row1">
 		<td class="col0">setLoopMode(LoopMode.Loop); </td><td class="col1"> From now on, the animation on this channel will repeat from the beginning when it ends. </td>
@@ -116,7 +184,7 @@ The following information is available for a channel.
 </p>
 <table class="inline">
 	<tr class="row0">
-		<th class="col0">Channel property</th><th class="col1">Usage</th>
+		<th class="col0">AnimChannel Property</th><th class="col1">Usage</th>
 	</tr>
 	<tr class="row1">
 		<td class="col0">getAnimationName()</td><td class="col1">The name of the animation playing on this channel. Returns <code>null</code> when no animation is playing.</td>
@@ -130,42 +198,45 @@ The following information is available for a channel.
 	<tr class="row4">
 		<td class="col0">getTime()</td><td class="col1">How long the animation on this channel has been playing. It returns <code>0f</code> if the channel has not started playing yet, or a value up to getAnimMaxTime().</td>
 	</tr>
+	<tr class="row5">
+		<td class="col0">getControl()</td><td class="col1">The AnimControl that belongs to this AnimChannel.</td>
+	</tr>
 </table>
 
 <p>
 
-The following information is available for a controller.
+Use the following methods to add or remove individual bones to an AnimChannel. This is useful when you play two animations in parallel on two channels, and each controls a subset of the bones (e.g. one the arms, and the other the legs).
 
 </p>
 <table class="inline">
 	<tr class="row0">
-		<th class="col0">Method</th><th class="col1">Usage</th>
+		<th class="col0">AnimChannel Methods</th><th class="col1">Usage</th>
 	</tr>
 	<tr class="row1">
-		<td class="col0">playerControl.getAnimationNames()</td><td class="col1">A String Collection of names of all animations that this Controller can play for this model.</td>
+		<td class="col0">addAllBones()</td><td class="col1">Add all the bones of the model&#039;s skeleton to be influenced by this animation channel. (default)</td>
 	</tr>
 	<tr class="row2">
-		<td class="col0">playerControl.getNumChannels()</td><td class="col1">The number of channels registered to this Controller.</td>
+		<td class="col0">addBone(“bone1”) <br/>
+ addBone(bone1)</td><td class="col1">Add a single bone to be influenced by this animation channel.</td>
 	</tr>
 	<tr class="row3">
-		<td class="col0">playerControl.getChannel(0)</td><td class="col1">Gets individual channels by index number. At most <code>getNumChannels()</code>.</td>
+		<td class="col0">addToRootBone(“bone1”) <br/>
+ addToRootBone(bone1) </td><td class="col1">Add a series of bones to be influenced by this animation channel: Add all bones, starting from the given bone, to the root bone.</td>
 	</tr>
 	<tr class="row4">
-		<td class="col0">playerControl.getSkeleton()</td><td class="col1">The Skeleton object controlled by this Controller.</td>
-	</tr>
-	<tr class="row5">
-		<td class="col0">playerControl.getTargets()</td><td class="col1">The Skin objects controlled by this Controller, as Mesh array.</td>
+		<td class="col0">addFromRootBone(“bone1”) <br/>
+ addFromRootBone(bone1) </td><td class="col1">Add a series of bones to be influenced by this animation channel: Add all bones, starting from the given root bone, going towards the children bones.</td>
 	</tr>
 </table>
 
 </div>
-<!-- SECTION "Setting Animation Properties" [2258-4155] -->
+<!-- SECTION "Animation Channel Properties" [3711-5981] -->
 <h2><a name="playing_animations" id="playing_animations">Playing Animations</a></h2>
 <div class="level2">
 
 <p>
 
-Animations are played by channel.
+Animations are played by channel. <strong>Note:</strong> Whether the animation channel plays continuously or only once, depends on the Loop properties you have set.
 
 </p>
 <table class="inline">
@@ -180,15 +251,11 @@ Animations are played by channel.
 
 <p>
 
-<strong>Note:</strong> Whether the animation channel plays continuously or only once, depends on the Loop properties you have set. 
-</p>
-
-<p>
 <strong>Tip:</strong> Use the AnimEventLister below to react at the end or start of an animation cycle.
 </p>
 
 </div>
-<!-- SECTION "Playing Animations" [4156-4762] -->
+<!-- SECTION "Playing Animations" [5982-6586] -->
 <h3><a name="usage_example" id="usage_example">Usage Example</a></h3>
 <div class="level3">
 
@@ -214,7 +281,7 @@ In this short example, we define the space key to trigger playing the “Walk”
     <span class="br0">&#125;</span>
   <span class="br0">&#125;</span>;</pre>
 </div>
-<!-- SECTION "Usage Example" [4763-5452] -->
+<!-- SECTION "Usage Example" [6587-7276] -->
 <h2><a name="animation_event_listener" id="animation_event_listener">Animation Event Listener</a></h2>
 <div class="level2">
 
@@ -229,7 +296,7 @@ This optional Listener enables you to respond to animation start and end events,
 </p>
 
 </div>
-<!-- SECTION "Animation Event Listener" [5453-5856] -->
+<!-- SECTION "Animation Event Listener" [7277-7680] -->
 <h3><a name="responding_to_animation_end" id="responding_to_animation_end">Responding to Animation End</a></h3>
 <div class="level3">
 
@@ -257,7 +324,7 @@ You have access to the following objects:
     <span class="br0">&#125;</span>
   <span class="br0">&#125;</span></pre>
 </div>
-<!-- SECTION "Responding to Animation End" [5857-6649] -->
+<!-- SECTION "Responding to Animation End" [7681-8473] -->
 <h3><a name="responding_to_animation_start" id="responding_to_animation_start">Responding to Animation Start</a></h3>
 <div class="level3">
 
@@ -285,5 +352,5 @@ You have access to the following objects
     <span class="br0">&#125;</span>
   <span class="br0">&#125;</span></pre>
 </div>
-<!-- SECTION "Responding to Animation Start" [6650-] -->
+<!-- SECTION "Responding to Animation Start" [8474-] -->
 <p><em><a href="http://jmonkeyengine.org/wiki/doku.php/jme3:advanced:animation?do=export_xhtmlbody">view online version</a></em></p>

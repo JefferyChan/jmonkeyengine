@@ -14,15 +14,15 @@ In other code samples we have seen how to create collidable landscapes and walk 
 </p>
 
 <p>
-Many games however require a third-person perspective of the character. If you load a character model, create a PhysicsNode for it, and use forces to push it around, you may not get the desired effect: Pushed PhysicsNode can easily fall over, and that is not what you expect of a walking character.
+Many games however require a third-person perspective of the character. If you load a character model, create a PhysicsControl for it, and use forces to push it around, you may not get the desired effect: Phyical objects often fall over when pushed, and that is not what you expect of a walking character.
 </p>
 
 <p>
-This is why jME3 offers a special PhysicsCharacterNode to implement walking characters.
+This is why jME3 offers a special CharacterControl to implement walking characters.
 </p>
 
 </div>
-<!-- SECTION "Walking Character" [1-613] -->
+<!-- SECTION "Walking Character" [1-616] -->
 <h2><a name="sample_code" id="sample_code">Sample Code</a></h2>
 <div class="level2">
 
@@ -31,6 +31,8 @@ This is why jME3 offers a special PhysicsCharacterNode to implement walking char
 The full code sample can be found here:
 </p>
 <ul>
+<li class="level1"><div class="li"> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://code.google.com/p/jmonkeyengine/source/browse/branches/jme3/src/test/jme3test/bullet/TestWalkingChar.java"><param name="text" value="<html><u>TestPhysicsCharacter.java</u></html>"><param name="textColor" value="blue"></object> (third-person view)</div>
+</li>
 <li class="level1"><div class="li"> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://code.google.com/p/jmonkeyengine/source/browse/branches/jme3/src/test/jme3test/bullet/TestWalkingChar.java"><param name="text" value="<html><u>TestWalkingChar.java</u></html>"><param name="textColor" value="blue"></object> (third-person view)</div>
 </li>
 <li class="level1"><div class="li"> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://code.google.com/p/jmonkeyengine/source/browse/branches/jme3/src/test/jme3test/bullet/TestQ3.java"><param name="text" value="<html><u>TestQ3.java</u></html>"><param name="textColor" value="blue"></object> (first-person view)</div>
@@ -38,13 +40,13 @@ The full code sample can be found here:
 </ul>
 
 </div>
-<!-- SECTION "Sample Code" [614-985] -->
+<!-- SECTION "Sample Code" [617-1155] -->
 <h2><a name="overview_of_this_physics_application" id="overview_of_this_physics_application">Overview of this Physics Application</a></h2>
 <div class="level2">
 <ol>
 <li class="level1"><div class="li"> Create a SimpleApplication with a <a href="/com/jme3/gde/core/docs/jme3/advanced/physics.html" class="wikilink1" title="jme3:advanced:physics">BulletAppState</a> </div>
 <ul>
-<li class="level2"><div class="li"> This gives us a PhysicsSpace for PhysicsNodes</div>
+<li class="level2"><div class="li"> This gives us a Physics Space</div>
 </li>
 </ul>
 </li>
@@ -54,107 +56,85 @@ The full code sample can be found here:
 </li>
 <li class="level1"><div class="li"> Set up animation channel and controller</div>
 </li>
-<li class="level1"><div class="li"> Create a PhysicsCharacterNode for the model</div>
+<li class="level1"><div class="li"> Add a CharacterControl to the model</div>
 </li>
 </ol>
 
 </div>
-<!-- SECTION "Overview of this Physics Application" [986-1356] -->
+<!-- SECTION "Overview of this Physics Application" [1156-1502] -->
 <h2><a name="creating_the_character" id="creating_the_character">Creating the Character</a></h2>
 <div class="level2">
 <ol>
-<li class="level1"><div class="li"> We create a PhysicsCharacterNode with a CapsuleCollisionShape of the right size for the model.</div>
+<li class="level1"><div class="li"> Initialze physical character behaviour, including collision shape </div>
+<ol>
+<li class="level2"><div class="li"> Create CapsuleCollisionShape of the right size for the model.</div>
 <ul>
-<li class="level2"><div class="li"> A Capsule is a cylinder with rounded top and bottom: A good collision shape for a character that reduces the risk of getting stuck on obstacles.</div>
+<li class="level3"><div class="li"> A Capsule is a cylinder with rounded top and bottom: A good collision shape for a character since it reduces the risk of getting stuck on obstacles.</div>
 </li>
 </ul>
 </li>
-<li class="level1"><div class="li"> We load an animated model (“Models/Oto/Oto.mesh.xml”).</div>
-</li>
-<li class="level1"><div class="li"> We attach the model to the PhysicsCharacterNode.</div>
-</li>
-<li class="level1"><div class="li"> We add the PhysicsCharacterNode to the rootNode to make it appear in the scene.</div>
-</li>
-<li class="level1"><div class="li"> We add the PhysicsCharacterNode to the PhysicsSpace to make it physical.</div>
+<li class="level2"><div class="li"> Create a CharacterControl from the collision shape</div>
 </li>
 </ol>
-<pre class="code java">CapsuleCollisionShape capsule <span class="sy0">=</span> <span class="kw1">new</span> CapsuleCollisionShape<span class="br0">&#40;</span>1.5f, 2f<span class="br0">&#41;</span>;
-character <span class="sy0">=</span> <span class="kw1">new</span> PhysicsCharacterNode<span class="br0">&#40;</span>capsule, 0.01f<span class="br0">&#41;</span>;
-&nbsp;
+</li>
+<li class="level1"><div class="li"> Load the visible character model, and add the physical behaviour to it</div>
+<ol>
+<li class="level2"><div class="li"> Load an animated model (e.g. “Models/Oto/Oto.mesh.xml”).</div>
+</li>
+<li class="level2"><div class="li"> Add the CharacterControl to the character model.</div>
+</li>
+</ol>
+</li>
+<li class="level1"><div class="li"> Make character visible and physical</div>
+<ol>
+<li class="level2"><div class="li"> Attach the model to the rootNode to make it appear in the scene.</div>
+</li>
+<li class="level2"><div class="li"> Add the CharacterControl to the PhysicsSpace to make it physical.</div>
+</li>
+</ol>
+</li>
+</ol>
+<pre class="code java"><span class="co1">// initialze physical character behaviour, including collision shape</span>
+CapsuleCollisionShape capsule <span class="sy0">=</span> <span class="kw1">new</span> CapsuleCollisionShape<span class="br0">&#40;</span>3f, 4f<span class="br0">&#41;</span>;
+CharacterControl character <span class="sy0">=</span> <span class="kw1">new</span> CharacterControl<span class="br0">&#40;</span>capsule, 0.01f<span class="br0">&#41;</span>;
+<span class="co1">// load the visible character model and add the physical behaviour to it</span>
 Node model <span class="sy0">=</span> <span class="br0">&#40;</span>Node<span class="br0">&#41;</span> assetManager.<span class="me1">loadModel</span><span class="br0">&#40;</span><span class="st0">&quot;Models/Oto/Oto.mesh.xml&quot;</span><span class="br0">&#41;</span>;
-character.<span class="me1">attachChild</span><span class="br0">&#40;</span>model<span class="br0">&#41;</span>;
-rootNode.<span class="me1">attachChild</span><span class="br0">&#40;</span>character<span class="br0">&#41;</span>;
-getPhysicsSpace<span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">add</span><span class="br0">&#40;</span>character<span class="br0">&#41;</span>;</pre>
+model.<span class="me1">addControl</span><span class="br0">&#40;</span>character<span class="br0">&#41;</span>;
+<span class="co1">// Make character visible and physical</span>
+rootNode.<span class="me1">attachChild</span><span class="br0">&#40;</span>model<span class="br0">&#41;</span>;      <span class="co1">// make it visible</span>
+getPhysicsSpace<span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">add</span><span class="br0">&#40;</span>character<span class="br0">&#41;</span>; <span class="co1">// make it physical</span></pre>
 </div>
-<!-- SECTION "Creating the Character" [1357-2229] -->
+<!-- SECTION "Creating the Character" [1503-2810] -->
 <h2><a name="setting_up_the_animation_controller" id="setting_up_the_animation_controller">Setting Up the Animation Controller</a></h2>
 <div class="level2">
+
+<p>
+
+We create two AninChannels, for example one for walking, one for shooting. The shootingChannel only controls one arm, while the walking channels controls the whole animation.
+</p>
 <pre class="code java">AnimControl animationControl <span class="sy0">=</span> model.<span class="me1">getControl</span><span class="br0">&#40;</span>AnimControl.<span class="kw1">class</span><span class="br0">&#41;</span>;
 animationControl.<span class="me1">addListener</span><span class="br0">&#40;</span><span class="kw1">this</span><span class="br0">&#41;</span>;
 &nbsp;
 AnimChannel animationChannel <span class="sy0">=</span> animationControl.<span class="me1">createChannel</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
-shootingChannel <span class="sy0">=</span> animationControl.<span class="me1">createChannel</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
+AnimChannel shootingChannel <span class="sy0">=</span> animationControl.<span class="me1">createChannel</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
 &nbsp;
 shootingChannel.<span class="me1">addBone</span><span class="br0">&#40;</span>animationControl.<span class="me1">getSkeleton</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">getBone</span><span class="br0">&#40;</span><span class="st0">&quot;uparm.right&quot;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
 shootingChannel.<span class="me1">addBone</span><span class="br0">&#40;</span>animationControl.<span class="me1">getSkeleton</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">getBone</span><span class="br0">&#40;</span><span class="st0">&quot;arm.right&quot;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
 shootingChannel.<span class="me1">addBone</span><span class="br0">&#40;</span>animationControl.<span class="me1">getSkeleton</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">getBone</span><span class="br0">&#40;</span><span class="st0">&quot;hand.right&quot;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;</pre>
 <p>
-We create an extra shooting channel, so the character can lift an arm to shoot and walk at the same time.
+The extra shooting channel exists so the character can lift an arm to shoot and walk at the same time.
 </p>
 
 </div>
-<!-- SECTION "Setting Up the Animation Controller" [2230-2866] -->
+<!-- SECTION "Setting Up the Animation Controller" [2811-3632] -->
 <h2><a name="walking" id="walking">Walking</a></h2>
 <div class="level2">
-<pre class="code java">    @Override
-    <span class="kw1">public</span> <span class="kw4">void</span> simpleUpdate<span class="br0">&#40;</span><span class="kw4">float</span> tpf<span class="br0">&#41;</span> <span class="br0">&#123;</span>
-&nbsp;
-        rootNode.<span class="me1">updateLogicalState</span><span class="br0">&#40;</span>tpf<span class="br0">&#41;</span>;
-        rootNode.<span class="me1">updateGeometricState</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
-&nbsp;
-        Vector3f camDir <span class="sy0">=</span> cam.<span class="me1">getDirection</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">clone</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">multLocal</span><span class="br0">&#40;</span>0.2f<span class="br0">&#41;</span>;
-        Vector3f camLeft <span class="sy0">=</span> cam.<span class="me1">getLeft</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">clone</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">multLocal</span><span class="br0">&#40;</span>0.1f<span class="br0">&#41;</span>;
-&nbsp;
-        camDir.<span class="me1">y</span> <span class="sy0">=</span> 0;
-        camLeft.<span class="me1">y</span> <span class="sy0">=</span> 0;
-        walkDirection.<span class="me1">set</span><span class="br0">&#40;</span>0, 0, 0<span class="br0">&#41;</span>;
-        modelDirection.<span class="me1">set</span><span class="br0">&#40;</span>0, 0, <span class="nu0">2</span><span class="br0">&#41;</span>;
-&nbsp;
-        <span class="kw1">if</span> <span class="br0">&#40;</span>left<span class="br0">&#41;</span>   walkDirection.<span class="me1">addLocal</span><span class="br0">&#40;</span>camLeft<span class="br0">&#41;</span>;
-        <span class="kw1">if</span> <span class="br0">&#40;</span>right<span class="br0">&#41;</span>  walkDirection.<span class="me1">addLocal</span><span class="br0">&#40;</span>camLeft.<span class="me1">negate</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
-        <span class="kw1">if</span> <span class="br0">&#40;</span>up<span class="br0">&#41;</span>     walkDirection.<span class="me1">addLocal</span><span class="br0">&#40;</span>camDir<span class="br0">&#41;</span>;
-        <span class="kw1">if</span> <span class="br0">&#40;</span>down<span class="br0">&#41;</span>   walkDirection.<span class="me1">addLocal</span><span class="br0">&#40;</span>camDir.<span class="me1">negate</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
-&nbsp;
-        <span class="kw1">if</span> <span class="br0">&#40;</span>walkDirection.<span class="me1">length</span><span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="sy0">==</span> 0<span class="br0">&#41;</span> <span class="br0">&#123;</span>
-            <span class="kw1">if</span> <span class="br0">&#40;</span><span class="sy0">!</span>animationChannel.<span class="me1">getAnimationName</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">equals</span><span class="br0">&#40;</span><span class="st0">&quot;stand&quot;</span><span class="br0">&#41;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-                animationChannel.<span class="me1">setAnim</span><span class="br0">&#40;</span><span class="st0">&quot;stand&quot;</span>, 1f<span class="br0">&#41;</span>;
-            <span class="br0">&#125;</span>
-        <span class="br0">&#125;</span> <span class="kw1">else</span> <span class="br0">&#123;</span>
-            modelRotation.<span class="me1">lookAt</span><span class="br0">&#40;</span>walkDirection, Vector3f.<span class="me1">UNIT_Y</span><span class="br0">&#41;</span>;
-            <span class="kw1">if</span> <span class="br0">&#40;</span><span class="sy0">!</span>character.<span class="me1">onGround</span><span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="sy0">&amp;&amp;</span> <span class="sy0">!</span>animationChannel.<span class="me1">getAnimationName</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">equals</span><span class="br0">&#40;</span><span class="st0">&quot;stand&quot;</span><span class="br0">&#41;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-                animationChannel.<span class="me1">setAnim</span><span class="br0">&#40;</span><span class="st0">&quot;stand&quot;</span><span class="br0">&#41;</span>;
-            <span class="br0">&#125;</span>
-            <span class="kw1">if</span> <span class="br0">&#40;</span>character.<span class="me1">onGround</span><span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="sy0">&amp;&amp;</span> <span class="sy0">!</span>animationChannel.<span class="me1">getAnimationName</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">equals</span><span class="br0">&#40;</span><span class="st0">&quot;Walk&quot;</span><span class="br0">&#41;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-                animationChannel.<span class="me1">setAnim</span><span class="br0">&#40;</span><span class="st0">&quot;Walk&quot;</span>, 0.7f<span class="br0">&#41;</span>;
-            <span class="br0">&#125;</span>
-        <span class="br0">&#125;</span>
-&nbsp;
-        model.<span class="me1">setLocalRotation</span><span class="br0">&#40;</span>modelRotation<span class="br0">&#41;</span>;
-        modelRotation.<span class="me1">multLocal</span><span class="br0">&#40;</span>modelDirection<span class="br0">&#41;</span>;
-        modelRight.<span class="me1">set</span><span class="br0">&#40;</span>modelDirection<span class="br0">&#41;</span>;
-        ROTATE_LEFT.<span class="me1">multLocal</span><span class="br0">&#40;</span>modelRight<span class="br0">&#41;</span>;
-        character.<span class="me1">setWalkDirection</span><span class="br0">&#40;</span>walkDirection<span class="br0">&#41;</span>;
-    <span class="br0">&#125;</span></pre><pre class="code java">    <span class="kw1">public</span> <span class="kw4">void</span> onAction<span class="br0">&#40;</span><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Astring+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object> binding, <span class="kw4">boolean</span> isPressed, <span class="kw4">float</span> tpf<span class="br0">&#41;</span> <span class="br0">&#123;</span>
-        <span class="kw1">if</span> <span class="br0">&#40;</span>binding.<span class="me1">equals</span><span class="br0">&#40;</span><span class="st0">&quot;CharLeft&quot;</span><span class="br0">&#41;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-            left  <span class="sy0">=</span> isPressed;
-        <span class="br0">&#125;</span> <span class="kw1">else</span> <span class="kw1">if</span> <span class="br0">&#40;</span>binding.<span class="me1">equals</span><span class="br0">&#40;</span><span class="st0">&quot;CharRight&quot;</span><span class="br0">&#41;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-            right <span class="sy0">=</span> isPressed;
-        <span class="br0">&#125;</span> <span class="kw1">else</span> <span class="kw1">if</span> <span class="br0">&#40;</span>binding.<span class="me1">equals</span><span class="br0">&#40;</span><span class="st0">&quot;CharUp&quot;</span><span class="br0">&#41;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-            up    <span class="sy0">=</span> isPressed;
-        <span class="br0">&#125;</span> <span class="kw1">else</span> <span class="kw1">if</span> <span class="br0">&#40;</span>binding.<span class="me1">equals</span><span class="br0">&#40;</span><span class="st0">&quot;CharDown&quot;</span><span class="br0">&#41;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-            down  <span class="sy0">=</span> isPressed;
-        <span class="br0">&#125;</span>
-    <span class="br0">&#125;</span></pre>
+
+<p>
+Work in progress (this is being updated for the new physics and chase cam.)
+
+</p>
+
 </div>
-<!-- SECTION "Walking" [2867-] -->
+<!-- SECTION "Walking" [3633-] -->
 <p><em><a href="http://jmonkeyengine.org/wiki/doku.php/jme3:advanced:walking_character?do=export_xhtmlbody">view online version</a></em></p>

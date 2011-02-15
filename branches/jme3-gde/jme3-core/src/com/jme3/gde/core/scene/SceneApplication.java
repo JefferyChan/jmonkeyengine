@@ -219,25 +219,31 @@ public class SceneApplication extends Application implements LookupProvider, Loo
         if (speed == 0) {
             return;
         }
-        super.update();
-        float tpf = timer.getTimePerFrame();
-        camLight.setPosition(cam.getLocation());
-        secondCounter += tpf;
-        int fps = (int) timer.getFrameRate();
-        if (secondCounter >= 1.0f) {
-            fpsText.setText("Frames per second: " + fps);
-            secondCounter = 0.0f;
+        try {
+            super.update();
+            float tpf = timer.getTimePerFrame();
+            camLight.setPosition(cam.getLocation());
+            secondCounter += tpf;
+            int fps = (int) timer.getFrameRate();
+            if (secondCounter >= 1.0f) {
+                fpsText.setText("Frames per second: " + fps);
+                secondCounter = 0.0f;
+            }
+            getStateManager().update(tpf);
+            rootNode.updateLogicalState(tpf);
+            guiNode.updateLogicalState(tpf);
+            toolsNode.updateLogicalState(tpf);
+            rootNode.updateGeometricState();
+            guiNode.updateGeometricState();
+            toolsNode.updateGeometricState();
+            getStateManager().render(renderManager);
+            renderManager.render(tpf);
+            getStateManager().postRender();
+        } catch (Exception e) {
+            handleError(e.getMessage(), e);
+        } catch (Error e) {
+            handleError(e.getMessage(), e);
         }
-        getStateManager().update(tpf);
-        rootNode.updateLogicalState(tpf);
-        guiNode.updateLogicalState(tpf);
-        toolsNode.updateLogicalState(tpf);
-        rootNode.updateGeometricState();
-        guiNode.updateGeometricState();
-        toolsNode.updateGeometricState();
-        getStateManager().render(renderManager);
-        renderManager.render(tpf);
-        getStateManager().postRender();
     }
 
     @Override

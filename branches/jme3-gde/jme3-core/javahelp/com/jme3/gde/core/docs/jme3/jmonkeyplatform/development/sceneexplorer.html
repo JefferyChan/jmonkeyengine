@@ -28,7 +28,11 @@ You will have to create your own class that extends org.openide.nodes.Node and i
 <p>
 <br/>
 
-Theres also AbstractSceneExplorerNode which brings some other useful features you might want to include like automatic creation of properly threaded properties etc. JmeSpatial for example bases on it. A simple SceneExplorerNode example for an object extending Spatial would be JmeGeometry:
+Theres also AbstractSceneExplorerNode which brings some other useful features you might want to include like automatic creation of properly threaded properties etc. JmeSpatial for example bases on it. A simple SceneExplorerNode example for an object extending Spatial would be JmeGeometry (see below).
+</p>
+
+<p>
+The SceneExplorerNode can be used for Spatial and Control type objects.
 </p>
 <pre class="code java"><span class="kw1">package</span> <span class="co2">com.jme3.gde.core.sceneexplorer.nodes</span>;
 &nbsp;
@@ -102,5 +106,98 @@ Theres also AbstractSceneExplorerNode which brings some other useful features yo
     <span class="br0">&#125;</span>
 <span class="br0">&#125;</span></pre>
 </div>
-<!-- SECTION "Adding Node types to SceneExplorer" [33-] -->
+<!-- SECTION "Adding Node types to SceneExplorer" [33-3279] -->
+<h2><a name="adding_items_to_the_add_and_tools_menus" id="adding_items_to_the_add_and_tools_menus">Adding items to the add and tools menus</a></h2>
+<div class="level2">
+
+<p>
+For adding Spatials, Contols and for general tools theres premade abstract classes that you can use to extend the options. Undo/Redo is handled by the abstract class.
+</p>
+
+<p>
+To add a new Tool, use the AbstractToolAction:
+</p>
+<pre class="code java">@org.<span class="me1">openide</span>.<span class="me1">util</span>.<span class="me1">lookup</span>.<span class="me1">ServiceProvider</span><span class="br0">&#40;</span>service <span class="sy0">=</span> ToolAction.<span class="kw1">class</span><span class="br0">&#41;</span>
+<span class="kw1">public</span> <span class="kw1">class</span> GenerateTangentsTool <span class="kw1">extends</span> AbstractToolAction <span class="br0">&#123;</span>
+&nbsp;
+    <span class="kw1">public</span> GenerateTangentsTool<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+        name <span class="sy0">=</span> <span class="st0">&quot;Generate Tangents&quot;</span>;
+    <span class="br0">&#125;</span>
+&nbsp;
+    @Override
+    <span class="kw1">protected</span> <span class="kw4">boolean</span> doApplyTool<span class="br0">&#40;</span>AbstractSceneExplorerNode rootNode<span class="br0">&#41;</span> <span class="br0">&#123;</span>
+        Geometry geom <span class="sy0">=</span> rootNode.<span class="me1">getLookup</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">lookup</span><span class="br0">&#40;</span>Geometry.<span class="kw1">class</span><span class="br0">&#41;</span>;
+        Mesh mesh <span class="sy0">=</span> geom.<span class="me1">getMesh</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
+        <span class="kw1">if</span> <span class="br0">&#40;</span>mesh <span class="sy0">!=</span> <span class="kw2">null</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+            TangentBinormalGenerator.<span class="me1">generate</span><span class="br0">&#40;</span>mesh<span class="br0">&#41;</span>;
+        <span class="br0">&#125;</span>
+        <span class="kw1">return</span> <span class="kw2">true</span>;
+    <span class="br0">&#125;</span>
+&nbsp;
+    @Override
+    <span class="kw1">protected</span> <span class="kw4">void</span> doUndoTool<span class="br0">&#40;</span>AbstractSceneExplorerNode rootNode<span class="br0">&#41;</span> <span class="br0">&#123;</span>
+        Geometry geom <span class="sy0">=</span> rootNode.<span class="me1">getLookup</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">lookup</span><span class="br0">&#40;</span>Geometry.<span class="kw1">class</span><span class="br0">&#41;</span>;
+        Mesh mesh <span class="sy0">=</span> geom.<span class="me1">getMesh</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
+        <span class="kw1">if</span> <span class="br0">&#40;</span>mesh <span class="sy0">!=</span> <span class="kw2">null</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+            mesh.<span class="me1">clearBuffer</span><span class="br0">&#40;</span>Type.<span class="me1">Tangent</span><span class="br0">&#41;</span>;
+        <span class="br0">&#125;</span>
+    <span class="br0">&#125;</span>
+&nbsp;
+    <span class="kw1">public</span> Class<span class="sy0">&lt;?&gt;</span> getNodeClass<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+        <span class="kw1">return</span> JmeGeometry.<span class="kw1">class</span>;
+    <span class="br0">&#125;</span>
+&nbsp;
+<span class="br0">&#125;</span></pre>
+<p>
+For a new Spatial or Control, use AbstractNewSpatialAction
+</p>
+<pre class="code java">@org.<span class="me1">openide</span>.<span class="me1">util</span>.<span class="me1">lookup</span>.<span class="me1">ServiceProvider</span><span class="br0">&#40;</span>service <span class="sy0">=</span> NewSpatialAction.<span class="kw1">class</span><span class="br0">&#41;</span>
+<span class="kw1">public</span> <span class="kw1">class</span> NewSpecialSpatialAction <span class="kw1">extends</span> AbstractNewSpatialAction <span class="br0">&#123;</span>
+&nbsp;
+    <span class="kw1">public</span> NewSpecialSpatialAction<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+        name <span class="sy0">=</span> <span class="st0">&quot;Spatial&quot;</span>;
+    <span class="br0">&#125;</span>
+&nbsp;
+    @Override
+    <span class="kw1">protected</span> Spatial createSpatial<span class="br0">&#40;</span>Node parent<span class="br0">&#41;</span> <span class="br0">&#123;</span>
+        Spatial spatial<span class="sy0">=</span><span class="kw1">new</span> Node<span class="br0">&#40;</span><span class="br0">&#41;</span>;
+        <span class="kw1">return</span> spatial;
+    <span class="br0">&#125;</span>
+<span class="br0">&#125;</span></pre>
+<p>
+
+ 
+or AbstractNewControlAction:
+</p>
+<pre class="code java">@org.<span class="me1">openide</span>.<span class="me1">util</span>.<span class="me1">lookup</span>.<span class="me1">ServiceProvider</span><span class="br0">&#40;</span>service <span class="sy0">=</span> NewControlAction.<span class="kw1">class</span><span class="br0">&#41;</span>
+<span class="kw1">public</span> <span class="kw1">class</span> NewRigidBodyAction <span class="kw1">extends</span> AbstractNewControlAction <span class="br0">&#123;</span>
+&nbsp;
+    <span class="kw1">public</span> NewRigidBodyAction<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+        name <span class="sy0">=</span> <span class="st0">&quot;Static RigidBody&quot;</span>;
+    <span class="br0">&#125;</span>
+&nbsp;
+    @Override
+    <span class="kw1">protected</span> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Acontrol+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object> createControl<span class="br0">&#40;</span>Spatial spatial<span class="br0">&#41;</span> <span class="br0">&#123;</span>
+        RigidBodyControl control <span class="sy0">=</span> spatial.<span class="me1">getControl</span><span class="br0">&#40;</span>RigidBodyControl.<span class="kw1">class</span><span class="br0">&#41;</span>;
+        <span class="kw1">if</span> <span class="br0">&#40;</span>control <span class="sy0">!=</span> <span class="kw2">null</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+            spatial.<span class="me1">removeControl</span><span class="br0">&#40;</span>control<span class="br0">&#41;</span>;
+        <span class="br0">&#125;</span>
+        Node parent <span class="sy0">=</span> spatial.<span class="me1">getParent</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
+        spatial.<span class="me1">removeFromParent</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
+        control <span class="sy0">=</span> <span class="kw1">new</span> RigidBodyControl<span class="br0">&#40;</span>0<span class="br0">&#41;</span>;
+        <span class="kw1">if</span> <span class="br0">&#40;</span>parent <span class="sy0">!=</span> <span class="kw2">null</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+            parent.<span class="me1">attachChild</span><span class="br0">&#40;</span>spatial<span class="br0">&#41;</span>;
+        <span class="br0">&#125;</span>
+        <span class="kw1">return</span> control;
+    <span class="br0">&#125;</span>
+<span class="br0">&#125;</span></pre>
+<p>
+
+<p><div class="noteimportant">Note that the classes you create are singletons which are used across multiple nodes and you should not store any data in local variables!
+</div></p>
+
+</p>
+
+</div>
+<!-- SECTION "Adding items to the add and tools menus" [3280-] -->
 <p><em><a href="http://jmonkeyengine.org/wiki/doku.php/jme3:jmonkeyplatform:development:sceneexplorer?do=export_xhtmlbody">view online version</a></em></p>
