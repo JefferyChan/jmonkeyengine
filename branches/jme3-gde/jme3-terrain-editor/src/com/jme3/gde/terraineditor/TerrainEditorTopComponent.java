@@ -1300,7 +1300,7 @@ public final class TerrainEditorTopComponent extends TopComponent implements Sce
 
         @Override
         protected void setTextureInModel(int row, Texture tex) {
-            getTableModel().setTexture(row, tex);
+            getTableModel().setNormal(row, tex);
         }
 
         @Override

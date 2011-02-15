@@ -55,6 +55,7 @@ public class TextureBrowser extends javax.swing.JDialog {
         this.editor = editor;
         initComponents();
         loadAvailableTextures();
+        setLocationRelativeTo(null);
     }
 
     /** This method is called from within the constructor to
@@ -104,29 +105,27 @@ public class TextureBrowser extends javax.swing.JDialog {
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 231, Short.MAX_VALUE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 10, Short.MAX_VALUE)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(layout.createSequentialGroup()
+                        .add(17, 17, 17)
                         .add(cancelButton)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(okButton))
-                    .add(imagePreviewLabel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 93, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                    .add(layout.createSequentialGroup()
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(imagePreviewLabel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 177, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 278, Short.MAX_VALUE)
-                    .add(layout.createSequentialGroup()
-                        .add(imagePreviewLabel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 86, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                            .add(cancelButton)
-                            .add(okButton))))
-                .addContainerGap())
+                .add(imagePreviewLabel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 290, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(okButton)
+                    .add(cancelButton)))
+            .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 326, Short.MAX_VALUE)
         );
 
         pack();
