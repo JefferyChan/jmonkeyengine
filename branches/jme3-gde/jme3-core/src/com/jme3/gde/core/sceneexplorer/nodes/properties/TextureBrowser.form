@@ -26,7 +26,7 @@
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="1" attributes="0">
-              <EmptySpace pref="301" max="32767" attributes="0"/>
+              <EmptySpace pref="310" max="32767" attributes="0"/>
               <Component id="cancelButton" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="okButton" min="-2" max="-2" attributes="0"/>
@@ -74,16 +74,16 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" alignment="1" attributes="0">
-                  <Component id="jScrollPane1" pref="236" max="32767" attributes="0"/>
+              <Group type="102" alignment="0" attributes="0">
+                  <Component id="jScrollPane1" pref="240" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="imagePreviewLabel" pref="239" max="32767" attributes="0"/>
+                  <Component id="jScrollPane2" pref="244" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Component id="imagePreviewLabel" alignment="0" pref="299" max="32767" attributes="0"/>
+              <Component id="jScrollPane2" alignment="0" pref="299" max="32767" attributes="0"/>
               <Component id="jScrollPane1" alignment="1" pref="299" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
@@ -109,13 +109,19 @@
             </Component>
           </SubComponents>
         </Container>
-        <Component class="javax.swing.JLabel" name="imagePreviewLabel">
-          <Properties>
-            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="com/jme3/gde/core/sceneexplorer/nodes/properties/Bundle.properties" key="TextureBrowser.imagePreviewLabel.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
-            </Property>
-          </Properties>
-        </Component>
+        <Container class="javax.swing.JScrollPane" name="jScrollPane2">
+
+          <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
+          <SubComponents>
+            <Component class="javax.swing.JLabel" name="imagePreviewLabel">
+              <Properties>
+                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="com/jme3/gde/core/sceneexplorer/nodes/properties/Bundle.properties" key="TextureBrowser.imagePreviewLabel.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+                </Property>
+              </Properties>
+            </Component>
+          </SubComponents>
+        </Container>
       </SubComponents>
     </Container>
   </SubComponents>
