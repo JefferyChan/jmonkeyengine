@@ -67,7 +67,7 @@ public class UpdateHint extends AbstractHint {
     //Message that the user sees in the left sidebar:
     @Override
     public String getDisplayName() {
-        return "Updating is not needed, if you feel it is check your update order!";
+        return "Updating is not needed in jME3, if you need to call this check your update order!";
     }
 
     //Name of the hint in the Options window:
@@ -79,6 +79,6 @@ public class UpdateHint extends AbstractHint {
     //Description of the hint in the Options window:
     @Override
     public String getDescription() {
-        return "Update states/bound check";
+        return "Checks for calls to updateGeometricState(), updateLogicalState() and updateModelBound().";
     }
 }
