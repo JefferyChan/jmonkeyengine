@@ -54,6 +54,7 @@ import com.jme3.texture.Texture;
 import com.jme3.texture.Texture.WrapMode;
 import com.jme3.texture.Texture2D;
 import com.jme3.util.BufferUtils;
+import com.jme3.util.SkyFactory;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -669,6 +670,86 @@ public class TerrainEditorController {
         return terrain;
     }
 
+    /**
+     * Create a skybox with 6 textures.
+     * Blocking call.
+     */
+    protected Spatial createSky(final Node parent,
+                                final Texture west,
+                                final Texture east,
+                                final Texture north,
+                                final Texture south,
+                                final Texture top,
+                                final Texture bottom,
+                                final Vector3f normalScale)
+    {
+        try {
+            Spatial sky =
+            SceneApplication.getApplication().enqueue(new Callable<Spatial>() {
+                public Spatial call() throws Exception {
+                    return doCreateSky(parent, west, east, north, south, top, bottom, normalScale);
+                }
+            }).get();
+            return sky;
+        } catch (InterruptedException ex) {
+            Exceptions.printStackTrace(ex);
+        } catch (ExecutionException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        return null; // if failed
+    }
+
+    private Spatial doCreateSky(Node parent,
+                                Texture west,
+                                Texture east,
+                                Texture north,
+                                Texture south,
+                                Texture top,
+                                Texture bottom,
+                                Vector3f normalScale)
+    {
+        AssetManager manager = SceneApplication.getApplication().getAssetManager();
+        Spatial sky = SkyFactory.createSky(manager, west, east, north, south, top, bottom, normalScale);
+        parent.attachChild(sky);
+        return sky;
+    }
+
+    /**
+     * Create a skybox with a single texture.
+     * Blocking call.
+     */
+    protected Spatial createSky(final Node parent,
+                                final Texture texture,
+                                final boolean useSpheremap,
+                                final Vector3f normalScale)
+    {
+        try {
+            Spatial sky =
+            SceneApplication.getApplication().enqueue(new Callable<Spatial>() {
+                public Spatial call() throws Exception {
+                    return doCreateSky(parent, texture, useSpheremap, normalScale);
+                }
+            }).get();
+            return sky;
+        } catch (InterruptedException ex) {
+            Exceptions.printStackTrace(ex);
+        } catch (ExecutionException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        return null; // if failed
+    }
+
+    private Spatial doCreateSky(Node parent,
+                                Texture texture,
+                                boolean useSpheremap,
+                                Vector3f normalScale)
+    {
+        AssetManager manager = SceneApplication.getApplication().getAssetManager();
+        Spatial sky = SkyFactory.createSky(manager, texture, normalScale, useSpheremap);
+        parent.attachChild(sky);
+        return sky;
+    }
+
     public boolean hasTextureAt(final int i) {
         try {
             Boolean result =
@@ -919,5 +1000,7 @@ public class TerrainEditorController {
             }
         }
     }
+
+
 
 }

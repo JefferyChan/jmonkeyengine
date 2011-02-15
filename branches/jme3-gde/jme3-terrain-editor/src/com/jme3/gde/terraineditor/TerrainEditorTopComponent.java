@@ -41,8 +41,8 @@ import com.jme3.gde.core.scene.SceneRequest;
 import com.jme3.gde.core.sceneexplorer.nodes.JmeNode;
 import com.jme3.gde.core.sceneexplorer.nodes.JmeSpatial;
 import com.jme3.gde.core.sceneexplorer.nodes.NodeUtility;
-import com.jme3.gde.core.sceneexplorer.nodes.properties.TextureBrowser;
 import com.jme3.gde.core.sceneexplorer.nodes.properties.TexturePropertyEditor;
+import com.jme3.gde.terraineditor.sky.SkyboxWizardAction;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
@@ -50,6 +50,7 @@ import com.jme3.terrain.ProgressMonitor;
 import com.jme3.terrain.Terrain;
 import com.jme3.terrain.heightmap.AbstractHeightMap;
 import com.jme3.texture.Texture;
+import com.jme3.util.SkyFactory;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -62,7 +63,6 @@ import javax.swing.DefaultListSelectionModel;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
@@ -110,6 +110,8 @@ public final class TerrainEditorTopComponent extends TopComponent implements Sce
     private SceneRequest currentRequest;
     private int currentTextureCount;
     private boolean alreadyChoosing = false; // used for texture table selection
+    private CreateTerrainWizardAction terrainWizard;
+    private SkyboxWizardAction skyboxWizard;
 
     public enum TerrainEditButton {none, raiseTerrain, lowerTerrain, smoothTerrain, levelTerrain, paintTerrain, eraseTerrain};
 
@@ -212,6 +214,7 @@ public final class TerrainEditorTopComponent extends TopComponent implements Sce
         triPlanarCheckBox = new javax.swing.JCheckBox();
         terrainOpsPanel = new javax.swing.JPanel();
         genEntropiesButton = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
         jToolBar1 = new javax.swing.JToolBar();
         createTerrainButton = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JToolBar.Separator();
@@ -393,19 +396,30 @@ public final class TerrainEditorTopComponent extends TopComponent implements Sce
             }
         });
 
+        org.openide.awt.Mnemonics.setLocalizedText(jButton1, org.openide.util.NbBundle.getMessage(TerrainEditorTopComponent.class, "TerrainEditorTopComponent.jButton1.text")); // NOI18N
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout terrainOpsPanelLayout = new javax.swing.GroupLayout(terrainOpsPanel);
         terrainOpsPanel.setLayout(terrainOpsPanelLayout);
         terrainOpsPanelLayout.setHorizontalGroup(
             terrainOpsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(terrainOpsPanelLayout.createSequentialGroup()
-                .addComponent(genEntropiesButton)
+                .addGroup(terrainOpsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(genEntropiesButton)
+                    .addComponent(jButton1))
                 .addContainerGap(31, Short.MAX_VALUE))
         );
         terrainOpsPanelLayout.setVerticalGroup(
             terrainOpsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(terrainOpsPanelLayout.createSequentialGroup()
                 .addComponent(genEntropiesButton)
-                .addContainerGap(108, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton1)
+                .addContainerGap(79, Short.MAX_VALUE))
         );
 
         jToolBar1.setFloatable(false);
@@ -530,7 +544,7 @@ public final class TerrainEditorTopComponent extends TopComponent implements Sce
     }// </editor-fold>//GEN-END:initComponents
 
     private void createTerrainButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createTerrainButtonActionPerformed
-        addSpatial("Terrain", Vector3f.ZERO);
+        addSpatial("Terrain");
     }//GEN-LAST:event_createTerrainButtonActionPerformed
 
     private void raiseTerrainButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_raiseTerrainButtonActionPerformed
@@ -627,6 +641,10 @@ public final class TerrainEditorTopComponent extends TopComponent implements Sce
             setHintText("Make sure your scale is a power of 2, (1/2^n), when in tri-planar mode");
     }//GEN-LAST:event_triPlanarCheckBoxActionPerformed
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        addSpatial("Skybox");
+    }//GEN-LAST:event_jButton1ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addTextureButton;
     private javax.swing.JButton createTerrainButton;
@@ -636,6 +654,7 @@ public final class TerrainEditorTopComponent extends TopComponent implements Sce
     private javax.swing.JSlider heightSlider;
     private javax.swing.JPanel hintPanel;
     private javax.swing.JTextArea hintTextArea;
+    private javax.swing.JButton jButton1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
@@ -675,11 +694,11 @@ public final class TerrainEditorTopComponent extends TopComponent implements Sce
 
     private JmeSpatial selectedSpat;
 
-    public void addSpatial(final String name, final Vector3f point) {
+    public void addSpatial(final String name) {
         if (selectedSpat == null) {
             
             Confirmation msg = new NotifyDescriptor.Confirmation(
-                            "You must select a Node to add the terrain to in the Scene Explorer window",
+                            "You must select a Node to add the "+name+" to in the Scene Explorer window",
                             NotifyDescriptor.OK_CANCEL_OPTION,
                             NotifyDescriptor.ERROR_MESSAGE);
             DialogDisplayer.getDefault().notify(msg);
@@ -688,14 +707,14 @@ public final class TerrainEditorTopComponent extends TopComponent implements Sce
         
         final Spatial node = selectedSpat.getLookup().lookup(Spatial.class);
         if (node != null) {
-
-            //setNeedsSave(true);
-
             if ("Terrain".equals(name)) {
-                CreateTerrainWizardAction wiz = new CreateTerrainWizardAction(this);
-                wiz.performAction();
-            } else {
-
+                if (terrainWizard == null)
+                    terrainWizard = new CreateTerrainWizardAction(this);
+                terrainWizard.performAction();
+            } else if ("Skybox".equals(name)) {
+                if (skyboxWizard == null)
+                    skyboxWizard = new SkyboxWizardAction(this);
+                skyboxWizard.performAction();
             }
         }
         
@@ -732,8 +751,6 @@ public final class TerrainEditorTopComponent extends TopComponent implements Sce
             Exceptions.printStackTrace(ex);
         }
         
-        //((Node) node).attachChild((Node)terrain);
-
         editorController.setNeedsSave(true);
 
         currentTextureCount = editorController.getNumUsedTextures();
@@ -743,6 +760,32 @@ public final class TerrainEditorTopComponent extends TopComponent implements Sce
 
         refreshSelected();
 
+    }
+
+    public void generateSkybox(WizardDescriptor wiz) {
+
+        Spatial sky = null;
+        AssetManager assetManager = SceneApplication.getApplication().getAssetManager();
+        final Spatial node = selectedSpat.getLookup().lookup(Spatial.class);
+
+        if ((Boolean)wiz.getProperty("multipleTextures")) {
+            Texture south = (Texture)wiz.getProperty("textureSouth");
+            Texture north = (Texture)wiz.getProperty("textureNorth");
+            Texture east = (Texture)wiz.getProperty("textureEast");
+            Texture west = (Texture)wiz.getProperty("textureWest");
+            Texture top = (Texture)wiz.getProperty("textureTop");
+            Texture bottom = (Texture)wiz.getProperty("textureBottom");
+            Vector3f normalScale = (Vector3f)wiz.getProperty("normalScale");
+            sky = editorController.createSky((Node)node, west, east, north, south, top, bottom, normalScale);
+        } else {
+            Texture textureSingle = (Texture)wiz.getProperty("textureSingle");
+            Vector3f normalScale = (Vector3f)wiz.getProperty("normalScale");
+            boolean useSpheremap = (Boolean)wiz.getProperty("useSpheremap");
+            sky = editorController.createSky((Node)node, textureSingle, useSpheremap, normalScale);
+        }
+        
+        editorController.setNeedsSave(true);
+        refreshSelected();
     }
     
     private void refreshSelected() {
@@ -1223,33 +1266,6 @@ public final class TerrainEditorTopComponent extends TopComponent implements Sce
                             lbl.setIcon(newicon);
                             setTextureInModel(row, tex);
                         }
-
-                        //JFrame f = new JFrame();
-                        /*AssetManager manager = SceneApplication.getApplication().getAssetManager();
-                        String assetFolder = "";
-                        if (manager != null && manager instanceof ProjectAssetManager) {
-                            assetFolder = ((ProjectAssetManager)manager).getAssetFolderName();
-                            textureFileChooser.setCurrentDirectory(new File(assetFolder));
-                            // We restrict the view to the assets folder only, so we don't have to copy the image there ourselves
-                            // and deal with name conflicts:
-                            FileSystemView fsv = new DirectoryRestrictedFileSystemView(new File(assetFolder));
-                            textureFileChooser.setFileSystemView(fsv);
-                        } else {
-                            Logger.getLogger(TerrainEditorTopComponent.class.getName()).warning("ProjectAssetManager not found!");
-                            return; // fail out
-                        }
-
-                        int returnVal =  textureFileChooser.showOpenDialog(getTopComponent());
-                        if (returnVal == textureFileChooser.APPROVE_OPTION) {
-                            File file = textureFileChooser.getSelectedFile();
-                            String selectedPath = file.getPath().replaceAll("\\\\", "/");
-                            String[] split = selectedPath.split(assetFolder);
-                            String path = split[split.length-1];
-                            Texture newtex = SceneApplication.getApplication().getAssetManager().loadTexture(path);
-                            Icon newicon = ImageUtilities.image2Icon(ImageToAwt.convert(newtex.getImage(), false, true, 0));
-                            lbl.setIcon(newicon);
-                            setTextureInModel(row, path); // delegate to sub-class
-                        }*/
                     } finally {
                         alreadyChoosing = false;
                     }
