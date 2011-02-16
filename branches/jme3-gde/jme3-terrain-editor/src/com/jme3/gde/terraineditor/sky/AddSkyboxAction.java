@@ -15,10 +15,12 @@ import com.jme3.texture.Texture;
 import com.jme3.util.SkyFactory;
 import java.awt.Component;
 import java.awt.Dialog;
+import java.lang.reflect.InvocationTargetException;
 import java.text.MessageFormat;
 import javax.swing.JComponent;
 import org.openide.DialogDisplayer;
 import org.openide.WizardDescriptor;
+import org.openide.util.Exceptions;
 
 /**
  *
@@ -35,16 +37,27 @@ public class AddSkyboxAction extends AbstractNewSpatialAction {
 
     @Override
     protected Spatial createSpatial(Node parent) {
-        WizardDescriptor wizardDescriptor = new WizardDescriptor(getPanels());
-        // {0} will be replaced by WizardDesriptor.Panel.getComponent().getName()
-        wizardDescriptor.setTitleFormat(new MessageFormat("{0}"));
-        wizardDescriptor.setTitle("Skybox Wizard");
-        Dialog dialog = DialogDisplayer.getDefault().createDialog(wizardDescriptor);
-        dialog.setVisible(true);
-        dialog.toFront();
-        boolean cancelled = wizardDescriptor.getValue() != WizardDescriptor.FINISH_OPTION;
-        if (!cancelled) {
-            return generateSkybox(wizardDescriptor);
+        try {
+            final WizardDescriptor wizardDescriptor = new WizardDescriptor(getPanels());
+            java.awt.EventQueue.invokeAndWait(new Runnable() {
+
+                public void run() {
+                    // {0} will be replaced by WizardDesriptor.Panel.getComponent().getName()
+                    wizardDescriptor.setTitleFormat(new MessageFormat("{0}"));
+                    wizardDescriptor.setTitle("Skybox Wizard");
+                    Dialog dialog = DialogDisplayer.getDefault().createDialog(wizardDescriptor);
+                    dialog.setVisible(true);
+                    dialog.toFront();
+                }
+            });
+            boolean cancelled = wizardDescriptor.getValue() != WizardDescriptor.FINISH_OPTION;
+            if (!cancelled) {
+                return generateSkybox(wizardDescriptor);
+            }
+        } catch (InterruptedException ex) {
+            Exceptions.printStackTrace(ex);
+        } catch (InvocationTargetException ex) {
+            Exceptions.printStackTrace(ex);
         }
         return null;
     }
