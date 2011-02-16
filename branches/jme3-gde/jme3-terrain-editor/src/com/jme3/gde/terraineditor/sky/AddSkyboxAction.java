@@ -33,6 +33,7 @@ public class AddSkyboxAction extends AbstractNewSpatialAction {
 
     public AddSkyboxAction() {
         name = "Skybox..";
+        getPanels();
     }
 
     @Override
