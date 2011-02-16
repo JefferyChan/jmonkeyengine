@@ -714,6 +714,8 @@ public final class TerrainEditorTopComponent extends TopComponent implements Sce
                 if (skyboxWizard == null)
                     skyboxWizard = new SkyboxWizardAction(this);
                 skyboxWizard.performAction();
+            } else if ("Ocean".equals(name)) {
+                
             }
         }
         
@@ -1217,6 +1219,8 @@ public final class TerrainEditorTopComponent extends TopComponent implements Sce
 
         protected abstract Texture getTextureFromModel(int index);
 
+        protected abstract boolean supportsNullTexture();
+
         private JButton getButton(Object value, final int row, final int column) {
 
             final JButton lbl = new JButton();
@@ -1252,15 +1256,18 @@ public final class TerrainEditorTopComponent extends TopComponent implements Sce
                     alreadyChoosing = true;
 
                     try {
-                        TexturePropertyEditor editor = new TexturePropertyEditor();
+                        Texture selectedTex = getTextureFromModel(row); // delegates to sub class
+                        TexturePropertyEditor editor = new TexturePropertyEditor(selectedTex);
                         Component view = editor.getCustomEditor();
                         view.setVisible(true);
+                        Texture tex = (Texture)editor.getValue();
                         if (editor.getValue() != null) {
-                            Texture tex = (Texture)editor.getValue();
                             Icon newicon = ImageUtilities.image2Icon(ImageToAwt.convert(tex.getImage(), false, true, 0));
                             lbl.setIcon(newicon);
-                            setTextureInModel(row, tex);
+                        } else if (supportsNullTexture()){
+                            lbl.setIcon(null);
                         }
+                        setTextureInModel(row, tex);
                     } finally {
                         alreadyChoosing = false;
                     }
@@ -1281,18 +1288,26 @@ public final class TerrainEditorTopComponent extends TopComponent implements Sce
 
         @Override
         protected void setTextureInModel(int row, String path) {
-            getTableModel().setTexture(row, path);
+            if (path != null)
+                getTableModel().setTexture(row, path);
         }
 
         @Override
         protected void setTextureInModel(int row, Texture tex) {
-            getTableModel().setTexture(row, tex);
+            if (tex != null)
+                getTableModel().setTexture(row, tex);
         }
 
         @Override
         protected Texture getTextureFromModel(int index) {
             return editorController.getDiffuseTexture(index);
         }
+
+        @Override
+        protected boolean supportsNullTexture() {
+            return false;
+        }
+
     }
 
     public class NormalCellRendererEditor extends CellRendererEditor {
@@ -1317,6 +1332,11 @@ public final class TerrainEditorTopComponent extends TopComponent implements Sce
         @Override
         protected Texture getTextureFromModel(int index) {
             return editorController.getNormalMap(index);
+        }
+
+        @Override
+        protected boolean supportsNullTexture() {
+            return true;
         }
     }
 

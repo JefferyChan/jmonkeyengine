@@ -544,7 +544,7 @@ public class SceneApplication extends Application implements LookupProvider, Loo
         if (!started) {
             SceneViewerTopComponent.showOpenGLError(msg);
         } else {
-            if (!lastError.equals(msg)) {
+            if (lastError != null && !lastError.equals(msg)) {
                 Message mesg = new NotifyDescriptor.Message(
                         "Error in scene!\n"
                         + "(" + t + ")",

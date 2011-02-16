@@ -546,9 +546,19 @@ public class TerrainEditorController {
     }
 
     private void doSetNormalMap(int layer, String texturePath) {
+        Terrain terrain = (Terrain) getTerrain(null);
+        if (texturePath == null) {
+            // remove the texture if it is null
+            if (layer == 0)
+                terrain.getMaterial().clearParam("NormalMap");
+            else
+                terrain.getMaterial().clearParam("NormalMap_"+layer);
+            return;
+        }
+
         Texture tex = SceneApplication.getApplication().getAssetManager().loadTexture(texturePath);
         tex.setWrap(WrapMode.Repeat);
-        Terrain terrain = (Terrain) getTerrain(null);
+        
         if (layer == 0)
             terrain.getMaterial().setTexture("NormalMap", tex);
         else
@@ -571,8 +581,18 @@ public class TerrainEditorController {
     }
 
     private void doSetNormalMap(int layer, Texture tex) {
-        tex.setWrap(WrapMode.Repeat);
         Terrain terrain = (Terrain) getTerrain(null);
+        if (tex == null) {
+            // remove the texture if it is null
+            if (layer == 0)
+                terrain.getMaterial().clearParam("NormalMap");
+            else
+                terrain.getMaterial().clearParam("NormalMap_"+layer);
+            return;
+        }
+
+        tex.setWrap(WrapMode.Repeat);
+        
         if (layer == 0)
             terrain.getMaterial().setTexture("NormalMap", tex);
         else
@@ -899,20 +919,17 @@ public class TerrainEditorController {
      */
     protected void manipulatePixel(Image image, int x, int y, ColorRGBA color, boolean write){
         ByteBuffer buf = image.getData(0);
-        //buf.rewind();// needed? probably not
         int width = image.getWidth();
 
-        if ((y * width + x) * 4 >= buf.capacity())
+        int position = (y * width + x) * 4;
+
+        if ( position> buf.capacity()-1 || position<0 )
             return;
         
-        //int calcLimit = 4*image.getHeight()*image.getWidth();
-        //Logger.getLogger(TerrainEditorController.class.getName()).warning(
-        //        "x/y: ("+x+"/"+y+"),  buffer limit: "+buf.limit()+",  calc limit: "+calcLimit+",  position: "+((y * width + x) * 4 ));
-
         if (write) {
             switch (image.getFormat()){
                 case RGBA8:
-                    buf.position( (y * width + x) * 4 );
+                    buf.position( position );
                     buf.put(float2byte(color.r))
                        .put(float2byte(color.g))
                        .put(float2byte(color.b))
@@ -924,13 +941,14 @@ public class TerrainEditorController {
         } else {
             switch (image.getFormat()){
                 case RGBA8:
-                    buf.position( (y * width + x) * 4 );
+                    buf.position( position );
                     color.set(byte2float(buf.get()), byte2float(buf.get()), byte2float(buf.get()), byte2float(buf.get()));
                     return;
                 default:
                     throw new UnsupportedOperationException("Image format: "+image.getFormat());
             }
         }
+        
     }
 
     private float byte2float(byte b){

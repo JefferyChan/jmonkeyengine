@@ -33,6 +33,8 @@ package com.jme3.gde.core.sceneexplorer.nodes.properties;
 
 import com.jme3.gde.core.assets.ProjectAssetManager;
 import com.jme3.texture.Texture;
+import java.util.logging.Logger;
+import javax.swing.DefaultListSelectionModel;
 import javax.swing.Icon;
 import jme3tools.converters.ImageToAwt;
 import org.openide.util.ImageUtilities;
@@ -40,6 +42,9 @@ import org.openide.util.ImageUtilities;
 /**
  * Displays all textures in the ProjectAssetManager,
  * lets you select one, and shows a preview of it.
+ *
+ * The user can de-select the currently selected texture to specify they
+ * do not want a texture, and in that case null is returned.
  * 
  * @author bowens
  */
@@ -55,6 +60,7 @@ public class TextureBrowser extends javax.swing.JDialog {
         this.editor = editor;
         initComponents();
         loadAvailableTextures();
+        setSelectedTexture((Texture)editor.getValue());
         setLocationRelativeTo(null);
     }
 
@@ -93,6 +99,7 @@ public class TextureBrowser extends javax.swing.JDialog {
         });
 
         textureList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        textureList.setSelectionModel(new ToggleSelectionModel());
         textureList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
             public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
                 textureListValueChanged(evt);
@@ -123,7 +130,7 @@ public class TextureBrowser extends javax.swing.JDialog {
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(310, Short.MAX_VALUE)
+                .addContainerGap(357, Short.MAX_VALUE)
                 .add(cancelButton)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(okButton)
@@ -162,6 +169,8 @@ public class TextureBrowser extends javax.swing.JDialog {
             String selected = (String) textureList.getSelectedValue();
             Texture tex = assetManager.loadTexture(selected);
             editor.setValue(tex);
+        } else {
+            editor.setValue(null);
         }
     }
     
@@ -190,6 +199,44 @@ public class TextureBrowser extends javax.swing.JDialog {
             Texture tex = assetManager.loadTexture(selected);
             Icon newicon = ImageUtilities.image2Icon(ImageToAwt.convert(tex.getImage(), false, true, 0));
             imagePreviewLabel.setIcon(newicon);
+        } else {
+            imagePreviewLabel.setIcon(null);
+        }
+    }
+
+    private void setSelectedTexture(Texture texture) {
+        if (texture != null) {
+            Logger.getLogger(TextureBrowser.class.getName()).info("Looking for Texture: "+texture.getName());
+            for (int i=0; i<textureList.getModel().getSize(); i++) {
+                Logger.getLogger(TextureBrowser.class.getName()).info("Texture name: "+textureList.getModel().getElementAt(i));
+                if (textureList.getModel().getElementAt(i).equals(texture.getName()) ) {
+                    textureList.setSelectedIndex(i);
+                    break;
+                }
+            }
+        }
+    }
+
+
+    class ToggleSelectionModel extends DefaultListSelectionModel {
+        boolean gestureStarted = false;
+
+        @Override
+        public void setSelectionInterval(int index0, int index1) {
+            if (isSelectedIndex(index0) && !gestureStarted) {
+                super.removeSelectionInterval(index0, index1);
+            }
+            else {
+                super.setSelectionInterval(index0, index1);
+            }
+            gestureStarted = true;
+        }
+
+        @Override
+        public void setValueIsAdjusting(boolean isAdjusting) {
+            if (isAdjusting == false) {
+                gestureStarted = false;
+            }
         }
     }
 

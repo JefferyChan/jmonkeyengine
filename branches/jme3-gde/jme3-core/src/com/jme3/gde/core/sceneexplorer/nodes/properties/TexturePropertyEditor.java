@@ -40,8 +40,6 @@ import java.awt.Rectangle;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyEditor;
 import java.util.LinkedList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -52,9 +50,18 @@ public class TexturePropertyEditor implements PropertyEditor {
     private LinkedList<PropertyChangeListener> listeners = new LinkedList<PropertyChangeListener>();
     private Texture texture;
 
+
+    public TexturePropertyEditor() {}
+
+    public TexturePropertyEditor(Texture texture) {
+        this.texture = texture;
+    }
+
     public void setValue(Object value) {
         if (value instanceof Texture)
             texture = (Texture)value;
+        else
+            texture = null;
     }
 
     public Object getValue() {
@@ -89,15 +96,14 @@ public class TexturePropertyEditor implements PropertyEditor {
 
     public Component getCustomEditor() {
         ProjectAssetManager currentProjectAssetManager = null;
-        try {
+        //try {
             currentProjectAssetManager = (ProjectAssetManager) SceneApplication.getApplication().getAssetManager();
             TextureBrowser textureBrowser = new TextureBrowser(null, true, currentProjectAssetManager, this);
             return textureBrowser;
-        } catch (Exception e) {
-            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, e.getMessage()+" Could not get project asset manager!", e);
-            e.printStackTrace();
-            return null;
-        }
+        //} catch (Exception e) {
+            //Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, e.getMessage()+" Could not get project asset manager!", e);
+            //return null;
+        //}
     }
 
     public boolean supportsCustomEditor() {
