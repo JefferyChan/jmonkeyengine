@@ -50,7 +50,7 @@ public class NewRigidBodyAction extends AbstractNewControlAction {
     }
 
     @Override
-    protected Control createControl(Spatial spatial) {
+    protected Control doCreateControl(Spatial spatial) {
         RigidBodyControl control = spatial.getControl(RigidBodyControl.class);
         if (control != null) {
             spatial.removeControl(control);

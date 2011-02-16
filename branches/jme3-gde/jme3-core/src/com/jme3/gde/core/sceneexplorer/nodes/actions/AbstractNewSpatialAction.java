@@ -54,7 +54,7 @@ public abstract class AbstractNewSpatialAction implements NewSpatialAction {
 
     protected String name = "*";
 
-    protected abstract Spatial createSpatial(Node parent);
+    protected abstract Spatial doCreateSpatial(Node parent);
 
     protected Action makeAction(final JmeNode rootNode, final DataObject dataObject) {
         final Node node = rootNode.getLookup().lookup(Node.class);
@@ -64,7 +64,7 @@ public abstract class AbstractNewSpatialAction implements NewSpatialAction {
                 SceneApplication.getApplication().enqueue(new Callable<Void>() {
 
                     public Void call() throws Exception {
-                        final Spatial attachSpatial = createSpatial(node);
+                        final Spatial attachSpatial = doCreateSpatial(node);
                         if (node != null && attachSpatial != null) {
                             node.attachChild(attachSpatial);
                             Lookup.getDefault().lookup(SceneUndoRedoManager.class).addEdit(this, new AbstractUndoableSceneEdit() {

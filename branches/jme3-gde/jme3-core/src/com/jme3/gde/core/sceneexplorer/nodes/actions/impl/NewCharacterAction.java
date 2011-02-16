@@ -53,7 +53,7 @@ public class NewCharacterAction extends AbstractNewControlAction {
     }
 
     @Override
-    protected Control createControl(Spatial spatial) {
+    protected Control doCreateControl(Spatial spatial) {
         CharacterControl control = spatial.getControl(CharacterControl.class);
         if (control != null) {
             spatial.removeControl(control);

@@ -36,7 +36,7 @@ public class AddSkyboxAction extends AbstractNewSpatialAction {
     }
 
     @Override
-    protected Spatial createSpatial(Node parent) {
+    protected Spatial doCreateSpatial(Node parent) {
         try {
             final WizardDescriptor wizardDescriptor = new WizardDescriptor(getPanels());
             java.awt.EventQueue.invokeAndWait(new Runnable() {

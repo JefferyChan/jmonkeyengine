@@ -54,7 +54,7 @@ public abstract class AbstractNewControlAction implements NewControlAction {
 
     protected String name = "*";
 
-    protected abstract Control createControl(Spatial spatial);
+    protected abstract Control doCreateControl(Spatial spatial);
 
     protected Action makeAction(final JmeSpatial rootNode, final DataObject dataObject) {
         final Spatial spatial = rootNode.getLookup().lookup(Spatial.class);
@@ -64,7 +64,7 @@ public abstract class AbstractNewControlAction implements NewControlAction {
                 SceneApplication.getApplication().enqueue(new Callable<Void>() {
 
                     public Void call() throws Exception {
-                        final Control attachControl = createControl(spatial);
+                        final Control attachControl = doCreateControl(spatial);
                         if (spatial != null && attachControl != null) {
                             spatial.addControl(attachControl);
                             Lookup.getDefault().lookup(SceneUndoRedoManager.class).addEdit(this, new AbstractUndoableSceneEdit() {
