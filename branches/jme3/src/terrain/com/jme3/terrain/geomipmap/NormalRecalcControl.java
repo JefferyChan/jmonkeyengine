@@ -29,61 +29,78 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-package com.jme3.terrain.geomipmap.lodcalc;
+package com.jme3.terrain.geomipmap;
 
 import com.jme3.export.InputCapsule;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
 import com.jme3.export.OutputCapsule;
-import com.jme3.terrain.geomipmap.TerrainPatch;
+import com.jme3.renderer.RenderManager;
+import com.jme3.renderer.ViewPort;
+import com.jme3.scene.Spatial;
+import com.jme3.scene.control.AbstractControl;
+import com.jme3.scene.control.Control;
 import java.io.IOException;
 
+
 /**
- *
+ * Handles the normal vector updates when the terrain changes heights.
  * @author bowens
  */
-public class LodDistanceCalculatorFactory implements LodCalculatorFactory {
+public class NormalRecalcControl extends AbstractControl {
 
-    private float lodThresholdSize = 2.7f;
-    private LodThreshold lodThreshold = null;
+    private TerrainQuad terrain;
 
+    public NormalRecalcControl(){}
 
-    public LodDistanceCalculatorFactory() {
-    }
-    
-    public LodDistanceCalculatorFactory(LodThreshold lodThreshold) {
-        this.lodThreshold = lodThreshold;
-    }
-
-    public LodCalculator createCalculator() {
-        return new DistanceLodCalculator();
-    }
-
-    public LodCalculator createCalculator(TerrainPatch terrainPatch) {
-        if (lodThreshold == null)
-            lodThreshold = new SimpleLodThreshold(terrainPatch.getSize(), lodThresholdSize);
-        return new DistanceLodCalculator(terrainPatch, lodThreshold);
-    }
-
-    public void write(JmeExporter ex) throws IOException {
-		OutputCapsule c = ex.getCapsule(this);
-		c.write(lodThreshold, "lodThreshold", null);
-        c.write(lodThresholdSize, "lodThresholdSize", 2);
-    }
-
-    public void read(JmeImporter im) throws IOException {
-        InputCapsule c = im.getCapsule(this);
-		lodThresholdSize = c.readFloat("lodThresholdSize", 2);
-        lodThreshold = (LodThreshold) c.readSavable("lodThreshold", null);
+    public NormalRecalcControl(TerrainQuad terrain) {
+        this.terrain = terrain;
     }
 
     @Override
-    public LodDistanceCalculatorFactory clone() {
-        LodDistanceCalculatorFactory clone = new LodDistanceCalculatorFactory();
-        clone.lodThreshold = lodThreshold.clone();
-        clone.lodThresholdSize = lodThresholdSize;
-        return clone;
+    protected void controlUpdate(float tpf) {
+        terrain.updateNormals();
+    }
+
+    @Override
+    protected void controlRender(RenderManager rm, ViewPort vp) {
+
+    }
+
+    public Control cloneForSpatial(Spatial spatial) {
+        NormalRecalcControl control = new NormalRecalcControl(terrain);
+        control.setSpatial(spatial);
+        control.setEnabled(true);
+        return control;
+    }
+    
+    @Override
+    public void setSpatial(Spatial spatial) {
+        super.setSpatial(spatial);
+        if (spatial instanceof TerrainQuad)
+            this.terrain = (TerrainQuad)spatial;
+    }
+
+    public TerrainQuad getTerrain() {
+        return terrain;
+    }
+
+    public void setTerrain(TerrainQuad terrain) {
+        this.terrain = terrain;
+    }
+
+    @Override
+    public void write(JmeExporter ex) throws IOException {
+        super.write(ex);
+        OutputCapsule oc = ex.getCapsule(this);
+        oc.write(terrain, "terrain", null);
+    }
+
+    @Override
+    public void read(JmeImporter im) throws IOException {
+        super.read(im);
+        InputCapsule ic = im.getCapsule(this);
+        terrain = (TerrainQuad) ic.readSavable("terrain", null);
     }
 
 }

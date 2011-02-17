@@ -69,7 +69,7 @@ public class DistanceLodCalculator implements LodCalculator {
         float distance = getCenterLocation().distance(locations.get(0));
 
         // go through each lod level to find the one we are in
-        for (int i = 1; i <= terrainPatch.getMaxLod(); i++) {
+        for (int i = 0; i <= terrainPatch.getMaxLod(); i++) {
             if (distance < lodThresholdCalculator.getLodDistanceThreshold() * (i + 1) || i == terrainPatch.getMaxLod()) {
                 boolean reIndexNeeded = false;
                 if (i != terrainPatch.getLod()) {

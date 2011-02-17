@@ -39,15 +39,15 @@ import com.jme3.font.BitmapText;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
+import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.terrain.geomipmap.TerrainLodControl;
 import com.jme3.terrain.geomipmap.TerrainQuad;
-import com.jme3.terrain.geomipmap.lodcalc.LodPerspectiveCalculatorFactory;
 import com.jme3.terrain.heightmap.AbstractHeightMap;
-import com.jme3.terrain.heightmap.HillHeightMap;
+import com.jme3.terrain.heightmap.ImageBasedHeightMap;
 import com.jme3.texture.Texture;
 import com.jme3.texture.Texture.WrapMode;
 import java.io.BufferedInputStream;
@@ -60,6 +60,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import jme3tools.converters.ImageToAwt;
 
 /**
  * Saves and loads terrain.
@@ -70,6 +71,11 @@ public class TerrainTestReadWrite extends SimpleApplication {
 
     private TerrainQuad terrain;
     protected BitmapText hintText;
+    private float grassScale = 64;
+    private float dirtScale = 16;
+    private float rockScale = 128;
+    private Material matTerrain;
+    private Material matWire;
 
     public static void main(String[] args) {
         TerrainTestReadWrite app = new TerrainTestReadWrite();
@@ -93,55 +99,78 @@ public class TerrainTestReadWrite extends SimpleApplication {
     }
 
     private void createMap() {
-        AbstractHeightMap heightmap = null;
-        try {
-            heightmap = new HillHeightMap(513, 3000, 30, 60, (byte) 4);
-        } catch (Exception ex) {
-            Logger.getLogger(TerrainTestReadWrite.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        terrain = new TerrainQuad("terrain", 65, 513, heightmap.getHeightMap());
-        terrain.setLodCalculatorFactory(new LodPerspectiveCalculatorFactory(cam, 6));
-        getRootNode().attachChild(terrain);
+        matTerrain = new Material(assetManager, "Common/MatDefs/Terrain/TerrainLighting.j3md");
+        matTerrain.setBoolean("useTriPlanarMapping", false);
+        matTerrain.setBoolean("WardIso", true);
 
-        // TERRAIN TEXTURE material
-        Material matRock = new Material(assetManager, "Common/MatDefs/Terrain/Terrain.j3md");
+		// ALPHA map (for splat textures)
+		matTerrain.setTexture("AlphaMap", assetManager.loadTexture("Textures/Terrain/splat/alphamap.png"));
 
-        // ALPHA map (for splat textures)
-        matRock.setTexture("Alpha", assetManager.loadTexture("Textures/Terrain/splat/alphamap.png"));
+		// HEIGHTMAP image (for the terrain heightmap)
+		Texture heightMapImage = assetManager.loadTexture("Textures/Terrain/splat/mountains512.png");
 
-        // HEIGHTMAP image (for the terrain heightmap)
-        Texture heightMapImage = assetManager.loadTexture("Textures/Terrain/splat/mountains512.png");
+		// GRASS texture
+		Texture grass = assetManager.loadTexture("Textures/Terrain/splat/grass.jpg");
+		grass.setWrap(WrapMode.Repeat);
+		matTerrain.setTexture("DiffuseMap", grass);
+		matTerrain.setFloat("DiffuseMap_0_scale", grassScale);
 
-        // GRASS texture
-        Texture grass = assetManager.loadTexture("Textures/Terrain/splat/grass.jpg");
-        grass.setWrap(WrapMode.Repeat);
-        matRock.setTexture("Tex1", grass);
-        matRock.setFloat("Tex1Scale", 64f);
 
-        // DIRT texture
-        Texture dirt = assetManager.loadTexture("Textures/Terrain/splat/dirt.jpg");
-        dirt.setWrap(WrapMode.Repeat);
-        matRock.setTexture("Tex2", dirt);
-        matRock.setFloat("Tex2Scale", 32f);
+		// DIRT texture
+		Texture dirt = assetManager.loadTexture("Textures/Terrain/splat/dirt.jpg");
+		dirt.setWrap(WrapMode.Repeat);
+		matTerrain.setTexture("DiffuseMap_1", dirt);
+		matTerrain.setFloat("DiffuseMap_1_scale", dirtScale);
 
-        // ROCK texture
-        Texture rock = assetManager.loadTexture("Textures/Terrain/splat/road.jpg");
-        rock.setWrap(WrapMode.Repeat);
-        matRock.setTexture("Tex3", rock);
-        matRock.setFloat("Tex3Scale", 128f);
+		// ROCK texture
+		Texture rock = assetManager.loadTexture("Textures/Terrain/splat/road.jpg");
+		rock.setWrap(WrapMode.Repeat);
+		matTerrain.setTexture("DiffuseMap_2", rock);
+		matTerrain.setFloat("DiffuseMap_2_scale", rockScale);
 
-        Material matWire = new Material(assetManager, "Common/MatDefs/Misc/WireColor.j3md");
+
+        Texture normalMap0 = assetManager.loadTexture("Textures/Terrain/splat/grass_normal.png");
+        normalMap0.setWrap(WrapMode.Repeat);
+        Texture normalMap1 = assetManager.loadTexture("Textures/Terrain/splat/dirt_normal.png");
+        normalMap1.setWrap(WrapMode.Repeat);
+        Texture normalMap2 = assetManager.loadTexture("Textures/Terrain/splat/road_normal.png");
+        normalMap2.setWrap(WrapMode.Repeat);
+        matTerrain.setTexture("NormalMap", normalMap0);
+        matTerrain.setTexture("NormalMap_1", normalMap2);
+        matTerrain.setTexture("NormalMap_2", normalMap2);
+
+        matWire = new Material(assetManager, "Common/MatDefs/Misc/WireColor.j3md");
         matWire.setColor("Color", ColorRGBA.Green);
 
+
+        // CREATE HEIGHTMAP
+		AbstractHeightMap heightmap = null;
+		try {
+			//heightmap = new HillHeightMap(1025, 1000, 50, 100, (byte) 3);
+
+			heightmap = new ImageBasedHeightMap(ImageToAwt.convert(heightMapImage.getImage(), false, true, 0), 1f);
+			heightmap.load();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+        
         // create the terrain as normal, and give it a control for LOD management
-        List<Camera> cameras = new ArrayList<Camera>();
-        cameras.add(getCamera());
-        TerrainLodControl control = new TerrainLodControl(terrain, cameras);
-        terrain.addControl(control);
-        terrain.setMaterial(matWire);
-        terrain.setModelBound(new BoundingBox());
-        terrain.updateModelBound();
-        terrain.setLocalScale(1f, 0.25f, 1f);
+        terrain = new TerrainQuad("terrain", 65, 513, heightmap.getHeightMap());//, new LodPerspectiveCalculatorFactory(getCamera(), 4)); // add this in to see it use entropy for LOD calculations
+		List<Camera> cameras = new ArrayList<Camera>();
+		cameras.add(getCamera());
+		TerrainLodControl control = new TerrainLodControl(terrain, cameras);
+		terrain.addControl(control);
+		terrain.setMaterial(matTerrain);
+		terrain.setModelBound(new BoundingBox());
+		terrain.updateModelBound();
+		terrain.setLocalTranslation(0, -100, 0);
+		terrain.setLocalScale(2f, 1f, 2f);
+		rootNode.attachChild(terrain);
+
+        DirectionalLight light = new DirectionalLight();
+        light.setDirection((new Vector3f(-0.5f,-1f, -0.5f)).normalize());
+        rootNode.addLight(light);
     }
 
     /**
@@ -224,7 +253,7 @@ public class TerrainTestReadWrite extends SimpleApplication {
                     List<Camera> cameras = new ArrayList<Camera>();
                     cameras.add(getCamera());
                     TerrainLodControl lodControl = terrain.getControl(TerrainLodControl.class);
-                    if (lodControl != null && !(terrain.getParent() instanceof TerrainQuad)) {
+                    if (lodControl != null) {
                         lodControl.setCameras(cameras);
                     }
 

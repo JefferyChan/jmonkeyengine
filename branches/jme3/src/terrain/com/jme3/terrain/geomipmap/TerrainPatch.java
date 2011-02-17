@@ -59,6 +59,7 @@ import com.jme3.terrain.geomipmap.lodcalc.LodCalculator;
 import com.jme3.terrain.geomipmap.lodcalc.LodCalculatorFactory;
 import com.jme3.terrain.geomipmap.lodcalc.util.EntropyComputeUtil;
 import com.jme3.util.BufferUtils;
+import com.jme3.util.TangentBinormalGenerator;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -791,8 +792,6 @@ public class TerrainPatch extends Geometry {
 
 	public void setLod(int lod) {
 		this.lod = lod;
-                if (this.lod <= 0)
-                    throw new IllegalArgumentException();
 	}
 
 	public int getPreviousLod() {
@@ -924,6 +923,7 @@ public class TerrainPatch extends Geometry {
         geomap = new LODGeomap(size, heightBuffer);
         Mesh m = geomap.createMesh(stepScale, Vector2f.UNIT_XY, offset, offsetAmount, totalSize, false);
         setMesh(m);
+        TangentBinormalGenerator.generate(this);
     }
 
     @Override

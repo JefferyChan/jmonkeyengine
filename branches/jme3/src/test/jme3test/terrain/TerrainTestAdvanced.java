@@ -70,7 +70,6 @@ public class TerrainTestAdvanced extends SimpleApplication {
 	private TerrainQuad terrain;
 	Material matTerrain;
 	Material matWire;
-    Material lighting;
 	boolean wireframe = false;
     boolean triPlanar = false;
     boolean wardiso = false;
@@ -137,18 +136,13 @@ public class TerrainTestAdvanced extends SimpleApplication {
         normalMap1.setWrap(WrapMode.Repeat);
         Texture normalMap2 = assetManager.loadTexture("Textures/Terrain/splat/road_normal.png");
         normalMap2.setWrap(WrapMode.Repeat);
-        matTerrain.setTexture("NormalMap", normalMap0);
-        matTerrain.setTexture("NormalMap_1", normalMap2);
-        matTerrain.setTexture("NormalMap_2", normalMap2);
+        //matTerrain.setTexture("NormalMap", normalMap0);
+        //matTerrain.setTexture("NormalMap_1", normalMap2);
+        //matTerrain.setTexture("NormalMap_2", normalMap2);
 
 		// WIREFRAME material
 		matWire = new Material(assetManager, "Common/MatDefs/Misc/WireColor.j3md");
         matWire.setColor("Color", ColorRGBA.Green);
-
-        lighting = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
-        lighting.setTexture("DiffuseMap", grass);
-        lighting.setTexture("NormalMap", normalMap1);
-        lighting.setBoolean("WardIso", true);
 
         createSky();
 
@@ -243,14 +237,6 @@ public class TerrainTestAdvanced extends SimpleApplication {
                     matTerrain.setFloat("DiffuseMap_1_scale", dirtScale);
                     matTerrain.setFloat("DiffuseMap_2_scale", rockScale);
                 }
-            }
-            else if (name.equals("WardIso") && !pressed) {
-                wardiso = !wardiso;
-                lighting.setBoolean("WardIso", wardiso);
-            }
-            else if (name.equals("Minnaert") && !pressed) {
-                minnaert = !minnaert;
-                lighting.setBoolean("Minnaert", minnaert);
             }
 		}
 	};

@@ -33,6 +33,9 @@
 package com.jme3.terrain.geomipmap;
 
 import com.jme3.material.Material;
+import com.jme3.renderer.RenderManager;
+import com.jme3.renderer.ViewPort;
+import com.jme3.scene.control.Control;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
@@ -54,6 +57,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.debug.WireBox;
 import com.jme3.terrain.ProgressMonitor;
 import com.jme3.terrain.Terrain;
@@ -132,6 +136,7 @@ public class TerrainQuad extends Node implements Terrain {
 		this(name, patchSize, size, scale, heightMap, size, new Vector2f(), 0, lodCalculatorFactory);
         affectedAreaBBox = new BoundingBox(new Vector3f(0,0,0), size, Float.MAX_VALUE, size);
         fixNormalEdges(affectedAreaBBox);
+        addControl(new NormalRecalcControl(this));
 	}
 	
 	protected TerrainQuad(String name, int patchSize, int size,
@@ -169,7 +174,7 @@ public class TerrainQuad extends Node implements Terrain {
 			}
 		}
 	}
-	 
+	
 	
 	/**
 	 * Create just a flat heightmap
@@ -187,7 +192,6 @@ public class TerrainQuad extends Node implements Terrain {
 	  */
 	public void update(List<Vector3f> locations) {
 		
-        updateNormals();
         updateLOD(locations);
 	}
 
@@ -1469,9 +1473,11 @@ public class TerrainQuad extends Node implements Terrain {
 		quadrant = c.readInt("quadrant", 0);
 		totalSize = c.readInt("totalSize", 0);
 		lodCalculatorFactory = (LodCalculatorFactory) c.readSavable("lodCalculatorFactory", null);
-        TerrainLodControl lodControl = getControl(TerrainLodControl.class);
-        if (lodControl != null && !(getParent() instanceof TerrainQuad))
-            lodControl.setTerrain(this);
+        
+        // the terrain is re-built on load, so we need to run this once
+        affectedAreaBBox = new BoundingBox(new Vector3f(0,0,0), size, Float.MAX_VALUE, size);
+        updateNormals();
+
 	}
 
 	@Override
@@ -1489,6 +1495,7 @@ public class TerrainQuad extends Node implements Terrain {
 	
 	@Override
     public TerrainQuad clone() {
+        super.clone();
         TerrainQuad quadClone = (TerrainQuad) super.clone();
         quadClone.name = name.toString();
         quadClone.size = size;
@@ -1502,6 +1509,9 @@ public class TerrainQuad extends Node implements Terrain {
         if (lodControl != null && !(getParent() instanceof TerrainQuad)) {
             lodControl.setTerrain(quadClone); // set println in controller update to see if it is updating
         }
+        NormalRecalcControl normalControl = getControl(NormalRecalcControl.class);
+        if (normalControl != null)
+            normalControl.setTerrain(this);
 
         return quadClone;
 	}

@@ -56,8 +56,6 @@ public class UpdatedTerrainPatch {
 	public UpdatedTerrainPatch(TerrainPatch updatedPatch, int newLod) {
 		this.updatedPatch = updatedPatch;
 		this.newLod = newLod;
-                if (this.newLod <= 0)
-                    throw new IllegalArgumentException();
 	}
 	
 	public UpdatedTerrainPatch(TerrainPatch updatedPatch, int newLod, int prevLOD, boolean reIndexNeeded) {
