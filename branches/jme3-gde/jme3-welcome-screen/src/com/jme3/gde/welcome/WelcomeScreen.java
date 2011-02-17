@@ -17,6 +17,7 @@ import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.niftygui.NiftyJmeDisplay;
+import com.jme3.renderer.Caps;
 import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Geometry;
@@ -66,10 +67,12 @@ public class WelcomeScreen implements ScreenController {
             public void sceneRequested(SceneRequest request) {
                 if (request.getRequester() == WelcomeScreen.this) {
                     //FIXME: planet location dont work?
-                    planetView = new PlanetRendererState(new Planet(100f, new Vector3f(0, 0, 0)), dirLight);
+                    if (SceneApplication.getApplication().getRenderer().getCaps().contains(Caps.OpenGL21)) {
+                        planetView = new PlanetRendererState(new Planet(100f, new Vector3f(0, 0, 0)), dirLight);
+                        SceneApplication.getApplication().getStateManager().attach(planetView);
+                    }
                     SceneApplication.getApplication().getViewPort().getScenes().get(0).addLight(dirLight);
-                    SceneApplication.getApplication().getStateManager().attach(planetView);
-                    SceneApplication.getApplication().getCamera().setLocation(new Vector3f(0,0,400));
+                    SceneApplication.getApplication().getCamera().setLocation(new Vector3f(0, 0, 400));
                     setupSkyBox();
                     niftyDisplay = new NiftyJmeDisplay(SceneApplication.getApplication().getAssetManager(),
                             SceneApplication.getApplication().getInputManager(),
@@ -93,7 +96,9 @@ public class WelcomeScreen implements ScreenController {
                 skyBox.removeFromParent();
                 SceneApplication.getApplication().getGuiViewPort().removeProcessor(niftyDisplay);
                 nifty.exit();
-                SceneApplication.getApplication().getStateManager().detach(planetView);
+                if (planetView != null) {
+                    SceneApplication.getApplication().getStateManager().detach(planetView);
+                }
                 SceneApplication.getApplication().removeSceneListener(this);
                 return true;
             }
@@ -128,7 +133,7 @@ public class WelcomeScreen implements ScreenController {
         mat.setVector3("NormalScale", new Vector3f(1, 1, 1));
         skyBox.setMaterial(mat);
 
-        ((Node)SceneApplication.getApplication().getViewPort().getScenes().get(0)).attachChild(skyBox);
+        ((Node) SceneApplication.getApplication().getViewPort().getScenes().get(0)).attachChild(skyBox);
     }
 
     public void setNoStartup() {
