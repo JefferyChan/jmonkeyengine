@@ -33,7 +33,6 @@
 package com.jme3.gde.terraineditor;
 
 import com.jme3.asset.AssetManager;
-import com.jme3.asset.TextureKey;
 import com.jme3.bounding.BoundingBox;
 import com.jme3.gde.core.assets.ProjectAssetManager;
 import com.jme3.gde.core.scene.SceneApplication;
@@ -56,15 +55,12 @@ import com.jme3.texture.Texture2D;
 import com.jme3.util.BufferUtils;
 import com.jme3.util.SkyFactory;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
-import java.util.logging.Logger;
-import javax.imageio.ImageIO;
 import jme3tools.converters.ImageToAwt;
 import org.openide.cookies.SaveCookie;
 import org.openide.filesystems.FileObject;
@@ -83,7 +79,6 @@ public class TerrainEditorController {
     private DataObject currentFileObject;
 
     // texture settings
-//    protected final String DEFAULT_TERRAIN_TEXTURE = "Common/MatDefs/Water/Textures/heightmap.jpg";
     protected final String DEFAULT_TERRAIN_TEXTURE = "com/jme3/gde/terraineditor/dirt.jpg";
     protected final float DEFAULT_TEXTURE_SCALE = 16.0625f;
     private final int NUM_ALPHA_TEXTURES = 3;
@@ -149,7 +144,7 @@ public class TerrainEditorController {
             }
         }
 
-        return null;
+        return terrainNode;
     }
 
     /**
@@ -225,16 +220,22 @@ public class TerrainEditorController {
         return heightFactor * val;
 	}
 
-    protected void doPaintTexture(Vector3f worldLoc, float radius, float heightFactor) {
+    public void cleanup() {
+        final Node node = jmeRootNode.getLookup().lookup(Node.class);
+        terrainNode = null;
+        rootNode = null;
+        
+        SceneApplication.getApplication().enqueue(new Callable() {
 
+            public Object call() throws Exception {
+                doCleanup(node);
+                return null;
+            }
+        });
     }
 
-
-    public void cleanup(){
-
-    }
-
-    public void doCleanup(){
+    public void doCleanup(Node node) {
+        node.removeFromParent();
     }
 
     /**
@@ -683,7 +684,7 @@ public class TerrainEditorController {
         List<Camera> cameras = new ArrayList<Camera>();
 		cameras.add(SceneApplication.getApplication().getCamera());
         TerrainLodControl control = new TerrainLodControl(terrain, cameras);
-		terrain.addControl(control);
+		//terrain.addControl(control); // removing this until we figure out a way to have it get the cameras when saved/loaded
 
         parent.attachChild(terrain);
         

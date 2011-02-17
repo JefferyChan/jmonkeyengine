@@ -926,15 +926,16 @@ public final class TerrainEditorTopComponent extends TopComponent implements Sce
         }
         editorController = new TerrainEditorController(jmeNode, file);
         this.currentRequest = request;
-        request.setWindowTitle("SceneComposer - " + manager.getRelativeAssetPath(file.getPrimaryFile().getPath()));
-        request.setToolNode(new Node("SceneComposerToolNode"));
+        request.setWindowTitle("TerrainEditor - " + manager.getRelativeAssetPath(file.getPrimaryFile().getPath()));
+        request.setToolNode(new Node("TerrainEditorToolNode"));
         SceneApplication.getApplication().requestScene(request);
+        reinitTextureTable(); // update the UI
     }
 
     public void sceneRequested(SceneRequest request) {
         if (request.equals(currentRequest)) {
 
-            setLoadedScene(currentRequest.getJmeNode(), true);
+            setSceneInfo(currentRequest.getJmeNode(), true);
 
             if (camController != null) {
                 camController.disable();
@@ -958,7 +959,7 @@ public final class TerrainEditorTopComponent extends TopComponent implements Sce
         }
     }
 
-    private void setLoadedScene(final JmeNode jmeNode, final boolean active) {
+    private void setSceneInfo(final JmeNode jmeNode, final boolean active) {
         final TerrainEditorTopComponent inst = this;
         java.awt.EventQueue.invokeLater(new Runnable() {
 
@@ -1003,7 +1004,7 @@ public final class TerrainEditorTopComponent extends TopComponent implements Sce
         if (request.equals(currentRequest)) {
 //            if (checkSaved()) {
                 SceneApplication.getApplication().removeSceneListener(this);
-                setLoadedScene(null, false);
+                setSceneInfo(null, false);
                 currentRequest = null;
                 java.awt.EventQueue.invokeLater(new Runnable() {
 
@@ -1049,6 +1050,9 @@ public final class TerrainEditorTopComponent extends TopComponent implements Sce
         NormalCellRendererEditor rendererNormal = new NormalCellRendererEditor();
         textureTable.getColumnModel().getColumn(2).setCellRenderer(rendererNormal); // normal
         textureTable.getColumnModel().getColumn(2).setCellEditor(rendererNormal);
+
+        if (editorController.getTerrain(null) == null)
+            return;
         
         getTableModel().initModel();
 
