@@ -224,18 +224,6 @@ public class TerrainEditorController {
         final Node node = jmeRootNode.getLookup().lookup(Node.class);
         terrainNode = null;
         rootNode = null;
-        
-        SceneApplication.getApplication().enqueue(new Callable() {
-
-            public Object call() throws Exception {
-                doCleanup(node);
-                return null;
-            }
-        });
-    }
-
-    public void doCleanup(Node node) {
-        node.removeFromParent();
     }
 
     /**

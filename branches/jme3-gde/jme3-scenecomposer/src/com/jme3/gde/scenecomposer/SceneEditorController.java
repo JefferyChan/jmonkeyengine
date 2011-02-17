@@ -824,16 +824,6 @@ public class SceneEditorController implements PropertyChangeListener, NodeListen
         if (selectedSpat != null) {
             selectedSpat.removePropertyChangeListener(this);
         }
-        SceneApplication.getApplication().enqueue(new Callable() {
-
-            public Object call() throws Exception {
-                doCleanup(node);
-                return null;
-            }
-        });
     }
 
-    public void doCleanup(Node node) {
-        node.removeFromParent();
-    }
 }

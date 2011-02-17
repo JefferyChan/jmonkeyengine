@@ -525,17 +525,6 @@ public class VehicleEditorController implements LookupListener, ActionListener {
         result2.removeLookupListener(this);
         final Node node = jmeRootNode.getLookup().lookup(Node.class);
         toolController.cleanup();
-        SceneApplication.getApplication().enqueue(new Callable() {
-
-            public Object call() throws Exception {
-                doCleanup(node);
-                return null;
-            }
-        });
-    }
-
-    public void doCleanup(Node node) {
-        node.removeFromParent();
     }
 
     public void resultChanged(LookupEvent ev) {
