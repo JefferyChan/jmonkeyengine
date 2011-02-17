@@ -33,6 +33,7 @@
 package com.jme3.font;
 
 import com.jme3.font.BitmapFont.Align;
+import com.jme3.font.BitmapFont.VAlign;
 import com.jme3.math.ColorRGBA;
 
 /**
@@ -41,15 +42,20 @@ import com.jme3.math.ColorRGBA;
  *
  * @author dhdd
  */
-public class StringBlock implements Cloneable {
+class StringBlock implements Cloneable {
 
     private StringBuilder text;
     private Rectangle textBox;
-    private BitmapFont.Align alignment;
+    private Align alignment = Align.Left;
+    private VAlign valignment = VAlign.Top;
     private float size;
     private ColorRGBA color = new ColorRGBA(ColorRGBA.White);
     private boolean kerning;
     private int lineCount;
+    private LineWrapMode wrapType = LineWrapMode.Word;
+    private float[] tabPos;
+    private float tabWidth = 50;
+    private char ellipsisChar = 0x2026;
 
     /**
      *
@@ -60,7 +66,7 @@ public class StringBlock implements Cloneable {
      * @param color the initial color of the text
      * @param kerning
      */
-    public StringBlock(String text, Rectangle textBox, BitmapFont.Align alignment, float size, ColorRGBA color,
+    StringBlock(String text, Rectangle textBox, BitmapFont.Align alignment, float size, ColorRGBA color,
             boolean kerning) {
         this.text = new StringBuilder();
         this.text.append(text);
@@ -71,7 +77,7 @@ public class StringBlock implements Cloneable {
         this.kerning = kerning;
     }
 
-    public StringBlock(){
+    StringBlock(){
         this.text = new StringBuilder();
         this.text.append("");
         this.textBox = null;
@@ -94,67 +100,110 @@ public class StringBlock implements Cloneable {
         }
     }
 
-    public String getText() {
+    String getText() {
         return text.toString();
     }
 
-    public CharSequence getCharacters(){
+    CharSequence getCharacters(){
         return text;
     }
 
-    public void setText(CharSequence text){
+    void setText(CharSequence text){
         this.text.setLength(0);
         if (text != null) {
             this.text.append(text);
         }
     }
 
-    public Rectangle getTextBox() {
+    Rectangle getTextBox() {
         return textBox;
     }
 
-    public void setTextBox(Rectangle textBox) {
+    void setTextBox(Rectangle textBox) {
         this.textBox = textBox;
     }
 
-    public BitmapFont.Align getAlignment() {
+    BitmapFont.Align getAlignment() {
         return alignment;
     }
-
-    public void setAlignment(BitmapFont.Align alignment) {
-        this.alignment = alignment;
+    
+    BitmapFont.VAlign getVerticalAlignment() {
+        return valignment;
     }
 
-    public float getSize() {
+    void setAlignment(BitmapFont.Align alignment) {
+        this.alignment = alignment;
+    }
+    
+    void setVerticalAlignment(BitmapFont.VAlign alignment) {
+        this.valignment = alignment;
+    }
+
+    float getSize() {
         return size;
     }
 
-    public void setSize(float size) {
+    void setSize(float size) {
         this.size = size;
     }
 
-    public ColorRGBA getColor() {
+    ColorRGBA getColor() {
         return color;
     }
 
-    public void setColor(ColorRGBA color) {
+    void setColor(ColorRGBA color) {
         this.color.set(color);
     }
 
-    public boolean isKerning() {
+    boolean isKerning() {
         return kerning;
     }
 
-    public void setKerning(boolean kerning) {
+    void setKerning(boolean kerning) {
         this.kerning = kerning;
     }
 
-    public int getLineCount() {
+    int getLineCount() {
         return lineCount;
     }
 
     void setLineCount(int lineCount) {
         this.lineCount = lineCount;
     }
+    
+    LineWrapMode getLineWrapMode() {
+        return wrapType;
+    }
+    
+    /**
+     * available only when bounding is set. <code>setBox()</code> method call is needed in advance. 
+     * @param wrap true when word need not be split at the end of the line.
+     */
+    void setLineWrapMode(LineWrapMode wrap) {
+        this.wrapType = wrap;
+    }
+    
+    void setTabWidth(float tabWidth) {
+        this.tabWidth = tabWidth;
+    }
 
+    void setTabPosition(float[] tabs) {
+        this.tabPos = tabs;
+    }
+    
+    float getTabWidth() {
+        return tabWidth;
+    }
+    
+    float[] getTabPosition() {
+        return tabPos;
+    }
+
+    void setEllipsisChar(char c) {
+        this.ellipsisChar = c;
+    }
+
+    int getEllipsisChar() {
+        return ellipsisChar;
+    }
 }

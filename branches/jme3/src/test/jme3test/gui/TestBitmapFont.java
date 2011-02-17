@@ -51,7 +51,7 @@ import com.jme3.input.event.MouseMotionEvent;
 public class TestBitmapFont extends SimpleApplication {
 
     private String txtB =
-    "ABCDEFGHIKLMN\nOPQRSTUVWXYZ1234567 890`~!@#$%^&*()-=_+[]\\;',./{}|:<>?";
+    "ABCDEFGHIKLMNOPQRSTUVWXYZ1234567 890`~!@#$%^&*()-=_+[]\\;',./{}|:<>?";
     
     private BitmapText txt;
     private BitmapText txt2;

@@ -34,6 +34,7 @@ package com.jme3.font;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
+import java.util.LinkedList;
 
 import com.jme3.material.Material;
 import com.jme3.scene.Geometry;
@@ -43,6 +44,10 @@ import com.jme3.scene.VertexBuffer.Type;
 import com.jme3.texture.Texture2D;
 import com.jme3.util.BufferUtils;
 
+/**
+ * One page per BitmapText Font Texture.
+ * @author Lim, YongHoon
+ */
 class BitmapTextPage extends Geometry {
     
     private final float[] pos;
@@ -51,7 +56,7 @@ class BitmapTextPage extends Geometry {
     private final byte[] color;
     private final int page;
     private final Texture2D texture;
-    private final QuadList quadList = new QuadList();
+    private final LinkedList<LetterQuad> pageQuads = new LinkedList<LetterQuad>();
 
     BitmapTextPage(BitmapFont font, boolean arrayBased, int page) {
         super("BitmapFont", new Mesh());
@@ -114,11 +119,19 @@ class BitmapTextPage extends Geometry {
         return clone;
     }
 
-    void assemble(QuadList quads) {
-        quads.getPage(page, quadList);
+    void assemble(Letters quads) {
+        pageQuads.clear();
+        quads.rewind();
+        while (quads.nextCharacter()) {
+            if (quads.isPrintable()) {
+                if (quads.getCharacterSetPage() == page) {
+                    pageQuads.add(quads.getQuad());
+                }
+            }
+        }
         Mesh m = getMesh();
-        m.setVertexCount(quadList.getQuantity() * 4);
-        m.setTriangleCount(quadList.getQuantity() * 2);
+        m.setVertexCount(pageQuads.size() * 4);
+        m.setTriangleCount(pageQuads.size() * 2);
 
         VertexBuffer pb = m.getBuffer(Type.Position);
         VertexBuffer tb = m.getBuffer(Type.TexCoord);
@@ -153,8 +166,8 @@ class BitmapTextPage extends Geometry {
 
         // go for each quad and append it to the buffers
         if (pos != null) {
-            for (int i = 0; i < quadList.getActualSize(); i++) {
-                FontQuad fq = quadList.getQuad(i);
+            for (int i = 0; i < pageQuads.size(); i++) {
+                LetterQuad fq = pageQuads.get(i);
                 fq.storeToArrays(pos, tc, idx, color, i);
                 fpb.put(pos);
                 ftb.put(tc);
@@ -162,8 +175,8 @@ class BitmapTextPage extends Geometry {
                 bcb.put(color);
             }
         } else {
-            for (int i = 0; i < quadList.getActualSize(); i++) {
-                FontQuad fq = quadList.getQuad(i);
+            for (int i = 0; i < pageQuads.size(); i++) {
+                LetterQuad fq = pageQuads.get(i);
                 fq.appendPositions(fpb);
                 fq.appendTexCoords(ftb);
                 fq.appendIndices(sib, i);

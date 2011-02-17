@@ -31,22 +31,27 @@
  */
 package com.jme3.font;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import com.jme3.font.BitmapFont.Align;
+import com.jme3.font.BitmapFont.VAlign;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.scene.Node;
 
+/**
+ * @author YongHoon
+ */
 public class BitmapText extends Node {
-	
-	private BitmapFont font;
+    private BitmapFont font;
     private StringBlock block;
     private float lineWidth = 0f;    
     private boolean needRefresh = true;
-    private boolean rightToLeft = false;
-    private boolean wordWrap = true;
     private final BitmapTextPage[] textPages;
-    private QuadList quadList = new QuadList();
+    private Letters letters;
 
     public BitmapText(BitmapFont font) {
         this(font, false, false);
@@ -68,6 +73,7 @@ public class BitmapText extends Node {
         this.font = font;
         this.block = new StringBlock();
         block.setSize(font.getPreferredSize());
+        letters = new Letters(font, block, rightToLeft);
     }
 
     @Override
@@ -92,6 +98,7 @@ public class BitmapText extends Node {
     public void setSize(float size) {
         block.setSize(size);
         needRefresh = true;
+        letters.invalidate();
     }
 
     /**
@@ -104,6 +111,7 @@ public class BitmapText extends Node {
         }
 
         block.setText(text);
+        letters.setText(text);
         needRefresh = true;
     }
 
@@ -122,15 +130,12 @@ public class BitmapText extends Node {
     }
 
     /**
-     * changes text color
+     * changes text color. all substring colors are deleted.
      * @param color new color of text
      */
     public void setColor(ColorRGBA color) {
-        if (block.getColor().equals(color)) {
-            return;
-        }
-
-        block.setColor(color);
+        letters.setColor(0, block.getText().length(), color);
+        letters.invalidate(); // TODO: Don't have to align.
         needRefresh = true;
     }
 
@@ -140,6 +145,7 @@ public class BitmapText extends Node {
      */
     public void setBox(Rectangle rect) {
         block.setTextBox(rect);
+        letters.invalidate();
         needRefresh = true;
     }
     
@@ -175,27 +181,156 @@ public class BitmapText extends Node {
         return lineWidth;
     }
     
+    @Deprecated
     public boolean isWordWrap() {
-        return wordWrap;
+        return block.getLineWrapMode() == LineWrapMode.Word;
     }
     
-    public void setAlignment(BitmapFont.Align align) {
-        block.setAlignment(align);
+    @Deprecated
+    public void setWordWrap(boolean wrap) {
+        if (wrap) {
+            setLineWrapMode(LineWrapMode.Word);
+        } else {
+            setLineWrapMode(LineWrapMode.Character);
+        }
+    }
+    
+
+
+    
+    public LineWrapMode getLineWrapMode() {
+        return block.getLineWrapMode();
     }
     
     /**
-     * available only when bounding is set. <code>setBox()</code> method call is needed in advance. 
-     * @param wordWrap true when word need not be split at the end of the line.
+     * Set horizontal alignment. Applicable only when text bound is set.
+     * @param align
      */
-    public void setWordWrap(boolean wordWrap) {
-        this.wordWrap = wordWrap;
+    public void setAlignment(BitmapFont.Align align) {
+        if (block.getTextBox() == null && align != Align.Left) {
+            throw new RuntimeException("Bound is not set");
+        }
+        block.setAlignment(align);
+        letters.invalidate();
         needRefresh = true;
     }
-
+    
+    /**
+     * Set vertical alignment. Applicable only when text bound is set.
+     * @param align
+     */
+    public void setVerticalAlignment(BitmapFont.VAlign align) {
+        if (block.getTextBox() == null && align != VAlign.Top) {
+            throw new RuntimeException("Bound is not set");
+        }
+        block.setVerticalAlignment(align);
+        letters.invalidate();
+        needRefresh = true;
+    }
+    
     public BitmapFont.Align getAlignment() {
         return block.getAlignment();
     }
     
+    public BitmapFont.VAlign getVerticalAlignment() {
+        return block.getVerticalAlignment();
+    }
+    
+    /**
+     * Set the font style of substring. If font doesn't contain style, default style is used
+     * @param start start index to set style. inclusive.
+     * @param end   end index to set style. EXCLUSIVE.
+     * @param style
+     */
+    public void setStyle(int start, int end, int style) {
+        letters.setStyle(start, end, style);
+    }
+    
+    /**
+     * Set the font style of substring. If font doesn't contain style, default style is applied
+     * @param regexp regular expression
+     * @param style
+     */
+    public void setStyle(String regexp, int style) {
+        Pattern p = Pattern.compile(regexp);
+        Matcher m = p.matcher(block.getText());
+        while (m.find()) {
+            setStyle(m.start(), m.end(), style);
+        }
+    }
+    
+    /**
+     * Set the color of substring.
+     * @param start start index to set style. inclusive.
+     * @param end   end index to set style. EXCLUSIVE.
+     * @param color
+     */
+    public void setColor(int start, int end, ColorRGBA color) {
+        letters.setColor(start, end, color);
+        letters.invalidate();
+        needRefresh = true;
+    }
+    
+    /**
+     * Set the color of substring.
+     * @param regexp regular expression
+     * @param color
+     */
+    public void setColor(String regexp, ColorRGBA color) {
+        Pattern p = Pattern.compile(regexp);
+        Matcher m = p.matcher(block.getText());
+        while (m.find()) {
+            letters.setColor(m.start(), m.end(), color);
+        }
+        letters.invalidate();
+        needRefresh = true;
+    }
+    
+    /**
+     * @param tabs tab positions
+     */
+    public void setTabPosition(float... tabs) {
+        block.setTabPosition(tabs);
+        letters.invalidate();
+        needRefresh = false;
+    }
+    
+    /**
+     * used for the tabs over the last tab position.
+     * @param width tab size
+     */
+    public void setTabWidth(float width) {
+        block.setTabWidth(width);
+        letters.invalidate();
+        needRefresh = false;
+    }
+    
+    /**
+     * for setLineWrapType(LineWrapType.NoWrap),
+     * set the last character when the text exceeds the bound.
+     * @param c 
+     */
+    public void setEllipsisChar(char c) {
+        block.setEllipsisChar(c);
+        letters.invalidate();
+        needRefresh = false;
+    }
+
+    /**
+     * Available only when bounding is set. <code>setBox()</code> method call is needed in advance. 
+     * true when 
+     * @param wrap NoWrap   : Letters over the text bound is not shown. the last character is set to '...'(0x2026)
+     *             Character: Character is split at the end of the line. 
+     *             Word     : Word is split at the end of the line.
+     */
+    public void setLineWrapMode(LineWrapMode wrap) {
+        if (block.getLineWrapMode() != wrap) {
+            block.setLineWrapMode(wrap);
+            letters.invalidate();
+            needRefresh = true;
+        }
+    }
+
     @Override
     public void updateLogicalState(float tpf) {
         super.updateLogicalState(tpf);
@@ -206,15 +341,10 @@ public class BitmapText extends Node {
 
     private void assemble() {
         // first generate quadlist
-        quadList.clear();
-        if (block.getTextBox() == null) {
-            lineWidth = font.updateText(block, quadList, rightToLeft);
-        } else {
-            lineWidth = font.updateTextRect(block, quadList, wordWrap);
-        }
+        letters.update();
         
         for (int i = 0; i < textPages.length; i++) {
-            textPages[i].assemble(quadList);
+            textPages[i].assemble(letters);
         }
         needRefresh = false;
     }

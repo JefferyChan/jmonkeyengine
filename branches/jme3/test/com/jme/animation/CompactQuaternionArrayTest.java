@@ -1,4 +1,4 @@
-package testcases.animation;
+package com.jme.animation;
 
 import static org.junit.Assert.assertTrue;
 

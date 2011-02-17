@@ -45,7 +45,7 @@ import java.io.IOException;
  * Represents a single bitmap character.
  */
 public class BitmapCharacter implements Savable, Cloneable {
-
+    private char c;
     private int x;
     private int y;
     private int width;
@@ -55,6 +55,12 @@ public class BitmapCharacter implements Savable, Cloneable {
     private int xAdvance;
     private IntMap<Integer> kerning = new IntMap<Integer>();
     private int page;
+    
+    public BitmapCharacter() {}
+    
+    public BitmapCharacter(char c) {
+        this.c = c;
+    }
 
     @Override
     public BitmapCharacter clone() {
@@ -130,6 +136,14 @@ public class BitmapCharacter implements Savable, Cloneable {
     public int getPage() {
         return page;
     }
+    
+    public char getChar() {
+        return c;
+    }
+    
+    public void setChar(char c) {
+        this.c = c;
+    }
 
     public void addKerning(int second, int amount){
         kerning.put(second, amount);
@@ -145,6 +159,7 @@ public class BitmapCharacter implements Savable, Cloneable {
 
     public void write(JmeExporter ex) throws IOException {
         OutputCapsule oc = ex.getCapsule(this);
+        oc.write(c, "c", 0);
         oc.write(x, "x", 0);
         oc.write(y, "y", 0);
         oc.write(width, "width", 0);
@@ -169,6 +184,7 @@ public class BitmapCharacter implements Savable, Cloneable {
 
     public void read(JmeImporter im) throws IOException {
         InputCapsule ic = im.getCapsule(this);
+        c = (char) ic.readInt("c", 0);
         x = ic.readInt("x", 0);
         y = ic.readInt("y", 0);
         width = ic.readInt("width", 0);
