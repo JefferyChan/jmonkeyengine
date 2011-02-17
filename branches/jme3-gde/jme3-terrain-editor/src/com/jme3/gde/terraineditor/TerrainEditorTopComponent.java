@@ -1001,7 +1001,7 @@ public final class TerrainEditorTopComponent extends TopComponent implements Sce
 
     public boolean sceneClose(SceneRequest request) {
         if (request.equals(currentRequest)) {
-            if (checkSaved()) {
+//            if (checkSaved()) {
                 SceneApplication.getApplication().removeSceneListener(this);
                 setLoadedScene(null, false);
                 currentRequest = null;
@@ -1011,7 +1011,7 @@ public final class TerrainEditorTopComponent extends TopComponent implements Sce
                         cleanupControllers();
                     }
                 });
-            }
+//            }
         }
         return true;
     }
@@ -1034,6 +1034,7 @@ public final class TerrainEditorTopComponent extends TopComponent implements Sce
             editorController.cleanup();
             editorController = null;
         }
+        setActivatedNodes(new org.openide.nodes.Node[]{});
     }
 
     /**

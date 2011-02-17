@@ -833,6 +833,7 @@ public final class SceneComposerTopComponent extends TopComponent implements Sce
             editorController.cleanup();
             editorController = null;
         }
+        setActivatedNodes(new org.openide.nodes.Node[]{});
     }
 
     /*
@@ -861,7 +862,7 @@ public final class SceneComposerTopComponent extends TopComponent implements Sce
 
     public boolean sceneClose(SceneRequest request) {
         if (request.equals(currentRequest)) {
-            if (checkSaved()) {
+//            if (checkSaved()) {
                 SceneApplication.getApplication().removeSceneListener(this);
                 currentRequest = null;
                 setSceneInfo(null, null, false);
@@ -871,9 +872,9 @@ public final class SceneComposerTopComponent extends TopComponent implements Sce
                         cleanupControllers();
                     }
                 });
-            } else {
-                return false;
-            }
+//            } else {
+//                return false;
+//            }
         }
         return true;
     }
