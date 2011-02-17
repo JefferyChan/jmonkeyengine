@@ -138,8 +138,6 @@ public class TestCanvas {
         settings.setWidth( Math.max(640, frame.getContentPane().getWidth()) );
         settings.setHeight( Math.max(480, frame.getContentPane().getHeight()) );
 
-        JmeSystem.setLowPermissions(true);
-
         try{
             Class<? extends Application> clazz = (Class<? extends Application>) Class.forName(appClass);
             app = clazz.newInstance();
