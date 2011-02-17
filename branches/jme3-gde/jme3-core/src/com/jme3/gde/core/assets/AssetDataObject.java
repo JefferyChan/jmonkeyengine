@@ -150,6 +150,9 @@ public class AssetDataObject extends MultiDataObject {
 
     //TODO: make save as j3o
     public Savable loadAsset() {
+        if (savable != null) {
+            return savable;
+        }
         ProjectAssetManager mgr = getLookup().lookup(ProjectAssetManager.class);
         if (mgr == null) {
             return null;
@@ -204,6 +207,7 @@ public class AssetDataObject extends MultiDataObject {
         progressHandle.finish();
         StatusDisplayer.getDefault().setStatusText(getPrimaryFile().getNameExt() + " saved.");
         setModified(false);
+        this.savable = null;
     }
 
     public AssetKey<?> getAssetKey() {

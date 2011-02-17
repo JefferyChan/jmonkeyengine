@@ -66,6 +66,9 @@ public class SpatialAssetDataObject extends AssetDataObject {
 
     @Override
     public Spatial loadAsset() {
+        if (savable != null) {
+            return (Spatial) savable;
+        }
         ProjectAssetManager mgr = getLookup().lookup(ProjectAssetManager.class);
         if (mgr == null) {
             return null;
@@ -99,8 +102,8 @@ public class SpatialAssetDataObject extends AssetDataObject {
         if (saveExtension == null) {
             outFile = getPrimaryFile();
         } else {
-            outFile=getPrimaryFile().getParent().getFileObject(getPrimaryFile().getName(), saveExtension);
-            if(outFile==null){
+            outFile = getPrimaryFile().getParent().getFileObject(getPrimaryFile().getName(), saveExtension);
+            if (outFile == null) {
                 //ERROR
                 Logger.getLogger(SpatialAssetDataObject.class.getName()).log(Level.SEVERE, "Could not locate saved file.");
                 return;
@@ -117,5 +120,6 @@ public class SpatialAssetDataObject extends AssetDataObject {
         } catch (Exception ex) {
             Exceptions.printStackTrace(ex);
         }
+        savable = null;
     }
 }
