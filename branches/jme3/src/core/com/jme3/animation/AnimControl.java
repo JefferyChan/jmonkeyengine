@@ -77,7 +77,7 @@ import java.util.HashMap;
  *
  * @author Kirill Vainer
  */
-public class AnimControl extends AbstractControl implements Savable, Cloneable {
+public final class AnimControl extends AbstractControl implements Savable, Cloneable {
 
     /**
      * List of targets which this controller effects.

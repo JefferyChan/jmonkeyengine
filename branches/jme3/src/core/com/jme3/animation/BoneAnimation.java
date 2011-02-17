@@ -44,7 +44,7 @@ import java.util.BitSet;
  * Bone animation updates each of it's tracks with the skeleton and time
  * to apply the animation.
  */
-public class BoneAnimation implements Savable {
+public final class BoneAnimation implements Savable {
 
     private static final long serialVersionUID = 1L;
 

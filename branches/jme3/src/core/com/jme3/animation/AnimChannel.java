@@ -46,7 +46,7 @@ import java.util.BitSet;
  * 
  * @author Kirill Vainer
  */
-public class AnimChannel {
+public final class AnimChannel {
 
     private AnimControl control;
 

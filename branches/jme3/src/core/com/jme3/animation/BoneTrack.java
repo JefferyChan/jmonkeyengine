@@ -45,7 +45,7 @@ import java.io.IOException;
 /**
  * Contains a list of transforms and times for each keyframe.
  */
-public class BoneTrack implements Savable {
+public final class BoneTrack implements Savable {
 
     /**
      * Bone index in the skeleton which this track effects.
