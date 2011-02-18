@@ -69,7 +69,7 @@ public class AppSettings extends HashMap<String, Object> {
         defaults.put("UseInput", true);
         defaults.put("VSync", false);
         defaults.put("FrameRate", -1);
-        defaults.put("Icons", null);
+      //  defaults.put("Icons", null);
 
         // disable these settings to benchmark speed
 //        defaults.put("VSync", true);
@@ -163,6 +163,7 @@ public class AppSettings extends HashMap<String, Object> {
     public void save(String preferencesKey) throws BackingStoreException {
         Preferences prefs = Preferences.userRoot().node(preferencesKey);
         for (String key : keySet()) {
+            System.out.println(key);
             prefs.put(key, get(key).toString());
         }
     }

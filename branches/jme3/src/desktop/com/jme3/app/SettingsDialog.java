@@ -251,7 +251,9 @@ public final class SettingsDialog extends JDialog {
             }
         });
 
-        safeSetIconImages(Arrays.asList(source.getIcons()));
+        if(source.getIcons()!=null){
+            safeSetIconImages(Arrays.asList(source.getIcons()));
+        }
 
         setTitle("Select Display Settings");
 
