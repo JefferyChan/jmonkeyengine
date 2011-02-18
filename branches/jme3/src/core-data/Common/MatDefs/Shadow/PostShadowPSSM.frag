@@ -8,23 +8,23 @@
 
 #if FILTER_MODE == 0
     #define GETSHADOW Shadow_DoShadowCompare
-    #define KERNEL 1
+    #define KERNEL 1.0
 #elif FILTER_MODE == 1
     #ifdef HARDWARE_SHADOWS
         #define GETSHADOW Shadow_DoShadowCompare
     #else
         #define GETSHADOW Shadow_DoBilinear_2x2
     #endif
-    #define KERNEL 1
+    #define KERNEL 1.0
 #elif FILTER_MODE == 2
     #define GETSHADOW Shadow_DoDither_2x2
-    #define KERNEL 1
+    #define KERNEL 1.0
 #elif FILTER_MODE == 3
     #define GETSHADOW Shadow_DoPCF
-    #define KERNEL 4
+    #define KERNEL 4.0
 #elif FILTER_MODE == 4
     #define GETSHADOW Shadow_DoPCF
-    #define KERNEL 8
+    #define KERNEL 8.0
 #endif
 
 uniform SHADOWMAP m_ShadowMap0;
