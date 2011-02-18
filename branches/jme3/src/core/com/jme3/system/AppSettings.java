@@ -162,8 +162,7 @@ public class AppSettings extends HashMap<String, Object> {
 
     public void save(String preferencesKey) throws BackingStoreException {
         Preferences prefs = Preferences.userRoot().node(preferencesKey);
-        for (String key : keySet()) {
-            System.out.println(key);
+        for (String key : keySet()) {         
             prefs.put(key, get(key).toString());
         }
     }
