@@ -37,6 +37,10 @@ import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import com.jme3.system.AppSettings;
+
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.nio.ByteBuffer;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -107,6 +111,9 @@ public class LwjglDisplay extends LwjglAbstractDisplay {
         if (displayMode != null)
             Display.setDisplayMode(displayMode);
 
+        if (settings.getIcons() != null)
+            Display.setIcon(imagesToByteBuffers(settings.getIcons()));
+
         Display.setFullscreen(settings.isFullscreen());
         Display.setVSyncEnabled(settings.isVSync());
 
@@ -132,6 +139,43 @@ public class LwjglDisplay extends LwjglAbstractDisplay {
             }
         }
     }
+
+    private ByteBuffer[] imagesToByteBuffers(BufferedImage[] images) {
+        ByteBuffer[] out = new ByteBuffer[images.length];
+        for (int i = 0; i < images.length; i++) {
+            out[i] = imageToByteBuffer(images[i]);
+        }
+        return out;
+    }
+
+    private ByteBuffer imageToByteBuffer(BufferedImage image) {
+        if (image.getType() != BufferedImage.TYPE_INT_ARGB_PRE) {
+            BufferedImage convertedImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB_PRE);
+            Graphics2D g = convertedImage.createGraphics();
+            double width = image.getWidth() * (double) 1;
+            double height = image.getHeight() * (double) 1;
+            g.drawImage(image, (int) ((convertedImage.getWidth() - width) / 2),
+                    (int) ((convertedImage.getHeight() - height) / 2),
+                    (int) (width), (int) (height), null);
+            g.dispose();
+            image = convertedImage;
+        }
+
+        byte[] imageBuffer = new byte[image.getWidth() * image.getHeight() * 4];
+        int counter = 0;
+        for (int i = 0; i < image.getHeight(); i++) {
+            for (int j = 0; j < image.getWidth(); j++) {
+                int colorSpace = image.getRGB(j, i);
+                imageBuffer[counter + 0] = (byte) ((colorSpace << 8)  >> 24);
+                imageBuffer[counter + 1] = (byte) ((colorSpace << 16) >> 24);
+                imageBuffer[counter + 2] = (byte) ((colorSpace << 24) >> 24);
+                imageBuffer[counter + 3] = (byte) (colorSpace >> 24);
+                counter += 4;
+            }
+        }
+        return ByteBuffer.wrap(imageBuffer);
+  }
+
 
     public void create(boolean waitFor){
         if (created.get()){

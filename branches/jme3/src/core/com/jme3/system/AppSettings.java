@@ -31,6 +31,7 @@
  */
 package com.jme3.system;
 
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -68,6 +69,7 @@ public class AppSettings extends HashMap<String, Object> {
         defaults.put("UseInput", true);
         defaults.put("VSync", false);
         defaults.put("FrameRate", -1);
+        defaults.put("Icons", null);
 
         // disable these settings to benchmark speed
 //        defaults.put("VSync", true);
@@ -261,6 +263,23 @@ public class AppSettings extends HashMap<String, Object> {
         putBoolean("VSync", value);
     }
 
+    /**
+     * Sets the application icons to be used, with the most preferred first.
+     * For Windows you should supply at least one 16x16 icon and one 32x32. The former is used for the title/task bar,
+     * the latter for the alt-tab icon.
+     * Linux (and similar platforms) expect one 32x32 icon.
+     * Mac OS X should be supplied one 128x128 icon.
+     * <br/>
+     * The icon is used for the settings window, and the LWJGL render window. Not currently supported for JOGL.
+     * Note that a bug in Java 6 (bug ID 6445278, currently hidden but available in Google cache) currently prevents
+     * the icon working for alt-tab on the settings dialog in Windows.
+     *
+     * @param value An array of BufferedImages to use as icons.
+     */
+    public void setIcons(BufferedImage[] value) {
+        put("Icons", value);
+    }
+
     public int getFrameRate() {
         return getInteger("FrameRate");
     }
@@ -319,6 +338,10 @@ public class AppSettings extends HashMap<String, Object> {
 
     public String getAudioRenderer() {
         return getString("AudioRenderer");
+    }
+
+    public BufferedImage[] getIcons() {
+        return (BufferedImage[]) get("Icons");
     }
 
     public void setSettingsDialogImage(String path) {

@@ -36,6 +36,8 @@ import java.awt.BorderLayout;
 import java.awt.DisplayMode;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.awt.Image;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -44,11 +46,13 @@ import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
@@ -247,6 +251,8 @@ public final class SettingsDialog extends JDialog {
             }
         });
 
+        safeSetIconImages(Arrays.asList(source.getIcons()));
+
         setTitle("Select Display Settings");
 
         // The panels...
@@ -350,6 +356,25 @@ public final class SettingsDialog extends JDialog {
         this.getContentPane().add(mainPanel);
 
         pack();
+    }
+
+    /* Access JDialog.setIconImages by reflection in case we're running on JRE < 1.6 */
+    private void safeSetIconImages(List<? extends Image> icons) {
+        try {
+            // Due to Java bug 6445278, we try to set icon on our shared owner frame first.
+            // Otherwise, our alt-tab icon will be the Java default under Windows.
+            Window owner = getOwner();
+            if (owner != null) {
+                Method setIconImages = owner.getClass().getMethod("setIconImages", List.class);
+                setIconImages.invoke(owner, icons);
+                return;
+            }
+
+            Method setIconImages = getClass().getMethod("setIconImages", List.class);
+            setIconImages.invoke(this, icons);
+        } catch (Exception e) {
+            return;
+        }
     }
 
     /**

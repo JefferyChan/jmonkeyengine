@@ -42,6 +42,9 @@ import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -93,6 +96,15 @@ public class JoglDisplay extends JoglAbstractDisplay {
 
         frame.setResizable(false);
         frame.setFocusable(true);
+
+        if (settings.getIcons() != null) {
+            try {
+                Method setIconImages = frame.getClass().getMethod("setIconImages", List.class);
+                setIconImages.invoke(frame, Arrays.asList(settings.getIcons()));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
 
         // only add canvas after frame is visible
         contentPane.add(canvas, BorderLayout.CENTER);
