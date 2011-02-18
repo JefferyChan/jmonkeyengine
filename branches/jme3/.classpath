@@ -25,8 +25,6 @@
 	<classpathentry kind="lib" path="lib/jbullet/jbullet.jar"/>
 	<classpathentry kind="lib" path="lib/jbullet/stack-alloc.jar"/>
 	<classpathentry kind="lib" path="lib/jbullet/vecmath.jar"/>
-	<classpathentry kind="lib" path="lib/joal/jME3-natives-joal.jar"/>
-	<classpathentry kind="lib" path="lib/joal/joal.jar"/>
 	<classpathentry kind="lib" path="lib/jogg/j-ogg-oggd.jar"/>
 	<classpathentry kind="lib" path="lib/jogg/j-ogg-vorbisd.jar"/>
 	<classpathentry kind="lib" path="lib/jogl/gluegen-rt.jar"/>
