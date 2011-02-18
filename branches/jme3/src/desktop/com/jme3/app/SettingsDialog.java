@@ -273,6 +273,10 @@ public final class SettingsDialog extends JDialog {
                         dispose();
                     }
                 }
+                else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                    setUserSelection(CANCEL_SELECTION);
+                    dispose();
+                }
             }
         };
 
