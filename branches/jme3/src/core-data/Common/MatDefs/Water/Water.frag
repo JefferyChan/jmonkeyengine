@@ -63,16 +63,16 @@ mat3 computeTangentFrame(in vec3 N, in vec3 P, in vec2 UV) {
     vec2 duv2 = dFdy(UV);
 
     // solve the linear system
-    //mat3 M = mat3(dp1, dp2, cross(dp1, dp2));
-    vec3 dp1xdp2 = cross(dp1, dp2);
-    //mat3 inverseM = MatrixInverse(M);
-    mat2x3 inverseM = mat2x3(cross(dp2, dp1xdp2), cross(dp1xdp2, dp1));
+    mat3 M = mat3(dp1, dp2, cross(dp1, dp2));
+    //vec3 dp1xdp2 = cross(dp1, dp2);
+    mat3 inverseM = MatrixInverse(M);
+    //mat2x3 inverseM = mat2x3(cross(dp2, dp1xdp2), cross(dp1xdp2, dp1));
 
-    //vec3 T = inverseM * vec3(duv1.x, duv2.x, 0.0);
-    //vec3 B = inverseM * vec3(duv1.y, duv2.y, 0.0);
+    vec3 T = inverseM * vec3(duv1.x, duv2.x, 0.0);
+    vec3 B = inverseM * vec3(duv1.y, duv2.y, 0.0);
 
-    vec3 T = inverseM * vec2(duv1.x, duv2.x);
-    vec3 B = inverseM * vec2(duv1.y, duv2.y);
+    //vec3 T = inverseM * vec2(duv1.x, duv2.x);
+    //vec3 B = inverseM * vec2(duv1.y, duv2.y);
 
     // construct tangent frame
     float maxLength = max(length(T), length(B));
