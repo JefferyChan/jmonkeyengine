@@ -58,6 +58,10 @@ import com.jme3.renderer.Camera;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Spatial;
+import com.jme3.shadow.BasicShadowRenderer;
+import com.jme3.shadow.PssmShadowRenderer;
+import com.jme3.shadow.PssmShadowRenderer.CompareMode;
+import com.jme3.shadow.PssmShadowRenderer.FilterMode;
 import com.jme3.terrain.geomipmap.TerrainLodControl;
 import com.jme3.terrain.geomipmap.TerrainQuad;
 import com.jme3.terrain.heightmap.AbstractHeightMap;
@@ -93,10 +97,10 @@ public class TestHoveringTank extends SimpleApplication implements AnalogListene
     }
 
     private void setupKeys() {
-        inputManager.addMapping("Lefts", new KeyTrigger(KeyInput.KEY_H));
-        inputManager.addMapping("Rights", new KeyTrigger(KeyInput.KEY_K));
-        inputManager.addMapping("Ups", new KeyTrigger(KeyInput.KEY_U));
-        inputManager.addMapping("Downs", new KeyTrigger(KeyInput.KEY_J));
+        inputManager.addMapping("Lefts", new KeyTrigger(KeyInput.KEY_A));
+        inputManager.addMapping("Rights", new KeyTrigger(KeyInput.KEY_D));
+        inputManager.addMapping("Ups", new KeyTrigger(KeyInput.KEY_W));
+        inputManager.addMapping("Downs", new KeyTrigger(KeyInput.KEY_S));
         inputManager.addMapping("Space", new KeyTrigger(KeyInput.KEY_SPACE));
         inputManager.addMapping("Reset", new KeyTrigger(KeyInput.KEY_RETURN));
         inputManager.addListener(this, "Lefts");
@@ -110,10 +114,17 @@ public class TestHoveringTank extends SimpleApplication implements AnalogListene
     @Override
     public void simpleInitApp() {
         bulletAppState = new BulletAppState();
+        bulletAppState.setThreadingType(BulletAppState.ThreadingType.PARALLEL);
         stateManager.attach(bulletAppState);
 //        bulletAppState.getPhysicsSpace().enableDebug(assetManager);
 
-//        cam.setFrustumFar(50f);
+        PssmShadowRenderer pssmr = new PssmShadowRenderer(assetManager, 2048, 3);
+        pssmr.setDirection(new Vector3f(-0.5f, -0.3f, -0.3f).normalizeLocal());
+        pssmr.setLambda(0.55f);
+        pssmr.setShadowIntensity(0.6f);
+        pssmr.setCompareMode(CompareMode.Hardware);
+        pssmr.setFilterMode(FilterMode.Bilinear);
+        viewPort.addProcessor(pssmr);
 
         setupKeys();
         createTerrain();
@@ -136,6 +147,7 @@ public class TestHoveringTank extends SimpleApplication implements AnalogListene
         CollisionShape colShape = CollisionShapeFactory.createDynamicMeshShape(spaceCraft);
         spaceCraft.setShadowMode(ShadowMode.CastAndReceive);
         spaceCraft.setLocalTranslation(new Vector3f(-140, 14, -23));
+        spaceCraft.setLocalRotation(new Quaternion(new float[]{0, 0.01f, 0}));
 
         hoverControl = new PhysicsHoverControl(colShape, 500);
         hoverControl.setCollisionGroup(PhysicsCollisionObject.COLLISION_GROUP_02);
@@ -170,9 +182,9 @@ public class TestHoveringTank extends SimpleApplication implements AnalogListene
         missile.setName("Missile");
         missile.rotate(rot);
         missile.setLocalTranslation(pos.addLocal(0, extent.y * 4.5f, 0));
-        missile.setLocalRotation(spaceCraft.getWorldRotation());
-        missile.setShadowMode(ShadowMode.CastAndReceive);
-        RigidBodyControl control = new BombControl(boxShape, 20);
+        missile.setLocalRotation(hoverControl.getPhysicsRotation());
+        missile.setShadowMode(ShadowMode.Cast);
+        RigidBodyControl control = new BombControl(assetManager, boxShape, 20);
         control.setLinearVelocity(dir.mult(100));
         control.setCollisionGroup(PhysicsCollisionObject.COLLISION_GROUP_03);
         missile.addControl(control);
@@ -286,6 +298,7 @@ public class TestHoveringTank extends SimpleApplication implements AnalogListene
         terrain.updateModelBound();
         terrain.setLocked(false); // unlock it so we can edit the height
 
+        terrain.setShadowMode(ShadowMode.CastAndReceive);
         terrain.addControl(new RigidBodyControl(0));
         rootNode.attachChild(terrain);
         getPhysicsSpace().addAll(terrain);
