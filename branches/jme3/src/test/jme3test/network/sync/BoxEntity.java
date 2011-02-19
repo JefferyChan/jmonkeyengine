@@ -33,6 +33,7 @@ public class BoxEntity extends Geometry implements SyncEntity {
     }
 
     public void onRemoteDelete() {
+        removeFromParent();
     }
 
     public void onLocalUpdate() {

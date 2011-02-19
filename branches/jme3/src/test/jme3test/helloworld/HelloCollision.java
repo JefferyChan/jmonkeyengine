@@ -43,6 +43,7 @@ import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
+import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
@@ -112,9 +113,13 @@ public class HelloCollision extends SimpleApplication
   }
 
     private void setUpLight() {
+        AmbientLight al = new AmbientLight();
+        al.setColor(ColorRGBA.White.mult(1.3f));
+        rootNode.addLight(al);
+
         // We add a light so we see the scene
         DirectionalLight dl = new DirectionalLight();
-        dl.setColor(ColorRGBA.White.clone().multLocal(2)); // bright white light
+        dl.setColor(ColorRGBA.White.mult(0.7f)); // bright white light
         dl.setDirection(new Vector3f(2.8f, -2.8f, -2.8f).normalize());
         rootNode.addLight(dl);
     }

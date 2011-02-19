@@ -622,7 +622,7 @@ public final class Vector2f implements Savable, Cloneable {
      * @return the angle in radians. [-pi, pi)
      */
     public float getAngle() {
-        return -FastMath.atan2(y, x);
+        return FastMath.atan2(y, x);
     }
 
     /**

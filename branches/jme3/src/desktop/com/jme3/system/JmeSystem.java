@@ -232,7 +232,7 @@ public class JmeSystem {
         return null;
     }
 
-    public static JmeContext newContextJogl(AppSettings settings, JmeContext.Type type){
+    private static JmeContext newContextJogl(AppSettings settings, JmeContext.Type type){
         try{
             Class<? extends JmeContext> ctxClazz = null;
             switch (type){
@@ -259,6 +259,24 @@ public class JmeSystem {
         return null;
     }
 
+    private static JmeContext newContextCustom(AppSettings settings, JmeContext.Type type){
+        try{
+            String className = settings.getRenderer().substring("CUSTOM".length());
+
+            Class<? extends JmeContext> ctxClazz = null;
+            ctxClazz = (Class<? extends JmeContext>) Class.forName(className);
+            return ctxClazz.newInstance();
+        }catch (InstantiationException ex){
+            logger.log(Level.SEVERE, "Failed to create context", ex);
+        }catch (IllegalAccessException ex){
+            logger.log(Level.SEVERE, "Failed to create context", ex);
+        }catch (ClassNotFoundException ex){
+            logger.log(Level.SEVERE, "CRITICAL ERROR: Context class is missing!", ex);
+        }
+
+        return null;
+    }
+
     public static JmeContext newContext(AppSettings settings, JmeContext.Type contextType) {
         initialize(settings);
         JmeContext ctx;
@@ -272,6 +290,9 @@ public class JmeSystem {
             ctx.setSettings(settings);
         }else if (settings.getRenderer().startsWith("JOGL")){
             ctx = newContextJogl(settings, contextType);
+            ctx.setSettings(settings);
+        }else if (settings.getRenderer().startsWith("CUSTOM")){
+            ctx = newContextCustom(settings, contextType);
             ctx.setSettings(settings);
         }else{
             throw new UnsupportedOperationException(

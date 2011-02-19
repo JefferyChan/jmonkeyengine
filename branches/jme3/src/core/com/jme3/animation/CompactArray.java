@@ -81,7 +81,11 @@ public abstract class CompactArray<T> {
                 throw new RuntimeException("Internal is already fixed");
             }
             base = index.length;
-            index = Arrays.copyOf(index, base+objArray.length);
+
+            int[] tmp = new int[base + objArray.length];
+            System.arraycopy(index, 0, tmp, 0, index.length);
+            index = tmp;
+            //index = Arrays.copyOf(index, base+objArray.length);
         }
         for (int j=0; j < objArray.length; j++) {
             T obj = objArray[j];
@@ -155,7 +159,10 @@ public abstract class CompactArray<T> {
         } else if (arr.length >= size) {
             return arr;
         } else {
-            return Arrays.copyOf(arr, size);
+            float[] tmp = new float[size];
+            System.arraycopy(arr, 0, tmp, 0, arr.length);
+            return tmp;
+            //return Arrays.copyOf(arr, size);
         }
     }
 
