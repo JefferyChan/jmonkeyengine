@@ -55,15 +55,13 @@ public final class BoneTrack implements Savable {
     /**
      * Transforms and times for track.
      */
-    private CompactVector3Array translations;
-    private CompactQuaternionArray rotations;
+    private Vector3f[] translations;
+    private Quaternion[] rotations;
     private float[] times;
 
     // temp vectors for interpolation
     private transient final Vector3f tempV = new Vector3f();
     private transient final Quaternion tempQ = new Quaternion();
-    private transient final Vector3f tempV2 = new Vector3f();
-    private transient final Quaternion tempQ2 = new Quaternion();
 
     /**
      * Serialization-only. Do not use.
@@ -85,7 +83,7 @@ public final class BoneTrack implements Savable {
     }
 
     public Quaternion[] getRotations() {
-        return rotations.toObjectArray();
+        return rotations;
     }
 
     public float[] getTimes() {
@@ -93,7 +91,7 @@ public final class BoneTrack implements Savable {
     }
 
     public Vector3f[] getTranslations() {
-        return translations.toObjectArray();
+        return translations;
     }
 
     public void setKeyframes(float[] times, Vector3f[] translations, Quaternion[] rotations){
@@ -103,12 +101,8 @@ public final class BoneTrack implements Savable {
         assert (times.length == translations.length) && (times.length == rotations.length);
 
         this.times = times;
-        this.translations = new CompactVector3Array();
-        this.translations.add(translations);
-        this.translations.freeze();
-        this.rotations = new CompactQuaternionArray();
-        this.rotations.add(rotations);
-        this.rotations.freeze();
+        this.translations = translations;
+        this.rotations = rotations;
     }  
 
     /**
@@ -121,11 +115,11 @@ public final class BoneTrack implements Savable {
 
         int lastFrame = times.length - 1;
         if (time < 0 || lastFrame == 0){
-            rotations.get(0, tempQ);
-            translations.get(0, tempV);
+            tempQ.set(rotations[0]);
+            tempV.set(translations[0]);
         }else if (time >= times[lastFrame]){
-            rotations.get(lastFrame, tempQ);
-            translations.get(lastFrame, tempV);
+            tempQ.set(rotations[lastFrame]);
+            tempV.set(translations[lastFrame]);
         }else{
             int startFrame = 0;
             int endFrame   = 1;
@@ -139,12 +133,8 @@ public final class BoneTrack implements Savable {
             float blend =  (time - times[startFrame])
                          / (times[endFrame] - times[startFrame]);
 
-            rotations.get(startFrame, tempQ);
-            translations.get(startFrame, tempV);
-            rotations.get(endFrame, tempQ2);
-            translations.get(endFrame, tempV2);
-            tempQ.slerp(tempQ2, blend);
-            tempV.interpolate(tempV2, blend);
+            tempQ.slerp(rotations[startFrame], rotations[endFrame], blend);
+            tempV.interpolate(translations[startFrame], translations[endFrame], blend);
         }
 
         if (weight != 1f){
@@ -171,9 +161,17 @@ public final class BoneTrack implements Savable {
         InputCapsule ic = im.getCapsule(this);
         targetBoneIndex = ic.readInt("boneIndex", 0);
 
-        translations = (CompactVector3Array) ic.readSavable("translations", null);
+        Savable[] sav = ic.readSavableArray("translations", null);
+        if (sav != null){
+            translations = new Vector3f[sav.length];
+            System.arraycopy(sav, 0, translations, 0, sav.length);
+        }
 
-        rotations = (CompactQuaternionArray) ic.readSavable("rotations", null);
+        sav = ic.readSavableArray("rotations", null);
+        if (sav != null){
+            rotations = new Quaternion[sav.length];
+            System.arraycopy(sav, 0, rotations, 0, sav.length);
+        }
         times = ic.readFloatArray("times", null);
     }
 
