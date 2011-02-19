@@ -632,30 +632,21 @@ public final class Quaternion implements Savable, Cloneable {
      *            the amount to interpolate between the two quaternions.
      */
     public Quaternion slerp(Quaternion q1, Quaternion q2, float t) {
-        float x1 = q1.getX();
-        float y1 = q1.getY();
-        float z1 = q1.getZ();
-        float w1 = q1.getW();
-        float x2 = q2.getX();
-        float y2 = q2.getY();
-        float z2 = q2.getZ();
-        float w2 = q2.getW();
-        
         // Create a local quaternion to store the interpolated quaternion
-        if (x1 == x2 && y1 == y2 && z1 == z2 && w1 == w2) {
+        if (q1.x == q2.x && q1.y == q2.y && q1.z == q2.z && q1.w == q2.w) {
             this.set(q1);
             return this;
         }
 
-        float result = (x1 * x2) + (y1 * y2) + (z1 * z2)
-                + (w1 * w2);
+        float result = (q1.x * q2.x) + (q1.y * q2.y) + (q1.z * q2.z)
+                + (q1.w * q2.w);
 
         if (result < 0.0f) {
             // Negate the second quaternion and the result of the dot product
-            x2 = -x2;
-            y2 = -y2;
-            z2 = -z2;
-            w2 = -w2;
+            q2.x = -q2.x;
+            q2.y = -q2.y;
+            q2.z = -q2.z;
+            q2.w = -q2.w;
             result = -result;
         }
 
@@ -679,10 +670,10 @@ public final class Quaternion implements Savable, Cloneable {
         // Calculate the x, y, z and w values for the quaternion by using a
         // special
         // form of linear interpolation for quaternions.
-        this.x = (scale0 * x1) + (scale1 * x2);
-        this.y = (scale0 * y1) + (scale1 * y2);
-        this.z = (scale0 * z1) + (scale1 * z2);
-        this.w = (scale0 * w1) + (scale1 * w2);
+        this.x = (scale0 * q1.x) + (scale1 * q2.x);
+        this.y = (scale0 * q1.y) + (scale1 * q2.y);
+        this.z = (scale0 * q1.z) + (scale1 * q2.z);
+        this.w = (scale0 * q1.w) + (scale1 * q2.w);
 
         // Return the interpolated quaternion
         return this;
@@ -697,8 +688,49 @@ public final class Quaternion implements Savable, Cloneable {
      * @param changeAmnt
      *            The amount diffrence
      */
-    public Quaternion slerp(Quaternion q2, float changeAmnt) {
-        return slerp(this, q2, changeAmnt);
+    public void slerp(Quaternion q2, float changeAmnt) {
+        if (this.x == q2.x && this.y == q2.y && this.z == q2.z
+                && this.w == q2.w) {
+            return;
+        }
+
+        float result = (this.x * q2.x) + (this.y * q2.y) + (this.z * q2.z)
+                + (this.w * q2.w);
+
+        if (result < 0.0f) {
+            // Negate the second quaternion and the result of the dot product
+            q2.x = -q2.x;
+            q2.y = -q2.y;
+            q2.z = -q2.z;
+            q2.w = -q2.w;
+            result = -result;
+        }
+
+        // Set the first and second scale for the interpolation
+        float scale0 = 1 - changeAmnt;
+        float scale1 = changeAmnt;
+
+        // Check if the angle between the 2 quaternions was big enough to
+        // warrant such calculations
+        if ((1 - result) > 0.1f) {
+            // Get the angle between the 2 quaternions, and then store the sin()
+            // of that angle
+            float theta = FastMath.acos(result);
+            float invSinTheta = 1f / FastMath.sin(theta);
+
+            // Calculate the scale for q1 and q2, according to the angle and
+            // it's sine value
+            scale0 = FastMath.sin((1 - changeAmnt) * theta) * invSinTheta;
+            scale1 = FastMath.sin((changeAmnt * theta)) * invSinTheta;
+        }
+
+        // Calculate the x, y, z and w values for the quaternion by using a
+        // special
+        // form of linear interpolation for quaternions.
+        this.x = (scale0 * this.x) + (scale1 * q2.x);
+        this.y = (scale0 * this.y) + (scale1 * q2.y);
+        this.z = (scale0 * this.z) + (scale1 * q2.z);
+        this.w = (scale0 * this.w) + (scale1 * q2.w);
     }
 
     /**
@@ -788,12 +820,11 @@ public final class Quaternion implements Savable, Cloneable {
     public Quaternion mult(Quaternion q, Quaternion res) {
         if (res == null)
             res = new Quaternion();
-        float qw = q.getW(), qx = q.getX(), qy = q.getY(), qz = q.getZ();
-        float lw = w, lx = x, ly = y, lz = z;
-        res.x = lx * qw + ly * qz - lz * qy + lw * qx;
-        res.y = -lx * qz + ly * qw + lz * qx + lw * qy;
-        res.z = lx * qy - ly * qx + lz * qw + lw * qz;
-        res.w = -lx * qx - ly * qy - lz * qz + lw * qw;
+        float qw = q.w, qx = q.x, qy = q.y, qz = q.z;
+        res.x = x * qw + y * qz - z * qy + w * qx;
+        res.y = -x * qz + y * qw + z * qx + w * qy;
+        res.z = x * qy - y * qx + z * qw + w * qz;
+        res.w = -x * qx - y * qy - z * qz + w * qw;
         return res;
     }
 
@@ -888,7 +919,16 @@ public final class Quaternion implements Savable, Cloneable {
      * @return v
      */
     public Vector3f multLocal(Vector3f v) {
-        mult(v, v);
+        float tempX, tempY;
+        tempX = w * w * v.x + 2 * y * w * v.z - 2 * z * w * v.y + x * x * v.x
+                + 2 * y * x * v.y + 2 * z * x * v.z - z * z * v.x - y * y * v.x;
+        tempY = 2 * x * y * v.x + y * y * v.y + 2 * z * y * v.z + 2 * w * z
+                * v.x - z * z * v.y + w * w * v.y - 2 * x * w * v.z - x * x
+                * v.y;
+        v.z = 2 * x * z * v.x + 2 * y * z * v.y + z * z * v.z - 2 * w * y * v.x
+                - y * y * v.z + 2 * w * x * v.y - x * x * v.z + w * w * v.z;
+        v.x = tempX;
+        v.y = tempY;
         return v;
     }
 
@@ -957,20 +997,15 @@ public final class Quaternion implements Savable, Cloneable {
             store.set(0, 0, 0);
         } else {
             float vx = v.x, vy = v.y, vz = v.z;
-            float ww = w*w;
-            float xx = x*x;
-            float yy = y*y;
-            float zz = z*z;
-            float xy = x*y;
-            float yz = y*z;
-            float zw = z*w;
-            float wx = w*x;
-            float wy = w*y;
-            float xz = x*z;
-            
-            store.x = ww * vx + 2 * wy * vz - 2 * zw * vy + xx * vx + 2 * xy * vy + 2 * xz * vz - zz * vx - yy * vx;
-            store.y = 2 * xy * vx + yy * vy + 2 * yz * vz + 2 * zw * vx - zz * vy + ww * vy - 2 * wx * vz - xx * vy;
-            store.z = 2 * xz * vx + 2 * yz * vy + zz * vz - 2 * wy * vx - yy * vz + 2 * wx * vy - xx * vz + ww * vz;
+            store.x = w * w * vx + 2 * y * w * vz - 2 * z * w * vy + x * x
+                    * vx + 2 * y * x * vy + 2 * z * x * vz - z * z * vx - y
+                    * y * vx;
+            store.y = 2 * x * y * vx + y * y * vy + 2 * z * y * vz + 2 * w
+                    * z * vx - z * z * vy + w * w * vy - 2 * x * w * vz - x
+                    * x * vy;
+            store.z = 2 * x * z * vx + 2 * y * z * vy + z * z * vz - 2 * w
+                    * y * vx - y * y * vz + 2 * w * x * vy - x * x * vz + w
+                    * w * vz;
         }
         return store;
     }
