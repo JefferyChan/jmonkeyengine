@@ -166,7 +166,7 @@ public class CubeField extends SimpleApplication implements AnalogListener {
     @Override
     public void requestClose(boolean esc) {
         if (!esc){
-            System.out.println("Thier could be an issue!!");
+            System.out.println("The game was quit.");
         }else{
             System.out.println("Player has Collided. Final Score is " + Score);
         }
@@ -286,7 +286,7 @@ public class CubeField extends SimpleApplication implements AnalogListener {
                     gameLost();
                     return;
                 }
-                //Remove cube if 10 paces behind player
+                //Remove cube if 10 world units behind player
                 if (cubeField.get(i).getLocalTranslation().getX() + 10 < player.getLocalTranslation().getX()){
                     cubeField.get(i).removeFromParent();
                     cubeField.remove(cubeField.get(i));
@@ -303,7 +303,7 @@ public class CubeField extends SimpleApplication implements AnalogListener {
      */
     private void Keys() {
         inputManager.addMapping("START", new KeyTrigger(KeyInput.KEY_RETURN));
-        inputManager.addMapping("Left", new KeyTrigger(KeyInput.KEY_LEFT));
+        inputManager.addMapping("Left",  new KeyTrigger(KeyInput.KEY_LEFT));
         inputManager.addMapping("Right", new KeyTrigger(KeyInput.KEY_RIGHT));
         inputManager.addListener(this, "START", "Left", "Right");
     }
@@ -314,18 +314,12 @@ public class CubeField extends SimpleApplication implements AnalogListener {
             guiNode.detachChild(pressStart);
             System.out.println("START");
         }else if (START == true && binding.equals("Left")){
-            player.move(0, 0, -(speed / 2f) * value*tpf * fpsRate);
+            player.move(0, 0, -(speed / 2f) * value * fpsRate);
             camAngle -= value*tpf;
         }else if (START == true && binding.equals("Right")){
-            player.move(0, 0, (speed / 2f) * value*tpf * fpsRate);
+            player.move(0, 0, (speed / 2f) * value * fpsRate);
             camAngle += value*tpf;
         }
-    }
-
-    public void onPreUpdate(float tpf){
-    }
-
-    public void onPostUpdate(float tpf){
     }
 
     /**
