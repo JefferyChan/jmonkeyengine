@@ -279,7 +279,9 @@ public class BulletAppState implements AppState, PhysicsTickListener {
          * only location and rotation is transferred thread safe,
          * <b>all</b> other physics operations including adding and removing of objects to the physics space
          * have to be done from the physics thread. (Creation of objects is safe on any thread except for vehicle)
+         * @deprecated since native bullet will be parallelized at the time physics is moved to native
          */
+        @Deprecated
         DETACHED
     }
 }
