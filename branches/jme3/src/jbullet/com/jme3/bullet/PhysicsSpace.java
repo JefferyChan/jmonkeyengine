@@ -123,7 +123,7 @@ public class PhysicsSpace {
     private Vector3f worldMin = new Vector3f(-10000f, -10000f, -10000f);
     private Vector3f worldMax = new Vector3f(10000f, 10000f, 10000f);
     private float accuracy = 1f / 60f;
-    private boolean deterministic = false;
+    private int maxSubSteps = 4;
     private javax.vecmath.Vector3f rayVec1 = new javax.vecmath.Vector3f();
     private javax.vecmath.Vector3f rayVec2 = new javax.vecmath.Vector3f();
     private AssetManager debugManager;
@@ -318,11 +318,7 @@ public class PhysicsSpace {
      * @param time the current time value
      */
     public void update(float time) {
-        int subSteps = 1;
-        if (deterministic && time > accuracy) {
-            subSteps = (int) (Math.ceil(time / accuracy));
-        }
-        update(time, subSteps);
+        update(time, maxSubSteps);
     }
 
     /**
@@ -708,9 +704,27 @@ public class PhysicsSpace {
      * be compensated by stepping the physics space multiple times per frame.
      * If not, low fps values will make the physics inaccurate. Default is false.
      * @param deterministic
+     * @deprecated in favor of PhysicsSpace.setMaxSubSteps
      */
+    @Deprecated
     public void setDeterministic(boolean deterministic) {
-        this.deterministic = deterministic;
+        if (!deterministic) {
+            maxSubSteps = 1;
+        } else {
+            maxSubSteps = 4;
+        }
+    }
+
+    /**
+     * Sets the maximum amount of extra steps that will be used to step the physics
+     * when the fps is below the physics fps. Doing this maintains determinism in physics.
+     * For example a maximum number of 2 can compensate for framerates as low as 30fps
+     * when the physics has the default accuracy of 60 fps. Note that setting this
+     * value too high can make the physics drive down its own fps in case its overloaded.
+     * @param steps The maximum number of extra steps, default is 4.
+     */
+    public void setMaxSubSteps(int steps) {
+        maxSubSteps = steps;
     }
 
     /**
