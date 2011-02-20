@@ -132,8 +132,8 @@ Place town.zip in the root directory of your JME3 project.
         rootNode.<span class="me1">addLight</span><span class="br0">&#40;</span>al<span class="br0">&#41;</span>;
 &nbsp;
         DirectionalLight dl <span class="sy0">=</span> <span class="kw1">new</span> DirectionalLight<span class="br0">&#40;</span><span class="br0">&#41;</span>;
-        dl.<span class="me1">setColor</span><span class="br0">&#40;</span>ColorRGBA.<span class="me1">White</span>.<span class="me1">clone</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">multLocal</span><span class="br0">&#40;</span><span class="nu0">2</span><span class="br0">&#41;</span><span class="br0">&#41;</span>; <span class="co1">// bright white light</span>
-        dl.<span class="me1">setDirection</span><span class="br0">&#40;</span><span class="kw1">new</span> Vector3f<span class="br0">&#40;</span>2.8f, <span class="sy0">-</span>2.8f, <span class="sy0">-</span>2.8f<span class="br0">&#41;</span>.<span class="me1">normalize</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
+        dl.<span class="me1">setColor</span><span class="br0">&#40;</span>ColorRGBA.<span class="me1">White</span><span class="br0">&#41;</span>; 
+        dl.<span class="me1">setDirection</span><span class="br0">&#40;</span><span class="kw1">new</span> Vector3f<span class="br0">&#40;</span>2.8f, <span class="sy0">-</span>2.8f, <span class="sy0">-</span>2.8f<span class="br0">&#41;</span>.<span class="me1">normalizeLocal</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
         rootNode.<span class="me1">addLight</span><span class="br0">&#40;</span>dl<span class="br0">&#41;</span>;
     <span class="br0">&#125;</span>
 &nbsp;
@@ -193,7 +193,7 @@ Run the sample. You should see a town square with houses and a monument. Use the
 </p>
 
 </div>
-<!-- SECTION "Sample Code" [593-7133] -->
+<!-- SECTION "Sample Code" [593-7096] -->
 <h2><a name="understanding_the_code" id="understanding_the_code">Understanding the Code</a></h2>
 <div class="level2">
 
@@ -233,7 +233,7 @@ Let&#039;s have a look at all the details:
 </p>
 
 </div>
-<!-- SECTION "Understanding the Code" [7134-8322] -->
+<!-- SECTION "Understanding the Code" [7097-8285] -->
 <h2><a name="initializing_the_game" id="initializing_the_game">Initializing the Game</a></h2>
 <div class="level2">
 
@@ -248,12 +248,12 @@ As usual, you initialize the game in the <code>simpleInitApp()</code> method.
 <p>
 We switch the background color from balck to light blue, since this is a scene with a sky.
 You repurpose the default flyCam camera as first-person camera and set its speed. 
-The auxiliary method <code>setUpLights()</code> simply adds a light node.
+The auxiliary method <code>setUpLights()</code> adds light sources.
 The auxiliary method <code>setUpKeys()</code> configures input mappings–we will look at it later. 
 </p>
 
 </div>
-<!-- SECTION "Initializing the Game" [8323-8909] -->
+<!-- SECTION "Initializing the Game" [8286-8866] -->
 <h3><a name="the_physics-controlled_scene" id="the_physics-controlled_scene">The Physics-Controlled Scene</a></h3>
 <div class="level3">
 
@@ -297,7 +297,7 @@ Add the control to the Spatial to make give it physical properties. Attach the s
 </p>
 
 </div>
-<!-- SECTION "The Physics-Controlled Scene" [8910-10921] -->
+<!-- SECTION "The Physics-Controlled Scene" [8867-10878] -->
 <h3><a name="the_physics-controlled_player" id="the_physics-controlled_player">The Physics-Controlled Player</a></h3>
 <div class="level3">
 
@@ -331,7 +331,7 @@ Finally we put the player in its starting position and update its state – reme
 </p>
 
 </div>
-<!-- SECTION "The Physics-Controlled Player" [10922-12610] -->
+<!-- SECTION "The Physics-Controlled Player" [10879-12567] -->
 <h3><a name="activating_the_physicsspace" id="activating_the_physicsspace">Activating the PhysicsSpace</a></h3>
 <div class="level3">
 
@@ -347,7 +347,7 @@ Remember that for physical games, you must also add all solid objects (usually t
 <pre class="code java">    bulletAppState.<span class="me1">getPhysicsSpace</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">add</span><span class="br0">&#40;</span>landscape<span class="br0">&#41;</span>;
     bulletAppState.<span class="me1">getPhysicsSpace</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">add</span><span class="br0">&#40;</span>player<span class="br0">&#41;</span>;</pre>
 </div>
-<!-- SECTION "Activating the PhysicsSpace" [12611-13131] -->
+<!-- SECTION "Activating the PhysicsSpace" [12568-13088] -->
 <h2><a name="navigation" id="navigation">Navigation</a></h2>
 <div class="level2">
 
@@ -365,7 +365,7 @@ This is why we must re-define the flyCam&#039;s navigational key mappings to use
 </p>
 
 </div>
-<!-- SECTION "Navigation" [13132-13804] -->
+<!-- SECTION "Navigation" [13089-13761] -->
 <h3><a name="inputmanager" id="inputmanager">1. inputManager</a></h3>
 <div class="level3">
 
@@ -388,7 +388,7 @@ In the code sample above, this block of code was moved into an auxiliary method 
 </p>
 
 </div>
-<!-- SECTION "1. inputManager" [13805-14691] -->
+<!-- SECTION "1. inputManager" [13762-14648] -->
 <h3><a name="onaction" id="onaction">2. onAction()</a></h3>
 <div class="level3">
 
@@ -422,7 +422,7 @@ The only movement that you do not have to implement yourself is the jumping acti
 </p>
 
 </div>
-<!-- SECTION "2. onAction()" [14692-15972] -->
+<!-- SECTION "2. onAction()" [14649-15929] -->
 <h3><a name="setwalkdirection" id="setwalkdirection">3. setWalkDirection()</a></h3>
 <div class="level3">
 
@@ -460,7 +460,7 @@ That&#039;s it!
 </p>
 
 </div>
-<!-- SECTION "3. setWalkDirection()" [15973-17709] -->
+<!-- SECTION "3. setWalkDirection()" [15930-17666] -->
 <h2><a name="conclusion" id="conclusion">Conclusion</a></h2>
 <div class="level2">
 
@@ -487,5 +487,5 @@ Do you want to hear your player say “ouch!” when he bumps into a wall? Conti
 </p>
 
 </div>
-<!-- SECTION "Conclusion" [17710-] -->
+<!-- SECTION "Conclusion" [17667-] -->
 <p><em><a href="http://jmonkeyengine.org/wiki/doku.php/jme3:beginner:hello_collision?do=export_xhtmlbody">view online version</a></em></p>

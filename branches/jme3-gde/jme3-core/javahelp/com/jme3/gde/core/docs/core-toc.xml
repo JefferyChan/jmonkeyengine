@@ -89,7 +89,7 @@
             <tocitem text="Sky" target="jme3.advanced.sky"/>
             <tocitem text="Terrain" target="jme3.advanced.terrain"/>
             <tocitem text="Simple Water" target="jme3.advanced.water"/>
-            <tocitem text="Post Process Water" target="jme3.advanced.post-process_water"/>
+            <tocitem text="Post Process Water" target="jme3.advanced.post-processor_water"/>
             <tocitem text="Light and Shadow" target="jme3.advanced.light_and_shadow"/>
             <tocitem text="Bloom and Glow" target="jme3.advanced.bloom_and_glow"/>
             <tocitem text="Particle Emitters" target="jme3.advanced.particle_emitters"/>

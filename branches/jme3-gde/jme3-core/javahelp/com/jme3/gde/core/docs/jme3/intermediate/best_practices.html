@@ -203,27 +203,33 @@ Typically developers create a custom class off of jME3&#039;s SimpleApplication.
 
 <p>
 
-As your application grows, you find yourself putting more and more tests in the simpleUpdate() loop, and passing around lots of object references. Don&#039;t solve this by copying an pasting boilerplate code. It is a best practice to move game behaviour into classes of their own: Controls and AppStates.
+As your jME3-based application grows more advanced, you may find yourself putting more and more tests in the simpleUpdate() loop, and passing around lots of object references. Don&#039;t implement game behaviour by copying and pasting boilerplate code. 
+</p>
+
+<p>
+It is a best practice to move game behaviour methods into classes of their own: Controls and AppStates.
 
 </p>
 <ul>
-<li class="level1"><div class="li"> Use Controls to implement the behaviour of types of game entities. E.g. a character control that defines how one type of Spatials moves.</div>
+<li class="level1"><div class="li"> Use Controls to implement the behaviour of types of game entities. E.g. a character control that defines how this type of Spatials moves, or an animation control that plays animations in this type of Spatial&#039;s model.</div>
 </li>
-<li class="level1"><div class="li"> Use AppStates to implement global game behaviour: E.g. Physics manager, Artificial Intelligence manager.</div>
+<li class="level1"><div class="li"> Use AppStates to implement global game behaviour: E.g. a physics manager, or a custom artificial intelligence manager.</div>
+</li>
+<li class="level1"><div class="li"> Use the simpleUpdate() loop for the remaining tests and interactions.</div>
 </li>
 </ul>
 
 <p>
 
-Both classes hook into the update loop. Instead of remote controlling game entities via the simpleUpdate() loop, you define the behaviour in the update methods of your custom controls and AppStates. You add Controls to Spatials, and AppStates to the application, and jME will automatically trigger your custom update methods. This cleans up your simpleUpdate() loop code considerably. 
+Both classes hook into the update loop. Instead of remote controlling game entities via simpleUpdate(), you define the behaviour in the update methods of your custom controls and AppStates. You then add Controls to Spatials, and AppStates to the application, and jME will automatically trigger your custom update methods. This cleans up your simpleUpdate() loop code considerably. 
 </p>
 
 <p>
-Learn more about <a href="/com/jme3/gde/core/docs/jme3/intermediate/custom_controls.html" class="wikilink2" title="jme3:intermediate:custom_controls" rel="nofollow">Custom Controls</a> and <a href="/com/jme3/gde/core/docs/jme3/intermediate/application_states.html" class="wikilink2" title="jme3:intermediate:application_states" rel="nofollow">Application States</a>.
+Learn more about <a href="/com/jme3/gde/core/docs/jme3/advanced/custom_controls.html" class="wikilink1" title="jme3:advanced:custom_controls">Custom Controls</a> and <a href="/com/jme3/gde/core/docs/jme3/advanced/application_states.html" class="wikilink1" title="jme3:advanced:application_states">Application States</a>.
 </p>
 
 </div>
-<!-- SECTION "Make Use of Controls and Applications States" [5691-6789] -->
+<!-- SECTION "Make Use of Controls and Applications States" [5691-6999] -->
 <h3><a name="optimize_application_performance" id="optimize_application_performance">Optimize Application Performance</a></h3>
 <div class="level3">
 
@@ -233,7 +239,7 @@ Learn more about <a href="/com/jme3/gde/core/docs/jme3/intermediate/custom_contr
 </p>
 
 </div>
-<!-- SECTION "Optimize Application Performance" [6790-6869] -->
+<!-- SECTION "Optimize Application Performance" [7000-7079] -->
 <h3><a name="use_an_assets_folder" id="use_an_assets_folder">Use an Assets Folder</a></h3>
 <div class="level3">
 
@@ -294,7 +300,7 @@ See also: <a href="/com/jme3/gde/core/docs/jme3/jmonkeyplatform/asset_packs.html
 </p>
 
 </div>
-<!-- SECTION "Use an Assets Folder" [6870-9137] -->
+<!-- SECTION "Use an Assets Folder" [7080-9347] -->
 <h3><a name="don_t_mess_with_geometric_state" id="don_t_mess_with_geometric_state">Don&#039;t Mess With Geometric State</a></h3>
 <div class="level3">
 
@@ -313,7 +319,7 @@ Here are some tips especially for users who already know jME2. Automatic handlin
 </ul>
 
 </div>
-<!-- SECTION "Don't Mess With Geometric State" [9138-9594] -->
+<!-- SECTION "Don't Mess With Geometric State" [9348-9804] -->
 <h3><a name="maintain_internal_documentation" id="maintain_internal_documentation">Maintain Internal Documentation</a></h3>
 <div class="level3">
 
@@ -342,7 +348,7 @@ It&#039;s unlikely you will be willing to fully document every class you write. 
 </ul>
 
 </div>
-<!-- SECTION "Maintain Internal Documentation" [9595-10316] -->
+<!-- SECTION "Maintain Internal Documentation" [9805-10526] -->
 <h3><a name="use_version_control" id="use_version_control">Use Version Control</a></h3>
 <div class="level3">
 
@@ -364,7 +370,7 @@ Whether you work in a team or alone, keeping a version controlled repository of 
 </ul>
 
 </div>
-<!-- SECTION "Use Version Control" [10317-10834] -->
+<!-- SECTION "Use Version Control" [10527-11044] -->
 <h3><a name="convert_models_to_.j3o_format" id="convert_models_to_.j3o_format">Convert Models to .j3o Format</a></h3>
 <div class="level3">
 
@@ -386,12 +392,12 @@ From the beta on, convert all Ogre mesh models and scenes to the binary .j3o for
 </ul>
 
 </div>
-<!-- SECTION "Convert Models to .j3o Format" [10835-11912] -->
+<!-- SECTION "Convert Models to .j3o Format" [11045-12122] -->
 <h2><a name="debugging_and_test_phase" id="debugging_and_test_phase">Debugging and Test Phase</a></h2>
 <div class="level2">
 
 </div>
-<!-- SECTION "Debugging and Test Phase" [11913-11950] -->
+<!-- SECTION "Debugging and Test Phase" [12123-12160] -->
 <h3><a name="test" id="test">Test</a></h3>
 <div class="level3">
 
@@ -409,7 +415,7 @@ Alpha and Beta Testing means that you ask someone to try to install and run your
 </p>
 
 </div>
-<!-- SECTION "Test" [11951-13391] -->
+<!-- SECTION "Test" [12161-13601] -->
 <h3><a name="debug" id="debug">Debug</a></h3>
 <div class="level3">
 
@@ -423,7 +429,7 @@ Use the <a href="/com/jme3/gde/core/docs/jme3/advanced/logging.html" class="wiki
 </p>
 
 </div>
-<!-- SECTION "Debug" [13392-13814] -->
+<!-- SECTION "Debug" [13602-14024] -->
 <h3><a name="enhance_performance" id="enhance_performance">Enhance Performance</a></h3>
 <div class="level3">
 
@@ -433,7 +439,7 @@ A Java Profiler can be added to the jMonkeyPlatform via Tools → Plugins → Av
 </p>
 
 </div>
-<!-- SECTION "Enhance Performance" [13815-14207] -->
+<!-- SECTION "Enhance Performance" [14025-14417] -->
 <h2><a name="release_phase" id="release_phase">Release Phase</a></h2>
 <div class="level2">
 
@@ -499,5 +505,5 @@ Which ever method you choose, a Java-Application works on the three main operati
 </p>
 
 </div>
-<!-- SECTION "Release Phase" [14208-] -->
+<!-- SECTION "Release Phase" [14418-] -->
 <p><em><a href="http://jmonkeyengine.org/wiki/doku.php/jme3:intermediate:best_practices?do=export_xhtmlbody">view online version</a></em></p>

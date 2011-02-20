@@ -6,11 +6,15 @@
 
 <p>
 
+Lighting means that an object is lighter on the side facing the light direction, and darker on the backside. A light source with a direction or location is required for lit Materials to be visible. Lighting does not automatically mean that objects cast a shadow on the floor or other objects: Activating shadow processing is an extra step described below. 
+</p>
+
+<p>
 <img src="nbdocs:/com/jme3/gde/core/docs/jme3/advanced/pssm.png"> 
 </p>
 
 </div>
-<!-- SECTION "Light and Shadow" [1-115] -->
+<!-- SECTION "Light and Shadow" [1-473] -->
 <h2><a name="light_sources" id="light_sources">Light Sources</a></h2>
 <div class="level2">
 
@@ -20,11 +24,11 @@ You can add several light sources to a scene using <code>rootNode.addLight()</co
 </p>
 
 <p>
-The two available light sources are PointLight and DirectionalLight. You can set the color of the light – normally, it is white. You can choose to set other colors to influence the scene&#039;s atmosphere. 
+The available light sources in <code>com.​jme3.​light</code> are SpotLight, PointLight, AmbientLight, and DirectionalLight. You can set the color of the light – normally, it is white. You can choose to set other colors to influence the scene&#039;s atmosphere. 
 </p>
 
 <p>
-A PointLight has a location and shines in all directions:
+A PointLight has a location and shines from there in all directions as far as its radius reaches, like a lamp. The light intensity decreases with increased distance from the light source.
 </p>
 <pre class="code java">PointLight lamp_light <span class="sy0">=</span> <span class="kw1">new</span> PointLight<span class="br0">&#40;</span><span class="br0">&#41;</span>;
 lamp_light.<span class="me1">setColor</span><span class="br0">&#40;</span>ColorRGBA.<span class="me1">Yellow</span><span class="br0">&#41;</span>;
@@ -32,14 +36,24 @@ lamp_light.<span class="me1">setRadius</span><span class="br0">&#40;</span>4f<sp
 lamp_light.<span class="me1">setPosition</span><span class="br0">&#40;</span><span class="kw1">new</span> Vector3f<span class="br0">&#40;</span>lamp_geo.<span class="me1">getLocalTranslation</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
 rootNode.<span class="me1">addLight</span><span class="br0">&#40;</span>lamp_light<span class="br0">&#41;</span>;</pre>
 <p>
-A DirectionalLight has no position, only a direction. It is considered “infinitely” far away and sending out parallel beams of light. You typically use it to simulate sun light:
+A DirectionalLight has no position, only a direction. It is considered “infinitely” far away and sends out parallel beams of light. It can cast shadows. You typically use it to simulate sun light:
 </p>
 <pre class="code java">DirectionalLight sun <span class="sy0">=</span> <span class="kw1">new</span> DirectionalLight<span class="br0">&#40;</span><span class="br0">&#41;</span>;
 sun.<span class="me1">setColor</span><span class="br0">&#40;</span>ColorRGBA.<span class="me1">White</span><span class="br0">&#41;</span>;
 sun.<span class="me1">setDirection</span><span class="br0">&#40;</span><span class="kw1">new</span> Vector3f<span class="br0">&#40;</span><span class="sy0">-</span><span class="nu0">1</span>, <span class="sy0">-</span><span class="nu0">1</span>, <span class="sy0">-</span><span class="nu0">1</span><span class="br0">&#41;</span>.<span class="me1">normalizeLocal</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
 rootNode.<span class="me1">addLight</span><span class="br0">&#40;</span>sun<span class="br0">&#41;</span>;</pre>
+<p>
+An AmbientLight influences the brightness of the whole scene globally. It has no direction and no location, and does not cast any shadow.
+</p>
+<pre class="code java">AmbientLight al <span class="sy0">=</span> <span class="kw1">new</span> AmbientLight<span class="br0">&#40;</span><span class="br0">&#41;</span>;
+al.<span class="me1">setColor</span><span class="br0">&#40;</span>ColorRGBA.<span class="me1">White</span>.<span class="me1">mult</span><span class="br0">&#40;</span>1.3f<span class="br0">&#41;</span><span class="br0">&#41;</span>;
+rootNode.<span class="me1">addLight</span><span class="br0">&#40;</span>al<span class="br0">&#41;</span>;</pre>
+<p>
+A SpotLight is like a flashlight that sends a distinct beam of light. (Still work in progress, as of alpha-3.)
+</p>
+
 </div>
-<!-- SECTION "Light Sources" [116-1143] -->
+<!-- SECTION "Light Sources" [474-2072] -->
 <h2><a name="simple_lighting" id="simple_lighting">Simple Lighting</a></h2>
 <div class="level2">
 <ul>
@@ -87,7 +101,7 @@ This lighting method doesn&#039;t make the node cast a shadow onto other nodes.
 </p>
 
 </div>
-<!-- SECTION "Simple Lighting" [1144-3386] -->
+<!-- SECTION "Simple Lighting" [2073-4315] -->
 <h2><a name="basicshadowrenderer" id="basicshadowrenderer">BasicShadowRenderer</a></h2>
 <div class="level2">
 <ul>
@@ -124,7 +138,7 @@ For every scene node that needs shadows, individually specify the shadow behavio
 <span class="me1">ghost</span>.<span class="me1">setShadowMode</span><span class="br0">&#40;</span>ShadowMode.<span class="me1">Off</span><span class="br0">&#41;</span>;
 ...</pre>
 </div>
-<!-- SECTION "BasicShadowRenderer" [3387-4395] -->
+<!-- SECTION "BasicShadowRenderer" [4316-5324] -->
 <h2><a name="parallel-split_shadow_map" id="parallel-split_shadow_map">Parallel-Split Shadow Map</a></h2>
 <div class="level2">
 <ul>
@@ -191,5 +205,5 @@ As usual, specify the shadow behaviour for every scene node.
 <span class="me1">soil</span>.<span class="me1">setShadowMode</span><span class="br0">&#40;</span>ShadowMode.<span class="me1">Receive</span><span class="br0">&#41;</span>;
 ...</pre>
 </div>
-<!-- SECTION "Parallel-Split Shadow Map" [4396-] -->
+<!-- SECTION "Parallel-Split Shadow Map" [5325-] -->
 <p><em><a href="http://jmonkeyengine.org/wiki/doku.php/jme3:advanced:light_and_shadow?do=export_xhtmlbody">view online version</a></em></p>

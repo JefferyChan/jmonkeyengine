@@ -6,19 +6,29 @@
 
 <p>
 
-Controls are a customizable interface offered by jME. You can define custom controls and implement their update methods. When you add such a control to a spatial (<code>spatial.addControl(myControl)</code>), the spatial&#039;s game state is changed automatically in the update loop, the way you specified it. 
+<code>com.jme3.scene.control.Control</code> is a customizable jME3 interface that allows you to cleanly implement Game Logic. You use Controls to control the behaviour of types of Spatials. (To control global game behaviour see <a href="/com/jme3/gde/core/docs/jme3/advanced/applications_states.html" class="wikilink2" title="jme3:advanced:applications_states" rel="nofollow">Applications States</a>.)
+
 </p>
+<ol>
+<li class="level1"><div class="li"> You define a custom control and implement its behaviour in the Control&#039;s update() method.</div>
+<ul>
+<li class="level2"><div class="li"> You can manipulate the spatial in any way: Modify its transformation (move, scale, rotate), decide which animation to play, check for enemies around it and react, etc. </div>
+</li>
+</ul>
+</li>
+<li class="level1"><div class="li"> Add the control to a Spatial (<code>spatial.addControl(myControl)</code>), and the Spatial&#039;s game state is updated automatically from now on. </div>
+</li>
+<li class="level1"><div class="li"> Create one control for each type of behavior. When you add several controls to one spatial, they will be executed in the order they were added.</div>
+</li>
+</ol>
 
 <p>
-In your control&#039;s update method, you can modify the spatial in any way: Modify its transformation (move, scale, rotate), decide which animation to play, check for enemies around it and react, etc. You can create controls for different types of behavior. It is possible to add several controls to one spatial, and they will be executed in the order they were added.
-</p>
 
-<p>
-You will either extend AbstractControl, or implement Control.
+To implement game logic for a Spatial, you will either extend AbstractControl, or implement Control, as explained in this article.
 </p>
 
 </div>
-<!-- SECTION "Custom Controls" [1-757] -->
+<!-- SECTION "Custom Controls" [1-980] -->
 <h2><a name="usage_examples" id="usage_examples">Usage Examples</a></h2>
 <div class="level2">
 
@@ -39,7 +49,7 @@ For example you could write a CharacterAnimControl that animates a character whi
 </ul>
 
 </div>
-<!-- SECTION "Usage Examples" [758-1873] -->
+<!-- SECTION "Usage Examples" [981-2096] -->
 <h2><a name="the_control_interface" id="the_control_interface">The Control Interface</a></h2>
 <div class="level2">
 
@@ -141,7 +151,7 @@ If you want to create a Control that also extends an existing class, then create
     <span class="br0">&#125;</span>    
 <span class="br0">&#125;</span></pre>
 </div>
-<!-- SECTION "The Control Interface" [1874-4452] -->
+<!-- SECTION "The Control Interface" [2097-4675] -->
 <h2><a name="abstractcontrol" id="abstractcontrol">AbstractControl</a></h2>
 <div class="level2">
 
@@ -206,7 +216,7 @@ Usage: Your custom subclass must implement the three methods <code>controlUpdate
 &nbsp;
 <span class="br0">&#125;</span></pre>
 </div>
-<!-- SECTION "AbstractControl" [4453-5932] -->
+<!-- SECTION "AbstractControl" [4676-6155] -->
 <h2><a name="best_practices" id="best_practices">Best Practices</a></h2>
 <div class="level2">
 
@@ -260,5 +270,5 @@ Then add the appropriate controls to spatials:
 <pre class="code java">ManualControl c <span class="sy0">=</span> <span class="br0">&#40;</span><span class="br0">&#40;</span>Spatial<span class="br0">&#41;</span>myThing<span class="br0">&#41;</span>.<span class="me1">getControl</span><span class="br0">&#40;</span>ManualControl.<span class="kw1">class</span><span class="br0">&#41;</span>;
 c.<span class="me1">steerX</span><span class="br0">&#40;</span>steerX<span class="br0">&#41;</span>;</pre>
 </div>
-<!-- SECTION "Best Practices" [5933-] -->
+<!-- SECTION "Best Practices" [6156-] -->
 <p><em><a href="http://jmonkeyengine.org/wiki/doku.php/jme3:advanced:custom_controls?do=export_xhtmlbody">view online version</a></em></p>

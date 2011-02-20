@@ -26,13 +26,13 @@ Knowing exactly what you are looking for allows you to search more efficiently, 
 	</tr>
 	<tr class="row2">
 		<th class="col0">Make an object appear in the scene </th><td class="col1">Attach nodes and geometries to the rootNode: rootNode.attach(geo); <br/>
- com.jme3.scene.Node, com.jme3.scene.Geometry </td><td class="col2"><a href="/com/jme3/gde/core/docs/jme3/intermediate/the_scene_graph.html" class="wikilink2" title="jme3:intermediate:the_scene_graph" rel="nofollow">The Scene Graph</a> <br/>
+ com.jme3.scene.Node, com.jme3.scene.Geometry </td><td class="col2"><a href="/com/jme3/gde/core/docs/jme3/the_scene_graph.html" class="wikilink1" title="jme3:the_scene_graph">The Scene Graph</a> <br/>
  <a href="/com/jme3/gde/core/docs/jme3/beginner/hello_asset.html" class="wikilink1" title="jme3:beginner:hello_asset">Hello Asset</a> <br/>
  <a href="/com/jme3/gde/core/docs/jme3/beginner/hello_node.html" class="wikilink1" title="jme3:beginner:hello_node">Hello Node</a> </td>
 	</tr>
 	<tr class="row3">
 		<th class="col0">Use third-person view </th><td class="col1">Use default camera <code>cam</code> <br/>
- com.jme3.renderer.Camera </td><td class="col2">ChaseCam WIP </td>
+ com.jme3.renderer.Camera </td><td class="col2"> ChaseCam WIP </td>
 	</tr>
 	<tr class="row4">
 		<th class="col0">Use first-person view </th><td class="col1">Use camera <code>flyCam</code> <br/>
@@ -53,12 +53,12 @@ Knowing exactly what you are looking for allows you to search more efficiently, 
 	</tr>
 	<tr class="row9">
 		<th class="col0">Disable the logger</th><td class="col1">Logger.getLogger(””).setLevel(Level.SEVERE); <br/>
- java.util.logging.*</td><td class="col2">N/A </td>
+ java.util.logging.*</td><td class="col2"> <a href="/com/jme3/gde/core/docs/jme3/advanced/logging.html" class="wikilink1" title="jme3:advanced:logging">Logging</a> </td>
 	</tr>
 </table>
 
 </div>
-<!-- SECTION "Applications and SceneGraph" [552-1804] -->
+<!-- SECTION "Applications and SceneGraph" [552-1815] -->
 <h2><a name="creation_and_manipulation_of_objects" id="creation_and_manipulation_of_objects">Creation and Manipulation of Objects</a></h2>
 <div class="level2">
 <table class="inline">
@@ -66,7 +66,7 @@ Knowing exactly what you are looking for allows you to search more efficiently, 
 		<th class="col0">How do I…? </th><th class="col1">Use this JME 3 Feature! </th><th class="col2">Learn more here… </th>
 	</tr>
 	<tr class="row1">
-		<th class="col0">Make simple shapes like cubes, spheres </th><td class="col1">com.jme3.scene.Geometry, com.jme3.scene.shape.* </td><td class="col2"><a href="/com/jme3/gde/core/docs/jme3/beginner/hello_node.html" class="wikilink1" title="jme3:beginner:hello_node">Hello Node</a> <br/>
+		<th class="col0">Make simple shapes like cubes, spheres </th><td class="col1">com.jme3.scene.Geometry, com.jme3.scene.shape.* </td><td class="col2"> <a href="/com/jme3/gde/core/docs/jme3/beginner/hello_node.html" class="wikilink1" title="jme3:beginner:hello_node">Hello Node</a>, <a href="/com/jme3/gde/core/docs/jme3/advanced/models_and_meshes.html" class="wikilink1" title="jme3:advanced:models_and_meshes">Models and Meshes</a> <br/>
  <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://code.google.com/p/jmonkeyengine/source/browse/branches/jme3/src/test/jme3test/model/shape/TestCylinder.java"><param name="text" value="<html><u>TestSphere.java</u></html>"><param name="textColor" value="blue"></object> </td>
 	</tr>
 	<tr class="row2">
@@ -75,7 +75,7 @@ Knowing exactly what you are looking for allows you to search more efficiently, 
 	<tr class="row3">
 		<th class="col0">Load a 3-D model </th><td class="col1">Import asset as Ogre <acronym title="Extensible Markup Language">XML</acronym> mesh. <br/>
  jMonkeyPlatform: Converting Ogre to j3o binary format speeds up model loading. <br/>
- AssetManager, com.jme3.scene.plugins.ogre.*, com.jme3.scene.Geometry </td><td class="col2"><a href="/com/jme3/gde/core/docs/jme3/beginner/hello_asset.html" class="wikilink1" title="jme3:beginner:hello_asset">Hello Asset</a> <br/>
+ AssetManager, com.jme3.scene.plugins.ogre.*, com.jme3.scene.Geometry </td><td class="col2"> <a href="/com/jme3/gde/core/docs/jme3/beginner/hello_asset.html" class="wikilink1" title="jme3:beginner:hello_asset">Hello Asset</a>, <a href="/com/jme3/gde/core/docs/jme3/advanced/models_and_meshes.html" class="wikilink1" title="jme3:advanced:models_and_meshes">Models and Meshes</a> <br/>
  <a href="/com/jme3/gde/core/docs/jme3/jmonkeyplatform/model_loader_and_viewer.html" class="wikilink1" title="jme3:jmonkeyplatform:model_loader_and_viewer">jMonkeyPlatform j3o converter</a> <br/>
  <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://code.google.com/p/jmonkeyengine/source/browse/branches/jme3/src/test/jme3test/model/TestOgreLoading.java"><param name="text" value="<html><u>TestOgreConvert.java</u></html>"><param name="textColor" value="blue"></object> </td>
 	</tr>
@@ -89,8 +89,9 @@ Knowing exactly what you are looking for allows you to search more efficiently, 
 	</tr>
 	<tr class="row6">
 		<th class="col0">Make an object move by itself </th><td class="col1">Change the geo&#039;s translation in the <code>simpleUpdate()</code> loop. <br/>
- com.jme3.scene.Geometry, setLocalTranslation() (setPosition() for certain objects) </td><td class="col2"><a href="/com/jme3/gde/core/docs/jme3/beginner/hello_main_event_loop.html" class="wikilink1" title="jme3:beginner:hello_main_event_loop">Hello Loop</a> <br/>
-  <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://code.google.com/p/jmonkeyengine/source/browse/branches/jme3/src/test/jme3test/material/TestBumpModel.java"><param name="text" value="<html><u>TestOgreLoading.java</u></html>"><param name="textColor" value="blue"></object> </td>
+ com.jme3.scene.Geometry, setLocalTranslation(), setWalkDirection() for physical objects. </td><td class="col2"><a href="/com/jme3/gde/core/docs/jme3/beginner/hello_main_event_loop.html" class="wikilink1" title="jme3:beginner:hello_main_event_loop">Hello Loop</a> <br/>
+  <a href="/com/jme3/gde/core/docs/jme3/advanced/custom_controls.html" class="wikilink1" title="jme3:advanced:custom_controls">Custom Controls</a> <br/>
+ <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://code.google.com/p/jmonkeyengine/source/browse/branches/jme3/src/test/jme3test/material/TestBumpModel.java"><param name="text" value="<html><u>TestOgreLoading.java</u></html>"><param name="textColor" value="blue"></object> </td>
 	</tr>
 	<tr class="row7">
 		<th class="col0">Manipulate the color or shininess of an object </th><td class="col1">Materials, AssetManager </td><td class="col2"><a href="/com/jme3/gde/core/docs/jme3/beginner/hello_material.html" class="wikilink1" title="jme3:beginner:hello_material">Hello Material</a> <br/>
@@ -116,12 +117,15 @@ Knowing exactly what you are looking for allows you to search more efficiently, 
 		<th class="col0">Make procedural or custom shapes </th><td class="col1">com.jme3.scene.Mesh </td><td class="col2"><a href="/com/jme3/gde/core/docs/jme3/advanced/custom_meshes.html" class="wikilink1" title="jme3:advanced:custom_meshes">Custom Meshes</a> </td>
 	</tr>
 	<tr class="row13">
-		<th class="col0">Keep my models, textures, sound files in order </th><td class="col1">put assets in subdirectories of a project directory named <code>assets</code> and use the assetManager </td><td class="col2"><a href="/com/jme3/gde/core/docs/jme3/beginner/hello_asset.html" class="wikilink1" title="jme3:beginner:hello_asset">Hello Asset</a> </td>
+		<th class="col0">Keep my models, textures, sound files in order </th><td class="col1">put assets in subdirectories of a project directory named <code>assets</code> and use the assetManager </td><td class="col2"><a href="/com/jme3/gde/core/docs/jme3/beginner/hello_asset.html" class="wikilink1" title="jme3:beginner:hello_asset">Hello Asset</a>, <a href="/com/jme3/gde/core/docs/jme3/advanced/models_and_meshes.html" class="wikilink1" title="jme3:advanced:models_and_meshes">Models and Meshes</a> </td>
+	</tr>
+	<tr class="row14">
+		<th class="col0">Identify Named Sub-Mesh in Model</th><td class="col1">Geometry result = spatial.getName().startsWith(name);</td><td class="col2"><a href="/com/jme3/gde/core/docs/jme3/advanced/models_and_meshes.html" class="wikilink1" title="jme3:advanced:models_and_meshes">Models and Meshes</a></td>
 	</tr>
 </table>
 
 </div>
-<!-- SECTION "Creation and Manipulation of Objects" [1805-6145] -->
+<!-- SECTION "Creation and Manipulation of Objects" [1816-6437] -->
 <h2><a name="actions_interactions_physics" id="actions_interactions_physics">Actions, Interactions, Physics</a></h2>
 <div class="level2">
 <table class="inline">
@@ -129,38 +133,43 @@ Knowing exactly what you are looking for allows you to search more efficiently, 
 		<th class="col0">How do I…? </th><th class="col1">Use this JME 3 Feature! </th><th class="col2">Learn more here… </th>
 	</tr>
 	<tr class="row1">
+		<th class="col0">Implement the game logic and game mechanics </th><td class="col1"> Use Controls to define behaviours of types of Spatials. Use Application States to implement global behaviours. Use the <code>simpleUpdate()</code> loop for the remaining tests and interactions.</td><td class="col2"><a href="/com/jme3/gde/core/docs/jme3/beginner/hello_main_event_loop.html" class="wikilink1" title="jme3:beginner:hello_main_event_loop">Hello Loop</a> <br/>
+ <a href="/com/jme3/gde/core/docs/jme3/advanced/custom_controls.html" class="wikilink1" title="jme3:advanced:custom_controls">Custom Controls</a> <br/>
+ <a href="/com/jme3/gde/core/docs/jme3/advanced/application_states.html" class="wikilink1" title="jme3:advanced:application_states">Application States</a> </td>
+	</tr>
+	<tr class="row2">
 		<th class="col0">Let players interact by pressing keyboard keys </th><td class="col1">com.jme3.input.KeyInput, com.jme3.input.binding.BindingListener </td><td class="col2"><a href="/com/jme3/gde/core/docs/jme3/beginner/hello_input_system.html" class="wikilink1" title="jme3:beginner:hello_input_system">Hello Input</a> <br/>
  <a href="/com/jme3/gde/core/docs/jme3/advanced/input_handling.html" class="wikilink1" title="jme3:advanced:input_handling">Input Handling</a> </td>
 	</tr>
-	<tr class="row2">
+	<tr class="row3">
 		<th class="col0">Let players interact by clicking, e.g. picking up objects, opening doors, shooting </th><td class="col1">Intersect a Ray from the player with the Bounding Volume of the target: com.jme3.bounding.*, com.jme3.math.Ray, com.jme3.collision.CollisionResults. </td><td class="col2"><a href="/com/jme3/gde/core/docs/jme3/beginner/hello_picking.html" class="wikilink1" title="jme3:beginner:hello_picking">Hello Picking</a> <br/>
  <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://code.google.com/p/jmonkeyengine/source/browse/branches/jme3/src/test/jme3test/bounding/TestRayCollision.java"><param name="text" value="<html><u>TestRayCollision.java</u></html>"><param name="textColor" value="blue"></object> </td>
 	</tr>
-	<tr class="row3">
+	<tr class="row4">
 		<th class="col0">Animate objects and characters </th><td class="col1">Create an animated OgreMesh model with Bones in a 3-D editor (e.g. Blender). <br/>
  com.jme3.animation.* </td><td class="col2"><a href="/com/jme3/gde/core/docs/jme3/beginner/hello_animation.html" class="wikilink1" title="jme3:beginner:hello_animation">Hello Animation</a> <br/>
  <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://code.google.com/p/jmonkeyengine/source/browse/branches/jme3/src/test/jme3test/model/anim/"><param name="text" value="<html><u>Blender animation tutorial</u></html>"><param name="textColor" value="blue"></object> </td>
 	</tr>
-	<tr class="row4">
+	<tr class="row5">
 		<th class="col0">Keep players walking on floors of scenes </th><td class="col1">Collision detection – raycasting or physics. </td><td class="col2"><a href="/com/jme3/gde/core/docs/jme3/beginner/hello_collision.html" class="wikilink1" title="jme3:beginner:hello_collision">Hello Collision</a> </td>
 	</tr>
-	<tr class="row5">
+	<tr class="row6">
 		<th class="col0">Prevent players from walking through walls in scenes </th><td class="col1">Collision detection using physics and bounding volumes. <br/>
  com.jme3.bullet.*, CapsuleCollisionShape / CompoundCollisionShape, PhysicsCharacterNode / PhysicsNode <br/>
  geo.setModelBound(); geo.updateModelBound(); </td><td class="col2"><a href="/com/jme3/gde/core/docs/jme3/beginner/hello_collision.html" class="wikilink1" title="jme3:beginner:hello_collision">Hello Collision</a> </td>
 	</tr>
-	<tr class="row6">
+	<tr class="row7">
 		<th class="col0">Let balls, cars, etc bounce off obstacles and roll on floors </th><td class="col1">Use physics nodes and bounding volumes: com.jme3.bounding.*, com.jme3.bullet.collisions, com.jme3.bullet.nodes.PhysicsNode etc <br/>
  geo.setModelBound(); geo.updateModelBound(); </td><td class="col2"><a href="/com/jme3/gde/core/docs/jme3/beginner/hello_physics.html" class="wikilink1" title="jme3:beginner:hello_physics">Hello Physics</a> <br/>
   <a href="/com/jme3/gde/core/docs/jme3/advanced/physics.html" class="wikilink1" title="jme3:advanced:physics">Physics</a> <br/>
  <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://code.google.com/p/jmonkeyengine/source/browse/branches/jme3/src/test/jme3test/bullet/TestSimplePhysics.java"><param name="text" value="<html><u>more samples</u></html>"><param name="textColor" value="blue"></object> </td>
 	</tr>
-	<tr class="row7">
+	<tr class="row8">
 		<th class="col0">Steer cars, motorcycles, etc </th><td class="col1">Use physics characters and vehicles: com.jme3.bullet.*, PhysicsCharacterNode, PhysicsVehicleNode </td><td class="col2"><a href="/com/jme3/gde/core/docs/jme3/advanced/vehicles.html" class="wikilink1" title="jme3:advanced:vehicles">Vehicles</a> <br/>
  <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://code.google.com/p/jmonkeyengine/source/browse/branches/jme3/src/test/jme3test/bullet/TestFancyCar.java"><param name="text" value="<html><u>TestPhysicsCharacter.java</u></html>"><param name="textColor" value="blue"></object>  <br/>
   (Press HUJK keys to steer, spacebar to jump.) </td>
 	</tr>
-	<tr class="row8">
+	<tr class="row9">
 		<th class="col0">Let an object swing like a pendulum or chain links </th><td class="col1">Use physics joints:  com.jme3.bullet.joints.PhysicsHingeJoint </td><td class="col2"><a href="/com/jme3/gde/core/docs/jme3/advanced/hinges_and_joints.html" class="wikilink1" title="jme3:advanced:hinges_and_joints">Hinges and Joints</a> <br/>
  <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://code.google.com/p/jmonkeyengine/source/browse/branches/jme3/src/test/jme3test/bullet/TestPhysicsHingeJoint.java"><param name="text" value="<html><u>TestPhysicsHingeJoint.java</u></html>"><param name="textColor" value="blue"></object> <br/>
  (Press HK keys to turn, spacebar to swing.) </td>
@@ -168,7 +177,7 @@ Knowing exactly what you are looking for allows you to search more efficiently, 
 </table>
 
 </div>
-<!-- SECTION "Actions, Interactions, Physics" [6146-9103] -->
+<!-- SECTION "Actions, Interactions, Physics" [6438-9757] -->
 <h2><a name="gui_display" id="gui_display">GUI Display</a></h2>
 <div class="level2">
 <table class="inline">
@@ -189,7 +198,7 @@ Knowing exactly what you are looking for allows you to search more efficiently, 
 </table>
 
 </div>
-<!-- SECTION "GUI Display" [9104-10080] -->
+<!-- SECTION "GUI Display" [9758-10734] -->
 <h2><a name="environment_effectssound_landscape" id="environment_effectssound_landscape">Environment Effects: Sound, Landscape</a></h2>
 <div class="level2">
 <table class="inline">
@@ -224,7 +233,7 @@ Knowing exactly what you are looking for allows you to search more efficiently, 
 </table>
 
 </div>
-<!-- SECTION "Environment Effects: Sound, Landscape" [10081-11796] -->
+<!-- SECTION "Environment Effects: Sound, Landscape" [10735-12450] -->
 <h2><a name="back-end_properties" id="back-end_properties">Back-End Properties</a></h2>
 <div class="level2">
 <table class="inline">
@@ -239,5 +248,5 @@ Knowing exactly what you are looking for allows you to search more efficiently, 
 </table>
 
 </div>
-<!-- SECTION "Back-End Properties" [11797-] -->
+<!-- SECTION "Back-End Properties" [12451-] -->
 <p><em><a href="http://jmonkeyengine.org/wiki/doku.php/jme3:intermediate:api_feature_mapping?do=export_xhtmlbody">view online version</a></em></p>
