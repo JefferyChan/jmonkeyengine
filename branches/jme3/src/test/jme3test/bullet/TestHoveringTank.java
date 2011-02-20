@@ -57,8 +57,8 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Geometry;
+import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.shadow.BasicShadowRenderer;
 import com.jme3.shadow.PssmShadowRenderer;
 import com.jme3.shadow.PssmShadowRenderer.CompareMode;
 import com.jme3.shadow.PssmShadowRenderer.FilterMode;
@@ -68,6 +68,7 @@ import com.jme3.terrain.heightmap.AbstractHeightMap;
 import com.jme3.terrain.heightmap.ImageBasedHeightMap;
 import com.jme3.texture.Texture;
 import com.jme3.texture.Texture.WrapMode;
+import com.jme3.util.SkyFactory;
 import java.util.ArrayList;
 import java.util.List;
 import jme3tools.converters.ImageToAwt;
@@ -117,6 +118,8 @@ public class TestHoveringTank extends SimpleApplication implements AnalogListene
         bulletAppState.setThreadingType(BulletAppState.ThreadingType.PARALLEL);
         stateManager.attach(bulletAppState);
 //        bulletAppState.getPhysicsSpace().enableDebug(assetManager);
+        bulletAppState.getPhysicsSpace().setAccuracy(1f/30f);
+        rootNode.attachChild(SkyFactory.createSky(assetManager, "Textures/Sky/Bright/BrightSky.dds", false));
 
         PssmShadowRenderer pssmr = new PssmShadowRenderer(assetManager, 2048, 3);
         pssmr.setDirection(new Vector3f(-0.5f, -0.3f, -0.3f).normalizeLocal());
@@ -132,7 +135,7 @@ public class TestHoveringTank extends SimpleApplication implements AnalogListene
 
         DirectionalLight dl = new DirectionalLight();
         dl.setColor(new ColorRGBA(1.0f, 0.94f, 0.8f, 1f).multLocal(1.3f));
-        dl.setDirection(new Vector3f(-0.5f, -1f, -0.3f).normalizeLocal());
+        dl.setDirection(new Vector3f(-0.5f, -0.3f, -0.3f).normalizeLocal());
         rootNode.addLight(dl);
 
         Vector3f lightDir2 = new Vector3f(0.70518064f, 0.5902297f, -0.39287305f);
