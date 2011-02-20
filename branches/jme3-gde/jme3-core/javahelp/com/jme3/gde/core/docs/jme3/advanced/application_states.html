@@ -1,0 +1,64 @@
+
+
+
+<h1><a name="application_states" id="application_states">Application States</a></h1>
+<div class="level1">
+
+<p>
+
+<code>com.jme3.app.state.AppState</code> is a customizable jME3 interface that allows you to cleanly implement Game Logic. You use AppStates to control the global game behaviour, also referred to as the game logic or game mechanics. (To control the game behaviour of a type of Spatial, see <a href="/com/jme3/gde/core/docs/jme3/advanced/custom_controls.html" class="wikilink1" title="jme3:advanced:custom_controls">Custom Controls</a>.)
+
+</p>
+<ol>
+<li class="level1"><div class="li"> You define a custom AppState and implement its behaviour in the AppState&#039;s update() method.</div>
+<ul>
+<li class="level2"><div class="li"> You can manipulate …</div>
+</li>
+</ul>
+</li>
+<li class="level1"><div class="li"> Attach the AppState to your application&#039;s AppStateManager (<code>stateManager.attach(myState);</code>) to activate it.</div>
+</li>
+<li class="level1"><div class="li"> Create one AppState for each type of game behavior. When you add several AppStates to one Application, they will be executed in the order they were added.</div>
+</li>
+</ol>
+
+</div>
+<!-- SECTION "Application States" [1-753] -->
+<h2><a name="usage_examples" id="usage_examples">Usage Examples</a></h2>
+<div class="level2">
+
+<p>
+ 
+JME3 comes with a BulletAppState that implements Physical behaviour (using the jBullet library). You, for example, could write an Artificial Intelligence AppState to control all your enemy units. Existing examples in the code base include:
+
+</p>
+<ul>
+<li class="level1"><div class="li"> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://code.google.com/p/jmonkeyengine/source/browse/branches/jme3/src/jbullet/com/jme3/bullet/"><param name="text" value="<html><u>BulletAppState</u></html>"><param name="textColor" value="blue"></object> controls physical behaviour in PhysicsControl&#039;ed Spatials.</div>
+</li>
+<li class="level1"><div class="li"> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://code.google.com/p/jmonkeyengine/source/browse/branches/jme3/src/test/jme3test/app/state/TestAppStates.java"><param name="text" value="<html><u>TestAppStates.java</u></html>"><param name="textColor" value="blue"></object> an exmaple of a custom AppState</div>
+<ul>
+<li class="level2"><div class="li"> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://code.google.com/p/jmonkeyengine/source/browse/branches/jme3/src/test/jme3test/app/state/RootNodeState.java"><param name="text" value="<html><u>RootNodeState.java</u></html>"><param name="textColor" value="blue"></object></div>
+</li>
+</ul>
+</li>
+</ul>
+
+</div>
+<!-- SECTION "Usage Examples" [754-1518] -->
+<h2><a name="appstate" id="appstate">AppState</a></h2>
+<div class="level2">
+
+</div>
+<!-- SECTION "AppState" [1519-1539] -->
+<h2><a name="abstractappstate" id="abstractappstate">AbstractAppState</a></h2>
+<div class="level2">
+
+</div>
+<!-- SECTION "AbstractAppState" [1540-1568] -->
+<h2><a name="best_practices" id="best_practices">Best Practices</a></h2>
+<div class="level2">
+<pre class="code">app.getAppState(MyState.class).doStuff()</pre>
+
+</div>
+<!-- SECTION "Best Practices" [1569-] -->
+<p><em><a href="http://jmonkeyengine.org/wiki/doku.php/jme3:advanced:application_states?do=export_xhtmlbody">view online version</a></em></p>

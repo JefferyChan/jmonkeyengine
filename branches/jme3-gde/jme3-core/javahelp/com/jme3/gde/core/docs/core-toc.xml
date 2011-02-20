@@ -77,11 +77,13 @@
             <tocitem text="Hello Physics" target="jme3.beginner.hello_physics"/>
         </tocitem>
         <tocitem text="jME3 Basics" expand="false">
+            <tocitem text="Best Practices" target="jme3.intermediate.best_practices"/>
+            <tocitem text="Application States" target="jme3.advanced.application_states"/>
+            <tocitem text="Custom Controls" target="jme3.advanced.custom_controls"/>
             <tocitem text="Knowing SimpleApplication" target="jme3.intermediate.simpleapplication"/>
             <tocitem text="The Application Settings" target="jme3.intermediate.appsettings"/>
             <tocitem text="jME3 File Types" target="jme3.intermediate.file_types"/>
             <tocitem text="Math in jME3" target="jme3.math"/>
-            <tocitem text="Best Practices" target="jme3.intermediate.best_practices"/>
             <tocitem text="I want to do X, what API do I use?" target="jme3.intermediate.api_feature_mapping"/>
         </tocitem>
         <tocitem text="Effects" expand="false">
@@ -111,15 +113,13 @@
         </tocitem>
         <tocitem text="Miscellaneous" expand="false">
             <tocitem text="Input Handling" target="jme3.advanced.input_handling"/>
-            <tocitem text="NiftyGUI" target="jme3.advanced.nifty_gui"/>
-            <tocitem text="Custom Controls" target="jme3.advanced.custom_controls"/>
-            <tocitem text="Creating a Swing Canvas" target="jme3.advanced.swing_canvas"/>
-            <tocitem text="Camera" target="jme3.advanced.camera"/>
-            <tocitem text="Multiple Cameras" target="jme3.advanced.multiple_camera_views"/>
-            <tocitem text="Game Localization" target="jme3.advanced.localization"/>
             <tocitem text="Models and Meshes" target="jme3.advanced.models_and_meshes"/>
             <tocitem text="Custom Meshes" target="jme3.advanced.custom_meshes"/>
-            <tocitem text="Custom Controls" target="jme3.advanced.custom_controls"/>
+            <tocitem text="NiftyGUI" target="jme3.advanced.nifty_gui"/>
+            <tocitem text="Camera" target="jme3.advanced.camera"/>
+            <tocitem text="Multiple Cameras" target="jme3.advanced.multiple_camera_views"/>
+            <tocitem text="Creating a Swing Canvas" target="jme3.advanced.swing_canvas"/>
+            <tocitem text="Game Localization" target="jme3.advanced.localization"/>
             <tocitem text="Combo Moves" target="jme3.advanced.combo_moves"/>
             <tocitem text="Optimization" target="jme3.intermediate.optimization"/>
         </tocitem>
