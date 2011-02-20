@@ -207,11 +207,16 @@ Usage: Your custom subclass must implement the three methods <code>controlUpdate
 <span class="br0">&#125;</span></pre>
 </div>
 <!-- SECTION "AbstractControl" [4453-5932] -->
-<h2><a name="abstraction_tips" id="abstraction_tips">Abstraction Tips</a></h2>
+<h2><a name="best_practices" id="best_practices">Best Practices</a></h2>
 <div class="level2">
 
 <p>
-<strong>Tip:</strong> You can use an accessor to get Control objects from a Spatial:
+
+<strong>Tip:</strong> You can use the getControl() accessor to get Control objects from Spatials! No need to pass around lots of object references.
+</p>
+
+<p>
+Here an example from the jme3 code:
 </p>
 <pre class="code java"><span class="kw1">public</span> <span class="kw1">class</span> CharacterAnimControl <span class="kw1">implements</span> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Acontrol+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object> <span class="br0">&#123;</span>
   ...
@@ -250,10 +255,10 @@ Then add the appropriate controls to spatials:
 <span class="me1">vehicleSpatial</span>.<span class="me1">addControl</span><span class="br0">&#40;</span><span class="kw1">new</span> ManualVehicleControl<span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
 ...</pre>
 <p>
-Later, when you use the controls:
+<strong>Tip:</strong> Use the getControl() method on a Spatial, get a specific Control object, and activate its behaviour!
 </p>
-<pre class="code java">ManualControl c <span class="sy0">=</span> <span class="br0">&#40;</span><span class="br0">&#40;</span>Spatial<span class="br0">&#41;</span>object<span class="br0">&#41;</span>.<span class="me1">getControl</span><span class="br0">&#40;</span>ManualControl.<span class="kw1">class</span><span class="br0">&#41;</span>;
+<pre class="code java">ManualControl c <span class="sy0">=</span> <span class="br0">&#40;</span><span class="br0">&#40;</span>Spatial<span class="br0">&#41;</span>myThing<span class="br0">&#41;</span>.<span class="me1">getControl</span><span class="br0">&#40;</span>ManualControl.<span class="kw1">class</span><span class="br0">&#41;</span>;
 c.<span class="me1">steerX</span><span class="br0">&#40;</span>steerX<span class="br0">&#41;</span>;</pre>
 </div>
-<!-- SECTION "Abstraction Tips" [5933-] -->
+<!-- SECTION "Best Practices" [5933-] -->
 <p><em><a href="http://jmonkeyengine.org/wiki/doku.php/jme3:advanced:custom_controls?do=export_xhtmlbody">view online version</a></em></p>

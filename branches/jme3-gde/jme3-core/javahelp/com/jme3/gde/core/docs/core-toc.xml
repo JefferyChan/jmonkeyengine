@@ -117,6 +117,7 @@
             <tocitem text="Camera" target="jme3.advanced.camera"/>
             <tocitem text="Multiple Cameras" target="jme3.advanced.multiple_camera_views"/>
             <tocitem text="Game Localization" target="jme3.advanced.localization"/>
+            <tocitem text="Models and Meshes" target="jme3.advanced.models_and_meshes"/>
             <tocitem text="Custom Meshes" target="jme3.advanced.custom_meshes"/>
             <tocitem text="Custom Controls" target="jme3.advanced.custom_controls"/>
             <tocitem text="Combo Moves" target="jme3.advanced.combo_moves"/>

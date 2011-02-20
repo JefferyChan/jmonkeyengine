@@ -14,7 +14,7 @@ Although it is possible to embed a <a href="/com/jme3/gde/core/docs/jme3/advance
 </p>
 
 <p>
-This doc introduces you to <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://nifty-gui.lessvoid.com/"><param name="text" value="<html><u>Nifty GUI</u></html>"><param name="textColor" value="blue"></object>, a Java library for graphical user interfaces that is well integrated with jME3 (<code>de.​lessvoid.​nifty</code> package).
+This doc introduces you to <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://nifty-gui.lessvoid.com/"><param name="text" value="<html><u>Nifty GUI</u></html>"><param name="textColor" value="blue"></object>, a Java library for graphical user interfaces that is well integrated with jME3 (<code>de.?lessvoid.?nifty</code> package).
 
 </p>
 <ul>
@@ -32,7 +32,7 @@ All the JAR libraries that you need are already included in your jME3 download, 
 </p>
 
 </div>
-<!-- SECTION "Creating User Interfaces with Nifty GUI" [1-1054] -->
+<!-- SECTION "Creating User Interfaces with Nifty GUI" [1-1050] -->
 <h2><a name="laying_out_the_gui" id="laying_out_the_gui">Laying out the GUI</a></h2>
 <div class="level2">
 
@@ -42,7 +42,7 @@ Usually, you lay out the <acronym title="Graphical User Interface">GUI</acronym>
 </p>
 
 </div>
-<!-- SECTION "Laying out the GUI" [1055-1172] -->
+<!-- SECTION "Laying out the GUI" [1051-1168] -->
 <h3><a name="layout_in_xml" id="layout_in_xml">Layout in XML</a></h3>
 <div class="level3">
 
@@ -168,6 +168,16 @@ Playing sounds using nifty is also possible with effects as triggers. Remember t
   <span class="sc3"><span class="re1">&lt;/label<span class="re2">&gt;</span></span></span>
 ...</pre>
 <p>
+
+P.S. It would probably also be a good idea to use <acronym title="Extensible Markup Language">XML</acronym> schemas (IDE-s can help you with laying out the <acronym title="Extensible Markup Language">XML</acronym> that way)
+Example:
+
+</p>
+<pre class="code xml"><span class="sc3"><span class="re1">&lt;?xml</span> <span class="re0">version</span>=<span class="st0">&quot;1.0&quot;</span> <span class="re0">encoding</span>=<span class="st0">&quot;UTF-8&quot;</span><span class="re2">?&gt;</span></span>
+<span class="sc3"><span class="re1">&lt;nifty</span> <span class="re0">xmlns</span>=<span class="st0">&quot;http://nifty-gui.sourceforge.net/nifty.xsd&quot;</span> <span class="re0">xmlns:xsi</span>=<span class="st0">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span> <span class="re0">xsi:schemaLocation</span>=<span class="st0">&quot;http://nifty-gui.sourceforge.net/nifty.xsd http://nifty-gui.sourceforge.net/nifty.xsd&quot;</span><span class="re2">&gt;</span></span>
+     <span class="sc-1">&lt;!-- for example eclipse would tell you that 1 of &lt;screen&gt; element is expected here --&gt;</span>
+<span class="sc3"><span class="re1">&lt;/nifty<span class="re2">&gt;</span></span></span></pre>
+<p>
 Learn more from the NiftyGUI page:
 </p>
 <ul>
@@ -176,7 +186,7 @@ Learn more from the NiftyGUI page:
 </ul>
 
 </div>
-<!-- SECTION "Layout in XML" [1173-4011] -->
+<!-- SECTION "Layout in XML" [1169-4514] -->
 <h3><a name="in_java" id="in_java">... in Java</a></h3>
 <div class="level3">
 
@@ -186,7 +196,7 @@ The Nifty team has started creating a “Builder Pattern” based way to create 
 </p>
 
 </div>
-<!-- SECTION "... in Java" [4012-4316] -->
+<!-- SECTION "... in Java" [4515-4819] -->
 <h2><a name="integrating_the_gui_into_the_game" id="integrating_the_gui_into_the_game">Integrating the GUI into the Game</a></h2>
 <div class="level2">
 
@@ -197,7 +207,7 @@ You can either overlay the running game with the <acronym title="Graphical User 
 </p>
 
 </div>
-<!-- SECTION "Integrating the GUI into the Game" [4317-4566] -->
+<!-- SECTION "Integrating the GUI into the Game" [4820-5069] -->
 <h3><a name="overlaying_the_user_interface" id="overlaying_the_user_interface">Overlaying the User Interface</a></h3>
 <div class="level3">
 
@@ -216,7 +226,7 @@ This code shows you how to overlay anything on the screen with the <acronym titl
         <span class="co1">// disable the fly cam</span>
         flyCam.<span class="me1">setDragToRotate</span><span class="br0">&#40;</span><span class="kw2">true</span><span class="br0">&#41;</span>;</pre>
 </div>
-<!-- SECTION "Overlaying the User Interface" [4567-5122] -->
+<!-- SECTION "Overlaying the User Interface" [5070-5624] -->
 <h3><a name="projecting_the_user_interface_onto_a_texture" id="projecting_the_user_interface_onto_a_texture">Projecting the User Interface Onto a Texture</a></h3>
 <div class="level3">
 
@@ -262,7 +272,7 @@ Again, check the <object classid="java:org.netbeans.modules.javahelp.BrowserDisp
 </p>
 
 </div>
-<!-- SECTION "Projecting the User Interface Onto a Texture" [5123-6712] -->
+<!-- SECTION "Projecting the User Interface Onto a Texture" [5625-7214] -->
 <h2><a name="interacting_with_the_gui_from_java" id="interacting_with_the_gui_from_java">Interacting with the GUI from Java</a></h2>
 <div class="level2">
 
@@ -371,7 +381,7 @@ Learn more: <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer
 </p>
 
 </div>
-<!-- SECTION "Interacting with the GUI from Java" [6713-10274] -->
+<!-- SECTION "Interacting with the GUI from Java" [7215-10776] -->
 <h2><a name="nifty_documentation" id="nifty_documentation">Nifty Documentation</a></h2>
 <div class="level2">
 
@@ -393,5 +403,5 @@ Learn more from the NiftyGUI page!
 </ul>
 
 </div>
-<!-- SECTION "Nifty Documentation" [10275-] -->
+<!-- SECTION "Nifty Documentation" [10777-] -->
 <p><em><a href="http://jmonkeyengine.org/wiki/doku.php/jme3:advanced:nifty_gui?do=export_xhtmlbody">view online version</a></em></p>

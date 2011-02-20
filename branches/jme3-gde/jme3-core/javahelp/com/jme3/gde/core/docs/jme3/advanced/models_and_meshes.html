@@ -1,0 +1,192 @@
+
+
+
+<h1><a name="models_meshes_assetmanager" id="models_meshes_assetmanager">Models, Meshes (AssetManager)</a></h1>
+<div class="level1">
+
+<p>
+
+<strong>Work in progress</strong>
+</p>
+
+</div>
+<!-- SECTION "Models, Meshes (AssetManager)" [1-67] -->
+<h2><a name="assetmanager" id="assetmanager">AssetManager</a></h2>
+<div class="level2">
+
+<p>
+
+The <code>assetManager</code> object is an com.jme3.asset.AssetManager instance that every com.jme3.app.Application can access. You can use the object directly or use the accessor (e.g. <code>getAssetManager()</code>).
+</p>
+
+<p>
+Use the AssetManager to load assets such as Materials and Models, for example:
+
+</p>
+<pre class="code java">Material mat <span class="sy0">=</span> <span class="br0">&#40;</span>Material<span class="br0">&#41;</span> assetManager.<span class="me1">loadAsset</span><span class="br0">&#40;</span>
+    <span class="kw1">new</span> AssetKey<span class="br0">&#40;</span><span class="st0">&quot;Common/Materials/RedColor.j3m&quot;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;</pre>
+<p>
+Textures are already discussed under <a href="/com/jme3/gde/core/docs/jme3/advanced/materials_overview.html" class="wikilink1" title="jme3:advanced:materials_overview">Materials Overview</a>. This article looks close at visible elements that you load into the scenegraph, and then transform. Such SceneGraph elements are 3D models and simple shapes.
+</p>
+
+</div>
+<!-- SECTION "AssetManager" [68-730] -->
+<h2><a name="geometries" id="geometries">Geometries</a></h2>
+<div class="level2">
+
+<p>
+
+For a full defintion of Spatial, Node, and com.jme3.scene.Geometry, see <a href="/com/jme3/gde/core/docs/jme3/the_scene_graph.html" class="wikilink1" title="jme3:the_scene_graph">the scene graph</a>.
+
+</p>
+<ul>
+<li class="level1"><div class="li"> A Geometry is a visible Spatial. </div>
+</li>
+<li class="level1"><div class="li"> A Geometry contains a Mesh.</div>
+</li>
+<li class="level1"><div class="li"> You can attach a (visible) Geometry to an (invisible) Node.</div>
+</li>
+<li class="level1"><div class="li"> A Geomtry can be saved and loaded using the AssetManager.</div>
+</li>
+</ul>
+
+<p>
+
+The Mesh in the Geometry can be a default Shape or a loaded model.
+</p>
+
+</div>
+<!-- SECTION "Geometries" [731-1119] -->
+<h3><a name="meshes" id="meshes">Meshes</a></h3>
+<div class="level3">
+
+<p>
+
+All visible game elements, whether it is a Model or a Shape, are made up of polygon meshes. See also <a href="/com/jme3/gde/core/docs/jme3/advanced/custom_meshes.html" class="wikilink1" title="jme3:advanced:custom_meshes">custom meshes</a>. 
+</p>
+
+<p>
+JME3 has a com.jme3.scene.Mesh class that represents meshes.
+</p>
+<ul>
+<li class="level1"><div class="li"> Meshes have transformations: location (local translation), rotation, scale</div>
+</li>
+<li class="level1"><div class="li"> Meshes have a bounding volume.</div>
+</li>
+<li class="level1"><div class="li"> Meshes are made up of triangles. <code>getTriangle(…)</code>, <code>getTriangleCount(…)</code></div>
+</li>
+<li class="level1"><div class="li"> Meshes have IDs. <code>getId()</code></div>
+</li>
+<li class="level1"><div class="li"> You can use meshes to detect intersections (that is, non-physical collisions) with other meshes or rays. <code>collideWith()</code>.</div>
+</li>
+<li class="level1"><div class="li"> Meshes can have a LOD (level of detail optimization depending on distance from the camera)</div>
+</li>
+<li class="level1"><div class="li"> Can be locked with <code>setStatic()</code> and unlocked with <code>setDynamic()</code>. </div>
+<ul>
+<li class="level2"><div class="li"> Static Meshes cannot be modified but are more optimized (can be precalculated). </div>
+</li>
+<li class="level2"><div class="li"> Dynamic Meshes can be modified live but are not optimized and slower. </div>
+</li>
+</ul>
+</li>
+<li class="level1"><div class="li"> … …</div>
+</li>
+</ul>
+
+</div>
+<!-- SECTION "Meshes" [1120-2043] -->
+<h3><a name="shapes" id="shapes">Shapes</a></h3>
+<div class="level3">
+
+<p>
+
+The simplest type of of Meshes are jME&#039;s default Shapes. You can use Shapes to build complex Geometries. Shapes are created without using the AssetManager.
+</p>
+
+<p>
+3D shapes:
+</p>
+<ul>
+<li class="level1"><div class="li"> com.jme3.scene.shape.Sphere – a ball</div>
+</li>
+<li class="level1"><div class="li"> com.jme3.scene.shape.Box – a cuboid</div>
+</li>
+<li class="level1"><div class="li"> com.jme3.scene.shape.Cylinder – a disk or pillar</div>
+</li>
+<li class="level1"><div class="li"> com.jme3.scene.shape.Dome – Half a sphere</div>
+</li>
+<li class="level1"><div class="li"> com.jme3.scene.shape.Torus – An ordinary (single-holed) torus.</div>
+</li>
+<li class="level1"><div class="li"> com.jme3.scene.shape.PQTorus – A parameterized torus, also known as a pq torus.</div>
+</li>
+</ul>
+
+<p>
+
+non-3D shapes:
+</p>
+<ul>
+<li class="level1"><div class="li"> com.jme3.scene.shape.Quad – a flat 2D rectangle (has two sides)</div>
+</li>
+<li class="level1"><div class="li"> com.jme3.scene.shape.Line – a 1D line (has a length)</div>
+</li>
+</ul>
+
+<p>
+
+Usage: Create the base mesh shape, and wrap it into a Geometry. Then attach the Geometry to the rootNode to make it visible.
+</p>
+<pre class="code java">Sphere sphereMesh <span class="sy0">=</span> <span class="kw1">new</span> Sphere<span class="br0">&#40;</span><span class="nu0">32</span>, <span class="nu0">32</span>, <span class="nu0">10</span>, <span class="kw2">false</span>, <span class="kw2">true</span><span class="br0">&#41;</span>;
+Geometry sphere <span class="sy0">=</span> <span class="kw1">new</span> Geometry<span class="br0">&#40;</span><span class="st0">&quot;Sky&quot;</span>, sphereMesh<span class="br0">&#41;</span>;
+rootNode.<span class="me1">attachChild</span><span class="br0">&#40;</span>sphere<span class="br0">&#41;</span>;</pre>
+</div>
+<!-- SECTION "Shapes" [2044-2995] -->
+<h2><a name="models" id="models">Models</a></h2>
+<div class="level2">
+
+<p>
+
+Models are also made up of meshes, but are a lot more complex than Shapes. Models are created in Mesh editors such as Blender. Copy the model files into your project&#039;s <code>assets</code> directory and use the AssetManager to load it into a jME application.
+</p>
+<pre class="code java">Spatial model <span class="sy0">=</span> 
+  <span class="br0">&#40;</span>Spatial<span class="br0">&#41;</span> assetManager.<span class="me1">loadModel</span><span class="br0">&#40;</span>
+    <span class="st0">&quot;Models/MonkeyHead/MonkeyHead.mesh.xml&quot;</span><span class="br0">&#41;</span>;</pre>
+</div>
+<!-- SECTION "Models" [2996-3383] -->
+<h3><a name="how_to_identify_a_named_sub-mesh_in_a_loaded_model" id="how_to_identify_a_named_sub-mesh_in_a_loaded_model">How to Identify a Named Sub-Mesh in a Loaded Model</a></h3>
+<div class="level3">
+
+<p>
+
+The spatial is the loaded model, either a Node or a Geometry. The String is the name of the mesh that you are searching. 
+</p>
+<pre class="code java">    <span class="kw1">private</span> Geometry findGeom<span class="br0">&#40;</span>Spatial spatial, <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Astring+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object> name<span class="br0">&#41;</span> <span class="br0">&#123;</span>
+        <span class="kw1">if</span> <span class="br0">&#40;</span>spatial <span class="kw1">instanceof</span> Node<span class="br0">&#41;</span> <span class="br0">&#123;</span>
+            Node node <span class="sy0">=</span> <span class="br0">&#40;</span>Node<span class="br0">&#41;</span> spatial;
+            <span class="kw1">for</span> <span class="br0">&#40;</span><span class="kw4">int</span> i <span class="sy0">=</span> 0; i <span class="sy0">&lt;</span> node.<span class="me1">getQuantity</span><span class="br0">&#40;</span><span class="br0">&#41;</span>; i<span class="sy0">++</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+                Spatial child <span class="sy0">=</span> node.<span class="me1">getChild</span><span class="br0">&#40;</span>i<span class="br0">&#41;</span>;
+                Geometry result <span class="sy0">=</span> findGeom<span class="br0">&#40;</span>child, name<span class="br0">&#41;</span>;
+                <span class="kw1">if</span> <span class="br0">&#40;</span>result <span class="sy0">!=</span> <span class="kw2">null</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+                    <span class="kw1">return</span> result;
+                <span class="br0">&#125;</span>
+            <span class="br0">&#125;</span>
+        <span class="br0">&#125;</span> <span class="kw1">else</span> <span class="kw1">if</span> <span class="br0">&#40;</span>spatial <span class="kw1">instanceof</span> Geometry<span class="br0">&#41;</span> <span class="br0">&#123;</span>
+            <span class="kw1">if</span> <span class="br0">&#40;</span>spatial.<span class="me1">getName</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">startsWith</span><span class="br0">&#40;</span>name<span class="br0">&#41;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+                <span class="kw1">return</span> <span class="br0">&#40;</span>Geometry<span class="br0">&#41;</span> spatial;
+            <span class="br0">&#125;</span>
+        <span class="br0">&#125;</span>
+        <span class="kw1">return</span> <span class="kw2">null</span>;
+    <span class="br0">&#125;</span></pre>
+<p>
+Open the model in a 3D mesh editor 
+</p>
+<ol>
+<li class="level1"><div class="li"> to assign names to sub-meshes in the model</div>
+</li>
+<li class="level1"><div class="li"> to find out the existing names of sub-meshes in the model</div>
+</li>
+</ol>
+
+</div>
+<!-- SECTION "How to Identify a Named Sub-Mesh in a Loaded Model" [3384-] -->
+<p><em><a href="http://jmonkeyengine.org/wiki/doku.php/jme3:advanced:models_and_meshes?do=export_xhtmlbody">view online version</a></em></p>
