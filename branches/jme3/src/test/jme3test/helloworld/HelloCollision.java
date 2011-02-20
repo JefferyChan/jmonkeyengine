@@ -113,14 +113,14 @@ public class HelloCollision extends SimpleApplication
   }
 
     private void setUpLight() {
+        // We add light so we see the scene
         AmbientLight al = new AmbientLight();
         al.setColor(ColorRGBA.White.mult(1.3f));
         rootNode.addLight(al);
 
-        // We add a light so we see the scene
         DirectionalLight dl = new DirectionalLight();
-        dl.setColor(ColorRGBA.White.mult(0.7f)); // bright white light
-        dl.setDirection(new Vector3f(2.8f, -2.8f, -2.8f).normalize());
+        dl.setColor(ColorRGBA.White); 
+        dl.setDirection(new Vector3f(2.8f, -2.8f, -2.8f).normalizeLocal());
         rootNode.addLight(dl);
     }
 
