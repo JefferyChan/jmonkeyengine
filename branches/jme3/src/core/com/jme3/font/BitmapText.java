@@ -48,7 +48,6 @@ import com.jme3.scene.Node;
 public class BitmapText extends Node {
     private BitmapFont font;
     private StringBlock block;
-    private float lineWidth = 0f;    
     private boolean needRefresh = true;
     private final BitmapTextPage[] textPages;
     private Letters letters;
@@ -178,7 +177,11 @@ public class BitmapText extends Node {
         if (needRefresh) {
             assemble();
         }
-        return lineWidth;
+        Rectangle textBox = block.getTextBox();
+        if (textBox != null) {
+            return Math.max(letters.getTotalWidth(), textBox.width);
+        }
+        return letters.getTotalWidth();
     }
     
     @Deprecated
