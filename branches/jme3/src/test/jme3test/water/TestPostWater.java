@@ -3,6 +3,8 @@ package jme3test.water;
 import com.jme3.app.SimpleApplication;
 import com.jme3.audio.AudioNode;
 import com.jme3.bounding.BoundingBox;
+import com.jme3.input.controls.ActionListener;
+import com.jme3.input.controls.KeyTrigger;
 import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
@@ -20,6 +22,7 @@ import com.jme3.terrain.heightmap.AbstractHeightMap;
 import com.jme3.terrain.heightmap.ImageBasedHeightMap;
 import com.jme3.texture.Texture;
 import com.jme3.texture.Texture.WrapMode;
+import com.jme3.texture.Texture2D;
 import com.jme3.util.SkyFactory;
 import com.jme3.water.WaterFilter;
 import java.util.ArrayList;
@@ -79,13 +82,42 @@ public class TestPostWater extends SimpleApplication {
 
 
         fpp = new FilterPostProcessor(assetManager);
+       // fpp.setNumSamples(4);
+
         water = new WaterFilter(rootNode, lightDir);
-        water.setFoamHardness(0.6f);
+        water.setWaveScale(0.003f);
+        water.setMaxAmplitude(1.5f);
+        water.setFoamExistence(new Vector3f(0.1f, 12, 1.5f));
+        //water.setNormalScale(0.5f);
+        
+        //water.setRefractionConstant(0.25f);
+        water.setRefractionStrength(0.2f);
+        water.setReflectionMapSize(1024);
+        //water.setFoamHardness(0.6f);
 
         water.setWaterHeight(initialWaterHeight);
         fpp.addFilter(water);
         viewPort.addProcessor(fpp);
 
+        inputManager.addListener(new ActionListener() {
+
+            public void onAction(String name, boolean isPressed, float tpf) {
+                if(isPressed){
+                    if(name.equals("foam1")){
+                        water.setFoamTexture((Texture2D) assetManager.loadTexture("Common/MatDefs/Water/Textures/foam.jpg"));                      
+                    }
+                    if(name.equals("foam2")){
+                        water.setFoamTexture((Texture2D) assetManager.loadTexture("Common/MatDefs/Water/Textures/foam2.jpg"));
+                    }
+                    if(name.equals("foam3")){
+                        water.setFoamTexture((Texture2D) assetManager.loadTexture("Common/MatDefs/Water/Textures/foam3.jpg"));
+                    }
+                }
+            }
+        }, "foam1","foam2","foam3");
+        inputManager.addMapping("foam1", new KeyTrigger(keyInput.KEY_1));
+        inputManager.addMapping("foam2", new KeyTrigger(keyInput.KEY_2));
+        inputManager.addMapping("foam3", new KeyTrigger(keyInput.KEY_3));
     }
 
     private void createTerrain(Node rootNode) {

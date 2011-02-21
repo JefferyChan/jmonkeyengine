@@ -546,6 +546,9 @@ public class WaterFilter extends Filter {
     public void setFoamTexture(Texture2D foamTexture) {
         this.foamTexture = foamTexture;
         foamTexture.setWrap(WrapMode.Repeat);
+        if (material != null) {
+            material.setTexture("FoamMap", foamTexture);
+        }
     }
 
     /**
