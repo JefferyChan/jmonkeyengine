@@ -115,7 +115,7 @@ public class BresenhamTerrainPicker implements TerrainPicker {
                 // check the triangles of main square for intersection.
                 if (checkTriangles(loc.x, loc.y, workRay, intersection, patch)) {
                     // we found an intersection, so return that!
-                    float distance = workRay.origin.distanceSquared(intersection);
+                    float distance = workRay.origin.distance(intersection);
                     CollisionResult cr = new CollisionResult(intersection, distance);
                     cr.setGeometry(patch);
                     results.addCollision(cr);
@@ -142,7 +142,7 @@ public class BresenhamTerrainPicker implements TerrainPicker {
 
                 if (checkTriangles(loc.x + dx, loc.y + dz, workRay, intersection, patch)) {
                     // we found an intersection, so return that!
-                    float distance = workRay.origin.distanceSquared(intersection);
+                    float distance = workRay.origin.distance(intersection);
                     CollisionResult cr = new CollisionResult(intersection, distance);
                     results.addCollision(cr);
                     return intersection;
