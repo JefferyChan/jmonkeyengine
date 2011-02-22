@@ -41,9 +41,12 @@ float refractionScale = m_WaveScale;
 // smaller "waves" or last to have more bigger "waves"
 const vec4 normalModifier = vec4(3.0, 2.0, 4.0, 10.0);
 // Strength of displacement along normal.
-const float displace = 1.7;
+// Strength of displacement along normal.
+uniform float m_ReflectionDisplace;
 // Water transparency along eye vector.
 const float visibility = 3.0;
+// foam intensity
+uniform float m_FoamIntensity ;
 
 varying vec2 texCoord;
 
@@ -226,8 +229,8 @@ void main(){
     waterPosition.y -= (level - m_WaterHeight);
     vec4 texCoordProj = m_TextureProjMatrix * vec4(waterPosition, 1.0);
 
-    texCoordProj.x = texCoordProj.x + displace * normal.x;
-    texCoordProj.z = texCoordProj.z + displace * normal.z;
+    texCoordProj.x = texCoordProj.x + m_ReflectionDisplace * normal.x;
+    texCoordProj.z = texCoordProj.z + m_ReflectionDisplace * normal.z;
     texCoordProj /= texCoordProj.w;
     texCoordProj.y = 1.0 - texCoordProj.y;
 
@@ -246,15 +249,15 @@ void main(){
         vec2 texCoord2 = (surfacePoint.xz + eyeVecNorm.xz * 0.1) * 0.05 + m_Time * 0.1 * m_WindDirection + sin(m_Time * 0.001 + position.z) * 0.005;
 
         if(depth2 < m_FoamExistence.x){
-            foam = (texture2D(m_FoamMap, texC).r + texture2D(m_FoamMap, texCoord2)).rgb * 0.4;
+            foam = (texture2D(m_FoamMap, texC).r + texture2D(m_FoamMap, texCoord2)).rgb * m_FoamIntensity;
         }else if(depth2 < m_FoamExistence.y){
-            foam = mix((texture2D(m_FoamMap, texC) + texture2D(m_FoamMap, texCoord2)) * 0.4, vec4(0.0),
+            foam = mix((texture2D(m_FoamMap, texC) + texture2D(m_FoamMap, texCoord2)) * m_FoamIntensity, vec4(0.0),
                 (depth2 - m_FoamExistence.x) / (m_FoamExistence.y - m_FoamExistence.x)).rgb;
         }
 
         if(m_MaxAmplitude - m_FoamExistence.z > 0.0001){
-            foam += ((texture2D(m_FoamMap, texC) + texture2D(m_FoamMap, texCoord2)) * 0.4 *
-                saturate((level - (m_WaterHeight + m_FoamExistence.z)) / (m_MaxAmplitude - m_FoamExistence.z))).rgb;
+           foam += ((texture2D(m_FoamMap, texC) + texture2D(m_FoamMap, texCoord2)) * m_FoamIntensity  * m_FoamIntensity * 0.3 *
+               saturate((level - (m_WaterHeight + m_FoamExistence.z)) / (m_MaxAmplitude - m_FoamExistence.z))).rgb;
         }
         foam *= m_LightColor.rgb;
     #endif

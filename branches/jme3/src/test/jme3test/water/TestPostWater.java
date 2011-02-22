@@ -82,17 +82,17 @@ public class TestPostWater extends SimpleApplication {
 
 
         fpp = new FilterPostProcessor(assetManager);
-       // fpp.setNumSamples(4);
+    //    fpp.setNumSamples(4);
 
         water = new WaterFilter(rootNode, lightDir);
         water.setWaveScale(0.003f);
-        water.setMaxAmplitude(1.5f);
-        water.setFoamExistence(new Vector3f(0.1f, 12, 1.5f));
+        water.setMaxAmplitude(2f);
+        water.setFoamExistence(new Vector3f(1f, 4, 0.5f));
+        water.setFoamTexture((Texture2D) assetManager.loadTexture("Common/MatDefs/Water/Textures/foam2.jpg"));
         //water.setNormalScale(0.5f);
         
         //water.setRefractionConstant(0.25f);
-        water.setRefractionStrength(0.2f);
-        water.setReflectionMapSize(1024);
+        water.setRefractionStrength(0.2f);        
         //water.setFoamHardness(0.6f);
 
         water.setWaterHeight(initialWaterHeight);

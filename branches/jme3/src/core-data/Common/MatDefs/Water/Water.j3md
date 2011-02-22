@@ -32,6 +32,8 @@ MaterialDef Advanced Water {
         Color WaterColor
         Color DeepWaterColor
         Vector2 WindDirection
+        Float ReflectionDisplace
+        Float FoamIntensity
 
         Boolean UseRipples
         Boolean UseHQShoreline
@@ -40,7 +42,7 @@ MaterialDef Advanced Water {
         Boolean UseRefraction
     }
 
-    Technique {
+   Technique {
         VertexShader   GLSL150 : Common/MatDefs/Post/Post15.vert
         FragmentShader GLSL150 : Common/MatDefs/Water/Water15.frag
 

@@ -104,6 +104,8 @@ public class WaterFilter extends Filter {
     private boolean useRefraction = true;
     private float time = 0;
     private float savedTpf = 0;
+    private float reflectionDisplace = 30;
+    private float foamIntensity = 0.5f;
 
     /**
      * Create a Water Filter
@@ -194,7 +196,9 @@ public class WaterFilter extends Filter {
         reflectionView.addProcessor(reflectionProcessor);
 
         normalTexture = (Texture2D) manager.loadTexture("Common/MatDefs/Water/Textures/gradient_map.jpg");
-        foamTexture = (Texture2D) manager.loadTexture("Common/MatDefs/Water/Textures/foam.jpg");
+        if (foamTexture == null) {
+            foamTexture = (Texture2D) manager.loadTexture("Common/MatDefs/Water/Textures/foam.jpg");
+        }
         heightTexture = (Texture2D) manager.loadTexture("Common/MatDefs/Water/Textures/heightmap.jpg");
 
         normalTexture.setWrap(WrapMode.Repeat);
@@ -229,6 +233,8 @@ public class WaterFilter extends Filter {
         material.setBoolean("UseSpecular", useSpecular);
         material.setBoolean("UseFoam", useFoam);
         material.setBoolean("UseRefraction", useRefraction);
+        material.setFloat("m_ReflectionDisplace", reflectionDisplace);
+        material.setFloat("m_FoamIntensity", foamIntensity);
 
     }
 
@@ -763,5 +769,30 @@ public class WaterFilter extends Filter {
         if (material != null) {
             material.setBoolean("UseSpecular", useSpecular);
         }
+    }
+
+    public float getFoamIntensity() {
+        return foamIntensity;
+    }
+
+    public void setFoamIntensity(float foamIntensity) {
+        this.foamIntensity = foamIntensity;
+        if (material != null) {
+            material.setFloat("m_FoamIntensity", foamIntensity);
+
+        }
+    }
+
+    public float getReflectionDisplace() {
+        return reflectionDisplace;
+    }
+
+    public void setReflectionDisplace(float reflectionDisplace) {
+        this.reflectionDisplace = reflectionDisplace;
+        if (material != null) {
+            material.setFloat("m_ReflectionDisplace", reflectionDisplace);
+        }
+
+
     }
 }
