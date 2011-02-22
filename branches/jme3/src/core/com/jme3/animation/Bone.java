@@ -29,7 +29,6 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package com.jme3.animation;
 
 import com.jme3.export.JmeExporter;
@@ -55,29 +54,24 @@ import java.util.ArrayList;
 public final class Bone implements Savable {
 
     private String name;
-
     private Bone parent;
     private final ArrayList<Bone> children = new ArrayList<Bone>();
-
     /**
      * If enabled, user can control bone transform with setUserTransforms.
      * Animation transforms are not applied to this bone when enabled.
      */
     private boolean userControl = false;
-
     /**
      * The attachment node.
      */
     private Node attachNode;
-
     /**
      * Initial transform is the local bind transform of this bone.
      * PARENT SPACE -> BONE SPACE
      */
     private Vector3f initialPos;
     private Quaternion initialRot;
-    private Vector3f initialScale;
-    
+    private Vector3f initialScale = new Vector3f(1.0f, 1.0f, 1.0f);
     /**
      * The inverse world bind transform.
      * BONE SPACE -> MODEL SPACE
@@ -85,27 +79,25 @@ public final class Bone implements Savable {
     private Vector3f worldBindInversePos;
     private Quaternion worldBindInverseRot;
     private Vector3f worldBindInverseScale;
-    
     /**
      * The local animated transform combined with the local bind transform and parent world transform
      */
     private Vector3f localPos = new Vector3f();
     private Quaternion localRot = new Quaternion();
-    private Vector3f localScale = new Vector3f();
-    
+    private Vector3f localScale = new Vector3f(1.0f, 1.0f, 1.0f);
     /**
      * MODEL SPACE -> BONE SPACE (in animated state)
      */
     private Vector3f worldPos = new Vector3f();
     private Quaternion worldRot = new Quaternion();
     private Vector3f worldScale = new Vector3f();
-    
+
     /**
      * Creates a new bone with the given name.
      * 
      * @param name Name to give to this bone
      */
-    public Bone(String name){
+    public Bone(String name) {
         this.name = name;
 
         initialPos = new Vector3f();
@@ -121,7 +113,7 @@ public final class Bone implements Savable {
      * Copy constructor. local bind and world inverse bind transforms shallow copied.
      * @param source
      */
-    Bone(Bone source){
+    Bone(Bone source) {
         this.name = source.name;
 
         userControl = source.userControl;
@@ -148,21 +140,21 @@ public final class Bone implements Savable {
     /**
      * @return The name of the bone, set in the constructor.
      */
-    public String getName(){
+    public String getName() {
         return name;
     }
 
     /**
      * @return The parent bone of this bone, or null if it is a root bone.
      */
-    public Bone getParent(){
+    public Bone getParent() {
         return parent;
     }
 
     /**
      * @return All the children bones of this bone.
      */
-    public ArrayList<Bone> getChildren(){
+    public ArrayList<Bone> getChildren() {
         return children;
     }
 
@@ -184,9 +176,9 @@ public final class Bone implements Savable {
      * @return The local scale of the bone, relative to the parent bone.
      */
     public Vector3f getLocalScale() {
-		return localScale;
-	}
-    
+        return localScale;
+    }
+
     /**
      * @return The position of the bone in model space.
      */
@@ -200,7 +192,7 @@ public final class Bone implements Savable {
     public Quaternion getModelSpaceRotation() {
         return worldRot;
     }
-    
+
     /**
      * @return The scale of the bone in model space.
      */
@@ -215,16 +207,16 @@ public final class Bone implements Savable {
     public Quaternion getWorldBindInverseRotation() {
         return worldBindInverseRot;
     }
-    
+
     public Vector3f getWorldBindInverseScale() {
-		return worldBindInverseScale;
-	}
+        return worldBindInverseScale;
+    }
 
     /**
      * If enabled, user can control bone transform with setUserTransforms.
      * Animation transforms are not applied to this bone when enabled.
      */
-    public void setUserControl(boolean enable){
+    public void setUserControl(boolean enable) {
         userControl = enable;
     }
 
@@ -241,8 +233,8 @@ public final class Bone implements Savable {
     /**
      * Updates the world transforms for this bone, and, possibly the attach node if not null.
      */
-    final void updateWorldVectors(){
-        if (parent != null){
+    final void updateWorldVectors() {
+        if (parent != null) {
             // worldRot = localRot * parentWorldRot
 
             parent.worldRot.mult(localRot, worldRot);
@@ -254,13 +246,13 @@ public final class Bone implements Savable {
             parent.worldRot.mult(localPos, worldPos);
 //            worldPos = parent.worldRot.mult(localPos);
             worldPos.addLocal(parent.worldPos);
-        }else{
+        } else {
             worldRot.set(localRot);
             worldPos.set(localPos);
             worldScale.set(localScale);
         }
 
-        if (attachNode != null){
+        if (attachNode != null) {
             attachNode.setLocalTranslation(worldPos);
             attachNode.setLocalRotation(worldRot);
             attachNode.setLocalScale(worldScale);
@@ -270,28 +262,28 @@ public final class Bone implements Savable {
     /**
      * Updates world transforms for this bone and it's children.
      */
-    final void update(){
+    final void update() {
         this.updateWorldVectors();
 
         for (int i = children.size() - 1; i >= 0; i--) {
-			children.get(i).update();
-		}
+            children.get(i).update();
+        }
     }
 
     /**
      * Saves the current bone state as it's binding pose, including it's children.
      */
-    void setBindingPose(){
+    void setBindingPose() {
         initialPos.set(localPos);
         initialRot.set(localRot);
         initialScale.set(localScale);
 
-        if (worldBindInversePos == null){
+        if (worldBindInversePos == null) {
             worldBindInversePos = new Vector3f();
             worldBindInverseRot = new Quaternion();
             worldBindInverseScale = new Vector3f();
         }
-        
+
         // Save inverse derived position/scale/orientation, used for calculate offset transform later
         worldBindInversePos.set(worldPos);
         worldBindInversePos.negateLocal();
@@ -301,25 +293,25 @@ public final class Bone implements Savable {
 
         worldBindInverseScale.set(worldScale);
         worldBindInverseScale.negateLocal();
-        
+
         for (Bone b : children) {
-			b.setBindingPose();
-		}
+            b.setBindingPose();
+        }
     }
 
     /**
      * Reset the bone and it's children to bind pose.
      */
-    final void reset(){
-        if (!userControl){
+    final void reset() {
+        if (!userControl) {
             localPos.set(initialPos);
             localRot.set(initialRot);
             localScale.set(initialScale);
         }
 
         for (int i = children.size() - 1; i >= 0; i--) {
-			children.get(i).reset();
-		}
+            children.get(i).reset();
+        }
     }
 
     /**
@@ -327,11 +319,11 @@ public final class Bone implements Savable {
      * The skinning transform applies the animation of the bone to a vertex.
      * @param m
      */
-    void getOffsetTransform(Matrix4f m, Quaternion tmp1, Vector3f tmp2){
+    void getOffsetTransform(Matrix4f m, Quaternion tmp1, Vector3f tmp2) {
         Quaternion rotate = worldRot.mult(worldBindInverseRot, tmp1);
         Vector3f translate = worldPos.add(rotate.mult(worldBindInversePos, tmp2), tmp2);
         //TODO: add scale influence here ???
-        
+
         m.loadIdentity();
         m.setTranslation(translate);
         m.setRotationQuaternion(rotate);
@@ -341,15 +333,15 @@ public final class Bone implements Savable {
      * Set user transform.
      * @see setUserControl
      */
-    public void setUserTransforms(Vector3f translation, Quaternion rotation, Vector3f scale){
+    public void setUserTransforms(Vector3f translation, Quaternion rotation, Vector3f scale) {
         if (!userControl) {
-			throw new IllegalStateException("User control must be on bone to allow user transforms");
-		}
+            throw new IllegalStateException("User control must be on bone to allow user transforms");
+        }
 
         localPos.set(initialPos);
         localRot.set(initialRot);
         localScale.set(initialScale);
-        
+
         localPos.addLocal(translation);
         localRot = localRot.mult(rotation);
         localScale.addLocal(scale);
@@ -360,10 +352,10 @@ public final class Bone implements Savable {
      * @param translation
      * @param rotation
      *///TODO: add scale here ???
-    public void setUserTransformsWorld(Vector3f translation, Quaternion rotation){
+    public void setUserTransformsWorld(Vector3f translation, Quaternion rotation) {
         if (!userControl) {
-			throw new IllegalStateException("User control must be on bone to allow user transforms");
-		}
+            throw new IllegalStateException("User control must be on bone to allow user transforms");
+        }
 
         worldPos.set(translation);
         worldRot.set(rotation);
@@ -374,9 +366,9 @@ public final class Bone implements Savable {
      * Attach models and effects to this node to make
      * them follow this bone's motions.
      */
-    public Node getAttachmentsNode(){
-        if (attachNode == null){
-            attachNode = new Node(name+"_attachnode");
+    public Node getAttachmentsNode() {
+        if (attachNode == null) {
+            attachNode = new Node(name + "_attachnode");
             attachNode.setUserData("AttachedBone", this);
         }
         return attachNode;
@@ -386,7 +378,7 @@ public final class Bone implements Savable {
      * Used internally after model cloning.
      * @param attachNode
      */
-    public void setAttachmentsNode(Node attachNode){
+    public void setAttachmentsNode(Node attachNode) {
         this.attachNode = attachNode;
     }
 
@@ -394,10 +386,10 @@ public final class Bone implements Savable {
      * Sets the local animation transform of this bone.
      * Bone is assumed to be in bind pose when this is called.
      */
-    void setAnimTransforms(Vector3f translation, Quaternion rotation, Vector3f scale){
+    void setAnimTransforms(Vector3f translation, Quaternion rotation, Vector3f scale) {
         if (userControl) {
-			return;
-		}
+            return;
+        }
 
 //        localPos.addLocal(translation);
 //        localRot.multLocal(rotation);
@@ -409,10 +401,10 @@ public final class Bone implements Savable {
     }
 
     //TODO: add scale here?
-    void blendAnimTransforms(Vector3f translation, Quaternion rotation, float weight){
+    void blendAnimTransforms(Vector3f translation, Quaternion rotation, float weight) {
         if (userControl) {
-			return;
-		}
+            return;
+        }
 
         TempVars vars = TempVars.get();
         assert vars.lock();
@@ -434,58 +426,62 @@ public final class Bone implements Savable {
      * Sets local bind transform for bone.
      * Call setBindingPose() after all of the skeleton bones' bind transforms are set to save them.
      */
-    public void setBindTransforms(Vector3f translation, Quaternion rotation, Vector3f scale){
+    public void setBindTransforms(Vector3f translation, Quaternion rotation, Vector3f scale) {
         initialPos.set(translation);
         initialRot.set(rotation);
-        initialScale.set(scale);
+        if (scale != null) {
+            initialScale.set(scale);
+        }
 
         localPos.set(translation);
         localRot.set(rotation);
-        localScale.set(scale);
+        if (scale != null) {
+            localScale.set(scale);
+        }
     }
 
-    void setAnimTransforms(Vector3f translation, Quaternion rotation){
+    void setAnimTransforms(Vector3f translation, Quaternion rotation) {
         this.setAnimTransforms(translation, rotation, Vector3f.UNIT_XYZ);
     }
 
-    public void setBindTransforms(Vector3f translation, Quaternion rotation){
+    public void setBindTransforms(Vector3f translation, Quaternion rotation) {
         this.setBindTransforms(translation, rotation, Vector3f.UNIT_XYZ);
     }
 
-    private String toString(int depth){
+    private String toString(int depth) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < depth; i++) {
-			sb.append('-');
-		}
+            sb.append('-');
+        }
 
         sb.append(name).append(" bone\n");
-        for (Bone child : children){
-            sb.append(child.toString(depth+1));
+        for (Bone child : children) {
+            sb.append(child.toString(depth + 1));
         }
         return sb.toString();
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return this.toString(0);
     }
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public void read(JmeImporter im) throws IOException {
+    @Override
+    @SuppressWarnings("unchecked")
+    public void read(JmeImporter im) throws IOException {
         InputCapsule input = im.getCapsule(this);
 
         name = input.readString("name", null);
         initialPos = (Vector3f) input.readSavable("initialPos", null);
         initialRot = (Quaternion) input.readSavable("initialRot", null);
-        initialScale = (Vector3f) input.readSavable("initialScale", null);
+        initialScale = (Vector3f) input.readSavable("initialScale", new Vector3f(1.0f, 1.0f, 1.0f));
         attachNode = (Node) input.readSavable("attachNode", null);
 
         localPos.set(initialPos);
         localRot.set(initialRot);
 
         ArrayList<Bone> childList = input.readSavableArrayList("children", null);
-        for (int i = childList.size() - 1; i >= 0; i--){
+        for (int i = childList.size() - 1; i >= 0; i--) {
             this.addChild(childList.get(i));
         }
 
@@ -496,15 +492,14 @@ public final class Bone implements Savable {
     }
 
     @Override
-	public void write(JmeExporter ex) throws IOException {
+    public void write(JmeExporter ex) throws IOException {
         OutputCapsule output = ex.getCapsule(this);
 
         output.write(name, "name", null);
         output.write(attachNode, "attachNode", null);
         output.write(initialPos, "initialPos", null);
         output.write(initialRot, "initialRot", null);
-        output.write(initialScale, "initialScale", null);
+        output.write(initialScale, "initialScale", new Vector3f(1.0f, 1.0f, 1.0f));
         output.writeSavableArrayList(children, "children", null);
     }
-
 }
