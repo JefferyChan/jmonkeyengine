@@ -170,7 +170,7 @@ public class TerrainTestCollision extends SimpleApplication {
         rootNode.addLight(dl);
 
         getCamera().getLocation().y = 25;
-        getCamera().setDirection(new Vector3f(-1, 0, -1));
+        getCamera().setDirection(new Vector3f(0, -1, 0));
     }
 
     public void loadHintText() {
@@ -211,6 +211,8 @@ public class TerrainTestCollision extends SimpleApplication {
         inputManager.addListener(actionListener, "Reset");
         inputManager.addMapping("shoot", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
         inputManager.addListener(actionListener, "shoot");
+        inputManager.addMapping("cameraDown", new MouseButtonTrigger(MouseInput.BUTTON_RIGHT));
+        inputManager.addListener(actionListener, "cameraDown");
     }
 
     @Override
@@ -252,11 +254,15 @@ public class TerrainTestCollision extends SimpleApplication {
                     if (collisionMarker == null) {
                         createCollisionMarker();
                     }
-                    Vector2f loc = new Vector2f(hit.getContactPoint().x, hit.getContactPoint().y);
-                    System.out.println("collide " + hit.getContactPoint() + ", height: " + terrain.getHeight(loc));
-                    collisionMarker.setLocalTranslation(hit.getContactPoint());
+                    Vector2f loc = new Vector2f(hit.getContactPoint().x, hit.getContactPoint().z);
+                    float height = terrain.getHeight(loc);
+                    System.out.println("collide " + hit.getContactPoint() + ", height: " + height);
+                    collisionMarker.setLocalTranslation(new Vector3f(hit.getContactPoint().x, height, hit.getContactPoint().z));
                 }
+            } else if (binding.equals("cameraDown") && !keyPressed) {
+                getCamera().setDirection(new Vector3f(0,-1,0));
             }
+
         }
     };
 }

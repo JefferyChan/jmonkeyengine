@@ -136,9 +136,9 @@ public class TerrainTestAdvanced extends SimpleApplication {
         normalMap1.setWrap(WrapMode.Repeat);
         Texture normalMap2 = assetManager.loadTexture("Textures/Terrain/splat/road_normal.png");
         normalMap2.setWrap(WrapMode.Repeat);
-        //matTerrain.setTexture("NormalMap", normalMap0);
-        //matTerrain.setTexture("NormalMap_1", normalMap2);
-        //matTerrain.setTexture("NormalMap_2", normalMap2);
+        matTerrain.setTexture("NormalMap", normalMap0);
+        matTerrain.setTexture("NormalMap_1", normalMap2);
+        matTerrain.setTexture("NormalMap_2", normalMap2);
 
 		// WIREFRAME material
 		matWire = new Material(assetManager, "Common/MatDefs/Misc/WireColor.j3md");
@@ -171,12 +171,12 @@ public class TerrainTestAdvanced extends SimpleApplication {
 		List<Camera> cameras = new ArrayList<Camera>();
 		cameras.add(getCamera());
 		TerrainLodControl control = new TerrainLodControl(terrain, cameras);
-		//terrain.addControl(control);
+		terrain.addControl(control);
 		terrain.setMaterial(matTerrain);
 		terrain.setModelBound(new BoundingBox());
 		terrain.updateModelBound();
 		terrain.setLocalTranslation(0, -100, 0);
-		terrain.setLocalScale(2f, 1f, 2f);
+		terrain.setLocalScale(1f, 1f, 1f);
 		rootNode.attachChild(terrain);
 
         DirectionalLight light = new DirectionalLight();

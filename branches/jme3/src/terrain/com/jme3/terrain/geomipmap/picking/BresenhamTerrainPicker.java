@@ -94,13 +94,19 @@ public class BresenhamTerrainPicker implements TerrainPicker {
 
             tracer.startWalk(workRay);
 
-            if (tracer.isRayPerpendicularToGrid()) {
-                // no intersection
-                return null;
-            }
-            
             final Vector3f intersection = new Vector3f();
             final Vector2f loc = tracer.getGridLocation();
+
+            if (tracer.isRayPerpendicularToGrid()) {
+                checkTriangles(loc.x, loc.y, workRay, intersection, patch);
+                float distance = workRay.origin.distanceSquared(intersection);
+                CollisionResult cr = new CollisionResult(intersection, distance);
+                cr.setGeometry(patch);
+                results.addCollision(cr);
+                return intersection;
+            }
+            
+            
 
             while (loc.x >= -1 && loc.x <= patch.getSize() && 
                    loc.y >= -1 && loc.y <= patch.getSize()) {
@@ -111,6 +117,7 @@ public class BresenhamTerrainPicker implements TerrainPicker {
                     // we found an intersection, so return that!
                     float distance = workRay.origin.distanceSquared(intersection);
                     CollisionResult cr = new CollisionResult(intersection, distance);
+                    cr.setGeometry(patch);
                     results.addCollision(cr);
                     return intersection;
                 }

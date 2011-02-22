@@ -111,7 +111,7 @@ public class TangentBinormalGenerator {
         }
     }
 
-    private static class TriangleData {
+    public static class TriangleData {
         public final Vector3f tangent;
         public final Vector3f binormal;
         public final Vector3f normal;
@@ -309,7 +309,7 @@ public class TangentBinormalGenerator {
     }
 
 
-    private static TriangleData processTriangle(int[] index,
+    public static TriangleData processTriangle(int[] index,
             Vector3f[] v, Vector2f[] t)
     {
         Vector3f edge1 = new Vector3f();

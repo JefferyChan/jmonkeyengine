@@ -33,9 +33,6 @@
 package com.jme3.terrain.geomipmap;
 
 import com.jme3.material.Material;
-import com.jme3.renderer.RenderManager;
-import com.jme3.renderer.ViewPort;
-import com.jme3.scene.control.Control;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
@@ -57,7 +54,6 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.debug.WireBox;
 import com.jme3.terrain.ProgressMonitor;
 import com.jme3.terrain.Terrain;
@@ -910,9 +906,9 @@ public class TerrainQuad extends Node implements Terrain {
 
                 if (match) {
                     if (spat instanceof TerrainQuad) {
-                        return ((TerrainQuad) spat).getHeight(col, row);
+                        return ((TerrainQuad) spat).getHeightmapHeight(col, row);
                     } else if (spat instanceof TerrainPatch) {
-                        return ((TerrainPatch) spat).getHeight(col, row);
+                        return ((TerrainPatch) spat).getHeightmapHeight(col, row);
                     }
                 }
 
@@ -924,28 +920,31 @@ public class TerrainQuad extends Node implements Terrain {
 
     public float getHeight(Vector2f xz) {
         // offset
-        float x = ((xz.x / getLocalScale().x) + totalSize / 2);
-        float z = ((xz.y / getLocalScale().z) + totalSize / 2);
-        return getHeight(x, z);
+        float x = (float)((xz.x / getLocalScale().x) + (float)totalSize / 2f);
+        float z = (float)((xz.y / getLocalScale().z) + (float)totalSize / 2f);
+        return getHeight(x, z, xz);
     }
 
-    // gets an interpolated value
-    protected float getHeight(float x, float z) {
-        float col = FastMath.floor(x);
-        float row = FastMath.floor(z);
-
-        boolean onX = (x-col) > (z-row); // what triangle to interpolate on
-
+    /*
+     * gets an interpolated value at the specified point
+     * @param x coordinate translated into actual (positive) terrain grid coordinates
+     * @param y coordinate translated into actual (positive) terrain grid coordinates
+     */
+    protected float getHeight(float x, float z, Vector2f xz) {
         float topLeft = getHeightmapHeight((int)FastMath.floor(x), (int)FastMath.ceil(z));
         float topRight = getHeightmapHeight((int)FastMath.ceil(x), (int)FastMath.ceil(z));
         float bottomLeft = getHeightmapHeight((int)FastMath.floor(x), (int)FastMath.floor(z));
         float bottomRight = getHeightmapHeight((int)FastMath.ceil(x), (int)FastMath.floor(z));
 
-        if (onX) {
-             return (1-(x-col))*topLeft + ((x-col)-(z-row))*topRight + (z-row)*bottomRight;
-        } else {
-            return (1-(z-row))*topLeft + ((z-row)-(x-col))*bottomLeft + (x-col)*bottomRight;
-        }
+        // create a vertical, down-facing, ray and get the height from that
+        float max = Math.max(Math.max(Math.max(topLeft, topRight), bottomRight),bottomLeft);
+        Ray ray = new Ray(new Vector3f(xz.x,max+10f,xz.y), new Vector3f(0,-1,0).normalizeLocal());
+        CollisionResults cr = new CollisionResults();
+        int num = this.collideWith(ray, cr);
+        if (num > 0)
+            return cr.getClosestCollision().getContactPoint().y;
+        else
+            return 0;
     }
 
 
@@ -1363,18 +1362,15 @@ public class TerrainQuad extends Node implements Terrain {
                 TerrainPatch bottomRight = null;
                 if (right != null)
                     bottomRight = findDownPatch(right);
+                TerrainPatch topRight = null;
+                if (top != null)
+                    topRight = findRightPatch(top);
+                TerrainPatch bottomLeft = null;
+                if (left != null)
+                    bottomLeft = findDownPatch(left);
 
-                // update above and left patches' normals first
-                //if (top != null && affectedArea != null && !affectedArea.intersects(top.getWorldBound()) )
-                //    top.fixNormalEdges(findRightPatch(top), tp, findTopPatch(top), findLeftPatch(top), null, null);
+                tp.fixNormalEdges(right, bottom, top, left, bottomRight, bottomLeft, topRight, topLeft);
                 
-                //if (left != null && affectedArea != null && !affectedArea.intersects(left.getWorldBound()) )
-                //    left.fixNormalEdges(tp, findDownPatch(left), findTopPatch(left), findLeftPatch(left), null, null);
-
-                tp.fixNormalEdges(right, bottom, top, left, bottomRight, topLeft);
-                //if (right != null)
-                //    right.fixNormalEdges(findRightPatch(right), findDownPatch(right), findTopPatch(right), findLeftPatch(right), null, null);
-
             }
         } // for each child
 
