@@ -133,7 +133,7 @@ public class BitmapText extends Node {
      * @param color new color of text
      */
     public void setColor(ColorRGBA color) {
-        letters.setColor(0, block.getText().length(), color);
+        letters.setColor(0, block.getCharacters().length(), color);
         letters.invalidate(); // TODO: Don't have to align.
         needRefresh = true;
     }
@@ -182,6 +182,16 @@ public class BitmapText extends Node {
             return Math.max(letters.getTotalWidth(), textBox.width);
         }
         return letters.getTotalWidth();
+    }
+    
+    /**
+     * @return line count
+     */
+    public int getLineCount() {
+        if (needRefresh) {
+            assemble();
+        }
+        return block.getLineCount();
     }
     
     @Deprecated
@@ -256,7 +266,7 @@ public class BitmapText extends Node {
      */
     public void setStyle(String regexp, int style) {
         Pattern p = Pattern.compile(regexp);
-        Matcher m = p.matcher(block.getText());
+        Matcher m = p.matcher(block.getCharacters());
         while (m.find()) {
             setStyle(m.start(), m.end(), style);
         }
@@ -281,7 +291,7 @@ public class BitmapText extends Node {
      */
     public void setColor(String regexp, ColorRGBA color) {
         Pattern p = Pattern.compile(regexp);
-        Matcher m = p.matcher(block.getText());
+        Matcher m = p.matcher(block.getCharacters());
         while (m.find()) {
             letters.setColor(m.start(), m.end(), color);
         }

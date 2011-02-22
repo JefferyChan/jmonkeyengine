@@ -78,6 +78,7 @@ class Letters {
                     switch (block.getLineWrapMode()) {
                     case Character:
                         lineWrap(l);
+                        lineCount++;
                         break;
                     case Word:
                         if (!l.isBlank()) {
@@ -86,6 +87,7 @@ class Letters {
                             while (!blank.isBlank()) {
                                 if (blank.isLineStart() || blank.isHead()) {
                                     lineWrap(l);
+                                    lineCount++;
                                     blank = null;
                                     break;
                                 }
@@ -93,6 +95,7 @@ class Letters {
                             }
                             if (blank != null) {
                                 blank.setEndOfLine();
+                                lineCount++;
                                 while (blank != l) {
                                     blank = blank.getNext();
                                     blank.invalidate();
