@@ -84,7 +84,7 @@ public abstract class Filter implements Savable {
               //  depthTexture = new Texture2D(width, height, numSamples, depthBufferFormat);
             } else {
                 renderFrameBuffer = new FrameBuffer(width, height, 1);
-                renderedTexture = new Texture2D(width, height, textureFormat);
+                renderedTexture = new Texture2D(width, height, textureFormat);                
 //                depthTexture = new Texture2D(width, height,  depthBufferFormat);
             }
             
@@ -106,6 +106,11 @@ public abstract class Filter implements Savable {
         public boolean requiresSceneAsTexture() {
             return false;
         }
+
+        public boolean requiresDepthAsTexture() {
+            return false;
+        }
+
 
         public void beforeRender() {
         }
@@ -272,4 +277,17 @@ public abstract class Filter implements Savable {
     public void setPostRenderPasses(List<Pass> postRenderPasses) {
         this.postRenderPasses = postRenderPasses;
     }
+
+    public void setEnabled(boolean enabled) {
+        if(processor!=null){
+            processor.setFilterState(this, enabled);
+        }else{
+            this.enabled = enabled;
+        }
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+    
 }

@@ -40,7 +40,6 @@ import com.jme3.export.InputCapsule;
 import com.jme3.export.OutputCapsule;
 import com.jme3.export.Savable;
 import com.jme3.material.Material;
-import com.jme3.material.RenderState;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.Caps;
 import com.jme3.renderer.RenderManager;
@@ -91,11 +90,13 @@ public class FilterPostProcessor implements SceneProcessor, Savable {
 
     public void addFilter(Filter filter) {
         filters.add(filter);
-        filter.enabled = true;
+        
         if (isInitialized()) {
             initFilter(filter, viewPort);
         }
-        lastFilterIndex = filters.size() - 1;
+        if(filter.isEnabled()){
+            lastFilterIndex = filters.size() - 1;
+        }
     }
 
     public void removeFilter(Filter filter) {
@@ -154,7 +155,7 @@ public class FilterPostProcessor implements SceneProcessor, Savable {
     public void postQueue(RenderQueue rq) {
         for (Iterator<Filter> it = filters.iterator(); it.hasNext();) {
             Filter filter = it.next();
-            if (filter.enabled) {
+            if (filter.isEnabled()) {
                 filter.preRender(renderManager, viewPort);
             }
         }
@@ -165,7 +166,7 @@ public class FilterPostProcessor implements SceneProcessor, Savable {
         boolean msDepth = depthTexture != null && depthTexture.getImage().getMultiSamples() > 1;
         for (int i = 0; i < filters.size(); i++) {
             Filter filter = filters.get(i);
-            if (filter.enabled) {
+            if (filter.isEnabled()) {
                 if (filter.getPostRenderPasses() != null) {
                     for (Iterator<Filter.Pass> it1 = filter.getPostRenderPasses().iterator(); it1.hasNext();) {
                         Filter.Pass pass = it1.next();
@@ -175,9 +176,16 @@ public class FilterPostProcessor implements SceneProcessor, Savable {
                             if (tex.getImage().getMultiSamples() > 1) {
                                 pass.getPassMaterial().setInt("NumSamples", tex.getImage().getMultiSamples());
                             } else {
-                              //  if (pass.getPassMaterial().getParam("NumSamples") != null) {
-                                    pass.getPassMaterial().clearParam("NumSamples");
-                              //  }
+                                pass.getPassMaterial().clearParam("NumSamples");
+
+                            }
+                        }
+                        if (pass.requiresDepthAsTexture()) {
+                            pass.getPassMaterial().setTexture("DepthTexture", depthTexture);
+                            if (msDepth) {
+                                pass.getPassMaterial().setInt("NumSamplesDepth", depthTexture.getImage().getMultiSamples());
+                            } else {
+                                pass.getPassMaterial().clearParam("NumSamplesDepth");
                             }
                         }
                         renderProcessing(r, pass.getRenderFrameBuffer(), pass.getPassMaterial());
@@ -193,9 +201,7 @@ public class FilterPostProcessor implements SceneProcessor, Savable {
                 if (tex.getImage().getMultiSamples() > 1) {
                     mat.setInt("NumSamples", tex.getImage().getMultiSamples());
                 } else {
-                  //  if (mat.getParam("NumSamples") != null) {
-                        mat.clearParam("NumSamples");
-//                    }
+                    mat.clearParam("NumSamples");
                 }
 
                 FrameBuffer buff = outputBuffer;
@@ -211,7 +217,7 @@ public class FilterPostProcessor implements SceneProcessor, Savable {
     public void postFrame(FrameBuffer out) {
         //Added this to fix the issue where the filter were not rendered when an object in the scene had a DepthWrite to false. (particles for example)
         //there should be a better way...
-        renderer.applyRenderState(RenderState.DEFAULT);
+     //   renderer.applyRenderState(RenderState.DEFAULT);
         if (renderFrameBufferMS != null && !renderer.getCaps().contains(Caps.OpenGL31)) {
             renderer.copyFrameBuffer(renderFrameBufferMS, renderFrameBuffer);
         }
@@ -230,7 +236,7 @@ public class FilterPostProcessor implements SceneProcessor, Savable {
         }
         for (Iterator<Filter> it = filters.iterator(); it.hasNext();) {
             Filter filter = it.next();
-            if (filter.enabled) {
+            if (filter.isEnabled()) {
                 filter.preFrame(tpf);
             }
         }
@@ -240,8 +246,17 @@ public class FilterPostProcessor implements SceneProcessor, Savable {
      * Enable or disable a filter
      * @param filter the filter
      * @param enabled true to enable
+     * @deprecated use filter.setEnabled(boolean enabled) instead
      */
+    @Deprecated
     public void setFilterEnabled(Filter filter, boolean enabled) {
+        if (filters.contains(filter)) {
+            filter.enabled = enabled;
+            updateLastFilterIndex();
+        }
+    }
+
+    protected void setFilterState(Filter filter, boolean enabled) {
         if (filters.contains(filter)) {
             filter.enabled = enabled;
             updateLastFilterIndex();
@@ -251,7 +266,7 @@ public class FilterPostProcessor implements SceneProcessor, Savable {
     private void updateLastFilterIndex() {
         lastFilterIndex = -1;
         for (int i = filters.size() - 1; i >= 0 && lastFilterIndex == -1; i--) {
-            if (filters.get(i).enabled) {
+            if (filters.get(i).isEnabled()) {
                 lastFilterIndex = i;
                 return;
             }
@@ -265,7 +280,7 @@ public class FilterPostProcessor implements SceneProcessor, Savable {
      * @return
      */
     public boolean isFilterEnabled(Filter filter) {
-        return filter.enabled;
+        return filter.isEnabled();
     }
 
     public void cleanup() {
@@ -331,6 +346,16 @@ public class FilterPostProcessor implements SceneProcessor, Savable {
     public int getNumSamples() {
         return numSamples;
     }
+
+    /**
+     *
+     * Removes all the filters from this processor
+     */
+    public void removeAllFilters() {
+        filters.clear();
+        updateLastFilterIndex();
+    }
+
 
     /**
      * Sets the number of samples for antialiasing
