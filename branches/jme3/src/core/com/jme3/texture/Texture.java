@@ -41,6 +41,8 @@ import com.jme3.export.InputCapsule;
 import com.jme3.export.OutputCapsule;
 import com.jme3.export.Savable;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * <code>Texture</code> defines a texture object to be used to display an
@@ -626,9 +628,13 @@ public abstract class Texture implements Asset, Savable, Cloneable {
         name = capsule.readString("name", null);
         key = (TextureKey) capsule.readSavable("key", null);
         // load texture from key
-        if (key != null){
+        if (key != null) {
             Texture loadedTex = e.getAssetManager().loadTexture(key);
-            image = loadedTex.getImage();
+            if (loadedTex == null) {
+                Logger.getLogger(Texture.class.getName()).log(Level.SEVERE, "Could not load texture: {0}", key.toString());
+            } else {
+                image = loadedTex.getImage();
+            }
         }
 //        image = (Image) capsule.readSavable("image", null);
 //        if (image == null) {
