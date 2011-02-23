@@ -837,6 +837,10 @@ public class LwjglAudioRenderer implements AudioRenderer, Runnable {
 
                 // allocate channel to this source
                 int index = newChannel();
+                if (index == -1) {
+                    logger.log(Level.WARNING, "No channel available to play " + src);
+                    return;
+                }
                 clearChannel(index);
                 src.setChannel(this, index);
 
