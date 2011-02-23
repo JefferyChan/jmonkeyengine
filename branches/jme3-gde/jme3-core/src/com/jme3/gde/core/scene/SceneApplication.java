@@ -543,6 +543,7 @@ public class SceneApplication extends Application implements LookupProvider, Loo
         progressHandle.finish();
         if (!started) {
             SceneViewerTopComponent.showOpenGLError(msg);
+            Exceptions.printStackTrace(t);
         } else {
             if (lastError != null && !lastError.equals(msg)) {
                 Message mesg = new NotifyDescriptor.Message(
