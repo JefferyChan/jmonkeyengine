@@ -269,8 +269,10 @@ public class TerrainPatch extends Geometry {
 
 
     public Vector2f getTex(float x, float z, Vector2f store) {
-        if (x < 0 || z < 0 || x >= size || z >= size)
-            return Vector2f.ZERO;
+        if (x < 0 || z < 0 || x >= size || z >= size) {
+            store.set(Vector2f.ZERO);
+            return store;
+        }
         int idx = (int) (z * size + x);
         return store.set(getMesh().getFloatBuffer(Type.TexCoord).get(idx*2),
                          getMesh().getFloatBuffer(Type.TexCoord).get(idx*2+1) );
