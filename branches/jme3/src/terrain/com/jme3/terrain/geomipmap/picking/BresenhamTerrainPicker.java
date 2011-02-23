@@ -145,6 +145,7 @@ public class BresenhamTerrainPicker implements TerrainPicker {
                     float distance = workRay.origin.distance(intersection);
                     CollisionResult cr = new CollisionResult(intersection, distance);
                     results.addCollision(cr);
+                    cr.setGeometry(patch);
                     return intersection;
                 }
 
