@@ -87,10 +87,10 @@ public class BresenhamTerrainPicker implements TerrainPicker {
             TerrainPatch patch = pd.targetPatch;
 
 
-            tracer.getGridSpacing().set(Vector3f.UNIT_XYZ).multLocal(patch.getWorldScale().clone());
+            tracer.getGridSpacing().set(patch.getWorldScale());
             tracer.setGridOrigin(patch.getWorldTranslation());
 
-            workRay.getOrigin().set(worldPick.getDirection().clone()).multLocal(pd.cr.getDistance()-.1f).addLocal(worldPick.getOrigin().clone());
+            workRay.getOrigin().set(worldPick.getDirection()).multLocal(pd.cr.getDistance()-.1f).addLocal(worldPick.getOrigin());
 
             tracer.startWalk(workRay);
 
