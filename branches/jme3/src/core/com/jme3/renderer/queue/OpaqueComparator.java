@@ -49,29 +49,23 @@ public class OpaqueComparator implements GeometryComparator {
     public float distanceToCam(Geometry spat){
         if (spat == null)
             return Float.NEGATIVE_INFINITY;
-
+ 
         if (spat.queueDistance != Float.NEGATIVE_INFINITY)
                 return spat.queueDistance;
-
+ 
         Vector3f camPosition = cam.getLocation();
         Vector3f viewVector = cam.getDirection();
         Vector3f spatPosition = null;
-
+ 
         if (spat.getWorldBound() != null){
             spatPosition = spat.getWorldBound().getCenter();
         }else{
             spatPosition = spat.getWorldTranslation();
         }
-
+ 
         spatPosition.subtract(camPosition, tempVec);
-        spat.queueDistance = tempVec.dot(tempVec);
-
-        float retval = Math.abs(tempVec.dot(viewVector)
-                / viewVector.dot(viewVector));
-        viewVector.mult(retval, tempVec);
-
-        spat.queueDistance = tempVec.length();
-
+        spat.queueDistance = tempVec.dot(viewVector);
+ 
         return spat.queueDistance;
     }
 
