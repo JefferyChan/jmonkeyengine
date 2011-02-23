@@ -70,7 +70,7 @@ public class DistanceLodCalculator implements LodCalculator {
 
         // go through each lod level to find the one we are in
         for (int i = 0; i <= terrainPatch.getMaxLod(); i++) {
-            if (distance < lodThresholdCalculator.getLodDistanceThreshold() * (i + 1) || i == terrainPatch.getMaxLod()) {
+            if (distance < lodThresholdCalculator.getLodDistanceThreshold() * (i + 1)*terrainPatch.getWorldScale().x || i == terrainPatch.getMaxLod()) {
                 boolean reIndexNeeded = false;
                 if (i != terrainPatch.getLod()) {
                     reIndexNeeded = true;
@@ -92,39 +92,12 @@ public class DistanceLodCalculator implements LodCalculator {
         }
 
         return false;
-        /*
-        int newLOD = terrainPatch.getLod();
-        int prevLOD = terrainPatch.getPreviousLod();
-
-        if (newLOD != terrainPatch.getMaxLod())
-        prevLOD = newLOD;
-
-        // max lod (least detailed)
-        newLOD = terrainPatch.getMaxLod();
-
-        boolean reIndexNeeded = false;
-
-        if (prevLOD != newLOD) {
-        reIndexNeeded = true;
-        System.out.println("lod change prev/new: "+prevLOD+"/"+newLOD);
-        }
-        
-        UpdatedTerrainPatch utp = updates.get(terrainPatch.getName());
-        if (utp == null) {
-        utp = new UpdatedTerrainPatch(terrainPatch, newLOD);// save in here, do not update actual variables
-        updates.put(utp.getName(), utp);
-        }
-        utp.setPreviousLod(prevLOD);
-        utp.setReIndexNeeded(reIndexNeeded);
-
-        return reIndexNeeded;
-         */
     }
 
     public Vector3f getCenterLocation() {
         Vector3f loc = terrainPatch.getWorldTranslation().clone();
-        loc.x += terrainPatch.getSize() / 2;
-        loc.z += terrainPatch.getSize() / 2;
+        loc.x += terrainPatch.getSize()*terrainPatch.getWorldScale().x / 2;
+        loc.z += terrainPatch.getSize()*terrainPatch.getWorldScale().z / 2;
         return loc;
     }
 
