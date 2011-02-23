@@ -364,10 +364,10 @@ class LetterQuad {
         tc[4] = u1; tc[5] = v1;
         tc[6] = u1; tc[7] = v0;
 
-        colors[0] = (byte) (colorInt & 0xff);
-        colors[1] = (byte) ((colorInt >> 8) & 0xff);
-        colors[2] = (byte) ((colorInt >> 16) & 0xff);
-        colors[3] = (byte) ((colorInt >> 24) & 0xff);
+        colors[3] = (byte) (colorInt & 0xff);
+        colors[2] = (byte) ((colorInt >> 8) & 0xff);
+        colors[1] = (byte) ((colorInt >> 16) & 0xff);
+        colors[0] = (byte) ((colorInt >> 24) & 0xff);
         System.arraycopy(colors, 0, colors, 4,  4);
         System.arraycopy(colors, 0, colors, 8,  4);
         System.arraycopy(colors, 0, colors, 12, 4);
