@@ -44,6 +44,7 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.plugins.ogre.OgreMeshKey;
 import com.jme3.scene.shape.Sphere;
+import com.jme3.util.TangentBinormalGenerator;
 
 public class TestBumpModel extends SimpleApplication {
 
@@ -60,6 +61,7 @@ public class TestBumpModel extends SimpleApplication {
     public void simpleInitApp() {
         Spatial signpost = (Spatial) assetManager.loadAsset(new OgreMeshKey("Models/Sign Post/Sign Post.mesh.xml", null));
         signpost.setMaterial( (Material) assetManager.loadAsset(new AssetKey("Models/Sign Post/Sign Post.j3m")));
+        TangentBinormalGenerator.generate(signpost);
         rootNode.attachChild(signpost);
 
         lightMdl = new Geometry("Light", new Sphere(10, 10, 0.1f));
