@@ -21,97 +21,11 @@
                 <package>com.bulletphysics.linearmath</package>
                 <package>com.bulletphysics.linearmath.convexhull</package>
                 <package>com.bulletphysics.util</package>
-                <package>com.fluendo.jheora</package>
-                <package>com.fluendo.utils</package>
-                <package>com.jcraft.jogg</package>
-                <package>com.jcraft.jorbis</package>
-                <package>com.sun.gluegen.runtime</package>
-                <package>com.sun.opengl.cg</package>
-                <package>com.sun.opengl.impl</package>
-                <package>com.sun.opengl.impl.error</package>
-                <package>com.sun.opengl.impl.glue</package>
-                <package>com.sun.opengl.impl.macosx</package>
-                <package>com.sun.opengl.impl.mipmap</package>
-                <package>com.sun.opengl.impl.nurbs</package>
-                <package>com.sun.opengl.impl.packrect</package>
-                <package>com.sun.opengl.impl.registry</package>
-                <package>com.sun.opengl.impl.tessellator</package>
-                <package>com.sun.opengl.impl.windows</package>
-                <package>com.sun.opengl.impl.x11</package>
-                <package>com.sun.opengl.util</package>
-                <package>com.sun.opengl.util.j2d</package>
-                <package>com.sun.opengl.util.texture</package>
-                <package>com.sun.opengl.util.texture.spi</package>
                 <package>cz.advel.stack</package>
                 <package>cz.advel.stack.instrument</package>
                 <package>de.jarnbjo.ogg</package>
                 <package>de.jarnbjo.util.io</package>
                 <package>de.jarnbjo.vorbis</package>
-                <package>de.lessvoid.console</package>
-                <package>de.lessvoid.nifty</package>
-                <package>de.lessvoid.nifty.controls</package>
-                <package>de.lessvoid.nifty.controls.button</package>
-                <package>de.lessvoid.nifty.controls.button.controller</package>
-                <package>de.lessvoid.nifty.controls.checkbox</package>
-                <package>de.lessvoid.nifty.controls.console.controller</package>
-                <package>de.lessvoid.nifty.controls.dragndrop</package>
-                <package>de.lessvoid.nifty.controls.dragndrop.controller</package>
-                <package>de.lessvoid.nifty.controls.dropdown</package>
-                <package>de.lessvoid.nifty.controls.dropdown.controller</package>
-                <package>de.lessvoid.nifty.controls.dropdown.inputmapping</package>
-                <package>de.lessvoid.nifty.controls.dynamic</package>
-                <package>de.lessvoid.nifty.controls.dynamic.attributes</package>
-                <package>de.lessvoid.nifty.controls.imageSelect</package>
-                <package>de.lessvoid.nifty.controls.listbox</package>
-                <package>de.lessvoid.nifty.controls.listbox.controller</package>
-                <package>de.lessvoid.nifty.controls.scrollbar</package>
-                <package>de.lessvoid.nifty.controls.scrollbar.controller</package>
-                <package>de.lessvoid.nifty.controls.scrollbar.controller.impl</package>
-                <package>de.lessvoid.nifty.controls.scrollbar.inputmapping</package>
-                <package>de.lessvoid.nifty.controls.scrollpanel</package>
-                <package>de.lessvoid.nifty.controls.textfield</package>
-                <package>de.lessvoid.nifty.controls.textfield.controller</package>
-                <package>de.lessvoid.nifty.controls.textfield.inputmapping</package>
-                <package>de.lessvoid.nifty.controls.window</package>
-                <package>de.lessvoid.nifty.controls.window.controller</package>
-                <package>de.lessvoid.nifty.effects</package>
-                <package>de.lessvoid.nifty.effects.impl</package>
-                <package>de.lessvoid.nifty.elements</package>
-                <package>de.lessvoid.nifty.elements.render</package>
-                <package>de.lessvoid.nifty.elements.tools</package>
-                <package>de.lessvoid.nifty.input</package>
-                <package>de.lessvoid.nifty.input.keyboard</package>
-                <package>de.lessvoid.nifty.input.mapping</package>
-                <package>de.lessvoid.nifty.input.mouse</package>
-                <package>de.lessvoid.nifty.layout</package>
-                <package>de.lessvoid.nifty.layout.align</package>
-                <package>de.lessvoid.nifty.layout.manager</package>
-                <package>de.lessvoid.nifty.loaderv2</package>
-                <package>de.lessvoid.nifty.loaderv2.types</package>
-                <package>de.lessvoid.nifty.loaderv2.types.apply</package>
-                <package>de.lessvoid.nifty.loaderv2.types.helper</package>
-                <package>de.lessvoid.nifty.loaderv2.types.resolver.parameter</package>
-                <package>de.lessvoid.nifty.loaderv2.types.resolver.style</package>
-                <package>de.lessvoid.nifty.nulldevice</package>
-                <package>de.lessvoid.nifty.render</package>
-                <package>de.lessvoid.nifty.screen</package>
-                <package>de.lessvoid.nifty.sound</package>
-                <package>de.lessvoid.nifty.spi.input</package>
-                <package>de.lessvoid.nifty.spi.render</package>
-                <package>de.lessvoid.nifty.spi.sound</package>
-                <package>de.lessvoid.nifty.tools</package>
-                <package>de.lessvoid.nifty.tools.pulsate</package>
-                <package>de.lessvoid.nifty.tools.pulsate.provider</package>
-                <package>de.lessvoid.nifty.tools.resourceloader</package>
-                <package>de.lessvoid.nifty.tools.time</package>
-                <package>de.lessvoid.nifty.tools.time.interpolator</package>
-                <package>de.lessvoid.xml.lwxs</package>
-                <package>de.lessvoid.xml.lwxs.elements</package>
-                <package>de.lessvoid.xml.lwxs.processor</package>
-                <package>de.lessvoid.xml.tools</package>
-                <package>de.lessvoid.xml.xpp3</package>
-                <package>javax.media.opengl</package>
-                <package>javax.media.opengl.glu</package>
                 <package>javax.vecmath</package>
                 <package>net.java.games.input</package>
                 <package>net.java.games.util</package>
@@ -135,52 +49,36 @@
                 <package>org.xmlpull.v1.wrapper.classic</package>
             </public-packages>
             <class-path-extension>
-                <runtime-relative-path>ext/nifty-style-black-1.2-SNAPSHOT.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/nifty-style-black-1.2-SNAPSHOT.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
                 <runtime-relative-path>ext/j-ogg-vorbisd.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/j-ogg-vorbisd.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/jogl.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jogl.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/gluegen-rt.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/gluegen-rt.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/j-ogg-oggd.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/j-ogg-oggd.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/jinput.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/jinput.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/nifty-default-controls-1.2-SNAPSHOT.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/nifty-default-controls-1.2-SNAPSHOT.jar</binary-origin>
+                <runtime-relative-path>ext/j-ogg-oggd.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/j-ogg-oggd.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/stack-alloc.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/stack-alloc.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/nifty-1.2-SNAPSHOT.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/nifty-1.2-SNAPSHOT.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/xmlpull-xpp3-1.1.4c.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/xmlpull-xpp3-1.1.4c.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/jheora-debug-0.6.0.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jheora-debug-0.6.0.jar</binary-origin>
+                <runtime-relative-path>ext/nifty-default-controls-1.3-SNAPSHOT.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/nifty-default-controls-1.3-SNAPSHOT.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/vecmath.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/vecmath.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/nifty-style-black-1.3-SNAPSHOT.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/nifty-style-black-1.3-SNAPSHOT.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/nifty-1.3-SNAPSHOT.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/nifty-1.3-SNAPSHOT.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/jbullet.jar</runtime-relative-path>
@@ -189,6 +87,10 @@
             <class-path-extension>
                 <runtime-relative-path>ext/lwjgl.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/lwjgl.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/xmlpull-xpp3-1.1.4c.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/xmlpull-xpp3-1.1.4c.jar</binary-origin>
             </class-path-extension>
         </data>
     </configuration>
