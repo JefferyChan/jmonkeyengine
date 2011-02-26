@@ -177,7 +177,7 @@ public class WelcomeScreen implements ScreenController {
     }
 
     public void quit() {
-        if (screen.findElementByName("mainLayer").findElementByName("mainPanel").findElementByName("buttonBar").findElementByName("checkboxPanel").findControl("checkbox", CheckboxControl.class).isChecked()) {
+        if (screen.findElementByName("mainLayer").findElementByName("mainPanel").findElementByName("buttonBar").findElementByName("checkboxPanel").findNiftyControl("checkbox", CheckboxControl.class).isChecked()) {
             setNoStartup();
         }
         SceneApplication.getApplication().closeScene(request);
