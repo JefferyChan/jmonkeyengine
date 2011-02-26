@@ -58,7 +58,6 @@
             <zipfileset dir="${src.jbullet.dir}" prefix="source"/>
             <zipfileset dir="${src.niftygui.dir}" prefix="source"/>
             <zipfileset dir="${src.jogg.dir}" prefix="source"/>
-            <zipfileset dir="${src.jogl.dir}" prefix="source"/>
             <zipfileset dir="${src.lwjgl-oal.dir}" prefix="source"/>
             <zipfileset dir="${src.lwjgl-ogl.dir}" prefix="source"/>
             <zipfileset dir="${src.ogre.dir}" prefix="source"/>
@@ -150,7 +149,6 @@
             <zipfileset dir="${src.jbullet.dir}"/>
             <zipfileset dir="${src.niftygui.dir}"/>
             <zipfileset dir="${src.jogg.dir}"/>
-            <zipfileset dir="${src.jogl.dir}"/>
             <zipfileset dir="${src.lwjgl-oal.dir}"/>
             <zipfileset dir="${src.lwjgl-ogl.dir}"/>
             <zipfileset dir="${src.ogre.dir}"/>
