@@ -9,19 +9,19 @@
 A collection of recommendations and expert tips. Feel free to add your own!
 </p>
 
+<p>
+If you are a beginner, you should first <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.gamedevlessons.com/?page=free"><param name="text" value="<html><u>game developement</u></html>"><param name="textColor" value="blue"></object>. We cannot cover all general tips here. 
+</p>
+
 </div>
-<!-- SECTION "Best Practices For jME3 Developers" [1-127] -->
+<!-- SECTION "Best Practices For jME3 Developers" [1-378] -->
 <h2><a name="requirements_gathering" id="requirements_gathering">Requirements Gathering</a></h2>
 <div class="level2">
 
 <p>
 
-First, <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?q=game+design"><param name="text" value="<html><u>game developement</u></html>"><param name="textColor" value="blue"></object>. We cannot cover everything here, sorry. 
-</p>
+As a quick overview, answer yourself the following questions:
 
-<p>
-
-<strong>As a quick overview, answer yourself the following questions:</strong>
 </p>
 <ul>
 <li class="level1"><div class="li"> Motivation</div>
@@ -74,7 +74,7 @@ First, <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><pa
 </ul>
 
 </div>
-<!-- SECTION "Requirements Gathering" [128-1617] -->
+<!-- SECTION "Requirements Gathering" [379-1616] -->
 <h2><a name="planning_development_milestones" id="planning_development_milestones">Planning Development Milestones</a></h2>
 <div class="level2">
 <ol>
@@ -126,39 +126,42 @@ Every milestone has a development phase and a test phase. Here are some best pra
 </p>
 
 </div>
-<!-- SECTION "Planning Development Milestones" [1618-2680] -->
+<!-- SECTION "Planning Development Milestones" [1617-2679] -->
 <h2><a name="development_phase" id="development_phase">Development Phase</a></h2>
 <div class="level2">
 
 </div>
-<!-- SECTION "Development Phase" [2681-2711] -->
+<!-- SECTION "Development Phase" [2680-2710] -->
 <h3><a name="where_to_start" id="where_to_start">Where to Start?</a></h3>
 <div class="level3">
 
 <p>
 
-Many ask, where do I start? You have a list of features that you want in, which one do you implement first? You will keep <em>adding features</em> to a project that grows more and more complex, how can you minimize the amount of rewriting required? 
+You have a list of features that you want in game, but which one do you implement first? You will keep adding features to a project that grows more and more complex, how can you minimize the amount of rewriting required? 
 
 </p>
 <ol>
 <li class="level1"><div class="li"> Start with implementing the most complex game feature first – the one that imposes most constraints on the structure of your project (for instance, networking.)</div>
 </li>
-<li class="level1"><div class="li"> When laying out the base game, only add one bigger feature at a time. Complete and test one feature before you add the next. Test for side effects on existing code.</div>
+<li class="level1"><div class="li"> Make sure the game&#039;s high-level frame (screen switching, networking, physics, loading/saving) is sound and solid before you implement low-level details of gameplay. </div>
 </li>
-<li class="level1"><div class="li"> If there are complex interactions (such as networking+physics), start with a small test case (“one cube”) and work your way up, don&#039;t start with a whole scene.</div>
+<li class="level1"><div class="li"> Only add one larger feature at a time. If there are complex interactions (such as “networking + physics”), start with a small test case (“one cube”) and work your way up, don&#039;t start with a whole scene.</div>
 </li>
-<li class="level1"><div class="li"> Acknowledge whether you want to add a feature because it is necessary for gameplay, or simply because “everyone else has it”. Successful high-performance games are the ones where someone made a smart decision what to keep and what to drop. </div>
-<ul>
-<li class="level2"><div class="li"> Example: Believe me, everybody wants “full physics, AI, post-rendering effects, and multi-player networking”… But do you have a plan how to keep the game synchronized and playable? Bring out the essence of your game idea, don&#039;t water down gameplay with unnecessary complexity. </div>
-</li>
-</ul>
-</li>
-<li class="level1"><div class="li"> Obviously every game project brings its own additional complexities. In general, make sure the game&#039;s outer frame (screen switching, networking, physics, loading/saving) is sound and solid before you invest effort into implementing gameplay and custom interactions. </div>
+<li class="level1"><div class="li"> Test for side-effects on existing code before you add the next feature.</div>
 </li>
 </ol>
 
+<p>
+
+Acknowledge whether you want a feature because it is necessary for gameplay, or simply because “everyone else has it”. Successful high-performance games are the ones where someone made smart decisions what to keep and what to drop. 
+</p>
+<ul>
+<li class="level1"><div class="li"> Example: Everybody wants “full physics, AI, post-rendering effects, and multi-player networking”… Make certain you truly understand what that requires (e.g. client-server synchonization)! Your goal should be to bring out the essence of your game idea, don&#039;t water down gameplay but attempting to make it “do everything, but better”. </div>
+</li>
+</ul>
+
 </div>
-<!-- SECTION "Where to Start?" [2712-4286] -->
+<!-- SECTION "Where to Start?" [2711-4154] -->
 <h3><a name="extend_simpleapplication" id="extend_simpleapplication">Extend SimpleApplication</a></h3>
 <div class="level3">
 
@@ -197,31 +200,27 @@ Typically developers create a custom class off of jME3&#039;s SimpleApplication.
 </ol>
 
 </div>
-<!-- SECTION "Extend SimpleApplication" [4287-5690] -->
-<h3><a name="make_use_of_controls_and_applications_states" id="make_use_of_controls_and_applications_states">Make Use of Controls and Applications States</a></h3>
+<!-- SECTION "Extend SimpleApplication" [4155-5558] -->
+<h3><a name="controls_and_appstates_--_the_smart_way_to_implement_game_logic" id="controls_and_appstates_--_the_smart_way_to_implement_game_logic">Controls and AppStates -- The Smart Way to Implement Game Logic</a></h3>
 <div class="level3">
 
 <p>
 
-As your jME3-based application grows more advanced, you may find yourself putting more and more tests in the simpleUpdate() loop, and passing around lots of object references. Don&#039;t implement game behaviour by copying and pasting boilerplate code. 
-</p>
-
-<p>
-It is a best practice to move game behaviour methods into classes of their own: Controls and AppStates.
+As your jME3-based application grows more advanced, you may find yourself putting more and more tests in the simpleUpdate() loop, and passing around lots of object references. Don&#039;t implement game behaviour by copying and pasting boilerplate code! It is a best practice to move game behaviour into classes of their own. In jME3 these classes are Controls and AppStates.
 
 </p>
 <ul>
-<li class="level1"><div class="li"> Use Controls to implement the behaviour of types of game entities. E.g. a character control that defines how this type of Spatials moves, or an animation control that plays animations in this type of Spatial&#039;s model.</div>
+<li class="level1"><div class="li"> Use Controls to implement the behaviour of types of game entities. A character control that defines how this type of Spatials moves, an animation control that plays animations in this type of Spatial&#039;s model, etc.</div>
 </li>
-<li class="level1"><div class="li"> Use AppStates to implement global game behaviour: E.g. a physics manager, or a custom artificial intelligence manager.</div>
+<li class="level1"><div class="li"> Use AppStates to implement global game behaviour: A physics manager, a custom artificial intelligence manager, etc.</div>
 </li>
-<li class="level1"><div class="li"> Use the simpleUpdate() loop for the remaining tests and interactions.</div>
+<li class="level1"><div class="li"> Use the simpleUpdate() loop for the remaining “one-off” tests and interactions.</div>
 </li>
 </ul>
 
 <p>
 
-Both classes hook into the update loop. Instead of remote controlling game entities via simpleUpdate(), you define the behaviour in the update methods of your custom controls and AppStates. You then add Controls to Spatials, and AppStates to the application, and jME will automatically trigger your custom update methods. This cleans up your simpleUpdate() loop code considerably. 
+Both classes automatically hook into the main update loop. Instead of remote controlling game entities via simpleUpdate(), you define the desired behaviour in the update methods of custom Controls and AppStates. You then add Controls to Spatials, and AppStates to the application, and jME3 will automatically trigger the update methods. This cleans up your simpleUpdate() loop code considerably. 
 </p>
 
 <p>
@@ -229,7 +228,7 @@ Learn more about <a href="/com/jme3/gde/core/docs/jme3/advanced/custom_controls.
 </p>
 
 </div>
-<!-- SECTION "Make Use of Controls and Applications States" [5691-6999] -->
+<!-- SECTION "Controls and AppStates -- The Smart Way to Implement Game Logic" [5559-6921] -->
 <h3><a name="optimize_application_performance" id="optimize_application_performance">Optimize Application Performance</a></h3>
 <div class="level3">
 
@@ -239,7 +238,7 @@ Learn more about <a href="/com/jme3/gde/core/docs/jme3/advanced/custom_controls.
 </p>
 
 </div>
-<!-- SECTION "Optimize Application Performance" [7000-7079] -->
+<!-- SECTION "Optimize Application Performance" [6922-7001] -->
 <h3><a name="use_an_assets_folder" id="use_an_assets_folder">Use an Assets Folder</a></h3>
 <div class="level3">
 
@@ -300,7 +299,7 @@ See also: <a href="/com/jme3/gde/core/docs/jme3/jmonkeyplatform/asset_packs.html
 </p>
 
 </div>
-<!-- SECTION "Use an Assets Folder" [7080-9347] -->
+<!-- SECTION "Use an Assets Folder" [7002-9269] -->
 <h3><a name="don_t_mess_with_geometric_state" id="don_t_mess_with_geometric_state">Don&#039;t Mess With Geometric State</a></h3>
 <div class="level3">
 
@@ -319,7 +318,7 @@ Here are some tips especially for users who already know jME2. Automatic handlin
 </ul>
 
 </div>
-<!-- SECTION "Don't Mess With Geometric State" [9348-9804] -->
+<!-- SECTION "Don't Mess With Geometric State" [9270-9726] -->
 <h3><a name="maintain_internal_documentation" id="maintain_internal_documentation">Maintain Internal Documentation</a></h3>
 <div class="level3">
 
@@ -348,13 +347,13 @@ It&#039;s unlikely you will be willing to fully document every class you write. 
 </ul>
 
 </div>
-<!-- SECTION "Maintain Internal Documentation" [9805-10526] -->
+<!-- SECTION "Maintain Internal Documentation" [9727-10448] -->
 <h3><a name="use_version_control" id="use_version_control">Use Version Control</a></h3>
 <div class="level3">
 
 <p>
 
-Whether you work in a team or alone, keeping a version controlled repository of your code will help you roll-back buggy changes. 
+Whether you work in a team or alone, keeping a version controlled repository of your code will help you roll-back buggy changes or recover that code that you or someone deleted and now is needed. 
 </p>
 <ul>
 <li class="level1"><div class="li"> Treat commit messages as messages to your future self. “Made some changes” is <em>not</em> a commit message.</div>
@@ -363,14 +362,14 @@ Whether you work in a team or alone, keeping a version controlled repository of 
 <ul>
 <li class="level2"><div class="li"> If you don&#039;t know which to choose, Subversion is a good choice for starters. </div>
 </li>
-<li class="level2"><div class="li"> You can get free project hosting space from various open-source dev portals or Google Code.</div>
+<li class="level2"><div class="li"> You can get free project hosting space from various open-source dev portals like <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://sourceforge.net/"><param name="text" value="<html><u>Bitbucket</u></html>"><param name="textColor" value="blue"></object> support private projects.</div>
 </li>
 </ul>
 </li>
 </ul>
 
 </div>
-<!-- SECTION "Use Version Control" [10527-11044] -->
+<!-- SECTION "Use Version Control" [10449-11239] -->
 <h3><a name="convert_models_to_.j3o_format" id="convert_models_to_.j3o_format">Convert Models to .j3o Format</a></h3>
 <div class="level3">
 
@@ -392,12 +391,12 @@ From the beta on, convert all Ogre mesh models and scenes to the binary .j3o for
 </ul>
 
 </div>
-<!-- SECTION "Convert Models to .j3o Format" [11045-12122] -->
+<!-- SECTION "Convert Models to .j3o Format" [11240-12317] -->
 <h2><a name="debugging_and_test_phase" id="debugging_and_test_phase">Debugging and Test Phase</a></h2>
 <div class="level2">
 
 </div>
-<!-- SECTION "Debugging and Test Phase" [12123-12160] -->
+<!-- SECTION "Debugging and Test Phase" [12318-12355] -->
 <h3><a name="test" id="test">Test</a></h3>
 <div class="level3">
 
@@ -415,7 +414,7 @@ Alpha and Beta Testing means that you ask someone to try to install and run your
 </p>
 
 </div>
-<!-- SECTION "Test" [12161-13601] -->
+<!-- SECTION "Test" [12356-13796] -->
 <h3><a name="debug" id="debug">Debug</a></h3>
 <div class="level3">
 
@@ -429,7 +428,7 @@ Use the <a href="/com/jme3/gde/core/docs/jme3/advanced/logging.html" class="wiki
 </p>
 
 </div>
-<!-- SECTION "Debug" [13602-14024] -->
+<!-- SECTION "Debug" [13797-14219] -->
 <h3><a name="enhance_performance" id="enhance_performance">Enhance Performance</a></h3>
 <div class="level3">
 
@@ -439,7 +438,7 @@ A Java Profiler can be added to the jMonkeyPlatform via Tools → Plugins → Av
 </p>
 
 </div>
-<!-- SECTION "Enhance Performance" [14025-14417] -->
+<!-- SECTION "Enhance Performance" [14220-14612] -->
 <h2><a name="release_phase" id="release_phase">Release Phase</a></h2>
 <div class="level2">
 
@@ -505,5 +504,5 @@ Which ever method you choose, a Java-Application works on the three main operati
 </p>
 
 </div>
-<!-- SECTION "Release Phase" [14418-] -->
+<!-- SECTION "Release Phase" [14613-] -->
 <p><em><a href="http://jmonkeyengine.org/wiki/doku.php/jme3:intermediate:best_practices?do=export_xhtmlbody">view online version</a></em></p>

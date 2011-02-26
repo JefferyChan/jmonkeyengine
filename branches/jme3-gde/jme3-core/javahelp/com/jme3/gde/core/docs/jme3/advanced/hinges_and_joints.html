@@ -33,13 +33,13 @@ In this example, we will create a pendulum. The joint is the (invisible) connect
 <ol>
 <li class="level1"><div class="li"> Create a SimpleApplication with a <a href="/com/jme3/gde/core/docs/jme3/advanced/physics.html" class="wikilink1" title="jme3:advanced:physics">BulletAppState</a> </div>
 <ul>
-<li class="level2"><div class="li"> This gives us a PhysicsSpace for PhysicsNodes</div>
+<li class="level2"><div class="li"> This gives us a PhysicsSpace for PhysicsControls</div>
 </li>
 </ul>
 </li>
-<li class="level1"><div class="li"> For the pendulum, we add physical nodes and use physical forces on them.</div>
+<li class="level1"><div class="li"> For the pendulum, we use a Spatial with a PhysicsControl, and we apply physical forces to them.</div>
 <ul>
-<li class="level2"><div class="li"> The parts of the “pendulum” are physics nodes with collision shapes. </div>
+<li class="level2"><div class="li"> The parts of the “pendulum” are Physics Control&#039;ed Spatials with Collision Shapes. </div>
 </li>
 <li class="level2"><div class="li"> We create a fixed <code>hookNode</code> and a dynamic <code>pendulumNode</code>. </div>
 </li>
@@ -54,7 +54,7 @@ In this example, we will create a pendulum. The joint is the (invisible) connect
 </ol>
 
 </div>
-<!-- SECTION "Overview of this Physics Application" [873-1480] -->
+<!-- SECTION "Overview of this Physics Application" [873-1520] -->
 <h2><a name="creating_a_fixed_node" id="creating_a_fixed_node">Creating a Fixed Node</a></h2>
 <div class="level2">
 
@@ -62,18 +62,17 @@ In this example, we will create a pendulum. The joint is the (invisible) connect
 
 The hookNode is the fixed point from which the pendulum hangs. It has no mass. 
 </p>
-<pre class="code java">PhysicsNode hookNode <span class="sy0">=</span> <span class="kw1">new</span> PhysicsNode<span class="br0">&#40;</span>
-   <span class="kw1">new</span> BoxCollisionShape<span class="br0">&#40;</span> <span class="kw1">new</span> Vector3f<span class="br0">&#40;</span>0.1f,0.1f,0.1f<span class="br0">&#41;</span><span class="br0">&#41;</span> , 0 <span class="br0">&#41;</span>;
-hookNode.<span class="me1">setLocalTranslation</span><span class="br0">&#40;</span><span class="kw1">new</span> Vector3f<span class="br0">&#40;</span>0f,0,0f<span class="br0">&#41;</span><span class="br0">&#41;</span>;
-hookNode.<span class="me1">attachDebugShape</span><span class="br0">&#40;</span>mat<span class="br0">&#41;</span>; <span class="co1">// some material</span>
+<pre class="code java">Node hookNode<span class="sy0">=</span>PhysicsTestHelper.<span class="me1">createPhysicsTestNode</span><span class="br0">&#40;</span>assetManager, <span class="kw1">new</span> BoxCollisionShape<span class="br0">&#40;</span><span class="kw1">new</span> Vector3f<span class="br0">&#40;</span> .1f, .1f, .1f<span class="br0">&#41;</span><span class="br0">&#41;</span>,0<span class="br0">&#41;</span>;
+hookNode.<span class="me1">getControl</span><span class="br0">&#40;</span>RigidBodyControl.<span class="kw1">class</span><span class="br0">&#41;</span>.<span class="me1">setPhysicsLocation</span><span class="br0">&#40;</span><span class="kw1">new</span> Vector3f<span class="br0">&#40;</span>0f,0,0f<span class="br0">&#41;</span><span class="br0">&#41;</span>;
+&nbsp;
 rootNode.<span class="me1">attachChild</span><span class="br0">&#40;</span>hookNode<span class="br0">&#41;</span>;
-bulletAppState.<span class="me1">getPhysicsSpace</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">add</span><span class="br0">&#40;</span>hookNode<span class="br0">&#41;</span>;</pre>
+getPhysicsSpace<span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">add</span><span class="br0">&#40;</span>hookNode<span class="br0">&#41;</span>;</pre>
 <p>
 For a rope bridge, there would be two fixed nodes where the bridge is attached to the mountainside.
 </p>
 
 </div>
-<!-- SECTION "Creating a Fixed Node" [1481-2003] -->
+<!-- SECTION "Creating a Fixed Node" [1521-2035] -->
 <h2><a name="creating_a_dynamic_node" id="creating_a_dynamic_node">Creating a Dynamic Node</a></h2>
 <div class="level2">
 
@@ -81,18 +80,16 @@ For a rope bridge, there would be two fixed nodes where the bridge is attached t
 
 The pendulumNode is the dynamic part of the construction. It has a mass. 
 </p>
-<pre class="code java">PhysicsNode pendulumNode <span class="sy0">=</span> <span class="kw1">new</span> PhysicsNode<span class="br0">&#40;</span>
-    <span class="kw1">new</span> BoxCollisionShape<span class="br0">&#40;</span> <span class="kw1">new</span> Vector3f<span class="br0">&#40;</span>0.3f,0.3f,0.3f<span class="br0">&#41;</span><span class="br0">&#41;</span> , <span class="nu0">1</span> <span class="br0">&#41;</span>;
-pendulumNode.<span class="me1">setLocalTranslation</span><span class="br0">&#40;</span><span class="kw1">new</span> Vector3f<span class="br0">&#40;</span>0f,<span class="sy0">-</span><span class="nu0">1</span>,0f<span class="br0">&#41;</span><span class="br0">&#41;</span>;
-pendulumNode.<span class="me1">attachDebugShape</span><span class="br0">&#40;</span>assetManager<span class="br0">&#41;</span>;
+<pre class="code java">Node pendulumNode<span class="sy0">=</span>PhysicsTestHelper.<span class="me1">createPhysicsTestNode</span><span class="br0">&#40;</span>assetManager, <span class="kw1">new</span> BoxCollisionShape<span class="br0">&#40;</span><span class="kw1">new</span> Vector3f<span class="br0">&#40;</span> .3f, .3f, .3f<span class="br0">&#41;</span><span class="br0">&#41;</span>,<span class="nu0">1</span><span class="br0">&#41;</span>;
+pendulumNode.<span class="me1">getControl</span><span class="br0">&#40;</span>RigidBodyControl.<span class="kw1">class</span><span class="br0">&#41;</span>.<span class="me1">setPhysicsLocation</span><span class="br0">&#40;</span><span class="kw1">new</span> Vector3f<span class="br0">&#40;</span>0f,<span class="sy0">-</span><span class="nu0">1</span>,0f<span class="br0">&#41;</span><span class="br0">&#41;</span>;
 rootNode.<span class="me1">attachChild</span><span class="br0">&#40;</span>pendulumNode<span class="br0">&#41;</span>;
-bulletAppState.<span class="me1">getPhysicsSpace</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">add</span><span class="br0">&#40;</span>pendulumNode<span class="br0">&#41;</span>;</pre>
+getPhysicsSpace<span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">add</span><span class="br0">&#40;</span>pendulumNode<span class="br0">&#41;</span>;</pre>
 <p>
 For a rope bridge, each set of planks would be one dynamic node. 
 </p>
 
 </div>
-<!-- SECTION "Creating a Dynamic Node" [2004-2502] -->
+<!-- SECTION "Creating a Dynamic Node" [2036-2528] -->
 <h2><a name="understanding_dof_joints_and_hinges" id="understanding_dof_joints_and_hinges">Understanding DOF, Joints, and Hinges</a></h2>
 <div class="level2">
 
@@ -130,7 +127,7 @@ You&#039;ll understand that, when creating any type of joint, it is important to
 </p>
 
 </div>
-<!-- SECTION "Understanding DOF, Joints, and Hinges" [2503-3700] -->
+<!-- SECTION "Understanding DOF, Joints, and Hinges" [2529-3726] -->
 <h2><a name="creating_the_joint" id="creating_the_joint">Creating the Joint</a></h2>
 <div class="level2">
 
@@ -138,29 +135,32 @@ You&#039;ll understand that, when creating any type of joint, it is important to
 
 You create the PhysicsHingeJoint after you have created the nodes that are to be chained together. In the code snippet you see that the PhysicsHingeJoint constructor requires the two node objects. You also have to specify axes and pivots – they are the degrees of freedom that you just heard about.
 </p>
-<pre class="code java"><span class="kw1">private</span> PhysicsHingeJoint joint;
+<pre class="code java"><span class="kw1">private</span> HingeJoint joint;
 ...
   <span class="kw1">public</span> <span class="kw4">void</span> simpleInitApp<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
     ...
     <span class="co1">// hookNode and pendulumNode are created here...</span>
     ...
-    <span class="me1">joint</span> <span class="sy0">=</span> <span class="kw1">new</span> PhysicsHingeJoint<span class="br0">&#40;</span>
-        hookNode, pendulumNode,                  <span class="co1">// two nodes</span>
-        Vector3f.<span class="me1">ZERO</span>,   <span class="kw1">new</span> Vector3f<span class="br0">&#40;</span>0f,<span class="sy0">-</span><span class="nu0">1</span>,0f<span class="br0">&#41;</span>, <span class="co1">// two pivot points</span>
-        Vector3f.<span class="me1">UNIT_Z</span>, Vector3f.<span class="me1">UNIT_Z</span><span class="br0">&#41;</span>;       <span class="co1">// two DOF axes</span></pre>
+&nbsp;
+    <span class="me1">joint</span><span class="sy0">=</span><span class="kw1">new</span> HingeJoint<span class="br0">&#40;</span>hookNode.<span class="me1">getControl</span><span class="br0">&#40;</span>RigidBodyControl.<span class="kw1">class</span><span class="br0">&#41;</span>, <span class="co1">// A</span>
+                     pendulumNode.<span class="me1">getControl</span><span class="br0">&#40;</span>RigidBodyControl.<span class="kw1">class</span><span class="br0">&#41;</span>, <span class="co1">// B</span>
+                     <span class="kw1">new</span> Vector3f<span class="br0">&#40;</span>0f, 0f, 0f<span class="br0">&#41;</span>,  <span class="co1">// pivot point of A</span>
+                     <span class="kw1">new</span> Vector3f<span class="br0">&#40;</span>0f,<span class="sy0">-</span>1f, 0f<span class="br0">&#41;</span>,  <span class="co1">// pivot point of B </span>
+                     Vector3f.<span class="me1">UNIT_Z</span>,           <span class="co1">// DoF Axis of A (Z axis)</span>
+                     Vector3f.<span class="me1">UNIT_Z</span>  <span class="br0">&#41;</span>;        <span class="co1">// DoF Axis of B (Z axis)</span></pre>
 <p>
 Specify the following parameters for each joint:
 </p>
 <ul>
-<li class="level1"><div class="li"> PhysicsNode A and B – the two nodes that are to be joined</div>
+<li class="level1"><div class="li"> PhysicsControl A and B – the two nodes that are to be joined</div>
 </li>
-<li class="level1"><div class="li"> Vector3f pivotA and pivotB – coordinates of the two attachment points in the two nodes</div>
+<li class="level1"><div class="li"> Vector3f pivot A and pivot B – coordinates of the two attachment points</div>
 <ul>
-<li class="level2"><div class="li"> The points typically lie on the surface of the nodes, rarely in the middle.</div>
+<li class="level2"><div class="li"> The points typically lie on the surface of the PhysicsControl&#039;s Spatials, rarely in the middle.</div>
 </li>
 </ul>
 </li>
-<li class="level1"><div class="li"> Vector3f axisA and axisB – around which axes each node is allowed to spin</div>
+<li class="level1"><div class="li"> Vector3f axisA and axisB – around which axes each node is allowed to spin.</div>
 <ul>
 <li class="level2"><div class="li"> In our example, we constrain the pendulum to swing only along the Z axis.</div>
 </li>
@@ -178,7 +178,7 @@ Remember to add all joint objects to the physicsSpace, just like you would do wi
 </p>
 
 </div>
-<!-- SECTION "Creating the Joint" [3701-5165] -->
+<!-- SECTION "Creating the Joint" [3727-5402] -->
 <h2><a name="apply_physical_forces" id="apply_physical_forces">Apply Physical Forces</a></h2>
 <div class="level2">
 
@@ -204,7 +204,7 @@ joint.<span class="me1">enableMotor</span><span class="br0">&#40;</span><span cl
 </li>
 </ul>
 </li>
-<li class="level1"><div class="li"> Specify the impulse for this motor. Heavier masses need a bigger impulse.</div>
+<li class="level1"><div class="li"> Specify the impulse for this motor. Heavier masses need a bigger impulse to be moved.</div>
 </li>
 </ol>
 
@@ -215,5 +215,5 @@ When you disable the motor, the chained nodes are exposed to gravity again:
 </p>
 <pre class="code java">joint.<span class="me1">enableMotor</span><span class="br0">&#40;</span><span class="kw2">false</span>, 0, 0<span class="br0">&#41;</span>;</pre>
 </div>
-<!-- SECTION "Apply Physical Forces" [5166-] -->
+<!-- SECTION "Apply Physical Forces" [5403-] -->
 <p><em><a href="http://jmonkeyengine.org/wiki/doku.php/jme3:advanced:hinges_and_joints?do=export_xhtmlbody">view online version</a></em></p>

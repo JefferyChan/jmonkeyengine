@@ -6,33 +6,56 @@
 
 <p>
 
-Although it is possible to embed a <a href="/com/jme3/gde/core/docs/jme3/advanced/swing_canvas.html" class="wikilink1" title="jme3:advanced:swing_canvas">jME3 canvas</a> in a Swing <acronym title="Graphical User Interface">GUI</acronym> app, a 3D game typically runs full-screen, or in a window of its own. This soon raises the question of how to add a user interface: Most games respond to the escape key by displaying some buttons, with which the users switch to different screens – for example to view high scores, customize settings, or load saved games. 
+Although it is possible to embed a <a href="/com/jme3/gde/core/docs/jme3/advanced/swing_canvas.html" class="wikilink1" title="jme3:advanced:swing_canvas">jME3 canvas</a> in a Swing <acronym title="Graphical User Interface">GUI</acronym> app, a 3D game typically runs full-screen, or in a window of its own. This soon raises the question of how to add a user interface: Most games respond to the escape key by displaying buttons that allow users to switch to different screens – for example to view high scores, customize settings, or load saved games. 
 </p>
 
 <p>
+This doc introduces you to <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://nifty-gui.lessvoid.com/"><param name="text" value="<html><u>Nifty GUI</u></html>"><param name="textColor" value="blue"></object>, a Java library for graphical user interfaces (GUIs). Nifty <acronym title="Graphical User Interface">GUI</acronym> (<code>de.lessvoid.nifty</code> package) is well integrated with jME3 via the <code>com.jme3.niftygui</code> package. You define the <acronym title="Graphical User Interface">GUI</acronym> layout in <acronym title="Extensible Markup Language">XML</acronym> and call it from your Java code. All the JAR libraries that you need are already included in your jME3 download, so you do not need to install anything extra (Just make sure they are on the classpath).
+</p>
+
+<p>
+There are three steps needed to add a <acronym title="Graphical User Interface">GUI</acronym> to your jME3 game:
+
+</p>
+<ol>
+<li class="level1"><div class="li"> Lay out the <acronym title="Graphical User Interface">GUI</acronym></div>
+<ul>
+<li class="level2"><div class="li"> in <acronym title="Extensible Markup Language">XML</acronym>, or</div>
+</li>
+<li class="level2"><div class="li"> in Java (work in progress)</div>
+</li>
+</ul>
+</li>
+<li class="level1"><div class="li"> Integrate the <acronym title="Graphical User Interface">GUI</acronym> into the Game</div>
+<ul>
+<li class="level2"><div class="li"> Overlay the User Interface Over the Screen, or</div>
+</li>
+<li class="level2"><div class="li"> Project the User Interface Onto a Texture</div>
+</li>
+</ul>
+</li>
+<li class="level1"><div class="li"> Interact with the <acronym title="Graphical User Interface">GUI</acronym> from Java</div>
+</li>
+</ol>
+
+<p>
+
 <img src="nbdocs:/com/jme3/gde/core/docs/jme3/advanced/nifty-gui.png">
 </p>
 
-<p>
-This doc introduces you to <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://nifty-gui.lessvoid.com/"><param name="text" value="<html><u>Nifty GUI</u></html>"><param name="textColor" value="blue"></object>, a Java library for graphical user interfaces that is well integrated with jME3 (<code>de.?lessvoid.?nifty</code> package).
-
-</p>
+</div>
+<!-- SECTION "Creating User Interfaces with Nifty GUI" [1-1289] -->
+<h2><a name="sample_code" id="sample_code">Sample Code</a></h2>
+<div class="level2">
 <ul>
-<li class="level1"><div class="li"> Nifty <acronym title="Graphical User Interface">GUI</acronym> allows you to lay out visual user interfaces for games.</div>
+<li class="level1"><div class="li"> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://code.google.com/p/jmonkeyengine/source/browse/branches/jme3/src/test/jme3test/niftygui/TestNiftyGui.java"><param name="text" value="<html><u>TestNiftyGui.java</u></html>"><param name="textColor" value="blue"></object></div>
 </li>
-<li class="level1"><div class="li"> Nifty <acronym title="Graphical User Interface">GUI</acronym> is defined in <acronym title="Extensible Markup Language">XML</acronym> files and called by Java code.</div>
-</li>
-<li class="level1"><div class="li"> Nifty <acronym title="Graphical User Interface">GUI</acronym> is integrated into jme3 and jme2</div>
+<li class="level1"><div class="li"> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://code.google.com/p/jmonkeyengine/source/browse/branches/jme3/src/test/jme3test/niftygui/TestNiftyToMesh.java"><param name="text" value="<html><u>TestNiftyToMesh.java</u></html>"><param name="textColor" value="blue"></object></div>
 </li>
 </ul>
 
-<p>
-
-All the JAR libraries that you need are already included in your jME3 download, so you do not need to install anything. Just make sure they are on the classpath.
-</p>
-
 </div>
-<!-- SECTION "Creating User Interfaces with Nifty GUI" [1-1050] -->
+<!-- SECTION "Sample Code" [1290-1601] -->
 <h2><a name="laying_out_the_gui" id="laying_out_the_gui">Laying out the GUI</a></h2>
 <div class="level2">
 
@@ -42,8 +65,8 @@ Usually, you lay out the <acronym title="Graphical User Interface">GUI</acronym>
 </p>
 
 </div>
-<!-- SECTION "Laying out the GUI" [1051-1168] -->
-<h3><a name="layout_in_xml" id="layout_in_xml">Layout in XML</a></h3>
+<!-- SECTION "Laying out the GUI" [1602-1719] -->
+<h3><a name="a_lay_out_the_gui_in_xml" id="a_lay_out_the_gui_in_xml">a) Lay out the GUI in XML</a></h3>
 <div class="level3">
 
 <p>
@@ -73,7 +96,7 @@ You “draw” the <acronym title="Graphical User Interface">GUI</acronym> to th
 
 </div>
 
-<h4><a name="screens_and_layers" id="screens_and_layers">Screens and Layers</a></h4>
+<h4><a name="how_to_use_screens_and_layers" id="how_to_use_screens_and_layers">How to Use Screens and Layers</a></h4>
 <div class="level4">
 
 <p>
@@ -129,7 +152,7 @@ Nifty additionally offers predefined controls – learn more from the NiftyGUI p
 
 </div>
 
-<h4><a name="effects" id="effects">Effects</a></h4>
+<h4><a name="how_to_add_effects" id="how_to_add_effects">How to Add Effects</a></h4>
 <div class="level4">
 
 <p>
@@ -169,15 +192,6 @@ Playing sounds using nifty is also possible with effects as triggers. Remember t
 ...</pre>
 <p>
 
-P.S. It would probably also be a good idea to use <acronym title="Extensible Markup Language">XML</acronym> schemas (IDE-s can help you with laying out the <acronym title="Extensible Markup Language">XML</acronym> that way)
-Example:
-
-</p>
-<pre class="code xml"><span class="sc3"><span class="re1">&lt;?xml</span> <span class="re0">version</span>=<span class="st0">&quot;1.0&quot;</span> <span class="re0">encoding</span>=<span class="st0">&quot;UTF-8&quot;</span><span class="re2">?&gt;</span></span>
-<span class="sc3"><span class="re1">&lt;nifty</span> <span class="re0">xmlns</span>=<span class="st0">&quot;http://nifty-gui.sourceforge.net/nifty.xsd&quot;</span> <span class="re0">xmlns:xsi</span>=<span class="st0">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span> <span class="re0">xsi:schemaLocation</span>=<span class="st0">&quot;http://nifty-gui.sourceforge.net/nifty.xsd http://nifty-gui.sourceforge.net/nifty.xsd&quot;</span><span class="re2">&gt;</span></span>
-     <span class="sc-1">&lt;!-- for example eclipse would tell you that 1 of &lt;screen&gt; element is expected here --&gt;</span>
-<span class="sc3"><span class="re1">&lt;/nifty<span class="re2">&gt;</span></span></span></pre>
-<p>
 Learn more from the NiftyGUI page:
 </p>
 <ul>
@@ -186,8 +200,8 @@ Learn more from the NiftyGUI page:
 </ul>
 
 </div>
-<!-- SECTION "Layout in XML" [1169-4514] -->
-<h3><a name="in_java" id="in_java">... in Java</a></h3>
+<!-- SECTION "a) Lay out the GUI in XML" [1720-4594] -->
+<h3><a name="b_lay_out_the_gui_in_java" id="b_lay_out_the_gui_in_java">b) Lay out the GUI in Java</a></h3>
 <div class="level3">
 
 <p>
@@ -196,43 +210,44 @@ The Nifty team has started creating a “Builder Pattern” based way to create 
 </p>
 
 </div>
-<!-- SECTION "... in Java" [4515-4819] -->
+<!-- SECTION "b) Lay out the GUI in Java" [4595-4914] -->
 <h2><a name="integrating_the_gui_into_the_game" id="integrating_the_gui_into_the_game">Integrating the GUI into the Game</a></h2>
 <div class="level2">
 
 <p>
 
-Define a key (for example escape) that switches the <acronym title="Graphical User Interface">GUI</acronym> on an off.
-You can either overlay the running game with the <acronym title="Graphical User Interface">GUI</acronym> (you should probably pause it then), or even project it as a texture onto a mesh.
+Define a key (for example escape) that switches the <acronym title="Graphical User Interface">GUI</acronym> on and off.
+You can either overlay the running game with the <acronym title="Graphical User Interface">GUI</acronym> (you will most likely pause then game then), or even project it as a texture onto a mesh (but that makes clicking difficult).
 </p>
 
 </div>
-<!-- SECTION "Integrating the GUI into the Game" [4820-5069] -->
-<h3><a name="overlaying_the_user_interface" id="overlaying_the_user_interface">Overlaying the User Interface</a></h3>
+<!-- SECTION "Integrating the GUI into the Game" [4915-5209] -->
+<h3><a name="a_overlaying_the_user_interface_over_the_screen" id="a_overlaying_the_user_interface_over_the_screen">a) Overlaying the User Interface Over the Screen</a></h3>
 <div class="level3">
 
 <p>
 
-This code shows you how to overlay anything on the screen with the <acronym title="Graphical User Interface">GUI</acronym>.
+This code shows you how to overlay anything on the screen with the <acronym title="Graphical User Interface">GUI</acronym>. This is the most common usecase.
 </p>
-<pre class="code java">        NiftyJmeDisplay niftyDisplay <span class="sy0">=</span> <span class="kw1">new</span> NiftyJmeDisplay<span class="br0">&#40;</span>
-           assetManager, inputManager, audioRenderer, guiViewPort<span class="br0">&#41;</span>;
-        nifty <span class="sy0">=</span> niftyDisplay.<span class="me1">getNifty</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
-        nifty.<span class="me1">fromXml</span><span class="br0">&#40;</span><span class="st0">&quot;Interface/helloworld.xml&quot;</span>, <span class="st0">&quot;start&quot;</span><span class="br0">&#41;</span>;
+<pre class="code java">NiftyJmeDisplay niftyDisplay <span class="sy0">=</span> <span class="kw1">new</span> NiftyJmeDisplay<span class="br0">&#40;</span>
+    assetManager, inputManager, audioRenderer, guiViewPort<span class="br0">&#41;</span>;
+nifty <span class="sy0">=</span> niftyDisplay.<span class="me1">getNifty</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
 &nbsp;
-        <span class="co1">// attach the nifty display to the gui view port as a processor</span>
-        guiViewPort.<span class="me1">addProcessor</span><span class="br0">&#40;</span>niftyDisplay<span class="br0">&#41;</span>;
+<span class="co1">// init Nifty start screen</span>
+nifty.<span class="me1">fromXml</span><span class="br0">&#40;</span><span class="st0">&quot;Interface/helloworld.xml&quot;</span>, <span class="st0">&quot;start&quot;</span><span class="br0">&#41;</span>;
 &nbsp;
-        <span class="co1">// disable the fly cam</span>
-        flyCam.<span class="me1">setDragToRotate</span><span class="br0">&#40;</span><span class="kw2">true</span><span class="br0">&#41;</span>;</pre>
+<span class="co1">// attach the Nifty display to the gui view port as a processor</span>
+guiViewPort.<span class="me1">addProcessor</span><span class="br0">&#40;</span>niftyDisplay<span class="br0">&#41;</span>;
+<span class="co1">// disable the fly cam</span>
+flyCam.<span class="me1">setDragToRotate</span><span class="br0">&#40;</span><span class="kw2">true</span><span class="br0">&#41;</span>;</pre>
 </div>
-<!-- SECTION "Overlaying the User Interface" [5070-5624] -->
-<h3><a name="projecting_the_user_interface_onto_a_texture" id="projecting_the_user_interface_onto_a_texture">Projecting the User Interface Onto a Texture</a></h3>
+<!-- SECTION "a) Overlaying the User Interface Over the Screen" [5210-5780] -->
+<h3><a name="b_projecting_the_user_interface_onto_a_texture" id="b_projecting_the_user_interface_onto_a_texture">b) Projecting the User Interface Onto a Texture</a></h3>
 <div class="level3">
 
 <p>
 
-You can project the NiftyGUI onto a texture, load the texture into a normal textured material, and assign it to a 3D mesh! 
+You can project the Nifty <acronym title="Graphical User Interface">GUI</acronym> onto a texture, load the texture into a material, and assign it to a 3D mesh. Allthough this is possible the approach is rarely used since it is difficult to record clicks this way, you can only interact with this UI by keyboard.
 </p>
 <pre class="code java"><span class="co3">/** Create a new viewport for the GUI */</span>
 ViewPort niftyView <span class="sy0">=</span> renderManager.<span class="me1">createPreView</span><span class="br0">&#40;</span><span class="st0">&quot;NiftyView&quot;</span>, <span class="kw1">new</span> Camera<span class="br0">&#40;</span><span class="nu0">1024</span>, <span class="nu0">768</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
@@ -264,7 +279,7 @@ mat.<span class="me1">setTexture</span><span class="br0">&#40;</span><span class
 geom.<span class="me1">setMaterial</span><span class="br0">&#40;</span>mat<span class="br0">&#41;</span>;
 rootNode.<span class="me1">attachChild</span><span class="br0">&#40;</span>geom<span class="br0">&#41;</span>;</pre>
 <p>
-You press buttons on this <acronym title="Graphical User Interface">GUI</acronym> with the arrow keys and return. (Clicking will not work.)
+You select buttons on this <acronym title="Graphical User Interface">GUI</acronym> with the arrow keys and then press return – Clicking them will not work.
 </p>
 
 <p>
@@ -272,7 +287,7 @@ Again, check the <object classid="java:org.netbeans.modules.javahelp.BrowserDisp
 </p>
 
 </div>
-<!-- SECTION "Projecting the User Interface Onto a Texture" [5625-7214] -->
+<!-- SECTION "b) Projecting the User Interface Onto a Texture" [5781-7526] -->
 <h2><a name="interacting_with_the_gui_from_java" id="interacting_with_the_gui_from_java">Interacting with the GUI from Java</a></h2>
 <div class="level2">
 
@@ -281,12 +296,18 @@ Again, check the <object classid="java:org.netbeans.modules.javahelp.BrowserDisp
 The main purpose of the <acronym title="Graphical User Interface">GUI</acronym> is to send events back to your Java class that indicate what the users clicked, which settings they chose, which values they entered into a field, etc. In the Java class, you want to respond with an appropriate action, or store the entered settings in a file, etc. 
 </p>
 
+</div>
+<!-- SECTION "Interacting with the GUI from Java" [7527-7869] -->
+<h3><a name="connect_gui_to_java_controller" id="connect_gui_to_java_controller">Connect GUI to Java Controller</a></h3>
+<div class="level3">
+
 <p>
-How can the <acronym title="Extensible Markup Language">XML</acronym> file send a message back to your Java application? You register a ScreenController (a Java class) to every NiftyGUI screen. 
+
+How does the <acronym title="Extensible Markup Language">XML</acronym> file send a message back to your Java application? You register a ScreenController (a Java class) to every NiftyGUI screen. 
 </p>
 
 <p>
-You create a ScreenController by creating a Java class that implements the <code>de.lessvoid.nifty.screen.ScreenController</code> interface and its abtract methods.
+Create a ScreenController by creating a Java class that implements the <code>de.lessvoid.nifty.screen.ScreenController</code> interface and its abtract methods.
 </p>
 <pre class="code java"><span class="kw1">package</span> <span class="co2">my.game</span>;
 <span class="kw1">import</span> <span class="co2">de.lessvoid.nifty.Nifty</span>;
@@ -305,23 +326,39 @@ You create a ScreenController by creating a Java class that implements the <code
 The name and package of your custom ScreenController class (here <code>my.game.MySettingsScreen</code>) goes into the controller parameter of the respective screen it belongs to:
 </p>
 <pre class="code xml"><span class="sc3"><span class="re1">&lt;nifty<span class="re2">&gt;</span></span></span>
-  <span class="sc3"><span class="re1">&lt;screen</span> <span class="re0">id</span>=<span class="st0">&quot;start&quot;</span> <span class="re0">controller</span>=<span class="st0">&quot;my.game.MySettingsScreen&quot;</span><span class="re2">&gt;</span></span>
-      ...
+  <span class="sc3"><span class="re1">&lt;screen</span> <span class="re0">id</span>=<span class="st0">&quot;settings&quot;</span> <span class="re0">controller</span>=<span class="st0">&quot;my.game.MySettingsScreen&quot;</span><span class="re2">&gt;</span></span>
+      <span class="sc-1">&lt;!-- panel code ... --&gt;</span>
   <span class="sc3"><span class="re1">&lt;/screen<span class="re2">&gt;</span></span></span>
 <span class="sc3"><span class="re1">&lt;/nifty<span class="re2">&gt;</span></span></span></pre>
 <p>
-Now this Java class and this <acronym title="Graphical User Interface">GUI</acronym> screen are connected. 
+Now the Java class <code>my.game.MySettingsScreen</code> and this <acronym title="Graphical User Interface">GUI</acronym> screen (<code>settings</code>) are connected. 
 </p>
 
+</div>
+<!-- SECTION "Connect GUI to Java Controller" [7870-8970] -->
+<h3><a name="make_gui_and_java_interact" id="make_gui_and_java_interact">Make GUI and Java Interact</a></h3>
+<div class="level3">
+
 <p>
-To respond to an interaction, add the &lt;interact /&gt; element to a panel and specifiy the method you want to to call. Here we want to call <code>sayHello()</code> when a the panel is clicked. 
+
+You can use any of the three following approaches to interact, and you can also combine them, depending on what you want to do.
+</p>
+
+</div>
+
+<h4><a name="a_gui_calls_a_void_java_method" id="a_gui_calls_a_void_java_method">a) GUI Calls a Void Java Method</a></h4>
+<div class="level4">
+
+<p>
+
+To respond to an interaction, add the &lt;interact /&gt; element to a panel and specify the Java method you want to call. In this example, we want to call <code>sayHello()</code> when a panel on the screen is clicked. 
 </p>
 <pre class="code xml">...
 <span class="sc3"><span class="re1">&lt;panel</span> <span class="re0">id</span>=<span class="st0">&quot;panel&quot;</span> <span class="re0">height</span>=<span class="st0">&quot;25%&quot;</span> <span class="re0">width</span>=<span class="st0">&quot;35%&quot;</span> <span class="re0">align</span>=<span class="st0">&quot;center&quot;</span> <span class="re0">valign</span>=<span class="st0">&quot;center&quot;</span> </span>
 <span class="sc3">       <span class="re0">backgroundColor</span>=<span class="st0">&quot;#f60f&quot;</span> <span class="re0">childLayout</span>=<span class="st0">&quot;center&quot;</span> <span class="re0">visibleToMouse</span>=<span class="st0">&quot;true&quot;</span><span class="re2">&gt;</span></span>
-    <span class="sc3"><span class="re1">&lt;interact</span> <span class="re0">onClick</span>=<span class="st0">&quot;sayHello(hi)&quot;</span><span class="re2">/&gt;</span></span>
     <span class="sc3"><span class="re1">&lt;text</span> <span class="re0">id</span>=<span class="st0">&quot;text&quot;</span> <span class="re0">font</span>=<span class="st0">&quot;aurulent-sans-17.fnt&quot;</span> <span class="re0">color</span>=<span class="st0">&quot;#000f&quot;</span> </span>
-<span class="sc3">          <span class="re0">text</span>=<span class="st0">&quot;Hello World, ${CALL.callThis()}!&quot;</span> <span class="re0">align</span>=<span class="st0">&quot;center&quot;</span> <span class="re0">valign</span>=<span class="st0">&quot;center&quot;</span> <span class="re2">/&gt;</span></span>
+<span class="sc3">          <span class="re0">text</span>=<span class="st0">&quot;Hello World!&quot;</span> <span class="re0">align</span>=<span class="st0">&quot;center&quot;</span> <span class="re0">valign</span>=<span class="st0">&quot;center&quot;</span> <span class="re2">/&gt;</span></span>
+    <span class="sc3"><span class="re1">&lt;interact</span> <span class="re0">onClick</span>=<span class="st0">&quot;sayHello(hi)&quot;</span><span class="re2">/&gt;</span></span>
 <span class="sc3"><span class="re1">&lt;/panel<span class="re2">&gt;</span></span></span>
 ...</pre>
 <p>
@@ -337,13 +374,35 @@ Back in this screen&#039;s Java class, we specify what the <code>sayHello()</cod
      <span class="kw1">return</span> <span class="st0">&quot;my friend&quot;</span>;
   <span class="br0">&#125;</span>
 <span class="br0">&#125;</span></pre>
+</div>
+
+<h4><a name="b_gui_gets_return_value_from_java_method" id="b_gui_gets_return_value_from_java_method">b) GUI Gets Return Value from Java Method</a></h4>
+<div class="level4">
+
 <p>
-The other way round, Nifty uses <code>${CALL.callThis()}</code> to get the return value of a custom <code>callThis()</code> method from your Java class.
+
+To send a message from Java to Nifty, Nifty uses <code>${CALL.callThis()}</code> to get the return value of a custom <code>callThis()</code> method from your Java class.
+</p>
+<pre class="code xml">...
+<span class="sc3"><span class="re1">&lt;panel</span> <span class="re0">id</span>=<span class="st0">&quot;panel&quot;</span> <span class="re0">height</span>=<span class="st0">&quot;25%&quot;</span> <span class="re0">width</span>=<span class="st0">&quot;35%&quot;</span> <span class="re0">align</span>=<span class="st0">&quot;center&quot;</span> <span class="re0">valign</span>=<span class="st0">&quot;center&quot;</span> </span>
+<span class="sc3">       <span class="re0">backgroundColor</span>=<span class="st0">&quot;#f60f&quot;</span> <span class="re0">childLayout</span>=<span class="st0">&quot;center&quot;</span> <span class="re0">visibleToMouse</span>=<span class="st0">&quot;true&quot;</span><span class="re2">&gt;</span></span>
+    <span class="sc3"><span class="re1">&lt;text</span> <span class="re0">id</span>=<span class="st0">&quot;text&quot;</span> <span class="re0">font</span>=<span class="st0">&quot;aurulent-sans-17.fnt&quot;</span> <span class="re0">color</span>=<span class="st0">&quot;#000f&quot;</span> </span>
+<span class="sc3">          <span class="re0">text</span>=<span class="st0">&quot;Hello World, ${CALL.callThis()}!&quot;</span> <span class="re0">align</span>=<span class="st0">&quot;center&quot;</span> <span class="re0">valign</span>=<span class="st0">&quot;center&quot;</span> <span class="re2">/&gt;</span></span>
+    <span class="sc3"><span class="re1">&lt;interact</span> <span class="re0">onClick</span>=<span class="st0">&quot;sayHello(hi)&quot;</span><span class="re2">/&gt;</span></span>
+<span class="sc3"><span class="re1">&lt;/panel<span class="re2">&gt;</span></span></span>
+...</pre>
+<p>
+The Java class callThis() in MySettingsScreen defines the Text that is displayed in the textfield after the words <code>Hello World, …!</code>
 </p>
 
+</div>
+
+<h4><a name="c_java_modifies_nifty_elements_and_events" id="c_java_modifies_nifty_elements_and_events">c) Java Modifies Nifty Elements and Events</a></h4>
+<div class="level4">
+
 <p>
 
-You can also alter the appearance and functions of your nifty elements from java.
+You can also alter the appearance and functions of your nifty elements from Java.
 </p>
 
 <p>
@@ -381,7 +440,25 @@ Learn more: <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer
 </p>
 
 </div>
-<!-- SECTION "Interacting with the GUI from Java" [7215-10776] -->
+<!-- SECTION "Make GUI and Java Interact" [8971-12031] -->
+<h2><a name="pro_tipuse_xml_schema" id="pro_tipuse_xml_schema">Pro Tip: Use XML Schema</a></h2>
+<div class="level2">
+
+<p>
+
+If you include the following <acronym title="Extensible Markup Language">XML</acronym> schema in the first lines of your NiftyGUI <acronym title="Extensible Markup Language">XML</acronym> files, your IDE will give you helpful hints and code completion.
+</p>
+<pre class="code xml"><span class="sc3"><span class="re1">&lt;?xml</span> <span class="re0">version</span>=<span class="st0">&quot;1.0&quot;</span> <span class="re0">encoding</span>=<span class="st0">&quot;UTF-8&quot;</span><span class="re2">?&gt;</span></span>
+<span class="sc3"><span class="re1">&lt;nifty</span> <span class="re0">xmlns</span>=<span class="st0">&quot;http://nifty-gui.sourceforge.net/nifty.xsd&quot;</span> </span>
+<span class="sc3">       <span class="re0">xmlns:xsi</span>=<span class="st0">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span> </span>
+<span class="sc3">       <span class="re0">xsi:schemaLocation</span>=<span class="st0">&quot;http://nifty-gui.sourceforge.net/nifty.xsd </span>
+<span class="sc3">                           http://nifty-gui.sourceforge.net/nifty.xsd&quot;</span><span class="re2">&gt;</span></span>
+&nbsp;
+     <span class="sc-1">&lt;!-- Example: The IDE will tell you that 1 &lt;screen&gt;&lt;/screen&gt; element is expected here --&gt;</span>
+&nbsp;
+<span class="sc3"><span class="re1">&lt;/nifty<span class="re2">&gt;</span></span></span></pre>
+</div>
+<!-- SECTION "Pro Tip: Use XML Schema" [12032-12646] -->
 <h2><a name="nifty_documentation" id="nifty_documentation">Nifty Documentation</a></h2>
 <div class="level2">
 
@@ -403,5 +480,5 @@ Learn more from the NiftyGUI page!
 </ul>
 
 </div>
-<!-- SECTION "Nifty Documentation" [10777-] -->
+<!-- SECTION "Nifty Documentation" [12647-] -->
 <p><em><a href="http://jmonkeyengine.org/wiki/doku.php/jme3:advanced:nifty_gui?do=export_xhtmlbody">view online version</a></em></p>

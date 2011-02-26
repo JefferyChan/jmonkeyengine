@@ -152,31 +152,15 @@ Models are also made up of meshes, but are a lot more complex than Shapes. Model
   <span class="br0">&#40;</span>Spatial<span class="br0">&#41;</span> assetManager.<span class="me1">loadModel</span><span class="br0">&#40;</span>
     <span class="st0">&quot;Models/MonkeyHead/MonkeyHead.mesh.xml&quot;</span><span class="br0">&#41;</span>;</pre>
 </div>
-<!-- SECTION "Models" [2996-3383] -->
+<!-- SECTION "Models" [2996-3382] -->
 <h3><a name="how_to_identify_a_named_sub-mesh_in_a_loaded_model" id="how_to_identify_a_named_sub-mesh_in_a_loaded_model">How to Identify a Named Sub-Mesh in a Loaded Model</a></h3>
 <div class="level3">
 
 <p>
 
-The spatial is the loaded model, either a Node or a Geometry. The String is the name of the mesh that you are searching. 
+The node is the loaded model, a Node that contains children that are the sub-meshes. The String is the name of the mesh that you are searching. 
 </p>
-<pre class="code java">    <span class="kw1">private</span> Geometry findGeom<span class="br0">&#40;</span>Spatial spatial, <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Astring+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object> name<span class="br0">&#41;</span> <span class="br0">&#123;</span>
-        <span class="kw1">if</span> <span class="br0">&#40;</span>spatial <span class="kw1">instanceof</span> Node<span class="br0">&#41;</span> <span class="br0">&#123;</span>
-            Node node <span class="sy0">=</span> <span class="br0">&#40;</span>Node<span class="br0">&#41;</span> spatial;
-            <span class="kw1">for</span> <span class="br0">&#40;</span><span class="kw4">int</span> i <span class="sy0">=</span> 0; i <span class="sy0">&lt;</span> node.<span class="me1">getQuantity</span><span class="br0">&#40;</span><span class="br0">&#41;</span>; i<span class="sy0">++</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-                Spatial child <span class="sy0">=</span> node.<span class="me1">getChild</span><span class="br0">&#40;</span>i<span class="br0">&#41;</span>;
-                Geometry result <span class="sy0">=</span> findGeom<span class="br0">&#40;</span>child, name<span class="br0">&#41;</span>;
-                <span class="kw1">if</span> <span class="br0">&#40;</span>result <span class="sy0">!=</span> <span class="kw2">null</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-                    <span class="kw1">return</span> result;
-                <span class="br0">&#125;</span>
-            <span class="br0">&#125;</span>
-        <span class="br0">&#125;</span> <span class="kw1">else</span> <span class="kw1">if</span> <span class="br0">&#40;</span>spatial <span class="kw1">instanceof</span> Geometry<span class="br0">&#41;</span> <span class="br0">&#123;</span>
-            <span class="kw1">if</span> <span class="br0">&#40;</span>spatial.<span class="me1">getName</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">startsWith</span><span class="br0">&#40;</span>name<span class="br0">&#41;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-                <span class="kw1">return</span> <span class="br0">&#40;</span>Geometry<span class="br0">&#41;</span> spatial;
-            <span class="br0">&#125;</span>
-        <span class="br0">&#125;</span>
-        <span class="kw1">return</span> <span class="kw2">null</span>;
-    <span class="br0">&#125;</span></pre>
+<pre class="code java">Geometry geometry <span class="sy0">=</span> <span class="br0">&#40;</span>Geometry<span class="br0">&#41;</span>node.<span class="me1">getChild</span><span class="br0">&#40;</span><span class="st0">&quot;MyGeometry&quot;</span><span class="br0">&#41;</span>;</pre>
 <p>
 Open the model in a 3D mesh editor 
 </p>
@@ -188,5 +172,5 @@ Open the model in a 3D mesh editor
 </ol>
 
 </div>
-<!-- SECTION "How to Identify a Named Sub-Mesh in a Loaded Model" [3384-] -->
+<!-- SECTION "How to Identify a Named Sub-Mesh in a Loaded Model" [3383-] -->
 <p><em><a href="http://jmonkeyengine.org/wiki/doku.php/jme3:advanced:models_and_meshes?do=export_xhtmlbody">view online version</a></em></p>

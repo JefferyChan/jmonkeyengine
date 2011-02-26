@@ -6,13 +6,16 @@
 
 <p>
 
-<code>com.jme3.app.state.AppState</code> is a customizable jME3 interface that allows you to cleanly implement Game Logic. You use AppStates to control the global game behaviour, also referred to as the game logic or game mechanics. (To control the game behaviour of a type of Spatial, see <a href="/com/jme3/gde/core/docs/jme3/advanced/custom_controls.html" class="wikilink1" title="jme3:advanced:custom_controls">Custom Controls</a>.)
+<code>com.jme3.app.state.AppState</code> is a customizable jME3 interface that allows you to control the global game logic (game mechanics). To control the behaviour of a type of Spatial, see <a href="/com/jme3/gde/core/docs/jme3/advanced/custom_controls.html" class="wikilink1" title="jme3:advanced:custom_controls">Custom Controls</a> instead – both can be used together.
+</p>
 
+<p>
+To implement game logic:
 </p>
 <ol>
 <li class="level1"><div class="li"> You define a custom AppState and implement its behaviour in the AppState&#039;s update() method.</div>
 <ul>
-<li class="level2"><div class="li"> You can manipulate …</div>
+<li class="level2"><div class="li"> You can pass arguments and manipulate everything inside the app&#039;s scope.</div>
 </li>
 </ul>
 </li>
@@ -23,7 +26,7 @@
 </ol>
 
 </div>
-<!-- SECTION "Application States" [1-753] -->
+<!-- SECTION "Application States" [1-766] -->
 <h2><a name="usage_examples" id="usage_examples">Usage Examples</a></h2>
 <div class="level2">
 
@@ -44,21 +47,146 @@ JME3 comes with a BulletAppState that implements Physical behaviour (using the j
 </ul>
 
 </div>
-<!-- SECTION "Usage Examples" [754-1518] -->
+<!-- SECTION "Usage Examples" [767-1531] -->
 <h2><a name="appstate" id="appstate">AppState</a></h2>
 <div class="level2">
 
+<p>
+
+The AppState interface allows you to hook a continously executing piece of code into the main loop.
+
+</p>
+<table class="inline">
+	<tr class="row0">
+		<th class="col0">AppState Method</th><th class="col1">Usage</th>
+	</tr>
+	<tr class="row1">
+		<td class="col0">isActive()</td><td class="col1">Test whether AppState is enabled or disabled.</td>
+	</tr>
+	<tr class="row2">
+		<td class="col0">stateAttached(asm) <br/>
+ stateDetached(asm)</td><td class="col1">The AppState knows when it is attached to, or detached from, the AppStateManager. Then it triggers these methods that you implement.</td>
+	</tr>
+	<tr class="row3">
+		<td class="col0">isInitialized()</td><td class="col1">Your implementations of this interface should return the correct respective boolean value.</td>
+	</tr>
+	<tr class="row4">
+		<td class="col0">initialize(asm,app)</td><td class="col1">The RenderThread initialized the AppState and then calls this method.</td>
+	</tr>
+	<tr class="row5">
+		<td class="col0">setActive(true) <br/>
+ setActive(false)</td><td class="col1">Temporarily enables or disables an AppState.</td>
+	</tr>
+	<tr class="row6">
+		<td class="col0">update(float tpf)</td><td class="col1">Here you implement the behaviour that you want to hook into the main update loop.</td>
+	</tr>
+	<tr class="row7">
+		<td class="col0">cleanup()</td><td class="col1">Called when when the AppState is de-initialized.</td>
+	</tr>
+	<tr class="row8">
+		<td class="col0">render(RenderManager rm)</td><td class="col1">Renders the state.</td>
+	</tr>
+	<tr class="row9">
+		<td class="col0">postRender()</td><td class="col1">Called after all rendering commands are flushed.</td>
+	</tr>
+</table>
+
 </div>
-<!-- SECTION "AppState" [1519-1539] -->
+<!-- SECTION "AppState" [1532-2472] -->
 <h2><a name="abstractappstate" id="abstractappstate">AbstractAppState</a></h2>
 <div class="level2">
 
+<p>
+
+The AbstractAppState class already implements some common methods and makes creation of custom AppStates a bit easier: isInitialized(), setActive(), isActive(), cleanUp(). Just extend it and override the remaining AppState methods.
+</p>
+
+<p>
+
+Definition:
+</p>
+<pre class="code java"><span class="kw1">public</span> <span class="kw1">class</span> MyAppState <span class="kw1">extends</span> AbstractAppState <span class="br0">&#123;</span>
+    <span class="kw1">private</span> Node x <span class="sy0">=</span> <span class="kw1">new</span> Node<span class="br0">&#40;</span><span class="st0">&quot;x&quot;</span><span class="br0">&#41;</span>; <span class="co1">// some class field</span>
+&nbsp;
+    <span class="kw1">public</span> Node getX<span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#123;</span>
+        <span class="kw1">return</span> x;
+    <span class="br0">&#125;</span>
+&nbsp;
+    @Override
+    <span class="kw1">public</span> <span class="kw4">void</span> update<span class="br0">&#40;</span><span class="kw4">float</span> tpf<span class="br0">&#41;</span> <span class="br0">&#123;</span>
+        x.<span class="me1">doSomething</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;             <span class="co1">// implement behaviour</span>
+    <span class="br0">&#125;</span>
+<span class="br0">&#125;</span></pre>
+<p>
+Usage:
+</p>
+<pre class="code java"><span class="kw1">public</span> <span class="kw1">class</span> TestAppStates <span class="kw1">extends</span> Application <span class="br0">&#123;</span>
+  <span class="kw1">public</span> <span class="kw1">static</span> <span class="kw4">void</span> main<span class="br0">&#40;</span><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Astring+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object><span class="br0">&#91;</span><span class="br0">&#93;</span> args<span class="br0">&#41;</span><span class="br0">&#123;</span>
+    TestAppStates app <span class="sy0">=</span> <span class="kw1">new</span> TestAppStates<span class="br0">&#40;</span><span class="br0">&#41;</span>;
+    app.<span class="me1">start</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
+  <span class="br0">&#125;</span>
+&nbsp;
+  @Override
+  <span class="kw1">public</span> <span class="kw4">void</span> start<span class="br0">&#40;</span>JmeContext.<span class="me1">Type</span> contextType<span class="br0">&#41;</span><span class="br0">&#123;</span>
+    <span class="kw1">super</span>.<span class="me1">start</span><span class="br0">&#40;</span>contextType<span class="br0">&#41;</span>;
+  <span class="br0">&#125;</span>
+&nbsp;
+  @Override
+  <span class="kw1">public</span> <span class="kw4">void</span> initialize<span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#123;</span>
+    <span class="kw1">super</span>.<span class="me1">initialize</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;MyAppState state <span class="sy0">=</span> <span class="kw1">new</span> MyAppState<span class="br0">&#40;</span><span class="br0">&#41;</span>;
+    stateManager.<span class="me1">attach</span><span class="br0">&#40;</span>state<span class="br0">&#41;</span>;
+    <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Asystem+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object>.<span class="me1">out</span>.<span class="me1">println</span><span class="br0">&#40;</span><span class="st0">&quot;Use the state's methods... &quot;</span> <span class="sy0">+</span> state.<span class="me1">getX</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
+  <span class="br0">&#125;</span>
+&nbsp;
+  @Override
+  <span class="kw1">public</span> <span class="kw4">void</span> update<span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#123;</span>
+    <span class="kw1">super</span>.<span class="me1">update</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
+    stateManager.<span class="me1">update</span><span class="br0">&#40;</span>tpf<span class="br0">&#41;</span>;
+    stateManager.<span class="me1">render</span><span class="br0">&#40;</span>renderManager<span class="br0">&#41;</span>;
+    renderManager.<span class="me1">render</span><span class="br0">&#40;</span>tpf<span class="br0">&#41;</span>;
+  <span class="br0">&#125;</span>
+&nbsp;
+  @Override
+  <span class="kw1">public</span> <span class="kw4">void</span> destroy<span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#123;</span>
+    <span class="kw1">super</span>.<span class="me1">destroy</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
+  <span class="br0">&#125;</span></pre>
 </div>
-<!-- SECTION "AbstractAppState" [1540-1568] -->
-<h2><a name="best_practices" id="best_practices">Best Practices</a></h2>
+<!-- SECTION "AbstractAppState" [2473-3759] -->
+<h2><a name="appstatemanager" id="appstatemanager">AppStateManager</a></h2>
 <div class="level2">
-<pre class="code">app.getAppState(MyState.class).doStuff()</pre>
+
+<p>
+
+The com.jme3.app.state.AppStateManager holds the list of AppStates for an application. AppStateManager ensures that active AppStates are updated and rendered. When an AppState is attached, AppStateManager calls its stateAttached() method. When an AppState is detached, AppStateManager calls its stateDetached() method. 
+</p>
+
+<p>
+There is one AppStateManager per application. You can attach several AppStates to one AppStateManager, but the same state can only be attached once.
+
+</p>
+<table class="inline">
+	<tr class="row0">
+		<th class="col0">AppStateManager Method</th><th class="col1">Usage</th>
+	</tr>
+	<tr class="row1">
+		<td class="col0">hasState(s)</td><td class="col1">Is AppState s attached?</td>
+	</tr>
+	<tr class="row2">
+		<td class="col0">getState(Class&lt;T&gt; stateClass)</td><td class="col1">Returns the first state that is an instance of a subclass of the specified class.</td>
+	</tr>
+</table>
+
+<p>
+
+The AppStateManager&#039;s update(), render(), postRender(), and cleanUp() methods are internal, users never call them directly.
+</p>
 
 </div>
-<!-- SECTION "Best Practices" [1569-] -->
+<!-- SECTION "AppStateManager" [3760-4568] -->
+<h2><a name="best_practices" id="best_practices">Best Practices</a></h2>
+<div class="level2">
+<pre class="code">app.getState(MyState.class).doStuff()</pre>
+
+</div>
+<!-- SECTION "Best Practices" [4569-] -->
 <p><em><a href="http://jmonkeyengine.org/wiki/doku.php/jme3:advanced:application_states?do=export_xhtmlbody">view online version</a></em></p>
