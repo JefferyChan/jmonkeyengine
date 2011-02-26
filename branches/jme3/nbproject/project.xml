@@ -22,7 +22,6 @@
                 <root id="src.jbullet.dir" name="JBullet"/>
                 <root id="src.niftygui.dir" name="NiftyGUI"/>
                 <root id="src.jogg.dir" name="JOGG"/>
-                <root id="src.jogl.dir" name="JOGL"/>
                 <root id="src.lwjgl-oal.dir" name="LWJGL-OAL"/>
                 <root id="src.lwjgl-ogl.dir" name="LWJGL-OGL"/>
                 <root id="src.ogre.dir" name="Ogre"/>
