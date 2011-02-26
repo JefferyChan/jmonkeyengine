@@ -84,8 +84,8 @@ public class InputSystemJme implements InputSystem, RawInputListener {
     }
 
     public void endInput(){
-		//requires nifty1.3
-        //boolean result = nifty.update();
+        //requires nifty1.3
+        boolean result = nifty.update();
     }
 
     public void onJoyAxisEvent(JoyAxisEvent evt) {
@@ -98,7 +98,7 @@ public class InputSystemJme implements InputSystem, RawInputListener {
         x = evt.getX();
         y = height - evt.getY();
         MouseInputEvent niftyEvt = new MouseInputEvent(x, y, pressed);
-        if (nic.processMouseEvent(niftyEvt)){
+        if (nic.processMouseEvent(niftyEvt) /*|| nifty.getCurrentScreen().isMouseOverElement()*/){
             evt.setConsumed();
         }
     }
@@ -111,7 +111,7 @@ public class InputSystemJme implements InputSystem, RawInputListener {
         if (evt.getButtonIndex() == 0){
             pressed = evt.isPressed();
             MouseInputEvent niftyEvt = new MouseInputEvent(x, y, pressed);
-            if (nic.processMouseEvent(niftyEvt)){
+            if (nic.processMouseEvent(niftyEvt) /*|| nifty.getCurrentScreen().isMouseOverElement()*/){
                 evt.setConsumed();
             }
         }

@@ -41,7 +41,7 @@ MaterialDef Phong Lighting {
         Color Ambient
 
         // Diffuse color
-        Color Diffuse
+        Color Diffuse : Color
 
         // Specular color
         Color Specular
@@ -161,6 +161,8 @@ MaterialDef Phong Lighting {
 
         WorldParameters {
             WorldViewProjectionMatrix
+            NormalMatrix
+            WorldViewMatrix
             WorldMatrix
         }
 

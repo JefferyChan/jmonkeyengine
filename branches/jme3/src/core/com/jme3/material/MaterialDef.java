@@ -81,8 +81,8 @@ public class MaterialDef {
         return name;
     }
 
-    public void addMaterialParam(VarType type, String name, Object value) {
-        matParams.put(name, new MatParam(type, name, value));
+    public void addMaterialParam(VarType type, String name, Object value, FixedFuncBinding ffBinding) {
+        matParams.put(name, new MatParam(type, name, value, ffBinding));
     }
     
     public MatParam getMaterialParam(String name){

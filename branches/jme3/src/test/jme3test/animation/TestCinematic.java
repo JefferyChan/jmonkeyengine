@@ -216,7 +216,7 @@ public class TestCinematic extends SimpleApplication {
         rootNode.attachChild(model);
 
 
-        Material mat = new Material(assetManager, "Common/MatDefs/Misc/SolidColor.j3md");
+        Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
         mat.setColor("Color", ColorRGBA.Cyan);
 
         teapot = assetManager.loadModel("Models/Teapot/Teapot.obj");

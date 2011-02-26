@@ -102,7 +102,7 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
 //        private transient TextureKey key;
 
         public MatParamTexture(VarType type, String name, Texture texture, int unit) {
-            super(type, name, texture);
+            super(type, name, texture, null);
             this.texture = texture;
             this.unit = unit;
         }
@@ -320,7 +320,8 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
             technique.notifySetParam(name, type, value);
         }
         if (val == null) {
-            paramValues.put(name, new MatParam(type, name, value));
+            MatParam paramDef = def.getMaterialParam(name);
+            paramValues.put(name, new MatParam(type, name, value, paramDef.getFixedFuncBinding()));
         } else {
             val.setValue(value);
         }

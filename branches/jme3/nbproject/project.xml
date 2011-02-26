@@ -32,7 +32,9 @@
                 <root id="src.tools.dir" name="Tools"/>
                 <root id="src.xml.dir" name="XML"/>
             </source-roots>
-            <test-roots/>
+            <test-roots>
+                <root id="test.test.dir" name="Unit Test"/>
+            </test-roots>
         </data>
         <libraries xmlns="http://www.netbeans.org/ns/ant-project-libraries/1">
             <definitions>./lib/nblibraries.properties</definitions>

@@ -46,10 +46,10 @@ public class AppSettings extends HashMap<String, Object> {
 
     private static final AppSettings defaults = new AppSettings(false);
     public static final String LWJGL_OPENGL1 = "LWJGL-OPENGL1",
-            LWJGL_OPENGL2 = "LWJGL-OpenGL2",
-            LWJGL_OPENGL3 = "LWJGL-OpenGL3",
-            JOGL = "JOGL",
-            NULL = "NULL";
+                               LWJGL_OPENGL2 = "LWJGL-OpenGL2",
+                               LWJGL_OPENGL3 = "LWJGL-OpenGL3",
+                               JOGL = "JOGL",
+                               NULL = "NULL";
     public static final String LWJGL_OPENAL = "LWJGL";
     private String settingsDialogImage = "/com/jme3/app/Monkey.png";
 
@@ -220,6 +220,10 @@ public class AppSettings extends HashMap<String, Object> {
 
     public void setRenderer(String renderer) {
         putString("Renderer", renderer);
+    }
+
+    public void setCustomRenderer(Class clazz){
+        put("Renderer", "CUSTOM" + clazz.getName());
     }
 
     public void setAudioRenderer(String audioRenderer) {

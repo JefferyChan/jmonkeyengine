@@ -37,6 +37,7 @@ import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
 import com.jme3.export.OutputCapsule;
 import com.jme3.export.Savable;
+import com.jme3.renderer.GL1Renderer;
 import com.jme3.renderer.Renderer;
 import com.jme3.shader.Uniform;
 import com.jme3.shader.VarType;
@@ -47,15 +48,21 @@ public class MatParam implements Savable, Cloneable {
     protected VarType type;
     protected String name;
     protected Object value;
+    protected FixedFuncBinding ffBinding;
 //    protected Uniform uniform;
 
-    public MatParam(VarType type, String name, Object value){
+    public MatParam(VarType type, String name, Object value, FixedFuncBinding ffBinding){
         this.type = type;
         this.name = name;
         this.value = value;
+        this.ffBinding = ffBinding;
     }
 
     public MatParam(){
+    }
+
+    public FixedFuncBinding getFixedFuncBinding() {
+        return ffBinding;
     }
 
     public VarType getVarType() {
@@ -100,6 +107,7 @@ public class MatParam implements Savable, Cloneable {
         OutputCapsule oc = ex.getCapsule(this);
         oc.write(type, "varType", null);
         oc.write(name, "name", null);
+        oc.write(ffBinding, "ff_binding", null);
         if (value instanceof Savable){
             Savable s = (Savable) value;
             oc.write(s, "value_savable", null);
@@ -119,6 +127,7 @@ public class MatParam implements Savable, Cloneable {
         InputCapsule ic = im.getCapsule(this);
         type = ic.readEnum("varType", VarType.class, null);
         name = ic.readString("name", null);
+        ffBinding = ic.readEnum("ff_binding", FixedFuncBinding.class, null);
         switch (getVarType()){
             case Boolean:
                 value = ic.readBoolean("value_bool", false);
@@ -155,7 +164,9 @@ public class MatParam implements Savable, Cloneable {
         if (techDef.isUsingShaders()) {
             technique.updateUniformParam(getName(), getVarType(), getValue(), true);
         }
-
+        if (ffBinding != null && r instanceof GL1Renderer){
+            ((GL1Renderer)r).setFixedFuncBinding(ffBinding, getValue());
+        }
     }
 }
 

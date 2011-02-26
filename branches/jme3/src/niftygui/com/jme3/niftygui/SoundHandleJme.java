@@ -47,6 +47,9 @@ public class SoundHandleJme implements SoundHandle {
     private float volume = 1;
 
     public SoundHandleJme(AudioRenderer ar, AudioNode node){
+        if (ar == null || node == null)
+            throw new NullPointerException();
+
         this.ar = ar;
         this.node = node;
     }
@@ -58,6 +61,9 @@ public class SoundHandleJme implements SoundHandle {
      * @param fileName
      */
     public SoundHandleJme(AudioRenderer ar, AssetManager am, String fileName){
+        if (ar == null || am == null)
+            throw new NullPointerException();
+
         this.ar = ar;
         this.am = am;
         if (fileName == null)

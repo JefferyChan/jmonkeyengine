@@ -165,8 +165,21 @@ public class J3MLoader implements AssetLoader {
         }
         
         word = readString("[\n;(//)(\\})]");
+        FixedFuncBinding ffBinding = null;
+        if (word.contains(":")){
+            // contains fixed func binding
+            String[] split = word.split(":");
+            word = split[0].trim();
+
+            try {
+                ffBinding = FixedFuncBinding.valueOf(split[1].trim());
+            } catch (IllegalArgumentException ex){
+                throw new IOException("FixedFuncBinding '" +
+                                      split[1] + "' does not exist!");
+            }
+        }
         // TODO: add support for default vals
-        materialDef.addMaterialParam(type, word, null);
+        materialDef.addMaterialParam(type, word, null, ffBinding);
     }
 
     private void readValueParam() throws IOException{
