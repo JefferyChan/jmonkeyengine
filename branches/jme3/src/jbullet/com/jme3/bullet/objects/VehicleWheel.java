@@ -69,6 +69,7 @@ public class VehicleWheel implements Savable {
     protected Spatial wheelSpatial;
     protected com.jme3.math.Matrix3f tmp_Matrix = new com.jme3.math.Matrix3f();
     protected final Quaternion tmp_inverseWorldRotation = new Quaternion();
+    private boolean applyLocal = false;
 
     public VehicleWheel() {
     }
@@ -101,7 +102,7 @@ public class VehicleWheel implements Savable {
         }
         Quaternion localRotationQuat = wheelSpatial.getLocalRotation();
         Vector3f localLocation = wheelSpatial.getLocalTranslation();
-        if (wheelSpatial.getParent() != null) {
+        if (!applyLocal && wheelSpatial.getParent() != null) {
             localLocation.set(wheelWorldLocation).subtractLocal(wheelSpatial.getParent().getWorldTranslation());
             localLocation.divideLocal(wheelSpatial.getParent().getWorldScale());
             tmp_inverseWorldRotation.set(wheelSpatial.getParent().getWorldRotation()).inverseLocal().multLocal(localLocation);
@@ -385,5 +386,13 @@ public class VehicleWheel implements Savable {
      */
     public void setWheelSpatial(Spatial wheelSpatial) {
         this.wheelSpatial = wheelSpatial;
+    }
+
+    public boolean isApplyLocal() {
+        return applyLocal;
+    }
+
+    public void setApplyLocal(boolean applyLocal) {
+        this.applyLocal = applyLocal;
     }
 }

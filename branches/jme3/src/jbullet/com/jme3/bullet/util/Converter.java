@@ -213,8 +213,7 @@ public class Converter {
 
     public static com.bulletphysics.linearmath.Transform convert(com.jme3.math.Transform in, com.bulletphysics.linearmath.Transform out) {
         convert(in.getTranslation(), out.origin);
-        //TODO: reuse matrix
-        convert(in.getRotation().toRotationMatrix(), out.basis);
+        convert(in.getRotation(), out.basis);
         return out;
     }
 

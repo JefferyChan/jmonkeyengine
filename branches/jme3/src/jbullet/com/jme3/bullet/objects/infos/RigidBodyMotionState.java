@@ -52,9 +52,9 @@ public class RigidBodyMotionState extends MotionState {
     //stores the bullet transform
 
     private Transform motionStateTrans = new Transform(Converter.convert(new Matrix3f()));
-    protected Vector3f worldLocation = new Vector3f();
-    protected Matrix3f worldRotation = new Matrix3f();
-    protected Quaternion worldRotationQuat = new Quaternion();
+    private Vector3f worldLocation = new Vector3f();
+    private Matrix3f worldRotation = new Matrix3f();
+    private Quaternion worldRotationQuat = new Quaternion();
     private Vector3f localLocation = new Vector3f();
     private Quaternion localRotationQuat = new Quaternion();
     //keep track of transform changes
@@ -62,7 +62,8 @@ public class RigidBodyMotionState extends MotionState {
     private boolean jmeLocationDirty = false;
     //temp variable for conversion
     private Quaternion tmp_inverseWorldRotation = new Quaternion();
-    protected PhysicsVehicle vehicle;
+    private PhysicsVehicle vehicle;
+    private boolean applyPhysicsLocal = false;
 //    protected LinkedList<PhysicsMotionStateListener> listeners = new LinkedList<PhysicsMotionStateListener>();
 
     public RigidBodyMotionState() {
@@ -111,7 +112,7 @@ public class RigidBodyMotionState extends MotionState {
         if (spatial instanceof PhysicsBaseNode) {
             ((PhysicsBaseNode) spatial).setWorldRotation(worldRotationQuat);
             ((PhysicsBaseNode) spatial).setWorldTranslation(worldLocation);
-        } else if (spatial.getParent() != null) {
+        } else if (!applyPhysicsLocal && spatial.getParent() != null) {
             localLocation.set(worldLocation).subtractLocal(spatial.getParent().getWorldTranslation());
             localLocation.divideLocal(spatial.getParent().getWorldScale());
             tmp_inverseWorldRotation.set(spatial.getParent().getWorldRotation()).inverseLocal().multLocal(localLocation);
@@ -157,6 +158,13 @@ public class RigidBodyMotionState extends MotionState {
         this.vehicle = vehicle;
     }
 
+    public boolean isApplyPhysicsLocal() {
+        return applyPhysicsLocal;
+    }
+
+    public void setApplyPhysicsLocal(boolean applyPhysicsLocal) {
+        this.applyPhysicsLocal = applyPhysicsLocal;
+    }
 //    public void addMotionStateListener(PhysicsMotionStateListener listener){
 //        listeners.add(listener);
 //    }

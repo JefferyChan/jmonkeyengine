@@ -11,7 +11,8 @@ import com.jme3.export.InputCapsule;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
 import com.jme3.export.OutputCapsule;
-import com.jme3.math.Matrix3f;
+import com.jme3.math.Quaternion;
+import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Spatial;
@@ -29,12 +30,40 @@ public class GhostControl extends PhysicsGhostObject implements PhysicsControl {
     protected boolean enabled = true;
     protected boolean added = false;
     protected PhysicsSpace space = null;
+    protected boolean applyLocal = false;
 
     public GhostControl() {
     }
 
     public GhostControl(CollisionShape shape) {
         super(shape);
+    }
+
+    public boolean isApplyPhysicsLocal() {
+        return applyLocal;
+    }
+
+    /**
+     * When set to true, the physics coordinates will be applied to the local
+     * translation of the Spatial
+     * @param applyPhysicsLocal
+     */
+    public void setApplyPhysicsLocal(boolean applyPhysicsLocal) {
+        applyLocal = applyPhysicsLocal;
+    }
+
+    private Vector3f getSpatialTranslation() {
+        if (applyLocal) {
+            return spatial.getLocalTranslation();
+        }
+        return spatial.getWorldTranslation();
+    }
+
+    private Quaternion getSpatialRotation() {
+        if (applyLocal) {
+            return spatial.getLocalRotation();
+        }
+        return spatial.getWorldRotation();
     }
 
     public Control cloneForSpatial(Spatial spatial) {
@@ -45,6 +74,7 @@ public class GhostControl extends PhysicsGhostObject implements PhysicsControl {
         control.setCollisionGroup(getCollisionGroup());
         control.setPhysicsLocation(getPhysicsLocation());
         control.setPhysicsRotation(getPhysicsRotationMatrix());
+        control.setApplyPhysicsLocal(isApplyPhysicsLocal());
 
         control.setSpatial(spatial);
         return control;
@@ -61,17 +91,17 @@ public class GhostControl extends PhysicsGhostObject implements PhysicsControl {
             }
             return;
         }
-        setPhysicsLocation(spatial.getWorldTranslation());
-        setPhysicsRotation(spatial.getWorldRotation().toRotationMatrix());
+        setPhysicsLocation(getSpatialTranslation());
+        setPhysicsRotation(getSpatialRotation());
     }
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
         if (space != null) {
             if (enabled && !added) {
-                if(spatial!=null){
-                    setPhysicsLocation(spatial.getWorldTranslation());
-                    setPhysicsRotation(spatial.getWorldRotation());
+                if (spatial != null) {
+                    setPhysicsLocation(getSpatialTranslation());
+                    setPhysicsRotation(getSpatialRotation());
                 }
                 space.addCollisionObject(this);
                 added = true;
@@ -90,8 +120,8 @@ public class GhostControl extends PhysicsGhostObject implements PhysicsControl {
         if (!enabled) {
             return;
         }
-        setPhysicsLocation(spatial.getWorldTranslation());
-        setPhysicsRotation(spatial.getWorldRotation());
+        setPhysicsLocation(getSpatialTranslation());
+        setPhysicsRotation(getSpatialRotation());
     }
 
     public void render(RenderManager rm, ViewPort vp) {
@@ -99,8 +129,8 @@ public class GhostControl extends PhysicsGhostObject implements PhysicsControl {
             if (debugShape == null) {
                 attachDebugShape(space.getDebugManager());
             }
-            debugShape.setLocalTranslation(getPhysicsLocation());
-            debugShape.setLocalRotation(getPhysicsRotationMatrix());
+            debugShape.setLocalTranslation(spatial.getWorldTranslation());
+            debugShape.setLocalRotation(spatial.getWorldRotation());
             debugShape.updateLogicalState(0);
             debugShape.updateGeometricState();
             rm.renderScene(debugShape, vp);
@@ -114,7 +144,9 @@ public class GhostControl extends PhysicsGhostObject implements PhysicsControl {
                 added = false;
             }
         } else {
-            if(this.space==space) return;
+            if (this.space == space) {
+                return;
+            }
             space.addCollisionObject(this);
             added = true;
         }
@@ -130,6 +162,7 @@ public class GhostControl extends PhysicsGhostObject implements PhysicsControl {
         super.write(ex);
         OutputCapsule oc = ex.getCapsule(this);
         oc.write(enabled, "enabled", true);
+        oc.write(applyLocal, "applyLocalPhysics", false);
         oc.write(spatial, "spatial", null);
     }
 
@@ -139,6 +172,7 @@ public class GhostControl extends PhysicsGhostObject implements PhysicsControl {
         InputCapsule ic = im.getCapsule(this);
         enabled = ic.readBoolean("enabled", true);
         spatial = (Spatial) ic.readSavable("spatial", null);
+        applyLocal = ic.readBoolean("applyLocalPhysics", false);
         setUserObject(spatial);
     }
 }

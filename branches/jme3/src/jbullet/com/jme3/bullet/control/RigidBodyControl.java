@@ -14,7 +14,7 @@ import com.jme3.export.InputCapsule;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
 import com.jme3.export.OutputCapsule;
-import com.jme3.math.Matrix3f;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
@@ -26,8 +26,6 @@ import com.jme3.scene.control.Control;
 import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Sphere;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -88,6 +86,7 @@ public class RigidBodyControl extends PhysicsRigidBody implements PhysicsControl
             control.setAngularVelocity(getAngularVelocity());
             control.setLinearVelocity(getLinearVelocity());
         }
+        control.setApplyPhysicsLocal(isApplyPhysicsLocal());
 
         control.setSpatial(spatial);
         return control;
@@ -110,8 +109,8 @@ public class RigidBodyControl extends PhysicsRigidBody implements PhysicsControl
             createCollisionShape();
             rebuildRigidBody();
         }
-        setPhysicsLocation(spatial.getWorldTranslation());
-        setPhysicsRotation(spatial.getWorldRotation().toRotationMatrix());
+        setPhysicsLocation(getSpatialTranslation());
+        setPhysicsRotation(getSpatialRotation());
     }
 
     protected void createCollisionShape() {
@@ -155,8 +154,8 @@ public class RigidBodyControl extends PhysicsRigidBody implements PhysicsControl
         if (space != null) {
             if (enabled && !added) {
                 if (spatial != null) {
-                    setPhysicsLocation(spatial.getWorldTranslation());
-                    setPhysicsRotation(spatial.getWorldRotation());
+                    setPhysicsLocation(getSpatialTranslation());
+                    setPhysicsRotation(getSpatialRotation());
                 }
                 space.addCollisionObject(this);
                 added = true;
@@ -188,11 +187,38 @@ public class RigidBodyControl extends PhysicsRigidBody implements PhysicsControl
         this.kinematicSpatial = kinematicSpatial;
     }
 
+    public boolean isApplyPhysicsLocal() {
+        return motionState.isApplyPhysicsLocal();
+    }
+
+    /**
+     * When set to true, the physics coordinates will be applied to the local
+     * translation of the Spatial
+     * @param applyPhysicsLocal
+     */
+    public void setApplyPhysicsLocal(boolean applyPhysicsLocal) {
+        motionState.setApplyPhysicsLocal(applyPhysicsLocal);
+    }
+
+    private Vector3f getSpatialTranslation(){
+        if(motionState.isApplyPhysicsLocal()){
+            return spatial.getLocalTranslation();
+        }
+        return spatial.getWorldTranslation();
+    }
+
+    private Quaternion getSpatialRotation(){
+        if(motionState.isApplyPhysicsLocal()){
+            return spatial.getLocalRotation();
+        }
+        return spatial.getWorldRotation();
+    }
+
     public void update(float tpf) {
         if (enabled && spatial != null) {
             if (isKinematic() && kinematicSpatial) {
-                super.setPhysicsLocation(spatial.getWorldTranslation());
-                super.setPhysicsRotation(spatial.getWorldRotation());
+                super.setPhysicsLocation(getSpatialTranslation());
+                super.setPhysicsRotation(getSpatialRotation());
             } else {
                 getMotionState().applyTransform(spatial);
             }
@@ -204,8 +230,9 @@ public class RigidBodyControl extends PhysicsRigidBody implements PhysicsControl
             if (debugShape == null) {
                 attachDebugShape(space.getDebugManager());
             }
-            debugShape.setLocalTranslation(motionState.getWorldLocation());
-            debugShape.setLocalRotation(motionState.getWorldRotation());
+            //TODO: using spatial traslation/rotation..
+            debugShape.setLocalTranslation(spatial.getWorldTranslation());
+            debugShape.setLocalRotation(spatial.getWorldRotation());
             debugShape.updateLogicalState(0);
             debugShape.updateGeometricState();
             rm.renderScene(debugShape, vp);
@@ -235,6 +262,7 @@ public class RigidBodyControl extends PhysicsRigidBody implements PhysicsControl
         super.write(ex);
         OutputCapsule oc = ex.getCapsule(this);
         oc.write(enabled, "enabled", true);
+        oc.write(motionState.isApplyPhysicsLocal(), "applyLocalPhysics", false);
         oc.write(kinematicSpatial, "kinematicSpatial", true);
         oc.write(spatial, "spatial", null);
     }
@@ -246,6 +274,7 @@ public class RigidBodyControl extends PhysicsRigidBody implements PhysicsControl
         enabled = ic.readBoolean("enabled", true);
         kinematicSpatial = ic.readBoolean("kinematicSpatial", true);
         spatial = (Spatial) ic.readSavable("spatial", null);
+        motionState.setApplyPhysicsLocal(ic.readBoolean("applyLocalPhysics", false));
         setUserObject(spatial);
     }
 }

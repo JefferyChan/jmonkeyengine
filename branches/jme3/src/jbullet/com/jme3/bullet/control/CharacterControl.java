@@ -31,12 +31,33 @@ public class CharacterControl extends PhysicsCharacter implements PhysicsControl
     protected PhysicsSpace space = null;
     protected Vector3f viewDirection = new Vector3f(Vector3f.UNIT_Z);
     protected boolean useViewDirection = true;
+    protected boolean applyLocal = false;
 
     public CharacterControl() {
     }
 
     public CharacterControl(CollisionShape shape, float stepHeight) {
         super(shape, stepHeight);
+    }
+
+    public boolean isApplyPhysicsLocal() {
+        return applyLocal;
+    }
+
+    /**
+     * When set to true, the physics coordinates will be applied to the local
+     * translation of the Spatial
+     * @param applyPhysicsLocal
+     */
+    public void setApplyPhysicsLocal(boolean applyPhysicsLocal) {
+        applyLocal = applyPhysicsLocal;
+    }
+
+    private Vector3f getSpatialTranslation() {
+        if (applyLocal) {
+            return spatial.getLocalTranslation();
+        }
+        return spatial.getWorldTranslation();
     }
 
     public Control cloneForSpatial(Spatial spatial) {
@@ -51,6 +72,7 @@ public class CharacterControl extends PhysicsCharacter implements PhysicsControl
         control.setMaxSlope(getMaxSlope());
         control.setPhysicsLocation(getPhysicsLocation());
         control.setUpAxis(getUpAxis());
+        control.setApplyPhysicsLocal(isApplyPhysicsLocal());
 
         control.setSpatial(spatial);
         return control;
@@ -67,7 +89,7 @@ public class CharacterControl extends PhysicsCharacter implements PhysicsControl
             }
             return;
         }
-        setPhysicsLocation(spatial.getWorldTranslation());
+        setPhysicsLocation(getSpatialTranslation());
     }
 
     public void setEnabled(boolean enabled) {
@@ -75,7 +97,7 @@ public class CharacterControl extends PhysicsCharacter implements PhysicsControl
         if (space != null) {
             if (enabled && !added) {
                 if (spatial != null) {
-                    warp(spatial.getWorldTranslation());
+                    warp(getSpatialTranslation());
                 }
                 space.addCollisionObject(this);
                 added = true;
@@ -110,7 +132,7 @@ public class CharacterControl extends PhysicsCharacter implements PhysicsControl
         if (enabled && spatial != null) {
             Quaternion localRotationQuat = spatial.getLocalRotation();
             Vector3f localLocation = spatial.getLocalTranslation();
-            if (spatial.getParent() != null) {
+            if (!applyLocal && spatial.getParent() != null) {
                 getPhysicsLocation(localLocation);
                 localLocation.subtractLocal(spatial.getParent().getWorldTranslation());
                 localLocation.divideLocal(spatial.getParent().getWorldScale());
@@ -166,6 +188,7 @@ public class CharacterControl extends PhysicsCharacter implements PhysicsControl
         super.write(ex);
         OutputCapsule oc = ex.getCapsule(this);
         oc.write(enabled, "enabled", true);
+        oc.write(applyLocal, "applyLocalPhysics", false);
         oc.write(useViewDirection, "viewDirectionEnabled", true);
         oc.write(viewDirection, "viewDirection", new Vector3f(Vector3f.UNIT_Z));
         oc.write(spatial, "spatial", null);
@@ -178,6 +201,7 @@ public class CharacterControl extends PhysicsCharacter implements PhysicsControl
         enabled = ic.readBoolean("enabled", true);
         useViewDirection = ic.readBoolean("viewDirectionEnabled", true);
         viewDirection = (Vector3f) ic.readSavable("viewDirection", new Vector3f(Vector3f.UNIT_Z));
+        applyLocal = ic.readBoolean("applyLocalPhysics", false);
         spatial = (Spatial) ic.readSavable("spatial", null);
         setUserObject(spatial);
     }

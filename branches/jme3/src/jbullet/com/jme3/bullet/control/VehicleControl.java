@@ -6,13 +6,14 @@ package com.jme3.bullet.control;
 
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.CollisionShape;
+import com.jme3.bullet.joints.PhysicsJoint;
 import com.jme3.bullet.objects.PhysicsVehicle;
 import com.jme3.bullet.objects.VehicleWheel;
 import com.jme3.export.InputCapsule;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
 import com.jme3.export.OutputCapsule;
-import com.jme3.math.Matrix3f;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
@@ -31,7 +32,7 @@ import java.util.Iterator;
 public class VehicleControl extends PhysicsVehicle implements PhysicsControl {
 
     protected Spatial spatial;
-    private boolean enabled = true;
+    protected boolean enabled = true;
     protected PhysicsSpace space = null;
     protected boolean added = false;
 
@@ -49,6 +50,37 @@ public class VehicleControl extends PhysicsVehicle implements PhysicsControl {
 
     public VehicleControl(CollisionShape shape, float mass) {
         super(shape, mass);
+    }
+
+    public boolean isApplyPhysicsLocal() {
+        return motionState.isApplyPhysicsLocal();
+    }
+
+    /**
+     * When set to true, the physics coordinates will be applied to the local
+     * translation of the Spatial
+     * @param applyPhysicsLocal
+     */
+    public void setApplyPhysicsLocal(boolean applyPhysicsLocal) {
+        motionState.setApplyPhysicsLocal(applyPhysicsLocal);
+        for (Iterator<VehicleWheel> it = wheels.iterator(); it.hasNext();) {
+            VehicleWheel vehicleWheel = it.next();
+            vehicleWheel.setApplyLocal(applyPhysicsLocal);
+        }
+    }
+
+    private Vector3f getSpatialTranslation(){
+        if(motionState.isApplyPhysicsLocal()){
+            return spatial.getLocalTranslation();
+        }
+        return spatial.getWorldTranslation();
+    }
+
+    private Quaternion getSpatialRotation(){
+        if(motionState.isApplyPhysicsLocal()){
+            return spatial.getLocalRotation();
+        }
+        return spatial.getWorldRotation();
     }
 
     public Control cloneForSpatial(Spatial spatial) {
@@ -96,6 +128,7 @@ public class VehicleControl extends PhysicsVehicle implements PhysicsControl {
                 }
             }
         }
+        control.setApplyPhysicsLocal(isApplyPhysicsLocal());
 
         control.setSpatial(spatial);
         return control;
@@ -114,8 +147,8 @@ public class VehicleControl extends PhysicsVehicle implements PhysicsControl {
             this.collisionShape = null;
             return;
         }
-        setPhysicsLocation(spatial.getWorldTranslation());
-        setPhysicsRotation(spatial.getWorldRotation().toRotationMatrix());
+        setPhysicsLocation(getSpatialTranslation());
+        setPhysicsRotation(getSpatialRotation());
     }
 
     public void setEnabled(boolean enabled) {
@@ -123,8 +156,8 @@ public class VehicleControl extends PhysicsVehicle implements PhysicsControl {
         if (space != null) {
             if (enabled && !added) {
                 if(spatial!=null){
-                    setPhysicsLocation(spatial.getWorldTranslation());
-                    setPhysicsRotation(spatial.getWorldRotation());
+                    setPhysicsLocation(getSpatialTranslation());
+                    setPhysicsRotation(getSpatialRotation());
                 }
                 space.addCollisionObject(this);
                 added = true;
@@ -161,8 +194,8 @@ public class VehicleControl extends PhysicsVehicle implements PhysicsControl {
                 attachDebugShape(space.getDebugManager());
             }
             Node debugNode = (Node) debugShape;
-            debugShape.setLocalTranslation(motionState.getWorldLocation());
-            debugShape.setLocalRotation(motionState.getWorldRotation());
+            debugShape.setLocalTranslation(spatial.getWorldTranslation());
+            debugShape.setLocalRotation(spatial.getWorldRotation());
             int i = 0;
             for (Iterator<VehicleWheel> it = wheels.iterator(); it.hasNext();) {
                 VehicleWheel physicsVehicleWheel = it.next();
@@ -221,6 +254,7 @@ public class VehicleControl extends PhysicsVehicle implements PhysicsControl {
         super.write(ex);
         OutputCapsule oc = ex.getCapsule(this);
         oc.write(enabled, "enabled", true);
+        oc.write(motionState.isApplyPhysicsLocal(), "applyLocalPhysics", false);
         oc.write(spatial, "spatial", null);
     }
 
@@ -230,6 +264,7 @@ public class VehicleControl extends PhysicsVehicle implements PhysicsControl {
         InputCapsule ic = im.getCapsule(this);
         enabled = ic.readBoolean("enabled", true);
         spatial = (Spatial) ic.readSavable("spatial", null);
+        motionState.setApplyPhysicsLocal(ic.readBoolean("applyLocalPhysics", false));
         setUserObject(spatial);
     }
 }
