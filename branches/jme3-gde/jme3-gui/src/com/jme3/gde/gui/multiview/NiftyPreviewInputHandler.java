@@ -41,4 +41,8 @@ public class NiftyPreviewInputHandler implements de.lessvoid.nifty.spi.input.Inp
         KeyboardInputEvent event = new KeyboardInputEvent(newKey, newCharacter, newKeyDown, newShiftDown, newControlDown);
         keyEvents.add(event);
     }
+
+    public void setMousePosition(int i, int i1) {
+//        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }
