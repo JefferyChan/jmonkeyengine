@@ -11,13 +11,14 @@ import java.awt.Point;
 import java.text.DecimalFormat;
 import jme3tools.navigation.NavCalculator;
 
+
 /**
  * A representation of the actual map in terms of lat/long and x,y,z co-ordinates.
  * The Map class contains various helper methods such as methods for determining
  * the world unit positions for lat/long coordinates and vice versa. This map projection
  * does not handle screen/pixel coordinates.
  *
- * @author Benjamin Jakobus, Cormac Gebruers
+ * @author Benjamin Jakobus (thanks to Cormac Gebruers)
  * @version 1.0
  * @since 1.0
  */
@@ -49,7 +50,8 @@ public class MapModel3D {
     private double minutesPerWorldUnit;
 
     /**
-     * Constructor
+     * Constructor.
+     * 
      * @param viewportWidth         The world unit width the map's area
      * @since 1.0
      */
@@ -77,8 +79,9 @@ public class MapModel3D {
     }
 
     /**
-     * Returns the height of the viewport in pixels
-     * @return the height of the viewport in pixels
+     * Returns the height of the viewport in pixels.
+     *
+     * @return          The height of the viewport in pixels.
      * @since 1.0
      */
     public int getWorldHeight() {
@@ -98,56 +101,80 @@ public class MapModel3D {
     }
 
     /**
-     * Returns the width of the viewport in pixels
-     * @return the width of the viewport in pixels
+     * Returns the width of the viewport in pixels.
+     *
+     * @return              The width of the viewport in pixels.
      * @since 1.0
      */
     public int getWorldWidth() {
         return worldWidth;
     }
 
+    /**
+     * Sets the world's desired width.
+     *
+     * @param viewportWidth     The world's desired width in WU.
+     * @since 1.0
+     */
     public void setWorldWidth(int viewportWidth) {
         this.worldWidth = viewportWidth;
     }
 
+     /**
+     * Sets the world's desired height.
+     *
+     * @param viewportHeight     The world's desired height in WU.
+     * @since 1.0
+     */
     public void setWorldHeight(int viewportHeight) {
         this.worldHeight = viewportHeight;
     }
 
+    /**
+     * Sets the map's centre.
+     *
+     * @param centre            The <code>Position</code> denoting the map's
+     *                          desired centre.
+     * @since 1.0
+     */
     public void setCentre(Position centre) {
         this.centre = centre;
     }
 
     /**
-     * Returns the number of minutes there are per pixel
-     * @return the number of minutes per pixel
+     * Returns the number of minutes there are per WU.
+     *
+     * @return                  The number of minutes per WU.
      * @since 1.0
      */
     public double getMinutesPerWu() {
         return minutesPerWorldUnit;
     }
 
-    public double getMetersPerPixel() {
+    /**
+     * Returns the meters per WU.
+     *
+     * @return                  The meters per WU.
+     * @since 1.0
+     */
+    public double getMetersPerWu() {
         return 1853 * minutesPerWorldUnit;
     }
 
-    public void setWorldUnitsPerPixel(double minutesPerPixel) {
-        this.minutesPerWorldUnit = minutesPerPixel;
-    }
-
     /**
-     * Converts a latitude/longitude position into a pixel co-ordinate
-     * @param position the position to convert
-     * @return {@code Point} a pixel co-ordinate
+     * Converts a latitude/longitude position into a WU coordinate.
+     *
+     * @param position          The <code>Position</code> to convert.
+     * @return                  The <code>Point</code> a pixel coordinate.
      * @since 1.0
      */
     public Vector3f toWorldUnit(Position position) {
-        // Get the distance between position and the centre for calculating
+        // Get the difference between position and the centre for calculating
         // the position's longitude translation
         double distance = NavCalculator.computeLongDiff(centre.getLongitude(),
                 position.getLongitude());
 
-        // Use the distance from the centre to calculate the pixel x co-ordinate
+        // Use the difference from the centre to calculate the pixel x co-ordinate
         double distanceInPixels = (distance / minutesPerWorldUnit);
 
         // Use the difference in meridional parts to calculate the pixel y co-ordinate
@@ -211,21 +238,24 @@ public class MapModel3D {
     }
 
     /**
-     * Converts a pixel position into a Mercator position
-     * @param p {@Point} object that you wish to convert into
-     *        longitude / latitude
-     * @return the converted {@code Position} object
+     * Converts a world position into a Mercator position.
+     *
+     * @param p                     <code>Vector</code> containing the world unit 
+     *                              coordinates that are to be converted into
+     *                              longitude / latitude coordinates.
+     * @return                      The resulting <code>Position</code> in degrees of
+     *                              latitude and longitude.
      * @since 1.0
      */
-    public Position toPosition(Point p) {
+    public Position toPosition(Vector3f posVec) {
         double lat, lon;
         Position pos = null;
         try {
             Vector3f worldCentre = toWorldUnit(new Position(0, 0));
 
-            // Get the distance between position and the centre
-            double xDistance = distance(xCentre, p.getX());
-            double yDistance = distance(worldCentre.getY(), p.getY());
+            // Get the difference between position and the centre
+            double xDistance = difference(xCentre, posVec.getX());
+            double yDistance = difference(worldCentre.getZ(), posVec.getZ());
             double lonDistanceInDegrees = (xDistance * minutesPerWorldUnit) / 60;
             double mp = (yDistance * minutesPerWorldUnit);
             // If we are zoomed in past a certain point, then use linear search.
@@ -238,10 +268,10 @@ public class MapModel3D {
             } else {
                 lat = findLat(mp, 0.0, 85.0);
             }
-            lon = (p.getX() < xCentre ? centre.getLongitude() - lonDistanceInDegrees
+            lon = (posVec.getX() < xCentre ? centre.getLongitude() - lonDistanceInDegrees
                     : centre.getLongitude() + lonDistanceInDegrees);
 
-            if (p.getY() > worldCentre.getY()) {
+            if (posVec.getZ() > worldCentre.getZ()) {
                 lat = -1 * lat;
             }
             if (lat == -1000 || lon == -1000) {
@@ -255,24 +285,26 @@ public class MapModel3D {
     }
 
     /**
-     * Calculates distance between two points on the map in pixels
-     * @param a
+     * Calculates difference between two points on the map in WU.
+     *
+     * @param a                     
      * @param b
-     * @return distance the distance between a and b in pixels
+     * @return difference           The difference between a and b in WU.
      * @since 1.0
      */
-    private double distance(double a, double b) {
+    private double difference(double a, double b) {
         return Math.abs(a - b);
     }
 
     /**
-     * Defines the centre of the map in pixels
-     * @param p <code>Point</code> object denoting the map's new centre
+     * Defines the centre of the map in pixels.
+     *
+     * @param p             <code>Vector3f</code> object denoting the map's new centre.
      * @since 1.0
      */
-    public void setCentre(Point p) {
+    public void setCentre(Vector3f posVec) {
         try {
-            Position newCentre = toPosition(p);
+            Position newCentre = toPosition(posVec);
             if (newCentre != null) {
                 centre = newCentre;
             }
@@ -282,26 +314,9 @@ public class MapModel3D {
     }
 
     /**
-     * Sets the map's xCentre
-     * @param xCentre
-     * @since 1.0
-     */
-    public void setXCentre(int xCentre) {
-        this.xCentre = xCentre;
-    }
-
-    /**
-     * Sets the map's zCentre
-     * @param zCentre
-     * @since 1.0
-     */
-    public void setYCentre(int yCentre) {
-        this.zCentre = yCentre;
-    }
-
-    /**
-     * Returns the WU (x,y,z) centre of the map
-     * @return {@code Point) object marking the map's (x,y) centre
+     * Returns the WU (x,y,z) centre of the map.
+     * 
+     * @return              <code>Vector3f</code> object marking the map's (x,y) centre.
      * @since 1.0
      */
     public Vector3f getCentreWu() {
@@ -309,8 +324,10 @@ public class MapModel3D {
     }
 
     /**
-     * Returns the {@code Position} centre of the map
-     * @return {@code Position} object marking the map's (lat, long) centre
+     * Returns the <code>Position</code> centre of the map.
+     *
+     * @return              <code>Position</code> object marking the map's (lat, long)
+     *                      centre.
      * @since 1.0
      */
     public Position getCentre() {
@@ -320,10 +337,10 @@ public class MapModel3D {
     /**
      * Uses binary search to find the latitude of a given MP.
      *
-     * @param mp maridian part
-     * @param low
-     * @param high
-     * @return the latitude of the MP value
+     * @param mp                Maridian part whose latitude to determine.
+     * @param low               Minimum latitude bounds.
+     * @param high              Maximum latitude bounds.
+     * @return                  The latitude of the MP value
      * @since 1.0
      */
     private double findLat(double mp, double low, double high) {
@@ -353,10 +370,12 @@ public class MapModel3D {
     }
 
     /**
-     * Uses linear search to find the latitude of a given MP
-     * @param mp the meridion part for which to find the latitude
-     * @param previousLat the previous latitude. Used as a upper / lower bound
-     * @return the latitude of the MP value
+     * Uses linear search to find the latitude of a given MP.
+     *
+     * @param mp                The meridian part for which to find the latitude.
+     * @param previousLat       The previous latitude. Used as a upper / lower bound.
+     * @return                  The latitude of the MP value.
+     * @since 1.0
      */
     private double findLat(double mp, double previousLat) {
         DecimalFormat form = new DecimalFormat("#.#####");
