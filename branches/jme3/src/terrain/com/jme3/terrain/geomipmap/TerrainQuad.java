@@ -938,6 +938,7 @@ public class TerrainQuad extends Node implements Terrain {
 
         // create a vertical, down-facing, ray and get the height from that
         float max = Math.max(Math.max(Math.max(topLeft, topRight), bottomRight),bottomLeft);
+        max = max*getWorldScale().y;
         Ray ray = new Ray(new Vector3f(xz.x,max+10f,xz.y), new Vector3f(0,-1,0).normalizeLocal());
         CollisionResults cr = new CollisionResults();
         int num = this.collideWith(ray, cr);
@@ -1386,8 +1387,9 @@ public class TerrainQuad extends Node implements Terrain {
             return collideWithRay((Ray)other, results);
 
         // if it didn't collide with this bbox, return
-        if (other.collideWith(this.getWorldBound(), results) == 0)
-            return total;
+        if (other instanceof BoundingVolume)
+            if (!this.getWorldBound().intersects((BoundingVolume)other))
+                return total;
 
         for (Spatial child : children){
             total += child.collideWith(other, results);

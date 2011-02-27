@@ -32,7 +32,10 @@
 
 package com.jme3.terrain.geomipmap;
 
+import com.jme3.bounding.BoundingBox;
+import com.jme3.bounding.BoundingSphere;
 import com.jme3.bounding.BoundingVolume;
+import com.jme3.bounding.Intersection;
 import com.jme3.collision.Collidable;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
@@ -48,6 +51,7 @@ import java.util.HashMap;
 
 import com.jme3.math.FastMath;
 import com.jme3.math.Ray;
+import com.jme3.math.Triangle;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
@@ -284,27 +288,25 @@ public class TerrainPatch extends Geometry {
         int idx = (int) (z * size + x);
         return getMesh().getFloatBuffer(Type.Position).get(idx*3+1); // 3 floats per entry (x,y,z), the +1 is to get the Y
     }
+    
+    /**
+     * Get the triangle of this geometry at the specified local coordinate.
+     * @param gridX local to the terrain patch
+     * @param gridY local to the terrain patch
+     * @return the triangle in world coordinates, or null if the point does intersect this patch on the XZ axis
+     */
+    public Triangle getTriangle(float x, float z) {
+        return geomap.getTriangleAtPoint(x, z, getWorldScale() , getWorldTranslation());
+    }
 
     /**
-     * Expects the x/z coordinate to already be scaled and centered with the terrain,
-     * ass if you are calling TerrainQuad.getHeight().
+     * Get the triangles at the specified grid point. Probably only 2 triangles
+     * @param gridX local to the terrain patch
+     * @param gridY local to the terrain patch
+     * @return the triangles in world coordinates, or null if the point does intersect this patch on the XZ axis
      */
-    public float getHeight(float x, float z) {
-        float col = FastMath.floor(x);
-        float row = FastMath.floor(z);
-
-        boolean onX = (x-col) > (z-row); // what triangle to interpolate on
-
-        float topLeft = getHeightmapHeight((int)FastMath.floor(x), (int)FastMath.ceil(z));
-        float topRight = getHeightmapHeight((int)FastMath.ceil(x), (int)FastMath.ceil(z));
-        float bottomLeft = getHeightmapHeight((int)FastMath.floor(x), (int)FastMath.floor(z));
-        float bottomRight = getHeightmapHeight((int)FastMath.ceil(x), (int)FastMath.floor(z));
-
-        if (onX) {
-             return (1-(x-col))*topLeft + ((x-col)-(z-row))*topRight + (z-row)*bottomRight;
-        } else {
-            return (1-(z-row))*topLeft + ((z-row)-(x-col))*bottomLeft + (x-col)*bottomRight;
-        }
+    public Triangle[] getGridTriangles(float x, float z) {
+        return geomap.getGridTrianglesAtPoint(x, z, getWorldScale() , getWorldTranslation());
     }
 
     public void setHeight(float x, float z, float height) {
@@ -960,33 +962,110 @@ public class TerrainPatch extends Geometry {
             throw new IllegalStateException("Scene graph must be updated" +
                                             " before checking collision");
 
-        if (getWorldBound().collideWith(other, new CollisionResults()) == 0)
-            return 0;
+        if (other instanceof BoundingVolume)
+            if (!getWorldBound().intersects((BoundingVolume)other))
+                return 0;
         
-        if (other instanceof SweepSphere)
-             return collideWithSweepSphere((SweepSphere)other, results);
-        else if(other instanceof Ray)
+        if(other instanceof Ray)
             return collideWithRay((Ray)other, results);
         else if (other instanceof BoundingVolume)
             return collideWithBoundingVolume((BoundingVolume)other, results);
         else {
-            throw new UnsupportedCollisionException();
+            throw new UnsupportedCollisionException("TerrainPatch cannnot collide with "+other.getClass().getName());
         }
     }
 
-    private int collideWithSweepSphere(SweepSphere sweepSphere, CollisionResults results) {
-        return 0; //TODO
-    }
 
     private int collideWithRay(Ray ray, CollisionResults results) {
-        Vector3f xyz = getWorldBound().getCenter();
-        results.addCollision(new CollisionResult(xyz, ray.distanceSquared(getWorldTranslation())));
-        return 1; //TODO
+        // This should be handled in the root terrain quad
+        return 0;
     }
 
     private int collideWithBoundingVolume(BoundingVolume boundingVolume, CollisionResults results) {
-        return 0; //TODO
+        if (boundingVolume instanceof BoundingBox)
+            return collideWithBoundingBox((BoundingBox)boundingVolume, results);
+        else if(boundingVolume instanceof BoundingSphere) {
+            BoundingSphere sphere = (BoundingSphere) boundingVolume;
+            BoundingBox bbox = new BoundingBox(boundingVolume.getCenter().clone(), sphere.getRadius(),
+                                                           sphere.getRadius(),
+                                                           sphere.getRadius());
+            return collideWithBoundingBox(bbox, results);
+        }
+        return 0;
     }
+
+    protected Vector3f worldCoordinateToLocal(Vector3f loc) {
+        Vector3f translated = new Vector3f();
+        translated.x = loc.x/getWorldScale().x - getWorldTranslation().x;
+        translated.y = loc.y/getWorldScale().y - getWorldTranslation().y;
+        translated.z = loc.z/getWorldScale().z - getWorldTranslation().z;
+        return translated;
+    }
+
+    /**
+     * This most definitely is not optimized.
+     */
+    private int collideWithBoundingBox(BoundingBox bbox, CollisionResults results) {
+        
+        // test the four corners, for cases where the bbox dimensions are less than the terrain grid size, which is probably most of the time
+        Vector3f topLeft = worldCoordinateToLocal(new Vector3f(bbox.getCenter().x-bbox.getXExtent(), 0, bbox.getCenter().z-bbox.getZExtent()));
+        Vector3f topRight = worldCoordinateToLocal(new Vector3f(bbox.getCenter().x+bbox.getXExtent(), 0, bbox.getCenter().z-bbox.getZExtent()));
+        Vector3f bottomLeft = worldCoordinateToLocal(new Vector3f(bbox.getCenter().x-bbox.getXExtent(), 0, bbox.getCenter().z+bbox.getZExtent()));
+        Vector3f bottomRight = worldCoordinateToLocal(new Vector3f(bbox.getCenter().x+bbox.getXExtent(), 0, bbox.getCenter().z+bbox.getZExtent()));
+
+        Triangle t = getTriangle(topLeft.x, topLeft.z);
+        if (t != null && bbox.collideWith(t, results) > 0)
+            return 1;
+        t = getTriangle(topRight.x, topRight.z);
+        if (t != null && bbox.collideWith(t, results) > 0)
+            return 1;
+        t = getTriangle(bottomLeft.x, bottomLeft.z);
+        if (t != null && bbox.collideWith(t, results) > 0)
+            return 1;
+        t = getTriangle(bottomRight.x, bottomRight.z);
+        if (t != null && bbox.collideWith(t, results) > 0)
+            return 1;
+        
+        // box is larger than the points on the terrain, so test against the points
+        for (float z=topLeft.z; z<bottomLeft.z; z+=1) {
+            for (float x=topLeft.x; x<topRight.x; x+=1) {
+                
+                if (x < 0 || z < 0 || x >= size || z >= size)
+                    continue;
+                t = getTriangle(x,z);
+                if (t != null && bbox.collideWith(t, results) > 0)
+                    return 1;
+            }
+        }
+
+        return 0;
+    }
+
+    /*private int collideWithBoundingSphere(BoundingSphere bSphere, CollisionResults results) {
+
+        Vector3f topLeft = worldCoordinateToLocal(new Vector3f(bSphere.getCenter().x-bSphere.getRadius(), 0, bSphere.getCenter().z-bSphere.getRadius()));
+        Vector3f topRight = worldCoordinateToLocal(new Vector3f(bSphere.getCenter().x+bSphere.getRadius(), 0, bSphere.getCenter().z-bSphere.getRadius()));
+        Vector3f bottomLeft = worldCoordinateToLocal(new Vector3f(bSphere.getCenter().x-bSphere.getRadius(), 0, bSphere.getCenter().z+bSphere.getRadius()));
+        Vector3f center = worldCoordinateToLocal(bSphere.getCenter());
+        float radius2 = bSphere.getRadius()/getWorldScale().x;
+        radius2 *= radius2; // square it
+        
+        for (float z=topLeft.z; z<bottomLeft.z; z+=1) {
+            for (float x=topLeft.x; x<topRight.x; x+=1) {
+
+                if (x < 0 || z < 0 || x >= size || z >= size)
+                    continue;
+                if (center.distanceSquared(new Vector3f(x, center.y, z)) > radius2)
+                    continue;
+
+                Triangle t = getTriangle(x,z);
+                if (t != null && bSphere.collideWith(t, results) > 0)
+                    return 1;
+            }
+        }
+
+        return 0;
+    }*/
 
     @Override
     public void write(JmeExporter ex) throws IOException {
@@ -1053,5 +1132,7 @@ public class TerrainPatch extends Geometry {
         clone.setMaterial(material.clone());
         return clone;
     }
+
+
 
 }

@@ -32,12 +32,13 @@
 
 package com.jme3.terrain.geomipmap;
 
+import com.jme3.math.FastMath;
+import com.jme3.math.Triangle;
 import java.nio.BufferOverflowException;
 import java.nio.BufferUnderflowException;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
-import com.jme3.math.FastMath;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Mesh;
@@ -45,8 +46,6 @@ import com.jme3.scene.Mesh.Mode;
 import com.jme3.scene.VertexBuffer.Type;
 import com.jme3.terrain.BufferGeomap;
 import com.jme3.util.BufferUtils;
-import java.util.HashMap;
-import java.util.Map.Entry;
 
 /**
  * Produces the mesh for the TerrainPatch.
@@ -735,6 +734,186 @@ public class LODGeomap extends BufferGeomap {
 			return count;
 		}
 	}
+
+    /**
+     * Get a representation of the underlying triangle at the given point,
+     * translated to world coordinates.
+     * 
+     * @param x local x coordinate
+     * @param z local z coordinate
+     * @return a triangle in world space not local space
+     */
+    protected Triangle getTriangleAtPoint(float x, float z, Vector3f scale, Vector3f translation) {
+        Triangle tri = getTriangleAtPoint(x, z);
+        if (tri != null) {
+            tri.get1().multLocal(scale).addLocal(translation);
+            tri.get2().multLocal(scale).addLocal(translation);
+            tri.get3().multLocal(scale).addLocal(translation);
+        }
+        return tri;
+    }
+
+    /**
+     * Get the two triangles that make up the grid section at the specified point,
+     * translated to world coordinates.
+     *
+     * @param x local x coordinate
+     * @param z local z coordinate
+     * @param scale
+     * @param translation
+     * @return two triangles in world space not local space
+     */
+    protected Triangle[] getGridTrianglesAtPoint(float x, float z, Vector3f scale, Vector3f translation) {
+        Triangle[] tris = getGridTrianglesAtPoint(x, z);
+        if (tris != null) {
+            tris[0].get1().multLocal(scale).addLocal(translation);
+            tris[0].get2().multLocal(scale).addLocal(translation);
+            tris[0].get3().multLocal(scale).addLocal(translation);
+            tris[1].get1().multLocal(scale).addLocal(translation);
+            tris[1].get2().multLocal(scale).addLocal(translation);
+            tris[1].get3().multLocal(scale).addLocal(translation);
+        }
+        return tris;
+    }
+
+    /**
+     * Get the two triangles that make up the grid section at the specified point.
+     *
+     * For every grid space there are two triangles oriented like this:
+     *  *----*
+     *  |a / |
+     *  | / b|
+     *  *----*
+     * The corners of the mesh have differently oriented triangles. The two
+     * corners that we have to special-case are the top left and bottom right
+     * corners. They are oriented inversely:
+     *  *----*
+     *  | \ b|
+     *  |a \ |
+     *  *----*
+     *
+     * @param x local x coordinate
+     * @param z local z coordinate
+     * @param scale
+     * @param translation
+     * @return
+     */
+    protected Triangle[] getGridTrianglesAtPoint(float x, float z) {
+        int gridX = (int)x;
+        int gridY = (int)z;
+
+        int index = findClosestHeightIndex(gridX,gridY);
+        if (index < 0)
+            return null;
+
+        Triangle t = new Triangle(new Vector3f(), new Vector3f(), new Vector3f());
+        Triangle t2 = new Triangle(new Vector3f(), new Vector3f(), new Vector3f());
+
+        float h1 = hdata.get(index);                // top left
+        float h2 = hdata.get(index + 1);            // top right
+        float h3 = hdata.get(index + width);        // bottom left
+        float h4 = hdata.get(index + width + 1);    // bottom right
+
+
+        if ((gridX == 0 && gridY == 0) || (gridX == width-1 && gridY == width-1)) {
+            // top left or bottom right grid point
+            t.get(0).x = (gridX);
+            t.get(0).y = (h1);
+            t.get(0).z = (gridY);
+
+            t.get(1).x = (gridX);
+            t.get(1).y = (h3);
+            t.get(1).z = (gridY + 1);
+
+            t.get(2).x = (gridX + 1);
+            t.get(2).y = (h4);
+            t.get(2).z = (gridY + 1);
+
+            t2.get(0).x = (gridX);
+            t2.get(0).y = (h1);
+            t2.get(0).z = (gridY);
+
+            t2.get(1).x = (gridX + 1);
+            t2.get(1).y = (h4);
+            t2.get(1).z = (gridY + 1);
+
+            t2.get(2).x = (gridX + 1);
+            t2.get(2).y = (h2);
+            t2.get(2).z = (gridY);
+        }
+        else {
+            // all other grid points
+            t.get(0).x = (gridX);
+            t.get(0).y = (h1);
+            t.get(0).z = (gridY);
+
+            t.get(1).x = (gridX);
+            t.get(1).y = (h3);
+            t.get(1).z = (gridY + 1);
+
+            t.get(2).x = (gridX + 1);
+            t.get(2).y = (h2);
+            t.get(2).z = (gridY);
+
+            t2.get(0).x = (gridX + 1);
+            t2.get(0).y = (h2);
+            t2.get(0).z = (gridY);
+
+            t2.get(1).x = (gridX);
+            t2.get(1).y = (h3);
+            t2.get(1).z = (gridY + 1);
+
+            t2.get(2).x = (gridX + 1);
+            t2.get(2).y = (h4);
+            t2.get(2).z = (gridY + 1);
+        }
+
+        return new Triangle[]{t,t2};
+    }
+    
+    /**
+     * Get the triangle that the point is on.
+     * 
+     * @param x coordinate in local space to the geomap
+     * @param z coordinate in local space to the geomap
+     * @return triangle in local space to the geomap
+     */
+    protected Triangle getTriangleAtPoint(float x, float z) {
+        Triangle[] triangles = getGridTrianglesAtPoint(x, z);
+        if (triangles == null) {
+            System.out.println("x,z: "+x+","+z);
+            return null;
+        }
+        Vector2f point = new Vector2f(x, z);
+        Vector2f t1 = new Vector2f(triangles[0].get1().x, triangles[0].get1().z);
+        Vector2f t2 = new Vector2f(triangles[0].get2().x, triangles[0].get2().z);
+        Vector2f t3 = new Vector2f(triangles[0].get3().x, triangles[0].get3().z);
+
+        if (0 != FastMath.pointInsideTriangle(t1, t2, t3, point))
+            return triangles[0];
+
+        t1.set(triangles[1].get1().x, triangles[1].get1().z);
+        t1.set(triangles[1].get2().x, triangles[1].get2().z);
+        t1.set(triangles[1].get3().x, triangles[1].get3().z);
+
+        if (0 != FastMath.pointInsideTriangle(t1, t2, t3, point))
+            return triangles[1];
+
+        return null;
+    }
+
+
+    protected int findClosestHeightIndex(int x, int z) {
+
+        if (x < 0 || x >= width - 1) {
+            return -1;
+        }
+        if (z < 0 || z >= width - 1) {
+            return -1;
+        }
+
+        return z * width + x;
+    }
 
 }
 

@@ -98,10 +98,12 @@ public class BresenhamTerrainPicker implements TerrainPicker {
             final Vector2f loc = tracer.getGridLocation();
 
             if (tracer.isRayPerpendicularToGrid()) {
-                checkTriangles(loc.x, loc.y, workRay, intersection, patch);
+                Triangle hit = new Triangle();
+                checkTriangles(loc.x, loc.y, workRay, intersection, patch, hit);
                 float distance = workRay.origin.distanceSquared(intersection);
                 CollisionResult cr = new CollisionResult(intersection, distance);
                 cr.setGeometry(patch);
+                cr.setContactNormal(hit.getNormal());
                 results.addCollision(cr);
                 return intersection;
             }
@@ -113,17 +115,19 @@ public class BresenhamTerrainPicker implements TerrainPicker {
 
                 //System.out.print(loc.x+","+loc.y+" : ");
                 // check the triangles of main square for intersection.
-                if (checkTriangles(loc.x, loc.y, workRay, intersection, patch)) {
+                Triangle hit = new Triangle();
+                if (checkTriangles(loc.x, loc.y, workRay, intersection, patch, hit)) {
                     // we found an intersection, so return that!
                     float distance = workRay.origin.distance(intersection);
                     CollisionResult cr = new CollisionResult(intersection, distance);
                     cr.setGeometry(patch);
                     results.addCollision(cr);
+                    cr.setContactNormal(hit.getNormal());
                     return intersection;
                 }
 
                 // because of how we get our height coords, we will
-                // sometimes be off be a grid spot, so we check the next
+                // sometimes be off by a grid spot, so we check the next
                 // grid space up.
                 int dx = 0, dz = 0;
                 Direction d = tracer.getLastStepDirection();
@@ -140,12 +144,13 @@ public class BresenhamTerrainPicker implements TerrainPicker {
                     break;
                 }
 
-                if (checkTriangles(loc.x + dx, loc.y + dz, workRay, intersection, patch)) {
+                if (checkTriangles(loc.x + dx, loc.y + dz, workRay, intersection, patch, hit)) {
                     // we found an intersection, so return that!
                     float distance = workRay.origin.distance(intersection);
                     CollisionResult cr = new CollisionResult(intersection, distance);
                     results.addCollision(cr);
                     cr.setGeometry(patch);
+                    cr.setContactNormal(hit.getNormal());
                     return intersection;
                 }
 
@@ -156,15 +161,21 @@ public class BresenhamTerrainPicker implements TerrainPicker {
         return null;
     }
 
-    protected boolean checkTriangles(float gridX, float gridY, Ray pick, Vector3f intersection, TerrainPatch patch) {
+    protected boolean checkTriangles(float gridX, float gridY, Ray pick, Vector3f intersection, TerrainPatch patch, Triangle store) {
         if (!getTriangles(gridX, gridY, patch))
             return false;
 
-        if (!pick.intersectWhere(gridTriA, intersection)) {
-            return pick.intersectWhere(gridTriB, intersection);
-        } else {
+        if (pick.intersectWhere(gridTriA, intersection)) {
+            store.set(gridTriA.get1(), gridTriA.get2(), gridTriA.get3());
             return true;
+        } else {
+            if (pick.intersectWhere(gridTriB, intersection)) {
+                store.set(gridTriB.get1(), gridTriB.get2(), gridTriB.get3());
+                return true;
+            }
         }
+
+        return false;
     }
 
     /**
@@ -188,42 +199,17 @@ public class BresenhamTerrainPicker implements TerrainPicker {
         if (index == -1)
             return false;
         
-        float h3 = patch.getHeightmap().get(index + patch.getSize());
-        float h4 = patch.getHeightmap().get(index + patch.getSize() + 1);
-        float h1 = patch.getHeightmap().get(index);
-        float h2 = patch.getHeightmap().get(index + 1);
+        Triangle[] t = patch.getGridTriangles(gridX, gridY);
+        if (t == null || t.length == 0)
+            return false;
+        
+        gridTriA.set1(t[0].get1());
+        gridTriA.set2(t[0].get2());
+        gridTriA.set3(t[0].get3());
 
-        final Vector3f scaleVec = calcVec1.set(tracer.getGridSpacing());
-
-        gridTriA.get(0).x = (gridX);
-        gridTriA.get(0).y = (h1);
-        gridTriA.get(0).z = (gridY);
-        gridTriA.get(0).multLocal(scaleVec).addLocal(tracer.getGridOrigin());
-
-        gridTriA.get(1).x = (gridX);
-        gridTriA.get(1).y = (h3);
-        gridTriA.get(1).z = (gridY + 1);
-        gridTriA.get(1).multLocal(scaleVec).addLocal(tracer.getGridOrigin());
-
-        gridTriA.get(2).x = (gridX + 1);
-        gridTriA.get(2).y = (h2);
-        gridTriA.get(2).z = (gridY);
-        gridTriA.get(2).multLocal(scaleVec).addLocal(tracer.getGridOrigin());
-
-        gridTriB.get(0).x = (gridX + 1);
-        gridTriB.get(0).y = (h2);
-        gridTriB.get(0).z = (gridY);
-        gridTriB.get(0).multLocal(scaleVec).addLocal(tracer.getGridOrigin());
-
-        gridTriB.get(1).x = (gridX);
-        gridTriB.get(1).y = (h3);
-        gridTriB.get(1).z = (gridY + 1);
-        gridTriB.get(1).multLocal(scaleVec).addLocal(tracer.getGridOrigin());
-
-        gridTriB.get(2).x = (gridX + 1);
-        gridTriB.get(2).y = (h4);
-        gridTriB.get(2).z = (gridY + 1);
-        gridTriB.get(2).multLocal(scaleVec).addLocal(tracer.getGridOrigin());
+        gridTriB.set1(t[1].get1());
+        gridTriB.set2(t[1].get2());
+        gridTriB.set3(t[1].get3());
 
         return true;
     }
