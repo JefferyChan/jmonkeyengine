@@ -113,6 +113,8 @@ public class DesktopAssetManager implements AssetManager {
             clazz = (Class<? extends AssetLoader>) Class.forName(clsName);
         }catch (ClassNotFoundException ex){
             logger.log(Level.WARNING, "Failed to find loader: "+clsName, ex);
+        }catch (NoClassDefFoundError ex){
+            logger.log(Level.WARNING, "Failed to find loader: "+clsName, ex);
         }
         if (clazz != null){
             registerLoader(clazz, extensions);
@@ -133,6 +135,8 @@ public class DesktopAssetManager implements AssetManager {
             clazz = (Class<? extends AssetLocator>) Class.forName(clsName);
         }catch (ClassNotFoundException ex){
             logger.log(Level.WARNING, "Failed to find locator: "+clsName, ex);
+        }catch (NoClassDefFoundError ex){
+            logger.log(Level.WARNING, "Failed to find loader: "+clsName, ex);
         }
         if (clazz != null){
             registerLocator(rootPath, clazz);
