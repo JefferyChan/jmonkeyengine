@@ -125,9 +125,11 @@ public final class BoneTrack implements Savable {
 
     public void setKeyframes(float[] times, Vector3f[] translations, Quaternion[] rotations, Vector3f[] scales){
         this.setKeyframes(times, translations, rotations);
-        this.scales = new CompactVector3Array();
-        this.scales.add(scales);
-        this.scales.freeze();
+        if(scales!=null) {
+        	this.scales = new CompactVector3Array();
+        	this.scales.add(scales);
+        	this.scales.freeze();
+        }
     } 
     
     /**
