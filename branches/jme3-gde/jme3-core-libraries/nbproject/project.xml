@@ -116,6 +116,10 @@
                 <package>org.xmlpull.v1.wrapper.classic</package>
             </public-packages>
             <class-path-extension>
+                <runtime-relative-path>ext/eventbus-1.4.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/eventbus-1.4.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/j-ogg-vorbisd.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/j-ogg-vorbisd.jar</binary-origin>
             </class-path-extension>
