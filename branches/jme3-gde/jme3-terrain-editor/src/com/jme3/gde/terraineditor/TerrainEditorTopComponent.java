@@ -943,6 +943,10 @@ public final class TerrainEditorTopComponent extends TopComponent implements Sce
             if (toolController != null) {
                 toolController.cleanup();
             }
+
+            for (int i=0; i<textureTable.getModel().getRowCount(); i++)
+                ((TextureTableModel)textureTable.getModel()).removeRow(i);
+
             toolController = new TerrainToolController(currentRequest.getToolNode(), currentRequest.getManager().getManager(), request.getJmeNode());
             camController = new TerrainCameraController(SceneApplication.getApplication().getCamera());
             camController.setMaster(this);
