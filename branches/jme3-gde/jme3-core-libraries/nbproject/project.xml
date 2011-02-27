@@ -98,6 +98,10 @@
                 <package>net.java.games.util</package>
                 <package>net.java.games.util.plugins</package>
                 <package>net.java.games.util.plugins.test</package>
+                <package>org.bushe.swing.event</package>
+                <package>org.bushe.swing.event.annotation</package>
+                <package>org.bushe.swing.event.generics</package>
+                <package>org.bushe.swing.exception</package>
                 <package>org.lwjgl</package>
                 <package>org.lwjgl.input</package>
                 <package>org.lwjgl.openal</package>
