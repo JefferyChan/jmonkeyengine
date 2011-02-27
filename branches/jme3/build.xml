@@ -34,7 +34,7 @@
     <target name="dist" depends="clean, jar, javadoc">
         <!-- create date in the format MM-dd-yyyy -->
         <tstamp>
-            <format property="date" pattern="MM-dd-yyyy" locale="en,US"/>
+            <format property="date" pattern="yyyy-MM-dd" locale="en,US"/>
         </tstamp>
         <property name="jme3zip" value="jME3_${date}.zip"/>
 
