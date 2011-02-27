@@ -154,20 +154,24 @@ public class TerrainTestReadWrite extends SimpleApplication {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-        
-        // create the terrain as normal, and give it a control for LOD management
-        terrain = new TerrainQuad("terrain", 65, 513, heightmap.getHeightMap());//, new LodPerspectiveCalculatorFactory(getCamera(), 4)); // add this in to see it use entropy for LOD calculations
-		List<Camera> cameras = new ArrayList<Camera>();
-		cameras.add(getCamera());
-		TerrainLodControl control = new TerrainLodControl(terrain, cameras);
-		terrain.addControl(control);
-		terrain.setMaterial(matTerrain);
-		terrain.setModelBound(new BoundingBox());
-		terrain.updateModelBound();
-		terrain.setLocalTranslation(0, -100, 0);
-		terrain.setLocalScale(2f, 1f, 2f);
-		rootNode.attachChild(terrain);
 
+        if (new File("terrainsave.jme").exists()) {
+            loadTerrain();
+        } else {
+            // create the terrain as normal, and give it a control for LOD management
+            terrain = new TerrainQuad("terrain", 65, 513, heightmap.getHeightMap());//, new LodPerspectiveCalculatorFactory(getCamera(), 4)); // add this in to see it use entropy for LOD calculations
+            List<Camera> cameras = new ArrayList<Camera>();
+            cameras.add(getCamera());
+            TerrainLodControl control = new TerrainLodControl(terrain, cameras);
+            terrain.addControl(control);
+            terrain.setMaterial(matTerrain);
+            terrain.setModelBound(new BoundingBox());
+            terrain.updateModelBound();
+            terrain.setLocalTranslation(0, -100, 0);
+            terrain.setLocalScale(2f, 1f, 2f);
+            rootNode.attachChild(terrain);
+        }
+        
         DirectionalLight light = new DirectionalLight();
         light.setDirection((new Vector3f(-0.5f,-1f, -0.5f)).normalize());
         rootNode.addLight(light);
@@ -227,47 +231,55 @@ public class TerrainTestReadWrite extends SimpleApplication {
             }
         }
     };
+
+    private void loadTerrain() {
+        FileInputStream fis = null;
+        try {
+            long start = System.currentTimeMillis();
+            // remove the existing terrain and detach it from the root node.
+            if (terrain != null) {
+                terrain.removeFromParent();
+                terrain.removeControl(TerrainLodControl.class);
+                terrain.detachAllChildren();
+                terrain = null;
+            }
+
+            // import the saved terrain, and attach it back to the root node
+            fis = new FileInputStream(new File("terrainsave.jme"));
+            BinaryImporter imp = BinaryImporter.getInstance();
+            imp.setAssetManager(assetManager);
+            terrain = (TerrainQuad) imp.load(new BufferedInputStream(fis));
+            rootNode.attachChild(terrain);
+
+            float duration = (System.currentTimeMillis() - start) / 1000.0f;
+            System.out.println("Load took " + duration + " seconds");
+
+            // now we have to add back the cameras to the LOD control, since we didn't want to duplicate them on save
+            List<Camera> cameras = new ArrayList<Camera>();
+            cameras.add(getCamera());
+            TerrainLodControl lodControl = terrain.getControl(TerrainLodControl.class);
+            if (lodControl != null) {
+                lodControl.setCameras(cameras);
+            }
+
+        } catch (IOException ex) {
+            Logger.getLogger(TerrainTestReadWrite.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                if (fis != null) {
+                    fis.close();
+                }
+            } catch (IOException ex) {
+                Logger.getLogger(TerrainTestReadWrite.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
     private ActionListener loadActionListener = new ActionListener() {
 
         public void onAction(String name, boolean pressed, float tpf) {
             if (name.equals("load") && !pressed) {
-                FileInputStream fis = null;
-                try {
-                    long start = System.currentTimeMillis();
-                    // remove the existing terrain and detach it from the root node.
-                    terrain.removeFromParent();
-                    terrain.removeControl(TerrainLodControl.class);
-                    terrain = null;
-
-                    // import the saved terrain, and attach it back to the root node
-                    fis = new FileInputStream(new File("terrainsave.jme"));
-                    BinaryImporter imp = BinaryImporter.getInstance();
-                    imp.setAssetManager(assetManager);
-                    terrain = (TerrainQuad) imp.load(new BufferedInputStream(fis));
-                    rootNode.attachChild(terrain);
-
-                    float duration = (System.currentTimeMillis() - start) / 1000.0f;
-                    System.out.println("Load took " + duration + " seconds");
-
-                    // now we have to add back the cameras to the LOD control, since we didn't want to duplicate them on save
-                    List<Camera> cameras = new ArrayList<Camera>();
-                    cameras.add(getCamera());
-                    TerrainLodControl lodControl = terrain.getControl(TerrainLodControl.class);
-                    if (lodControl != null) {
-                        lodControl.setCameras(cameras);
-                    }
-
-                } catch (IOException ex) {
-                    Logger.getLogger(TerrainTestReadWrite.class.getName()).log(Level.SEVERE, null, ex);
-                } finally {
-                    try {
-                        if (fis != null) {
-                            fis.close();
-                        }
-                    } catch (IOException ex) {
-                        Logger.getLogger(TerrainTestReadWrite.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
+                loadTerrain();
             }
         }
     };
