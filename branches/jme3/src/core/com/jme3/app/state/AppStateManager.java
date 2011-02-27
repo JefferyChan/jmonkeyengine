@@ -31,12 +31,10 @@
  */
 
 package com.jme3.app.state;
-
+ 
 import com.jme3.app.Application;
 import com.jme3.renderer.RenderManager;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * The <code>AppStateManager</code> holds a list of {@link AppState}s which
@@ -50,24 +48,7 @@ import java.util.logging.Logger;
  */
 public class AppStateManager {
 
-    private static final Logger logger = Logger.getLogger(AppStateManager.class.getName());
-
-    // List used for iteration only
-    private final ArrayList<AppState> iterationTemp = new ArrayList<AppState>();
-
-    private final ArrayList<AppState> addedStates = new ArrayList<AppState>();
-    private final ArrayList<AppState> deletedStates = new ArrayList<AppState>();
-
-    /**
-     * States that are on this manager
-     */
     private final ArrayList<AppState> states = new ArrayList<AppState>();
-
-    /**
-     * This list is maintained based on the {@link AppStateManager#addedStates}
-     * and {@link AppStateManager#deletedStates} lists.
-     */
-    private final ArrayList<AppState> updateStates = new ArrayList<AppState>();
     private final Application app;
 
     public AppStateManager(Application app){
@@ -85,13 +66,7 @@ public class AppStateManager {
     public boolean attach(AppState state){
         synchronized (states){
             if (!states.contains(state)){
-                assert !addedStates.contains(state);
-                
-                if (deletedStates.contains(state)){
-                    deletedStates.remove(state);
-                }
-
-                addedStates.add(state);
+                state.stateAttached(this);
                 states.add(state);
                 return true;
             }else{
@@ -110,13 +85,8 @@ public class AppStateManager {
     public boolean detach(AppState state){
         synchronized (states){
             if (states.contains(state)){
+                state.stateDetached(this);
                 states.remove(state);
-                if (addedStates.contains(state)){
-                    addedStates.remove(state);
-                }
-                if (updateStates.contains(state)){
-                    deletedStates.add(state);
-                }
                 return true;
             }else{
                 return false;
@@ -140,17 +110,15 @@ public class AppStateManager {
 
     /**
      * Returns the first state that is an instance of subclass of the specified class.
-     * Only returns states that have already been initialized
-     *
      * @param <T>
      * @param stateClass
      * @return First attached state that is an instance of stateClass
      */
     public <T extends AppState> T getState(Class<T> stateClass){
         synchronized (states){
-            int num = updateStates.size();
+            int num = states.size();
             for (int i = 0; i < num; i++){
-                AppState state = updateStates.get(i);
+                AppState state = states.get(i);
                 if (stateClass.isAssignableFrom(state.getClass())){
                     return (T) state;
                 }
@@ -165,58 +133,17 @@ public class AppStateManager {
      */
     public void update(float tpf){
         synchronized (states){
-            while (deletedStates.size() > 0 
-                || addedStates.size() > 0){
-                // Delete states requested for removal
-                iterationTemp.addAll(deletedStates);
-                deletedStates.clear();
-
-                int num = iterationTemp.size();
-                for (int i = 0; i < num; i++){
-                    AppState state = iterationTemp.get(i);
-
-                    // NOTE: This call could add/remove states,
-                    // in that case, we go through the loop again.
-                    logger.log(Level.INFO, "Detaching state: {0}", state);
-                    state.stateDetached(this);
-                    
-                    updateStates.remove(state);
-                }
-                iterationTemp.clear();
-            
-                // Initialize any added states
-                // Also call stateAttached
-                iterationTemp.addAll(addedStates);
-                addedStates.clear();
-
-                num = iterationTemp.size();
-                for (int i = 0; i < num; i++){
-                    AppState state = iterationTemp.get(i);
-                    if (!state.isInitialized()){
-                        // NOTE: This call could add/remove states
-
-                        logger.log(Level.INFO, "Initializing state: {0}", state);
-                        state.initialize(this, app);
-                    }
-
-                    // NOTE: This call could add/remove states
-                    logger.log(Level.INFO, "Attaching state: {0}", state);
-                    state.stateAttached(this);
-                    updateStates.add(state);
-                }
-                iterationTemp.clear();
-            }
-
-            int num = updateStates.size();
+            int num = states.size();
             for (int i = 0; i < num; i++){
-                AppState state = updateStates.get(i);
-                if (state.isActive()){
-                    // NOTE: This call could add/remove states
-                    // But it will be handled on the next iteration
+                AppState state = states.get(i);
+                if (!state.isInitialized())
+                    state.initialize(this, app);
+
+                if (state.isActive()) {
                    state.update(tpf);
                 }
             }
-        }
+        } 
     }
 
     /**
@@ -225,12 +152,13 @@ public class AppStateManager {
      */
     public void render(RenderManager rm){
         synchronized (states){
-            int num = updateStates.size();
+            int num = states.size();
             for (int i = 0; i < num; i++){
-                AppState state = updateStates.get(i);
+                AppState state = states.get(i);
+                if (!state.isInitialized())
+                    state.initialize(this, app);
+
                 if (state.isActive()) {
-                    // NOTE: This call could add/remove states
-                    // But it will be handled on the next iteration
                    state.render(rm);
                 }
             }
@@ -243,12 +171,13 @@ public class AppStateManager {
      */
     public void postRender(){
         synchronized (states){
-            int num = updateStates.size();
+            int num = states.size();
             for (int i = 0; i < num; i++){
-                AppState state = updateStates.get(i);
+                AppState state = states.get(i);
+                if (!state.isInitialized())
+                    state.initialize(this, app);
+
                 if (state.isActive()) {
-                    // NOTE: This call could add/remove states
-                    // But it will be handled on the next iteration
                    state.postRender();
                 }
             }
@@ -260,19 +189,10 @@ public class AppStateManager {
      */
     public void cleanup(){
         synchronized (states){
-            for (int i = 0; i < updateStates.size(); i++){
-                AppState state = updateStates.get(i);
-                if (state.isInitialized()){
-                    // NOTE: This call could add/remove states
-                    // But it will be handled on the next iteration
-                    logger.log(Level.INFO, "Cleaning state: {0}", state);
-                    state.cleanup();
-                }
+            for (int i = 0; i < states.size(); i++){
+                AppState state = states.get(i);
+                state.cleanup();
             }
-            updateStates.clear();
-            addedStates.clear();
-            deletedStates.clear();
-            states.clear();
         }
     }
 }
