@@ -1,6 +1,6 @@
 package com.jme3.gde.codecheck.hints;
 
-import com.jme3.system.Annotations.ReadOnlyPrimitive;
+import com.jme3.system.Annotations.ReadOnly;
 import com.sun.source.tree.Tree;
 import com.sun.source.tree.Tree.Kind;
 import com.sun.source.util.SourcePositions;
@@ -50,7 +50,7 @@ public class ReadOnlyPrimitiveHint extends AbstractHint {
 //        Element el = info.getTrees().getElement(method);
 //        TypeElement invokedClass = (TypeElement) el.getEnclosingElement();
 
-        if (info.getTrees().getElement(treePath).getAnnotation(ReadOnlyPrimitive.class) != null) {
+        if (info.getTrees().getElement(treePath).getAnnotation(ReadOnly.class) != null) {
             Tree t = treePath.getLeaf();
             //prepare selection for removing
             JTextComponent editor = EditorRegistry.lastFocusedComponent();

@@ -1,6 +1,6 @@
 package com.jme3.gde.codecheck.hints;
 
-import com.jme3.system.Annotations.InternalMethod;
+import com.jme3.system.Annotations.Internal;
 import com.sun.source.tree.Tree;
 import com.sun.source.tree.Tree.Kind;
 import com.sun.source.util.SourcePositions;
@@ -49,7 +49,7 @@ public class InternalMethodHint extends AbstractHint {
 
         Element el = info.getTrees().getElement(treePath);
 
-        if (el.getAnnotation(InternalMethod.class) != null) {
+        if (el.getAnnotation(Internal.class) != null) {
             //prepare selection for removing
             JTextComponent editor = EditorRegistry.lastFocusedComponent();
             Document doc = editor.getDocument();
