@@ -228,6 +228,76 @@ final public class FastMath {
         return interpolateCatmullRom(u, T, p0, p1, p2, p3, null);
     }
 
+    /**Interpolate a spline between at least 4 control points following the Bezier equation.
+     * here is the interpolation matrix
+     * m = [ -1.0   3.0  -3.0    1.0 ]
+     *     [  3.0  -6.0   3.0    0.0 ]
+     *     [ -3.0   3.0   0.0    0.0 ]
+     *     [  1.0   0.0   0.0    0.0 ]
+     * where T is the curve tension
+     * the result is a value between p1 and p3, t=0 for p1, t=1 for p3
+     * @param u value from 0 to 1
+     * @param p0 control point 0
+     * @param p1 control point 1
+     * @param p2 control point 2
+     * @param p3 control point 3
+     * @return Bezier interpolation
+     */
+    public static float interpolateBezier(float u, float p0, float p1, float p2, float p3) {
+    	float oneMinusU = 1.0f - u;
+		float oneMinusU2 = oneMinusU * oneMinusU;
+		float u2 = u * u;
+		return p0 * oneMinusU2 * oneMinusU + 
+			   3.0f * p1 * u * oneMinusU2 + 
+			   3.0f * p2 * u2 * oneMinusU + 
+			   p3 * u2 * u;
+    }
+
+    /**Interpolate a spline between at least 4 control points following the Bezier equation.
+     * here is the interpolation matrix
+     * m = [ -1.0   3.0  -3.0    1.0 ]
+     *     [  3.0  -6.0   3.0    0.0 ]
+     *     [ -3.0   3.0   0.0    0.0 ]
+     *     [  1.0   0.0   0.0    0.0 ]
+     * where T is the tension of the curve
+     * the result is a value between p1 and p3, t=0 for p1, t=1 for p3
+     * @param u value from 0 to 1
+     * @param p0 control point 0
+     * @param p1 control point 1
+     * @param p2 control point 2
+     * @param p3 control point 3
+     * @param store a Vector3f to store the result
+     * @return Bezier interpolation
+     */
+    public static Vector3f interpolateBezier(float u, Vector3f p0, Vector3f p1, Vector3f p2, Vector3f p3, Vector3f store) {
+        if (store == null) {
+            store = new Vector3f();
+        }
+        store.x = interpolateBezier(u, p0.x, p1.x, p2.x, p3.x);
+        store.y = interpolateBezier(u, p0.y, p1.y, p2.y, p3.y);
+        store.z = interpolateBezier(u, p0.z, p1.z, p2.z, p3.z);
+        return store;
+    }
+
+    /**Interpolate a spline between at least 4 control points following the Bezier equation.
+     * here is the interpolation matrix
+     * m = [ -1.0   3.0  -3.0    1.0 ]
+     *     [  3.0  -6.0   3.0    0.0 ]
+     *     [ -3.0   3.0   0.0    0.0 ]
+     *     [  1.0   0.0   0.0    0.0 ]
+     * where T is the tension of the curve
+     * the result is a value between p1 and p3, t=0 for p1, t=1 for p3
+     * @param u value from 0 to 1
+     * @param p0 control point 0
+     * @param p1 control point 1
+     * @param p2 control point 2
+     * @param p3 control point 3
+     * @return Bezier interpolation
+     */
+    public static Vector3f interpolateBezier(float u, Vector3f p0, Vector3f p1, Vector3f p2, Vector3f p3) {
+        return interpolateBezier(u, p0, p1, p2, p3, null);
+    }
+    
     /**
      * Compute the lenght on a catmull rom spline between control point 1 and 2
      * @param p0 control point 0

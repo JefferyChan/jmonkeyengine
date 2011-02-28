@@ -9,6 +9,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.VertexBuffer;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  *
@@ -38,14 +39,15 @@ public class Curve extends Mesh {
         super();
         this.spline = spline;
         switch (spline.getType()) {
-
             case CatmullRom:
-                createCatmullRomMesh(nbSubSegments);
+            	this.createCatmullRomMesh(nbSubSegments);
                 break;
-            case Linear:
             case Bezier:
+            	this.createBezierMesh(nbSubSegments);
+            	break;
+            case Linear:
             default:
-                createLinearMesh();
+            	this.createLinearMesh();
                 break;
         }
     }
@@ -95,6 +97,55 @@ public class Curve extends Mesh {
         updateCounts();
     }
 
+    /**
+	 * This method creates the Bezier path for this curve.
+	 * 
+	 * @param nbSubSegments
+	 *            amount of subsegments between position control points
+	 */
+	private void createBezierMesh(int nbSubSegments) {
+		int centerPointsAmount = (spline.getControlPoints().size() + 2) / 3;
+		
+		//calculating vertices
+		float[] array = new float[((centerPointsAmount - 1) * nbSubSegments + 1) * 3];
+		int currentControlPoint = 0;
+		List<Vector3f> controlPoints = spline.getControlPoints();
+		int lineIndex = 0;
+		for (int i = 0; i < centerPointsAmount - 1; ++i) {
+			Vector3f vector3f = controlPoints.get(currentControlPoint);
+			array[lineIndex++] = vector3f.x;
+			array[lineIndex++] = vector3f.y;
+			array[lineIndex++] = vector3f.z;
+			for (int j = 1; j < nbSubSegments; ++j) {
+				spline.interpolate((float) j / nbSubSegments, currentControlPoint, temp);
+				array[lineIndex++] = temp.getX();
+				array[lineIndex++] = temp.getY();
+				array[lineIndex++] = temp.getZ();
+			}
+			currentControlPoint += 3;
+		}
+		Vector3f vector3f = controlPoints.get(currentControlPoint);
+		array[lineIndex++] = vector3f.x;
+		array[lineIndex++] = vector3f.y;
+		array[lineIndex++] = vector3f.z;
+
+		//calculating indexes
+		int i = 0, k = 0;
+		short[] indices = new short[(centerPointsAmount - 1) * nbSubSegments << 1];
+		for (int j = 0; j < (centerPointsAmount - 1) * nbSubSegments; ++j) {
+			k = j;
+			indices[i++] = (short) k;
+			++k;
+			indices[i++] = (short) k;
+		}
+
+		this.setMode(Mesh.Mode.Lines);
+		this.setBuffer(VertexBuffer.Type.Position, 3, array);
+		this.setBuffer(VertexBuffer.Type.Index, 2, indices);
+		this.updateBound();
+		this.updateCounts();
+	}
+    
     private void createLinearMesh() {
         float[] array = new float[spline.getControlPoints().size() * 3];
         short[] indices = new short[(spline.getControlPoints().size() - 1) * 2];
