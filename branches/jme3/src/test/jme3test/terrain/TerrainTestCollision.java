@@ -268,7 +268,7 @@ public class TerrainTestCollision extends SimpleApplication {
                     }
                     Vector2f loc = new Vector2f(hit.getContactPoint().x, hit.getContactPoint().z);
                     float height = terrain.getHeight(loc);
-                    System.out.println("collide " + hit.getContactPoint() + ", height: " + height);
+                    System.out.println("collide " + hit.getContactPoint() + ", height: " + height+", distance: "+hit.getDistance());
                     collisionMarker.setLocalTranslation(new Vector3f(hit.getContactPoint().x, height, hit.getContactPoint().z));
                 }
             } else if (binding.equals("cameraDown") && !keyPressed) {

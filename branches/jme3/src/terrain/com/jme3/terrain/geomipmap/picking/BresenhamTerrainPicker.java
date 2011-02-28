@@ -63,6 +63,7 @@ public class BresenhamTerrainPicker implements TerrainPicker {
 
     private final Vector3f calcVec1 = new Vector3f();
     private final Ray workRay = new Ray();
+    private final Ray worldPickRay = new Ray();
 
     private final TerrainQuad root;
     private final BresenhamYUpGridTracer tracer = new BresenhamYUpGridTracer();
@@ -74,6 +75,7 @@ public class BresenhamTerrainPicker implements TerrainPicker {
 
     public Vector3f getTerrainIntersection(Ray worldPick, CollisionResults results) {
 
+        worldPickRay.set(worldPick);
         List<TerrainPickData> pickData = new ArrayList<TerrainPickData>();
         root.findPick(worldPick.clone(), pickData);
         Collections.sort(pickData);
@@ -100,7 +102,7 @@ public class BresenhamTerrainPicker implements TerrainPicker {
             if (tracer.isRayPerpendicularToGrid()) {
                 Triangle hit = new Triangle();
                 checkTriangles(loc.x, loc.y, workRay, intersection, patch, hit);
-                float distance = workRay.origin.distanceSquared(intersection);
+                float distance = worldPickRay.origin.distance(intersection);
                 CollisionResult cr = new CollisionResult(intersection, distance);
                 cr.setGeometry(patch);
                 cr.setContactNormal(hit.getNormal());
@@ -118,7 +120,7 @@ public class BresenhamTerrainPicker implements TerrainPicker {
                 Triangle hit = new Triangle();
                 if (checkTriangles(loc.x, loc.y, workRay, intersection, patch, hit)) {
                     // we found an intersection, so return that!
-                    float distance = workRay.origin.distance(intersection);
+                    float distance = worldPickRay.origin.distance(intersection);
                     CollisionResult cr = new CollisionResult(intersection, distance);
                     cr.setGeometry(patch);
                     results.addCollision(cr);
@@ -146,7 +148,7 @@ public class BresenhamTerrainPicker implements TerrainPicker {
 
                 if (checkTriangles(loc.x + dx, loc.y + dz, workRay, intersection, patch, hit)) {
                     // we found an intersection, so return that!
-                    float distance = workRay.origin.distance(intersection);
+                    float distance = worldPickRay.origin.distance(intersection);
                     CollisionResult cr = new CollisionResult(intersection, distance);
                     results.addCollision(cr);
                     cr.setGeometry(patch);
