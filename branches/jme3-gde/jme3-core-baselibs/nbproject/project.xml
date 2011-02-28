@@ -73,7 +73,6 @@
                 <package>com.jme3.post.filters</package>
                 <package>com.jme3.post.ssao</package>
                 <package>com.jme3.renderer</package>
-                <package>com.jme3.renderer.jogl</package>
                 <package>com.jme3.renderer.layer</package>
                 <package>com.jme3.renderer.lwjgl</package>
                 <package>com.jme3.renderer.queue</package>
@@ -89,11 +88,11 @@
                 <package>com.jme3.shader.plugins</package>
                 <package>com.jme3.shadow</package>
                 <package>com.jme3.system</package>
-                <package>com.jme3.system.jogl</package>
                 <package>com.jme3.system.lwjgl</package>
                 <package>com.jme3.terrain</package>
                 <package>com.jme3.terrain.geomipmap</package>
                 <package>com.jme3.terrain.geomipmap.lodcalc</package>
+                <package>com.jme3.terrain.geomipmap.lodcalc.util</package>
                 <package>com.jme3.terrain.geomipmap.picking</package>
                 <package>com.jme3.terrain.heightmap</package>
                 <package>com.jme3.texture</package>
