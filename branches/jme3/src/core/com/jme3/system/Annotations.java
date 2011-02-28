@@ -42,21 +42,21 @@ public class Annotations {
      * Annotation used for math primitive fields, method parameters or method return values.
      * Specifies that the primitve is read only and should not be changed.
      */
-    public @interface ReadOnlyPrimitive{
+    public @interface ReadOnly{
     }
 
     /**
      * Annotation used for methods in math primitives that are destructive to the
      * object (xxxLocal, setXXX etc.).
      */
-    public @interface DestructiveEdit{
+    public @interface Destructive{
     }
 
     /**
      * Annotation used for public methods that are not to be called by users.
      * Examples include update() methods etc.
      */
-    public @interface InternalMethod{
+    public @interface Internal{
     }
 
 }
