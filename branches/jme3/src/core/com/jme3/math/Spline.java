@@ -41,6 +41,14 @@ public class Spline implements Savable {
      * Create a spline
      * @param splineType the type of the spline @see {SplineType}
      * @param controlPoints an array of vector to use as control points of the spline
+     * If the type of the curve is Bezier curve the control points should be provided
+     * in the appropriate way. Each point 'p' describing control position in the scene
+     * should be surrounded by two handler points. This applies to every point except
+     * for the border points of the curve, who should have only one handle point.
+     * The pattern should be as follows:
+     * P0 - H0  :  H1 - P1 - H1  :  ...  :  Hn - Pn
+     * 
+     * n is the amount of 'P' - points.
      * @param curveTension the tension of the spline
      * @param cycle true if the spline cycle.
      */
@@ -59,6 +67,14 @@ public class Spline implements Savable {
      * Create a spline
      * @param splineType the type of the spline @see {SplineType}
      * @param controlPoints a list of vector to use as control points of the spline
+     * If the type of the curve is Bezier curve the control points should be provided
+     * in the appropriate way. Each point 'p' describing control position in the scene
+     * should be surrounded by two handler points. This applies to every point except
+     * for the border points of the curve, who should have only one handle point.
+     * The pattern should be as follows:
+     * P0 - H0  :  H1 - P1 - H1  :  ...  :  Hn - Pn
+     * 
+     * n is the amount of 'P' - points.
      * @param curveTension the tension of the spline
      * @param cycle true if the spline cycle.
      */
