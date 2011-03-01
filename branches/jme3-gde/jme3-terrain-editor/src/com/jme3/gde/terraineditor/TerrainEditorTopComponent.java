@@ -134,28 +134,29 @@ public final class TerrainEditorTopComponent extends TopComponent implements Sce
 
         public void incrementProgress(float f) {
             progress += f;
-            java.awt.EventQueue.invokeLater(new Runnable() {
-                public void run() {
-                    synchronized(lock) {
+            //progress api is threadsafe - normen
+//            java.awt.EventQueue.invokeLater(new Runnable() {
+//                public void run() {
+//                    synchronized(lock) {
                         progressHandle.progress((int)progress);
                         //Logger.getLogger(TerrainEditorTopComponent.class.getName()).info("######         generated entropy " + progress);
-                    }
-                }
-            });
+//                    }
+//                }
+//            });
         }
 
         public void setMonitorMax(float f) {
             max = f;
-            java.awt.EventQueue.invokeLater(new Runnable() {
-                public void run() {
-                    synchronized(lock){
+//            java.awt.EventQueue.invokeLater(new Runnable() {
+//                public void run() {
+//                    synchronized(lock){
                         if (progressHandle == null) {
                             progressHandle = ProgressHandleFactory.createHandle("Calculating terrain entropies...");
                             progressHandle.start((int) max);
                         }
-                    }
-                }
-            });
+//                    }
+//                }
+//            });
         }
 
         public float getMonitorMax() {
@@ -163,11 +164,11 @@ public final class TerrainEditorTopComponent extends TopComponent implements Sce
         }
 
         public void progressComplete() {
-            SwingUtilities.invokeLater(new Runnable() {
-                public void run() {
+//            SwingUtilities.invokeLater(new Runnable() {
+//                public void run() {
                     progressHandle.finish();
-                }
-            });
+//                }
+//            });
         }
 
     }
