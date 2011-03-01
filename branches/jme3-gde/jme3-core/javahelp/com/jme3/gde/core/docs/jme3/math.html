@@ -583,6 +583,22 @@ Quaternion q2;
 Quaternion q3 <span class="sy0">=</span> q1.<span class="me1">slerp</span><span class="br0">&#40;</span>q2, 0.5f<span class="br0">&#41;</span>;</pre>
 </div>
 <!-- SECTION "Slerp" [14304-14941] -->
+<h3><a name="multiplication" id="multiplication">Multiplication</a></h3>
+<div class="level3">
+
+<p>
+
+You can concatenate (add) rotations: This means you turn the object first around one axis, then around the other, in one step.
+</p>
+<pre class="code java">Quaternion myRotation <span class="sy0">=</span> pitch90.<span class="me1">mult</span><span class="br0">&#40;</span>roll45<span class="br0">&#41;</span>; <span class="coMULTI">/* pitch and roll */</span></pre>
+<p>
+To rotate a Vector3f around its origin by the Quaternion amount, use the multLocal method of the Quaternion:
+</p>
+<pre class="code java">Quaternion myRotation <span class="sy0">=</span> pitch90;
+Vector3f myVector <span class="sy0">=</span> <span class="kw1">new</span> Vector3f<span class="br0">&#40;</span>0,0,<span class="sy0">-</span><span class="nu0">1</span><span class="br0">&#41;</span>;
+myRotation.<span class="me1">multLocal</span><span class="br0">&#40;</span>myVector<span class="br0">&#41;</span>;</pre>
+</div>
+<!-- SECTION "Multiplication" [14942-15416] -->
 <h1><a name="utility_classes" id="utility_classes">Utility Classes</a></h1>
 <div class="level1">
 
@@ -592,7 +608,7 @@ Along with the base Math classes, jME provides a number of Math classes to make 
 </p>
 
 </div>
-<!-- SECTION "Utility Classes" [14942-15217] -->
+<!-- SECTION "Utility Classes" [15417-15692] -->
 <h2><a name="fast_math" id="fast_math">Fast Math</a></h2>
 <div class="level2">
 
@@ -602,7 +618,7 @@ See <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param
 </p>
 
 </div>
-<!-- SECTION "Fast Math" [15218-15315] -->
+<!-- SECTION "Fast Math" [15693-15790] -->
 <h3><a name="definition5" id="definition5">Definition</a></h3>
 <div class="level3">
 
@@ -612,7 +628,7 @@ FastMath provides a number of convience methods, and where possible faster versi
 </p>
 
 </div>
-<!-- SECTION "Definition" [15316-15469] -->
+<!-- SECTION "Definition" [15791-15944] -->
 <h3><a name="usage" id="usage">Usage</a></h3>
 <div class="level3">
 
@@ -703,7 +719,7 @@ There are five major categories of functions that FastMath provides.
 </ul>
 
 </div>
-<!-- SECTION "Usage" [15470-17891] -->
+<!-- SECTION "Usage" [15945-18366] -->
 <h2><a name="line" id="line">Line</a></h2>
 <div class="level2">
 
@@ -713,7 +729,7 @@ See <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param
 </p>
 
 </div>
-<!-- SECTION "Line" [17892-17980] -->
+<!-- SECTION "Line" [18367-18455] -->
 <h3><a name="definition6" id="definition6">Definition</a></h3>
 <div class="level3">
 
@@ -723,7 +739,7 @@ A line is a straight one-dimensional figure having no thickness and extending in
 </p>
 
 </div>
-<!-- SECTION "Definition" [17981-18194] -->
+<!-- SECTION "Definition" [18456-18669] -->
 <h3><a name="usage1" id="usage1">Usage</a></h3>
 <div class="level3">
 
@@ -737,13 +753,13 @@ jME defines a Line class that is defined by an origin and direction. In reality,
 </p>
 
 </div>
-<!-- SECTION "Usage" [18195-18533] -->
+<!-- SECTION "Usage" [18670-19008] -->
 <h3><a name="example_1_-_find_a_random_point_on_a_line" id="example_1_-_find_a_random_point_on_a_line">Example 1 - Find a Random Point on a Line</a></h3>
 <div class="level3">
 <pre class="code java"><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Aline+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object><span class="br0">&#40;</span><span class="kw1">new</span> Vector3f<span class="br0">&#40;</span>0,<span class="nu0">1</span>,0<span class="br0">&#41;</span>, <span class="kw1">new</span> Vector3f<span class="br0">&#40;</span><span class="nu0">3</span>,<span class="nu0">2</span>,<span class="nu0">1</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
 Vector3f randomPoint <span class="sy0">=</span> l.<span class="me1">random</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;</pre>
 </div>
-<!-- SECTION "Example 1 - Find a Random Point on a Line" [18534-18701] -->
+<!-- SECTION "Example 1 - Find a Random Point on a Line" [19009-19176] -->
 <h2><a name="plane" id="plane">Plane</a></h2>
 <div class="level2">
 
@@ -753,7 +769,7 @@ See <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param
 </p>
 
 </div>
-<!-- SECTION "Plane" [18702-18792] -->
+<!-- SECTION "Plane" [19177-19267] -->
 <h3><a name="definition7" id="definition7">Definition</a></h3>
 <div class="level3">
 
@@ -787,7 +803,7 @@ This gives us the general equation: (ax + by + cz + d = 0)
 </p>
 
 </div>
-<!-- SECTION "Definition" [18793-19487] -->
+<!-- SECTION "Definition" [19268-19962] -->
 <h3><a name="usage_in_jme" id="usage_in_jme">Usage in jME</a></h3>
 <div class="level3">
 
@@ -819,7 +835,7 @@ These values are returned on a call to <code>whichSide</code>.
 </p>
 
 </div>
-<!-- SECTION "Usage in jME" [19488-20206] -->
+<!-- SECTION "Usage in jME" [19963-20681] -->
 <h3><a name="example_1_-_determining_if_a_point_is_on_the_positive_side_of_a_plane" id="example_1_-_determining_if_a_point_is_on_the_positive_side_of_a_plane">Example 1 - Determining if a Point is On the Positive Side of a Plane</a></h3>
 <div class="level3">
 <pre class="code java">Vector3f normal <span class="sy0">=</span> <span class="kw1">new</span> Vector3f<span class="br0">&#40;</span>0,<span class="nu0">1</span>,0<span class="br0">&#41;</span>;
@@ -832,7 +848,7 @@ Plane testPlane <span class="sy0">=</span> <span class="kw1">new</span> Plane<sp
    <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Asystem+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object>.<span class="me1">out</span>.<span class="me1">println</span><span class="br0">&#40;</span><span class="st0">&quot;This point lies on the plane&quot;</span><span class="br0">&#41;</span>;
 <span class="br0">&#125;</span></pre>
 </div>
-<!-- SECTION "Example 1 - Determining if a Point is On the Positive Side of a Plane" [20207-20581] -->
+<!-- SECTION "Example 1 - Determining if a Point is On the Positive Side of a Plane" [20682-21056] -->
 <h3><a name="example_2_-_for_the_layperson" id="example_2_-_for_the_layperson">Example 2 - For the Layperson</a></h3>
 <div class="level3">
 
@@ -903,7 +919,7 @@ Using the standard constructor Plane(Vector3f normal, float constant), here is w
   <span class="br0">&#125;</span>
 <span class="br0">&#125;</span></pre>
 </div>
-<!-- SECTION "Example 2 - For the Layperson" [20582-23219] -->
+<!-- SECTION "Example 2 - For the Layperson" [21057-23694] -->
 <h2><a name="ray" id="ray">Ray</a></h2>
 <div class="level2">
 
@@ -913,7 +929,7 @@ See <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param
 </p>
 
 </div>
-<!-- SECTION "Ray" [23220-23306] -->
+<!-- SECTION "Ray" [23695-23781] -->
 <h3><a name="definition8" id="definition8">Definition</a></h3>
 <div class="level3">
 
@@ -927,12 +943,12 @@ This Ray is used extensively in jME for <a href="/com/jme3/gde/core/docs/jme3/pi
 </p>
 
 </div>
-<!-- SECTION "Definition" [23307-23673] -->
+<!-- SECTION "Definition" [23782-24148] -->
 <h3><a name="example_1_-_create_a_ray_that_represents_where_the_camera_is_looking" id="example_1_-_create_a_ray_that_represents_where_the_camera_is_looking">Example 1 - Create a Ray That Represents Where the Camera is Looking</a></h3>
 <div class="level3">
 <pre class="code java">Ray ray <span class="sy0">=</span> <span class="kw1">new</span> Ray<span class="br0">&#40;</span>cam.<span class="me1">getLocation</span><span class="br0">&#40;</span><span class="br0">&#41;</span>, cam.<span class="me1">getDirection</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;</pre>
 </div>
-<!-- SECTION "Example 1 - Create a Ray That Represents Where the Camera is Looking" [23674-23830] -->
+<!-- SECTION "Example 1 - Create a Ray That Represents Where the Camera is Looking" [24149-24305] -->
 <h2><a name="rectangle" id="rectangle">Rectangle</a></h2>
 <div class="level2">
 
@@ -942,7 +958,7 @@ See <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param
 </p>
 
 </div>
-<!-- SECTION "Rectangle" [23831-23929] -->
+<!-- SECTION "Rectangle" [24306-24404] -->
 <h3><a name="definition9" id="definition9">Definition</a></h3>
 <div class="level3">
 
@@ -952,7 +968,7 @@ Rectangle defines a finite plane within three dimensional space that is specifie
 </p>
 
 </div>
-<!-- SECTION "Definition" [23930-24155] -->
+<!-- SECTION "Definition" [24405-24630] -->
 <h3><a name="jme_usage" id="jme_usage">jME Usage</a></h3>
 <div class="level3">
 
@@ -962,7 +978,7 @@ Rectangle is a straight forward data class that simply maintains values that def
 </p>
 
 </div>
-<!-- SECTION "jME Usage" [24156-24470] -->
+<!-- SECTION "jME Usage" [24631-24945] -->
 <h3><a name="example_1_define_a_rectangle_and_get_a_point_from_it" id="example_1_define_a_rectangle_and_get_a_point_from_it">Example 1 : Define a Rectangle and Get a Point From It</a></h3>
 <div class="level3">
 <pre class="code java">Vector3f v1 <span class="sy0">=</span> <span class="kw1">new</span> Vector3f<span class="br0">&#40;</span><span class="nu0">1</span>,0,0<span class="br0">&#41;</span>;
@@ -971,7 +987,7 @@ Vector3f v3 <span class="sy0">=</span> <span class="kw1">new</span> Vector3f<spa
 <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Arectangle+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object><span class="br0">&#40;</span>v1, v2, v3<span class="br0">&#41;</span>;
 Vector3f point <span class="sy0">=</span> r.<span class="me1">random</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;</pre>
 </div>
-<!-- SECTION "Example 1 : Define a Rectangle and Get a Point From It" [24471-24730] -->
+<!-- SECTION "Example 1 : Define a Rectangle and Get a Point From It" [24946-25205] -->
 <h2><a name="triangle" id="triangle">Triangle</a></h2>
 <div class="level2">
 
@@ -981,7 +997,7 @@ See <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param
 </p>
 
 </div>
-<!-- SECTION "Triangle" [24731-24827] -->
+<!-- SECTION "Triangle" [25206-25302] -->
 <h3><a name="definition10" id="definition10">Definition</a></h3>
 <div class="level3">
 
@@ -991,7 +1007,7 @@ A triangle is a 3-sided polygon. Every triangle has three sides and three angles
 </p>
 
 </div>
-<!-- SECTION "Definition" [24828-25241] -->
+<!-- SECTION "Definition" [25303-25716] -->
 <h3><a name="usage2" id="usage2">Usage</a></h3>
 <div class="level3">
 
@@ -1001,7 +1017,7 @@ jME&#039;s Triangle class is a simple data class. It contains three <a href="/co
 </p>
 
 </div>
-<!-- SECTION "Usage" [25242-25568] -->
+<!-- SECTION "Usage" [25717-26043] -->
 <h3><a name="example_1_-_creating_a_triangle" id="example_1_-_creating_a_triangle">Example 1 - Creating a Triangle</a></h3>
 <div class="level3">
 <pre class="code java"><span class="co1">//the three points that make up the triangle</span>
@@ -1010,5 +1026,5 @@ Vector3f p2 <span class="sy0">=</span> <span class="kw1">new</span> Vector3f<spa
 Vector3f p3 <span class="sy0">=</span> <span class="kw1">new</span> Vector3f<span class="br0">&#40;</span>0,<span class="nu0">1</span>,<span class="nu0">1</span><span class="br0">&#41;</span>;
 Triangle t <span class="sy0">=</span> <span class="kw1">new</span> Triangle<span class="br0">&#40;</span>p1, p2, p3<span class="br0">&#41;</span>;</pre>
 </div>
-<!-- SECTION "Example 1 - Creating a Triangle" [25569-] -->
+<!-- SECTION "Example 1 - Creating a Triangle" [26044-] -->
 <p><em><a href="http://jmonkeyengine.org/wiki/doku.php/jme3:math?do=export_xhtmlbody">view online version</a></em></p>

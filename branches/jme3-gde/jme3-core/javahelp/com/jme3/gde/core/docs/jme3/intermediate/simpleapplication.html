@@ -183,15 +183,15 @@ Additional to what Application offers, SimpleApplication offers:
 		<td class="col0">simpleInitApp()</td><td class="col1">Override this method to initialize the game scene. Here you load and create objects, attach Spatials to the rootNode, and bring everything in its starts position.</td>
 	</tr>
 	<tr class="row7">
-		<td class="col0">simpleUpdate(float tpf)</td><td class="col1">Override this method to have access to the main event loop. Use this loop to poll the current game state and respond to changes, or to initiate state changes and to generate encounters.</td>
+		<td class="col0">simpleUpdate(float tpf)</td><td class="col1">Override this method to have access to the main event loop. Use this loop to poll the current game state and respond to changes, or to initiate state changes and to generate encounters. For advanced info how to hook into the update loop, see also <a href="/com/jme3/gde/core/docs/jme3/advanced/application_states.html" class="wikilink1" title="jme3:advanced:application_states">Application States</a> and <a href="/com/jme3/gde/core/docs/jme3/advanced/custom_controls.html" class="wikilink1" title="jme3:advanced:custom_controls">Custom Controls</a>. </td>
 	</tr>
 	<tr class="row8">
-		<td class="col0">simpleRender()</td><td class="col1">Optionally, override this method to do advanced customizations to the frameBuffer and scene graph.</td>
+		<td class="col0">simpleRender()</td><td class="col1">Optionally, override this method to do advanced modifications to the frameBuffer and scene graph.</td>
 	</tr>
 </table>
 
 </div>
-<!-- SECTION "SimpleApplication Class" [4222-6315] -->
+<!-- SECTION "SimpleApplication Class" [4222-6454] -->
 <h3><a name="input_defaults" id="input_defaults">Input Defaults</a></h3>
 <div class="level3">
 
@@ -266,5 +266,5 @@ If useInput() is true, the default Flyby Cam is active. Then the following so-ca
 </table>
 
 </div>
-<!-- SECTION "Input Defaults" [6316-] -->
+<!-- SECTION "Input Defaults" [6455-] -->
 <p><em><a href="http://jmonkeyengine.org/wiki/doku.php/jme3:intermediate:simpleapplication?do=export_xhtmlbody">view online version</a></em></p>
