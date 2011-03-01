@@ -114,7 +114,7 @@ public final class TerrainEditorTopComponent extends TopComponent implements Sce
 
     public enum TerrainEditButton {none, raiseTerrain, lowerTerrain, smoothTerrain, levelTerrain, paintTerrain, eraseTerrain};
 
-    private HelpCtx ctx = new HelpCtx("com.jme3.gde.terraineditor.usage");
+    private HelpCtx ctx = new HelpCtx("jme3.jmonkeyplatform.terrain_editor");
 
     public TerrainEditorTopComponent() {
         initComponents();
@@ -902,6 +902,11 @@ public final class TerrainEditorTopComponent extends TopComponent implements Sce
     @Override
     protected String preferredID() {
         return PREFERRED_ID;
+    }
+
+    @Override
+    public HelpCtx getHelpCtx() {
+        return ctx;
     }
 
     public void openScene(Spatial spat, AssetDataObject file, ProjectAssetManager manager) {
