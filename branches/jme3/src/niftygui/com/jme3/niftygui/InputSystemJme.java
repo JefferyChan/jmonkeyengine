@@ -32,6 +32,7 @@
 
 package com.jme3.niftygui;
 
+import com.jme3.input.InputManager;
 import com.jme3.input.KeyInput;
 import com.jme3.input.RawInputListener;
 import com.jme3.input.event.InputEvent;
@@ -51,6 +52,7 @@ public class InputSystemJme implements InputSystem, RawInputListener {
 
     private final ArrayList<InputEvent> inputQueue = new ArrayList<InputEvent>();
 
+    private InputManager inputManager;
 
     private boolean pressed = false;
     private int x, y;
@@ -61,7 +63,8 @@ public class InputSystemJme implements InputSystem, RawInputListener {
 
     private Nifty nifty;
 
-    public InputSystemJme(){
+    public InputSystemJme(InputManager inputManager){
+        this.inputManager = inputManager;
     }
 
     public void setNifty(Nifty nifty) {
@@ -104,7 +107,9 @@ public class InputSystemJme implements InputSystem, RawInputListener {
     }
 
     public void onMouseMotionEvent(MouseMotionEvent evt) {
-        inputQueue.add(evt);
+        if (inputManager.isCursorVisible()){
+            inputQueue.add(evt);
+        }
     }
 
     private void onMouseButtonEventQueued(MouseButtonEvent evt, NiftyInputConsumer nic) {
@@ -118,7 +123,9 @@ public class InputSystemJme implements InputSystem, RawInputListener {
     }
 
     public void onMouseButtonEvent(MouseButtonEvent evt) {
-        inputQueue.add(evt);
+        if (inputManager.isCursorVisible()){
+            inputQueue.add(evt);
+        }
     }
 
     private void onKeyEventQueued(KeyInputEvent evt, NiftyInputConsumer nic) {

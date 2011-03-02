@@ -72,7 +72,7 @@ public class NiftyJmeDisplay extends TimeProvider implements SceneProcessor {
 
         soundDev = new SoundDeviceJme(assetManager, audioRenderer);
         renderDev = new RenderDeviceJme(this);
-        inputSys = new InputSystemJme();
+        inputSys = new InputSystemJme(inputManager);
         if (inputManager != null)
             inputManager.addRawInputListener(inputSys);
         
