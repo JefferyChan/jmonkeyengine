@@ -217,6 +217,12 @@ public class Converter {
         return out;
     }
 
+    public static com.jme3.math.Transform convert(com.bulletphysics.linearmath.Transform in,  com.jme3.math.Transform out) {
+        convert(in.origin, out.getTranslation());
+        convert(in.basis, out.getRotation());
+        return out;
+    }
+
     public static IndexedMesh convert(Mesh mesh) {
 
         IndexedMesh jBulletIndexedMesh = new IndexedMesh();

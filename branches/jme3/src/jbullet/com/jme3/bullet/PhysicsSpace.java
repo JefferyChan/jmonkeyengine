@@ -46,10 +46,12 @@ import com.bulletphysics.collision.broadphase.SimpleBroadphase;
 import com.bulletphysics.collision.dispatch.CollisionDispatcher;
 import com.bulletphysics.collision.dispatch.CollisionObject;
 import com.bulletphysics.collision.dispatch.CollisionWorld;
+import com.bulletphysics.collision.dispatch.CollisionWorld.LocalConvexResult;
 import com.bulletphysics.collision.dispatch.CollisionWorld.LocalRayResult;
 import com.bulletphysics.collision.dispatch.DefaultCollisionConfiguration;
 import com.bulletphysics.collision.dispatch.GhostPairCallback;
 import com.bulletphysics.collision.narrowphase.ManifoldPoint;
+import com.bulletphysics.collision.shapes.ConvexShape;
 import com.bulletphysics.dynamics.DiscreteDynamicsWorld;
 import com.bulletphysics.dynamics.DynamicsWorld;
 import com.bulletphysics.dynamics.InternalTickCallback;
@@ -66,6 +68,8 @@ import com.jme3.bullet.collision.PhysicsCollisionGroupListener;
 import com.jme3.bullet.collision.PhysicsCollisionListener;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.collision.PhysicsRayTestResult;
+import com.jme3.bullet.collision.PhysicsSweepTestResult;
+import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.PhysicsControl;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.joints.PhysicsJoint;
@@ -74,6 +78,7 @@ import com.jme3.bullet.objects.PhysicsCharacter;
 import com.jme3.bullet.objects.PhysicsVehicle;
 import com.jme3.bullet.objects.PhysicsRigidBody;
 import com.jme3.bullet.util.Converter;
+import com.jme3.math.Transform;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import java.util.Iterator;
@@ -126,6 +131,8 @@ public class PhysicsSpace {
     private int maxSubSteps = 4;
     private javax.vecmath.Vector3f rayVec1 = new javax.vecmath.Vector3f();
     private javax.vecmath.Vector3f rayVec2 = new javax.vecmath.Vector3f();
+    private com.bulletphysics.linearmath.Transform sweepTrans1=new com.bulletphysics.linearmath.Transform(new javax.vecmath.Matrix3f());
+    private com.bulletphysics.linearmath.Transform sweepTrans2=new com.bulletphysics.linearmath.Transform(new javax.vecmath.Matrix3f());
     private AssetManager debugManager;
 
     /**
@@ -667,6 +674,44 @@ public class PhysicsSpace {
             results.add(new PhysicsRayTestResult(obj, Converter.convert(lrr.hitNormalLocal), lrr.hitFraction, bln));
             return lrr.hitFraction;
         }
+    }
+
+    public List<PhysicsSweepTestResult> sweepTest(CollisionShape shape, Transform start, Transform end){
+        List<PhysicsSweepTestResult> results = new LinkedList<PhysicsSweepTestResult>();
+        if(!(shape.getCShape() instanceof ConvexShape)){
+            Logger.getLogger(PhysicsSpace.class.getName()).log(Level.WARNING, "Trying to sweep test with incompatible mesh shape!");
+            return results;
+        }
+        dynamicsWorld.convexSweepTest((ConvexShape)shape.getCShape(), Converter.convert(start, sweepTrans1), Converter.convert(end, sweepTrans2), new InternalSweepListener(results));
+        return results;
+
+    }
+
+    public List<PhysicsSweepTestResult> sweepTest(CollisionShape shape, Transform start, Transform end, List<PhysicsSweepTestResult> results){
+        results.clear();
+        if(!(shape.getCShape() instanceof ConvexShape)){
+            Logger.getLogger(PhysicsSpace.class.getName()).log(Level.WARNING, "Trying to sweep test with incompatible mesh shape!");
+            return results;
+        }
+        dynamicsWorld.convexSweepTest((ConvexShape)shape.getCShape(), Converter.convert(start, sweepTrans1), Converter.convert(end, sweepTrans2), new InternalSweepListener(results));
+        return results;
+    }
+
+    private class InternalSweepListener extends CollisionWorld.ConvexResultCallback{
+
+        private List<PhysicsSweepTestResult> results;
+
+        public InternalSweepListener(List<PhysicsSweepTestResult> results) {
+            this.results = results;
+        }
+
+        @Override
+        public float addSingleResult(LocalConvexResult lcr, boolean bln) {
+            PhysicsCollisionObject obj = (PhysicsCollisionObject) lcr.hitCollisionObject.getUserPointer();
+            results.add(new PhysicsSweepTestResult(obj, Converter.convert(lcr.hitNormalLocal), lcr.hitFraction, bln));
+            return lcr.hitFraction;
+        }
+
     }
 
     /**
