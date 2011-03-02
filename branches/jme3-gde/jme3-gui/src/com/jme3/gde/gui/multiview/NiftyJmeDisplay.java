@@ -34,6 +34,7 @@ package com.jme3.gde.gui.multiview;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.audio.AudioRenderer;
+import com.jme3.gde.core.scene.SceneApplication;
 import com.jme3.niftygui.InputSystemJme;
 import com.jme3.niftygui.RenderDeviceJme;
 import com.jme3.niftygui.SoundDeviceJme;
@@ -54,7 +55,7 @@ public class NiftyJmeDisplay extends com.jme3.niftygui.NiftyJmeDisplay implement
                            ViewPort vp){
         this.assetManager = assetManager;
         //FIXME: needed, else npe
-        this.inputSys = new InputSystemJme();
+        this.inputSys = new InputSystemJme(SceneApplication.getApplication().getInputManager());
 
         w = vp.getCamera().getWidth();
         h = vp.getCamera().getHeight();
