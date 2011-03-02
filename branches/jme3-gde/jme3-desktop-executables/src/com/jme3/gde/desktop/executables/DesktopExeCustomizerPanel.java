@@ -28,7 +28,7 @@ public class DesktopExeCustomizerPanel extends javax.swing.JPanel implements Act
         this.properties = properties;
         initComponents();
         loadProperties();
-        HelpCtx.setHelpIDString(this, "jme3.jmonkeyplatform.model_loader_and_viewer");
+        HelpCtx.setHelpIDString(this, "sdk.application_deployment");
     }
 
     private void loadProperties() {
