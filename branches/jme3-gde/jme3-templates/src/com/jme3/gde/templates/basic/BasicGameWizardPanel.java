@@ -62,7 +62,7 @@ public class BasicGameWizardPanel implements WizardDescriptor.Panel,
     }
 
     public HelpCtx getHelp() {
-        return new HelpCtx("jme3.jmonkeyplatform.project_creation");
+        return new HelpCtx("sdk.project_creation");
     }
 
     public boolean isValid() {

@@ -61,7 +61,7 @@ public class AssetsPropertiesPanel extends javax.swing.JPanel implements ActionL
         initComponents();
         this.project = propertiesFile;
         loadSettings();
-        HelpCtx.setHelpIDString(this, "jme3.jmonkeyplatform.application_deployment");
+        HelpCtx.setHelpIDString(this, "sdk.application_deployment");
     }
 
     /** This method is called from within the constructor to

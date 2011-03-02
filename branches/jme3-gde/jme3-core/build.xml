@@ -11,6 +11,9 @@
     <taskdef resource="net/sf/antcontrib/antcontrib.properties" classpathref="ant-import.classpath"/>
     <taskdef resource="com/jme/ant/ant-jme.properties" classpath="../ant-lib/ant-jme.jar"/>
 
+    <!--target name="init" depends="basic-init,files-init,build-init,-javac-init,update-help-sets">
+    </target-->
+
     <target name="update-help-sets" description="Updates the help pages from the wiki">
         <property file="javahelp/wiki_help.properties"/>
         <echo file="javahelp/${javahelp_path}wiki-map.xml"

@@ -270,11 +270,11 @@ There are three types of 3D transformation: Translation (moving), Scaling (resiz
  Example: Make it 10 times longer, one tenth of the height, same width: <pre class="code java">thing.<span class="me1">setLocalScale</span><span class="br0">&#40;</span> 10.0f, 0.1f, 1.0f  <span class="br0">&#41;</span>;</pre><pre class="code java">thing.<span class="me1">scale</span><span class="br0">&#40;</span> 10.0f, 0.1f, 1.0f <span class="br0">&#41;</span>;</pre></td><td class="col2">length</td><td class="col3">height</td><td class="col4">width</td>
 	</tr>
 	<tr class="row3">
-		<td class="col0"> Turn objects </td><td class="col1"> <strong>Rotation:</strong> 3-D rotation is a bit tricky (<a href="/com/jme3/gde/core/docs/rotate.html" class="wikilink1" title="rotate">learn details here</a>). In short: You can rotate around three axes, pitch, yaw, and roll. <br/>
+		<td class="col0"> Turn objects </td><td class="col1"> <strong>Rotation:</strong> 3-D rotation is a bit tricky (<a href="/com/jme3/gde/core/docs/rotate.html" class="wikilink2" title="rotate" rel="nofollow">learn details here</a>). In short: You can rotate around three axes, pitch, yaw, and roll. <br/>
  Important: <strong>You do not specify the rotation in degrees from 0° to 360°, but in radians from 0.0f to 6.28f (FastMath.PI*2) !</strong> <br/>
  Example: To roll an object 180° around the z axis: <pre class="code java">thing.<span class="me1">rotate</span><span class="br0">&#40;</span> 0f , 0f , FastMath.<span class="me1">PI</span> <span class="br0">&#41;</span>;</pre>
 <p>
-  Tip: If your game idea calls for a serious amount of rotations, it is worth looking into <a href="/com/jme3/gde/core/docs/quaternion.html" class="wikilink1" title="quaternion">quaternion</a>s, a data structure that can combine and store rotations efficiently. 
+  Tip: If your game idea calls for a serious amount of rotations, it is worth looking into <a href="/com/jme3/gde/core/docs/quaternion.html" class="wikilink2" title="quaternion" rel="nofollow">quaternion</a>s, a data structure that can combine and store rotations efficiently. 
 </p>
 <pre class="code java">thing.<span class="me1">setLocalRotation</span><span class="br0">&#40;</span> <span class="kw1">new</span> Quaternion<span class="br0">&#40;</span><span class="br0">&#41;</span>. <span class="me1">fromAngleAxis</span><span class="br0">&#40;</span>FastMath.<span class="me1">PI</span><span class="sy0">/</span><span class="nu0">2</span>, <span class="kw1">new</span> Vector3f<span class="br0">&#40;</span><span class="nu0">1</span>,0,0<span class="br0">&#41;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;</pre></td><td class="col2">pitch</td><td class="col3">yaw</td><td class="col4">roll</td>
 	</tr>

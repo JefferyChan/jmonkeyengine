@@ -114,7 +114,7 @@ public final class TerrainEditorTopComponent extends TopComponent implements Sce
 
     public enum TerrainEditButton {none, raiseTerrain, lowerTerrain, smoothTerrain, levelTerrain, paintTerrain, eraseTerrain};
 
-    private HelpCtx ctx = new HelpCtx("jme3.jmonkeyplatform.terrain_editor");
+    private HelpCtx ctx = new HelpCtx("sdk.terrain_editor");
 
     public TerrainEditorTopComponent() {
         initComponents();

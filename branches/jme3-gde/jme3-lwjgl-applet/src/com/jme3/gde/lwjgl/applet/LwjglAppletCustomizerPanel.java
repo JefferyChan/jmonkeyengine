@@ -28,7 +28,7 @@ public class LwjglAppletCustomizerPanel extends javax.swing.JPanel implements Ac
         this.properties = properties;
         initComponents();
         loadProperties();
-        HelpCtx.setHelpIDString(this, "jme3.jmonkeyplatform.application_deployment");
+        HelpCtx.setHelpIDString(this, "sdk.application_deployment");
     }
 
     private void loadProperties() {

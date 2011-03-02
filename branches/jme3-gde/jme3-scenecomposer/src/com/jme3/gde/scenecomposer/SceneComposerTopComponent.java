@@ -58,7 +58,7 @@ public final class SceneComposerTopComponent extends TopComponent implements Sce
     SceneEditorController editorController;
 //    private SaveCookie saveCookie = new SaveCookieImpl();
     private SceneRequest currentRequest;
-    private HelpCtx ctx = new HelpCtx("jme3.jmonkeyplatform.scene_composer");
+    private HelpCtx ctx = new HelpCtx("sdk.scene_composer");
 
     public SceneComposerTopComponent() {
         initComponents();

@@ -40,7 +40,7 @@ public final class VehicleCreatorTopComponent extends TopComponent implements Sc
     private SceneRequest currentRequest;
     private boolean testing = false;
     DirectionalLight dirLight = new DirectionalLight();
-    private HelpCtx ctx = new HelpCtx("jme3.jmonkeyplatform.vehicle_creator");
+    private HelpCtx ctx = new HelpCtx("sdk.vehicle_creator");
 
     public VehicleCreatorTopComponent() {
         initComponents();

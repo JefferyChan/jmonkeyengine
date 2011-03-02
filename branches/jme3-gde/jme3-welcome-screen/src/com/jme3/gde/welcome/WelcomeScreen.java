@@ -153,19 +153,19 @@ public class WelcomeScreen implements ScreenController {
     }
 
     public void creatingProjects() {
-        Lookup.getDefault().lookup(Help.class).showHelp(new HelpCtx("jme3.jmonkeyplatform.project_creation"));
+        Lookup.getDefault().lookup(Help.class).showHelp(new HelpCtx("sdk.project_creation"));
     }
 
     public void importingModels() {
-        Lookup.getDefault().lookup(Help.class).showHelp(new HelpCtx("jme3.jmonkeyplatform.model_loader_and_viewer"));
+        Lookup.getDefault().lookup(Help.class).showHelp(new HelpCtx("sdk.model_loader_and_viewer"));
     }
 
     public void editingScenes() {
-        Lookup.getDefault().lookup(Help.class).showHelp(new HelpCtx("jme3.jmonkeyplatform.scene_composer"));
+        Lookup.getDefault().lookup(Help.class).showHelp(new HelpCtx("sdk.scene_composer"));
     }
 
     public void editingCode() {
-        Lookup.getDefault().lookup(Help.class).showHelp(new HelpCtx("jme3.jmonkeyplatform.code_editor"));
+        Lookup.getDefault().lookup(Help.class).showHelp(new HelpCtx("sdk.code_editor"));
     }
 
     public void updatingJmp() {

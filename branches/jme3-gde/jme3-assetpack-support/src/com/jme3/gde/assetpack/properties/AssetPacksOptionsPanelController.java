@@ -45,7 +45,7 @@ public final class AssetPacksOptionsPanelController extends OptionsPanelControll
     }
 
     public HelpCtx getHelpCtx() {
-        return new HelpCtx("jme3.jmonkeyplatform.asset_packs");
+        return new HelpCtx("sdk.asset_packs");
     }
 
     public JComponent getComponent(Lookup masterLookup) {

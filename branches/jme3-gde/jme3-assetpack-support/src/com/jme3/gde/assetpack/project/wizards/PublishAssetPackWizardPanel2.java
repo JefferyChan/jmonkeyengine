@@ -30,7 +30,7 @@ public class PublishAssetPackWizardPanel2 implements WizardDescriptor.Panel {
 
     public HelpCtx getHelp() {
         // Show no Help button for this panel:
-        return new HelpCtx("jme3.jmonkeyplatform.asset_packs");
+        return new HelpCtx("sdk.asset_packs");
         // If you have context help:
         // return new HelpCtx(SampleWizardPanel1.class);
     }
