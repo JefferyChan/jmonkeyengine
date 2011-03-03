@@ -32,6 +32,8 @@ public class AndroidActivity extends Activity {
 	private OGLESContext ctx;
 	private GLSurfaceView view;
 
+	private boolean useVA = false;
+	private boolean verboseLogging = false;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -51,6 +53,16 @@ public class AndroidActivity extends Activity {
 		logger.info("test class name: [" + testClassName + "]");
 
 		String appClass = (testClassName != null? testClassName: "jme3test.android.SimpleTexturedTest");
+
+		useVA = getIntent().getBooleanExtra(AndroidActivity.class.getName() + ".USE_VA", false);
+
+		logger.info("USE_VA -> [" + useVA + "]");
+
+		settings.putBoolean("USE_VA", useVA);
+
+		verboseLogging = getIntent().getBooleanExtra(AndroidActivity.class.getName() + ".VERBOSE_LOGGING", false);
+
+		settings.putBoolean("VERBOSE_LOGGING", verboseLogging);
 
 		Application app = null;
 
@@ -80,32 +92,41 @@ public class AndroidActivity extends Activity {
 				}
 			);
 */
-		} catch (Exception ex) {
-			ex.printStackTrace();
+
+
+			if (app instanceof SimpleApplication) {
+				((SimpleApplication) app).setShowSettings(false);
+			}
+
+			logger.info("setting settings ...");
+			app.setSettings(settings);
+			logger.info("setting settings ... done.");
+
+			logger.info("starting app ...");
+			app.start();
+			logger.info("starting app ... done.");
+
+			if (app instanceof SimpleApplication)
+				((SimpleApplication) app).getGuiNode().detachAllChildren();
+
+			logger.info("creating context ...");
+			ctx = (OGLESContext) app.getContext();
+			logger.info("creating context ... done.");
+
+			ctx.setSettings(settings);
+
+			logger.info("creating view ...");
+			view = ctx.createView(this);
+			logger.info("creating view ... done.");
+
+			logger.info("setting content view ...");
+			setContentView(view);
+			logger.info("setting content done ...");
+
+		} catch (Throwable exception) {
+			logger.warning("exception: " + exception);
+			exception.printStackTrace(System.err);
 		}
-
-		logger.info("setting settings ...");
-		app.setSettings(settings);
-		logger.info("setting settings ... done.");
-
-		logger.info("starting app ...");
-		app.start();
-		logger.info("starting app ... done.");
-
-		if (app instanceof SimpleApplication)
-			((SimpleApplication) app).getGuiNode().detachAllChildren();
-
-		logger.info("creating context ...");
-		ctx = (OGLESContext) app.getContext();
-		logger.info("creating context ... done.");
-
-		logger.info("creating view ...");
-		view = ctx.createView(this);
-		logger.info("creating view ... done.");
-
-		logger.info("setting content view ...");
-		setContentView(view);
-		logger.info("setting content done ...");
 	}
 
 	@Override

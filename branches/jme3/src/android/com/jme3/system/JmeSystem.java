@@ -7,8 +7,10 @@ import com.jme3.asset.AssetManager;
 import com.jme3.audio.AudioNode;
 import com.jme3.audio.AudioData;
 import com.jme3.audio.AudioRenderer;
+import com.jme3.audio.AudioParam;
 import com.jme3.audio.Environment;
 import com.jme3.audio.Listener;
+import com.jme3.audio.ListenerParam;
 //import com.jme3.audio.DummyAudioRenderer;
 import com.jme3.system.JmeContext.Type;
 import com.jme3.system.android.OGLESContext;
@@ -69,6 +71,8 @@ public class JmeSystem {
 			public void initialize() {}
 			public void update(float tpf) {}
 			public void cleanup() {}
+			public void updateListenerParam(Listener listener, ListenerParam parameter) {}
+			public void updateSourceParam(AudioNode node, AudioParam parameter) {}
 		};
     }
 

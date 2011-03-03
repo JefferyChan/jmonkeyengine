@@ -92,6 +92,8 @@ public class SimpleTexturedTest extends SimpleApplication {
 
 		for (int y = -1; y < 2; y++) {
 			for (int x = -1; x < 2; x++){
+	//		int x = 0;
+	//		int y = 0;
 				Geometry geomClone = new Geometry("geometry-" + y + "-" + x, shape);
 				geomClone.setMaterial(material);
 				geomClone.setLocalTranslation(x, y, 0);

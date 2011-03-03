@@ -171,11 +171,22 @@ public class OGLESShaderRenderer implements Renderer {
 	private final GL10 gl;
 	private boolean powerOf2 = false;
 	private boolean verboseLogging = false;
+	private boolean useVBO = true;
 
 
     public OGLESShaderRenderer(GL10 gl) {
 	this.gl = gl;
     }
+
+	public void setUseVA(boolean value) {
+		logger.info("use_VBO [" + useVBO + "] -> [" + (!value) + "]");
+		useVBO = !value;
+	}
+
+	public void setVerboseLogging(boolean value) {
+		logger.info("verboseLogging [" + verboseLogging + "] -> [" + value + "]");
+		verboseLogging = value;
+	}
 
     protected void updateNameBuffer(){
         int len = stringBuf.length();
@@ -1923,9 +1934,9 @@ public class OGLESShaderRenderer implements Renderer {
              GLES20.glBindTexture(type, texId);
              textures[unit] = image;
 
-             statistics.onTextureUse(tex, true);
+             statistics.onTextureUse(tex.getImage(), true);
          }else{
-             statistics.onTextureUse(tex, false);
+             statistics.onTextureUse(tex.getImage(), false);
          }
 
          setupTextureParams(tex);
@@ -2510,41 +2521,61 @@ public class OGLESShaderRenderer implements Renderer {
         }
     }
 
-    private void renderMeshVertexArray(Mesh mesh, int lod, int count){
-
-	if (verboseLogging)
-		logger.info("renderMeshVertexArray");
-
-        if (mesh.getId() == -1){
-            updateVertexArray(mesh);
-        }
-
-        if (context.boundVertexArray != mesh.getId()){
-        //    ARBVertexArrayObject.glBindVertexArray(mesh.getId());
- //           GLES20.glBindVertexArray(mesh.getId());
-            context.boundVertexArray = mesh.getId();
-        }
-
-        IntMap<VertexBuffer> buffers = mesh.getBuffers();
-        VertexBuffer indices = null;
-        if (mesh.getNumLodLevels() > 0){
-            indices = mesh.getLodLevel(lod);
-        }else{
-            indices = buffers.get(Type.Index.ordinal());
-        }
-        if (indices != null){
-            drawTriangleList(indices, mesh, count);
-        }else{
-//            throw new UnsupportedOperationException("Cannot render without index buffer");
-
-		if (verboseLogging)
-			logger.info("GLES20.glDrawArrays(" + mesh.getMode() + ", " + 0 + ", " + mesh.getVertexCount() + ")");
-
-            GLES20.glDrawArrays(convertElementMode(mesh.getMode()), 0, mesh.getVertexCount());
-        }
+  
+     /**
+      * renderMeshVertexArray renders a mesh using vertex arrays
+      * @param mesh
+      * @param lod
+      * @param count
+      */
+     private void renderMeshVertexArray(Mesh mesh, int lod, int count)
+     {
+         if (verboseLogging)
+             logger.info("renderMeshVertexArray");
+ 
+         IntMap<VertexBuffer> buffers = mesh.getBuffers();
+         for (Entry<VertexBuffer> entry : buffers){
+             VertexBuffer vb = entry.getValue();
+ 
+             if (vb.getBufferType() == Type.InterleavedData
+                     || vb.getUsage() == Usage.CpuOnly // ignore cpu-only buffers
+                     || vb.getBufferType() == Type.Index)
+                 continue;
+ 
+             if (vb.getStride() == 0){
+                 // not interleaved
+                 setVertexAttrib_Array(vb);
+             }else{
+                 // interleaved
+                 VertexBuffer interleavedData = mesh.getBuffer(Type.InterleavedData);
+                 setVertexAttrib_Array(vb, interleavedData);
+             }
+         }
+ 
+         VertexBuffer indices = null;
+         if (mesh.getNumLodLevels() > 0)
+         {
+             indices = mesh.getLodLevel(lod);
+         }
+         else
+         {
+             indices = buffers.get(Type.Index.ordinal());
+          }
+         if (indices != null)
+         {
+             drawTriangleList_Array(indices, mesh, count);
+         }
+         else
+         {
+             if (verboseLogging)
+                 logger.info("GLES20.glDrawArrays(" + mesh.getMode() + ", " + 0 + ", " + mesh.getVertexCount() + ")");
+ 
+             GLES20.glDrawArrays(convertElementMode(mesh.getMode()), 0, mesh.getVertexCount());
+         }
         clearVertexAttribs();
         clearTextureUnits();
     }
+
 
     private void renderMeshDefault(Mesh mesh, int lod, int count){
 	if (verboseLogging)
@@ -2613,7 +2644,19 @@ public class OGLESShaderRenderer implements Renderer {
 //        if (GLContext.getCapabilities().GL_ARB_vertex_array_object){
 //            renderMeshVertexArray(mesh, lod, count);
 //        }else{
-            renderMeshDefault(mesh, lod, count);
+
+		if (useVBO) {
+			if (verboseLogging)
+				logger.info("RENDERING A MESH USING VertexBufferObject");
+
+			renderMeshDefault(mesh, lod, count);
+		} else {
+			if (verboseLogging)
+				logger.info("RENDERING A MESH USING VertexArray");
+
+			renderMeshVertexArray(mesh, lod, count);
+		}
+
 //        }
     }
 
@@ -2630,4 +2673,176 @@ public class OGLESShaderRenderer implements Renderer {
 		return true;
 	}
 
+   /**
+    * drawTriangleList_Array uses Vertex Array
+    * @param indexBuf
+    * @param mesh
+    * @param count
+    */
+   public void drawTriangleList_Array(VertexBuffer indexBuf, Mesh mesh, int count)
+   {
+       if (verboseLogging)
+           logger.info("drawTriangleList_Array(Count = " + count + ")");
+
+       if (indexBuf.getBufferType() != VertexBuffer.Type.Index)
+           throw new IllegalArgumentException("Only index buffers are allowed as triangle lists.");
+
+       boolean useInstancing = count > 1 && caps.contains(Caps.MeshInstancing);
+       if (useInstancing)
+       {
+           throw new IllegalArgumentException("Caps.MeshInstancing is not supported.");
+       }
+
+       int vertCount = mesh.getVertexCount();
+       Buffer indexData = indexBuf.getData();
+       indexData.clear();
+
+       if (mesh.getMode() == Mode.Hybrid)
+       {
+           int[] modeStart      = mesh.getModeStart();
+           int[] elementLengths = mesh.getElementLengths();
+
+           int elMode = convertElementMode(Mode.Triangles);
+           int fmt    = convertFormat(indexBuf.getFormat());
+           int elSize = indexBuf.getFormat().getComponentSize();
+           int listStart = modeStart[0];
+           int stripStart = modeStart[1];
+           int fanStart = modeStart[2];
+           int curOffset = 0;
+           for (int i = 0; i < elementLengths.length; i++)
+           {
+               if (i == stripStart)
+               {
+                   elMode = convertElementMode(Mode.TriangleStrip);
+               }
+               else if (i == fanStart)
+               {
+                   elMode = convertElementMode(Mode.TriangleStrip);
+               }
+               int elementLength = elementLengths[i];
+
+               indexBuf.getData().position(curOffset);
+               if (verboseLogging)
+                   logger.info("glDrawElements(): " + elementLength + ", " + curOffset);
+
+               GLES20.glDrawElements(elMode, elementLength, fmt, indexBuf.getData());
+
+               curOffset += elementLength * elSize;
+           }
+       }
+       else    //if (mesh.getMode() == Mode.Hybrid)
+       {
+           if (verboseLogging)
+               logger.info("glDrawElements(), indexBuf.capacity (" + indexBuf.getData().capacity() + "), vertCount (" + vertCount + ")");
+
+           GLES20.glDrawElements(
+                   convertElementMode(mesh.getMode()),
+                   indexBuf.getData().capacity(),
+                   convertFormat(indexBuf.getFormat()),
+                   indexBuf.getData()
+           );
+       }
+   }
+
+   /**
+    * setVertexAttrib_Array uses Vertex Array
+    * @param vb
+    * @param idb
+    */
+   public void setVertexAttrib_Array(VertexBuffer vb, VertexBuffer idb)
+   {
+       if (verboseLogging)
+           logger.info("setVertexAttrib_Array(" + vb + ", " + idb + ")");
+
+       if (vb.getBufferType() == VertexBuffer.Type.Index)
+           throw new IllegalArgumentException("Index buffers not allowed to be set to vertex attrib");
+
+       // Get shader
+       int programId = context.boundShaderProgram;
+       if (programId > 0)
+       {
+           VertexBuffer[] attribs = context.boundAttribs;
+
+           Attribute attrib = boundShader.getAttribute(vb.getBufferType().name());
+           int loc = attrib.getLocation();
+           if (loc == -1)
+           {
+               //throw new IllegalArgumentException("Location is invalid for attrib: [" + vb.getBufferType().name() + "]");
+               if (verboseLogging)
+                   logger.warning("attribute is invalid in shader: [" + vb.getBufferType().name() + "]");
+               return;
+           }
+           else if (loc == -2)
+           {
+               String attributeName = "in" + vb.getBufferType().name();
+
+               if (verboseLogging)
+                   logger.info("GLES20.glGetAttribLocation(" + programId + ", " + attributeName + ")");
+
+               loc = GLES20.glGetAttribLocation(programId, attributeName);
+               if (loc < 0)
+               {
+                   attrib.setLocation(-1);
+                   if (verboseLogging)
+                       logger.warning("attribute is invalid in shader: [" + vb.getBufferType().name() + "]");
+                   return; // not available in shader.
+               }
+               else
+               {
+                   attrib.setLocation(loc);
+               }
+
+           }  // if (loc == -2)
+
+           if ((attribs[loc] != vb) || vb.isUpdateNeeded())
+           {
+               // NOTE: Use data from interleaved buffer if specified
+               VertexBuffer avb = idb != null ? idb : vb;
+               avb.getData().clear();
+               avb.getData().position(vb.getOffset());
+
+               if (verboseLogging)
+                   logger.info("GLES20.glVertexAttribPointer(" +
+                           "location=" + loc + ", " +
+                           "numComponents=" + vb.getNumComponents() + ", " +
+                           "format=" + vb.getFormat() + ", " +
+                           "isNormalized=" + vb.isNormalized() + ", " +
+                           "stride=" + vb.getStride() + ", " +
+                           "data.capacity=" + avb.getData().capacity() + ")"
+                   );
+
+
+               // Upload attribute data
+               GLES20.glVertexAttribPointer(loc,
+                       vb.getNumComponents(),
+                       convertFormat(vb.getFormat()),
+                       vb.isNormalized(),
+                       vb.getStride(),
+                       avb.getData());
+               checkGLError();
+
+               GLES20.glEnableVertexAttribArray(loc);
+
+               attribs[loc] = vb;
+           } // if (attribs[loc] != vb)
+       }
+       else
+       {
+           throw new IllegalStateException("Cannot render mesh without shader bound");
+       }
+   }
+
+   /**
+    * setVertexAttrib_Array uses Vertex Array
+    * @param vb
+    */
+   public void setVertexAttrib_Array(VertexBuffer vb)
+   {
+       setVertexAttrib_Array(vb, null);
+   }
+
+   public void setAlphaToCoverage(boolean value)
+   {
+       // TODO Auto-generated method stub
+   }
 }

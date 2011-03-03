@@ -123,6 +123,7 @@ public class OGLESContext implements JmeContext, GLSurfaceView.Renderer {
         timer = new AndroidTimer();
 
         renderer = new OGLESShaderRenderer(gl);
+	applySettingsToRenderer(renderer, settings);
 
         renderer.initialize();
         listener.initialize();
@@ -151,8 +152,21 @@ public class OGLESContext implements JmeContext, GLSurfaceView.Renderer {
 	}
     }
 
+
+	protected void  applySettingsToRenderer(OGLESShaderRenderer renderer, AppSettings settings) {
+		logger.warning("setSettings.USE_VA: [" + settings.getBoolean("USE_VA") + "]");
+		logger.warning("setSettings.VERBOSE_LOGGING: [" + settings.getBoolean("VERBOSE_LOGGING") + "]");
+		renderer.setUseVA(settings.getBoolean("USE_VA"));
+		renderer.setVerboseLogging(settings.getBoolean("VERBOSE_LOGGING"));
+	}
+
+	@Override
     public void setSettings(AppSettings settings) {
-        this.settings.copyFrom(settings);
+		this.settings.copyFrom(settings);
+
+		// XXX This code should be somewhere else
+		if (renderer != null)
+			applySettingsToRenderer(renderer, this.settings);
     }
 
     public void setSystemListener(SystemListener listener){

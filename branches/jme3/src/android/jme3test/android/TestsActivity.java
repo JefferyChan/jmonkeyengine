@@ -66,6 +66,8 @@ public class TestsActivity extends Activity {
 		new Test("helloworld.HelloTerrain", "jme3test.helloworld.HelloTerrain")
 	};
 
+	private CheckBox useVA = null;
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		logger.info("onCreate(" + savedInstanceState + ")");
@@ -75,6 +77,9 @@ public class TestsActivity extends Activity {
 		setContentView(R.layout.tests);
 
 		try {
+
+			useVA = (CheckBox) findViewById(R.id.useVA);
+
 		LinearLayout buttonsContainer = (LinearLayout) findViewById(R.id.buttonsContainer);
 
 
@@ -94,6 +99,7 @@ public class TestsActivity extends Activity {
 					public void onClick(View view) {
 						Intent intent = new Intent(view.getContext(), AndroidActivity.class);
 						intent.putExtra(AndroidActivity.class.getName() + ".TEST_CLASS_NAME", finalClassName); 
+						intent.putExtra(AndroidActivity.class.getName() + ".USE_VA", useVA.isChecked()); 
 						startActivityForResult(intent, 0);
 					}
 				}

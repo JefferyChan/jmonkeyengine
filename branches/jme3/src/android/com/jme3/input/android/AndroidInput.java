@@ -319,9 +319,13 @@ public class AndroidInput extends GLSurfaceView implements KeyInput, MouseInput 
 
     @Override
     public boolean onTouchEvent(MotionEvent motionEvent){
+	int newX = getWidth() - (int) motionEvent.getX();
+	int newY = (int) motionEvent.getY();
+
+
         switch (motionEvent.getAction()){
             case MotionEvent.ACTION_DOWN:
-                MouseButtonEvent btn = new MouseButtonEvent(0, true);
+                MouseButtonEvent btn = new MouseButtonEvent(0, true, newX, newY);
                 btn.setTime(motionEvent.getEventTime());
 		processEvent(btn);
                // listener.onMouseButtonEvent(btn);
@@ -329,7 +333,7 @@ public class AndroidInput extends GLSurfaceView implements KeyInput, MouseInput 
                 lastY = -1;
                 return true;
             case MotionEvent.ACTION_UP:
-                MouseButtonEvent btn2 = new MouseButtonEvent(0, false);
+                MouseButtonEvent btn2 = new MouseButtonEvent(0, false, newX, newY);
                 btn2.setTime(motionEvent.getEventTime());
 		processEvent(btn2);
                // listener.onMouseButtonEvent(btn2);
@@ -337,8 +341,8 @@ public class AndroidInput extends GLSurfaceView implements KeyInput, MouseInput 
                 lastY = -1;
                 return true;
             case MotionEvent.ACTION_MOVE:
-                int newX = getWidth() - (int) motionEvent.getX();
-                int newY = (int) motionEvent.getY();
+               // int newX = getWidth() - (int) motionEvent.getX();
+               // int newY = (int) motionEvent.getY();
                 int dx;
                 int dy;
                 if (lastX != -1){
