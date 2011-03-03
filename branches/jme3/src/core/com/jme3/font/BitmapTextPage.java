@@ -188,5 +188,6 @@ class BitmapTextPage extends Geometry {
         ftb.rewind();
         sib.rewind();
         bcb.rewind();
+        updateModelBound();
     }
 }
