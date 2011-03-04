@@ -107,23 +107,24 @@ public class InputSystemJme implements InputSystem, RawInputListener {
     }
 
     public void onMouseMotionEvent(MouseMotionEvent evt) {
-        if (inputManager.isCursorVisible()){
+        // Only forward the event if there's actual motion involved.
+        // Ignores mouse wheel
+        if (inputManager.isCursorVisible() && (evt.getDX() != 0 ||
+                                               evt.getDY() != 0)){
             inputQueue.add(evt);
         }
     }
 
     private void onMouseButtonEventQueued(MouseButtonEvent evt, NiftyInputConsumer nic) {
-        if (evt.getButtonIndex() == 0){
-            pressed = evt.isPressed();
-            MouseInputEvent niftyEvt = new MouseInputEvent(x, y, pressed);
-            if (nic.processMouseEvent(niftyEvt) /*|| nifty.getCurrentScreen().isMouseOverElement()*/){
-                evt.setConsumed();
-            }
+        pressed = evt.isPressed();
+        MouseInputEvent niftyEvt = new MouseInputEvent(x, y, pressed);
+        if (nic.processMouseEvent(niftyEvt) /*|| nifty.getCurrentScreen().isMouseOverElement()*/){
+            evt.setConsumed();
         }
     }
 
     public void onMouseButtonEvent(MouseButtonEvent evt) {
-        if (inputManager.isCursorVisible()){
+        if (inputManager.isCursorVisible() && evt.getButtonIndex() == 0){
             inputQueue.add(evt);
         }
     }

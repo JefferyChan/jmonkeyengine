@@ -42,13 +42,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
 import javax.swing.SwingUtilities;
 
 /**
- *
  * @author Kirill
  */
 public class AppletHarness extends Applet {
+
+    public static final HashMap<Application, Applet> appToApplet
+                         = new HashMap<Application, Applet>();
 
     private JmeCanvasContext context;
     private Canvas canvas;
@@ -57,6 +60,10 @@ public class AppletHarness extends Applet {
     private String appClass;
     private URL appCfg = null;
     private URL assetCfg = null;
+
+    public static Applet getApplet(Application app){
+        return appToApplet.get(app);
+    }
 
     private void createCanvas(){
         AppSettings settings = new AppSettings(true);
@@ -78,7 +85,6 @@ public class AppletHarness extends Applet {
 
         settings.setWidth(getWidth());
         settings.setHeight(getHeight());
-        settings.setAudioRenderer(null);
 
         JmeSystem.setLowPermissions(true);
 
@@ -93,6 +99,7 @@ public class AppletHarness extends Applet {
             ex.printStackTrace();
         }
 
+        appToApplet.put(app, this);
         app.setSettings(settings);
         app.createCanvas();
 
@@ -118,14 +125,14 @@ public class AppletHarness extends Applet {
         try {
             appCfg = new URL(getParameter("AppSettingsURL"));
         } catch (MalformedURLException ex) {
-            ex.printStackTrace();
+            System.out.println(ex.getMessage());
             appCfg = null;
         }
 
         try {
             assetCfg = new URL(getParameter("AssetConfigURL"));
         } catch (MalformedURLException ex){
-            ex.printStackTrace();
+            System.out.println(ex.getMessage());
             assetCfg = getClass().getResource("/com/jme3/asset/Desktop.cfg");
         }
 
@@ -156,6 +163,8 @@ public class AppletHarness extends Applet {
         });
         app.stop(true);
         System.out.println("applet:destroyDone");
+
+        appToApplet.remove(app);
     }
 
 }

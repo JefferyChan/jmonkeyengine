@@ -71,6 +71,7 @@ public class MouseMotionEvent extends InputEvent {
         return y;
     }
 
+    @Override
     public String toString(){
         return "MouseMotion(X="+x+", Y="+y+", DX="+dx+", DY="+dy+")";
     }
