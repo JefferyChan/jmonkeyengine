@@ -2,6 +2,8 @@ package jme3test.post;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.bounding.BoundingBox;
+import com.jme3.collision.CollisionResult;
+import com.jme3.collision.CollisionResults;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.AnalogListener;
 import com.jme3.input.controls.KeyTrigger;
@@ -10,6 +12,8 @@ import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
+import com.jme3.math.Ray;
+import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 
 import com.jme3.post.FilterPostProcessor;
@@ -39,6 +43,7 @@ public class TestDepthOfField extends SimpleApplication {
     TerrainQuad terrain;
     Material matRock;
     Material matWire;
+    DepthOfFieldFilter dofFilter;
 
     public static void main(String[] args) {
         TestDepthOfField app = new TestDepthOfField();
@@ -78,7 +83,7 @@ public class TestDepthOfField extends SimpleApplication {
         fpp = new FilterPostProcessor(assetManager);
         //     fpp.setNumSamples(4);
 
-        final DepthOfFieldFilter dofFilter = new DepthOfFieldFilter();
+        dofFilter = new DepthOfFieldFilter();
         dofFilter.setFocusDistance(0);
         dofFilter.setFocusRange(50);
         dofFilter.setBlurScale(1.4f);
@@ -189,5 +194,20 @@ public class TestDepthOfField extends SimpleApplication {
         terrain.setShadowMode(ShadowMode.Receive);
         rootNode.attachChild(terrain);
 
+    }
+
+    @Override
+    public void simpleUpdate(float tpf) {
+        Vector3f origin = cam.getWorldCoordinates(new Vector2f(settings.getWidth() / 2, settings.getHeight() / 2), 0.0f);
+        Vector3f direction = cam.getWorldCoordinates(new Vector2f(settings.getWidth() / 2, settings.getHeight() / 2), 0.3f);
+        direction.subtractLocal(origin).normalizeLocal();
+        Ray ray = new Ray(origin, direction);
+        CollisionResults results = new CollisionResults();
+        int numCollisions = terrain.collideWith(ray, results);
+        if (numCollisions > 0) {
+            CollisionResult hit = results.getClosestCollision();
+            fpsText.setText(""+hit.getDistance());
+            dofFilter.setFocusDistance(hit.getDistance()/10);
+        }
     }
 }
