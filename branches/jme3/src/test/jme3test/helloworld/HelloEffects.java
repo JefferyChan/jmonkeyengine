@@ -57,13 +57,13 @@ public class HelloEffects extends SimpleApplication {
     fire.setImagesX(2); fire.setImagesY(2); // 2x2 texture animation
     fire.setEndColor(  new ColorRGBA(1f, 0f, 0f, 1f));   // red
     fire.setStartColor(new ColorRGBA(1f, 1f, 0f, 0.5f)); // yellow
-    fire.setStartVel(new Vector3f(0, 2, 0));
+    fire.setInitialVelocity(new Vector3f(0, 2, 0));
     fire.setStartSize(1.5f);
     fire.setEndSize(0.1f);
     fire.setGravity(0);
     fire.setLowLife(1f);
     fire.setHighLife(3f);
-    fire.setVariation(0.3f);
+    fire.setVelocityVariation(0.3f);
     rootNode.attachChild(fire);
 
     ParticleEmitter debris = new ParticleEmitter("Debris", ParticleMesh.Type.Triangle, 10);
@@ -73,10 +73,10 @@ public class HelloEffects extends SimpleApplication {
     debris.setImagesX(3); debris.setImagesY(3); // 3x3 texture animation
     debris.setRotateSpeed(4);
     debris.setSelectRandomImage(true);
-    debris.setStartVel(new Vector3f(0, 4, 0));
+    debris.setInitialVelocity(new Vector3f(0, 4, 0));
     debris.setStartColor(ColorRGBA.White);
     debris.setGravity(6f);
-    debris.setVariation(.60f);
+    debris.setVelocityVariation(.60f);
     rootNode.attachChild(debris);
     debris.emitAllParticles();
 
@@ -87,13 +87,13 @@ public class HelloEffects extends SimpleApplication {
 //    water.setImagesX(2); water.setImagesY(2); // 2x2 texture animation
 //    water.setStartColor(new ColorRGBA(0f, 0f, 1f, 1f)); // blue
 //    water.setEndColor(  new ColorRGBA(0f, 1f, 1f, 1f)); // turquois
-//    water.setStartVel(new Vector3f(0, -2, 0));
+//    water.setInitialVelocity(new Vector3f(0, -2, 0));
 //    water.setStartSize(1f);
 //    water.setEndSize(1.5f);
 //    water.setGravity(1);
 //    water.setLowLife(1f);
 //    water.setHighLife(3f);
-//    water.setVariation(0.3f);
+//    water.setVelocityVariation(0.3f);
 //    water.setLocalTranslation(0, 5, 0);
 //    rootNode.attachChild(water);
 
