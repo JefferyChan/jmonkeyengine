@@ -654,6 +654,9 @@ public class PhysicsSpace {
         return results;
     }
 
+    /**
+     * Performs a ray collision test and returns the results as a list of PhysicsRayTestResults
+     */
     public List<PhysicsRayTestResult> rayTest(Vector3f from, Vector3f to, List<PhysicsRayTestResult> results) {
         results.clear();
         dynamicsWorld.rayTest(Converter.convert(from, rayVec1), Converter.convert(to, rayVec2), new InternalRayListener(results));
@@ -676,6 +679,11 @@ public class PhysicsSpace {
         }
     }
 
+    /**
+     * Performs a sweep collision test and returns the results as a list of PhysicsSweepTestResults<br/>
+     * You have to use different Transforms for start and end (at least distance > 0.4f).
+     * SweepTest will not see a collision if it starts INSIDE an object and is moving AWAY from its center.
+     */
     public List<PhysicsSweepTestResult> sweepTest(CollisionShape shape, Transform start, Transform end){
         List<PhysicsSweepTestResult> results = new LinkedList<PhysicsSweepTestResult>();
         if(!(shape.getCShape() instanceof ConvexShape)){
@@ -687,6 +695,11 @@ public class PhysicsSpace {
 
     }
 
+    /**
+     * Performs a sweep collision test and returns the results as a list of PhysicsSweepTestResults<br/>
+     * You have to use different Transforms for start and end (at least distance > 0.4f).
+     * SweepTest will not see a collision if it starts INSIDE an object and is moving AWAY from its center.
+     */
     public List<PhysicsSweepTestResult> sweepTest(CollisionShape shape, Transform start, Transform end, List<PhysicsSweepTestResult> results){
         results.clear();
         if(!(shape.getCShape() instanceof ConvexShape)){

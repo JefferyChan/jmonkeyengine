@@ -287,7 +287,7 @@ public class PhysicsRigidBody extends PhysicsCollisionObject {
 
     /**
      * Sets the amount of motion that has to happen in one physics tick to trigger the continuous motion detection<br/>
-     * Set to zero to disable (default)
+     * This avoids the problem of fast objects moving through other objects, set to zero to disable (default)
      * @param threshold
      */
     public void setCcdMotionThreshold(float threshold) {
