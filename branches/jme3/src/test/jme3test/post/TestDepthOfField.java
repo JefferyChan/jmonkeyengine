@@ -207,7 +207,7 @@ public class TestDepthOfField extends SimpleApplication {
         if (numCollisions > 0) {
             CollisionResult hit = results.getClosestCollision();
             fpsText.setText(""+hit.getDistance());
-            dofFilter.setFocusDistance(hit.getDistance()/10);
+            dofFilter.setFocusDistance(hit.getDistance()/10.0f);
         }
     }
 }
