@@ -109,11 +109,8 @@ public class BitmapFont implements Savable {
         if (c == null)
             return 0f;
 
-        int kerning = c.getKerning(nextChar);
         float advance = size * c.getXAdvance();
-        if (kerning != -1){
-            advance += kerning * size;
-        }
+        advance += c.getKerning(nextChar) * size;
         return advance;
     }
 
@@ -165,10 +162,7 @@ public class BitmapFont implements Savable {
                     }
                 }
                 if (!firstCharOfLine){
-                    int amount = findKerningAmount(lastChar, theChar);
-                    if (amount != -1){
-                        lineWidth += amount * sizeScale;
-                    }
+                    lineWidth += findKerningAmount(lastChar, theChar) * sizeScale;
                 }
                 float xAdvance = c.getXAdvance() * sizeScale;
                 lineWidth += xAdvance;

@@ -152,7 +152,7 @@ public class BitmapCharacter implements Savable, Cloneable {
     public int getKerning(int second){
         Integer i = kerning.get(second);
         if (i == null)
-            return -1;
+            return 0;
         else
             return i.intValue();
     }

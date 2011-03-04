@@ -299,11 +299,8 @@ class LetterQuad {
             // Adjust for kerning
             BitmapCharacter lastChar = previous.getBitmapChar();
             if (lastChar != null && block.isKerning()) {
-                int amount = lastChar.getKerning(c);
-                if (amount != -1) {
-                    kernAmount = amount * sizeScale;
-                    x0 += kernAmount * incrScale;
-                }
+                kernAmount = lastChar.getKerning(c) * sizeScale;
+                x0 += kernAmount * incrScale;
             }
         }
         if (isEndOfLine()) {
