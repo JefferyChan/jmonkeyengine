@@ -45,8 +45,10 @@ import org.lwjgl.Sys;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GLContext;
+import org.lwjgl.opengl.OpenGLException;
 import org.lwjgl.opengl.Pbuffer;
 import org.lwjgl.opengl.PixelFormat;
+import org.lwjgl.opengl.Util;
 
 
 public class LwjglOffscreenBuffer extends LwjglContext implements Runnable {
@@ -123,6 +125,16 @@ public class LwjglOffscreenBuffer extends LwjglContext implements Runnable {
         listener.initialize();
     }
 
+    protected boolean checkGLError(){
+        try {
+            Util.checkGLError();
+        } catch (OpenGLException ex){
+            listener.handleError("An OpenGL error has occured!", ex);
+        }
+        // NOTE: Always return true since this is used in an "assert" statement
+        return true;
+    }
+
     protected void runLoop(){
         if (!created.get())
             throw new IllegalStateException();
@@ -141,7 +153,10 @@ public class LwjglOffscreenBuffer extends LwjglContext implements Runnable {
         }catch (LWJGLException ex){
             listener.handleError( "Error occured while making pbuffer current", ex);
         }
+
         listener.update();
+        assert checkGLError();
+        
         renderer.onFrame();
     }
 
