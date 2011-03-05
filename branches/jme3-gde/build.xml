@@ -44,7 +44,7 @@
     </target>
 
     <!--creates update center version via hudson build server-->
-    <target name="dist-gde-hudson" depends="suite.clean, -revert-svn-changes, zip-templates, -set-impl-version-hudson, suite.nbms, -unset-impl-version-hudson">
+    <target name="dist-gde-hudson" depends="suite.clean, -revert-svn-changes, -update-help-sets, zip-templates, -set-impl-version-hudson, suite.nbms, -unset-impl-version-hudson">
     </target>
 
     <!--zip up mac version using command line tool-->
@@ -179,6 +179,11 @@
         <exec executable="svn" dir=".">
             <arg value="update" />
         </exec>
+    </target>
+
+    <!--updates the help sets-->
+    <target name="-update-help-sets">
+        <ant antfile="build.xml" target="update-help-sets" inheritall="false" inheritrefs="false" dir="jme3-core/"/>
     </target>
 
     <!--creates properties files containing svn info for the jme3 folders-->
