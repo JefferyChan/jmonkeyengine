@@ -31,7 +31,6 @@
  */
 package com.jme3.terrain.heightmap;
 
-import com.jme3.terrain.heightmap.AbstractHeightMap;
 import java.util.logging.Logger;
 
 /**

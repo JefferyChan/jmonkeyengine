@@ -50,6 +50,8 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GLContext;
+import org.lwjgl.opengl.OpenGLException;
+import org.lwjgl.opengl.Util;
 
 
 public abstract class LwjglAbstractDisplay extends LwjglContext implements Runnable {
@@ -136,6 +138,16 @@ public abstract class LwjglAbstractDisplay extends LwjglContext implements Runna
         listener.initialize();
     }
 
+    protected boolean checkGLError(){
+        try {
+            Util.checkGLError();
+        } catch (OpenGLException ex){
+            listener.handleError("An OpenGL error has occured!", ex);
+        }
+        // NOTE: Always return true since this is used in an "assert" statement
+        return true;
+    }
+
     /**
      * execute one iteration of the render loop in the OpenGL thread
      */
@@ -144,6 +156,7 @@ public abstract class LwjglAbstractDisplay extends LwjglContext implements Runna
             throw new IllegalStateException();
 
         listener.update();
+        assert checkGLError();
 
         // calls swap buffers, etc.
         try {
