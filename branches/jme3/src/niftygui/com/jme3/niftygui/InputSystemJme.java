@@ -102,7 +102,8 @@ public class InputSystemJme implements InputSystem, RawInputListener {
         y = height - evt.getY();
         MouseInputEvent niftyEvt = new MouseInputEvent(x, y, pressed);
         if (nic.processMouseEvent(niftyEvt) /*|| nifty.getCurrentScreen().isMouseOverElement()*/){
-            evt.setConsumed();
+            // Do not consume motion events
+            //evt.setConsumed();
         }
     }
 
