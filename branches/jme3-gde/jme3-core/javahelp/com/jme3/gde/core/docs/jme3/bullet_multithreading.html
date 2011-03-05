@@ -1,11 +1,9 @@
 
-
-
 <h1><a name="multithreading_bullet_physics_in_jme3" id="multithreading_bullet_physics_in_jme3">Multithreading Bullet Physics in jme3</a></h1>
 <div class="level1">
 
 </div>
-<!-- SECTION "Multithreading Bullet Physics in jme3" [1-52] -->
+
 <h2><a name="introduction" id="introduction">Introduction</a></h2>
 <div class="level2">
 
@@ -18,7 +16,7 @@ Multithreading is misunderstood by many programmers nowadays. The secret is not 
 </p>
 
 </div>
-<!-- SECTION "Introduction" [53-1067] -->
+
 <h2><a name="how_is_it_handled_in_jme3_and_bullet" id="how_is_it_handled_in_jme3_and_bullet">How is it handled in jme3 and bullet?</a></h2>
 <div class="level2">
 
@@ -39,7 +37,7 @@ In the simpleInitApp() method:
 bulletAppState.<span class="me1">setThreadingType</span><span class="br0">&#40;</span>BulletAppState.<span class="me1">ThreadingType</span>.<span class="me1">PARALLEL</span><span class="br0">&#41;</span>;
 stateManager.<span class="me1">attach</span><span class="br0">&#40;</span>bulletAppState<span class="br0">&#41;</span>;</pre>
 </div>
-<!-- SECTION "How is it handled in jme3 and bullet?" [1068-1517] -->
+
 <h3><a name="sequential" id="sequential">SEQUENTIAL</a></h3>
 <div class="level3">
 
@@ -66,7 +64,7 @@ This does everything sequentially on one thread, updating the scene, updating ph
 </ol>
 
 </div>
-<!-- SECTION "SEQUENTIAL" [1518-1803] -->
+
 <h3><a name="parallel" id="parallel">PARALLEL</a></h3>
 <div class="level3">
 
@@ -97,7 +95,7 @@ This is the “standard” form of multithreading since it will produce less pro
 </ol>
 
 </div>
-<!-- SECTION "PARALLEL" [1804-2632] -->
+
 <h3><a name="detached" id="detached">DETACHED</a></h3>
 <div class="level3">
 
@@ -127,7 +125,7 @@ The updatePhysics() method is called by a separate thread and you have to care f
 </ol>
 
 </div>
-<!-- SECTION "DETACHED" [2633-3894] -->
+
 <h2><a name="future_of_jme3_bullet" id="future_of_jme3_bullet">Future of jme3/bullet</a></h2>
 <div class="level2">
 
@@ -137,5 +135,4 @@ In the future, I hope that when I have integrated the native bullet version with
 </p>
 
 </div>
-<!-- SECTION "Future of jme3/bullet" [3895-] -->
 <p><em><a href="http://jmonkeyengine.org/wiki/doku.php/jme3:bullet_multithreading?do=export_xhtmlbody">view online version</a></em></p>

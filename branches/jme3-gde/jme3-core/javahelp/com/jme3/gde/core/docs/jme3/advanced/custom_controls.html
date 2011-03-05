@@ -1,6 +1,4 @@
 
-
-
 <h1><a name="custom_controls" id="custom_controls">Custom Controls</a></h1>
 <div class="level1">
 
@@ -31,7 +29,7 @@ To implement game logic for a Spatial, you will either extend AbstractControl, o
 </p>
 
 </div>
-<!-- SECTION "Custom Controls" [1-1057] -->
+
 <h2><a name="usage_examples" id="usage_examples">Usage Examples</a></h2>
 <div class="level2">
 
@@ -56,7 +54,7 @@ Existing examples in the code base include:
 </ul>
 
 </div>
-<!-- SECTION "Usage Examples" [1058-2529] -->
+
 <h2><a name="the_control_interface" id="the_control_interface">The Control Interface</a></h2>
 <div class="level2">
 
@@ -158,7 +156,7 @@ If you want to create a Control that also extends an existing class, then create
     <span class="br0">&#125;</span>    
 <span class="br0">&#125;</span></pre>
 </div>
-<!-- SECTION "The Control Interface" [2530-5108] -->
+
 <h2><a name="abstractcontrol" id="abstractcontrol">AbstractControl</a></h2>
 <div class="level2">
 
@@ -223,7 +221,7 @@ Usage: Your custom subclass must implement the three methods <code>controlUpdate
 &nbsp;
 <span class="br0">&#125;</span></pre>
 </div>
-<!-- SECTION "AbstractControl" [5109-6586] -->
+
 <h2><a name="best_practices" id="best_practices">Best Practices</a></h2>
 <div class="level2">
 
@@ -277,5 +275,4 @@ Then add the appropriate controls to spatials:
 <pre class="code java">ManualControl c <span class="sy0">=</span> mySpatial.<span class="me1">getControl</span><span class="br0">&#40;</span>ManualControl.<span class="kw1">class</span><span class="br0">&#41;</span>;
 c.<span class="me1">steerX</span><span class="br0">&#40;</span>steerX<span class="br0">&#41;</span>;</pre>
 </div>
-<!-- SECTION "Best Practices" [6587-] -->
 <p><em><a href="http://jmonkeyengine.org/wiki/doku.php/jme3:advanced:custom_controls?do=export_xhtmlbody">view online version</a></em></p>

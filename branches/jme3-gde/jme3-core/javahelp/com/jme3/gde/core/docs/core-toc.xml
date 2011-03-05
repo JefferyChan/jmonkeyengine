@@ -83,6 +83,7 @@
             <tocitem text="Custom Controls" target="jme3.advanced.custom_controls"/>
             <tocitem text="Knowing SimpleApplication" target="jme3.intermediate.simpleapplication"/>
             <tocitem text="The Application Settings" target="jme3.intermediate.appsettings"/>
+            <tocitem text="Asset Manager" target="jme3.advanced.asset_manager"/>
             <tocitem text="jME3 File Types" target="jme3.intermediate.file_types"/>
             <tocitem text="Math in jME3" target="jme3.math"/>
             <tocitem text="I want to do X, what API do I use?" target="jme3.intermediate.api_feature_mapping"/>

@@ -1,6 +1,4 @@
 
-
-
 <h1><a name="combo_moves" id="combo_moves">Combo Moves</a></h1>
 <div class="level1">
 
@@ -32,7 +30,7 @@ Copy the two classes ComboMoveExecution.java and ComboMove.java into your applic
 </p>
 
 </div>
-<!-- SECTION "Combo Moves" [1-824] -->
+
 <h2><a name="example_code" id="example_code">Example Code</a></h2>
 <div class="level2">
 <ul>
@@ -45,7 +43,7 @@ Copy the two classes ComboMoveExecution.java and ComboMove.java into your applic
 </ul>
 
 </div>
-<!-- SECTION "Example Code" [825-1324] -->
+
 <h2><a name="create_input_triggers" id="create_input_triggers">Create Input Triggers</a></h2>
 <div class="level2">
 
@@ -65,7 +63,7 @@ inputManager.<span class="me1">addMapping</span><span class="br0">&#40;</span><s
 ...
 <span class="me1">inputManager</span>.<span class="me1">addListener</span><span class="br0">&#40;</span><span class="kw1">this</span>, <span class="st0">&quot;Left&quot;</span>, <span class="st0">&quot;Right&quot;</span>, <span class="st0">&quot;Up&quot;</span>, <span class="st0">&quot;Down&quot;</span>, <span class="st0">&quot;Attack1&quot;</span><span class="br0">&#41;</span>;</pre>
 </div>
-<!-- SECTION "Create Input Triggers" [1325-2095] -->
+
 <h2><a name="define_combos" id="define_combos">Define Combos</a></h2>
 <div class="level2">
 
@@ -88,7 +86,7 @@ Also create a ComboMoveExecution object for each ComboMove. You need it later to
 </p>
 <pre class="code java">ComboMoveExecution fireballExec <span class="sy0">=</span> <span class="kw1">new</span> ComboMoveExecution<span class="br0">&#40;</span>fireball<span class="br0">&#41;</span>;</pre>
 </div>
-<!-- SECTION "Define Combos" [2096-3004] -->
+
 <h3><a name="combomove_class_methods" id="combomove_class_methods">ComboMove Class Methods</a></h3>
 <div class="level3">
 
@@ -154,7 +152,7 @@ The following getters give you more information about the game state:
 </table>
 
 </div>
-<!-- SECTION "ComboMove Class Methods" [3005-4493] -->
+
 <h2><a name="detect_combos_in_actionlistener" id="detect_combos_in_actionlistener">Detect Combos in ActionListener</a></h2>
 <div class="level2">
 
@@ -212,7 +210,7 @@ We also track the cast time of a combo to determine if it has timed out (see upd
     <span class="br0">&#125;</span>
 <span class="br0">&#125;</span></pre>
 </div>
-<!-- SECTION "Detect Combos in ActionListener" [4494-6317] -->
+
 <h2><a name="execute_combos_in_the_update_loop" id="execute_combos_in_the_update_loop">Execute Combos in the Update Loop</a></h2>
 <div class="level2">
 
@@ -241,7 +239,7 @@ Test <code>currentMove.getMoveName()</code> and proceed to call methods that imp
 </p>
 
 </div>
-<!-- SECTION "Execute Combos in the Update Loop" [6318-7155] -->
+
 <h2><a name="why_combos" id="why_combos">Why Combos?</a></h2>
 <div class="level2">
 
@@ -258,5 +256,4 @@ Depending on the game genre, the designer can reward the players&#039; intrinsic
 </ul>
 
 </div>
-<!-- SECTION "Why Combos?" [7156-] -->
 <p><em><a href="http://jmonkeyengine.org/wiki/doku.php/jme3:advanced:combo_moves?do=export_xhtmlbody">view online version</a></em></p>

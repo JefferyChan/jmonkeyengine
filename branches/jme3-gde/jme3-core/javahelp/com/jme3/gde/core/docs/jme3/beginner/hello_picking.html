@@ -1,6 +1,4 @@
 
-
-
 <h1><a name="getting_started_with_jme3_8_-_hello_picking" id="getting_started_with_jme3_8_-_hello_picking">Getting Started with JME3 (8) - Hello Picking</a></h1>
 <div class="level1">
 
@@ -31,7 +29,7 @@ This tutorial relies on what you have learned in the <a href="/com/jme3/gde/core
 </p>
 
 </div>
-<!-- SECTION "Getting Started with JME3 (8) - Hello Picking" [1-808] -->
+
 <h2><a name="sample_code" id="sample_code">Sample Code</a></h2>
 <div class="level2">
 <pre class="code java"><span class="kw1">package</span> <span class="co2">jme3test.helloworld</span>;
@@ -176,7 +174,7 @@ Keep an eye on the application&#039;s output stream, it will give you more detai
 </p>
 
 </div>
-<!-- SECTION "Sample Code" [809-6618] -->
+
 <h2><a name="understanding_the_helper_methods" id="understanding_the_helper_methods">Understanding the Helper Methods</a></h2>
 <div class="level2">
 
@@ -210,7 +208,7 @@ In this example, we attached all “shootable” objects to one custom node, <co
 </p>
 
 </div>
-<!-- SECTION "Understanding the Helper Methods" [6619-7665] -->
+
 <h2><a name="understanding_ray_casting_for_hit_testing" id="understanding_ray_casting_for_hit_testing">Understanding Ray Casting for Hit Testing</a></h2>
 <div class="level2">
 
@@ -243,12 +241,12 @@ Here is our simple ray casting algorithm for picking objects:
 </ol>
 
 </div>
-<!-- SECTION "Understanding Ray Casting for Hit Testing" [7666-8510] -->
+
 <h2><a name="implementing_hit_testing" id="implementing_hit_testing">Implementing Hit Testing</a></h2>
 <div class="level2">
 
 </div>
-<!-- SECTION "Implementing Hit Testing" [8511-8548] -->
+
 <h3><a name="loading_the_scene" id="loading_the_scene">Loading the scene</a></h3>
 <div class="level3">
 
@@ -273,7 +271,7 @@ First initialize some shootable nodes and attach them to the scene. You will use
     shootables.<span class="me1">attachChild</span><span class="br0">&#40;</span>makeFloor<span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
   <span class="br0">&#125;</span></pre>
 </div>
-<!-- SECTION "Loading the scene" [8549-9230] -->
+
 <h3><a name="setting_up_the_input_listener" id="setting_up_the_input_listener">Setting Up the Input Listener</a></h3>
 <div class="level3">
 
@@ -289,7 +287,7 @@ Next you declare the shooting action. It can be triggered by clicking or by pres
     inputManager.<span class="me1">addListener</span><span class="br0">&#40;</span>actionListener, <span class="st0">&quot;Shoot&quot;</span><span class="br0">&#41;</span>;
   <span class="br0">&#125;</span></pre>
 </div>
-<!-- SECTION "Setting Up the Input Listener" [9231-9799] -->
+
 <h3><a name="defining_the_picking_action" id="defining_the_picking_action">Defining the Picking Action</a></h3>
 <div class="level3">
 
@@ -355,7 +353,7 @@ Tip: Notice how you use the provided method <code>results.getClosestCollision().
 </p>
 
 </div>
-<!-- SECTION "Defining the Picking Action" [9800-12558] -->
+
 <h2><a name="exercises" id="exercises">Exercises</a></h2>
 <div class="level2">
 
@@ -366,7 +364,7 @@ Modify the code sample to solve these exercises:
 </p>
 
 </div>
-<!-- SECTION "Exercises" [12559-12731] -->
+
 <h3><a name="magic_spell" id="magic_spell">Magic Spell</a></h3>
 <div class="level3">
 
@@ -393,7 +391,7 @@ Change the color of the closest clicked target! <br/>
 </ol>
 
 </div>
-<!-- SECTION "Magic Spell" [12732-13260] -->
+
 <h3><a name="shoot_at_a_character" id="shoot_at_a_character">Shoot at a Character</a></h3>
 <div class="level3">
 
@@ -415,7 +413,7 @@ P.S. if you translate your golems position you could try .getWorldContactPoint()
 </p>
 
 </div>
-<!-- SECTION "Shoot at a Character" [13261-13836] -->
+
 <h3><a name="pick_up_into_inventory" id="pick_up_into_inventory">Pick up into Inventory</a></h3>
 <div class="level3">
 
@@ -431,7 +429,7 @@ When you click once, the closest target should now be detached from the scene; w
 </ol>
 
 </div>
-<!-- SECTION "Pick up into Inventory" [13837-14188] -->
+
 <h2><a name="conclusion" id="conclusion">Conclusion</a></h2>
 <div class="level2">
 
@@ -450,5 +448,4 @@ Now, would it not be nice if those targets and the floor were solid objects? Let
 </p>
 
 </div>
-<!-- SECTION "Conclusion" [14189-] -->
 <p><em><a href="http://jmonkeyengine.org/wiki/doku.php/jme3:beginner:hello_picking?do=export_xhtmlbody">view online version</a></em></p>

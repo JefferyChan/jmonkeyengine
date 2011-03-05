@@ -1,6 +1,4 @@
 
-
-
 <h1><a name="the_scene" id="the_scene">The Scene</a></h1>
 <div class="level1">
 
@@ -16,7 +14,7 @@ Note: All info due to change until jMP is stable!
 </p>
 
 </div>
-<!-- SECTION "The Scene" [1-335] -->
+
 <h2><a name="how_to_access_the_scene" id="how_to_access_the_scene">How to access the Scene</a></h2>
 <div class="level2">
 
@@ -45,7 +43,7 @@ There are several ways for your plugin to interact with the Scene:
 </ul>
 
 </div>
-<!-- SECTION "How to access the Scene" [336-1300] -->
+
 <h2><a name="listening_for_node_selection" id="listening_for_node_selection">Listening for Node selection</a></h2>
 <div class="level2">
 
@@ -93,7 +91,7 @@ You can also access the “real” spatial but since its part of the scenegraph 
     <span class="kw1">return</span>;
 <span class="br0">&#125;</span></pre>
 </div>
-<!-- SECTION "Listening for Node selection" [1301-3319] -->
+
 <h2><a name="requesting_the_scene" id="requesting_the_scene">Requesting the Scene</a></h2>
 <div class="level2">
 
@@ -140,7 +138,7 @@ The SceneRequest object has to contain several things. A thing that you must sup
     <span class="kw1">return</span> <span class="kw2">true</span>;
 <span class="br0">&#125;</span></pre>
 </div>
-<!-- SECTION "Requesting the Scene" [3320-5281] -->
+
 <h2><a name="undo_redo_support" id="undo_redo_support">Undo/Redo support</a></h2>
 <div class="level2">
 
@@ -183,7 +181,7 @@ Note: Its important that you use the method addEdit(Object source, UndoableEdit 
 </p>
 
 </div>
-<!-- SECTION "Undo/Redo support" [5282-6376] -->
+
 <h2><a name="handy_things_in_jmonkeyplatform_core" id="handy_things_in_jmonkeyplatform_core">Handy things in jMonkeyPlatform Core</a></h2>
 <div class="level2">
 <ul>
@@ -195,8 +193,19 @@ Note: Its important that you use the method addEdit(Object source, UndoableEdit 
 </li>
 </ul>
 </li>
+<li class="level1"><div class="li"> com.jme3.gde.core.scene</div>
+<ul>
+<li class="level2"><div class="li"> OffViewPanel → A panel that renders a 3d scene in a preview and displays it in a lightweight swing panel</div>
+</li>
+</ul>
+</li>
+<li class="level1"><div class="li"> com.jme3.gde.core.util</div>
+<ul>
+<li class="level2"><div class="li"> DataObjectSaveNode → Allows enabling the save all button by using any file and implementing the SvaeCookie yourself.</div>
+</li>
+</ul>
+</li>
 </ul>
 
 </div>
-<!-- SECTION "Handy things in jMonkeyPlatform Core" [6377-] -->
 <p><em><a href="http://jmonkeyengine.org/wiki/doku.php/sdk:development:scene?do=export_xhtmlbody">view online version</a></em></p>

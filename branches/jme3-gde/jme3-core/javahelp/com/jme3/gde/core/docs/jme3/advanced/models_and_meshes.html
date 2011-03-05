@@ -1,36 +1,18 @@
 
-
-
-<h1><a name="models_meshes_assetmanager" id="models_meshes_assetmanager">Models, Meshes (AssetManager)</a></h1>
+<h1><a name="models_and_meshes" id="models_and_meshes">Models and Meshes</a></h1>
 <div class="level1">
 
 <p>
 
-<strong>Work in progress</strong>
+This article looks close at visible elements that you load into the scenegraph, and then transform. Such SceneGraph elements are 3D models and simple shapes.
+</p>
+
+<p>
+For loading Models, see <a href="/com/jme3/gde/core/docs/jme3/advanced/asset_manager.html" class="wikilink1" title="jme3:advanced:asset_manager">Asset Manager</a>. Model textures and materials are discussed under <a href="/com/jme3/gde/core/docs/jme3/advanced/materials_overview.html" class="wikilink1" title="jme3:advanced:materials_overview">Materials Overview</a>. 
 </p>
 
 </div>
-<!-- SECTION "Models, Meshes (AssetManager)" [1-67] -->
-<h2><a name="assetmanager" id="assetmanager">AssetManager</a></h2>
-<div class="level2">
 
-<p>
-
-The <code>assetManager</code> object is an com.jme3.asset.AssetManager instance that every com.jme3.app.Application can access. You can use the object directly or use the accessor (e.g. <code>getAssetManager()</code>).
-</p>
-
-<p>
-Use the AssetManager to load assets such as Materials and Models, for example:
-
-</p>
-<pre class="code java">Material mat <span class="sy0">=</span> <span class="br0">&#40;</span>Material<span class="br0">&#41;</span> assetManager.<span class="me1">loadAsset</span><span class="br0">&#40;</span>
-    <span class="kw1">new</span> AssetKey<span class="br0">&#40;</span><span class="st0">&quot;Common/Materials/RedColor.j3m&quot;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;</pre>
-<p>
-Textures are already discussed under <a href="/com/jme3/gde/core/docs/jme3/advanced/materials_overview.html" class="wikilink1" title="jme3:advanced:materials_overview">Materials Overview</a>. This article looks close at visible elements that you load into the scenegraph, and then transform. Such SceneGraph elements are 3D models and simple shapes.
-</p>
-
-</div>
-<!-- SECTION "AssetManager" [68-730] -->
 <h2><a name="geometries" id="geometries">Geometries</a></h2>
 <div class="level2">
 
@@ -56,51 +38,52 @@ The Mesh in the Geometry can be a default Shape or a loaded model.
 </p>
 
 </div>
-<!-- SECTION "Geometries" [731-1119] -->
+
 <h3><a name="meshes" id="meshes">Meshes</a></h3>
 <div class="level3">
 
 <p>
 
-All visible game elements, whether it is a Model or a Shape, are made up of polygon meshes. See also <a href="/com/jme3/gde/core/docs/jme3/advanced/custom_meshes.html" class="wikilink1" title="jme3:advanced:custom_meshes">custom meshes</a>. 
-</p>
+All visible game elements in a scene, whether it is a Model or a Shape, are made up of polygon meshes. JME3 has a com.jme3.scene.Mesh class that represents all meshes.
 
-<p>
-JME3 has a com.jme3.scene.Mesh class that represents meshes.
 </p>
 <ul>
 <li class="level1"><div class="li"> Meshes have transformations: location (local translation), rotation, scale</div>
 </li>
-<li class="level1"><div class="li"> Meshes have a bounding volume.</div>
+<li class="level1"><div class="li"> Meshes are made up of triangles. <br/>
+ <code>getTriangleCount(…)</code> and <code>getTriangle(…)</code></div>
 </li>
-<li class="level1"><div class="li"> Meshes are made up of triangles. <code>getTriangle(…)</code>, <code>getTriangleCount(…)</code></div>
+<li class="level1"><div class="li"> Each meshes has a IDs. <br/>
+ <code>getId()</code></div>
 </li>
-<li class="level1"><div class="li"> Meshes have IDs. <code>getId()</code></div>
+<li class="level1"><div class="li"> Meshes have a bounding volume. jME3 can detect intersections (that is, non-physical collisions) between meshes, or between meshes and 2D elements such as rays. <br/>
+ <code>collideWith()</code>.</div>
 </li>
-<li class="level1"><div class="li"> You can use meshes to detect intersections (that is, non-physical collisions) with other meshes or rays. <code>collideWith()</code>.</div>
+<li class="level1"><div class="li"> Meshes can have a LOD, a level of detail optimization, that renders more or less details depending on distance from the camera.</div>
 </li>
-<li class="level1"><div class="li"> Meshes can have a LOD (level of detail optimization depending on distance from the camera)</div>
-</li>
-<li class="level1"><div class="li"> Can be locked with <code>setStatic()</code> and unlocked with <code>setDynamic()</code>. </div>
+<li class="level1"><div class="li"> Meshes can be locked with <code>setStatic()</code> and unlocked with <code>setDynamic()</code>. </div>
 <ul>
-<li class="level2"><div class="li"> Static Meshes cannot be modified but are more optimized (can be precalculated). </div>
+<li class="level2"><div class="li"> Static Meshes cannot be modified, but are more optimized and faster (they can be precalculated). </div>
 </li>
-<li class="level2"><div class="li"> Dynamic Meshes can be modified live but are not optimized and slower. </div>
+<li class="level2"><div class="li"> Dynamic Meshes can be modified live, but are not optimized and slower. </div>
 </li>
 </ul>
-</li>
-<li class="level1"><div class="li"> … …</div>
 </li>
 </ul>
 
+<p>
+
+You can use provided default shapes, load meshes created in external applications (that is, 3D models), or create free-form <a href="/com/jme3/gde/core/docs/jme3/advanced/custom_meshes.html" class="wikilink1" title="jme3:advanced:custom_meshes">custom meshes</a>. 
+</p>
+
 </div>
-<!-- SECTION "Meshes" [1120-2043] -->
+
 <h3><a name="shapes" id="shapes">Shapes</a></h3>
 <div class="level3">
 
 <p>
 
-The simplest type of of Meshes are jME&#039;s default Shapes. You can use Shapes to build complex Geometries. Shapes are created without using the AssetManager.
+The simplest type of Meshes are jME&#039;s default Shapes. You can use Shapes to build complex Geometries. Shapes are created without using the AssetManager.
 </p>
 
 <p>
@@ -130,6 +113,8 @@ non-3D shapes:
 </li>
 <li class="level1"><div class="li"> com.jme3.scene.shape.Line – a 1D line (has a length)</div>
 </li>
+<li class="level1"><div class="li"> come.jme3.math.Ray – a 1D line (has length, direction, start point, but no end)</div>
+</li>
 </ul>
 
 <p>
@@ -140,19 +125,66 @@ Usage: Create the base mesh shape, and wrap it into a Geometry. Then attach the 
 Geometry sphere <span class="sy0">=</span> <span class="kw1">new</span> Geometry<span class="br0">&#40;</span><span class="st0">&quot;Sky&quot;</span>, sphereMesh<span class="br0">&#41;</span>;
 rootNode.<span class="me1">attachChild</span><span class="br0">&#40;</span>sphere<span class="br0">&#41;</span>;</pre>
 </div>
-<!-- SECTION "Shapes" [2044-2995] -->
+
 <h2><a name="models" id="models">Models</a></h2>
 <div class="level2">
 
 <p>
 
-Models are also made up of meshes, but are a lot more complex than Shapes. Models are created in Mesh editors such as Blender. Copy the model files into your project&#039;s <code>assets</code> directory and use the AssetManager to load it into a jME application.
+Models are also made up of meshes, but are a lot more complex than Shapes. Models are created in external 3D Mesh Editors, such as <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.blender.org/"><param name="text" value="<html><u>Asset Manager</u></html>"><param name="textColor" value="blue"></object> to load models into a jME application.
 </p>
 <pre class="code java">Spatial model <span class="sy0">=</span> 
   <span class="br0">&#40;</span>Spatial<span class="br0">&#41;</span> assetManager.<span class="me1">loadModel</span><span class="br0">&#40;</span>
     <span class="st0">&quot;Models/MonkeyHead/MonkeyHead.mesh.xml&quot;</span><span class="br0">&#41;</span>;</pre>
 </div>
-<!-- SECTION "Models" [2996-3382] -->
+
+<h2><a name="creating_models_and_scenes" id="creating_models_and_scenes">Creating Models and Scenes</a></h2>
+<div class="level2">
+
+<p>
+
+To create 3D models and scenes, you need a 3D Mesh Editor such as Blender, with an OgreXML Exporter plugin. <strong>Tip:</strong> Consider to create <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://en.wikibooks.org/wiki/Blender_3D:_Noob_to_Pro/UV_Map_Basics"><param name="text" value="<html><u>UV textures</u></html>"><param name="textColor" value="blue"></object> for more complex models, it looks more professional. 
+</p>
+
+<p>
+3D Mesh editors are third-party products, so please consult their documentation for help. Here is an example for Blender users:
+</p>
+
+<p>
+To export your models as Ogre <acronym title="Extensible Markup Language">XML</acronym> meshes with materials:
+</p>
+<ol>
+<li class="level1"><div class="li"> Open the menu File &gt; Export &gt; OgreXML Exporter to open the exporter dialog.</div>
+</li>
+<li class="level1"><div class="li"> In the Export Materials field: Give the material the same name as the model. For example, the model <code>something.mesh.xml</code> goes with <code>something.material</code>, plus (optionally) <code>something.skeleton.xml</code>, and some <acronym title="Joint Photographics Experts Group">JPG</acronym> files.</div>
+</li>
+<li class="level1"><div class="li"> In the Export Meshes field: Select a target subdirectory of your <code>assets/Models/</code> directory. E.g. <code>assets/Models/something/</code>.</div>
+</li>
+<li class="level1"><div class="li"> Activate the following exporter settings: </div>
+<ul>
+<li class="level2"><div class="li"> Copy Textures: YES</div>
+</li>
+<li class="level2"><div class="li"> Rendering Materials: YES</div>
+</li>
+<li class="level2"><div class="li"> Flip Axis: YES</div>
+</li>
+<li class="level2"><div class="li"> Require Materials: YES</div>
+</li>
+<li class="level2"><div class="li"> Skeleton name follows mesh: YES</div>
+</li>
+</ul>
+</li>
+<li class="level1"><div class="li"> Click export.</div>
+</li>
+</ol>
+
+<p>
+
+You can now use the <a href="/com/jme3/gde/core/docs/jme3/jmonkeyplatform.html" class="wikilink2" title="jme3:jmonkeyplatform" rel="nofollow">jMonkeyPlatform</a> to <a href="/com/jme3/gde/core/docs/jme3/jmonkeyplatform/model_loader_and_viewer.html" class="wikilink2" title="jme3:jmonkeyplatform:model_loader_and_viewer" rel="nofollow">load models</a> and <a href="/com/jme3/gde/core/docs/jme3/jmonkeyplatform/scene_composer.html" class="wikilink2" title="jme3:jmonkeyplatform:scene_composer" rel="nofollow">create scenes</a> from them. 
+</p>
+
+</div>
+
 <h3><a name="how_to_identify_a_named_sub-mesh_in_a_loaded_model" id="how_to_identify_a_named_sub-mesh_in_a_loaded_model">How to Identify a Named Sub-Mesh in a Loaded Model</a></h3>
 <div class="level3">
 
@@ -172,5 +204,4 @@ Open the model in a 3D mesh editor
 </ol>
 
 </div>
-<!-- SECTION "How to Identify a Named Sub-Mesh in a Loaded Model" [3383-] -->
 <p><em><a href="http://jmonkeyengine.org/wiki/doku.php/jme3:advanced:models_and_meshes?do=export_xhtmlbody">view online version</a></em></p>

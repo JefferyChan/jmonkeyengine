@@ -1,6 +1,4 @@
 
-
-
 <h1><a name="audio_in_jme3" id="audio_in_jme3">Audio in jME3</a></h1>
 <div class="level1">
 
@@ -14,7 +12,7 @@ Place audio files in the <code>assets/Sound/</code> directory of your project. j
 </p>
 
 </div>
-<!-- SECTION "Audio in jME3" [1-334] -->
+
 <h2><a name="creating_audio_nodes" id="creating_audio_nodes">Creating Audio Nodes</a></h2>
 <div class="level2">
 
@@ -34,7 +32,7 @@ If it is a long file, you set the boolean to true to stream the audio.
 </p>
 <pre class="code java">AudioNode music <span class="sy0">=</span> <span class="kw1">new</span> AudioNode<span class="br0">&#40;</span>assetManager, <span class="st0">&quot;Sound/music.wav&quot;</span>, <span class="kw2">true</span><span class="br0">&#41;</span>;</pre>
 </div>
-<!-- SECTION "Creating Audio Nodes" [335-736] -->
+
 <h2><a name="setting_audionode_properties" id="setting_audionode_properties">Setting AudioNode Properties</a></h2>
 <div class="level2">
 <table class="inline">
@@ -87,7 +85,7 @@ If it is a long file, you set the boolean to true to stream the audio.
 </table>
 
 </div>
-<!-- SECTION "Setting AudioNode Properties" [737-2009] -->
+
 <h2><a name="playing_audio_nodes" id="playing_audio_nodes">Playing Audio Nodes</a></h2>
 <div class="level2">
 
@@ -105,7 +103,7 @@ You pause and stop music with the following methods:
 </p>
 <pre class="code java">audioRenderer.<span class="me1">pauseSource</span><span class="br0">&#40;</span> myAudioNode <span class="br0">&#41;</span>;</pre><pre class="code java">audioRenderer.<span class="me1">stopSource</span><span class="br0">&#40;</span> myAudioNode <span class="br0">&#41;</span>;</pre>
 </div>
-<!-- SECTION "Playing Audio Nodes" [2010-2532] -->
+
 <h2><a name="setting_environment_properties" id="setting_environment_properties">Setting Environment Properties</a></h2>
 <div class="level2">
 
@@ -147,5 +145,4 @@ Alternatively you can create a <code>com.​jme3.​audio.Environment</code> obj
         <span class="kw1">new</span> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Aenvironment+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object><span class="br0">&#40;</span> density, diffusion, gain, gainHf, decayTime, decayHf, 
                 reflGain, reflDelay, lateGain, lateDelay <span class="br0">&#41;</span> <span class="br0">&#41;</span>;</pre>
 </div>
-<!-- SECTION "Setting Environment Properties" [2533-] -->
 <p><em><a href="http://jmonkeyengine.org/wiki/doku.php/jme3:advanced:audio?do=export_xhtmlbody">view online version</a></em></p>

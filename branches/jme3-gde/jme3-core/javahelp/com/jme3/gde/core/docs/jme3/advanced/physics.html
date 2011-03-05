@@ -1,6 +1,4 @@
 
-
-
 <h1><a name="physicsgravity_collisions_forces" id="physicsgravity_collisions_forces">Physics: Gravity, Collisions, Forces</a></h1>
 <div class="level1">
 
@@ -11,7 +9,7 @@ Game Physics are used in applications that simulate mass/gravity, collisions, an
 </p>
 
 </div>
-<!-- SECTION "Physics: Gravity, Collisions, Forces" [1-320] -->
+
 <h2><a name="technical_overview" id="technical_overview">Technical Overview</a></h2>
 <div class="level2">
 
@@ -44,7 +42,7 @@ When you use physics, 1 unit (1.0f) equals 1 meter, weight is expressed in kilog
 </p>
 
 </div>
-<!-- SECTION "Technical Overview" [321-1364] -->
+
 <h2><a name="sample_code" id="sample_code">Sample Code</a></h2>
 <div class="level2">
 
@@ -65,7 +63,7 @@ Full code samples are here:
 </ul>
 
 </div>
-<!-- SECTION "Sample Code" [1365-1969] -->
+
 <h2><a name="physics_application" id="physics_application">Physics Application</a></h2>
 <div class="level2">
 
@@ -115,7 +113,7 @@ For each Spatial that you want to be physical:
 </ol>
 
 </div>
-<!-- SECTION "Physics Application" [1970-3012] -->
+
 <h3><a name="collision_shapes" id="collision_shapes">Collision Shapes</a></h3>
 <div class="level3">
 
@@ -178,7 +176,7 @@ Let&#039;s look at the constructor:
 </p>
 
 </div>
-<!-- SECTION "Collision Shapes" [3013-5477] -->
+
 <h3><a name="collision_shape_code_samples" id="collision_shape_code_samples">Collision Shape Code Samples</a></h3>
 <div class="level3">
 
@@ -199,7 +197,7 @@ SphereCollisionShape, BoxCollisionShape, CapsuleCollisionShape are also not mesh
 <pre class="code java">SphereCollisionShape sphereShape <span class="sy0">=</span> 
     <span class="kw1">new</span> SphereCollisionShape<span class="br0">&#40;</span>1.0f<span class="br0">&#41;</span>;</pre>
 </div>
-<!-- SECTION "Collision Shape Code Samples" [5478-6413] -->
+
 <h2><a name="physics_controls" id="physics_controls">Physics Controls</a></h2>
 <div class="level2">
 
@@ -278,7 +276,7 @@ Package: com.jme3.bullet.nodes
 </p>
 
 </div>
-<!-- SECTION "Physics Controls" [6414-8613] -->
+
 <h3><a name="physics_nodes_code_samples" id="physics_nodes_code_samples">Physics Nodes Code Samples</a></h3>
 <div class="level3">
 
@@ -310,7 +308,7 @@ Tip: Spheres and Boxes will fall back to their correct default Collision Shape i
 myBox.<span class="me1">addControl</span><span class="br0">&#40;</span><span class="kw1">new</span> RigidBodyControl<span class="br0">&#40;</span> 1.0f <span class="br0">&#41;</span><span class="br0">&#41;</span>;
 bulletAppState.<span class="me1">getPhysicsSpace</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">add</span><span class="br0">&#40;</span>myBox<span class="br0">&#41;</span>;</pre>
 </div>
-<!-- SECTION "Physics Nodes Code Samples" [8614-9919] -->
+
 <h2><a name="physics_space" id="physics_space">Physics Space</a></h2>
 <div class="level2">
 
@@ -334,7 +332,7 @@ myModel.<span class="me1">removeFromParent</span><span class="br0">&#40;</span><
 </ol>
 
 </div>
-<!-- SECTION "Physics Space" [9920-10765] -->
+
 <h2><a name="properties_of_physical_objects" id="properties_of_physical_objects">Properties of Physical Objects</a></h2>
 <div class="level2">
 
@@ -395,7 +393,7 @@ On a PhysicsControl, you can set the following physical properties.
 </table>
 
 </div>
-<!-- SECTION "Properties of Physical Objects" [10766-12297] -->
+
 <h3><a name="kinematic_vs_dynamic_vs_static" id="kinematic_vs_dynamic_vs_static">Kinematic vs Dynamic vs Static</a></h3>
 <div class="level3">
 
@@ -451,7 +449,7 @@ Kinematic spatials have a mass, but they are not affected by gravity. When non-k
 </p>
 <pre class="code java">airhook.<span class="me1">setKinematic</span><span class="br0">&#40;</span><span class="kw2">true</span><span class="br0">&#41;</span>;</pre>
 </div>
-<!-- SECTION "Kinematic vs Dynamic vs Static" [12298-13619] -->
+
 <h2><a name="forcesmoving_physical_objects" id="forcesmoving_physical_objects">Forces: Moving Physical Objects</a></h2>
 <div class="level2">
 
@@ -530,7 +528,7 @@ Physics also supports the following features:
 		<td class="col0"> setDamping(float, float)</td><td class="col1">The first value is the linear threshold and the second the angular.</td>
 	</tr>
 	<tr class="row5">
-		<td class="col0"> setAngularFactor()</td><td class="col1">?</td>
+		<td class="col0"> setAngularFactor(1f)</td><td class="col1">Set the amount of rotation that will be applied. A value of zero will cancel all rotational force outcome.</td>
 	</tr>
 	<tr class="row6">
 		<td class="col0"> setCcdSweptSphereRadius()</td><td class="col1">?</td>
@@ -541,7 +539,7 @@ Physics also supports the following features:
 </table>
 
 </div>
-<!-- SECTION "Forces: Moving Physical Objects" [13620-16868] -->
+
 <h2><a name="responding_to_a_physicscollisionevent" id="responding_to_a_physicscollisionevent">Responding to a PhysicsCollisionEvent</a></h2>
 <div class="level2">
 
@@ -567,7 +565,7 @@ If you want to respond to a collision event with a custom action however, then y
 </ul>
 
 </div>
-<!-- SECTION "Responding to a PhysicsCollisionEvent" [16869-17503] -->
+
 <h3><a name="overriding_the_collision_method" id="overriding_the_collision_method">Overriding the Collision() Method</a></h3>
 <div class="level3">
 
@@ -594,7 +592,7 @@ After you identify the colliding nodes, specify the action to trigger when this 
 </p>
 
 </div>
-<!-- SECTION "Overriding the Collision() Method" [17504-18612] -->
+
 <h3><a name="reading_details_from_a_physicscollisionevent" id="reading_details_from_a_physicscollisionevent">Reading Details From a PhysicsCollisionEvent</a></h3>
 <div class="level3">
 
@@ -634,7 +632,7 @@ Note that after the collision method has been called the object is not valid any
 </p>
 
 </div>
-<!-- SECTION "Reading Details From a PhysicsCollisionEvent" [18613-19715] -->
+
 <h2><a name="best_practices" id="best_practices">Best Practices</a></h2>
 <div class="level2">
 
@@ -653,5 +651,4 @@ If you get weird behaviour, such as physical nodes jittering wildy and being eje
 </p>
 
 </div>
-<!-- SECTION "Best Practices" [19716-] -->
 <p><em><a href="http://jmonkeyengine.org/wiki/doku.php/jme3:advanced:physics?do=export_xhtmlbody">view online version</a></em></p>

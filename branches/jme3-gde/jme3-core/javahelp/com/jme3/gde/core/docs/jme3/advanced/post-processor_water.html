@@ -1,6 +1,4 @@
 
-
-
 <h1><a name="rendering_water_as_post-process_effect" id="rendering_water_as_post-process_effect">Rendering Water as Post-Process Effect</a></h1>
 <div class="level1">
 
@@ -14,7 +12,7 @@ This awesome water effect is highly configurable and can render any type of wate
 </p>
 
 </div>
-<!-- SECTION "Rendering Water as Post-Process Effect" [1-466] -->
+
 <h2><a name="the_theory" id="the_theory">The Theory</a></h2>
 <div class="level2">
 
@@ -32,7 +30,7 @@ The GameDev.net article describes how those effects are achieved, but the main i
 </p>
 
 </div>
-<!-- SECTION "The Theory" [467-1607] -->
+
 <h2><a name="how_did_we_implement_it_in_jme3" id="how_did_we_implement_it_in_jme3">How Did We Implement it in jME3?</a></h2>
 <div class="level2">
 
@@ -54,7 +52,7 @@ See also: <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer">
 </p>
 
 </div>
-<!-- SECTION "How Did We Implement it in jME3?" [1608-2526] -->
+
 <h2><a name="sample_code" id="sample_code">Sample Code</a></h2>
 <div class="level2">
 
@@ -73,7 +71,7 @@ There are two test cases in the jME3 repository:
 </ul>
 
 </div>
-<!-- SECTION "Sample Code" [2527-2987] -->
+
 <h3><a name="using_the_water_filter" id="using_the_water_filter">Using the Water Filter</a></h3>
 <div class="level3">
 
@@ -105,7 +103,7 @@ Usually you make the water reflect everything attached to the rootNode. But you 
 </p>
 
 </div>
-<!-- SECTION "Using the Water Filter" [2988-4292] -->
+
 <h3><a name="optionalwaves" id="optionalwaves">Optional: Waves</a></h3>
 <div class="level3">
 
@@ -124,7 +122,7 @@ If you want waves, set the water height in the update loop. We reuse the initial
   water.<span class="me1">setWaterHeight</span><span class="br0">&#40;</span>initialWaterHeight <span class="sy0">+</span> waterHeight<span class="br0">&#41;</span>;
 <span class="br0">&#125;</span></pre>
 </div>
-<!-- SECTION "Optional: Waves" [4293-4817] -->
+
 <h3><a name="optionalwater_wave_and_color_effects" id="optionalwater_wave_and_color_effects">Optional: Water Wave and Color Effects</a></h3>
 <div class="level3">
 
@@ -253,7 +251,7 @@ All these effects are optional. Every setter also has a getter.
 </table>
 
 </div>
-<!-- SECTION "Optional: Water Wave and Color Effects" [4818-9011] -->
+
 <h3><a name="sound_effects" id="sound_effects">Sound Effects</a></h3>
 <div class="level3">
 
@@ -265,5 +263,4 @@ You should also add audio nodes with water sounds to complete the effect.
 waves.<span class="me1">setLooping</span><span class="br0">&#40;</span><span class="kw2">true</span><span class="br0">&#41;</span>;
 audioRenderer.<span class="me1">playSource</span><span class="br0">&#40;</span>waves<span class="br0">&#41;</span>;</pre>
 </div>
-<!-- SECTION "Sound Effects" [9012-] -->
 <p><em><a href="http://jmonkeyengine.org/wiki/doku.php/jme3:advanced:post-processor_water?do=export_xhtmlbody">view online version</a></em></p>

@@ -1,6 +1,4 @@
 
-
-
 <h1><a name="animation_in_jme3" id="animation_in_jme3">Animation in jME3</a></h1>
 <div class="level1">
 
@@ -39,12 +37,12 @@ What is required in your java class?
 </ul>
 
 </div>
-<!-- SECTION "Animation in jME3" [1-963] -->
+
 <h2><a name="controlling_animations" id="controlling_animations">Controlling Animations</a></h2>
 <div class="level2">
 
 </div>
-<!-- SECTION "Controlling Animations" [964-999] -->
+
 <h3><a name="the_controller" id="the_controller">The Controller</a></h3>
 <div class="level3">
 
@@ -57,7 +55,7 @@ Create one <code>com.jme3.animation.AnimControl</code> object in your JME3 appli
   playerControl <span class="sy0">=</span> player.<span class="me1">getControl</span><span class="br0">&#40;</span>AnimControl.<span class="kw1">class</span><span class="br0">&#41;</span>; <span class="co1">// get control over this model</span>
   playerControl.<span class="me1">addListener</span><span class="br0">&#40;</span><span class="kw1">this</span><span class="br0">&#41;</span>; <span class="co1">// add listener</span></pre>
 </div>
-<!-- SECTION "The Controller" [1000-1638] -->
+
 <h3><a name="channels" id="channels">Channels</a></h3>
 <div class="level3">
 
@@ -79,7 +77,7 @@ To reset a controller, call <code>control.clearChannels();</code>
 </p>
 
 </div>
-<!-- SECTION "Channels" [1639-2257] -->
+
 <h2><a name="animation_control_properties" id="animation_control_properties">Animation Control Properties</a></h2>
 <div class="level2">
 
@@ -147,7 +145,7 @@ The following information is available for an AnimControl.
 </table>
 
 </div>
-<!-- SECTION "Animation Control Properties" [2258-3710] -->
+
 <h2><a name="animation_channel_properties" id="animation_channel_properties">Animation Channel Properties</a></h2>
 <div class="level2">
 
@@ -230,7 +228,7 @@ Use the following methods to add or remove individual bones to an AnimChannel. T
 </table>
 
 </div>
-<!-- SECTION "Animation Channel Properties" [3711-5981] -->
+
 <h2><a name="playing_animations" id="playing_animations">Playing Animations</a></h2>
 <div class="level2">
 
@@ -255,7 +253,7 @@ Animations are played by channel. <strong>Note:</strong> Whether the animation c
 </p>
 
 </div>
-<!-- SECTION "Playing Animations" [5982-6586] -->
+
 <h3><a name="usage_example" id="usage_example">Usage Example</a></h3>
 <div class="level3">
 
@@ -281,7 +279,7 @@ In this short example, we define the space key to trigger playing the “Walk”
     <span class="br0">&#125;</span>
   <span class="br0">&#125;</span>;</pre>
 </div>
-<!-- SECTION "Usage Example" [6587-7276] -->
+
 <h2><a name="animation_event_listener" id="animation_event_listener">Animation Event Listener</a></h2>
 <div class="level2">
 
@@ -296,7 +294,7 @@ This optional Listener enables you to respond to animation start and end events,
 </p>
 
 </div>
-<!-- SECTION "Animation Event Listener" [7277-7680] -->
+
 <h3><a name="responding_to_animation_end" id="responding_to_animation_end">Responding to Animation End</a></h3>
 <div class="level3">
 
@@ -324,7 +322,7 @@ You have access to the following objects:
     <span class="br0">&#125;</span>
   <span class="br0">&#125;</span></pre>
 </div>
-<!-- SECTION "Responding to Animation End" [7681-8473] -->
+
 <h3><a name="responding_to_animation_start" id="responding_to_animation_start">Responding to Animation Start</a></h3>
 <div class="level3">
 
@@ -352,5 +350,4 @@ You have access to the following objects
     <span class="br0">&#125;</span>
   <span class="br0">&#125;</span></pre>
 </div>
-<!-- SECTION "Responding to Animation Start" [8474-] -->
 <p><em><a href="http://jmonkeyengine.org/wiki/doku.php/jme3:advanced:animation?do=export_xhtmlbody">view online version</a></em></p>

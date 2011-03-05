@@ -1,6 +1,4 @@
 
-
-
 <h1><a name="particle_emmitter_settings" id="particle_emmitter_settings">Particle Emmitter Settings</a></h1>
 <div class="level1">
 
@@ -10,7 +8,7 @@ You cannot create a 3D model for delicate things like fire, smoke, or explosions
 </p>
 
 <p>
-Creating an effect involves some trial and error to get the settings <em>just right</em>, and it&#039;s worth exploring the expressiveness of the options described below. <strong>Tip:</strong> Use the Scene Editor in the <a href="/com/jme3/gde/core/docs/jme3/jmonkeyplatform.html" class="wikilink2" title="jme3:jmonkeyplatform" rel="nofollow">jMonkeyPlatform</a> to design and preview effects.
+Creating an effect involves some trial and error to get the settings <em>just right</em>, and it&#039;s worth exploring the expressiveness of the options described below. <strong>Tip:</strong> Use the Scene Editor in the <a href="/com/jme3/gde/core/docs/sdk.html" class="wikilink1" title="sdk">jMonkeyPlatform</a> to design and preview effects.
 </p>
 
 <p>
@@ -18,7 +16,7 @@ Creating an effect involves some trial and error to get the settings <em>just ri
 </p>
 
 </div>
-<!-- SECTION "Particle Emmitter Settings" [1-841] -->
+
 <h2><a name="create_an_emitter" id="create_an_emitter">Create an Emitter</a></h2>
 <div class="level2">
 <ol>
@@ -34,8 +32,19 @@ explosion.<span class="me1">setLocalTranslation</span><span class="br0">&#40;</s
 </li>
 </ol>
 
+<p>
+
+Choose one of the following mesh shapes
+</p>
+<ul>
+<li class="level1"><div class="li"> ParticleMesh.Type.Triangle</div>
+</li>
+<li class="level1"><div class="li"> ParticleMesh.Type.Point</div>
+</li>
+</ul>
+
 </div>
-<!-- SECTION "Create an Emitter" [842-1373] -->
+
 <h2><a name="configure_parameters" id="configure_parameters">Configure Parameters</a></h2>
 <div class="level2">
 
@@ -106,7 +115,7 @@ Build up you effect by specifying one parameter after the other. If you change s
 </p>
 
 </div>
-<!-- SECTION "Configure Parameters" [1374-4019] -->
+
 <h2><a name="create_an_effect_material" id="create_an_effect_material">Create an Effect Material</a></h2>
 <div class="level2">
 
@@ -142,7 +151,7 @@ Have a look at the following default textures and you will see that you can easi
 </p>
 
 </div>
-<!-- SECTION "Create an Effect Material" [4020-5145] -->
+
 <h3><a name="default_particle_textures" id="default_particle_textures">Default Particle Textures</a></h3>
 <div class="level3">
 
@@ -190,7 +199,7 @@ The following effect textures are available by default from <code>test-data.jar<
 </p>
 
 </div>
-<!-- SECTION "Default Particle Textures" [5146-6849] -->
+
 <h2><a name="usage_example" id="usage_example">Usage Example</a></h2>
 <div class="level2">
 <pre class="code java">    ParticleEmitter fire <span class="sy0">=</span> <span class="kw1">new</span> ParticleEmitter<span class="br0">&#40;</span><span class="st0">&quot;Emitter&quot;</span>, ParticleMesh.<span class="me1">Type</span>.<span class="me1">Triangle</span>, <span class="nu0">30</span><span class="br0">&#41;</span>;
@@ -220,5 +229,4 @@ See also: <a href="/com/jme3/gde/core/docs/jme3/advanced/effects_overview.html" 
 </p>
 
 </div>
-<!-- SECTION "Usage Example" [6850-] -->
 <p><em><a href="http://jmonkeyengine.org/wiki/doku.php/jme3:advanced:particle_emitters?do=export_xhtmlbody">view online version</a></em></p>

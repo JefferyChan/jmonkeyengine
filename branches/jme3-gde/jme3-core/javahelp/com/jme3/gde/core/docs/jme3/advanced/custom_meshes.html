@@ -1,6 +1,4 @@
 
-
-
 <h1><a name="custom_mesh_shapes" id="custom_mesh_shapes">Custom Mesh Shapes</a></h1>
 <div class="level1">
 
@@ -23,7 +21,7 @@ In this tutorial, we (re)create a very simple rectangular mesh, and we have a lo
 </ul>
 
 </div>
-<!-- SECTION "Custom Mesh Shapes" [1-815] -->
+
 <h2><a name="polygon_meshes" id="polygon_meshes">Polygon Meshes</a></h2>
 <div class="level2">
 
@@ -41,7 +39,7 @@ Sounds worse than it is – here is an example:
 </p>
 
 </div>
-<!-- SECTION "Polygon Meshes" [816-1394] -->
+
 <h2><a name="creating_a_quad_mesh" id="creating_a_quad_mesh">Creating a Quad Mesh</a></h2>
 <div class="level2">
 
@@ -55,7 +53,7 @@ The base class for creating meshes is <code>com.jme3.scene.Mesh</code>.
 </p>
 <pre class="code java">Mesh m <span class="sy0">=</span> <span class="kw1">new</span> Mesh<span class="br0">&#40;</span><span class="br0">&#41;</span>;</pre>
 </div>
-<!-- SECTION "Creating a Quad Mesh" [1395-1625] -->
+
 <h3><a name="vertices" id="vertices">Vertices</a></h3>
 <div class="level3">
 
@@ -69,7 +67,7 @@ vertices<span class="br0">&#91;</span><span class="nu0">1</span><span class="br0
 vertices<span class="br0">&#91;</span><span class="nu0">2</span><span class="br0">&#93;</span> <span class="sy0">=</span> <span class="kw1">new</span> Vector3f<span class="br0">&#40;</span>0,<span class="nu0">3</span>,0<span class="br0">&#41;</span>;
 vertices<span class="br0">&#91;</span><span class="nu0">3</span><span class="br0">&#93;</span> <span class="sy0">=</span> <span class="kw1">new</span> Vector3f<span class="br0">&#40;</span><span class="nu0">3</span>,<span class="nu0">3</span>,0<span class="br0">&#41;</span>;</pre>
 </div>
-<!-- SECTION "Vertices" [1626-2084] -->
+
 <h3><a name="texture_coordinates" id="texture_coordinates">Texture Coordinates</a></h3>
 <div class="level3">
 
@@ -83,7 +81,7 @@ texCoord<span class="br0">&#91;</span><span class="nu0">1</span><span class="br0
 texCoord<span class="br0">&#91;</span><span class="nu0">2</span><span class="br0">&#93;</span> <span class="sy0">=</span> <span class="kw1">new</span> Vector2f<span class="br0">&#40;</span>0,<span class="nu0">1</span><span class="br0">&#41;</span>;
 texCoord<span class="br0">&#91;</span><span class="nu0">3</span><span class="br0">&#93;</span> <span class="sy0">=</span> <span class="kw1">new</span> Vector2f<span class="br0">&#40;</span><span class="nu0">1</span>,<span class="nu0">1</span><span class="br0">&#41;</span>;</pre>
 </div>
-<!-- SECTION "Texture Coordinates" [2085-2473] -->
+
 <h3><a name="connecting_the_dots" id="connecting_the_dots">Connecting the Dots</a></h3>
 <div class="level3">
 
@@ -105,7 +103,7 @@ Next we turn the unrelated coordinates into triangles – We define the order in
 </pre>
 
 </div>
-<!-- SECTION "Connecting the Dots" [2474-3081] -->
+
 <h3><a name="setting_the_mesh_buffer" id="setting_the_mesh_buffer">Setting the Mesh Buffer</a></h3>
 <div class="level3">
 
@@ -137,7 +135,7 @@ Our Mesh is ready! Now we want to see it.
 </p>
 
 </div>
-<!-- SECTION "Setting the Mesh Buffer" [3082-3961] -->
+
 <h2><a name="using_the_mesh_in_a_scene" id="using_the_mesh_in_a_scene">Using the Mesh in a Scene</a></h2>
 <div class="level2">
 
@@ -154,7 +152,7 @@ Ta-daa!
 </p>
 
 </div>
-<!-- SECTION "Using the Mesh in a Scene" [3962-4388] -->
+
 <h2><a name="optionalvertex_colors" id="optionalvertex_colors">Optional: Vertex Colors</a></h2>
 <div class="level2">
 
@@ -214,7 +212,7 @@ Now you see a gradient color extending from each vertex.
 </p>
 
 </div>
-<!-- SECTION "Optional: Vertex Colors" [4389-6524] -->
+
 <h3><a name="optionalpoint_mode" id="optionalpoint_mode">Optional: Point Mode</a></h3>
 <div class="level3">
 
@@ -238,7 +236,7 @@ This will result in a 10 px dot being rendered for each of the four vertices. Th
 </p>
 
 </div>
-<!-- SECTION "Optional: Point Mode" [6525-7178] -->
+
 <h2><a name="front_and_back_faces" id="front_and_back_faces">Front and Back Faces</a></h2>
 <div class="level2">
 
@@ -264,5 +262,4 @@ In case that your use case requires the backfaces to be visible, you have two op
 </ul>
 
 </div>
-<!-- SECTION "Front and Back Faces" [7179-] -->
 <p><em><a href="http://jmonkeyengine.org/wiki/doku.php/jme3:advanced:custom_meshes?do=export_xhtmlbody">view online version</a></em></p>

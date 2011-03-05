@@ -1,6 +1,4 @@
 
-
-
 <h1><a name="jme3_cinematics" id="jme3_cinematics">jME3 Cinematics</a></h1>
 <div class="level1">
 
@@ -14,7 +12,7 @@ Cinematics are implemented as AppStates. Attach the scene that you want to be vi
 </p>
 
 </div>
-<!-- SECTION "jME3 Cinematics" [1-462] -->
+
 <h2><a name="overview" id="overview">Overview</a></h2>
 <div class="level2">
 <pre class="code java">Cinematic cinematic <span class="sy0">=</span> <span class="kw1">new</span> Cinematic<span class="br0">&#40;</span>sceneNode, duration<span class="br0">&#41;</span>;
@@ -40,7 +38,7 @@ cinematic.<span class="me1">addCinematicEvent</span><span class="br0">&#40;</spa
 </ol>
 
 </div>
-<!-- SECTION "Overview" [463-1197] -->
+
 <h2><a name="cinematicevents" id="cinematicevents">CinematicEvents</a></h2>
 <div class="level2">
 
@@ -106,7 +104,7 @@ Those methods, must be called on the Cinematic and are propagated to the events.
 </p>
 
 </div>
-<!-- SECTION "CinematicEvents" [1198-2812] -->
+
 <h3><a name="motiontrack_motionpath" id="motiontrack_motionpath">MotionTrack &amp; MotionPath</a></h3>
 <div class="level3">
 
@@ -172,7 +170,7 @@ A motion track is made up of MotionPaths.
 </table>
 
 </div>
-<!-- SECTION "MotionTrack & MotionPath" [2813-4877] -->
+
 <h3><a name="motionpathlistener" id="motionpathlistener">MotionPathListener</a></h3>
 <div class="level3">
 
@@ -190,7 +188,7 @@ You can register a MotionPathListener to the MotionPath to track whether waypoin
   <span class="br0">&#125;</span>
 <span class="br0">&#125;</span><span class="br0">&#41;</span>;</pre>
 </div>
-<!-- SECTION "MotionPathListener" [4878-5617] -->
+
 <h3><a name="positiontrack" id="positiontrack">PositionTrack</a></h3>
 <div class="level3">
 <pre class="code java">PositionTrack thingPositionControl <span class="sy0">=</span> <span class="kw1">new</span> PositionTrack<span class="br0">&#40;</span>
@@ -215,7 +213,7 @@ The start location is always the current location of the Spatial.
 </p>
 
 </div>
-<!-- SECTION "PositionTrack" [5618-6096] -->
+
 <h3><a name="rotationtrack" id="rotationtrack">RotationTrack</a></h3>
 <div class="level3">
 <pre class="code java">RotationTrack thingRotationControl <span class="sy0">=</span> <span class="kw1">new</span> RotationTrack<span class="br0">&#40;</span>
@@ -235,7 +233,7 @@ Details of the constructor:
 </ul>
 
 </div>
-<!-- SECTION "RotationTrack" [6097-6525] -->
+
 <h3><a name="scaletrack" id="scaletrack">ScaleTrack</a></h3>
 <div class="level3">
 <pre class="code java">ScaleTrack thingScaleControl <span class="sy0">=</span> <span class="kw1">new</span> ScaleTrack<span class="br0">&#40;</span>
@@ -255,7 +253,7 @@ Details of the constructor:
 </ul>
 
 </div>
-<!-- SECTION "ScaleTrack" [6526-6928] -->
+
 <h3><a name="soundtrack" id="soundtrack">SoundTrack</a></h3>
 <div class="level3">
 <pre class="code java">SoundTrack<span class="br0">&#40;</span> audioPath, isStream, duration, loopMode <span class="br0">&#41;</span></pre>
@@ -275,7 +273,7 @@ Details of the constructor:
 </ul>
 
 </div>
-<!-- SECTION "SoundTrack" [6929-7376] -->
+
 <h3><a name="guitrack" id="guitrack">GuiTrack</a></h3>
 <div class="level3">
 <pre class="code java">GuiTrack<span class="br0">&#40;</span> screen, duration, loopMode <span class="br0">&#41;</span></pre>
@@ -298,7 +296,7 @@ Details of the constructor:
 </ul>
 
 </div>
-<!-- SECTION "GuiTrack" [7377-7834] -->
+
 <h3><a name="animationtrack" id="animationtrack">AnimationTrack</a></h3>
 <div class="level3">
 <pre class="code java">AnimationTrack<span class="br0">&#40;</span> thingNode, animationName, duration, loopMode <span class="br0">&#41;</span></pre>
@@ -318,7 +316,7 @@ Details of the constructor:
 </ul>
 
 </div>
-<!-- SECTION "AnimationTrack" [7835-8248] -->
+
 <h3><a name="customizations" id="customizations">Customizations</a></h3>
 <div class="level3">
 
@@ -332,7 +330,7 @@ You can also create new CinematicEvent by extending <object classid="java:org.ne
 </p>
 
 </div>
-<!-- SECTION "Customizations" [8249-9298] -->
+
 <h2><a name="camera_handling" id="camera_handling">Camera Handling</a></h2>
 <div class="level2">
 
@@ -366,7 +364,7 @@ CameraNode camNodeSide <span class="sy0">=</span> cinematic.<span class="me1">bi
 camNodeSide.<span class="me1">setControlDir</span><span class="br0">&#40;</span>ControlDirection.<span class="me1">CameraToSpatial</span><span class="br0">&#41;</span>;
 camNodeSide.<span class="me1">getControl</span><span class="br0">&#40;</span>0<span class="br0">&#41;</span>.<span class="me1">setEnabled</span><span class="br0">&#40;</span><span class="kw2">false</span><span class="br0">&#41;</span>;</pre>
 </div>
-<!-- SECTION "Camera Handling" [9299-10604] -->
+
 <h2><a name="physics_interaction" id="physics_interaction">Physics Interaction</a></h2>
 <div class="level2">
 
@@ -376,7 +374,7 @@ Upcoming.
 </p>
 
 </div>
-<!-- SECTION "Physics Interaction" [10605-10648] -->
+
 <h2><a name="more_information" id="more_information">More Information</a></h2>
 <div class="level2">
 
@@ -386,5 +384,4 @@ See also: <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer">
 </p>
 
 </div>
-<!-- SECTION "More Information" [10649-] -->
 <p><em><a href="http://jmonkeyengine.org/wiki/doku.php/jme3:advanced:cinematics?do=export_xhtmlbody">view online version</a></em></p>

@@ -1,6 +1,4 @@
 
-
-
 <h1><a name="getting_started_with_jme3_12_-_hello_effects" id="getting_started_with_jme3_12_-_hello_effects">Getting Started with JME3 (12) - Hello Effects</a></h1>
 <div class="level1">
 
@@ -46,11 +44,11 @@ In very simple terms:
 
 <p>
 
-Particle effects can be animated (e.g. sparks, drops) and static (strands of grass, hair). Non-particle effects include bloom/glow, and motion blur/afterimage. In this tutorial we will look at animated particles. 
+Particle effects can be animated (e.g. sparks, drops) and static (strands of grass, hair). Non-particle effects include bloom/glow, and motion blur/afterimage. In this tutorial we will look at animated particles (com.jme3.effect). 
 </p>
 
 </div>
-<!-- SECTION "Getting Started with JME3 (12) - Hello Effects" [1-898] -->
+
 <h2><a name="sample_code" id="sample_code">Sample Code</a></h2>
 <div class="level2">
 <pre class="code java"><span class="kw1">package</span> <span class="co2">jme3test.helloworld</span>;
@@ -80,13 +78,13 @@ Particle effects can be animated (e.g. sparks, drops) and static (strands of gra
     fire.<span class="me1">setImagesX</span><span class="br0">&#40;</span><span class="nu0">2</span><span class="br0">&#41;</span>; fire.<span class="me1">setImagesY</span><span class="br0">&#40;</span><span class="nu0">2</span><span class="br0">&#41;</span>; <span class="co1">// 2x2 texture animation</span>
     fire.<span class="me1">setEndColor</span><span class="br0">&#40;</span>  <span class="kw1">new</span> ColorRGBA<span class="br0">&#40;</span>1f, 0f, 0f, 1f<span class="br0">&#41;</span><span class="br0">&#41;</span>;   <span class="co1">// red</span>
     fire.<span class="me1">setStartColor</span><span class="br0">&#40;</span><span class="kw1">new</span> ColorRGBA<span class="br0">&#40;</span>1f, 1f, 0f, 0.5f<span class="br0">&#41;</span><span class="br0">&#41;</span>; <span class="co1">// yellow</span>
-    fire.<span class="me1">setStartVel</span><span class="br0">&#40;</span><span class="kw1">new</span> Vector3f<span class="br0">&#40;</span>0, <span class="nu0">2</span>, 0<span class="br0">&#41;</span><span class="br0">&#41;</span>;
+    fire.<span class="me1">setInitialVelocity</span><span class="br0">&#40;</span><span class="kw1">new</span> Vector3f<span class="br0">&#40;</span>0, <span class="nu0">2</span>, 0<span class="br0">&#41;</span><span class="br0">&#41;</span>;
     fire.<span class="me1">setStartSize</span><span class="br0">&#40;</span>1.5f<span class="br0">&#41;</span>;
     fire.<span class="me1">setEndSize</span><span class="br0">&#40;</span>0.1f<span class="br0">&#41;</span>;
     fire.<span class="me1">setGravity</span><span class="br0">&#40;</span>0<span class="br0">&#41;</span>;
     fire.<span class="me1">setLowLife</span><span class="br0">&#40;</span>0.5f<span class="br0">&#41;</span>;
     fire.<span class="me1">setHighLife</span><span class="br0">&#40;</span>3f<span class="br0">&#41;</span>;
-    fire.<span class="me1">setVariation</span><span class="br0">&#40;</span>0.3f<span class="br0">&#41;</span>; 
+    fire.<span class="me1">setVelocityVariation</span><span class="br0">&#40;</span>0.3f<span class="br0">&#41;</span>; 
     rootNode.<span class="me1">attachChild</span><span class="br0">&#40;</span>fire<span class="br0">&#41;</span>;
 &nbsp;
     ParticleEmitter debris <span class="sy0">=</span> <span class="kw1">new</span> ParticleEmitter<span class="br0">&#40;</span><span class="st0">&quot;Debris&quot;</span>, ParticleMesh.<span class="me1">Type</span>.<span class="me1">Triangle</span>, <span class="nu0">10</span><span class="br0">&#41;</span>;
@@ -96,10 +94,10 @@ Particle effects can be animated (e.g. sparks, drops) and static (strands of gra
     debris.<span class="me1">setImagesX</span><span class="br0">&#40;</span><span class="nu0">3</span><span class="br0">&#41;</span>; debris.<span class="me1">setImagesY</span><span class="br0">&#40;</span><span class="nu0">3</span><span class="br0">&#41;</span>; <span class="co1">// 3x3 texture animation</span>
     debris.<span class="me1">setRotateSpeed</span><span class="br0">&#40;</span><span class="nu0">4</span><span class="br0">&#41;</span>;
     debris.<span class="me1">setSelectRandomImage</span><span class="br0">&#40;</span><span class="kw2">true</span><span class="br0">&#41;</span>;
-    debris.<span class="me1">setStartVel</span><span class="br0">&#40;</span><span class="kw1">new</span> Vector3f<span class="br0">&#40;</span>0, <span class="nu0">4</span>, 0<span class="br0">&#41;</span><span class="br0">&#41;</span>;
+    debris.<span class="me1">setInitialVelocity</span><span class="br0">&#40;</span><span class="kw1">new</span> Vector3f<span class="br0">&#40;</span>0, <span class="nu0">4</span>, 0<span class="br0">&#41;</span><span class="br0">&#41;</span>;
     debris.<span class="me1">setStartColor</span><span class="br0">&#40;</span><span class="kw1">new</span> ColorRGBA<span class="br0">&#40;</span>1f, 1f, 1f, 1f<span class="br0">&#41;</span><span class="br0">&#41;</span>;
     debris.<span class="me1">setGravity</span><span class="br0">&#40;</span>6f<span class="br0">&#41;</span>;
-    debris.<span class="me1">setVariation</span><span class="br0">&#40;</span>.60f<span class="br0">&#41;</span>;
+    debris.<span class="me1">setVelocityVariation</span><span class="br0">&#40;</span>.60f<span class="br0">&#41;</span>;
     rootNode.<span class="me1">attachChild</span><span class="br0">&#40;</span>debris<span class="br0">&#41;</span>;
     debris.<span class="me1">emitAllParticles</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
 &nbsp;
@@ -111,7 +109,7 @@ You should see an explosion that sends debris flying, and a fire.
 </p>
 
 </div>
-<!-- SECTION "Sample Code" [899-3071] -->
+
 <h3><a name="texture_animation_and_variation" id="texture_animation_and_variation">Texture Animation and Variation</a></h3>
 <div class="level3">
 
@@ -149,7 +147,7 @@ As you see in the debris example, texture animations improve effects because eac
 </p>
 
 </div>
-<!-- SECTION "Texture Animation and Variation" [3072-4582] -->
+
 <h3><a name="default_particle_textures" id="default_particle_textures">Default Particle Textures</a></h3>
 <div class="level3">
 
@@ -185,7 +183,7 @@ Copy them into you <code>assets/Effects</code> directory to use them.
 </p>
 
 </div>
-<!-- SECTION "Default Particle Textures" [4583-5602] -->
+
 <h2><a name="creating_custom_textures" id="creating_custom_textures">Creating Custom Textures</a></h2>
 <div class="level2">
 
@@ -221,43 +219,66 @@ Create a grayscale texture in a graphic editor, and save it to your <code>assets
 </p>
 
 </div>
-<!-- SECTION "Creating Custom Textures" [5603-6875] -->
+
 <h3><a name="emitter_parameters" id="emitter_parameters">Emitter Parameters</a></h3>
 <div class="level3">
 
 <p>
 
-A particle system is always centered around an emitter. You create different effects by changing the emitter parameters: 
+A particle system is always centered around an emitter. 
+</p>
+
+<p>
+Use the <code>setShape()</code> method to change the EmitterShape:
+</p>
+<ul>
+<li class="level1"><div class="li"> EmitterPointShape(Vector3f.ZERO) – default shape</div>
+</li>
+<li class="level1"><div class="li"> EmitterSphereShape(Vector3f.ZERO,2f)</div>
+</li>
+<li class="level1"><div class="li"> EmitterBoxShape(new Vector3f(-1f,-1f,-1f),new Vector3f(1f,1f,1f))</div>
+</li>
+</ul>
+
+<p>
+Example: <code>emitter.setShape(new EmitterPointShape(Vector3f.ZERO));</code>
+</p>
+
+<p>
+You create different effects by changing the emitter parameters: 
 
 </p>
 <table class="inline">
 	<tr class="row0">
-		<th class="col0 leftalign"> Parameter           </th><th class="col1"> Method and Default </th><th class="col2"> Description </th>
+		<th class="col0 leftalign"> Parameter           </th><th class="col1"> Method (default value) </th><th class="col2"> Description </th>
 	</tr>
 	<tr class="row1">
-		<td class="col0 leftalign"> number              </td><td class="col1"> <code>setNumParticles()</code> </td><td class="col2"> The maximum number of particles visible at the same time. Specified by user in constructor. </td>
+		<td class="col0 leftalign"> number              </td><td class="col1"> <code>setNumParticles()</code> </td><td class="col2"> The maximum number of particles visible at the same time. Value is specified by user in constructor. </td>
 	</tr>
 	<tr class="row2">
-		<td class="col0 leftalign"> velocity            </td><td class="col1"> <code>setStartVel()</code> (Vector3f.ZERO) </td><td class="col2"> You must specify a vector how fast particles should move and it which start direction. </td>
+		<td class="col0 leftalign"> velocity            </td><td class="col1"> <code>setInitialVelocity()</code> (Vector3f.ZERO) </td><td class="col2"> You must specify a vector how fast particles should move and it which start direction. </td>
 	</tr>
 	<tr class="row3">
-		<td class="col0 leftalign"> direction           </td><td class="col1"> <code>setVariation()</code> (0.2f) <br/>
+		<td class="col0 leftalign"> direction           </td><td class="col1"> <code>setVelocityVariation()</code> (0.2f) <br/>
  <code>setFacingVelocity()</code> (false) <br/>
  <code>setRandomAngle()</code> (false) <br/>
  <code>setFaceNormal()</code> (Vector3f.NAN) <br/>
- <code>setRotateSpeed()</code> (0f) </td><td class="col2"> Optional accessors that control in which direction particles face when flying. </td>
+ <code>setRotateSpeed()</code> (0f) </td><td class="col2"> Optional accessors that control in which direction particles face when flying. </td>
 	</tr>
 	<tr class="row4">
-		<td class="col0 leftalign"> lifetime            </td><td class="col1"> <code>setLowLife()</code>, <code>setHighLife()</code> (3-7) </td><td class="col2"> Minimum and maximum time period before particles fade. </td>
+		<td class="col0 leftalign"> lifetime            </td><td class="col1"> <code>setLowLife()</code> (3f) <br/>
+ <code>setHighLife()</code> (7f) </td><td class="col2"> Minimum and maximum time period before particles fade. </td>
 	</tr>
 	<tr class="row5">
 		<td class="col0 leftalign"> emission rate       </td><td class="col1"> <code>setParticlesPerSec()</code> (20) </td><td class="col2"> How many new particles are emitted per second. </td>
 	</tr>
 	<tr class="row6">
-		<td class="col0 leftalign"> color               </td><td class="col1"> <code>setStartColor()</code>, <code>setEndColor()</code>  (gray)</td><td class="col2"> Set to two different colors for gradient effects, or to same color. </td>
+		<td class="col0 leftalign"> color               </td><td class="col1"> <code>setStartColor()</code> <br/>
+ <code>setEndColor()</code>  (gray)</td><td class="col2"> Set to two different colors for gradient effects, or to same color. </td>
 	</tr>
 	<tr class="row7">
-		<td class="col0 leftalign"> size                </td><td class="col1"> <code>setStartSize()</code>, <code>setEndSize()</code> (0.2f, 2f) </td><td class="col2"> Set to two different values for shrink/grow effect, or to same size. </td>
+		<td class="col0 leftalign"> size                </td><td class="col1"> <code>setStartSize()</code> (0.2f) <br/>
+ <code>setEndSize()</code> (2f) </td><td class="col2"> Set to two different values for shrink/grow effect, or to same size. </td>
 	</tr>
 	<tr class="row8">
 		<td class="col0 leftalign"> gravity             </td><td class="col1"> <code>setGravity()</code> (0.1f) </td><td class="col2"> Whether particles falls down eventually. Set to 0f for zero-g effects. </td>
@@ -266,18 +287,18 @@ A particle system is always centered around an emitter. You create different eff
 
 <p>
 
-You can find details about <a href="/com/jme3/gde/core/docs/jme3/users_guide#effects.html" class="wikilink1" title="jme3:users_guide">effect parameters</a> in the user guide.
-Try different values until you get the effect you want. <strong>Tip:</strong> Use the jMonkeyPlatform SceneComposer to preview effects settings (details TODO).
+You can find details about <a href="/com/jme3/gde/core/docs/jme3/advanced/particle_emitters#configure_parameters.html" class="wikilink1" title="jme3:advanced:particle_emitters">effect parameters</a> in the user guide.
+Add and modify one paramter at a time, and try different values until you get the effect you want. <strong>Tip:</strong> Use the jMonkeyPlatform SceneComposer to preview effects settings (instructions: TODO).
 </p>
 
 </div>
-<!-- SECTION "Emitter Parameters" [6876-8528] -->
+
 <h2><a name="exercise" id="exercise">Exercise</a></h2>
 <div class="level2">
 
 <p>
 
-Can you “invert” the fire into water?
+Can you “invert” the campfire into a small waterfall?
 </p>
 <ul>
 <li class="level1"><div class="li"> Change the Red and Yellow color to Cyan and Blue…</div>
@@ -291,7 +312,7 @@ Can you “invert” the fire into water?
 </ul>
 
 </div>
-<!-- SECTION "Exercise" [8529-8792] -->
+
 <h2><a name="conclusion" id="conclusion">Conclusion</a></h2>
 <div class="level2">
 
@@ -306,5 +327,4 @@ Now we move on to the next exciting chapter – the simulation of <object classi
 </p>
 
 </div>
-<!-- SECTION "Conclusion" [8793-] -->
 <p><em><a href="http://jmonkeyengine.org/wiki/doku.php/jme3:beginner:hello_effects?do=export_xhtmlbody">view online version</a></em></p>

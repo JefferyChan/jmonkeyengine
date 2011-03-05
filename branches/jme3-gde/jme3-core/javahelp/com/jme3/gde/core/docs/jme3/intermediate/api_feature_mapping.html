@@ -1,6 +1,4 @@
 
-
-
 <h1><a name="jme_3_-_api_feature_mapping" id="jme_3_-_api_feature_mapping">JME 3 - API / Feature Mapping</a></h1>
 <div class="level1">
 
@@ -14,7 +12,7 @@ Knowing exactly what you are looking for allows you to search more efficiently, 
 </p>
 
 </div>
-<!-- SECTION "JME 3 - API / Feature Mapping" [1-551] -->
+
 <h2><a name="applications_and_scenegraph" id="applications_and_scenegraph">Applications and SceneGraph</a></h2>
 <div class="level2">
 <table class="inline">
@@ -58,7 +56,7 @@ Knowing exactly what you are looking for allows you to search more efficiently, 
 </table>
 
 </div>
-<!-- SECTION "Applications and SceneGraph" [552-1815] -->
+
 <h2><a name="creation_and_manipulation_of_objects" id="creation_and_manipulation_of_objects">Creation and Manipulation of Objects</a></h2>
 <div class="level2">
 <table class="inline">
@@ -76,7 +74,7 @@ Knowing exactly what you are looking for allows you to search more efficiently, 
 		<th class="col0">Load a 3-D model </th><td class="col1">Import asset as Ogre <acronym title="Extensible Markup Language">XML</acronym> mesh. <br/>
  jMonkeyPlatform: Converting Ogre to j3o binary format speeds up model loading. <br/>
  AssetManager, com.jme3.scene.plugins.ogre.*, com.jme3.scene.Geometry </td><td class="col2"> <a href="/com/jme3/gde/core/docs/jme3/beginner/hello_asset.html" class="wikilink1" title="jme3:beginner:hello_asset">Hello Asset</a>, <a href="/com/jme3/gde/core/docs/jme3/advanced/models_and_meshes.html" class="wikilink1" title="jme3:advanced:models_and_meshes">Models and Meshes</a> <br/>
- <a href="/com/jme3/gde/core/docs/jme3/jmonkeyplatform/model_loader_and_viewer.html" class="wikilink2" title="jme3:jmonkeyplatform:model_loader_and_viewer" rel="nofollow">jMonkeyPlatform j3o converter</a> <br/>
+ <a href="/com/jme3/gde/core/docs/sdk/model_loader_and_viewer.html" class="wikilink1" title="sdk:model_loader_and_viewer">jMonkeyPlatform j3o converter</a> <br/>
  <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://code.google.com/p/jmonkeyengine/source/browse/branches/jme3/src/test/jme3test/model/TestOgreLoading.java"><param name="text" value="<html><u>TestOgreConvert.java</u></html>"><param name="textColor" value="blue"></object> </td>
 	</tr>
 	<tr class="row4">
@@ -85,12 +83,13 @@ Knowing exactly what you are looking for allows you to search more efficiently, 
 	</tr>
 	<tr class="row5">
 		<th class="col0">Concatenate transformations (e.g. rotations around several axes in one step) </th><td class="col1">com.jme3.math.Quaternion, slerp() <br/>
- com.jme3.math.Transform, interpolateTransforms() </td><td class="col2"><a href="/com/jme3/gde/core/docs/rotate.html" class="wikilink2" title="rotate" rel="nofollow">rotate</a>, <a href="/com/jme3/gde/core/docs/rotate_about_a_point.html" class="wikilink2" title="rotate_about_a_point" rel="nofollow">rotate_about_a_point</a>, <a href="/com/jme3/gde/core/docs/quaternion.html" class="wikilink2" title="quaternion" rel="nofollow">quaternion</a> </td>
+ com.jme3.math.Transform, interpolateTransforms() </td><td class="col2"><a href="/com/jme3/gde/core/docs/jme2/rotate.html" class="wikilink1" title="jme2:rotate">rotate</a>, <a href="/com/jme3/gde/core/docs/jme2/rotate_about_a_point.html" class="wikilink1" title="jme2:rotate_about_a_point">rotate_about_a_point</a>, <a href="/com/jme3/gde/core/docs/jme2/quaternion.html" class="wikilink1" title="jme2:quaternion">quaternion</a> </td>
 	</tr>
 	<tr class="row6">
-		<th class="col0">Make an object move by itself </th><td class="col1">Change the geo&#039;s translation in the <code>simpleUpdate()</code> loop. <br/>
+		<th class="col0">Make an object move by itself </th><td class="col1">Change the geo&#039;s translation in the update phase of the main loop. Or remote-control the motion using cinematics. <br/>
  com.jme3.scene.Geometry, setLocalTranslation(), setWalkDirection() for physical objects. </td><td class="col2"><a href="/com/jme3/gde/core/docs/jme3/beginner/hello_main_event_loop.html" class="wikilink1" title="jme3:beginner:hello_main_event_loop">Hello Loop</a> <br/>
   <a href="/com/jme3/gde/core/docs/jme3/advanced/custom_controls.html" class="wikilink1" title="jme3:advanced:custom_controls">Custom Controls</a> <br/>
+ <a href="/com/jme3/gde/core/docs/jme3/advanced/cinematics.html" class="wikilink1" title="jme3:advanced:cinematics">Cinematics</a> <br/>
  <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://code.google.com/p/jmonkeyengine/source/browse/branches/jme3/src/test/jme3test/material/TestBumpModel.java"><param name="text" value="<html><u>TestOgreLoading.java</u></html>"><param name="textColor" value="blue"></object> </td>
 	</tr>
 	<tr class="row7">
@@ -125,7 +124,7 @@ Knowing exactly what you are looking for allows you to search more efficiently, 
 </table>
 
 </div>
-<!-- SECTION "Creation and Manipulation of Objects" [1816-6437] -->
+
 <h2><a name="actions_interactions_physics" id="actions_interactions_physics">Actions, Interactions, Physics</a></h2>
 <div class="level2">
 <table class="inline">
@@ -133,9 +132,10 @@ Knowing exactly what you are looking for allows you to search more efficiently, 
 		<th class="col0">How do I…? </th><th class="col1">Use this JME 3 Feature! </th><th class="col2">Learn more here… </th>
 	</tr>
 	<tr class="row1">
-		<th class="col0">Implement the game logic and game mechanics </th><td class="col1"> Use Controls to define behaviours of types of Spatials. Use Application States to implement global behaviours. Use the <code>simpleUpdate()</code> loop for the remaining tests and interactions.</td><td class="col2"><a href="/com/jme3/gde/core/docs/jme3/beginner/hello_main_event_loop.html" class="wikilink1" title="jme3:beginner:hello_main_event_loop">Hello Loop</a> <br/>
+		<th class="col0">Implement the game logic and game mechanics </th><td class="col1"> Use Controls to define behaviours of types of Spatials. Use Application States to implement global behaviours. Use the <code>simpleUpdate()</code> loop for the remaining tests and interactions. Use Cinematics to remote-control objects in scenes. </td><td class="col2"><a href="/com/jme3/gde/core/docs/jme3/beginner/hello_main_event_loop.html" class="wikilink1" title="jme3:beginner:hello_main_event_loop">Hello Loop</a> <br/>
  <a href="/com/jme3/gde/core/docs/jme3/advanced/custom_controls.html" class="wikilink1" title="jme3:advanced:custom_controls">Custom Controls</a> <br/>
- <a href="/com/jme3/gde/core/docs/jme3/advanced/application_states.html" class="wikilink1" title="jme3:advanced:application_states">Application States</a> </td>
+ <a href="/com/jme3/gde/core/docs/jme3/advanced/application_states.html" class="wikilink1" title="jme3:advanced:application_states">Application States</a> <br/>
+ <a href="/com/jme3/gde/core/docs/jme3/advanced/cinematics.html" class="wikilink1" title="jme3:advanced:cinematics">Cinematics</a> </td>
 	</tr>
 	<tr class="row2">
 		<th class="col0">Let players interact by pressing keyboard keys </th><td class="col1">com.jme3.input.KeyInput, com.jme3.input.binding.BindingListener </td><td class="col2"><a href="/com/jme3/gde/core/docs/jme3/beginner/hello_input_system.html" class="wikilink1" title="jme3:beginner:hello_input_system">Hello Input</a> <br/>
@@ -177,7 +177,7 @@ Knowing exactly what you are looking for allows you to search more efficiently, 
 </table>
 
 </div>
-<!-- SECTION "Actions, Interactions, Physics" [6438-9757] -->
+
 <h2><a name="gui_display" id="gui_display">GUI Display</a></h2>
 <div class="level2">
 <table class="inline">
@@ -198,7 +198,7 @@ Knowing exactly what you are looking for allows you to search more efficiently, 
 </table>
 
 </div>
-<!-- SECTION "GUI Display" [9758-10734] -->
+
 <h2><a name="environment_effectssound_landscape" id="environment_effectssound_landscape">Environment Effects: Sound, Landscape</a></h2>
 <div class="level2">
 <table class="inline">
@@ -233,7 +233,7 @@ Knowing exactly what you are looking for allows you to search more efficiently, 
 </table>
 
 </div>
-<!-- SECTION "Environment Effects: Sound, Landscape" [10735-12450] -->
+
 <h2><a name="back-end_properties" id="back-end_properties">Back-End Properties</a></h2>
 <div class="level2">
 <table class="inline">
@@ -248,5 +248,4 @@ Knowing exactly what you are looking for allows you to search more efficiently, 
 </table>
 
 </div>
-<!-- SECTION "Back-End Properties" [12451-] -->
 <p><em><a href="http://jmonkeyengine.org/wiki/doku.php/jme3:intermediate:api_feature_mapping?do=export_xhtmlbody">view online version</a></em></p>
