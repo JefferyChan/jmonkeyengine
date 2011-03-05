@@ -49,6 +49,7 @@ import com.jme3.light.PointLight;
 import com.jme3.material.TechniqueDef.LightMode;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
+import com.jme3.math.Vector4f;
 import com.jme3.renderer.Caps;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.Renderer;
@@ -126,7 +127,7 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
         public int getUnit() {
             return unit;
         }
-        
+
         @Override
         public void apply(Renderer r, Technique technique) {
             TechniqueDef techDef = technique.getDef();
@@ -499,6 +500,15 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
         setParam(name, VarType.Vector3, value);
     }
 
+    /**
+     * Pass a Vector4f to the material shader
+     * @param name the name of the Vector4f defined in the material definition (j3md)
+     * @param value the Vector4f value
+     */
+    public void setVector4(String name, Vector4f value) {
+        setParam(name, VarType.Vector4, value);
+    }
+
     private ColorRGBA getAmbientColor(LightList lightList) {
         ambientLightColor.set(0, 0, 0, 1);
         for (int j = 0; j < lightList.size(); j++) {
@@ -799,7 +809,7 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
 
         if (rm.getForcedRenderState() != null) {
             r.applyRenderState(rm.getForcedRenderState());
-        }else{
+        } else {
             if (techDef.getRenderState() != null) {
                 r.applyRenderState(techDef.getRenderState().copyMergedTo(additionalState, mergedRenderState));
             } else {

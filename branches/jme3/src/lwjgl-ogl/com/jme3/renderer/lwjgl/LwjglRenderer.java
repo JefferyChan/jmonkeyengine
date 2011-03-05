@@ -38,6 +38,7 @@ import com.jme3.math.Matrix4f;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
+import com.jme3.math.Vector4f;
 import com.jme3.renderer.Caps;
 import com.jme3.renderer.GLObjectManager;
 import com.jme3.renderer.IDList;
@@ -185,7 +186,7 @@ public class LwjglRenderer implements Renderer {
         }
 
         String versionStr = null;
-        if (ctxCaps.OpenGL20){
+        if (ctxCaps.OpenGL20) {
             versionStr = glGetString(GL_SHADING_LANGUAGE_VERSION);
         }
         if (versionStr == null || versionStr.equals("")) {
@@ -483,7 +484,7 @@ public class LwjglRenderer implements Renderer {
             glColorMask(false, false, false, false);
             context.colorWriteEnabled = false;
         }
-        
+
         if (state.isPointSprite() && !context.pointSprite) {
             glEnable(GL_POINT_SPRITE);
             glTexEnvi(GL_POINT_SPRITE, GL_COORD_REPLACE, GL_TRUE);
@@ -709,6 +710,9 @@ public class LwjglRenderer implements Renderer {
                 if (val instanceof ColorRGBA) {
                     ColorRGBA c = (ColorRGBA) val;
                     glUniform4f(loc, c.r, c.g, c.b, c.a);
+                }else if (val instanceof Vector4f) {
+                    Vector4f c = (Vector4f) val;
+                    glUniform4f(loc, c.x, c.y, c.z, c.w);
                 } else {
                     Quaternion c = (Quaternion) uniform.getValue();
                     glUniform4f(loc, c.getX(), c.getY(), c.getZ(), c.getW());
@@ -1194,7 +1198,7 @@ public class LwjglRenderer implements Renderer {
         Image image = tex.getImage();
         if (image.isUpdateNeeded()) {
             updateTexImageData(image, tex.getType(), tex.getMinFilter().usesMipMapLevels(), 0);
-            
+
             // NOTE: For depth textures, sets nearest/no-mips mode
             // Required to fix "framebuffer unsupported"
             // for old NVIDIA drivers!
@@ -1622,7 +1626,7 @@ public class LwjglRenderer implements Renderer {
         }
 
         if (GLContext.getCapabilities().OpenGL30) {
-            if (!img.hasMipmaps() && mips && img.getData()!=null) {
+            if (!img.hasMipmaps() && mips && img.getData() != null) {
                 glGenerateMipmapEXT(target);
             }
         }
@@ -2161,8 +2165,9 @@ public class LwjglRenderer implements Renderer {
     }
 
     public void renderMesh(Mesh mesh, int lod, int count) {
-        if (mesh.getVertexCount() == 0)
+        if (mesh.getVertexCount() == 0) {
             return;
+        }
         if (context.pointSize != mesh.getPointSize()) {
             glPointSize(mesh.getPointSize());
             context.pointSize = mesh.getPointSize();

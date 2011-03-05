@@ -37,14 +37,13 @@ import com.jme3.export.JmeImporter;
 import com.jme3.export.InputCapsule;
 import com.jme3.export.OutputCapsule;
 import com.jme3.export.Savable;
-import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
-import com.jme3.math.Matrix3f;
 import com.jme3.math.Matrix4f;
 import com.jme3.math.Plane;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
+import com.jme3.math.Vector4f;
 import com.jme3.util.TempVars;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -283,7 +282,7 @@ public class Camera implements Savable, Cloneable {
         }
     }
 
-     /**
+    /**
      * Sets a clipPlane for this camera.
      * The cliPlane is used to recompute the projectionMatrix using the plane as the near plane
      * This technique is known as the oblique near-plane clipping method introduced by Eric Lengyel
@@ -313,22 +312,22 @@ public class Camera implements Savable, Cloneable {
         Vector3f point = clipPlane.getNormal().mult(clipPlane.getConstant());
         Vector3f pp = ivm.mult(point);
         Vector3f pn = ivm.multNormal(clipPlane.getNormal(), null);
-        ColorRGBA clipPlaneV = new ColorRGBA(pn.x * sideFactor, pn.y * sideFactor, pn.z * sideFactor, -(pp.dot(pn)) * sideFactor);
+        Vector4f clipPlaneV = new Vector4f(pn.x * sideFactor, pn.y * sideFactor, pn.z * sideFactor, -(pp.dot(pn)) * sideFactor);
 
-        ColorRGBA q = new ColorRGBA(0, 0, 0, 0);
+        Vector4f v = new Vector4f(0, 0, 0, 0);
 
-        q.r = (Math.signum(clipPlaneV.r) + p.m02) / p.m00;
-        q.g = (Math.signum(clipPlaneV.g) + p.m12) / p.m11;
-        q.b = -1.0f;
-        q.a = (1.0f + p.m22) / p.m23;
+        v.x = (Math.signum(clipPlaneV.x) + p.m02) / p.m00;
+        v.y = (Math.signum(clipPlaneV.y) + p.m12) / p.m11;
+        v.z = -1.0f;
+        v.w = (1.0f + p.m22) / p.m23;
 
-        float dot = clipPlaneV.r * q.r + clipPlaneV.g * q.g + clipPlaneV.b * q.b + clipPlaneV.a * q.a;
-        ColorRGBA c = clipPlaneV.mult(2.0f / dot);
+        float dot = clipPlaneV.dot(v);//clipPlaneV.x * v.x + clipPlaneV.y * v.y + clipPlaneV.z * v.z + clipPlaneV.w * v.w;
+        Vector4f c = clipPlaneV.mult(2.0f / dot);
 
-        p.m20 = c.r - p.m30;
-        p.m21 = c.g - p.m31;
-        p.m22 = c.b - p.m32;
-        p.m23 = c.a - p.m33;
+        p.m20 = c.x - p.m30;
+        p.m21 = c.y - p.m31;
+        p.m22 = c.z - p.m32;
+        p.m23 = c.w - p.m33;
         setProjectionMatrix(p);
     }
 

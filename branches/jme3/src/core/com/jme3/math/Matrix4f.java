@@ -1022,6 +1022,84 @@ public final class Matrix4f implements Savable, Cloneable {
     }
 
     /**
+     * <code>mult</code> multiplies a <code>Vector4f</code> about a rotation
+     * matrix. The resulting vector is returned as a new <code>Vector4f</code>.
+     *
+     * @param vec
+     *            vec to multiply against.
+     * @return the rotated vector.
+     */
+    public Vector4f mult(Vector4f vec) {
+        return mult(vec, null);
+    }
+
+    /**
+     * <code>mult</code> multiplies a <code>Vector4f</code> about a rotation
+     * matrix. The resulting vector is returned.
+     *
+     * @param vec
+     *            vec to multiply against.
+     * @param store
+     *            a vector to store the result in. Created if null is passed.
+     * @return the rotated vector.
+     */
+    public Vector4f mult(Vector4f vec, Vector4f store) {
+        if (null == vec) {
+            logger.info("Source vector is null, null result returned.");
+            return null;
+        }
+        if (store == null) store = new Vector4f();
+
+        float vx = vec.x, vy = vec.y, vz = vec.z, vw = vec.w;
+        store.x = m00 * vx + m01 * vy + m02 * vz + m03 * vw;
+        store.y = m10 * vx + m11 * vy + m12 * vz + m13 * vw;
+        store.z = m20 * vx + m21 * vy + m22 * vz + m23 * vw;
+        store.w = m30 * vx + m31 * vy + m32 * vz + m33 * vw;
+
+        return store;
+    }
+
+    /**
+     * <code>mult</code> multiplies a vector about a rotation matrix. The
+     * resulting vector is returned.
+     *
+     * @param vec
+     *            vec to multiply against.
+     * @param store
+     *            a vector to store the result in.  created if null is passed.
+     * @return the rotated vector.
+     */
+    public Vector4f multAcross(Vector4f vec) {
+        return multAcross(vec, null);
+    }
+
+    /**
+     * <code>mult</code> multiplies a vector about a rotation matrix. The
+     * resulting vector is returned.
+     *
+     * @param vec
+     *            vec to multiply against.
+     * @param store
+     *            a vector to store the result in.  created if null is passed.
+     * @return the rotated vector.
+     */
+    public Vector4f multAcross(Vector4f vec, Vector4f store) {
+        if (null == vec) {
+            logger.info("Source vector is null, null result returned.");
+            return null;
+        }
+        if (store == null) store = new Vector4f();
+
+        float vx = vec.x, vy = vec.y, vz = vec.z, vw =vec.w;
+        store.x = m00 * vx + m10 * vy + m20 * vz + m30 * vw;
+        store.y = m01 * vx + m11 * vy + m21 * vz + m31 * vw;
+        store.z = m02 * vx + m12 * vy + m22 * vz + m32 * vw;
+        store.z = m03 * vx + m13 * vy + m23 * vz + m33 * vw;
+
+        return store;
+    }
+
+    /**
      * <code>multNormal</code> multiplies a vector about a rotation matrix, but
      * does not add translation. The resulting vector is returned.
      *
