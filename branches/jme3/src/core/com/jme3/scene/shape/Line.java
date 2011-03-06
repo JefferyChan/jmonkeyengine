@@ -54,9 +54,7 @@ public class Line extends Mesh {
     private Vector3f start;
     private Vector3f end;
     
-    
     public Line() {
-
     }
 
     public Line(Vector3f start, Vector3f end) {
@@ -86,10 +84,16 @@ public class Line extends Mesh {
      * Update the start and end points of the line.
      */
     public void updatePoints(Vector3f start, Vector3f end) {
-        VertexBuffer fb = getBuffer(Type.Position);
-        FloatBuffer newFb = BufferUtils.createFloatBuffer(2*3);
-        newFb.put(new float[]{start.x, start.y, start.z, end.x, end.y, end.z});
-        fb.updateData(newFb);
+        VertexBuffer posBuf = getBuffer(Type.Position);
+
+        FloatBuffer fb = (FloatBuffer) posBuf.getData();
+
+        fb.put(start.x).put(start.y).put(start.z);
+        fb.put(end.x).put(end.y).put(end.z);
+        
+        posBuf.updateData(fb);
+        
+        updateBound();
     }
 
     public Vector3f getEnd() {
@@ -99,8 +103,6 @@ public class Line extends Mesh {
     public Vector3f getStart() {
         return start;
     }
-
-    
 
     @Override
     public void write(JmeExporter ex) throws IOException {

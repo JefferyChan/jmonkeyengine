@@ -182,7 +182,6 @@ public class Dome extends Mesh {
         this.radius = radius;
 
         int vertCount = ((planes - 1) * (radialSamples + 1)) + 1;
-        setVertexCount(vertCount);
 
         // Allocate vertices, allocating one extra in each radial to get the
         // correct texture coordinates

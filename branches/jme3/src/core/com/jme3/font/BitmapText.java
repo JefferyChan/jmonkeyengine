@@ -208,9 +208,6 @@ public class BitmapText extends Node {
         }
     }
     
-
-
-    
     public LineWrapMode getLineWrapMode() {
         return block.getLineWrapMode();
     }

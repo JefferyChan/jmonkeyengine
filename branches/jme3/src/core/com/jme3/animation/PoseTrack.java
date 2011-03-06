@@ -47,14 +47,14 @@ import java.nio.FloatBuffer;
 /**
  * A single track of pose animation associated with a certain mesh.
  */
-public final class PoseTrack extends Track implements Serializable{
+public final class PoseTrack extends Track {
     
     private static final long serialVersionUID = 1L;
 
     private PoseFrame[] frames;
     private float[]     times;
 
-    public static class PoseFrame implements Serializable, Savable {
+    public static class PoseFrame implements Savable {
 
         private static final long serialVersionUID = 1L;
 

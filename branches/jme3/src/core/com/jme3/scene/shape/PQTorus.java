@@ -144,11 +144,11 @@ public class PQTorus extends Mesh {
         Vector3f[] torusPoints = new Vector3f[steps];
 
         // Allocate all of the required buffers
-        setVertexCount(radialSamples * steps);
+        int vertCount = radialSamples * steps;
         
-        FloatBuffer fpb = createVector3Buffer(getVertexCount());
-        FloatBuffer fnb = createVector3Buffer(getVertexCount());
-        FloatBuffer ftb = createVector2Buffer(getVertexCount());
+        FloatBuffer fpb = createVector3Buffer(vertCount);
+        FloatBuffer fnb = createVector3Buffer(vertCount);
+        FloatBuffer ftb = createVector2Buffer(vertCount);
 
         Vector3f pointB = new Vector3f(), T = new Vector3f(), N = new Vector3f(), B = new Vector3f();
         Vector3f tempNorm = new Vector3f();
@@ -200,8 +200,8 @@ public class PQTorus extends Mesh {
         }
 
         // Update the indices data
-        ShortBuffer sib = createShortBuffer(6 * getVertexCount());
-        for (int i = 0; i < getVertexCount(); i++) {
+        ShortBuffer sib = createShortBuffer(6 * vertCount);
+        for (int i = 0; i < vertCount; i++) {
             sib.put(new short[] {
                     (short)(i),
                     (short)(i - radialSamples),
@@ -214,10 +214,10 @@ public class PQTorus extends Mesh {
         for (int i = 0, len = sib.capacity(); i < len; i++) {
             int ind = sib.get(i);
             if (ind < 0) {
-                ind += getVertexCount();
+                ind += vertCount;
                 sib.put(i, (short) ind);
-            } else if (ind >= getVertexCount()) {
-                ind -= getVertexCount();
+            } else if (ind >= vertCount) {
+                ind -= vertCount;
                 sib.put(i, (short) ind);
             }
         }
@@ -229,6 +229,7 @@ public class PQTorus extends Mesh {
         setBuffer(Type.Index,    3, sib);
     }
 
+    @Override
     public void write(JmeExporter e) throws IOException {
         super.write(e);
         OutputCapsule capsule = e.getCapsule(this);

@@ -120,6 +120,8 @@ public class ModelConverter {
             mesh.setModeStart(modeStart);
             mesh.setMode(Mode.Hybrid);
         }
+
+        mesh.updateCounts();
     }
 
     public static void optimize(Mesh mesh, boolean toFixed){

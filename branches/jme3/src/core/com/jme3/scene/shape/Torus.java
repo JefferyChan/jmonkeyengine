@@ -116,16 +116,16 @@ public class Torus extends Mesh {
 
     private void setGeometryData() {
         // allocate vertices
-        setVertexCount((circleSamples + 1) * (radialSamples + 1));
-        FloatBuffer fpb = BufferUtils.createVector3Buffer(getVertexCount());
+        int vertCount = (circleSamples + 1) * (radialSamples + 1);
+        FloatBuffer fpb = BufferUtils.createVector3Buffer(vertCount);
         setBuffer(Type.Position, 3, fpb);
 
         // allocate normals if requested
-        FloatBuffer fnb = BufferUtils.createVector3Buffer(getVertexCount());
+        FloatBuffer fnb = BufferUtils.createVector3Buffer(vertCount);
         setBuffer(Type.Normal, 3, fnb);
 
         // allocate texture coordinates
-        FloatBuffer ftb = BufferUtils.createVector2Buffer(getVertexCount());
+        FloatBuffer ftb = BufferUtils.createVector2Buffer(vertCount);
         setBuffer(Type.TexCoord, 2, ftb);
 
         // generate geometry

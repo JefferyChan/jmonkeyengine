@@ -35,8 +35,6 @@ package com.jme3.audio;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * <code>AudioStream</code> is an implementation of AudioData that

@@ -122,6 +122,7 @@ class BitmapTextPage extends Geometry {
     void assemble(Letters quads) {
         pageQuads.clear();
         quads.rewind();
+        
         while (quads.nextCharacter()) {
             if (quads.isPrintable()) {
                 if (quads.getCharacterSetPage() == page) {
@@ -129,6 +130,7 @@ class BitmapTextPage extends Geometry {
                 }
             }
         }
+        
         Mesh m = getMesh();
         int vertCount = pageQuads.size() * 4;
         int triCount = pageQuads.size() * 2;
@@ -164,6 +166,8 @@ class BitmapTextPage extends Geometry {
         sib.limit(triCount * 3);
         ib.updateData(sib);
 
+        m.updateCounts();
+
         // go for each quad and append it to the buffers
         if (pos != null) {
             for (int i = 0; i < pageQuads.size(); i++) {
@@ -188,6 +192,7 @@ class BitmapTextPage extends Geometry {
         ftb.rewind();
         sib.rewind();
         bcb.rewind();
+        
         updateModelBound();
     }
 }
