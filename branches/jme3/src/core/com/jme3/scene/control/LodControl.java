@@ -46,6 +46,17 @@ import com.jme3.scene.Mesh;
 import com.jme3.scene.Spatial;
 import java.io.IOException;
 
+/**
+ * Determines what Level of Detail a spatial should be, based on how many pixels
+ * on the screen the spatial is taking up. The more pixels covered, the more detailed
+ * the spatial should be.
+ * It calculates the area of the screen that the spatial covers by using its bounding box.
+ * When initializing, it will ask the spatial for how many triangles it has for each LOD.
+ * It then uses that, along with the trisPerPixel value to determine what LOD it should be at.
+ * It requires the camera to do this.
+ * The controlRender method is called each frame and will update the spatial's LOD
+ * if the camera has moved by a specified amount.
+ */
 public class LodControl extends AbstractControl implements Cloneable {
 
     private float trisPerPixel = 1f;
