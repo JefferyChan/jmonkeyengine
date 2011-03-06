@@ -57,8 +57,6 @@ public class ParticlePointMesh extends ParticleMesh {
     @Override
     public void initParticleData(ParticleEmitter emitter, int numParticles) {
         setMode(Mode.Points);
-        setVertexCount(numParticles);
-        setTriangleCount(numParticles);
 
         this.emitter = emitter;
 

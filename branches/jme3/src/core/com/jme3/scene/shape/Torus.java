@@ -187,9 +187,9 @@ public class Torus extends Mesh {
 
     private void setIndexData() {
         // allocate connectivity
-        setTriangleCount(2 * circleSamples * radialSamples);
+        int triCount = 2 * circleSamples * radialSamples;
 
-        ShortBuffer sib = BufferUtils.createShortBuffer(3 * getTriangleCount());
+        ShortBuffer sib = BufferUtils.createShortBuffer(3 * triCount);
         setBuffer(Type.Index, 3, sib);
 
         int i;

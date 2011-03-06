@@ -163,7 +163,7 @@ public class MeshLoader extends DefaultHandler implements AssetLoader {
         int numIndices;
 
         if (mesh.getMode() == Mesh.Mode.Triangles){
-            mesh.setTriangleCount(numFaces);
+            //mesh.setTriangleCount(numFaces);
             numIndices = numFaces * 3;
         }else{
             throw new SAXException("Triangle strip or fan not supported!");

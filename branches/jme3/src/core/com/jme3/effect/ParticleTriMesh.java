@@ -57,8 +57,6 @@ public class ParticleTriMesh extends ParticleMesh {
     @Override
     public void initParticleData(ParticleEmitter emitter, int numParticles) {
         setMode(Mode.Triangles);
-        setVertexCount(numParticles * 4);
-        setTriangleCount(numParticles * 2);
 
         this.emitter = emitter;
 

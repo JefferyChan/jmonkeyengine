@@ -406,10 +406,12 @@ public class Mesh implements Savable, Cloneable {
         return vertCount;
     }
 
+    @Deprecated
     public void setTriangleCount(int count){
         this.elementCount = count;
     }
 
+    @Deprecated
     public void setVertexCount(int count){
         this.vertCount = count;
     }

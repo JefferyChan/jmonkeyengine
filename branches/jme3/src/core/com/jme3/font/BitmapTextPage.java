@@ -130,8 +130,8 @@ class BitmapTextPage extends Geometry {
             }
         }
         Mesh m = getMesh();
-        m.setVertexCount(pageQuads.size() * 4);
-        m.setTriangleCount(pageQuads.size() * 2);
+        int vertCount = pageQuads.size() * 4;
+        int triCount = pageQuads.size() * 2;
 
         VertexBuffer pb = m.getBuffer(Type.Position);
         VertexBuffer tb = m.getBuffer(Type.TexCoord);
@@ -145,23 +145,23 @@ class BitmapTextPage extends Geometry {
 
         // increase capacity of buffers as needed
         fpb.rewind();
-        fpb = BufferUtils.ensureLargeEnough(fpb, m.getVertexCount() * 3);
-        fpb.limit(m.getVertexCount() * 3);
+        fpb = BufferUtils.ensureLargeEnough(fpb, vertCount * 3);
+        fpb.limit(vertCount * 3);
         pb.updateData(fpb);
 
         ftb.rewind();
-        ftb = BufferUtils.ensureLargeEnough(ftb, m.getVertexCount() * 2);
-        ftb.limit(m.getVertexCount() * 2);
+        ftb = BufferUtils.ensureLargeEnough(ftb, vertCount * 2);
+        ftb.limit(vertCount * 2);
         tb.updateData(ftb);
 
         bcb.rewind();
-        bcb = BufferUtils.ensureLargeEnough(bcb, m.getVertexCount() * 4);
-        bcb.limit(m.getVertexCount() * 4);
+        bcb = BufferUtils.ensureLargeEnough(bcb, vertCount * 4);
+        bcb.limit(vertCount * 4);
         cb.updateData(bcb);
 
         sib.rewind();
-        sib = BufferUtils.ensureLargeEnough(sib, m.getTriangleCount() * 3);
-        sib.limit(m.getTriangleCount() * 3);
+        sib = BufferUtils.ensureLargeEnough(sib, triCount * 3);
+        sib.limit(triCount * 3);
         ib.updateData(sib);
 
         // go for each quad and append it to the buffers

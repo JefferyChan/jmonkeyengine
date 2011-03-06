@@ -251,20 +251,19 @@ public class Cylinder extends Mesh {
 //        VertexBuffer tvb = getBuffer(Type.TexCoord);
 
         // Vertices
-        setVertexCount(axisSamples * (radialSamples + 1) + (closed ? 2 : 0));
+        int vertCount = axisSamples * (radialSamples + 1) + (closed ? 2 : 0);
 
-        setBuffer(Type.Position, 3, createVector3Buffer(getFloatBuffer(Type.Position), getVertexCount()));
+        setBuffer(Type.Position, 3, createVector3Buffer(getFloatBuffer(Type.Position), vertCount));
 
         // Normals
-        setBuffer(Type.Normal, 3, createVector3Buffer(getFloatBuffer(Type.Normal), getVertexCount()));
+        setBuffer(Type.Normal, 3, createVector3Buffer(getFloatBuffer(Type.Normal), vertCount));
 
         // Texture co-ordinates
-        setBuffer(Type.TexCoord, 2, createVector2Buffer(getVertexCount()));
+        setBuffer(Type.TexCoord, 2, createVector2Buffer(vertCount));
 
-        setTriangleCount(((closed ? 2 : 0) + 2 * (axisSamples - 1)) * radialSamples);
-
+        int triCount = ((closed ? 2 : 0) + 2 * (axisSamples - 1)) * radialSamples;
         
-        setBuffer(Type.Index, 3, createShortBuffer(getShortBuffer(Type.Index), 3 * getTriangleCount()));
+        setBuffer(Type.Index, 3, createShortBuffer(getShortBuffer(Type.Index), 3 * triCount));
 
         // generate geometry
         float inverseRadial = 1.0f / radialSamples;
@@ -368,17 +367,17 @@ public class Cylinder extends Mesh {
                 if (closed && axisCount == 0) {
                     if (!inverted) {
                         ib.put(index++, i0++);
-                        ib.put(index++, getVertexCount() - 2);
+                        ib.put(index++, vertCount - 2);
                         ib.put(index++, i1++);
                     } else {
                         ib.put(index++, i0++);
                         ib.put(index++, i1++);
-                        ib.put(index++, getVertexCount() - 2);
+                        ib.put(index++, vertCount - 2);
                     }
                 } else if (closed && axisCount == axisSamples - 2) {
                     ib.put(index++, i2++);
-                    ib.put(index++, inverted ? getVertexCount() - 1 : i3++);
-                    ib.put(index++, inverted ? i3++ : getVertexCount() - 1);
+                    ib.put(index++, inverted ? vertCount - 1 : i3++);
+                    ib.put(index++, inverted ? i3++ : vertCount - 1);
                 } else {
                     ib.put(index++, i0++);
                     ib.put(index++, inverted ? i2 : i1);
@@ -391,7 +390,6 @@ public class Cylinder extends Mesh {
         }
 
         updateBound();
-        updateCounts();
     }
 
     public void read(JmeImporter e) throws IOException {
