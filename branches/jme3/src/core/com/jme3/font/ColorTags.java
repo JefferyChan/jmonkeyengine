@@ -18,26 +18,26 @@ class ColorTags {
     private static final Pattern colorPattern = Pattern.compile("\\\\#([0-9a-fA-F]{8})#|\\\\#([0-9a-fA-F]{6})#|" +
     		                                                    "\\\\#([0-9a-fA-F]{4})#|\\\\#([0-9a-fA-F]{3})#");
     private LinkedList<Range> colors = new LinkedList<Range>();
-    private CharSequence text;
-    
+    private String text;
+
     ColorTags() { }
-    
-    ColorTags(CharSequence seq) {
+
+    ColorTags(String seq) {
         setText(seq);
     }
     
     /**
      * @return text without color tags
      */
-    CharSequence getPlainText() {
+    String getPlainText() {
         return text;
     }
     
     LinkedList<Range> getTags() {
         return colors;
     }
-    
-    void setText(final CharSequence charSeq) {
+
+    void setText(final String charSeq) {
         colors.clear();
         if (charSeq == null) {
             return;
@@ -65,7 +65,7 @@ class ColorTags {
     
     class Range {
         int start;
-        ColorRGBA color;        
+        ColorRGBA color;
         Range(int start, String colorStr) {
             this.start = start;
             this.color = new ColorRGBA();

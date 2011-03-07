@@ -105,7 +105,17 @@ public class BitmapText extends Node {
      * @param text charsequence to change text to
      */
     public void setText(CharSequence text) {
-        if (block.getText().equals(text)) {
+        // note: text.toString() is free if text is already a java.lang.String.
+        setText( text != null ? text.toString() : null );
+    }
+
+    /**
+     *
+     * @param text String to change text to
+     */
+    public void setText(String text) {
+        text = text == null ? "" : text;
+        if (text == block.getText() || block.getText().equals(text)) {
             return;
         }
 
@@ -133,7 +143,7 @@ public class BitmapText extends Node {
      * @param color new color of text
      */
     public void setColor(ColorRGBA color) {
-        letters.setColor(0, block.getCharacters().length(), color);
+        letters.setColor(0, block.getText().length(), color);
         letters.invalidate(); // TODO: Don't have to align.
         needRefresh = true;
     }
@@ -263,7 +273,7 @@ public class BitmapText extends Node {
      */
     public void setStyle(String regexp, int style) {
         Pattern p = Pattern.compile(regexp);
-        Matcher m = p.matcher(block.getCharacters());
+        Matcher m = p.matcher(block.getText());
         while (m.find()) {
             setStyle(m.start(), m.end(), style);
         }
@@ -288,7 +298,7 @@ public class BitmapText extends Node {
      */
     public void setColor(String regexp, ColorRGBA color) {
         Pattern p = Pattern.compile(regexp);
-        Matcher m = p.matcher(block.getCharacters());
+        Matcher m = p.matcher(block.getText());
         while (m.find()) {
             letters.setColor(m.start(), m.end(), color);
         }
@@ -318,7 +328,7 @@ public class BitmapText extends Node {
     /**
      * for setLineWrapType(LineWrapType.NoWrap),
      * set the last character when the text exceeds the bound.
-     * @param c 
+     * @param c
      */
     public void setEllipsisChar(char c) {
         block.setEllipsisChar(c);
@@ -327,10 +337,10 @@ public class BitmapText extends Node {
     }
 
     /**
-     * Available only when bounding is set. <code>setBox()</code> method call is needed in advance. 
-     * true when 
+     * Available only when bounding is set. <code>setBox()</code> method call is needed in advance.
+     * true when
      * @param wrap NoWrap   : Letters over the text bound is not shown. the last character is set to '...'(0x2026)
-     *             Character: Character is split at the end of the line. 
+     *             Character: Character is split at the end of the line.
      *             Word     : Word is split at the end of the line.
      */
     public void setLineWrapMode(LineWrapMode wrap) {

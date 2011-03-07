@@ -44,7 +44,7 @@ import com.jme3.math.ColorRGBA;
  */
 class StringBlock implements Cloneable {
 
-    private StringBuilder text;
+    private String text;
     private Rectangle textBox;
     private Align alignment = Align.Left;
     private VAlign valignment = VAlign.Top;
@@ -68,8 +68,7 @@ class StringBlock implements Cloneable {
      */
     StringBlock(String text, Rectangle textBox, BitmapFont.Align alignment, float size, ColorRGBA color,
             boolean kerning) {
-        this.text = new StringBuilder();
-        this.text.append(text);
+        this.text = text;
         this.textBox = textBox;
         this.alignment = alignment;
         this.size = size;
@@ -78,8 +77,7 @@ class StringBlock implements Cloneable {
     }
 
     StringBlock(){
-        this.text = new StringBuilder();
-        this.text.append("");
+        this.text = "";
         this.textBox = null;
         this.alignment = Align.Left;
         this.size = 100;
@@ -101,18 +99,11 @@ class StringBlock implements Cloneable {
     }
 
     String getText() {
-        return text.toString();
-    }
-
-    CharSequence getCharacters(){
         return text;
     }
 
-    void setText(CharSequence text){
-        this.text.setLength(0);
-        if (text != null) {
-            this.text.append(text);
-        }
+    void setText(String text){
+        this.text = text == null ? "" : text;
     }
 
     Rectangle getTextBox() {

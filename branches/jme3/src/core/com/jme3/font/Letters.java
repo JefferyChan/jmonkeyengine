@@ -30,10 +30,10 @@ class Letters {
         setText(text);
     }
 
-    void setText(final CharSequence text) {
+    void setText(final String text) {
         colorTags.setText(text);
-        CharSequence plainText = colorTags.getPlainText();
-        
+        String plainText = colorTags.getPlainText();
+
         head.setNext(tail);
         tail.setPrevious(head);
         current = head;
