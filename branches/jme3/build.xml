@@ -5,6 +5,7 @@
     <import file="nbproject/build-impl.xml"/>
     <import file="nbproject/profiler-build-impl.xml"/>
 
+
     <!--this target creates the assets jar file and modifies the classpath to include it-->
     <target name="-pre-jar">
         <!--separate test classes-->
