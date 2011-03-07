@@ -102,6 +102,8 @@ public class MeshLoader extends DefaultHandler implements AssetLoader {
     private static volatile int nodeIdx = 0;
     private String ignoreUntilEnd = null;
     private boolean bigindices = false;
+    private int vertCount;
+    private int triCount;
 
     private List<Geometry> geoms = new ArrayList<Geometry>();
     private List<Boolean> usesSharedGeom = new ArrayList<Boolean>();
@@ -130,6 +132,8 @@ public class MeshLoader extends DefaultHandler implements AssetLoader {
         sharedgeom = null;
         sharedmesh = null;
 
+        vertCount = 0;
+        triCount = 0;
         geomIdx = 0;
         texCoordIdx = 0;
         nodeIdx = 0;
@@ -254,8 +258,8 @@ public class MeshLoader extends DefaultHandler implements AssetLoader {
 
     private void startSharedGeom(String vertexcount) throws SAXException{
         sharedmesh = new Mesh();
-        int vertCount = parseInt(vertexcount);
-        sharedmesh.setVertexCount(vertCount);
+        vertCount = parseInt(vertexcount);
+//        sharedmesh.setVertexCount(vertCount);
 
         if (meshName == null)
             sharedgeom = new Geometry("Ogre-SharedGeom", sharedmesh);
@@ -271,8 +275,8 @@ public class MeshLoader extends DefaultHandler implements AssetLoader {
     }
 
     private void startGeometry(String vertexcount) throws SAXException{
-        int vertCount = parseInt(vertexcount);
-        mesh.setVertexCount(vertCount);
+        vertCount = parseInt(vertexcount);
+//        mesh.setVertexCount(vertCount);
     }
 
     /**
@@ -284,7 +288,7 @@ public class MeshLoader extends DefaultHandler implements AssetLoader {
             return;
         }
 
-        int vertCount = mesh.getVertexCount();
+        //int vertCount = mesh.getVertexCount();
         int maxWeightsPerVert = 0;
         weightsFloatData.rewind();
         for (int v = 0; v < vertCount; v++){
@@ -329,7 +333,7 @@ public class MeshLoader extends DefaultHandler implements AssetLoader {
         }
 
         // current mesh will have bone assigns
-        int vertCount = mesh.getVertexCount();
+        //int vertCount = mesh.getVertexCount();
         // each vertex has
         // - 4 bone weights
         // - 4 bone indices
@@ -356,32 +360,32 @@ public class MeshLoader extends DefaultHandler implements AssetLoader {
     private void startVertexBuffer(Attributes attribs) throws SAXException{
         if (parseBool(attribs.getValue("positions"), false)){
             vb = new VertexBuffer(Type.Position);
-            fb = BufferUtils.createFloatBuffer(mesh.getVertexCount() * 3);
+            fb = BufferUtils.createFloatBuffer(vertCount * 3);
             vb.setupData(Usage.Static, 3, Format.Float, fb);
             mesh.setBuffer(vb);
         }
         if (parseBool(attribs.getValue("normals"), false)){
             vb = new VertexBuffer(Type.Normal);
-            fb = BufferUtils.createFloatBuffer(mesh.getVertexCount() * 3);
+            fb = BufferUtils.createFloatBuffer(vertCount * 3);
             vb.setupData(Usage.Static, 3, Format.Float, fb);
             mesh.setBuffer(vb);
         }
         if (parseBool(attribs.getValue("colours_diffuse"), false)){
             vb = new VertexBuffer(Type.Color);
-            fb = BufferUtils.createFloatBuffer(mesh.getVertexCount() * 4);
+            fb = BufferUtils.createFloatBuffer(vertCount * 4);
             vb.setupData(Usage.Static, 4, Format.Float, fb);
             mesh.setBuffer(vb);
         }
         if (parseBool(attribs.getValue("tangents"), false)){
             int dimensions = parseInt(attribs.getValue("tangent_dimensions"), 3);
             vb = new VertexBuffer(Type.Tangent);
-            fb = BufferUtils.createFloatBuffer(mesh.getVertexCount() * dimensions);
+            fb = BufferUtils.createFloatBuffer(vertCount * dimensions);
             vb.setupData(Usage.Static, dimensions, Format.Float, fb);
             mesh.setBuffer(vb);
         }
         if (parseBool(attribs.getValue("binormals"), false)){
             vb = new VertexBuffer(Type.Binormal);
-            fb = BufferUtils.createFloatBuffer(mesh.getVertexCount() * 3);
+            fb = BufferUtils.createFloatBuffer(vertCount * 3);
             vb.setupData(Usage.Static, 3, Format.Float, fb);
             mesh.setBuffer(vb);
         }
@@ -400,7 +404,7 @@ public class MeshLoader extends DefaultHandler implements AssetLoader {
             }else{
                 vb = new VertexBuffer(Type.TexCoord2);
             }
-            fb = BufferUtils.createFloatBuffer(mesh.getVertexCount() * dims);
+            fb = BufferUtils.createFloatBuffer(vertCount * dims);
             vb.setupData(Usage.Static, dims, Format.Float, fb);
             mesh.setBuffer(vb);
         }

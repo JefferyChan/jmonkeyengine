@@ -340,7 +340,6 @@ public class TerrainPatch extends Geometry {
     protected void updateNormals() {
         FloatBuffer newNormalBuffer = geomap.writeNormalArray(null, stepScale);
         getMesh().getBuffer(Type.Normal).updateData(newNormalBuffer);
-        getMesh().getBuffer(Type.Normal).setUpdateNeeded();
     }
 
     /**

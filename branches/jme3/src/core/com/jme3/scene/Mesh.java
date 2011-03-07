@@ -297,7 +297,8 @@ public class Mesh implements Savable, Cloneable {
         VertexBuffer allData = new VertexBuffer(Type.InterleavedData);
         ByteBuffer dataBuf = BufferUtils.createByteBuffer(stride * getVertexCount());
         allData.setupData(Usage.Static, -1, Format.UnsignedByte, dataBuf);
-        setBuffer(allData);
+        // adding buffer directly so that no update counts is forced
+        buffers.put(Type.InterleavedData.ordinal(), allData);
 
         for (int vert = 0; vert < getVertexCount(); vert++){
             for (int i = 0; i < vbs.size(); i++){
@@ -568,10 +569,12 @@ public class Mesh implements Savable, Cloneable {
             throw new IllegalArgumentException("Buffer type already set: "+vb.getBufferType());
 
         buffers.put(vb.getBufferType().ordinal(), vb);
+        updateCounts();
     }
 
     public void clearBuffer(VertexBuffer.Type type){
         buffers.remove(type.ordinal());
+        updateCounts();
     }
 
     public void setBuffer(Type type, int components, short[] buf){
@@ -637,6 +640,7 @@ public class Mesh implements Savable, Cloneable {
             fb.put(x).put(y);
         }
         fb.clear();
+        tc.updateData(fb);
     }
 
     public void updateBound(){
