@@ -1040,40 +1040,9 @@ public class TerrainPatch extends Geometry {
         return 0;
     }
 
-    /*private int collideWithBoundingSphere(BoundingSphere bSphere, CollisionResults results) {
-
-        Vector3f topLeft = worldCoordinateToLocal(new Vector3f(bSphere.getCenter().x-bSphere.getRadius(), 0, bSphere.getCenter().z-bSphere.getRadius()));
-        Vector3f topRight = worldCoordinateToLocal(new Vector3f(bSphere.getCenter().x+bSphere.getRadius(), 0, bSphere.getCenter().z-bSphere.getRadius()));
-        Vector3f bottomLeft = worldCoordinateToLocal(new Vector3f(bSphere.getCenter().x-bSphere.getRadius(), 0, bSphere.getCenter().z+bSphere.getRadius()));
-        Vector3f center = worldCoordinateToLocal(bSphere.getCenter());
-        float radius2 = bSphere.getRadius()/getWorldScale().x;
-        radius2 *= radius2; // square it
-        
-        for (float z=topLeft.z; z<bottomLeft.z; z+=1) {
-            for (float x=topLeft.x; x<topRight.x; x+=1) {
-
-                if (x < 0 || z < 0 || x >= size || z >= size)
-                    continue;
-                if (center.distanceSquared(new Vector3f(x, center.y, z)) > radius2)
-                    continue;
-
-                Triangle t = getTriangle(x,z);
-                if (t != null && bSphere.collideWith(t, results) > 0)
-                    return 1;
-            }
-        }
-
-        return 0;
-    }*/
 
     @Override
     public void write(JmeExporter ex) throws IOException {
-
-        // we don't want to save the mesh. We just save the heightmap and rebuild it on load
-        // this is much faster and makes way smaller save files
-        Mesh tempMesh = getMesh();
-        mesh = null;
-
         super.write(ex);
         OutputCapsule oc = ex.getCapsule(this);
         oc.write(size, "size", 16);
@@ -1084,10 +1053,8 @@ public class TerrainPatch extends Geometry {
         oc.write(offsetAmount, "offsetAmount", 0);
         oc.write(lodCalculator, "lodCalculator", null);
         oc.write(lodCalculatorFactory, "lodCalculatorFactory", null);
-        oc.write(geomap.getHeightData(), "heightmap", null);
         oc.write(lodEntropy, "lodEntropy", null);
-
-        setMesh(tempMesh); // add the mesh back
+        oc.write(geomap, "geomap", null);
     }
 
     @Override
@@ -1104,11 +1071,7 @@ public class TerrainPatch extends Geometry {
         lodCalculator.setTerrainPatch(this);
         lodCalculatorFactory = (LodCalculatorFactory) ic.readSavable("lodCalculatorFactory", null);
         lodEntropy = ic.readFloatArray("lodEntropy", null);
-        FloatBuffer heightBuffer = ic.readFloatBuffer("heightmap", null);
-        geomap = new LODGeomap(size, heightBuffer);
-        Mesh m = geomap.createMesh(stepScale, Vector2f.UNIT_XY, offset, offsetAmount, totalSize, false);
-        setMesh(m);
-        TangentBinormalGenerator.generate(this);
+        geomap = (LODGeomap) ic.readSavable("geomap", null);
     }
 
     @Override

@@ -32,8 +32,17 @@
 
 package com.jme3.terrain;
 
+import com.jme3.export.InputCapsule;
+import com.jme3.export.JmeExporter;
+import com.jme3.export.JmeImporter;
+import com.jme3.export.OutputCapsule;
+import com.jme3.export.Savable;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Mesh;
+import com.jme3.scene.VertexBuffer;
+import com.jme3.scene.VertexBuffer.Type;
 import com.jme3.util.BufferUtils;
+import java.io.IOException;
 import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
@@ -41,12 +50,14 @@ import java.nio.FloatBuffer;
 /**
  * Implementation of the Geomap interface which stores data in memory as native buffers
  */
-public class BufferGeomap extends AbstractGeomap implements Geomap {
+public class BufferGeomap extends AbstractGeomap implements Geomap, Savable {
 
     protected FloatBuffer hdata;
     protected ByteBuffer ndata;
     protected int width, height, maxval;
 
+    public BufferGeomap() {}
+    
     public BufferGeomap(FloatBuffer heightData, ByteBuffer normalData, int width, int height, int maxval){
         this.hdata = heightData;
         this.ndata = normalData;
@@ -205,4 +216,37 @@ public class BufferGeomap extends AbstractGeomap implements Geomap {
         return store;
     }
 
+    public void write(JmeExporter ex) throws IOException {
+        OutputCapsule oc = ex.getCapsule(this);
+        oc.write(hdata, "hdata", null);
+        oc.write(width, "width", 0);
+        oc.write(height, "height", 0);
+        oc.write(maxval, "maxval", 0);
+    }
+
+    public void read(JmeImporter im) throws IOException {
+        InputCapsule ic = im.getCapsule(this);
+        hdata = ic.readFloatBuffer("hdata", null);
+        width = ic.readInt("width", 0);
+        height = ic.readInt("height", 0);
+        maxval = ic.readInt("maxval", 0);
+    }
+
+    /**
+     * Populate the height data from the supplied mesh.
+     * The mesh's dimensions should be the same as width and height
+     * of this geomap
+     */
+    public void populateHdataFromMesh(Mesh mesh) {
+        hdata = BufferUtils.createFloatBuffer(width*height);
+        hdata.rewind();
+        VertexBuffer pb = mesh.getBuffer(Type.Position);
+        FloatBuffer fb = (FloatBuffer) pb.getData();
+        for (int r=0; r<height; r++) {
+            for (int c=0; c<width; c++) {
+                float f = fb.get( (width*r) + c + 1);
+                hdata.put( f );
+            }
+        }
+    }
 }

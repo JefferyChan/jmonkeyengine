@@ -32,6 +32,10 @@
 
 package com.jme3.terrain.geomipmap;
 
+import com.jme3.export.InputCapsule;
+import com.jme3.export.JmeExporter;
+import com.jme3.export.JmeImporter;
+import com.jme3.export.OutputCapsule;
 import com.jme3.math.FastMath;
 import com.jme3.math.Triangle;
 import java.nio.BufferOverflowException;
@@ -46,6 +50,7 @@ import com.jme3.scene.Mesh.Mode;
 import com.jme3.scene.VertexBuffer.Type;
 import com.jme3.terrain.BufferGeomap;
 import com.jme3.util.BufferUtils;
+import java.io.IOException;
 
 /**
  * Produces the mesh for the TerrainPatch.
@@ -61,7 +66,10 @@ import com.jme3.util.BufferUtils;
  * @author Brent Owens
  */
 public class LODGeomap extends BufferGeomap {
-	public LODGeomap(int size, FloatBuffer heightMap) {
+
+    public LODGeomap() {}
+
+    public LODGeomap(int size, FloatBuffer heightMap) {
 		super(heightMap, null, size, size, 1);
 	}
 
@@ -915,5 +923,14 @@ public class LODGeomap extends BufferGeomap {
         return z * width + x;
     }
 
+    @Override
+    public void write(JmeExporter ex) throws IOException {
+        super.write(ex);
+    }
+
+    @Override
+    public void read(JmeImporter im) throws IOException {
+        super.read(im);
+    }
 }
 

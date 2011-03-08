@@ -67,6 +67,7 @@ import com.jme3.util.TangentBinormalGenerator;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 /**
  * A terrain quad is a node in the quad tree of the terrain system.
@@ -1473,9 +1474,8 @@ public class TerrainQuad extends Node implements Terrain {
 		lodCalculatorFactory = (LodCalculatorFactory) c.readSavable("lodCalculatorFactory", null);
         
         // the terrain is re-built on load, so we need to run this once
-        affectedAreaBBox = new BoundingBox(new Vector3f(0,0,0), size, Float.MAX_VALUE, size);
-        updateNormals();
-
+        //affectedAreaBBox = new BoundingBox(new Vector3f(0,0,0), size, Float.MAX_VALUE, size);
+        //updateNormals();
 	}
 
 	@Override
@@ -1490,11 +1490,15 @@ public class TerrainQuad extends Node implements Terrain {
 		c.write(quadrant, "quadrant", 0);
         c.write(lodCalculatorFactory, "lodCalculatorFactory", null);
 	}
-	
-	@Override
+
+    @Override
     public TerrainQuad clone() {
-        super.clone();
-        TerrainQuad quadClone = (TerrainQuad) super.clone();
+        return this.clone(true);
+    }
+
+	@Override
+    public TerrainQuad clone(boolean cloneMaterials) {
+        TerrainQuad quadClone = (TerrainQuad) super.clone(cloneMaterials);
         quadClone.name = name.toString();
         quadClone.size = size;
         quadClone.totalSize = totalSize;
