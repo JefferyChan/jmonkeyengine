@@ -132,12 +132,12 @@ public class Mesh implements Savable, Cloneable {
             for (Entry<VertexBuffer> ent : buffers){
                 clone.buffers.put(ent.getKey(), ent.getValue().clone());
             }
-            vertexArrayID = -1;
-            vertCount = -1;
-            elementCount = -1;
-            maxNumWeights = -1;
-            elementLengths = elementLengths != null ? elementLengths.clone() : null;
-            modeStart = modeStart != null ? modeStart.clone() : null;
+            clone.vertexArrayID = -1;
+            clone.vertCount = -1;
+            clone.elementCount = -1;
+            clone.maxNumWeights = -1;
+            clone.elementLengths = elementLengths != null ? elementLengths.clone() : null;
+            clone.modeStart = modeStart != null ? modeStart.clone() : null;
             return clone;
         }catch (CloneNotSupportedException ex){
             throw new AssertionError();
