@@ -206,9 +206,9 @@ public class TextureBrowser extends javax.swing.JDialog {
 
     private void setSelectedTexture(Texture texture) {
         if (texture != null) {
-            Logger.getLogger(TextureBrowser.class.getName()).info("Looking for Texture: "+texture.getName());
+            Logger.getLogger(TextureBrowser.class.getName()).finer("Looking for Texture: "+texture.getName());
             for (int i=0; i<textureList.getModel().getSize(); i++) {
-                Logger.getLogger(TextureBrowser.class.getName()).info("Texture name: "+textureList.getModel().getElementAt(i));
+                Logger.getLogger(TextureBrowser.class.getName()).finer("Texture name: "+textureList.getModel().getElementAt(i));
                 if (textureList.getModel().getElementAt(i).equals(texture.getName()) ) {
                     textureList.setSelectedIndex(i);
                     break;

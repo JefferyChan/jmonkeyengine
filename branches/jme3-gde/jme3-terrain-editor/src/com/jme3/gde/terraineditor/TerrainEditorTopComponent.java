@@ -41,6 +41,7 @@ import com.jme3.gde.core.sceneexplorer.nodes.JmeNode;
 import com.jme3.gde.core.sceneexplorer.nodes.JmeSpatial;
 import com.jme3.gde.core.sceneexplorer.nodes.NodeUtility;
 import com.jme3.gde.core.sceneexplorer.nodes.properties.TexturePropertyEditor;
+import com.jme3.gde.core.util.DataObjectSaveNode;
 import com.jme3.gde.terraineditor.sky.SkyboxWizardAction;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
@@ -54,6 +55,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Vector;
 import java.util.logging.Logger;
@@ -75,6 +77,7 @@ import javax.swing.table.TableCellRenderer;
 import jme3tools.converters.ImageToAwt;
 import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.api.progress.ProgressHandleFactory;
+import org.openide.loaders.DataObjectNotFoundException;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
@@ -84,6 +87,8 @@ import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.NotifyDescriptor.Confirmation;
 import org.openide.WizardDescriptor;
+import org.openide.cookies.SaveCookie;
+import org.openide.loaders.DataObject;
 import org.openide.util.Exceptions;
 import org.openide.util.HelpCtx;
 import org.openide.util.Lookup.Result;
@@ -111,6 +116,8 @@ public final class TerrainEditorTopComponent extends TopComponent implements Sce
     private boolean alreadyChoosing = false; // used for texture table selection
     private CreateTerrainWizardAction terrainWizard;
     private SkyboxWizardAction skyboxWizard;
+    private DataObjectSaveNode saveNode;
+    private JmeSpatial selectedSpat;
 
     public enum TerrainEditButton {none, raiseTerrain, lowerTerrain, smoothTerrain, levelTerrain, paintTerrain, eraseTerrain};
 
@@ -134,15 +141,7 @@ public final class TerrainEditorTopComponent extends TopComponent implements Sce
 
         public void incrementProgress(float f) {
             progress += f;
-            //progress api is threadsafe - normen
-//            java.awt.EventQueue.invokeLater(new Runnable() {
-//                public void run() {
-//                    synchronized(lock) {
-                        progressHandle.progress((int)progress);
-                        //Logger.getLogger(TerrainEditorTopComponent.class.getName()).info("######         generated entropy " + progress);
-//                    }
-//                }
-//            });
+            progressHandle.progress((int)progress);
         }
 
         public void setMonitorMax(float f) {
@@ -692,8 +691,6 @@ public final class TerrainEditorTopComponent extends TopComponent implements Sce
     }
 
 
-    private JmeSpatial selectedSpat;
-
     public void addSpatial(final String name) {
         if (selectedSpat == null) {
             
@@ -752,6 +749,10 @@ public final class TerrainEditorTopComponent extends TopComponent implements Sce
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
         }
+
+        addSaveNode(selectedSpat);
+        
+        editorController.getAlphaSaveDataObject(this);
         
         editorController.setNeedsSave(true);
 
@@ -801,6 +802,26 @@ public final class TerrainEditorTopComponent extends TopComponent implements Sce
 
     }
 
+    class AlphaTextureSaveCookie implements SaveCookie {
+
+        private Terrain terrain;
+        private DataObject dataObject;
+        
+        AlphaTextureSaveCookie(Terrain terrain, DataObject dataObject) {
+            this.terrain = terrain;
+            this.dataObject = dataObject;
+        }
+
+        public String getId() {
+            return terrain.getSpatial().getName();
+        }
+
+        public void save() throws IOException {
+            editorController.saveAlphaImages(terrain);
+            dataObject.setModified(false);// seems to be needed
+        }
+
+    }
 
     /**
      * listener for node selection changes
@@ -817,22 +838,7 @@ public final class TerrainEditorTopComponent extends TopComponent implements Sce
     }
 
     private void selectSpatial(JmeSpatial spatial) {
-        if (spatial == null) {
-            //setSelectedObjectText(null); TODO?
-            //setSelectionData(null);  TODO?
-
-                selectedSpat = spatial;
-            
-            setActivatedNodes(new org.openide.nodes.Node[]{});
-            return;
-        } else {
-            
-        }
-        System.out.println("set selected spatial: "+spatial.getName());
         selectedSpat = spatial;
-        
-        //SceneApplication.getApplication().setSelectedNode(spatial);  TODO?
-        //setActivatedNodes(new org.openide.nodes.Node[]{spatial});  TODO?
     }
 
 
@@ -926,22 +932,43 @@ public final class TerrainEditorTopComponent extends TopComponent implements Sce
         SceneRequest request = new SceneRequest(this, jmeNode, manager);
         request.setDataObject(file);
         request.setHelpCtx(ctx);
-        //file.setSaveCookie(saveCookie);
+
+        addSaveNode(jmeNode);
+        
+        Logger.getLogger(TerrainEditorTopComponent.class.getName()).finer("Terrain openScene "+file.getName());
+        
         if (editorController != null) {
             editorController.cleanup();
         }
-        editorController = new TerrainEditorController(jmeNode, file);
+        editorController = new TerrainEditorController(jmeNode, file, this);
         this.currentRequest = request;
         request.setWindowTitle("TerrainEditor - " + manager.getRelativeAssetPath(file.getPrimaryFile().getPath()));
         request.setToolNode(new Node("TerrainEditorToolNode"));
         SceneApplication.getApplication().requestScene(request);
-        reinitTextureTable(); // update the UI
     }
 
+    // run on GL thread
     public void sceneRequested(SceneRequest request) {
+        
         if (request.equals(currentRequest)) {
-
+            Logger.getLogger(TerrainEditorTopComponent.class.getName()).finer("Terrain sceneRequested "+request.getWindowTitle());
+            
             setSceneInfo(currentRequest.getJmeNode(), true);
+
+            editorController.doGetAlphaSaveDataObject(this);
+
+            // if the opened scene has terrain, add it to a save node
+            Terrain terrain = (Terrain)editorController.getTerrain(null);
+            if (terrain != null) {
+                 // add the terrain root save node
+
+                // ugh! wtf, why is this fixing the material problem?
+                ((Node)terrain).setMaterial(terrain.getMaterial());
+                // it appears when loading the actual applied material on the terrain
+                // does not reflect the material that we get from the terrain.
+
+                refreshSelected();
+            }
 
             if (camController != null) {
                 camController.disable();
@@ -966,7 +993,33 @@ public final class TerrainEditorTopComponent extends TopComponent implements Sce
             toolController.setHeightToolRadius(radiusSlider.getValue());
             toolController.setHeightToolHeight(heightSlider.getValue()); // should always be values upto and over 100, because it will be divided by 100
 
+            java.awt.EventQueue.invokeLater(new Runnable() {
+                public void run() {
+                    reinitTextureTable(); // update the UI
+                }
+            });
+            //editorController.getAlphaSaveDataObject(this);
         }
+    }
+
+    protected synchronized void addDataObject(DataObject dataObject) {
+        saveNode = new DataObjectSaveNode(dataObject);
+        final Terrain terrain = (Terrain)editorController.getTerrain(null);
+        final AlphaTextureSaveCookie cookie = new AlphaTextureSaveCookie(terrain, dataObject);
+        saveNode.setSaveCookie(cookie);
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                addSaveNode(saveNode);
+            }
+        });
+    }
+
+    protected void addSaveNode(org.openide.nodes.Node node) {
+        org.openide.nodes.Node[] nodes = getActivatedNodes();
+        org.openide.nodes.Node[] newNodes = new org.openide.nodes.Node[nodes.length+1];
+        System.arraycopy(nodes, 0, newNodes, 0, nodes.length);
+        newNodes[newNodes.length-1] = node;
+        setActivatedNodes(newNodes);
     }
 
     private void setSceneInfo(final JmeNode jmeNode, final boolean active) {
@@ -991,7 +1044,7 @@ public final class TerrainEditorTopComponent extends TopComponent implements Sce
         });
     }
 
-    private boolean checkSaved() {
+    /*private boolean checkSaved() {
         if (editorController != null && editorController.isNeedSave()) {
                 Confirmation msg = new NotifyDescriptor.Confirmation("Your Scene is not saved, do you want to save?", 
                         NotifyDescriptor.YES_NO_CANCEL_OPTION, 
@@ -1008,7 +1061,7 @@ public final class TerrainEditorTopComponent extends TopComponent implements Sce
                 return true;
         }
         return true;
-    }
+    }*/
 
     public boolean sceneClose(SceneRequest request) {
         if (request.equals(currentRequest)) {
@@ -1063,13 +1116,17 @@ public final class TerrainEditorTopComponent extends TopComponent implements Sce
 
         if (editorController.getTerrain(null) == null)
             return;
-        
+
         getTableModel().initModel();
 
         if (textureTable.getRowCount() > 0)
             toolController.setSelectedTextureIndex(0); // select the first row by default
         else
             toolController.setSelectedTextureIndex(-1);
+
+        currentTextureCount = editorController.getNumUsedTextures();
+        remainingTexturesLabel.setText(""+(editorController.MAX_TEXTURE_LAYERS-currentTextureCount));
+        triPlanarCheckBox.setSelected(editorController.isTriPlanarEnabled());
     }
 
     /**
@@ -1205,7 +1262,8 @@ public final class TerrainEditorTopComponent extends TopComponent implements Sce
 
             addListSelectionListener(new ListSelectionListener() {
                 public void valueChanged(ListSelectionEvent e) {
-                    toolController.setSelectedTextureIndex(textureTable.getSelectedRow());
+                    if (toolController != null)
+                        toolController.setSelectedTextureIndex(textureTable.getSelectedRow());
                 }
             });
         }

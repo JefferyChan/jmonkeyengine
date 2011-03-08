@@ -66,4 +66,12 @@ public class DataObjectSaveNode extends DataNode {
         }
         getDataObject().setModified(false);
     }
+
+    @Override
+    public String toString() {
+        if (cook != null)
+            return "DataObjectSaveNode("+cook.toString()+" - "+getDisplayName()+")";
+        else
+            return "DataObjectSaveNode("+getDisplayName()+")";
+    }
 }

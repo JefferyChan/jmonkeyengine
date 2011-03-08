@@ -33,6 +33,7 @@
 package com.jme3.gde.terraineditor;
 
 import com.jme3.asset.AssetManager;
+import com.jme3.asset.TextureKey;
 import com.jme3.bounding.BoundingBox;
 import com.jme3.gde.core.assets.ProjectAssetManager;
 import com.jme3.gde.core.scene.SceneApplication;
@@ -51,20 +52,23 @@ import com.jme3.terrain.geomipmap.TerrainQuad;
 import com.jme3.texture.Image;
 import com.jme3.texture.Texture;
 import com.jme3.texture.Texture.WrapMode;
-import com.jme3.texture.Texture2D;
-import com.jme3.util.BufferUtils;
 import com.jme3.util.SkyFactory;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import jme3tools.converters.ImageToAwt;
 import org.openide.cookies.SaveCookie;
 import org.openide.filesystems.FileObject;
+import org.openide.filesystems.FileUtil;
 import org.openide.loaders.DataObject;
+import org.openide.loaders.DataObjectNotFoundException;
 import org.openide.util.Exceptions;
 
 /**
@@ -77,6 +81,7 @@ public class TerrainEditorController {
     private Node terrainNode;
     private Node rootNode;
     private DataObject currentFileObject;
+    private DataObject alphaDataObject;
 
     // texture settings
     protected final String DEFAULT_TERRAIN_TEXTURE = "com/jme3/gde/terraineditor/dirt.jpg";
@@ -85,15 +90,90 @@ public class TerrainEditorController {
     private final int BASE_TEXTURE_COUNT = NUM_ALPHA_TEXTURES; // add any others here, like a global specular map
     protected final int MAX_TEXTURE_LAYERS = 7-BASE_TEXTURE_COUNT; // 16 max, minus the ones we are reserving
 
-
-    public TerrainEditorController(JmeSpatial jmeRootNode, DataObject currentFileObject) {
+    public TerrainEditorController(JmeSpatial jmeRootNode, DataObject currentFileObject, TerrainEditorTopComponent topComponent) {
         this.jmeRootNode = jmeRootNode;
         rootNode = this.jmeRootNode.getLookup().lookup(Node.class);
         this.currentFileObject = currentFileObject;
+        alphaDataObject = null;
     }
 
     public void setToolController(TerrainToolController toolController) {
         
+    }
+
+    /**
+     * Saves the data object into the topComponent via
+     * TerrainEditorTopComponent.addDataObject()
+     */
+    public void getAlphaSaveDataObject(final TerrainEditorTopComponent topComponent) {
+        if (alphaDataObject != null)
+            topComponent.addDataObject(alphaDataObject);
+        else {
+            Terrain terrain = (Terrain) getTerrain(null);
+            if (terrain == null)
+                return;
+            SceneApplication.getApplication().enqueue(new Callable<Object>() {
+                public Object call() throws Exception {
+                    doCreateAlphaSaveDataObject();
+                    topComponent.addDataObject(alphaDataObject);
+                    return null;
+                }
+            });
+        }
+
+    }
+
+    public void doGetAlphaSaveDataObject(final TerrainEditorTopComponent topComponent) {
+        if (alphaDataObject != null)
+            topComponent.addDataObject(alphaDataObject);
+        else {
+            Terrain terrain = (Terrain) getTerrain(null);
+            if (terrain == null)
+                return;
+            doCreateAlphaSaveDataObject();
+            topComponent.addDataObject(alphaDataObject);
+        }
+
+    }
+
+    /*public void createAlphaSaveDataObject() throws DataObjectNotFoundException {
+
+        if (alphaDataObject != null)
+            return;
+        try {
+            SceneApplication.getApplication().enqueue(new Callable<Object>() {
+
+                public Object call() throws Exception {
+                    doCreateAlphaSaveDataObject();
+                    return null;
+                }
+            }).get();
+        } catch (InterruptedException ex) {
+            Exceptions.printStackTrace(ex);
+        } catch (ExecutionException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+    }*/
+
+    private void doCreateAlphaSaveDataObject() {
+        if (alphaDataObject != null)
+            return;
+        Terrain terrain = (Terrain) getTerrain(null);
+        if (terrain == null)
+            return;
+        String assetFolder = "";
+        AssetManager manager = SceneApplication.getApplication().getAssetManager();
+        if (manager != null && manager instanceof ProjectAssetManager)
+            assetFolder = ((ProjectAssetManager)manager).getAssetFolderName();
+        Texture alpha0 = doGetAlphaTexture(terrain, 0);
+        String path = alpha0.getKey().getName();
+        Logger.getLogger(TerrainEditorController.class.getName()).info("Creating AlphaSaveDataObject, path: "+assetFolder+path);
+        FileObject fb = FileUtil.toFileObject(new File(assetFolder+path));
+        try {
+            alphaDataObject = DataObject.find(fb);
+        } catch (DataObjectNotFoundException ex) {
+            Exceptions.printStackTrace(ex);
+        }
     }
 
     public FileObject getCurrentFileObject() {
@@ -106,6 +186,14 @@ public class TerrainEditorController {
 
     public void setNeedsSave(boolean state) {
         currentFileObject.setModified(state);
+        setNeedsSaveAlpha(state);
+    }
+
+    private void setNeedsSaveAlpha(boolean state) {
+        if (alphaDataObject == null)
+            doCreateAlphaSaveDataObject();
+        
+        alphaDataObject.setModified(state);
     }
 
     public boolean isNeedSave() {
@@ -224,6 +312,7 @@ public class TerrainEditorController {
         final Node node = jmeRootNode.getLookup().lookup(Node.class);
         terrainNode = null;
         rootNode = null;
+        alphaDataObject = null;
     }
 
     /**
@@ -267,6 +356,8 @@ public class TerrainEditorController {
 
     private Float doGetTextureScale(int layer) {
         Terrain terrain = (Terrain) getTerrain(null);
+        if (terrain == null)
+            return 1f;
         MatParam matParam = null;
         matParam = terrain.getMaterial().getParam("DiffuseMap_"+layer+"_scale");
         return (Float) matParam.getValue();
@@ -291,7 +382,10 @@ public class TerrainEditorController {
 
     private void doSetTextureScale(int layer, float scale) {
         Terrain terrain = (Terrain) getTerrain(null);
+        if (terrain == null)
+            return;
         terrain.getMaterial().setFloat("DiffuseMap_"+layer+"_scale", scale);
+        setNeedsSave(true);
     }
 
 
@@ -319,12 +413,51 @@ public class TerrainEditorController {
      */
     private Texture doGetDiffuseTexture(int layer) {
         Terrain terrain = (Terrain) getTerrain(null);
+        if (terrain == null)
+            return null;
         MatParam matParam = null;
         if (layer == 0)
             matParam = terrain.getMaterial().getParam("DiffuseMap");
         else
             matParam = terrain.getMaterial().getParam("DiffuseMap_"+layer);
 
+        if (matParam == null || matParam.getValue() == null) {
+            return null;
+        }
+        Texture tex = (Texture) matParam.getValue();
+
+        return tex;
+    }
+
+    private Texture getAlphaTexture(final int layer) {
+        try {
+            Texture tex =
+                SceneApplication.getApplication().enqueue(new Callable<Texture>() {
+                    public Texture call() throws Exception {
+                        Terrain terrain = (Terrain) getTerrain(null);
+                        return doGetAlphaTexture(terrain, layer);
+                    }
+                }).get();
+                return tex;
+        } catch (InterruptedException ex) {
+            Exceptions.printStackTrace(ex);
+        } catch (ExecutionException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        return null;
+    }
+
+    private Texture doGetAlphaTexture(Terrain terrain, int alphaLayer) {
+        if (terrain == null)
+            return null;
+        MatParam matParam = null;
+        if (alphaLayer == 0)
+            matParam = terrain.getMaterial().getParam("AlphaMap");
+        else if(alphaLayer == 1)
+            matParam = terrain.getMaterial().getParam("AlphaMap_1");
+        else if(alphaLayer == 2)
+            matParam = terrain.getMaterial().getParam("AlphaMap_2");
+        
         if (matParam == null || matParam.getValue() == null) {
             return null;
         }
@@ -336,10 +469,11 @@ public class TerrainEditorController {
      * Get the diffuse texture at the specified layer.
      * Run this on the GL thread!
      */
-    private Texture doGetAlphaTexture(int layer) {
-        int alphaIdx = layer/4; // 4 = rgba = 4 textures
+    private Texture doGetAlphaTextureFromDiffuse(Terrain terrain, int diffuseLayer) {
+        int alphaIdx = diffuseLayer/4; // 4 = rgba = 4 textures
 
-        Terrain terrain = (Terrain) getTerrain(null);
+        return doGetAlphaTexture(terrain, alphaIdx);
+       /* Terrain terrain = (Terrain) getTerrain(null);
         MatParam matParam = null;
         //TODO: add when supported
 //        if (alphaIdx == 0)
@@ -352,17 +486,20 @@ public class TerrainEditorController {
         }
         Texture tex = (Texture) matParam.getValue();
         return tex;
+        */
     }
 
-    private void doSetAlphaTexture(int layer, Texture tex) {
+    /*private void doSetAlphaTexture(int layer, Texture tex) {
         int alphaIdx = layer/4; // 4 = rgba = 4 textures
 
         Terrain terrain = (Terrain) getTerrain(null);
+        if (terrain == null)
+            return;
         if (alphaIdx == 0)
             terrain.getMaterial().setTexture("AlphaMap", tex);
         else
             terrain.getMaterial().setTexture("AlphaMap_"+alphaIdx, tex);
-    }
+    }*/
 
     /**
      * Set the diffuse texture at the specified layer.
@@ -392,19 +529,26 @@ public class TerrainEditorController {
         Texture tex = SceneApplication.getApplication().getAssetManager().loadTexture(texturePath);
         tex.setWrap(WrapMode.Repeat);
         Terrain terrain = (Terrain) getTerrain(null);
+        
         if (layer == 0)
             terrain.getMaterial().setTexture("DiffuseMap", tex);
         else
             terrain.getMaterial().setTexture("DiffuseMap_"+layer, tex);
+
+        setNeedsSave(true);
     }
     
     private void doSetDiffuseTexture(int layer, Texture tex) {
         tex.setWrap(WrapMode.Repeat);
         Terrain terrain = (Terrain) getTerrain(null);
+        if (terrain == null)
+            return;
         if (layer == 0)
             terrain.getMaterial().setTexture("DiffuseMap", tex);
         else
             terrain.getMaterial().setTexture("DiffuseMap_"+layer, tex);
+
+        setNeedsSave(true);
     }
 
      public void setDiffuseTexture(final int layer, final Texture texture) {
@@ -445,10 +589,14 @@ public class TerrainEditorController {
 
     private void doRemoveDiffuseTexture(int layer) {
         Terrain terrain = (Terrain) getTerrain(null);
+        if (terrain == null)
+            return;
         if (layer == 0)
             terrain.getMaterial().clearParam("DiffuseMap");
         else
             terrain.getMaterial().clearParam("DiffuseMap_"+layer);
+
+        setNeedsSave(true);
     }
 
     /**
@@ -472,10 +620,14 @@ public class TerrainEditorController {
 
     private void doRemoveNormalMap(int layer) {
         Terrain terrain = (Terrain) getTerrain(null);
+        if (terrain == null)
+            return;
         if (layer == 0)
             terrain.getMaterial().clearParam("NormalMap");
         else
             terrain.getMaterial().clearParam("NormalMap_"+layer);
+
+        setNeedsSave(true);
     }
 
     // blocks on normal map get
@@ -502,6 +654,8 @@ public class TerrainEditorController {
      */
     private Texture doGetNormalMap(int layer) {
         Terrain terrain = (Terrain) getTerrain(null);
+        if (terrain == null)
+            return null;
         MatParam matParam = null;
         if (layer == 0)
             matParam = terrain.getMaterial().getParam("NormalMap");
@@ -536,6 +690,9 @@ public class TerrainEditorController {
 
     private void doSetNormalMap(int layer, String texturePath) {
         Terrain terrain = (Terrain) getTerrain(null);
+        if (terrain == null)
+            return;
+
         if (texturePath == null) {
             // remove the texture if it is null
             if (layer == 0)
@@ -552,6 +709,8 @@ public class TerrainEditorController {
             terrain.getMaterial().setTexture("NormalMap", tex);
         else
             terrain.getMaterial().setTexture("NormalMap_"+layer, tex);
+
+        setNeedsSave(true);
     }
 
     public void setNormalMap(final int layer, final Texture texture) {
@@ -571,6 +730,8 @@ public class TerrainEditorController {
 
     private void doSetNormalMap(int layer, Texture tex) {
         Terrain terrain = (Terrain) getTerrain(null);
+        if (terrain == null)
+            return;
         if (tex == null) {
             // remove the texture if it is null
             if (layer == 0)
@@ -586,6 +747,8 @@ public class TerrainEditorController {
             terrain.getMaterial().setTexture("NormalMap", tex);
         else
             terrain.getMaterial().setTexture("NormalMap_"+layer, tex);
+
+        setNeedsSave(true);
     }
 
     // blocks on GL thread until terrain is created
@@ -622,7 +785,7 @@ public class TerrainEditorController {
     {
         AssetManager manager = SceneApplication.getApplication().getAssetManager();
 
-        TerrainQuad terrain = new TerrainQuad("terrain", patchSize, totalSize, heightmapData); //TODO make this pluggable for different Terrain implementations
+        TerrainQuad terrain = new TerrainQuad("terrain-"+sceneName, patchSize, totalSize, heightmapData); //TODO make this pluggable for different Terrain implementations
         com.jme3.material.Material mat = new com.jme3.material.Material(manager, "Common/MatDefs/Terrain/TerrainLighting.j3md");
 
         String assetFolder = "";
@@ -638,15 +801,13 @@ public class TerrainEditorController {
                     for (int w=0; w<alphaTextureSize; w++)
                         alphaBlend.setRGB(w, h, 0x00FF0000);//argb
             }
-            //String alphaBlendFileName = "/Textures/"+sceneName+"-"+terrain.getName()+"-alphablend"+i+".png";
-            //File alphaImageFile = new File(assetFolder+alphaBlendFileName);
-            //ImageIO.write(alphaBlend, "png", alphaImageFile);
-            ByteBuffer imageBuffer = BufferUtils.createByteBuffer(alphaTextureSize*alphaTextureSize*4);
-            imageBuffer.rewind();
-            ImageToAwt.convert(alphaBlend, Image.Format.RGBA8, imageBuffer);
-            Image image = new Image(Image.Format.RGBA8, alphaTextureSize, alphaTextureSize, imageBuffer);
-            Texture tex = new Texture2D(image);
-            //Texture tex = manager.loadAsset(new TextureKey(alphaBlendFileName, false));
+            File alphaFolder = new File(assetFolder+"/Textures/terrain-alpha/");
+            if (!alphaFolder.exists())
+                alphaFolder.mkdir();
+            String alphaBlendFileName = "/Textures/terrain-alpha/"+sceneName+"-"+terrain.getName()+"-alphablend"+i+".png";
+            File alphaImageFile = new File(assetFolder+alphaBlendFileName);
+            ImageIO.write(alphaBlend, "png", alphaImageFile);
+            Texture tex = manager.loadAsset(new TextureKey(alphaBlendFileName, false));
             if (i == 0)
                 mat.setTexture("AlphaMap", tex);
             /*else if (i == 1) // add these in when they are supported
@@ -675,8 +836,55 @@ public class TerrainEditorController {
 		//terrain.addControl(control); // removing this until we figure out a way to have it get the cameras when saved/loaded
 
         parent.attachChild(terrain);
-        
+
+        doCreateAlphaSaveDataObject();
+
+        setNeedsSave(true);
+
         return terrain;
+    }
+
+    public void saveAlphaImages(final Terrain terrain) {
+        SceneApplication.getApplication().enqueue(new Callable<Object>() {
+            public Object call() throws Exception {
+                doSaveAlphaImages(terrain);
+                return null;
+            }
+        });
+    }
+
+    /**
+     * Save the terrain's alpha maps to disk, in the Textures/terrain-alpha/ directory
+     * @throws IOException
+     */
+    private synchronized void doSaveAlphaImages(Terrain terrain) {
+
+        AssetManager manager = SceneApplication.getApplication().getAssetManager();
+        String assetFolder = null;
+        if (manager != null && manager instanceof ProjectAssetManager)
+            assetFolder = ((ProjectAssetManager)manager).getAssetFolderName();
+        if (assetFolder == null)
+            throw new IllegalStateException("AssetManager was not a ProjectAssetManager. Could not locate image save directories.");
+
+        Texture alpha = doGetAlphaTexture(terrain, 0);
+        BufferedImage bi = ImageToAwt.convert(alpha.getImage(), false, true, 0);
+        File imageFile = new File(assetFolder+alpha.getKey().getName());
+        try {
+            ImageIO.write(bi, "png", imageFile);
+        } catch (IOException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        
+        /*alpha = doGetAlphaTexture(1);
+        bi = ImageToAwt.convert(alpha.getImage(), false, true, 0);
+        imageFile = new File(alpha.getKey().getName());
+        ImageIO.write(bi, "png", imageFile);
+
+        alpha = doGetAlphaTexture(2);
+        bi = ImageToAwt.convert(alpha.getImage(), false, true, 0);
+        imageFile = new File(alpha.getKey().getName());
+        ImageIO.write(bi, "png", imageFile);
+        */
     }
 
     /**
@@ -792,7 +1000,10 @@ public class TerrainEditorController {
         if (terrain == null)
             return;
 
-        Texture tex = doGetAlphaTexture(selectedTextureIndex);
+        
+        setNeedsSaveAlpha(true);
+        
+        Texture tex = doGetAlphaTextureFromDiffuse(terrain, selectedTextureIndex);
         Image image = tex.getImage();
 
         Vector2f UV = terrain.getPointPercentagePosition(markerLocation.x, markerLocation.z);
@@ -803,7 +1014,7 @@ public class TerrainEditorController {
         boolean erase = toolWeight<0;
         if (erase)
             toolWeight *= -1;
-        
+
         doPaintAction(texIndex, image, UV, true, brushSize, erase, toolWeight);
 
         tex.getImage().setUpdateNeeded();
@@ -987,6 +1198,34 @@ public class TerrainEditorController {
         return count;
     }
 
+    public boolean isTriPlanarEnabled() {
+        try {
+            Boolean isEnabled =
+            SceneApplication.getApplication().enqueue(new Callable<Boolean>() {
+                public Boolean call() throws Exception {
+                    return doIsTriPlanarEnabled();
+                }
+            }).get();
+            return isEnabled;
+        } catch (InterruptedException ex) {
+            Exceptions.printStackTrace(ex);
+        } catch (ExecutionException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        return false;
+    }
+
+    private boolean doIsTriPlanarEnabled() {
+        Terrain terrain = (Terrain) getTerrain(null);
+        if (terrain == null)
+            return false;
+        MatParam param = terrain.getMaterial().getParam("useTriPlanarMapping");
+        if (param != null)
+            return (Boolean)param.getValue();
+
+        return false;
+    }
+
     public void setTriPlanarEnabled(final boolean selected) {
         try {
             SceneApplication.getApplication().enqueue(new Callable() {
@@ -1011,6 +1250,8 @@ public class TerrainEditorController {
      */
     private void doSetTriPlanarEnabled(boolean enabled) {
         Terrain terrain = (Terrain) getTerrain(null);
+        if (terrain == null)
+            return;
         terrain.getMaterial().setBoolean("useTriPlanarMapping", enabled);
         
         float texCoordSize = 1/terrain.getTextureCoordinateScale();
@@ -1026,7 +1267,10 @@ public class TerrainEditorController {
                 doSetTextureScale(i, scale);
             }
         }
+
+        setNeedsSave(true);
     }
+
 
 
 
