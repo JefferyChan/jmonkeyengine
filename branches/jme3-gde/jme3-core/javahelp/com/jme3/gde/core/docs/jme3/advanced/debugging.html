@@ -1,0 +1,112 @@
+
+<h1><a name="debugging" id="debugging">Debugging</a></h1>
+<div class="level1">
+
+<p>
+
+When you want to quickly write code that loads models and brings them in their start position, you may not want to deal with additional hassles such as finding an appropriate sample model, converting it, adding lights, and creating and loading its materials… 
+</p>
+
+<p>
+Instead you use “hasslefree” default geometries like cubes and spheres and planes with a wireframe material: No model, no light source, no materials are needed to see them in the scene. If your code positions the debug shapes correctly, but models remain invisible when you apply the same code to them, you know that the problem must be the model or the light or its material – and not the positioning code.
+</p>
+
+<p>
+If you ever have problems with objects appearing in the wrong spot, with the wrong scale, or wrong orientation, attach debug shapes to your scene to have a point of reference in 3D space – just like a giant ruler. There are different types of debug shapes: 
+</p>
+
+<p>
+<img src="nbdocs:/com/jme3/gde/core/docs/jme3/advanced/debug-shapes.png">
+</p>
+
+</div>
+
+<h2><a name="coordinate_axes" id="coordinate_axes">Coordinate Axes</a></h2>
+<div class="level2">
+
+<p>
+
+The coordinate axes (com.jme3.scene.debug.Arrow) help you see the cardinal directions (X,Y,Z) from their center point. Scale the arrows to use them as a “ruler” for a certain length. 
+</p>
+<pre class="code java"><span class="kw1">private</span> <span class="kw4">void</span> attachCoordinateAxes<span class="br0">&#40;</span>Vector3f pos<span class="br0">&#41;</span><span class="br0">&#123;</span>
+  Arrow arrow <span class="sy0">=</span> <span class="kw1">new</span> Arrow<span class="br0">&#40;</span>Vector3f.<span class="me1">UNIT_X</span><span class="br0">&#41;</span>;
+  arrow.<span class="me1">setLineWidth</span><span class="br0">&#40;</span><span class="nu0">4</span><span class="br0">&#41;</span>; <span class="co1">// make arrow thicker</span>
+  putShape<span class="br0">&#40;</span>arrow, ColorRGBA.<span class="me1">Red</span><span class="br0">&#41;</span>.<span class="me1">setLocalTranslation</span><span class="br0">&#40;</span>pos<span class="br0">&#41;</span>;
+&nbsp;
+  Arrow arrow <span class="sy0">=</span> <span class="kw1">new</span> Arrow<span class="br0">&#40;</span>Vector3f.<span class="me1">UNIT_Y</span><span class="br0">&#41;</span>;
+  arrow.<span class="me1">setLineWidth</span><span class="br0">&#40;</span><span class="nu0">4</span><span class="br0">&#41;</span>; <span class="co1">// make arrow thicker</span>
+  putShape<span class="br0">&#40;</span>arrow, ColorRGBA.<span class="me1">Green</span><span class="br0">&#41;</span>.<span class="me1">setLocalTranslation</span><span class="br0">&#40;</span>pos<span class="br0">&#41;</span>;
+&nbsp;
+  Arrow arrow <span class="sy0">=</span> <span class="kw1">new</span> Arrow<span class="br0">&#40;</span>Vector3f.<span class="me1">UNIT_Z</span><span class="br0">&#41;</span>;
+  arrow.<span class="me1">setLineWidth</span><span class="br0">&#40;</span><span class="nu0">4</span><span class="br0">&#41;</span>; <span class="co1">// make arrow thicker</span>
+  putShape<span class="br0">&#40;</span>arrow, ColorRGBA.<span class="me1">Blue</span><span class="br0">&#41;</span>.<span class="me1">setLocalTranslation</span><span class="br0">&#40;</span>pos<span class="br0">&#41;</span>;
+<span class="br0">&#125;</span>
+&nbsp;
+<span class="kw1">private</span> Geometry putShape<span class="br0">&#40;</span>Mesh shape, ColorRGBA color<span class="br0">&#41;</span><span class="br0">&#123;</span>
+  Geometry g <span class="sy0">=</span> <span class="kw1">new</span> Geometry<span class="br0">&#40;</span><span class="st0">&quot;coordinate axis&quot;</span>, shape<span class="br0">&#41;</span>;
+  Material mat <span class="sy0">=</span> <span class="kw1">new</span> Material<span class="br0">&#40;</span>assetManager, <span class="st0">&quot;Common/MatDefs/Misc/Unshaded.j3md&quot;</span><span class="br0">&#41;</span>;
+  mat.<span class="me1">getAdditionalRenderState</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">setWireframe</span><span class="br0">&#40;</span><span class="kw2">true</span><span class="br0">&#41;</span>;
+  mat.<span class="me1">setColor</span><span class="br0">&#40;</span><span class="st0">&quot;Color&quot;</span>, color<span class="br0">&#41;</span>;
+  g.<span class="me1">setMaterial</span><span class="br0">&#40;</span>mat<span class="br0">&#41;</span>;
+  rootNode.<span class="me1">attachChild</span><span class="br0">&#40;</span>g<span class="br0">&#41;</span>;
+  <span class="kw1">return</span> g;
+<span class="br0">&#125;</span></pre>
+</div>
+
+<h2><a name="wireframe_grid" id="wireframe_grid">Wireframe Grid</a></h2>
+<div class="level2">
+
+<p>
+
+Use a wireframe grid (com.jme3.scene.debug.Grid) as a ruler or simple floor.
+</p>
+<pre class="code java"><span class="kw1">private</span> <span class="kw4">void</span> attachGrid<span class="br0">&#40;</span>Vector3f pos, <span class="kw4">float</span> size, ColorRGBA color<span class="br0">&#41;</span><span class="br0">&#123;</span>
+  Geometry g <span class="sy0">=</span> <span class="kw1">new</span> Geometry<span class="br0">&#40;</span><span class="st0">&quot;wireframe grid&quot;</span>, <span class="kw1">new</span> Grid<span class="br0">&#40;</span>size, size, 0.2f<span class="br0">&#41;</span> <span class="br0">&#41;</span>;
+  Material mat <span class="sy0">=</span> <span class="kw1">new</span> Material<span class="br0">&#40;</span>assetManager, <span class="st0">&quot;Common/MatDefs/Misc/Unshaded.j3md&quot;</span><span class="br0">&#41;</span>;
+  mat.<span class="me1">getAdditionalRenderState</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">setWireframe</span><span class="br0">&#40;</span><span class="kw2">true</span><span class="br0">&#41;</span>;
+  mat.<span class="me1">setColor</span><span class="br0">&#40;</span><span class="st0">&quot;Color&quot;</span>, color<span class="br0">&#41;</span>;
+  g.<span class="me1">setMaterial</span><span class="br0">&#40;</span>mat<span class="br0">&#41;</span>;
+  g.<span class="me1">center</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">move</span><span class="br0">&#40;</span>pos<span class="br0">&#41;</span>;
+  rootNode.<span class="me1">attachChild</span><span class="br0">&#40;</span>g<span class="br0">&#41;</span>;
+  <span class="kw1">return</span> g;
+<span class="br0">&#125;</span></pre>
+</div>
+
+<h2><a name="wireframe_cube" id="wireframe_cube">Wireframe Cube</a></h2>
+<div class="level2">
+
+<p>
+
+Use a wireframe cube (com.jme3.scene.debug.WireBox) as a stand-in object to see whether your code scales, positions, or orients, loaded models right.
+</p>
+<pre class="code java"><span class="kw1">public</span> <span class="kw4">void</span> attachWireBox<span class="br0">&#40;</span>Vector3f pos, <span class="kw4">float</span> size, ColorRGBA color<span class="br0">&#41;</span><span class="br0">&#123;</span>
+  Geometry g <span class="sy0">=</span> <span class="kw1">new</span> Geometry<span class="br0">&#40;</span><span class="st0">&quot;wireframe cube&quot;</span>, <span class="kw1">new</span> WireBox<span class="br0">&#40;</span>size, size, size<span class="br0">&#41;</span><span class="br0">&#41;</span>;
+  Material mat <span class="sy0">=</span> <span class="kw1">new</span> Material<span class="br0">&#40;</span>assetManager, <span class="st0">&quot;Common/MatDefs/Misc/Unshaded.j3md&quot;</span><span class="br0">&#41;</span>;
+  mat.<span class="me1">getAdditionalRenderState</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">setWireframe</span><span class="br0">&#40;</span><span class="kw2">true</span><span class="br0">&#41;</span>;
+  mat.<span class="me1">setColor</span><span class="br0">&#40;</span><span class="st0">&quot;Color&quot;</span>, color<span class="br0">&#41;</span>;
+  g.<span class="me1">setMaterial</span><span class="br0">&#40;</span>mat<span class="br0">&#41;</span>;
+  g.<span class="me1">setLocalTranslation</span><span class="br0">&#40;</span>pos<span class="br0">&#41;</span>;
+  rootNode.<span class="me1">attachChild</span><span class="br0">&#40;</span>g<span class="br0">&#41;</span>;
+  <span class="kw1">return</span> g;
+<span class="br0">&#125;</span></pre>
+</div>
+
+<h2><a name="wireframe_sphere" id="wireframe_sphere">Wireframe Sphere</a></h2>
+<div class="level2">
+
+<p>
+
+Use a wireframe sphere (com.jme3.scene.debug.WireSphere) as a stand-in object to see whether your code scales, positions, or orients, loaded models right.
+</p>
+<pre class="code java"><span class="kw1">private</span> <span class="kw4">void</span> attachWireSphere<span class="br0">&#40;</span>Vector3f pos, <span class="kw4">float</span> size, ColorRGBA color<span class="br0">&#41;</span><span class="br0">&#123;</span>
+  Geometry g <span class="sy0">=</span> <span class="kw1">new</span> Geometry<span class="br0">&#40;</span><span class="st0">&quot;wireframe sphere&quot;</span>, <span class="kw1">new</span> WireSphere<span class="br0">&#40;</span>size<span class="br0">&#41;</span><span class="br0">&#41;</span>;
+  Material mat <span class="sy0">=</span> <span class="kw1">new</span> Material<span class="br0">&#40;</span>assetManager, <span class="st0">&quot;Common/MatDefs/Misc/Unshaded.j3md&quot;</span><span class="br0">&#41;</span>;
+  mat.<span class="me1">getAdditionalRenderState</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">setWireframe</span><span class="br0">&#40;</span><span class="kw2">true</span><span class="br0">&#41;</span>;
+  mat.<span class="me1">setColor</span><span class="br0">&#40;</span><span class="st0">&quot;Color&quot;</span>, color<span class="br0">&#41;</span>;
+  g.<span class="me1">setMaterial</span><span class="br0">&#40;</span>mat<span class="br0">&#41;</span>;
+  g.<span class="me1">setLocalTranslation</span><span class="br0">&#40;</span>pos<span class="br0">&#41;</span>;
+  rootNode.<span class="me1">attachChild</span><span class="br0">&#40;</span>g<span class="br0">&#41;</span>;
+  <span class="kw1">return</span> g;
+<span class="br0">&#125;</span></pre>
+</div>
+<p><em><a href="http://jmonkeyengine.org/wiki/doku.php/jme3:advanced:debugging?do=export_xhtmlbody">view online version</a></em></p>

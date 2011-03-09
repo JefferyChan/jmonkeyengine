@@ -90,6 +90,11 @@ Do the following once per application to gain access to the <code>physicsSpace</
 
 <p>
 
+You can also access the BulletAppState via the state manager:
+
+</p>
+<pre class="code java">stateManager.<span class="me1">getState</span><span class="br0">&#40;</span>BulletAppState.<span class="kw1">class</span><span class="br0">&#41;</span></pre>
+<p>
 For each Spatial that you want to be physical:
 
 </p>
@@ -277,7 +282,7 @@ Package: com.jme3.bullet.nodes
 
 </div>
 
-<h3><a name="physics_nodes_code_samples" id="physics_nodes_code_samples">Physics Nodes Code Samples</a></h3>
+<h3><a name="physics_controls_code_samples" id="physics_controls_code_samples">Physics Controls Code Samples</a></h3>
 <div class="level3">
 
 <p>
@@ -437,15 +442,15 @@ You can create static physical objects without mass. They are still treated as s
 
 <p>
 
-Kinematic spatials have a mass, but they are not affected by gravity. When non-kinematic objects collide with a kinematic object, only the non-kinematic ones are pushed away by the collision. The intesity of the kinematic&#039;s effect against other objects depends on their speed and mass: 
+Kinematic RigidBodys have a mass, but they are not affected by gravity. When non-kinematic objects collide with a kinematic object, only the non-kinematic ones are pushed away by the collision. The intesity of the kinematic&#039;s effect against other objects depends on their speed and mass: 
 </p>
 
 <p>
-<code>E<sub>kin</sub> = mass * speed^2</code>
+<code>E<sub>kin</sub> = mass * speed^2</code> (well, approximately, bullet doesn&#039;t use Einsteins formula ;))
 </p>
 
 <p>
-<strong>Tip:</strong> Kinematic nodes can be moved programmatically, e.g. using setLocalTranslation() in the update() loop, or by an Animation Path. You can also “hang them up in mid-air” and attach other PhysicsNodes to them using <a href="/com/jme3/gde/core/docs/jme3/advanced/hinges_and_joints.html" class="wikilink1" title="jme3:advanced:hinges_and_joints">hinges and joints</a>.  
+<strong>Tip:</strong> Spatials with a kinematic RigidBodyControl can be moved programmatically, e.g. using setLocalTranslation() in the update() loop, or by an Animation Path. You can also “hang them up in mid-air” and attach other PhysicsNodes to them using <a href="/com/jme3/gde/core/docs/jme3/advanced/hinges_and_joints.html" class="wikilink1" title="jme3:advanced:hinges_and_joints">hinges and joints</a>.  
 </p>
 <pre class="code java">airhook.<span class="me1">setKinematic</span><span class="br0">&#40;</span><span class="kw2">true</span><span class="br0">&#41;</span>;</pre>
 </div>
@@ -647,6 +652,10 @@ You can use normal non-physical Nodes in the same scene next to physical ones. U
 
 <p>
 If you get weird behaviour, such as physical nodes jittering wildy and being ejected for no apparent reason, it usually means you have created an impossible state. Verify that none of the collision shapes overlap. This can happen when you create physical nodes in positions that are too close to other nodes; or if you position a physical node using setLocalTranslation() and it touches another node&#039;s collision shape.
+</p>
+
+<p>
+For large static meshes like shooter levels or terrain its best to divide the mesh into multiple physics objects to allow the less cpu intense broadphase to filter out most collision items.
 
 </p>
 

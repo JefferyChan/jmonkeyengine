@@ -87,7 +87,7 @@ texCoord<span class="br0">&#91;</span><span class="nu0">3</span><span class="br0
 
 <p>
 
-Next we turn the unrelated coordinates into triangles – We define the order in which the mesh is constructed. Think of these indexes as coming in groups of three. Each group of indexes describes one triangle. Note that the vertices are giving counter-clockwise! 
+Next we turn the unrelated coordinates into triangles – We define the order in which the mesh is constructed. Think of these indexes as coming in groups of three. Each group of indexes describes one triangle. Note that you must specify the vertices counter-clockwise! 
 </p>
 <pre class="code java"><span class="kw4">int</span> <span class="br0">&#91;</span><span class="br0">&#93;</span> indexes <span class="sy0">=</span> <span class="br0">&#123;</span> <span class="nu0">2</span>,0,<span class="nu0">1</span>, <span class="nu0">1</span>,<span class="nu0">3</span>,<span class="nu0">2</span> <span class="br0">&#125;</span>;</pre><ul>
 <li class="level1"><div class="li"> The 2,0,1 triangle starts at top left, continues bottom left, and ends at bottom right. </div>
@@ -153,8 +153,18 @@ Ta-daa!
 
 </div>
 
-<h2><a name="optionalvertex_colors" id="optionalvertex_colors">Optional: Vertex Colors</a></h2>
+<h2><a name="optional_mesh_features" id="optional_mesh_features">Optional Mesh Features</a></h2>
 <div class="level2">
+
+<p>
+
+There are more vertex buffers in a Mesh than the three shown above. For an overview, see also <a href="/com/jme3/gde/core/docs/jme3/advanced/meshes_and_models.html" class="wikilink2" title="jme3:advanced:meshes_and_models" rel="nofollow">Meshes and Models</a>.
+</p>
+
+</div>
+
+<h3><a name="examplevertex_colors" id="examplevertex_colors">Example: Vertex Colors</a></h3>
+<div class="level3">
 
 <p>
 
@@ -189,7 +199,7 @@ We create a float array color buffer.
 
 <p>
 
-We loop over the colorArray buffer to quickly set some RGBA value for each vertex. As usual, RGBA color values range from 0.0f to 1.0f. The values we use here are quite arbitrary, we are just trying to give every vertex a different RGBA value (a purplish gray, purple, a greenish gray, green, in the screenshot), without writing too much code. For your own mesh, you&#039;d choose the values the color buffer depending on which color you want the mesh to have.
+We loop over the colorArray buffer to quickly set some RGBA value for each vertex. As usual, RGBA color values range from 0.0f to 1.0f. Note that the values we use here are arbitrarily chosen! It&#039;s just a quick loop to give every vertex a different RGBA value (a purplish gray, purple, a greenish gray, green, see screenshot), without writing too much code. For your own mesh, you&#039;d assign values for the color buffer depending on which color you want your mesh to have.
 </p>
 <pre class="code java"><span class="kw1">for</span><span class="br0">&#40;</span><span class="kw4">int</span> i <span class="sy0">=</span> 0; i <span class="sy0">&lt;</span> <span class="nu0">4</span>; i<span class="sy0">++</span><span class="br0">&#41;</span><span class="br0">&#123;</span>
    <span class="co1">// Red value (is increased by .2 on each next vertex here)</span>
@@ -213,7 +223,7 @@ Now you see a gradient color extending from each vertex.
 
 </div>
 
-<h3><a name="optionalpoint_mode" id="optionalpoint_mode">Optional: Point Mode</a></h3>
+<h3><a name="examplepoint_mode" id="examplepoint_mode">Example: Point Mode</a></h3>
 <div class="level3">
 
 <p>
@@ -237,7 +247,7 @@ This will result in a 10 px dot being rendered for each of the four vertices. Th
 
 </div>
 
-<h2><a name="front_and_back_faces" id="front_and_back_faces">Front and Back Faces</a></h2>
+<h2><a name="tipfront_and_back_faces" id="tipfront_and_back_faces">Tip: Front and Back Faces</a></h2>
 <div class="level2">
 
 <p>

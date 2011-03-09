@@ -36,6 +36,16 @@ The reson for this is, that for every object a render command must be done, here
 <li class="level1"><div class="li">Using Texture atlases might be a way to provide a limited individual texturing.</div>
 </li>
 </ul>
+
+</div>
+
+<h2><a name="avoid_creating_new_objects" id="avoid_creating_new_objects">Avoid creating new objects</a></h2>
+<div class="level2">
+
+<p>
+
+When you use math operations like vectorA.mult(vectorB); new objects are created that have to be garbage collected when you don&#039;t use them anymore. Check your math operations for opportunities to use the local version of the math operations, e.g. vectorA.multLocal(vectorB). This way the result is stored in vectorA and no new object needs to be created.
+</p>
 <div class="tags"><span>
 	<a href="/wiki/doku.php/tag:performance?do=showtag&amp;tag=tag%3Aperformance" class="wikilink1" title="tag:performance" rel="tag">performance</a>
 </span></div>

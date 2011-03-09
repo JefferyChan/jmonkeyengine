@@ -1,0 +1,211 @@
+
+<h1><a name="collision_and_intersection" id="collision_and_intersection">Collision and Intersection</a></h1>
+<div class="level1">
+
+<p>
+
+The term collision can be used to refer to physical interactions (where physical objects collide and bump off one another), and also to non-physical intersections. This article is about non-physical (mathematical) collisions. 
+</p>
+
+<p>
+Non-physical collisions are interesting because they take less resources than physical ones. You cn optimize your game if you find a way to simulate a certain effect in a non-physical way, using mathematical techniques such as ray casting. 
+</p>
+
+<p>
+One example for an optimization is a physical vehicle&#039;s wheels. You could make the wheels fully physical disks, and have jME calculate every tiny force – sounds very accurate, but is total overkill. An more performant solution is to cast four rays down from the vehicle and calculate the intersections with the floor and other obstacles. These non-physical wheels require (in the simplest case) only four calculations to achieve an effect that players can hardly distinguish from the real thing.
+</p>
+
+</div>
+
+<h2><a name="bounding_volumes" id="bounding_volumes">Bounding Volumes</a></h2>
+<div class="level2">
+
+<p>
+
+A com.jme3.bounding.BoundingVolume is an interface for dealing with containment of a collection of points. All BoundingVolumes are Collidable and are used as optimization to calculate non-physical collisions more quickly: It&#039;s faster to calculate an intersection between simple shapes like spheres and boxes than between complex shapes. In cases where precision is not relevant, you wrap a complex model in a simpler shape to improve collision detection performance.
+
+</p>
+<ul>
+<li class="level1"><div class="li"> Type.Sphere: com.jme3.bounding.BoundingSphere is a sphere used as a container for a group of vertices of a piece of geometry. A BoundingSphere has a center and a radius.</div>
+</li>
+<li class="level1"><div class="li"> Type.AABB = Axis-aligned bounding box. A com.jme3.bounding.BoundingBox is an axis-aligned cuboid used as a container for a group of vertices of a piece of geometry. A BoundingBox has a center and extents from that center along the x, y and z axis.</div>
+</li>
+<li class="level1"><div class="li"> Type.OBB = Oriented bounding box. (not in use)</div>
+</li>
+<li class="level1"><div class="li"> Type.Capsule </div>
+</li>
+</ul>
+
+<p>
+
+Note: Physical objects have their own “bounding volumes” called CollisionShapes.
+</p>
+
+</div>
+
+<h2><a name="collisions" id="collisions">Collisions</a></h2>
+<div class="level2">
+
+<p>
+
+The interface com.jme3.collision.Collidable declares one method that returns how many collisions were found between two Collidables: <code>collideWith(Collidable other, CollisionResults results)</code>. 
+</p>
+
+<p>
+A <code>com.jme3.collision.CollisionResults</code> object is an ArrayList of comparable <code>com.jme3.collision.CollisionResult</code> objects. 
+</p>
+
+<p>
+You can iterate over the CollisionResults to identify the other parties involved in the collision. Note that jME counts <em>all</em> collisions, this means a ray intersecting a box will be counted as two hits, one on the front where the ray enters, and one on the back where the ray exits.
+
+</p>
+<table class="inline">
+	<tr class="row0">
+		<th class="col0">CollisionResults Method</th><th class="col1">Usage</th>
+	</tr>
+	<tr class="row1">
+		<td class="col0 leftalign">size()                </td><td class="col1">Returns the number of CollisionResult objects.</td>
+	</tr>
+	<tr class="row2">
+		<td class="col0">getClosestCollision() </td><td class="col1">Returns the CollisionResult with the lowest distance.</td>
+	</tr>
+	<tr class="row3">
+		<td class="col0">getFarthestCollision()</td><td class="col1">Returns the CollisionResult with the farthest distance.</td>
+	</tr>
+	<tr class="row4">
+		<td class="col0 leftalign">getCollision(i)       </td><td class="col1">Returns the CollisionResult at index i.</td>
+	</tr>
+</table>
+
+<p>
+
+A CollisionResult object contains information about the second party of the collision event.
+
+</p>
+<table class="inline">
+	<tr class="row0">
+		<th class="col0">CollisionResult Method</th><th class="col1">Usage</th>
+	</tr>
+	<tr class="row1">
+		<td class="col0">getContactPoint()</td><td class="col1">Returns the contact point coordinate on the second party, as Vector3f.</td>
+	</tr>
+	<tr class="row2">
+		<td class="col0">getContactNormal()</td><td class="col1">Returns the Normal vector at the contact point, as Vector3f.</td>
+	</tr>
+	<tr class="row3">
+		<td class="col0">getDistance()</td><td class="col1">Returns the distance between the Collidable and the second party, as float.</td>
+	</tr>
+	<tr class="row4">
+		<td class="col0">getGeometry()</td><td class="col1">Returns the Geometry of the second party.</td>
+	</tr>
+	<tr class="row5">
+		<td class="col0">getTriangle(t)</td><td class="col1">Binds t to the triangle t on the second party&#039;s mesh that was hit.</td>
+	</tr>
+	<tr class="row6">
+		<td class="col0">getTriangleIndex()</td><td class="col1">Returns the index of the triangle on the second party&#039;s mesh that was hit. (?)</td>
+	</tr>
+</table>
+
+<p>
+Assume you have two collidables a and b and want to detect collisions between them. The collision parties can be Geometries, Nodes with Geometries attached (including the rootNode), Planes, Quads, Lines, or Rays. 
+</p>
+
+<p>
+The following code snippet can be triggered by listeners (e.g. after an input action such as a click), or timed in the update loop.
+</p>
+<pre class="code java">  <span class="co1">// Calculate Results</span>
+  CollisionResults results <span class="sy0">=</span> <span class="kw1">new</span> CollisionResults<span class="br0">&#40;</span><span class="br0">&#41;</span>;
+  a.<span class="me1">collideWith</span><span class="br0">&#40;</span>b, results<span class="br0">&#41;</span>;
+&nbsp;
+  <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Asystem+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object>.<span class="me1">out</span>.<span class="me1">println</span><span class="br0">&#40;</span><span class="st0">&quot;Number of Collisions between&quot;</span> <span class="sy0">+</span> a.<span class="me1">getName</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="sy0">+</span> <span class="st0">&quot; and &quot;</span> 
+   <span class="sy0">+</span> b.<span class="me1">getName</span><span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="st0">&quot; : &quot;</span> <span class="sy0">+</span> results.<span class="me1">size</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
+&nbsp;
+  <span class="co1">// Use the results</span>
+  <span class="kw1">if</span> <span class="br0">&#40;</span>results.<span class="me1">size</span><span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="sy0">&gt;</span> 0<span class="br0">&#41;</span> <span class="br0">&#123;</span>
+    CollisionResult closest  <span class="sy0">=</span> results.<span class="me1">getClosestCollision</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
+    <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Asystem+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object>.<span class="me1">out</span>.<span class="me1">println</span><span class="br0">&#40;</span><span class="st0">&quot;What was hit? &quot;</span> <span class="sy0">+</span> closest.<span class="me1">getGeometry</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">getName</span><span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#41;</span>;
+    <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Asystem+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object>.<span class="me1">out</span>.<span class="me1">println</span><span class="br0">&#40;</span><span class="st0">&quot;Where was it hit? &quot;</span> <span class="sy0">+</span> closest.<span class="me1">getContactPoint</span><span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#41;</span>;
+    <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Asystem+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object>.<span class="me1">out</span>.<span class="me1">println</span><span class="br0">&#40;</span><span class="st0">&quot;Distance? &quot;</span> <span class="sy0">+</span> closest.<span class="me1">getDistance</span><span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#41;</span>;
+  <span class="br0">&#125;</span> <span class="kw1">else</span> <span class="br0">&#123;</span>
+    <span class="co1">// how to react when no collision occured</span>
+  <span class="br0">&#125;</span>
+<span class="br0">&#125;</span></pre>
+<p>
+You can also loop over all results and trigger different reactions depending on what was hit and where it was hit. In this example, we simply print info about them.
+</p>
+<pre class="code java">  <span class="co1">// Calculate Results</span>
+  CollisionResults results <span class="sy0">=</span> <span class="kw1">new</span> CollisionResults<span class="br0">&#40;</span><span class="br0">&#41;</span>;
+  a.<span class="me1">collideWith</span><span class="br0">&#40;</span>b, results<span class="br0">&#41;</span>;
+&nbsp;
+  <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Asystem+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object>.<span class="me1">out</span>.<span class="me1">println</span><span class="br0">&#40;</span><span class="st0">&quot;Number of Collisions between&quot;</span> <span class="sy0">+</span> a.<span class="me1">getName</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="sy0">+</span> <span class="st0">&quot; and &quot;</span> 
+   <span class="sy0">+</span> b.<span class="me1">getName</span><span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="st0">&quot; : &quot;</span> <span class="sy0">+</span> results.<span class="me1">size</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
+&nbsp;
+  <span class="co1">// Use the results</span>
+  <span class="kw1">for</span> <span class="br0">&#40;</span><span class="kw4">int</span> i <span class="sy0">=</span> 0; i <span class="sy0">&lt;</span> results.<span class="me1">size</span><span class="br0">&#40;</span><span class="br0">&#41;</span>; i<span class="sy0">++</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+    <span class="co1">// For each hit, we know distance, impact point, name of geometry.</span>
+    <span class="kw4">float</span>     dist <span class="sy0">=</span> results.<span class="me1">getCollision</span><span class="br0">&#40;</span>i<span class="br0">&#41;</span>.<span class="me1">getDistance</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
+    Vector3f    pt <span class="sy0">=</span> results.<span class="me1">getCollision</span><span class="br0">&#40;</span>i<span class="br0">&#41;</span>.<span class="me1">getContactPoint</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
+    <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Astring+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object>   party <span class="sy0">=</span> results.<span class="me1">getCollision</span><span class="br0">&#40;</span>i<span class="br0">&#41;</span>.<span class="me1">getGeometry</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">getName</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
+    <span class="kw4">int</span>        tri <span class="sy0">=</span> results.<span class="me1">getCollision</span><span class="br0">&#40;</span>i<span class="br0">&#41;</span>.<span class="me1">getTriangleIndex</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
+    Vector3f  norm <span class="sy0">=</span> results.<span class="me1">getCollision</span><span class="br0">&#40;</span>i<span class="br0">&#41;</span>.<span class="me1">getTriangle</span><span class="br0">&#40;</span><span class="kw1">new</span> Triangle<span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>.<span class="me1">getNormal</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
+&nbsp;
+    <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Asystem+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object>.<span class="me1">out</span>.<span class="me1">println</span><span class="br0">&#40;</span><span class="st0">&quot;Details of Collision #&quot;</span> <span class="sy0">+</span> i <span class="sy0">+</span> <span class="st0">&quot;:&quot;</span><span class="br0">&#41;</span>;
+    <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Asystem+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object>.<span class="me1">out</span>.<span class="me1">println</span><span class="br0">&#40;</span><span class="st0">&quot;  Party &quot;</span> <span class="sy0">+</span> party <span class="sy0">+</span> <span class="st0">&quot; was hit at &quot;</span> <span class="sy0">+</span> pt <span class="sy0">+</span> <span class="st0">&quot;, &quot;</span> <span class="sy0">+</span> dist <span class="sy0">+</span> <span class="st0">&quot; wu away.&quot;</span><span class="br0">&#41;</span>;
+    <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Asystem+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object>.<span class="me1">out</span>.<span class="me1">println</span><span class="br0">&#40;</span><span class="st0">&quot;  The hit triangle #&quot;</span> <span class="sy0">+</span> tri <span class="sy0">+</span> <span class="st0">&quot; has a normal vector of &quot;</span> <span class="sy0">+</span> norm<span class="br0">&#41;</span>;
+  <span class="br0">&#125;</span></pre>
+<p>
+Knowing the distance of the collisions is useful for example when you intersect Lines and Rays with other objects. 
+</p>
+
+</div>
+
+<h2><a name="intersection" id="intersection">Intersection</a></h2>
+<div class="level2">
+
+<p>
+
+A com.jme3.math.Ray is an infinite line with a beginning, a direction, and no end; whereas a com.jme3.math.Line is an infinite line with only a direction (no beginning, no end).
+</p>
+
+<p>
+Rays are used to detect where a 3D object is “looking” and whether one object can “see” the other. 
+</p>
+<ul>
+<li class="level1"><div class="li"> You can determine where a user has clicked by casting a ray from the camera in the direction of the camera. Now identify the closest collision of the ray with e.g. the rootNode.</div>
+</li>
+<li class="level1"><div class="li"> Or you cast a ray from a player in the direction of another player. Then you detect all collisions of this ray with other entities (walls, foliage, window panes) and use this to calculate whether one can see the other.</div>
+</li>
+</ul>
+
+<p>
+
+These simple ray-surface intersection tests are called Ray Casting. (As opposed to the more advanced Ray Tracing, Ray Casting does not follow a ray&#039;s reflection after the first hit, but the ray goes straight on.) 
+</p>
+
+</div>
+
+<h2><a name="bounding_interval_hierarchy" id="bounding_interval_hierarchy">Bounding Interval Hierarchy</a></h2>
+<div class="level2">
+
+<p>
+
+com.jme3.collision.bih.BIHNode
+com.jme3.scene.CollisionData
+</p>
+
+</div>
+
+<h2><a name="sweepsphere" id="sweepsphere">SweepSphere</a></h2>
+<div class="level2">
+
+<p>
+
+A com.jme3.collision.SweepSphere implements a collidable “stretched” sphere that is shaped like a capsule (an upright cylinder with half a sphere on top and the second half at the bottom). 
+</p>
+
+<p>
+This shape is usually used to simulate simple non-physcial collisions for character entities in games. The sweep sphere can be used to check collision against a triangle or another sweep sphere.
+</p>
+
+</div>
+<p><em><a href="http://jmonkeyengine.org/wiki/doku.php/jme3:advanced:collision_and_intersection?do=export_xhtmlbody">view online version</a></em></p>

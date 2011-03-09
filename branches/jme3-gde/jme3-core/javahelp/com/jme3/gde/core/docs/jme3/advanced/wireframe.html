@@ -1,0 +1,51 @@
+
+<h1><a name="showing_the_wireframe" id="showing_the_wireframe">Showing the Wireframe</a></h1>
+<div class="level1">
+
+<p>
+
+WIP
+</p>
+
+<p>
+I assume that you 
+</p>
+<ol>
+<li class="level1"><div class="li"> Have loaded your model.</div>
+</li>
+<li class="level1"><div class="li"> Have created one Material object for the mode, e.g. named <code>m_model</code>.</div>
+</li>
+<li class="level1"><div class="li"> Set the model&#039;s material to <code>m_model</code>. </div>
+</li>
+</ol>
+
+<p>
+
+Then you can add a switch to show the wireframe like this:
+
+</p>
+<ol>
+<li class="level1"><div class="li"> Create a wire material, e.g. m_wire <pre class="code java">  Material m_wire <span class="sy0">=</span> <span class="kw1">new</span> Material<span class="br0">&#40;</span>assetManager, <span class="st0">&quot;Common/MatDefs/Misc/WireColor.j3md&quot;</span><span class="br0">&#41;</span>;
+  m_wire.<span class="me1">setColor</span><span class="br0">&#40;</span><span class="st0">&quot;Color&quot;</span>, ColorRGBA.<span class="me1">Green</span><span class="br0">&#41;</span>;</pre></div>
+</li>
+<li class="level1"><div class="li"> Create a key input trigger that switches between the two materials: E.g. to toggle when the T key is pressed: <pre class="code java">    inputManager.<span class="me1">addMapping</span><span class="br0">&#40;</span><span class="st0">&quot;wireframe&quot;</span>, <span class="kw1">new</span> KeyTrigger<span class="br0">&#40;</span>KeyInput.<span class="me1">KEY_T</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
+    inputManager.<span class="me1">addListener</span><span class="br0">&#40;</span>actionListener, <span class="st0">&quot;wireframe&quot;</span><span class="br0">&#41;</span>;</pre></div>
+</li>
+<li class="level1"><div class="li"> Now add the action listener and the toggle action <pre class="code java">  <span class="kw1">private</span> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Aactionlistener+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object><span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+    @Override
+    <span class="kw1">public</span> <span class="kw4">void</span> onAction<span class="br0">&#40;</span><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Astring+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object> name, <span class="kw4">boolean</span> pressed, <span class="kw4">float</span> tpf<span class="br0">&#41;</span> <span class="br0">&#123;</span>
+      <span class="kw1">if</span> <span class="br0">&#40;</span>name.<span class="me1">equals</span><span class="br0">&#40;</span><span class="st0">&quot;wireframe&quot;</span><span class="br0">&#41;</span> <span class="sy0">&amp;&amp;</span> <span class="sy0">!</span>pressed<span class="br0">&#41;</span> <span class="br0">&#123;</span>
+        wireframe <span class="sy0">=</span> <span class="sy0">!</span>wireframe;
+        <span class="kw1">if</span> <span class="br0">&#40;</span><span class="sy0">!</span>wireframe<span class="br0">&#41;</span> <span class="br0">&#123;</span>
+          terrain.<span class="me1">setMaterial</span><span class="br0">&#40;</span>matWire<span class="br0">&#41;</span>;
+        <span class="br0">&#125;</span> <span class="kw1">else</span> <span class="br0">&#123;</span>
+          terrain.<span class="me1">setMaterial</span><span class="br0">&#40;</span>matRock<span class="br0">&#41;</span>;
+        <span class="br0">&#125;</span>
+      <span class="br0">&#125;</span>
+    <span class="br0">&#125;</span>
+  <span class="br0">&#125;</span>;</pre></div>
+</li>
+</ol>
+
+</div>
+<p><em><a href="http://jmonkeyengine.org/wiki/doku.php/jme3:advanced:wireframe?do=export_xhtmlbody">view online version</a></em></p>

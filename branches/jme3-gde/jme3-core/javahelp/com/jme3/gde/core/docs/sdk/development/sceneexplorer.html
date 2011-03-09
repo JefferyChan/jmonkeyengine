@@ -113,6 +113,11 @@ For adding Spatials, Contols and for general tools theres premade abstract class
 </p>
 
 <p>
+<p><div class="noteimportant">Note that the classes you create are singletons which are used across multiple nodes and you should not store any data in local variables!
+</div></p>
+</p>
+
+<p>
 To add a new Tool, use the AbstractToolAction:
 </p>
 <pre class="code java">@org.<span class="me1">openide</span>.<span class="me1">util</span>.<span class="me1">lookup</span>.<span class="me1">ServiceProvider</span><span class="br0">&#40;</span>service <span class="sy0">=</span> ToolAction.<span class="kw1">class</span><span class="br0">&#41;</span>
@@ -189,12 +194,5 @@ or AbstractNewControlAction:
         <span class="kw1">return</span> control;
     <span class="br0">&#125;</span>
 <span class="br0">&#125;</span></pre>
-<p>
-
-<p><div class="noteimportant">Note that the classes you create are singletons which are used across multiple nodes and you should not store any data in local variables!
-</div></p>
-
-</p>
-
 </div>
 <p><em><a href="http://jmonkeyengine.org/wiki/doku.php/sdk:development:sceneexplorer?do=export_xhtmlbody">view online version</a></em></p>

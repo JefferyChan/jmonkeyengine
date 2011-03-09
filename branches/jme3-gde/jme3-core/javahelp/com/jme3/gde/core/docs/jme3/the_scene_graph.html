@@ -1,0 +1,147 @@
+
+<h1><a name="the_scene_graph_and_other_jme3_terminology" id="the_scene_graph_and_other_jme3_terminology">The Scene Graph and Other jME3 Terminology</a></h1>
+<div class="level1">
+
+<p>
+
+For a visual introduction to the scene graph check out our <a href="/com/jme3/gde/core/docs/jme3/scenegraph_for_dummies.html" class="wikilink1" title="jme3:scenegraph_for_dummies"> Scene Graph for Dummies</a> presentation.
+</p>
+
+<p>
+Before you start making games, make sure you understand general <a href="/com/jme3/gde/core/docs/jme3/terminology.html" class="wikilink1" title="jme3:terminology">3D Gaming terminology</a> and the following jME3 concepts.
+</p>
+
+</div>
+
+<h2><a name="coordinate_system" id="coordinate_system">Coordinate System</a></h2>
+<div class="level2">
+
+<p>
+
+<img src="nbdocs:/com/jme3/gde/core/docs/jme3/intermediate/coordinate-system.png">
+</p>
+
+<p>
+The jMonkeyEngine uses a right-handed coordinate system, just as OpenGL does.
+</p>
+
+<p>
+The coordinate system consists of:
+
+</p>
+<ul>
+<li class="level1"><div class="li"> The origin, a single point in space.</div>
+<ul>
+<li class="level2"><div class="li"> This point is always at coordinate (0,0,0)</div>
+</li>
+</ul>
+</li>
+<li class="level1"><div class="li"> Three coordinate axes that are mutually perpendicular, and meet in the origin. </div>
+<ul>
+<li class="level2"><div class="li"> The X axis is “right/left”</div>
+</li>
+<li class="level2"><div class="li"> The Y axis is “up/down”</div>
+</li>
+<li class="level2"><div class="li"> The Z axis is “towards you/away from you”</div>
+</li>
+</ul>
+</li>
+</ul>
+
+<p>
+
+Every point in 3D space is defined by its (x,y,z) coordinates. The data type for vectors is com.jme3.math.Vector3f. 
+</p>
+
+<p>
+For your orientation, the default camera&#039;s location is (0.0f,0.0f,10.0f), and it is looking in the direction described by the unit vector (0.0f, 0.0f, -1.0f). This means your point of view is on the positive side of the Z axis, looking towards the origin, down the Z axis.
+</p>
+
+<p>
+The unit of meassurement is <code>world unit</code> (wu). Typically, 1 wu is considered to be one meter. All scales, vectors and points are relative to this coordinate system.
+</p>
+
+</div>
+
+<h2><a name="scene_graph_and_rootnode" id="scene_graph_and_rootnode">Scene Graph and RootNode</a></h2>
+<div class="level2">
+
+<p>
+
+The scene graph represents your 3D world. Objects in the jME3 scene graph are called <em>Spatials</em>.
+</p>
+<ul>
+<li class="level1"><div class="li"> A Spatial can be loaded, transformed, and saved.</div>
+</li>
+<li class="level1"><div class="li"> A Spatial contains transformation values (location, rotation, scale), relative to the coordinate system.</div>
+</li>
+<li class="level1"><div class="li"> Everything attached to the <em>rootNode</em> is part of the scene graph.</div>
+<ul>
+<li class="level2"><div class="li"> Geometries are visible Spatials that appear in the scene.</div>
+</li>
+<li class="level2"><div class="li"> Nodes are invisible Spatials that are used as handles and for grouping.</div>
+</li>
+</ul>
+</li>
+</ul>
+
+<p>
+
+<em>Attaching</em> a Spatial to the rootNode (or any other nodes) adds the Spatial to the scene graph; <em>detaching</em> removes it.
+</p>
+
+<p>
+<img src="nbdocs:/com/jme3/gde/core/docs/jme3/intermediate/scene-graph.png">
+</p>
+
+</div>
+
+<h2><a name="spatialsnode_vs_geometry" id="spatialsnode_vs_geometry">Spatials: Node vs Geometry</a></h2>
+<div class="level2">
+
+<p>
+
+There are two types of Spatials, <em>Nodes</em> and <em>Geometries</em>.
+
+</p>
+<table class="inline">
+	<tr class="row0">
+		<td class="col0 rightalign">  </td><th class="col1" colspan="2"> Spatial </th>
+	</tr>
+	<tr class="row1">
+		<th class="col0"> Purpose: </th><td class="col1" colspan="2"> A Spatial is an abstract data structure that stores transformations (translation, rotation, scale). </td>
+	</tr>
+	<tr class="row2">
+		<td class="col0 rightalign">  </td><th class="col1"> Geometry </th><th class="col2"> Node </th>
+	</tr>
+	<tr class="row3">
+		<th class="col0"> Visibility: </th><td class="col1"> A Geometry represents a visible 3-D object. </td><td class="col2"> A Node is an invisible “handle” for a group of objects. </td>
+	</tr>
+	<tr class="row4">
+		<th class="col0"> Purpose: </th><td class="col1"> A Geometry stores an object&#039;s looks: Every Geometry has a mesh (shape), and a material (surface) specifying color, texture, and opacity/transparency. </td><td class="col2"> A Node groups Geometries and other Nodes together: When you transform a parent Node, all its child Nodes are transformed as well. </td>
+	</tr>
+	<tr class="row5">
+		<th class="col0"> Content: </th><td class="col1"> transformations, mesh, material. </td><td class="col2"> transformations, no mesh, no material. </td>
+	</tr>
+	<tr class="row6">
+		<th class="col0"> Examples: </th><td class="col1"> A box, a sphere, player, a building, a piece of terrain, a vehicle, missiles, NPCs, etc… </td><td class="col2"> The rootNode, the guiNode, an audio node, a custom grouping node, etc. </td>
+	</tr>
+</table>
+
+</div>
+
+<h2><a name="how_to_use_this_knowledge" id="how_to_use_this_knowledge">How to Use This Knowledge?</a></h2>
+<div class="level2">
+
+<p>
+
+Before you start, you should have completed the <a href="/com/jme3/gde/core/docs/jme3/beginner.html" class="wikilink1" title="jme3:beginner">Hello World tutorial series</a>. It shows how to load and create Spatials, how to lay out a scene by attaching and transforming Spatials, and how to add interaction and effects to a game.
+</p>
+
+<p>
+The <a href="/com/jme3/gde/core/docs/jme3.html" class="wikilink1" title="jme3">intermediate and advanced documentation</a> gives you more details on how to put all the parts together to create an awesome Java 3D game!
+
+</p>
+
+</div>
+<p><em><a href="http://jmonkeyengine.org/wiki/doku.php/jme3:the_scene_graph?do=export_xhtmlbody">view online version</a></em></p>
