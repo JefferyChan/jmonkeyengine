@@ -363,17 +363,18 @@ public final class MaterialEditorTopComponent extends CloneableTopComponent impl
             jComboBox1.addItem(string);
         }
 
-        jComboBox1.addItem("Common/MatDefs/Misc/SolidColor.j3md");
-        jComboBox1.addItem("Common/MatDefs/Misc/VertexColor.j3md");
-        jComboBox1.addItem("Common/MatDefs/Misc/SimpleTextured.j3md");
-        jComboBox1.addItem("Common/MatDefs/Misc/ColoredTextured.j3md");
-        jComboBox1.addItem("Common/MatDefs/Misc/Particle.j3md");
-        jComboBox1.addItem("Common/MatDefs/Misc/Sky.j3md");
-        jComboBox1.addItem("Common/MatDefs/Gui/Gui.j3md");
         jComboBox1.addItem("Common/MatDefs/Light/Lighting.j3md");
-        jComboBox1.addItem("Common/MatDefs/Light/Reflection.j3md");
-        jComboBox1.addItem("Common/MatDefs/Misc/ShowNormals.j3md");
+        jComboBox1.addItem("Common/MatDefs/Misc/Particle.j3md");
+        jComboBox1.addItem("Common/MatDefs/Misc/Unshaded.j3md");
+        jComboBox1.addItem("Common/MatDefs/Gui/Gui.j3md");
+        jComboBox1.addItem("Common/MatDefs/Misc/Sky.j3md");
         jComboBox1.addItem("Common/MatDefs/Terrain/Terrain.j3md");
+//        jComboBox1.addItem("Common/MatDefs/Misc/SolidColor.j3md");
+//        jComboBox1.addItem("Common/MatDefs/Misc/VertexColor.j3md");
+//        jComboBox1.addItem("Common/MatDefs/Misc/SimpleTextured.j3md");
+//        jComboBox1.addItem("Common/MatDefs/Misc/ColoredTextured.j3md");
+//        jComboBox1.addItem("Common/MatDefs/Light/Reflection.j3md");
+//        jComboBox1.addItem("Common/MatDefs/Misc/ShowNormals.j3md");
         jComboBox1.setSelectedItem(selected);
 
         properties=prop;
