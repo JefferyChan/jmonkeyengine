@@ -186,7 +186,7 @@ public class MaterialLoader implements AssetLoader {
             int amount = scan.nextInt();
             texture.setAnisotropicFilter(amount);
         }else{
-            System.out.println("Unsupported texture_unit directive: "+keyword);
+            logger.log(Level.WARNING, "Unsupported texture_unit directive: {0}", keyword);
             readString("\n");
         }
     }
@@ -263,7 +263,7 @@ public class MaterialLoader implements AssetLoader {
                 noLight = true;
             }
         }else{
-            System.out.println(matName + ": " + keyword);
+            logger.log(Level.WARNING, "Unsupported pass directive: {0}", keyword);
             readString("\n");
         }
     }
