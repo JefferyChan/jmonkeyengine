@@ -216,10 +216,10 @@
             <arg value="private" />
         </exec>
         <exec executable="echo" dir="." output="./nbproject/private/platform-private.properties">
-            <arg value="nbplatform.default.netbeans.dest.dir=/var/lib/hudson/jobs/platform-base/workspace/nbbuild/netbeans"/>
+            <arg value="nbplatform.default.netbeans.dest.dir=/var/www/platform/base/alpha/platform-base/netbeans"/>
         </exec>
         <exec executable="echo" dir="." output="./nbproject/private/platform-private.properties" append="true">
-            <arg value="nbplatform.default.harness.dir=/var/lib/hudson/jobs/platform-base/workspace/nbbuild/netbeans/harness"/>
+            <arg value="nbplatform.default.harness.dir=/var/www/platform/base/alpha/platform-base/netbeans/harness"/>
         </exec>
     </target>
     
@@ -230,8 +230,8 @@
         </unzip>
         <desktopentry
             toFile="build/jmonkeyplatform.desktop"
-            name="jMonkeyPlatform"
-            comment="jMonkeyEngine3 Game SDK."
+            name="jMonkeyEngine3 SDK"
+            comment="jMonkeyEngine3 Game SDK"
             exec="/usr/local/jmonkeyplatform/bin/jmonkeyplatform"
             icon="/usr/local/jmonkeyplatform/jmonkeyplatform.png"
             categories="Development;Java"
