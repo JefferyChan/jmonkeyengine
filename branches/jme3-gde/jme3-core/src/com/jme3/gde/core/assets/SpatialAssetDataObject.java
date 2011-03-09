@@ -66,7 +66,7 @@ public class SpatialAssetDataObject extends AssetDataObject {
 
     @Override
     public Spatial loadAsset() {
-        if (savable != null) {
+        if (isModified() && savable != null) {
             return (Spatial) savable;
         }
         ProjectAssetManager mgr = getLookup().lookup(ProjectAssetManager.class);
@@ -120,6 +120,5 @@ public class SpatialAssetDataObject extends AssetDataObject {
         } catch (Exception ex) {
             Exceptions.printStackTrace(ex);
         }
-        savable = null;
     }
 }
