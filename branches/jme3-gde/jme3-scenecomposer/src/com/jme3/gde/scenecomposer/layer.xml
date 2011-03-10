@@ -138,10 +138,14 @@
     </folder>
     <folder name="Toolbars">
         <folder name="jMonkeyPlatform-Tools">
+            <attr name="position" intvalue="175"/>
             <file name="com-jme3-gde-scenecomposer-OpenSceneComposer.shadow">
                 <attr name="originalFile" stringvalue="Actions/SceneComposer/com-jme3-gde-scenecomposer-OpenSceneComposer.instance"/>
                 <attr name="position" intvalue="110"/>
             </file>
+        </folder>
+        <folder name="SceneComposer-Tools">
+            <attr name="position" intvalue="150"/>
             <file name="com-jme3-gde-scenecomposer-AddSceneComposer.shadow">
                 <attr name="originalFile" stringvalue="Actions/SceneComposer/com-jme3-gde-scenecomposer-AddSceneComposer.instance"/>
                 <attr name="position" intvalue="120"/>
@@ -151,8 +155,8 @@
                 <attr name="position" intvalue="150"/>
             </file>
         </folder>
-        <!--folder name="SceneComposer-Tools_hidden">
-        </folder-->
+        <folder name="SceneComposer-Tools_hidden">
+        </folder>
     </folder>
     <folder name="Templates">
         <folder name="Scene">

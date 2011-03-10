@@ -24,10 +24,10 @@
         </folder>
     </folder>
     <folder name="Toolbars">
-        <folder name="jMonkeyPlatform-Tools">
+        <folder name="File">
             <file name="com-jme3-gde-modelimporter-ImportModel.shadow">
+                <attr name="position" intvalue="310"/>
                 <attr name="originalFile" stringvalue="Actions/Import/com-jme3-gde-modelimporter-ImportModel.instance"/>
-                <attr name="position" intvalue="-80"/>
             </file>
         </folder>
     </folder>
