@@ -5,6 +5,7 @@
 package com.jme3.gde.materials;
 
 import com.jme3.gde.core.assets.ProjectAssetManager;
+import com.jme3.system.JmeSystem;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -133,8 +134,7 @@ public class MaterialProperties {
                     fs = FileUtil.createMemoryFileSystem();
                     matDef = fs.getRoot().createData(name, "j3md");
                     OutputStream out = matDef.getOutputStream();
-                    System.out.println("read " + "/" + getMatDefName());
-                    InputStream in = getClass().getResourceAsStream("/" + getMatDefName());
+                    InputStream in = JmeSystem.getResourceAsStream("/" + getMatDefName());
                     if (in != null) {
                         int input = in.read();
                         while (input != -1) {
