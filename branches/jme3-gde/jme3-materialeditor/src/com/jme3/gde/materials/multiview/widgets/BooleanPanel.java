@@ -40,12 +40,12 @@ public class BooleanPanel extends MaterialPropertyWidget {
         jToolBar1.setRollover(true);
         jToolBar1.setPreferredSize(new java.awt.Dimension(81, 27));
 
-        jLabel1.setText(org.openide.util.NbBundle.getMessage(BooleanPanel.class, "BooleanPanel.jLabel1.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(jLabel1, org.openide.util.NbBundle.getMessage(BooleanPanel.class, "BooleanPanel.jLabel1.text")); // NOI18N
         jLabel1.setMaximumSize(new java.awt.Dimension(220, 16));
         jLabel1.setPreferredSize(new java.awt.Dimension(220, 16));
         jToolBar1.add(jLabel1);
 
-        jCheckBox1.setText(org.openide.util.NbBundle.getMessage(BooleanPanel.class, "BooleanPanel.jCheckBox1.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(jCheckBox1, org.openide.util.NbBundle.getMessage(BooleanPanel.class, "BooleanPanel.jCheckBox1.text")); // NOI18N
         jCheckBox1.setFocusable(false);
         jCheckBox1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jCheckBox1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -56,15 +56,15 @@ public class BooleanPanel extends MaterialPropertyWidget {
         });
         jToolBar1.add(jCheckBox1);
 
-        org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jToolBar1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 132, Short.MAX_VALUE)
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 132, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jToolBar1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
     }// </editor-fold>//GEN-END:initComponents
 
