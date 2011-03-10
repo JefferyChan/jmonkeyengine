@@ -38,6 +38,7 @@ import com.jme3.asset.AssetManager;
 import com.jme3.asset.DesktopAssetManager;
 import com.jme3.audio.AudioRenderer;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -372,5 +373,12 @@ public class JmeSystem {
     public static String getFullName(){
         return "jMonkey Engine 3 Alpha 0.6";
     }
+
+    public static InputStream getResourceAsStream(String name){
+        return JmeSystem.class.getResourceAsStream(name);
+    }
     
+    public static URL getResource(String name){
+        return JmeSystem.class.getResource(name);
+    }
 }
