@@ -8,7 +8,6 @@ import com.jme3.asset.AssetManager;
 import com.jme3.asset.DesktopAssetManager;
 import com.jme3.asset.ModelKey;
 import com.jme3.audio.AudioNode;
-import com.jme3.bounding.BoundingVolume;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
 import com.jme3.bullet.control.CharacterControl;
 import com.jme3.bullet.control.RigidBodyControl;
@@ -373,6 +372,106 @@ public class SceneEditorController implements PropertyChangeListener, NodeListen
                 public void sceneRedo() throws CannotRedoException {
                     //redo stuff here
                     spatial.setLocalTranslation(after);
+                }
+            });
+        }
+    }
+
+    public void nudgeSelectedSpatial(final Vector3f amount) {
+        if (selectedSpat == null) {
+            return;
+        }
+        try {
+            final Spatial node = selectedSpat.getLookup().lookup(Spatial.class);
+            if (node != null) {
+                setNeedsSave(true);
+                SceneApplication.getApplication().enqueue(new Callable() {
+
+                    public Object call() throws Exception {
+                        doNudgeSpatial(node, amount);
+                        return null;
+
+                    }
+                }).get();
+            }
+        } catch (InterruptedException ex) {
+            Exceptions.printStackTrace(ex);
+        } catch (ExecutionException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+    }
+
+    public void doNudgeSpatial(Spatial selected, Vector3f translation) {
+        Vector3f before = new Vector3f(selected.getLocalTranslation());
+        selected.setLocalTranslation(before.add(translation));
+        Vector3f after = new Vector3f(selected.getLocalTranslation());
+        nudgeUndo(selected, before, after, selectedSpat);
+    }
+
+    private void nudgeUndo(final Spatial spatial, final Vector3f before, final Vector3f after, final AbstractSceneExplorerNode parentNode) {
+        if (spatial != null && before != null) {
+            Lookup.getDefault().lookup(SceneUndoRedoManager.class).addEdit(this, new AbstractUndoableSceneEdit() {
+
+                @Override
+                public void sceneUndo() throws CannotUndoException {
+                    //undo stuff here
+                    spatial.setLocalTranslation(before);
+                }
+
+                @Override
+                public void sceneRedo() throws CannotRedoException {
+                    //redo stuff here
+                    spatial.setLocalTranslation(after);
+                }
+            });
+        }
+    }
+
+    public void rotateSelectedSpatial(final Quaternion amount) {
+        if (selectedSpat == null) {
+            return;
+        }
+        try {
+            final Spatial node = selectedSpat.getLookup().lookup(Spatial.class);
+            if (node != null) {
+                setNeedsSave(true);
+                SceneApplication.getApplication().enqueue(new Callable() {
+
+                    public Object call() throws Exception {
+                        doRotateSpatial(node, amount);
+                        return null;
+
+                    }
+                }).get();
+            }
+        } catch (InterruptedException ex) {
+            Exceptions.printStackTrace(ex);
+        } catch (ExecutionException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+    }
+
+    public void doRotateSpatial(Spatial selected, Quaternion rotation) {
+        Quaternion before=new Quaternion(selected.getLocalRotation());
+        selected.rotate(rotation);
+        Quaternion after=new Quaternion(selected.getLocalRotation());
+        rotateUndo(selected, before, after, selectedSpat);
+    }
+
+    private void rotateUndo(final Spatial spatial, final Quaternion before, final Quaternion after, final AbstractSceneExplorerNode parentNode) {
+        if (spatial != null && before != null) {
+            Lookup.getDefault().lookup(SceneUndoRedoManager.class).addEdit(this, new AbstractUndoableSceneEdit() {
+
+                @Override
+                public void sceneUndo() throws CannotUndoException {
+                    //undo stuff here
+                    spatial.setLocalRotation(before);
+                }
+
+                @Override
+                public void sceneRedo() throws CannotRedoException {
+                    //redo stuff here
+                    spatial.setLocalRotation(after);
                 }
             });
         }
