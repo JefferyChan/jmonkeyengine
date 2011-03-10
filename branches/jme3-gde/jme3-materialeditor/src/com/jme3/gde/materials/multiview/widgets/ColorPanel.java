@@ -99,7 +99,7 @@ public class ColorPanel extends MaterialPropertyWidget {
         java.awt.EventQueue.invokeLater(new Runnable() {
 
             public void run() {
-                jLabel1.setText(property.getName() + " (" + property.getType() + ")");
+                jLabel1.setText(property.getName());
                 jTextField1.setText(property.getValue());
             }
         });

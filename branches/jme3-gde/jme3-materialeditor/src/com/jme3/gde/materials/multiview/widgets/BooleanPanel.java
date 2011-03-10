@@ -60,7 +60,7 @@ public class BooleanPanel extends MaterialPropertyWidget {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jToolBar1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
+            .add(jToolBar1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 132, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -83,7 +83,7 @@ public class BooleanPanel extends MaterialPropertyWidget {
         java.awt.EventQueue.invokeLater(new Runnable() {
 
             public void run() {
-                jLabel1.setText(property.getName() + " (" + property.getType() + ")");
+                jLabel1.setText(property.getName());
                 MaterialProperty prop = property;
                 property = null;
                 if ("true".equals(prop.getValue())) {
