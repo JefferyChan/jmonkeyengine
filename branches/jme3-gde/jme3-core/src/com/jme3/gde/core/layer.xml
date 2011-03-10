@@ -222,7 +222,7 @@
             <attr name="position" intvalue="100"/>
             <file name="org-openide-actions-SaveAction.shadow">
                 <attr name="originalFile" stringvalue="Actions/System/org-openide-actions-SaveAction.instance"/>
-                <attr name="position" intvalue="300"/>
+                <attr name="position" intvalue="355"/>
             </file>
         </folder>
     </folder>
