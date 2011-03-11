@@ -88,7 +88,7 @@ public class TexturePanel extends MaterialPropertyWidget {
 
         jLabel2.setFont(new java.awt.Font("Courier", 0, 13)); // NOI18N
         jLabel2.setText(org.openide.util.NbBundle.getMessage(TexturePanel.class, "TexturePanel.jLabel2.text")); // NOI18N
-        jLabel2.setMaximumSize(new java.awt.Dimension(200, 0));
+        jLabel2.setMaximumSize(new java.awt.Dimension(200, 30));
         jLabel2.setPreferredSize(new java.awt.Dimension(200, 14));
         jToolBar1.add(jLabel2);
 

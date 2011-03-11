@@ -22,7 +22,7 @@ import org.openide.filesystems.FileUtil;
 import org.openide.util.Exceptions;
 
 /**
- *
+ * Provides an editable j3m file
  * @author normenhansen
  */
 public class MaterialProperties {
@@ -42,6 +42,19 @@ public class MaterialProperties {
         this.manager = manager;
     }
 
+    private void prepareAdditionalStates() {
+        additionalRenderStates.clear();
+        additionalRenderStates.put("WireFrame", new MaterialProperty("OnOff", "WireFrame", ""));
+        additionalRenderStates.put("DepthWrite", new MaterialProperty("OnOff", "DepthWrite", ""));
+        additionalRenderStates.put("DepthTest", new MaterialProperty("OnOff", "DepthTest", ""));
+        additionalRenderStates.put("ColorWrite", new MaterialProperty("OnOff", "ColorWrite", ""));
+        additionalRenderStates.put("PointSprite", new MaterialProperty("OnOff", "PointSprite", ""));
+        additionalRenderStates.put("FaceCull", new MaterialProperty("FaceCullMode", "FaceCull", ""));
+        additionalRenderStates.put("Blend", new MaterialProperty("BlendMode", "Blend", ""));
+        additionalRenderStates.put("AlphaTestFalloff", new MaterialProperty("Float", "AlphaTestFalloff", ""));
+        additionalRenderStates.put("PolyOffset", new MaterialProperty("Float,Float", "PolyOffset", ""));
+    }
+
     /**
      * loads the data from the material and matdef files
      */
@@ -52,22 +65,27 @@ public class MaterialProperties {
         boolean params = false;
         boolean states = false;
         try {
-            //TODO: make/use parser
-            //material
+            //scan material text
             for (String line : material.asLines()) {
+                //trim line incl comments
                 line = trimLine(line);
+                //find and load matdef file
                 if (line.startsWith("Material ") || line.startsWith("Material\t") && level == 0) {
                     findMatDef(line);
                 }
+                //start parsing material parameters
                 if (line.startsWith("MaterialParameters ") || line.startsWith("MaterialParameters\t") || line.startsWith("MaterialParameters{") && level == 1) {
                     params = true;
                 }
+                //start parsing renderstates
                 if (line.startsWith("AdditionalRenderStates ") || line.startsWith("AdditionalRenderStates\t") || line.startsWith("AdditionalRenderStates{") && level == 1) {
                     states = true;
                 }
+                //up a level
                 if (line.indexOf("{") != -1) {
                     level++;
                 }
+                //down a level, stop processing parameters/states
                 if (line.indexOf("}") != -1) {
                     level--;
                     if (params) {
@@ -77,6 +95,7 @@ public class MaterialProperties {
                         states = false;
                     }
                 }
+                //try reading parameter
                 if (level == 2 && params) {
                     int colonIdx = line.indexOf(":");
                     if (colonIdx != -1) {
@@ -89,6 +108,7 @@ public class MaterialProperties {
                         materialParameters.put(prop.getName(), prop);
                     }
                 }
+                //try reading state
                 if (level == 2 && states) {
                     String[] lines = null;
                     int colonIdx = line.indexOf(" ");
@@ -113,59 +133,28 @@ public class MaterialProperties {
                     }
                 }
             }
-            //matdef
-            if (matDef != null && matDef.isValid()) {
-                for (String line : matDef.asLines()) {
-                    line = line.trim();
-                    if (line.startsWith("MaterialParameters ") || line.startsWith("MaterialParameters\t") || line.startsWith("MaterialParameters{") && level == 1) {
-                        params = true;
-                    }
-                    if (line.indexOf("{") != -1) {
-                        level++;
-                    }
-                    if (line.indexOf("}") != -1) {
-                        level--;
-                        if (params) {
-                            params = false;
-                        }
-                    }
-                    if (level == 2 && params) {
-                        for (int i = 0; i < variableTypes.length; i++) {
-                            String string = variableTypes[i];
-                            if (line.startsWith(string)) {
-                                String name = trimName(line.replaceFirst(string, ""));
-                                MaterialProperty prop = materialParameters.get(name);
-                                if (prop == null) {
-                                    prop = new MaterialProperty();
-                                    prop.setName(name);
-                                    prop.setValue("");
-                                    materialParameters.put(prop.getName(), prop);
-                                }
-                                prop.setType(string);
-                            }
-                        }
-                    }
-                }
-            }
+            loadMatDef();
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
         }
     }
 
     /**
-     * finds the matdef file either from project or from base jme
+     * finds and loads the matdef file either from project or from base jme
      * @param line
      */
     private void findMatDef(String line) {
         int colonIdx = line.indexOf(":");
+        //find matdef file
         if (colonIdx != -1) {
             line = line.replaceFirst("Material", "");
             line = line.replace("{", "");
             String[] lines = line.split(":");
             setName(lines[0].trim());
             setMatDefName(lines[1].trim());
+            //try to read from assets folder
             matDef = FileUtil.toFileObject(new File(manager.getFolderName() + "/" + getMatDefName()).getAbsoluteFile());
-            //try to read from classpath if not in assets folder
+            //try to read from classpath if not in assets folder and store in a virtual filesystem folder
             if (matDef == null || !matDef.isValid()) {
                 try {
                     fs = FileUtil.createMemoryFileSystem();
@@ -184,6 +173,53 @@ public class MaterialProperties {
                 } catch (IOException ex) {
                     Exceptions.printStackTrace(ex);
                 }
+            }
+        }
+    }
+    /**
+     * finds and loads the matdef file either from project or from base jme
+     * @param line
+     */
+    private void loadMatDef() {
+        //load matdef
+        boolean params = false;
+        int level = 0;
+        if (matDef != null && matDef.isValid()) {
+            try {
+                for (String defLine : matDef.asLines()) {
+                    defLine = trimLine(defLine.trim());
+                    if (defLine.startsWith("MaterialParameters ") || defLine.startsWith("MaterialParameters\t") || defLine.startsWith("MaterialParameters{") && level == 1) {
+                        params = true;
+                    }
+                    if (defLine.indexOf("{") != -1) {
+                        level++;
+                    }
+                    if (defLine.indexOf("}") != -1) {
+                        level--;
+                        if (params) {
+                            params = false;
+                        }
+                    }
+                    //read variable types
+                    if (level == 2 && params) {
+                        for (int i = 0; i < variableTypes.length; i++) {
+                            String string = variableTypes[i];
+                            if (defLine.startsWith(string)) {
+                                String name = trimName(defLine.replaceFirst(string, ""));
+                                MaterialProperty prop = materialParameters.get(name);
+                                if (prop == null) {
+                                    prop = new MaterialProperty();
+                                    prop.setName(name);
+                                    prop.setValue("");
+                                    materialParameters.put(prop.getName(), prop);
+                                }
+                                prop.setType(string);
+                            }
+                        }
+                    }
+                }
+            } catch (IOException ex) {
+                Exceptions.printStackTrace(ex);
             }
         }
     }
@@ -206,6 +242,7 @@ public class MaterialProperties {
             for (String line : matLines) {
                 String newLine = line;
                 line = trimLine(line);
+                //write material header
                 if (line.startsWith("Material ") || line.startsWith("Material\t") && level == 0) {
                     String suffix = "";
                     if (line.indexOf("{") > -1) {
@@ -213,20 +250,24 @@ public class MaterialProperties {
                     }
                     newLine = "Material " + getName() + " : " + matDefName + " " + suffix;
                 }
+                //start parameters
                 if (line.startsWith("MaterialParameters ") || line.startsWith("MaterialParameters\t") || line.startsWith("MaterialParameters{") && level == 1) {
                     params = true;
                 }
+                //start states
                 if (line.startsWith("AdditionalRenderStates ") || line.startsWith("AdditionalRenderStates\t") || line.startsWith("AdditionalRenderStates{") && level == 1) {
                     states = true;
                     addedstates = true;
                 }
+                //up a level
                 if (line.indexOf("{") != -1) {
                     level++;
                 }
+                //down a level, stop processing states and check if all parameters and states have been written
                 if (line.indexOf("}") != -1) {
                     level--;
+                    //find and write parameters we did not replace yet at end of parameters section
                     if (params) {
-                        //find and write parameters we did not replace yet at end of parameters section
                         for (Iterator<Map.Entry<String, MaterialProperty>> it = materialParameters.entrySet().iterator(); it.hasNext();) {
                             Map.Entry<String, MaterialProperty> entry = it.next();
                             if (!setValues.contains(entry.getKey())) {
@@ -239,8 +280,8 @@ public class MaterialProperties {
                         }
                         params = false;
                     }
+                    //find and write states we did not replace yet at end of states section
                     if (states) {
-                        //find and write states we did not replace yet at end of states section
                         for (Iterator<Map.Entry<String, MaterialProperty>> it = additionalRenderStates.entrySet().iterator(); it.hasNext();) {
                             Map.Entry<String, MaterialProperty> entry = it.next();
                             if (!setStates.contains(entry.getKey())) {
@@ -253,8 +294,8 @@ public class MaterialProperties {
                         }
                         states = false;
                     }
+                    //add renderstates if they havent been in the file yet
                     if (level == 0) {
-                        //add renderstates if they havent been in the file yet
                         if (!addedstates) {
                             boolean started = false;
                             for (Iterator<Map.Entry<String, MaterialProperty>> it = additionalRenderStates.entrySet().iterator(); it.hasNext();) {
@@ -279,6 +320,7 @@ public class MaterialProperties {
                         }
                     }
                 }
+                //try replacing value of parameter line with new value
                 if (level == 2 && params) {
                     int colonIdx = newLine.indexOf(":");
                     if (colonIdx != -1) {
@@ -295,6 +337,7 @@ public class MaterialProperties {
                         }
                     }
                 }
+                //try replacing value of state line with new value
                 if (level == 2 && states) {
                     String cutLine = newLine.trim();
                     String[] lines = null;
@@ -329,19 +372,6 @@ public class MaterialProperties {
             Exceptions.printStackTrace(ex);
         }
         return "";
-    }
-
-    private void prepareAdditionalStates() {
-        additionalRenderStates.clear();
-        additionalRenderStates.put("WireFrame", new MaterialProperty("OnOff", "WireFrame", ""));
-        additionalRenderStates.put("DepthWrite", new MaterialProperty("OnOff", "DepthWrite", ""));
-        additionalRenderStates.put("DepthTest", new MaterialProperty("OnOff", "DepthTest", ""));
-        additionalRenderStates.put("ColorWrite", new MaterialProperty("OnOff", "ColorWrite", ""));
-        additionalRenderStates.put("PointSprite", new MaterialProperty("OnOff", "PointSprite", ""));
-        additionalRenderStates.put("FaceCull", new MaterialProperty("FaceCullMode", "FaceCull", ""));
-        additionalRenderStates.put("Blend", new MaterialProperty("BlendMode", "Blend", ""));
-        additionalRenderStates.put("AlphaTestFalloff", new MaterialProperty("Float", "AlphaTestFalloff", ""));
-        additionalRenderStates.put("PolyOffset", new MaterialProperty("Float,Float", "PolyOffset", ""));
     }
 
     /**
