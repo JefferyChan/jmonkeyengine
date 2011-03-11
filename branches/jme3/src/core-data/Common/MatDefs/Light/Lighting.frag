@@ -1,3 +1,4 @@
+#import "Common/ShaderLib/Optics.glsllib"
 #define ATTENUATION
 //#define HQ_ATTENUATION
 
@@ -46,6 +47,21 @@ uniform float m_Shininess;
 #ifdef HQ_ATTENUATION
 uniform vec4 g_LightPosition;
 varying vec3 lightVec;
+#endif
+
+#ifdef USE_REFLECTION 
+    uniform float m_ReflectionPower;
+    uniform float m_ReflectionIntensity;
+    varying vec3 refVec;
+#endif
+
+#ifdef USE_REFRACTION 
+    uniform float m_RefractionIntensity;
+    varying vec3 rfrRed, rfrGreen, rfrBlue;
+#endif
+
+#if defined(USE_REFLECTION) || defined(USE_REFRACTION) 
+    uniform ENVMAP m_EnvMap;
 #endif
 
 float tangDot(in vec3 v1, in vec3 v2){
@@ -179,9 +195,27 @@ void main(){
            diffuseColor.rgb  *= texture2D(m_ColorRamp, vec2(light.x, 0.0)).rgb;
            specularColor.rgb *= texture2D(m_ColorRamp, vec2(light.y, 0.0)).rgb;
        #endif
-       gl_FragColor =  AmbientSum * diffuseColor +
+    
+     gl_FragColor =  AmbientSum * diffuseColor +
                        DiffuseSum * diffuseColor  * light.x +
                        SpecularSum * specularColor * light.y;
+
+       #ifdef USE_REFLECTION
+            vec4 refColor = Optics_GetEnvColor(m_EnvMap, refVec);
+            gl_FragColor  = mix(gl_FragColor , refColor, pow(specularColor,vec4(m_ReflectionPower)) * gl_FragColor * m_ReflectionIntensity);
+            
+       #endif  
+       
+       #ifdef USE_REFRACTION
+
+            vec4 rfrColor = vec4(0.0, 0.0, 0.0, 1.0);
+            rfrColor.r = Optics_GetEnvColor(m_EnvMap, rfrRed).r;
+            rfrColor.g = Optics_GetEnvColor(m_EnvMap, rfrGreen).g;
+            rfrColor.b = Optics_GetEnvColor(m_EnvMap, rfrBlue).b;
+            
+            gl_FragColor  = mix(gl_FragColor , rfrColor, m_RefractionIntensity);
+            
+       #endif  
     #endif
     gl_FragColor.a = alpha;
 }

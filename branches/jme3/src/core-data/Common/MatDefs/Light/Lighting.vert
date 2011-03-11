@@ -6,6 +6,7 @@ uniform mat4 g_WorldViewMatrix;
 uniform mat3 g_NormalMatrix;
 uniform mat4 g_ViewMatrix;
 
+
 uniform vec4 m_Ambient;
 uniform vec4 m_Diffuse;
 uniform vec4 m_Specular;
@@ -42,6 +43,45 @@ attribute vec3 inNormal;
   varying vec3 vPosition;
   varying vec3 vViewDir;
   varying vec4 vLightDir;
+#endif
+
+#ifdef USE_REFLECTION
+    varying vec3 refVec;
+
+#endif
+
+#ifdef USE_REFRACTION
+    varying vec3 rfrRed, rfrGreen, rfrBlue;
+#endif
+
+#if defined(USE_REFLECTION) || defined(USE_REFRACTION) 
+    uniform vec3 g_CameraPosition;
+    uniform mat4 g_WorldMatrix;
+
+    void computeRef(){
+        vec3 worldPos = (g_WorldMatrix * vec4(inPosition,1.0)).xyz;
+
+        vec3 I = normalize( g_CameraPosition - worldPos  ).xyz;
+        vec3 N = normalize( (g_WorldMatrix * vec4(inNormal, 0.0)).xyz );
+
+        #ifdef USE_REFRACTION
+            float fresnelBias = 0.05;
+            float fresnelScale = 0.25;
+            float fresnelPower = 0.30;
+            vec3 etaRGB = vec3(0.86, 0.88, 0.91);
+            etaRGB = vec3(0.93, 0.94, 0.95);
+            rfrRed   = refract(I, -N, etaRGB.r);
+            rfrGreen = refract(I, -N, etaRGB.g);
+            rfrBlue  = refract(I, -N, etaRGB.b);
+          //  refFactor = fresnelBias + fresnelScale * pow(1.0 + dot(I, N), fresnelPower);
+        #endif
+
+        #ifdef USE_REFLECTION
+            refVec   = reflect(I, N);
+        #endif
+        
+    }
+
 #endif
 
 // JME3 lights in world space
@@ -149,4 +189,8 @@ void main(){
        AmbientSum.a  = light.x;
        SpecularSum.a = light.y;
     #endif
+
+    #if defined(USE_REFLECTION) || defined(USE_REFRACTION) 
+        computeRef();
+    #endif 
 }
