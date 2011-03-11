@@ -206,10 +206,6 @@
     <folder name="Toolbars">
         <folder name="jMonkeyPlatform-Tools">
             <attr name="position" intvalue="175"/>
-            <file name="com-jme3-gde-core-assets-actions-ConvertModel.shadow">
-                <attr name="originalFile" stringvalue="Actions/jMonkeyPlatform/com-jme3-gde-core-assets-actions-ConvertModel.instance"/>
-                <attr name="position" intvalue="10"/>
-            </file>
             <file name="com-jme3-gde-core-assets-actions-OpenModel.shadow">
                 <attr name="originalFile" stringvalue="Actions/jMonkeyPlatform/com-jme3-gde-core-assets-actions-OpenModel.instance"/>
                 <attr name="position" intvalue="20"/>
@@ -220,6 +216,10 @@
         </folder>
         <folder name="File">
             <attr name="position" intvalue="100"/>
+            <file name="com-jme3-gde-core-assets-actions-ConvertModel.shadow">
+                <attr name="originalFile" stringvalue="Actions/jMonkeyPlatform/com-jme3-gde-core-assets-actions-ConvertModel.instance"/>
+                <attr name="position" intvalue="315"/>
+            </file>
             <file name="org-openide-actions-SaveAction.shadow">
                 <attr name="originalFile" stringvalue="Actions/System/org-openide-actions-SaveAction.instance"/>
                 <attr name="position" intvalue="355"/>
