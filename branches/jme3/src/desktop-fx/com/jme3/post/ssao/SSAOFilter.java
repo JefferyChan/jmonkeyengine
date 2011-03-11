@@ -46,7 +46,9 @@ import com.jme3.renderer.Renderer;
 import com.jme3.renderer.ViewPort;
 import com.jme3.shader.VarType;
 import com.jme3.texture.Image.Format;
+import com.jme3.texture.Texture;
 import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  *
@@ -64,6 +66,11 @@ public class SSAOFilter extends Filter {
     private float bias = 0.1f;
     private boolean useOnlyAo = false;
     private boolean useAo = true;
+    private Material ssaoMat;
+    private Pass ssaoPass;
+    private Material downSampleMat;
+    private Pass downSamplePass;
+    private int downSampleFactor = 1;
 
     /**
      * Create a Screen Space Ambiant Occlusion Filter
@@ -106,16 +113,6 @@ public class SSAOFilter extends Filter {
 
     @Override
     public Material getMaterial() {
-
-        material.setVector3("FrustumCorner", frustumCorner);
-        material.setFloat("SampleRadius", sampleRadius);
-        material.setFloat("Intensity", intensity);
-        material.setFloat("Scale", scale);
-        material.setFloat("Bias", bias);
-        material.setBoolean("UseAo", useAo);
-        material.setBoolean("UseOnlyAo", useOnlyAo);
-        material.setVector2("FrustumNearFar", frustumNearFar);
-        material.setParam("Samples", VarType.Vector2Array, samples);
         return material;
     }
 
@@ -123,8 +120,10 @@ public class SSAOFilter extends Filter {
     public void initFilter(AssetManager manager, RenderManager renderManager, ViewPort vp, int w, int h) {
         int screenWidth = w;
         int screenHeight = h;
+        postRenderPasses = new ArrayList<Pass>();
+
         normalPass = new Pass();
-        normalPass.init(renderManager.getRenderer(), screenWidth, screenHeight, Format.RGBA8, Format.Depth);
+        normalPass.init(renderManager.getRenderer(), screenWidth / downSampleFactor, screenHeight / downSampleFactor, Format.RGBA8, Format.Depth);
 
 
         frustumNearFar = new Vector2f();
@@ -134,8 +133,50 @@ public class SSAOFilter extends Filter {
         frustumCorner = new Vector3f(farX, farY, vp.getCamera().getFrustumFar());
         frustumNearFar.x = vp.getCamera().getFrustumNear();
         frustumNearFar.y = vp.getCamera().getFrustumFar();
-        material = new Material(manager, "Common/MatDefs/SSAO/ssao.j3md");
-        material.setTexture("Normals", normalPass.getRenderedTexture());
+
+
+
+
+
+        //ssao Pass
+        ssaoMat = new Material(manager, "Common/MatDefs/SSAO/ssao.j3md");
+        ssaoMat.setTexture("Normals", normalPass.getRenderedTexture());
+        Texture random = manager.loadTexture("Common/MatDefs/SSAO/Textures/random.png");
+        random.setWrap(Texture.WrapMode.Repeat);
+        ssaoMat.setTexture("RandomMap", random);
+
+        ssaoPass = new Pass() {
+
+            @Override
+            public boolean requiresDepthAsTexture() {
+                return downSampleFactor == 1;
+            }
+        };
+
+        ssaoPass.init(renderManager.getRenderer(), screenWidth / downSampleFactor, screenHeight / downSampleFactor, Format.RGBA8, Format.Depth, 1, ssaoMat);
+        ssaoPass.getRenderedTexture().setMinFilter(Texture.MinFilter.Trilinear);
+        ssaoPass.getRenderedTexture().setMagFilter(Texture.MagFilter.Bilinear);
+        postRenderPasses.add(ssaoPass);
+        material = new Material(manager, "Common/MatDefs/SSAO/ssaoBlur.j3md");
+        material.setTexture("SSAOMap", ssaoPass.getRenderedTexture());
+
+        ssaoMat.setVector3("FrustumCorner", frustumCorner);
+        ssaoMat.setFloat("SampleRadius", sampleRadius);
+        ssaoMat.setFloat("Intensity", intensity);
+        ssaoMat.setFloat("Scale", scale);
+        ssaoMat.setFloat("Bias", bias);
+        material.setBoolean("UseAo", useAo);
+        material.setBoolean("UseOnlyAo", useOnlyAo);
+        ssaoMat.setVector2("FrustumNearFar", frustumNearFar);
+        material.setVector2("FrustumNearFar", frustumNearFar);
+        ssaoMat.setParam("Samples", VarType.Vector2Array, samples);
+
+        float xScale = 1.0f / w;
+        float yScale = 1.0f / h;
+
+        float blurScale = 2.0f;
+        material.setFloat("XScale", blurScale * xScale);
+        material.setFloat("YScale", blurScale * yScale);
 
     }
 
@@ -145,8 +186,8 @@ public class SSAOFilter extends Filter {
 
     public void setBias(float bias) {
         this.bias = bias;
-        if (material != null) {
-            material.setFloat("Bias", bias);
+        if (ssaoMat != null) {
+            ssaoMat.setFloat("Bias", bias);
         }
     }
 
@@ -156,8 +197,8 @@ public class SSAOFilter extends Filter {
 
     public void setIntensity(float intensity) {
         this.intensity = intensity;
-        if (material != null) {
-            material.setFloat("Intensity", intensity);
+        if (ssaoMat != null) {
+            ssaoMat.setFloat("Intensity", intensity);
         }
 
     }
@@ -168,8 +209,8 @@ public class SSAOFilter extends Filter {
 
     public void setSampleRadius(float sampleRadius) {
         this.sampleRadius = sampleRadius;
-        if (material != null) {
-            material.setFloat("SampleRadius", sampleRadius);
+        if (ssaoMat != null) {
+            ssaoMat.setFloat("SampleRadius", sampleRadius);
         }
 
     }
@@ -180,8 +221,8 @@ public class SSAOFilter extends Filter {
 
     public void setScale(float scale) {
         this.scale = scale;
-        if (material != null) {
-            material.setFloat("Scale", scale);
+        if (ssaoMat != null) {
+            ssaoMat.setFloat("Scale", scale);
         }
 
     }
@@ -231,8 +272,5 @@ public class SSAOFilter extends Filter {
 
     @Override
     public void cleanUpFilter(Renderer r) {
-        if (normalPass != null) {
-            normalPass.cleanup(r);
-        }
     }
 }

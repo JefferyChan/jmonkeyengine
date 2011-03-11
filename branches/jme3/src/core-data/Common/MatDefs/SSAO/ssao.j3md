@@ -4,6 +4,7 @@ MaterialDef SSAO {
         Int NumSamples
         Int NumSamplesDepth
         Texture2D Texture
+        Texture2D RandomMap
         Texture2D Normals
         Texture2D DepthTexture
         Vector3 FrustumCorner
@@ -11,8 +12,6 @@ MaterialDef SSAO {
         Float Intensity
         Float Scale
         Float Bias
-        Boolean UseAo
-        Boolean UseOnlyAo
         Vector2 FrustumNearFar
         Vector2Array Samples
     }

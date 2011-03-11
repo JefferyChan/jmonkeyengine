@@ -79,8 +79,9 @@ public class SSAOUI {
             public void onAction(String name, boolean keyPressed, float tpf) {
 
                 if (name.equals("toggleUseAO") && keyPressed) {
-                    filter.setUseAo(!filter.isUseAo());
-                    System.out.println("use AO : " + filter.isUseAo());
+                    filter.setEnabled(!filter.isEnabled());
+                    // filter.setUseAo(!filter.isUseAo());
+                    System.out.println("use AO : " + filter.isEnabled());
                 }
                 if (name.equals("toggleUseOnlyAo") && keyPressed) {
                     filter.setUseOnlyAo(!filter.isUseOnlyAo());

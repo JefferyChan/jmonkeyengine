@@ -10,21 +10,16 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.post.FilterPostProcessor;
-import com.jme3.post.filters.CartoonEdgeFilter;
 import com.jme3.post.ssao.SSAOFilter;
 import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Quad;
-import com.jme3.shadow.PssmShadowRenderer;
-import com.jme3.shadow.PssmShadowRenderer.CompareMode;
-import com.jme3.shadow.PssmShadowRenderer.FilterMode;
-import com.jme3.util.TangentBinormalGenerator;
 
 public class TestTransparentSSAO extends SimpleApplication {
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
         TestTransparentSSAO app = new TestTransparentSSAO();
         app.start();
     }
@@ -44,7 +39,7 @@ public class TestTransparentSSAO extends SimpleApplication {
         Geometry geom = new Geometry("floor", q);
         Material mat = assetManager.loadMaterial("Textures/Terrain/Pond/Pond.j3m");
         geom.setMaterial(mat);
-        
+
         geom.rotate(-FastMath.HALF_PI, 0, 0);
         geom.center();
         geom.setShadowMode(ShadowMode.Receive);
@@ -53,7 +48,7 @@ public class TestTransparentSSAO extends SimpleApplication {
         // create the geometry and attach it
         Spatial teaGeom = assetManager.loadModel("Models/Tree/Tree2.mesh.xml");
         teaGeom.setQueueBucket(Bucket.Transparent);
-        teaGeom.setShadowMode(ShadowMode.Cast);       
+        teaGeom.setShadowMode(ShadowMode.Cast);
 
         AmbientLight al = new AmbientLight();
         al.setColor(ColorRGBA.White.mult(2));
@@ -70,13 +65,13 @@ public class TestTransparentSSAO extends SimpleApplication {
         rootNode.addLight(dl);
 
         rootNode.attachChild(teaGeom);
-        
-        FilterPostProcessor fpp=new FilterPostProcessor(assetManager);
 
-        SSAOFilter ssao= new SSAOFilter(0.15997836f,10.640148f,11.360165f,0.22500025f);
+        FilterPostProcessor fpp = new FilterPostProcessor(assetManager);
+
+        SSAOFilter ssao = new SSAOFilter(0.49997783f, 42.598858f, 35.999966f, 0.39299846f);
         fpp.addFilter(ssao);
 
-        SSAOUI ui=new SSAOUI(inputManager, ssao);
+        SSAOUI ui = new SSAOUI(inputManager, ssao);
 
         viewPort.addProcessor(fpp);
     }
