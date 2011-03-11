@@ -7,6 +7,8 @@ package com.jme3.gde.materials.multiview.widgets;
 
 import com.jme3.gde.core.assets.ProjectAssetManager;
 import com.jme3.gde.materials.MaterialProperty;
+import com.jme3.material.RenderState.BlendMode;
+import com.jme3.material.RenderState.FaceCullMode;
 
 /**
  *
@@ -16,10 +18,8 @@ public class WidgetFactory {
 
     public static MaterialPropertyWidget getWidget(MaterialProperty prop, ProjectAssetManager manager){
         MaterialPropertyWidget widget;
-        //TODO: remove startswith
         if("Texture2D".equals(prop.getType())){
-            widget=new SelectionPanel();
-            ((SelectionPanel)widget).setSelectionList(manager.getTextures());
+            widget=new TexturePanel(manager);
             widget.setProperty(prop);
             return widget;
         }
@@ -28,8 +28,38 @@ public class WidgetFactory {
             widget.setProperty(prop);
             return widget;
         }
+        else if("Float".equals(prop.getType())){
+            widget=new FloatPanel();
+            widget.setProperty(prop);
+            return widget;
+        }
+        else if("Int".equals(prop.getType())){
+            widget=new IntPanel();
+            widget.setProperty(prop);
+            return widget;
+        }
         else if("Color".equals(prop.getType())){
             widget=new ColorPanel();
+            widget.setProperty(prop);
+            return widget;
+        }
+        else if("FaceCullMode".equals(prop.getType())){
+            widget=new SelectionPanel();
+            String[] strings=new String[FaceCullMode.values().length];
+            for (int i = 0; i < strings.length; i++) {
+                strings[i]=BlendMode.values()[i].name();
+            }
+            ((SelectionPanel)widget).setSelectionList(strings);
+            widget.setProperty(prop);
+            return widget;
+        }
+        else if("BlendMode".equals(prop.getType())){
+            widget=new SelectionPanel();
+            String[] strings=new String[BlendMode.values().length];
+            for (int i = 0; i < strings.length; i++) {
+                strings[i]=BlendMode.values()[i].name();
+            }
+            ((SelectionPanel)widget).setSelectionList(strings);
             widget.setProperty(prop);
             return widget;
         }

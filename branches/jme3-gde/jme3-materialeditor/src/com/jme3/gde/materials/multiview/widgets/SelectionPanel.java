@@ -51,18 +51,42 @@ public class SelectionPanel extends MaterialPropertyWidget {
 
         jToolBar1 = new javax.swing.JToolBar();
         jLabel1 = new javax.swing.JLabel();
+        jPanel1 = new javax.swing.JPanel();
         jComboBox1 = new javax.swing.JComboBox();
 
+        setBackground(new java.awt.Color(204, 204, 204));
+
+        jToolBar1.setBackground(new java.awt.Color(204, 204, 204));
         jToolBar1.setFloatable(false);
         jToolBar1.setRollover(true);
         jToolBar1.setMinimumSize(new java.awt.Dimension(212, 32));
         jToolBar1.setPreferredSize(new java.awt.Dimension(212, 32));
 
         jLabel1.setText(org.openide.util.NbBundle.getMessage(SelectionPanel.class, "SelectionPanel.jLabel1.text")); // NOI18N
-        jLabel1.setPreferredSize(new java.awt.Dimension(220, 16));
+        jLabel1.setPreferredSize(new java.awt.Dimension(100, 16));
         jToolBar1.add(jLabel1);
 
+        jPanel1.setBackground(new java.awt.Color(204, 204, 204));
+        jPanel1.setPreferredSize(new java.awt.Dimension(10, 0));
+        jPanel1.setSize(new java.awt.Dimension(0, 0));
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 56, Short.MAX_VALUE)
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 28, Short.MAX_VALUE)
+        );
+
+        jToolBar1.add(jPanel1);
+
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jComboBox1.setMaximumSize(new java.awt.Dimension(200, 32767));
+        jComboBox1.setMinimumSize(new java.awt.Dimension(0, 0));
+        jComboBox1.setPreferredSize(new java.awt.Dimension(200, 27));
         jComboBox1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 selectTexture(evt);
@@ -105,6 +129,7 @@ public class SelectionPanel extends MaterialPropertyWidget {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox jComboBox1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JToolBar jToolBar1;
     // End of variables declaration//GEN-END:variables
 

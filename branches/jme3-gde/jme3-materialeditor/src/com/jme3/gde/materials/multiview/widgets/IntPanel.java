@@ -8,20 +8,18 @@
  *
  * Created on 14.06.2010, 16:42:25
  */
-
 package com.jme3.gde.materials.multiview.widgets;
 
-import java.lang.reflect.InvocationTargetException;
-import org.openide.util.Exceptions;
+import com.jme3.gde.materials.MaterialProperty;
 
 /**
  *
  * @author normenhansen
  */
-public class TextPanel extends MaterialPropertyWidget {
+public class IntPanel extends MaterialPropertyWidget {
 
     /** Creates new form NumberPanel */
-    public TextPanel() {
+    public IntPanel() {
         initComponents();
     }
 
@@ -37,7 +35,7 @@ public class TextPanel extends MaterialPropertyWidget {
         jToolBar1 = new javax.swing.JToolBar();
         jLabel1 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
-        jTextField1 = new javax.swing.JTextField();
+        jSpinner1 = new javax.swing.JSpinner();
 
         setBackground(new java.awt.Color(204, 204, 204));
 
@@ -45,19 +43,20 @@ public class TextPanel extends MaterialPropertyWidget {
         jToolBar1.setFloatable(false);
         jToolBar1.setRollover(true);
 
-        jLabel1.setText(org.openide.util.NbBundle.getMessage(TextPanel.class, "TextPanel.jLabel1.text")); // NOI18N
+        jLabel1.setText(org.openide.util.NbBundle.getMessage(IntPanel.class, "IntPanel.jLabel1.text")); // NOI18N
+        jLabel1.setMaximumSize(new java.awt.Dimension(100, 16));
         jLabel1.setPreferredSize(new java.awt.Dimension(100, 0));
         jToolBar1.add(jLabel1);
 
         jPanel1.setBackground(new java.awt.Color(204, 204, 204));
-        jPanel1.setPreferredSize(new java.awt.Dimension(10, 0));
+        jPanel1.setPreferredSize(new java.awt.Dimension(100, 0));
         jPanel1.setSize(new java.awt.Dimension(0, 0));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 4, Short.MAX_VALUE)
+            .addGap(0, 25, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -66,21 +65,19 @@ public class TextPanel extends MaterialPropertyWidget {
 
         jToolBar1.add(jPanel1);
 
-        jTextField1.setText(org.openide.util.NbBundle.getMessage(TextPanel.class, "TextPanel.jTextField1.text")); // NOI18N
-        jTextField1.setMaximumSize(new java.awt.Dimension(200, 2147483647));
-        jTextField1.setPreferredSize(new java.awt.Dimension(200, 28));
-        jTextField1.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                textChanged(evt);
+        jSpinner1.setModel(new javax.swing.SpinnerNumberModel());
+        jSpinner1.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                valueChanged(evt);
             }
         });
-        jToolBar1.add(jTextField1);
+        jToolBar1.add(jSpinner1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 185, Short.MAX_VALUE)
+            .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 129, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -88,28 +85,36 @@ public class TextPanel extends MaterialPropertyWidget {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void textChanged(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_textChanged
-        property.setValue(jTextField1.getText());
+    private void valueChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_valueChanged
+        if (property == null) {
+            return;
+        }
+        property.setValue(jSpinner1.getValue() + "");
         fireChanged();
-    }//GEN-LAST:event_textChanged
+    }//GEN-LAST:event_valueChanged
 
     @Override
     protected void readProperty() {
         java.awt.EventQueue.invokeLater(new Runnable() {
 
             public void run() {
-                jLabel1.setToolTipText(property.getName() + " (" + property.getType() + ")");
-                jLabel1.setText(property.getName() + " (" + property.getType() + ")");
-                jTextField1.setText(property.getValue());
+                jLabel1.setText(property.getName());
+                jLabel1.setToolTipText(property.getName());
+                MaterialProperty prop=property;
+                property=null;
+                try {
+                    jSpinner1.setValue(Integer.parseInt(prop.getValue()));
+                } catch (Exception e) {
+                    jSpinner1.setValue(0);
+                }
+                property=prop;
             }
         });
     }
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JSpinner jSpinner1;
     private javax.swing.JToolBar jToolBar1;
     // End of variables declaration//GEN-END:variables
-
 }

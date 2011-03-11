@@ -4,24 +4,38 @@
  */
 
 /*
- * NumberPanel.java
+ * SelectionPanel.java
  *
- * Created on 14.06.2010, 16:42:25
+ * Created on 14.06.2010, 16:52:22
  */
-
 package com.jme3.gde.materials.multiview.widgets;
 
-import javax.swing.JFrame;
+import com.jme3.gde.core.assets.ProjectAssetManager;
+import com.jme3.gde.core.sceneexplorer.nodes.properties.TexturePropertyEditor;
+import java.awt.Component;
 
 /**
  *
  * @author normenhansen
  */
-public class ColorPanel extends MaterialPropertyWidget {
+public class TexturePanel extends MaterialPropertyWidget {
 
-    /** Creates new form NumberPanel */
-    public ColorPanel() {
+    TexturePropertyEditor editor;
+    ProjectAssetManager manager;
+
+    /** Creates new form SelectionPanel */
+    public TexturePanel(ProjectAssetManager manager) {
+        this.manager = manager;
+        editor = new TexturePropertyEditor(manager);
         initComponents();
+    }
+
+    private String getName(String path) {
+        int idx = path.lastIndexOf("/");
+        if (idx != -1) {
+            return path.substring(idx + 1, path.length());
+        }
+        return path;
     }
 
     /** This method is called from within the constructor to
@@ -36,29 +50,30 @@ public class ColorPanel extends MaterialPropertyWidget {
         jToolBar1 = new javax.swing.JToolBar();
         jLabel1 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
-        jTextField1 = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(204, 204, 204));
 
         jToolBar1.setBackground(new java.awt.Color(204, 204, 204));
         jToolBar1.setFloatable(false);
         jToolBar1.setRollover(true);
+        jToolBar1.setMinimumSize(new java.awt.Dimension(212, 32));
+        jToolBar1.setPreferredSize(new java.awt.Dimension(212, 32));
 
-        jLabel1.setText(org.openide.util.NbBundle.getMessage(ColorPanel.class, "ColorPanel.jLabel1.text")); // NOI18N
+        jLabel1.setText(org.openide.util.NbBundle.getMessage(TexturePanel.class, "TexturePanel.jLabel1.text")); // NOI18N
         jLabel1.setPreferredSize(new java.awt.Dimension(100, 0));
         jToolBar1.add(jLabel1);
 
         jPanel1.setBackground(new java.awt.Color(204, 204, 204));
-        jPanel1.setMinimumSize(new java.awt.Dimension(0, 0));
         jPanel1.setPreferredSize(new java.awt.Dimension(10, 0));
-        jPanel1.setSize(new java.awt.Dimension(0, 0));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 8, Short.MAX_VALUE)
+            .addGap(0, 3, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -67,17 +82,12 @@ public class ColorPanel extends MaterialPropertyWidget {
 
         jToolBar1.add(jPanel1);
 
-        jTextField1.setText(org.openide.util.NbBundle.getMessage(ColorPanel.class, "ColorPanel.jTextField1.text")); // NOI18N
-        jTextField1.setMaximumSize(new java.awt.Dimension(110, 2147483647));
-        jTextField1.setPreferredSize(new java.awt.Dimension(110, 28));
-        jTextField1.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                textChanged(evt);
-            }
-        });
-        jToolBar1.add(jTextField1);
+        jLabel2.setFont(new java.awt.Font("Courier", 0, 13)); // NOI18N
+        jLabel2.setText(org.openide.util.NbBundle.getMessage(TexturePanel.class, "TexturePanel.jLabel2.text")); // NOI18N
+        jLabel2.setPreferredSize(new java.awt.Dimension(200, 14));
+        jToolBar1.add(jLabel2);
 
-        jButton1.setText(org.openide.util.NbBundle.getMessage(ColorPanel.class, "ColorPanel.jButton1.text")); // NOI18N
+        jButton1.setText(org.openide.util.NbBundle.getMessage(TexturePanel.class, "TexturePanel.jButton1.text")); // NOI18N
         jButton1.setFocusable(false);
         jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -88,35 +98,46 @@ public class ColorPanel extends MaterialPropertyWidget {
         });
         jToolBar1.add(jButton1);
 
+        jButton2.setText(org.openide.util.NbBundle.getMessage(TexturePanel.class, "TexturePanel.jButton2.text")); // NOI18N
+        jButton2.setFocusable(false);
+        jButton2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(jButton2);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 248, Short.MAX_VALUE)
+            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void textChanged(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_textChanged
-        property.setValue(jTextField1.getText());
-        fireChanged();
-    }//GEN-LAST:event_textChanged
-
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-        ColorRGBADialog dialog=new ColorRGBADialog(new JFrame(), true);
-        dialog.setLocationRelativeTo(null);
-        dialog.setVisible(true);
-        if(dialog.getColor()!=null){
-            jTextField1.setText(dialog.getColor());
-            property.setValue(jTextField1.getText());
+        Component view = editor.getCustomEditor();
+        view.setVisible(true);
+        if (editor.getValue() != null) {
+            jLabel2.setText(getName(editor.getAsText()));
+            jLabel2.setToolTipText(editor.getAsText());
+            property.setValue(editor.getAsText());
             fireChanged();
         }
-
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        jLabel2.setText("");
+        jLabel2.setToolTipText("");
+        property.setValue("");
+        fireChanged();
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     @Override
     protected void readProperty() {
@@ -124,17 +145,18 @@ public class ColorPanel extends MaterialPropertyWidget {
 
             public void run() {
                 jLabel1.setText(property.getName());
-                jTextField1.setText(property.getValue());
+                jLabel1.setToolTipText(property.getName());
+                jLabel2.setToolTipText(property.getValue());
+                jLabel2.setText(getName(property.getValue()));
             }
         });
     }
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JTextField jTextField1;
     private javax.swing.JToolBar jToolBar1;
     // End of variables declaration//GEN-END:variables
-
 }
