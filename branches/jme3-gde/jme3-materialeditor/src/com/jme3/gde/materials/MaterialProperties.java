@@ -333,11 +333,11 @@ public class MaterialProperties {
 
     private void prepareAdditionalStates() {
         additionalRenderStates.clear();
-        additionalRenderStates.put("WireFrame", new MaterialProperty("Boolean", "WireFrame", ""));
-        additionalRenderStates.put("DepthWrite", new MaterialProperty("Boolean", "DepthWrite", ""));
-        additionalRenderStates.put("DepthTest", new MaterialProperty("Boolean", "DepthTest", ""));
-        additionalRenderStates.put("ColorWrite", new MaterialProperty("Boolean", "ColorWrite", ""));
-        additionalRenderStates.put("PointSprite", new MaterialProperty("Boolean", "PointSprite", ""));
+        additionalRenderStates.put("WireFrame", new MaterialProperty("OnOff", "WireFrame", ""));
+        additionalRenderStates.put("DepthWrite", new MaterialProperty("OnOff", "DepthWrite", ""));
+        additionalRenderStates.put("DepthTest", new MaterialProperty("OnOff", "DepthTest", ""));
+        additionalRenderStates.put("ColorWrite", new MaterialProperty("OnOff", "ColorWrite", ""));
+        additionalRenderStates.put("PointSprite", new MaterialProperty("OnOff", "PointSprite", ""));
         additionalRenderStates.put("FaceCull", new MaterialProperty("FaceCullMode", "FaceCull", ""));
         additionalRenderStates.put("Blend", new MaterialProperty("BlendMode", "Blend", ""));
         additionalRenderStates.put("AlphaTestFalloff", new MaterialProperty("Float", "AlphaTestFalloff", ""));

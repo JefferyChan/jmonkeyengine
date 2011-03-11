@@ -28,6 +28,11 @@ public class WidgetFactory {
             widget.setProperty(prop);
             return widget;
         }
+        else if("OnOff".equals(prop.getType())){
+            widget=new OnOffPanel();
+            widget.setProperty(prop);
+            return widget;
+        }
         else if("Float".equals(prop.getType())){
             widget=new FloatPanel();
             widget.setProperty(prop);
