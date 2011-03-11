@@ -125,11 +125,11 @@ public class MaterialProperties {
                         prop.setName(name);
                         if (additionalRenderStates.get(name) != null) {
                             prop.setType(additionalRenderStates.get(name).getType());
+                            if (lines.length > 1) {
+                                prop.setValue(lines[lines.length - 1].trim());
+                            }
+                            additionalRenderStates.put(prop.getName(), prop);
                         }
-                        if (lines.length > 1) {
-                            prop.setValue(lines[lines.length - 1].trim());
-                        }
-                        additionalRenderStates.put(prop.getName(), prop);
                     }
                 }
             }
@@ -297,26 +297,20 @@ public class MaterialProperties {
                     //add renderstates if they havent been in the file yet
                     if (level == 0) {
                         if (!addedstates) {
-                            boolean started = false;
+                            String myLine = "    AdditionalRenderState {\n";
+                            out.write(myLine, 0, myLine.length());
                             for (Iterator<Map.Entry<String, MaterialProperty>> it = additionalRenderStates.entrySet().iterator(); it.hasNext();) {
                                 Map.Entry<String, MaterialProperty> entry = it.next();
                                 if (!setStates.contains(entry.getKey())) {
                                     MaterialProperty prop = entry.getValue();
                                     if (prop.getValue() != null && prop.getValue().length() > 0) {
-                                        if (!started) {
-                                            started = true;
-                                            String myLine = "    AdditionalRenderState {\n";
-                                            out.write(myLine, 0, myLine.length());
-                                        }
-                                        String myLine = "        " + prop.getName() + " " + prop.getValue() + "\n";
+                                        myLine = "        " + prop.getName() + " " + prop.getValue() + "\n";
                                         out.write(myLine, 0, myLine.length());
                                     }
                                 }
                             }
-                            if (started) {
-                                String myLine = "    }\n";
-                                out.write(myLine, 0, myLine.length());
-                            }
+                            myLine = "    }\n";
+                            out.write(myLine, 0, myLine.length());
                         }
                     }
                 }
