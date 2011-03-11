@@ -101,8 +101,11 @@ public class MaterialProperties {
                     }
                     if (lines != null) {
                         MaterialProperty prop = new MaterialProperty();
-                        prop.setName(lines[0].trim());
-                        prop.setType(getAdditionalType(lines[0].trim()));
+                        String name = lines[0].trim();
+                        prop.setName(name);
+                        if (additionalRenderStates.get(name) != null) {
+                            prop.setType(additionalRenderStates.get(name).getType());
+                        }
                         if (lines.length > 1) {
                             prop.setValue(lines[lines.length - 1].trim());
                         }
@@ -293,14 +296,15 @@ public class MaterialProperties {
                     }
                 }
                 if (level == 2 && states) {
+                    String cutLine = newLine.trim();
                     String[] lines = null;
-                    int colonIdx = newLine.indexOf(" ");
+                    int colonIdx = cutLine.indexOf(" ");
                     if (colonIdx != -1) {
-                        lines = newLine.split(" ");
+                        lines = cutLine.split(" ");
                     }
-                    colonIdx = newLine.indexOf("\t");
+                    colonIdx = cutLine.indexOf("\t");
                     if (colonIdx != -1) {
-                        lines = newLine.split("\t");
+                        lines = cutLine.split("\t");
                     }
                     if (lines != null) {
                         String myName = lines[0].trim();
@@ -308,7 +312,7 @@ public class MaterialProperties {
                             setStates.add(myName);
                             MaterialProperty prop = additionalRenderStates.get(myName);
                             if (prop.getValue() != null && prop.getValue().length() > 0 && prop.getType() != null) {
-                                newLine = lines[0] + " " + prop.getValue();
+                                newLine = "      " + lines[0] + " " + prop.getValue();
                             } else {
                                 newLine = null;
                             }
@@ -338,42 +342,6 @@ public class MaterialProperties {
         additionalRenderStates.put("Blend", new MaterialProperty("BlendMode", "Blend", ""));
         additionalRenderStates.put("AlphaTestFalloff", new MaterialProperty("Float", "AlphaTestFalloff", ""));
         additionalRenderStates.put("PolyOffset", new MaterialProperty("Float,Float", "PolyOffset", ""));
-    }
-
-    private String getAdditionalType(String name) {
-        if (name == null) {
-            return "";
-        }
-        if (name.equals("WireFrame")) {
-            return "Boolean";
-        }
-        else if(name.equals("DepthWrite")) {
-            return "Boolean";
-        }
-        else if(name.equals("DepthTest")) {
-            return "Boolean";
-        }
-        else if(name.equals("ColorWrite")) {
-            return "Boolean";
-        }
-        else if(name.equals("PointSprite")) {
-            return "Boolean";
-        }
-        else if(name.equals("FaceCull")) {
-            return "FaceCullMode";
-        }
-        else if(name.equals("Blend")) {
-            return "BlendMode";
-        }
-        else if(name.equals("AlphaTestFalloff")) {
-            return "Float";
-        }
-        else if(name.equals("PolyOffset")) {
-            return "Float,Float";
-        }
-        else{
-            return "";
-        }
     }
 
     /**
