@@ -872,14 +872,13 @@ public class LwjglRenderer implements Renderer {
                 logger.log(Level.FINE, "{0} compile success", source.getName());
             }
         } else {
-            if (infoLog != null) {
-                logger.log(Level.WARNING, "{0} compile error: {1}",
-                        new Object[]{source.getName(), infoLog});
-            } else {
-                logger.log(Level.WARNING, "{0} compile error: ?", source.getName());
-            }
-            logger.log(Level.WARNING, "{0}{1}",
+            logger.log(Level.WARNING, "Bad compile of:\n{0}{1}",
                     new Object[]{source.getDefines(), source.getSource()});
+            if (infoLog != null) {
+                throw new RendererException( "compile error in:" + source + " error:" + infoLog );
+            } else {
+                throw new RendererException( "compile error in:" + source + " error: <not provided>" );
+            }
         }
 
         source.clearUpdateNeeded();
@@ -957,9 +956,9 @@ public class LwjglRenderer implements Renderer {
             }
         } else {
             if (infoLog != null) {
-                logger.log(Level.WARNING, "shader link failure. \n{0}", infoLog);
+                throw new RendererException("Shader link failure, shader:" + shader + " info:" + infoLog );
             } else {
-                logger.warning("shader link failure");
+                throw new RendererException("Shader link failure, shader:" + shader + " info: <not provided>" );
             }
         }
 
@@ -994,7 +993,7 @@ public class LwjglRenderer implements Renderer {
                 updateShaderData(shader);
             }
 
-            // NOTE: might want to check if any of the 
+            // NOTE: might want to check if any of the
             // sources need an update?
 
             if (!shader.isUsable()) {
