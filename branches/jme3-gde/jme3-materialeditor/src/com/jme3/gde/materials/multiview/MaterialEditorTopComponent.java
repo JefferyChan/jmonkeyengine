@@ -497,7 +497,6 @@ public final class MaterialEditorTopComponent extends CloneableTopComponent impl
         }
 
         public void updateLog(DocumentEvent e, String action) {
-            checkSave();
         }
 
         private void checkSave() {
