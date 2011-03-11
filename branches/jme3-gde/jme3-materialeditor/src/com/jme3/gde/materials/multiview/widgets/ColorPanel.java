@@ -124,6 +124,7 @@ public class ColorPanel extends MaterialPropertyWidget {
 
             public void run() {
                 jLabel1.setText(property.getName());
+                jLabel1.setToolTipText(property.getName());
                 jTextField1.setText(property.getValue());
             }
         });

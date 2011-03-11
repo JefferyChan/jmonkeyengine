@@ -118,6 +118,7 @@ public class SelectionPanel extends MaterialPropertyWidget {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 jLabel1.setText(property.getName());
+                jLabel1.setToolTipText(property.getName());
                 MaterialProperty prop=property;
                 property=null;
                 jComboBox1.setSelectedItem(prop.getValue());

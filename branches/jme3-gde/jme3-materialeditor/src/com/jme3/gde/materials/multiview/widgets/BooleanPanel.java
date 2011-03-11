@@ -105,6 +105,7 @@ public class BooleanPanel extends MaterialPropertyWidget {
 
             public void run() {
                 jLabel1.setText(property.getName());
+                jLabel1.setToolTipText(property.getName());
                 MaterialProperty prop = property;
                 property = null;
                 if ("true".equals(prop.getValue())) {
