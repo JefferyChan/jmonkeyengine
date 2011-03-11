@@ -84,7 +84,6 @@ public final class MaterialEditorTopComponent extends CloneableTopComponent impl
     private void initWindow() {
         this.manager = dataObject.getLookup().lookup(ProjectAssetManager.class);
         properties = new MaterialProperties(dataObject.getPrimaryFile(), dataObject.getLookup().lookup(ProjectAssetManager.class));
-        properties.read();
         initComponents();
         setName(NbBundle.getMessage(MaterialEditorTopComponent.class, "CTL_MaterialEditorTopComponent"));
         setToolTipText(NbBundle.getMessage(MaterialEditorTopComponent.class, "HINT_MaterialEditorTopComponent"));
@@ -340,6 +339,7 @@ public final class MaterialEditorTopComponent extends CloneableTopComponent impl
             properties.setMatDefName((String) jComboBox1.getSelectedItem());
             String string = properties.getUpdatedContent();
             jTextArea1.setText(string);
+            updateProperties();
         }
     }//GEN-LAST:event_jComboBox1ActionPerformed
 
@@ -521,8 +521,6 @@ public final class MaterialEditorTopComponent extends CloneableTopComponent impl
             out.write(text, 0, text.length());
             out.close();
             dataObject.setModified(false);
-            properties.read();
-            updateProperties();
             showMaterial();
         }
     }
@@ -551,8 +549,8 @@ public final class MaterialEditorTopComponent extends CloneableTopComponent impl
     }
 
     private void updateProperties() {
+        properties.read();
         setMatDefList(manager.getMatDefs(), properties.getMatDefName());
-
         for (int i = 0; i < optionsPanel.getComponents().length; i++) {
             Component component = optionsPanel.getComponents()[i];
             if (component instanceof MaterialPropertyWidget) {
@@ -639,7 +637,6 @@ public final class MaterialEditorTopComponent extends CloneableTopComponent impl
 
     private void showMaterial() {
         try {
-
             AssetKey key = new AssetKey(manager.getRelativeAssetPath(materialFileName));
             Geometry geom = new Geometry("TestSphere", sphMesh);
             ((DesktopAssetManager) manager.getManager()).deleteFromCache(key);
