@@ -169,8 +169,10 @@ public class TextureBrowser extends javax.swing.JDialog {
             String selected = (String) textureList.getSelectedValue();
             Texture tex = assetManager.loadTexture(selected);
             editor.setValue(tex);
+            editor.setAsText(selected);
         } else {
             editor.setValue(null);
+            editor.setAsText(null);
         }
     }
     

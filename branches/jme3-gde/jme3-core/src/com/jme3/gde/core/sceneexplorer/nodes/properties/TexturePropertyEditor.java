@@ -31,6 +31,7 @@
  */
 package com.jme3.gde.core.sceneexplorer.nodes.properties;
 
+import com.jme3.asset.AssetManager;
 import com.jme3.gde.core.assets.ProjectAssetManager;
 import com.jme3.gde.core.scene.SceneApplication;
 import com.jme3.texture.Texture;
@@ -49,19 +50,31 @@ public class TexturePropertyEditor implements PropertyEditor {
 
     private LinkedList<PropertyChangeListener> listeners = new LinkedList<PropertyChangeListener>();
     private Texture texture;
+    private AssetManager manager;
+    private String assetKey;
 
-
-    public TexturePropertyEditor() {}
+    public TexturePropertyEditor() {
+    }
 
     public TexturePropertyEditor(Texture texture) {
         this.texture = texture;
     }
 
+    public TexturePropertyEditor(AssetManager manager) {
+        this.manager = manager;
+    }
+
+    public TexturePropertyEditor(Texture texture, AssetManager manager) {
+        this.texture = texture;
+        this.manager = manager;
+    }
+
     public void setValue(Object value) {
-        if (value instanceof Texture)
-            texture = (Texture)value;
-        else
+        if (value instanceof Texture) {
+            texture = (Texture) value;
+        } else {
             texture = null;
+        }
     }
 
     public Object getValue() {
@@ -73,7 +86,6 @@ public class TexturePropertyEditor implements PropertyEditor {
     }
 
     public void paintValue(Graphics gfx, Rectangle box) {
-        
     }
 
     public String getJavaInitializationString() {
@@ -81,13 +93,15 @@ public class TexturePropertyEditor implements PropertyEditor {
     }
 
     public String getAsText() {
-        if (texture != null)
-            return texture.getName();
-        return null;
+//        if (texture != null) {
+//            return texture.getName();
+//        }
+        return assetKey;
     }
 
     public void setAsText(String text) throws IllegalArgumentException {
-        
+        this.assetKey = text;
+        //TODO: load texture if not done.. maybe load here instead of panel..
     }
 
     public String[] getTags() {
@@ -96,13 +110,18 @@ public class TexturePropertyEditor implements PropertyEditor {
 
     public Component getCustomEditor() {
         ProjectAssetManager currentProjectAssetManager = null;
+        if (manager instanceof ProjectAssetManager) {
+            currentProjectAssetManager = (ProjectAssetManager) manager;
+        }
         //try {
+        if (currentProjectAssetManager == null) {
             currentProjectAssetManager = (ProjectAssetManager) SceneApplication.getApplication().getAssetManager();
-            TextureBrowser textureBrowser = new TextureBrowser(null, true, currentProjectAssetManager, this);
-            return textureBrowser;
+        }
+        TextureBrowser textureBrowser = new TextureBrowser(null, true, currentProjectAssetManager, this);
+        return textureBrowser;
         //} catch (Exception e) {
-            //Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, e.getMessage()+" Could not get project asset manager!", e);
-            //return null;
+        //Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, e.getMessage()+" Could not get project asset manager!", e);
+        //return null;
         //}
     }
 
@@ -117,6 +136,4 @@ public class TexturePropertyEditor implements PropertyEditor {
     public void removePropertyChangeListener(PropertyChangeListener listener) {
         listeners.remove(listener);
     }
-
-
 }
