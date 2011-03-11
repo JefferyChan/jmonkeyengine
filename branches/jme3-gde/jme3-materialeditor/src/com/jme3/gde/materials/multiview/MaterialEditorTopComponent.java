@@ -71,6 +71,7 @@ public final class MaterialEditorTopComponent extends CloneableTopComponent impl
     private Sphere sphMesh;
     private SaveCookie saveCookie = new SaveCookieImpl();
     private boolean saveImmediate = false;
+    private boolean updateProperties = false;
 
     public MaterialEditorTopComponent() {
     }
@@ -82,30 +83,29 @@ public final class MaterialEditorTopComponent extends CloneableTopComponent impl
     }
 
     private void initWindow() {
-        this.manager = dataObject.getLookup().lookup(ProjectAssetManager.class);
-        properties = new MaterialProperties(dataObject.getPrimaryFile(), dataObject.getLookup().lookup(ProjectAssetManager.class));
         initComponents();
         setName(NbBundle.getMessage(MaterialEditorTopComponent.class, "CTL_MaterialEditorTopComponent"));
         setToolTipText(NbBundle.getMessage(MaterialEditorTopComponent.class, "HINT_MaterialEditorTopComponent"));
+        setActivatedNodes(new Node[]{dataObject.getNodeDelegate()});
         ((AssetDataObject) dataObject).setSaveCookie(saveCookie);
-
+        manager = dataObject.getLookup().lookup(ProjectAssetManager.class);
+        properties = new MaterialProperties(dataObject.getPrimaryFile(), dataObject.getLookup().lookup(ProjectAssetManager.class));
+        properties.read();
+        setMatDefList(manager.getMatDefs(), properties.getMatDefName());
         try {
             jTextArea1.setText(dataObject.getPrimaryFile().asText());
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
         }
-
         jTextArea1.getDocument().addDocumentListener(new DocumentChangeListener());
 
         SceneApplication.getApplication().addSceneListener(this);
-
-        updateProperties();
-        setActivatedNodes(new Node[]{dataObject.getNodeDelegate()});
 
         sphMesh = new Sphere(32, 32, 2.5f);
         sphMesh.setTextureMode(Sphere.TextureMode.Projected);
         sphMesh.updateGeometry(32, 32, 2.5f, false, false);
         TangentBinormalGenerator.generate(sphMesh);
+        updateProperties();
         showMaterial();
     }
 
@@ -336,10 +336,10 @@ public final class MaterialEditorTopComponent extends CloneableTopComponent impl
 
     private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
         if (properties != null) {
+            updateProperties = true;
             properties.setMatDefName((String) jComboBox1.getSelectedItem());
             String string = properties.getUpdatedContent();
             jTextArea1.setText(string);
-            updateProperties();
         }
     }//GEN-LAST:event_jComboBox1ActionPerformed
 
@@ -444,7 +444,7 @@ public final class MaterialEditorTopComponent extends CloneableTopComponent impl
 
     @Override
     public void componentClosed() {
-        // TODO add custom code on component closing
+        SceneApplication.getApplication().removeSceneListener(this);
     }
 
     void writeProperties(java.util.Properties p) {
@@ -509,6 +509,10 @@ public final class MaterialEditorTopComponent extends CloneableTopComponent impl
             } else {
                 dataObject.setModified(true);
             }
+            if (updateProperties) {
+                updateProperties();
+                updateProperties = false;
+            }
         }
     }
 
@@ -544,13 +548,10 @@ public final class MaterialEditorTopComponent extends CloneableTopComponent impl
         jComboBox1.addItem("Common/MatDefs/Terrain/Terrain.j3md");
 //        jComboBox1.addItem("Common/MatDefs/Misc/ShowNormals.j3md");
         jComboBox1.setSelectedItem(selected);
-
         properties = prop;
     }
 
     private void updateProperties() {
-        properties.read();
-        setMatDefList(manager.getMatDefs(), properties.getMatDefName());
         for (int i = 0; i < optionsPanel.getComponents().length; i++) {
             Component component = optionsPanel.getComponents()[i];
             if (component instanceof MaterialPropertyWidget) {
@@ -563,7 +564,6 @@ public final class MaterialEditorTopComponent extends CloneableTopComponent impl
                 ((MaterialPropertyWidget) component).registerChangeListener(null);
             }
         }
-
         optionsPanel.removeAll();
         texturePanel.removeAll();
         List<Component> optionList = new LinkedList<Component>();

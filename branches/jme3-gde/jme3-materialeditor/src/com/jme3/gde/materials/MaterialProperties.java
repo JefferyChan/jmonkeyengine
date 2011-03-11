@@ -71,7 +71,7 @@ public class MaterialProperties {
                 line = trimLine(line);
                 //find and load matdef file
                 if (line.startsWith("Material ") || line.startsWith("Material\t") && level == 0) {
-                    findMatDef(line);
+                    parseMaterialProperties(line);
                 }
                 //start parsing material parameters
                 if (line.startsWith("MaterialParameters ") || line.startsWith("MaterialParameters\t") || line.startsWith("MaterialParameters{") && level == 1) {
@@ -133,7 +133,7 @@ public class MaterialProperties {
                     }
                 }
             }
-            loadMatDef();
+            parseMatDef();
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
         }
@@ -143,7 +143,7 @@ public class MaterialProperties {
      * finds and loads the matdef file either from project or from base jme
      * @param line
      */
-    private void findMatDef(String line) {
+    private void parseMaterialProperties(String line) {
         int colonIdx = line.indexOf(":");
         //find matdef file
         if (colonIdx != -1) {
@@ -152,35 +152,41 @@ public class MaterialProperties {
             String[] lines = line.split(":");
             setName(lines[0].trim());
             setMatDefName(lines[1].trim());
-            //try to read from assets folder
-            matDef = FileUtil.toFileObject(new File(manager.getFolderName() + "/" + getMatDefName()).getAbsoluteFile());
-            //try to read from classpath if not in assets folder and store in a virtual filesystem folder
-            if (matDef == null || !matDef.isValid()) {
-                try {
-                    fs = FileUtil.createMemoryFileSystem();
-                    matDef = fs.getRoot().createData(name, "j3md");
-                    OutputStream out = matDef.getOutputStream();
-                    InputStream in = JmeSystem.getResourceAsStream("/" + getMatDefName());
-                    if (in != null) {
-                        int input = in.read();
-                        while (input != -1) {
-                            out.write(input);
-                            input = in.read();
-                        }
-                        in.close();
+        }
+    }
+
+    private void initMatDef() {
+        //TODO: remove only those not existing for possible switching
+        materialParameters.clear();
+        //try to read from assets folder
+        matDef = FileUtil.toFileObject(new File(manager.getFolderName() + "/" + getMatDefName()).getAbsoluteFile());
+        //try to read from classpath if not in assets folder and store in a virtual filesystem folder
+        if (matDef == null || !matDef.isValid()) {
+            try {
+                fs = FileUtil.createMemoryFileSystem();
+                matDef = fs.getRoot().createData(name, "j3md");
+                OutputStream out = matDef.getOutputStream();
+                InputStream in = JmeSystem.getResourceAsStream("/" + getMatDefName());
+                if (in != null) {
+                    int input = in.read();
+                    while (input != -1) {
+                        out.write(input);
+                        input = in.read();
                     }
-                    out.close();
-                } catch (IOException ex) {
-                    Exceptions.printStackTrace(ex);
+                    in.close();
                 }
+                out.close();
+            } catch (IOException ex) {
+                Exceptions.printStackTrace(ex);
             }
         }
     }
+
     /**
      * finds and loads the matdef file either from project or from base jme
      * @param line
      */
-    private void loadMatDef() {
+    private void parseMatDef() {
         //load matdef
         boolean params = false;
         int level = 0;
@@ -429,6 +435,8 @@ public class MaterialProperties {
      */
     public void setMatDefName(String matDefName) {
         this.matDefName = matDefName;
+        initMatDef();
+        parseMatDef();
     }
 
     public String getMaterialPath() {
