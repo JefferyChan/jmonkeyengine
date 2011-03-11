@@ -78,7 +78,7 @@ public class MaterialProperties {
                     params = true;
                 }
                 //start parsing renderstates
-                if (line.startsWith("AdditionalRenderState ") || line.startsWith("AdditionalRenderState\t") || line.startsWith("AdditionalRenderStates{") && level == 1) {
+                if (line.startsWith("AdditionalRenderState ") || line.startsWith("AdditionalRenderState\t") || line.startsWith("AdditionalRenderState{") && level == 1) {
                     states = true;
                 }
                 //up a level
