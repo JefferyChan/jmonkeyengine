@@ -44,7 +44,7 @@ public class MaterialProperties {
 
     private void prepareAdditionalStates() {
         additionalRenderStates.clear();
-        additionalRenderStates.put("WireFrame", new MaterialProperty("OnOff", "WireFrame", ""));
+        additionalRenderStates.put("Wireframe", new MaterialProperty("OnOff", "Wireframe", ""));
         additionalRenderStates.put("DepthWrite", new MaterialProperty("OnOff", "DepthWrite", ""));
         additionalRenderStates.put("DepthTest", new MaterialProperty("OnOff", "DepthTest", ""));
         additionalRenderStates.put("ColorWrite", new MaterialProperty("OnOff", "ColorWrite", ""));
@@ -78,7 +78,7 @@ public class MaterialProperties {
                     params = true;
                 }
                 //start parsing renderstates
-                if (line.startsWith("AdditionalRenderStates ") || line.startsWith("AdditionalRenderStates\t") || line.startsWith("AdditionalRenderStates{") && level == 1) {
+                if (line.startsWith("AdditionalRenderState ") || line.startsWith("AdditionalRenderState\t") || line.startsWith("AdditionalRenderStates{") && level == 1) {
                     states = true;
                 }
                 //up a level
@@ -255,7 +255,7 @@ public class MaterialProperties {
                     params = true;
                 }
                 //start states
-                if (line.startsWith("AdditionalRenderStates ") || line.startsWith("AdditionalRenderStates\t") || line.startsWith("AdditionalRenderStates{") && level == 1) {
+                if (line.startsWith("AdditionalRenderState ") || line.startsWith("AdditionalRenderState\t") || line.startsWith("AdditionalRenderState{") && level == 1) {
                     states = true;
                     addedstates = true;
                 }
@@ -305,7 +305,7 @@ public class MaterialProperties {
                                     if (prop.getValue() != null && prop.getValue().length() > 0) {
                                         if (!started) {
                                             started = true;
-                                            String myLine = "    AdditionalRenderStates{\n";
+                                            String myLine = "    AdditionalRenderState {\n";
                                             out.write(myLine, 0, myLine.length());
                                         }
                                         String myLine = "        " + prop.getName() + " " + prop.getValue() + "\n";
