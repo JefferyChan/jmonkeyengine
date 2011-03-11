@@ -52,7 +52,7 @@ public class WidgetFactory {
             widget=new SelectionPanel();
             String[] strings=new String[FaceCullMode.values().length];
             for (int i = 0; i < strings.length; i++) {
-                strings[i]=BlendMode.values()[i].name();
+                strings[i]=FaceCullMode.values()[i].name();
             }
             ((SelectionPanel)widget).setSelectionList(strings);
             widget.setProperty(prop);
