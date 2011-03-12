@@ -513,6 +513,7 @@ public final class MaterialEditorTopComponent extends CloneableTopComponent impl
             out.write(text, 0, text.length());
             out.close();
             dataObject.setModified(false);
+            properties.read();
             showMaterial();
         }
     }
