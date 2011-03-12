@@ -25,72 +25,28 @@
     <screen id="intro" controller="com.jme3.gde.welcome.WelcomeScreen">
         <layer id="mainLayer" childLayout="center">
             <panel id="mainPanel" childLayout="vertical" height="80%" width="80%" align="center" valign="center">
-                <panel childLayout="vertical" style="nifty-panel" width="100%" height="100%">
-                    <text style="nifty-label" text="jMonkeyPlatform Introduction" width="95%" wrap="true"/>
-                    <text style="nifty-label" text=" "/>
-                    <text style="nifty-label" text="jMonkeyPlatform allows you to create jMonkeyEngine3 projects, manage and edit their assets and code and finally deploy your applications to different platforms. Click the 'New Project' button in the upper left and create a new 'BasicGame' project to get started. You can also create a 'JmeTests' project to see some jME3 code examples." width="95%" wrap="true"/>
-                    <text style="nifty-label" text=" "/>
-                    <text style="nifty-label" text="The help menu gives you access to the help system which is also available by pressing [F1]. The Help Menu also has a link to the jMonkeyEngine3 wiki which contains a lot of information about jME. To see some introductory help pages please press the button below." width="95%" wrap="true"/>
-                    <text style="nifty-label" text=" "/>
-                    <control id="helpButton" name="button" label="Help Contents" align="center">
-                        <interact onClick="startHelp()"/>
-                    </control>
-                </panel>
-                <panel id="buttonBar" childLayout="horizontal" align="right">
-                    <panel id="checkboxPanel" childLayout="horizontal" align="right">
-                        <control id="checkbox" name="checkbox" checked="false" align="right" />
-                        <text style="nifty-label" text="dont show again" align="right" />
-                    </panel>
-                    <control id="hideButton" name="button" label="Hide" align="right" >
-                        <interact onClick="startPlanet()"/>
-                    </control>
-                    <control id="quitButton" name="button" label="Quit" align="right" >
-                        <interact onClick="quit()"/>
-                    </control>
-                </panel>
+                <image align="center" valign="center" filename="Textures/f1-help.png" >
+                    <effect>
+                        <onStartScreen name="move" mode="in" direction="top" length="300" startDelay="0" inherit="true"/>
+                        <onEndScreen name="move" mode="out" direction="bottom" length="300" startDelay="0" inherit="true"/>
+                    </effect>
+                    <interact onClick="startUpdating()"/>
+                </image>
             </panel>
         </layer>
     </screen>
 
-    <!-- help content screen -->
-    <screen id="help" controller="com.jme3.gde.welcome.WelcomeScreen">
+    <!-- updating screen -->
+    <screen id="updating" controller="com.jme3.gde.welcome.WelcomeScreen">
         <layer id="mainLayer" childLayout="center">
             <panel id="mainPanel" childLayout="vertical" height="80%" width="80%" align="center" valign="center">
-                <text style="nifty-label" text="Introductory Help Content" align="center"/>
-<!--                <panel childLayout="horizontal">-->
-<!--                    <control id="listBoxStatic" name="listBox" horizontal="false" vertical="true" width="*" height="100%" visibleToMouse="true">-->
-                        <panel style="nifty-panel" id="listBoxStaticData" childLayout="vertical" visibleToMouse="true" width="100%" padding="20px" >
-                            <text style="nifty-label" text="Creating Projects">
-                                <interact onClick="creatingProjects()"/>
-                            </text>
-                            <text style="nifty-label" text="Importing Models">
-                                <interact onClick="importingModels()"/>
-                            </text>
-                            <text style="nifty-label" text="Editing Scenes">
-                                <interact onClick="editingScenes()"/>
-                            </text>
-                            <text style="nifty-label" text="Editing Code">
-                                <interact onClick="editingCode()"/>
-                            </text>
-                            <text style="nifty-label" text="jMonkeyEngine3 Tutorials">
-                                <interact onClick="tutorials()"/>
-                            </text>
-                            <text style="nifty-label" text="Getting the latest updates">
-                                <interact onClick="updatingJmp()"/>
-                            </text>
-                            <text style="nifty-label" text="">
-                                <interact onClick="updatingJmp()"/>
-                            </text>
-                        </panel>
-<!--                    </control>-->
-<!--                </panel>-->
-                <panel id="buttonBar" childLayout="horizontal">
-                    <panel id="checkboxPanel" childLayout="horizontal" align="right">
-                    </panel>
-                    <control id="backButton" name="button" label="Back" align="right" >
-                        <interact onClick="startIntro()"/>
-                    </control>
-                </panel>
+                <image align="center" valign="center" filename="Textures/updating.png" >
+                    <effect>
+                        <onStartScreen name="move" mode="in" direction="top" length="300" startDelay="0" inherit="true"/>
+                        <onEndScreen name="move" mode="out" direction="bottom" length="300" startDelay="0" inherit="true"/>
+                    </effect>
+                    <interact onClick="startPlanet()"/>
+                </image>
             </panel>
         </layer>
     </screen>
@@ -99,10 +55,18 @@
     <screen id="planet" controller="com.jme3.gde.welcome.WelcomeScreen">
         <layer id="mainLayer" childLayout="center">
             <panel id="mainPanel" childLayout="horizontal" height="100%" width="100%" align="left" valign="top">
-                <control id="backButton" name="button" label="Back" align="left" >
-                    <interact onClick="startIntro()"/>
+                <control id="quitButton" name="button" label="Close" align="left" >
+                    <interact onClick="quit()"/>
                 </control>
-                <text style="nifty-label" text=" planet shader contibuted by jME3 user jiyarza"/>
+                <text style="nifty-label" text="  planet shader by jME3 user jiyarza       " align="left" />
+                <panel id="mainPanel" childLayout="horizontal" align="right" valign="top">
+                </panel>
+                <control id="checkbox" name="checkbox" checked="false" align="right" />
+                <text style="nifty-label" text="dont show again   " align="right" />
+                <effect>
+                    <onStartScreen name="move" mode="in" direction="top" length="300" startDelay="0" inherit="true"/>
+                    <onEndScreen name="move" mode="out" direction="bottom" length="300" startDelay="0" inherit="true"/>
+                </effect>
             </panel>
         </layer>
     </screen>

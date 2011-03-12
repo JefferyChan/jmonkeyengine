@@ -140,8 +140,8 @@ public class WelcomeScreen implements ScreenController {
         NbPreferences.forModule(Installer.class).put("NO_WELCOME_SCREEN", "true");
     }
 
-    public void startHelp() {
-        nifty.gotoScreen("help");
+    public void startUpdating() {
+        nifty.gotoScreen("updating");
     }
 
     public void startIntro() {
@@ -177,7 +177,7 @@ public class WelcomeScreen implements ScreenController {
     }
 
     public void quit() {
-        if (screen.findElementByName("mainLayer").findElementByName("mainPanel").findElementByName("buttonBar").findElementByName("checkboxPanel").findNiftyControl("checkbox", CheckboxControl.class).isChecked()) {
+        if (screen.findNiftyControl("checkbox", CheckboxControl.class).isChecked()) {
             setNoStartup();
         }
         SceneApplication.getApplication().closeScene(request);
