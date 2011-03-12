@@ -507,13 +507,9 @@ public final class MaterialEditorTopComponent extends CloneableTopComponent impl
     private class SaveCookieImpl implements SaveCookie {
 
         public void save() throws IOException {
-            FileObject file = dataObject.getPrimaryFile();
             String text = jTextArea1.getText();
-            OutputStreamWriter out = new OutputStreamWriter(file.getOutputStream());
-            out.write(text, 0, text.length());
-            out.close();
+            properties.setAsText(text);
             dataObject.setModified(false);
-            properties.read();
             showMaterial();
         }
     }

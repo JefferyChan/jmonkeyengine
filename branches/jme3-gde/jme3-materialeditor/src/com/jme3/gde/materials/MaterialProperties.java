@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -431,6 +432,12 @@ public class MaterialProperties {
      */
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void setAsText(String text) throws IOException{
+        OutputStreamWriter out = new OutputStreamWriter(material.getOutputStream());
+        out.write(text, 0, text.length());
+        out.close();
     }
 
     /**
