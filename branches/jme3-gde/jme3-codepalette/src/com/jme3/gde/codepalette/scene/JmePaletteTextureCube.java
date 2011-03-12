@@ -47,7 +47,7 @@ public class JmePaletteTextureCube implements ActiveEditorDrop {
 
     private String createBody() {
 
-        String body = "/** A simple textured cube. Uses Texture from jme3-test-data library! */ \n    Box boxshape1 = new Box(Vector3f,ZERO, 1f,1f,1f); \n    Geometry cube = new Geometry(\"A Textured Box\", boxshape1); \n    Material mat_stl = new Material(assetManager, \"Common/MatDefs/Misc/SimpleTextured.j3md\"); \n    Texture tex_ml = assetManager.loadTexture(\"Interface/Logo/Monkey.jpg\"); \n    mat_stl.setTexture(\"ColorMap\", tex_ml); \n    cube.setMaterial(mat_stl); \n    rootNode.attachChild(cube); ";
+        String body = "/** A simple textured cube. Uses Texture from jme3-test-data library! */ \n    Box boxshape1 = new Box(Vector3f,ZERO, 1f,1f,1f); \n    Geometry cube = new Geometry(\"A Textured Box\", boxshape1); \n    Material mat_stl = new Material(assetManager, \"Common/MatDefs/Misc/Unshaded.j3md\"); \n    Texture tex_ml = assetManager.loadTexture(\"Interface/Logo/Monkey.jpg\"); \n    mat_stl.setTexture(\"ColorMap\", tex_ml); \n    cube.setMaterial(mat_stl); \n    rootNode.attachChild(cube); ";
         return body;
     }
 
