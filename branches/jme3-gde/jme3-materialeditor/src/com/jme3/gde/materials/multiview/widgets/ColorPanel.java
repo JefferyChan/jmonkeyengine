@@ -52,7 +52,6 @@ public class ColorPanel extends MaterialPropertyWidget {
         jPanel1.setBackground(new java.awt.Color(204, 204, 204));
         jPanel1.setMinimumSize(new java.awt.Dimension(0, 0));
         jPanel1.setPreferredSize(new java.awt.Dimension(10, 0));
-        jPanel1.setSize(new java.awt.Dimension(0, 0));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -70,8 +69,8 @@ public class ColorPanel extends MaterialPropertyWidget {
         jTextField1.setText(org.openide.util.NbBundle.getMessage(ColorPanel.class, "ColorPanel.jTextField1.text")); // NOI18N
         jTextField1.setMaximumSize(new java.awt.Dimension(110, 2147483647));
         jTextField1.setPreferredSize(new java.awt.Dimension(110, 28));
-        jTextField1.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
+        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
                 textChanged(evt);
             }
         });
@@ -100,11 +99,6 @@ public class ColorPanel extends MaterialPropertyWidget {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void textChanged(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_textChanged
-        property.setValue(jTextField1.getText());
-        fireChanged();
-    }//GEN-LAST:event_textChanged
-
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
         ColorRGBADialog dialog=new ColorRGBADialog(new JFrame(), true);
@@ -117,6 +111,11 @@ public class ColorPanel extends MaterialPropertyWidget {
         }
 
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void textChanged(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textChanged
+        property.setValue(jTextField1.getText());
+        fireChanged();
+    }//GEN-LAST:event_textChanged
 
     @Override
     protected void readProperty() {

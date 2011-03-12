@@ -51,7 +51,6 @@ public class TextPanel extends MaterialPropertyWidget {
 
         jPanel1.setBackground(new java.awt.Color(204, 204, 204));
         jPanel1.setPreferredSize(new java.awt.Dimension(10, 0));
-        jPanel1.setSize(new java.awt.Dimension(0, 0));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -69,8 +68,8 @@ public class TextPanel extends MaterialPropertyWidget {
         jTextField1.setText(org.openide.util.NbBundle.getMessage(TextPanel.class, "TextPanel.jTextField1.text")); // NOI18N
         jTextField1.setMaximumSize(new java.awt.Dimension(200, 2147483647));
         jTextField1.setPreferredSize(new java.awt.Dimension(200, 28));
-        jTextField1.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
+        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
                 textChanged(evt);
             }
         });
@@ -88,7 +87,7 @@ public class TextPanel extends MaterialPropertyWidget {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void textChanged(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_textChanged
+    private void textChanged(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textChanged
         property.setValue(jTextField1.getText());
         fireChanged();
     }//GEN-LAST:event_textChanged

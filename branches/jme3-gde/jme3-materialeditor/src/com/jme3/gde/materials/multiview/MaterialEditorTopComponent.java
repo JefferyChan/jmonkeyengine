@@ -70,7 +70,7 @@ public final class MaterialEditorTopComponent extends CloneableTopComponent impl
     private ProjectAssetManager manager;
     private Sphere sphMesh;
     private SaveCookie saveCookie = new SaveCookieImpl();
-    private boolean saveImmediate = false;
+    private boolean saveImmediate = true;
     private boolean updateProperties = false;
 
     public MaterialEditorTopComponent() {
@@ -265,13 +265,9 @@ public final class MaterialEditorTopComponent extends CloneableTopComponent impl
                 jTextField1ActionPerformed(evt);
             }
         });
-        jTextField1.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                updateName(evt);
-            }
-        });
         jToolBar3.add(jTextField1);
 
+        jCheckBox1.setSelected(true);
         org.openide.awt.Mnemonics.setLocalizedText(jCheckBox1, org.openide.util.NbBundle.getMessage(MaterialEditorTopComponent.class, "MaterialEditorTopComponent.jCheckBox1.text")); // NOI18N
         jCheckBox1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -289,7 +285,7 @@ public final class MaterialEditorTopComponent extends CloneableTopComponent impl
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jCheckBox1, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jToolBar3, javax.swing.GroupLayout.DEFAULT_SIZE, 452, Short.MAX_VALUE)
-                    .addComponent(jToolBar2, javax.swing.GroupLayout.PREFERRED_SIZE, 452, Short.MAX_VALUE)))
+                    .addComponent(jToolBar2, javax.swing.GroupLayout.DEFAULT_SIZE, 452, Short.MAX_VALUE)))
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addComponent(jTabbedPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -354,14 +350,6 @@ public final class MaterialEditorTopComponent extends CloneableTopComponent impl
             jTextArea1.setText(string);
         }
 }//GEN-LAST:event_jTextField1ActionPerformed
-
-    private void updateName(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_updateName
-        if (properties != null) {
-            properties.setName(jTextField1.getText());
-            String string = properties.getUpdatedContent();
-            jTextArea1.setText(string);
-        }
-    }//GEN-LAST:event_updateName
 
     private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
         saveImmediate = jCheckBox1.isSelected();
