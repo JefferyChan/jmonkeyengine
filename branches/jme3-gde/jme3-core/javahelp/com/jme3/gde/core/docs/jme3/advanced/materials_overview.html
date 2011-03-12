@@ -43,23 +43,12 @@ Also note that many other parameters are optional, even if they are not explicit
  GlowColor: Color </td>
 	</tr>
 	<tr class="row2">
-		<td class="col0"> Common/MatDefs/Misc/SimpleTextured.j3md </td><td class="col1"> Standard unlit textured Material. </td><td class="col2"> ColorMap : Texture <br/>
- ShowAlpha : Boolean (optional) <br/>
- Normalize : Boolean (optional) <br/>
- YCoCg<sup><a href="#fn__1" name="fnt__1" id="fnt__1" class="fn_top">1)</a></sup> : Boolean  (optional) <br/>
- LATC<sup><a href="#fn__2" name="fnt__2" id="fnt__2" class="fn_top">2)</a></sup> : Boolean (optional) </td>
-	</tr>
-	<tr class="row3">
-		<td class="col0"> Common/MatDefs/Misc/ColoredTextured.j3md</td><td class="col1"> Transparent texture with one solid color bleeding through transparent areas. </td><td class="col2"> ColorMap : Texture <br/>
- Color : Color </td>
-	</tr>
-	<tr class="row4">
 		<td class="col0 leftalign"> Common/MatDefs/Misc/Sky.j3md            </td><td class="col1"> A solid skyblue, or use with a custom SkyDome texture. <br/>
  See also: <a href="/com/jme3/gde/core/docs/jme3/advanced/sky.html" class="wikilink1" title="jme3:advanced:sky">Sky</a> </td><td class="col2"> Texture : TextureCubeMap <br/>
  SphereMap : Boolean <br/>
  NormalScale : Vector3 </td>
 	</tr>
-	<tr class="row5">
+	<tr class="row3">
 		<td class="col0"> Common/MatDefs/Terrain/Terrain.j3md </td><td class="col1"> Splat textures for e.g. terrains. <br/>
  See also: <a href="/com/jme3/gde/core/docs/jme3/beginner/hello_terrain.html" class="wikilink1" title="jme3:beginner:hello_terrain">Hello Terrain</a> </td><td class="col2"> Texture1 : Texture (red) <br/>
  Texture1Scale : Float <br/>
@@ -69,15 +58,33 @@ Also note that many other parameters are optional, even if they are not explicit
  Texture3Scale : Float <br/>
  Alpha : Texture </td>
 	</tr>
-	<tr class="row6">
+	<tr class="row4">
 		<td class="col0 leftalign"> Common/MatDefs/Misc/Particle.j3md       </td><td class="col1"> Used with texture masks for particle effects, or for point sprites. <br/>
- Quadratic? <br/>
+ The Quadratic value scales the particle for perspective view (<object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://code.google.com/p/jmonkeyengine/source/browse/branches/jme3/src/core/com/jme3/effect/ParticleEmitter.java"><param name="text" value="<html><u>formula</u></html>"><param name="textColor" value="blue"></object>). <br/>
  Does support an optional colored glow effect. <br/>
  See also: <a href="/com/jme3/gde/core/docs/jme3/beginner/hello_effects.html" class="wikilink1" title="jme3:beginner:hello_effects">Hello Effects</a> </td><td class="col2"> Texture : Texture <br/>
  GlowMap : Texture <br/>
  GlowColor : Color <br/>
  Quadratic : Float <br/>
  PointSprite : Boolean </td>
+	</tr>
+</table>
+<table class="inline">
+	<tr class="row0">
+		<th class="col0 leftalign"> Deprecated Material Definition     </th><th class="col1"> Usage </th><th class="col2 leftalign"> Parameter : Type  </th>
+	</tr>
+	<tr class="row1">
+		<td class="col0"> <em>Deprecated: use Unshaded.j3md instead</em> <br/>
+ Common/MatDefs/Misc/SimpleTextured.j3md </td><td class="col1"> Standard unlit textured Material. </td><td class="col2"> ColorMap : Texture <br/>
+ ShowAlpha : Boolean (optional) <br/>
+ Normalize : Boolean (optional) <br/>
+ YCoCg<sup><a href="#fn__1" name="fnt__1" id="fnt__1" class="fn_top">1)</a></sup> : Boolean  (optional) <br/>
+ LATC<sup><a href="#fn__2" name="fnt__2" id="fnt__2" class="fn_top">2)</a></sup> : Boolean (optional) </td>
+	</tr>
+	<tr class="row2">
+		<td class="col0"> <em>Deprecated: use Unshaded.j3md instead</em> <br/>
+ Common/MatDefs/Misc/ColoredTextured.j3md</td><td class="col1"> Transparent texture with one solid color bleeding through transparent areas. </td><td class="col2"> ColorMap : Texture <br/>
+ Color : Color </td>
 	</tr>
 </table>
 
@@ -172,7 +179,7 @@ Also note that many other parameters are optional, even if they are not explicit
 		<td class="col0 leftalign"> Common/MatDefs/Misc/ShowNormals.j3md    </td><td class="col1"> A color gradient calculated from surface normals. </td><td class="col2"> – </td>
 	</tr>
 	<tr class="row3">
-		<td class="col0 leftalign"> Common/MatDefs/Misc/WireColor.j3md      </td><td class="col1"> Transparent wireframe outline. </td><td class="col2"> Color : Color </td>
+		<td class="col0 leftalign"> Common/MatDefs/Misc/Wireframe.j3md      </td><td class="col1"> Transparent wireframe outline. </td><td class="col2"> Color : Color </td>
 	</tr>
 </table>
 
@@ -202,32 +209,32 @@ Additionally, specify a blendmode:
 		<td class="col0">mat.getAdditionalRenderState().setBlendMode(BlendMode.Off);</td><td class="col1">Opaque</td>
 	</tr>
 	<tr class="row2">
-		<td class="col0">mat.getAdditionalRenderState().setBlendMode(BlendMode.Alpha);</td><td class="col1">Use this for normal transparency</td>
+		<td class="col0">mat.getAdditionalRenderState().setBlendMode(BlendMode.Alpha);</td><td class="col1">Use this for normal transparency. Interpolates the background pixel with the current by using the current pixel&#039;s alpha. E.g. alpha-blended vegetation. </td>
 	</tr>
 	<tr class="row3">
-		<td class="col0">mat.getAdditionalRenderState().setBlendMode(BlendMode.Additive);</td><td class="col1">Additive alpha blending adds colors in a commutative way, i.e. the result does not depend on the order of transparent layers.</td>
+		<td class="col0">mat.getAdditionalRenderState().setBlendMode(BlendMode.Additive);</td><td class="col1">Additive alpha blending adds colors in a commutative way, i.e. the result does not depend on the order of transparent layers. Adds the background pixel color with the current pixel color. E.g. particle effects that have black color as background. </td>
 	</tr>
 	<tr class="row4">
-		<td class="col0">mat.getAdditionalRenderState().setBlendMode(BlendMode.AlphaAdditive);</td><td class="col1">Alpha-additive alpha blending (?)</td>
+		<td class="col0">mat.getAdditionalRenderState().setBlendMode(BlendMode.AlphaAdditive);</td><td class="col1">Same as “Additive”, except first it multiplies the current pixel color by the pixel alpha. E.g. used for particle effects that have alpha as background. </td>
 	</tr>
 	<tr class="row5">
-		<td class="col0">mat.getAdditionalRenderState().setBlendMode(BlendMode.Color);</td><td class="col1">Color blending</td>
+		<td class="col0">mat.getAdditionalRenderState().setBlendMode(BlendMode.Color);</td><td class="col1">Blends by color. Generally useless.</td>
 	</tr>
 	<tr class="row6">
-		<td class="col0">mat.getAdditionalRenderState().setBlendMode(BlendMode.Modulate);</td><td class="col1">Modulated (?) blending</td>
+		<td class="col0">mat.getAdditionalRenderState().setBlendMode(BlendMode.Modulate);</td><td class="col1">Multiplies the background pixel by the current pixel.</td>
 	</tr>
 	<tr class="row7">
-		<td class="col0">mat.getAdditionalRenderState().setBlendMode(BlendMode.ModulateX2);</td><td class="col1">Modulated X2 (?) blending</td>
+		<td class="col0">mat.getAdditionalRenderState().setBlendMode(BlendMode.ModulateX2);</td><td class="col1">Same as “Modulate”, except the result is doubled.</td>
 	</tr>
 	<tr class="row8">
-		<td class="col0">mat.getAdditionalRenderState().setBlendMode(BlendMode.PremultAlpha);</td><td class="col1">Premultiplied alpha blending</td>
+		<td class="col0">mat.getAdditionalRenderState().setBlendMode(BlendMode.PremultAlpha);</td><td class="col1">Pre-multiplied alpha blending. E.g. if the color of the object has already been multiplied by its alpha, this is used instead of  “Alpha” blend mode. </td>
 	</tr>
 	<tr class="row9">
-		<td class="col0">mat.getAdditionalRenderState().setDepthTest(true);</td><td class="col1">Use this if you have several transparent objects obscuring one another.</td>
+		<td class="col0">mat.getAdditionalRenderState().setDepthWrite(false);</td><td class="col1">Use this if you have several transparent objects obscuring one another. Disables writing of the pixel&#039;s depth value to the depth buffer. </td>
 	</tr>
 	<tr class="row10">
 		<td class="col0">mat.getAdditionalRenderState().setAlphaFallOff(0.5f); <br/>
- mat.getAdditionalRenderState().setAlphaTest(true)</td><td class="col1">Transparency limit (?)</td>
+ mat.getAdditionalRenderState().setAlphaTest(true)</td><td class="col1">Enables alpha test, generally used for vegetation. Works the same way as “AlphaDiscardThreshold”.</td>
 	</tr>
 </table>
 
@@ -246,16 +253,18 @@ Also note the AlphaDiscardThreshold value for materials based on Lighting.j3md. 
 	</tr>
 	<tr class="row1">
 		<td class="col0">mat.getAdditionalRenderState().setFaceCullMode(FaceCullMode.Off); <br/>
- FaceCullMode.Front, FaceCullMode.Back, FaceCullMode.FrontAndBack</td><td class="col1">(De)activate back- or frontface culling, or both.</td>
+ mat.getAdditionalRenderState().setFaceCullMode(FaceCullMode.Front); <br/>
+ mat.getAdditionalRenderState().setFaceCullMode(FaceCullMode.Back); <br/>
+ mat.getAdditionalRenderState().setFaceCullMode(FaceCullMode.FrontAndBack)</td><td class="col1">Activate back- or frontface culling, both (=invisible), or off. Backface culling is activated by default as an optimization.</td>
 	</tr>
 	<tr class="row2">
-		<td class="col0">mat.getAdditionalRenderState().setColorWrite(true);</td><td class="col1">?</td>
+		<td class="col0">mat.getAdditionalRenderState().setColorWrite(false);</td><td class="col1">Disable writing the color of pixels. Use this together with setDepthWrite(true) to write pixels only to the depth buffer for example. </td>
 	</tr>
 	<tr class="row3">
-		<td class="col0">mat.getAdditionalRenderState().setPointSprite(true);</td><td class="col1">?</td>
+		<td class="col0">mat.getAdditionalRenderState().setPointSprite(true);</td><td class="col1">Enables point-sprite mode, so meshes with “Mode.Points” will be rendered as textured sprites. Note that gl_PointCoord must be set in the shader. Point sprites are used for hardware accelerated particle effects. </td>
 	</tr>
 	<tr class="row4">
-		<td class="col0">mat.getAdditionalRenderState().setPolyOffset();</td><td class="col1">?</td>
+		<td class="col0">mat.getAdditionalRenderState().setPolyOffset();</td><td class="col1">Enable polygon offset. Use this when you have meshes that have triangles really close to each over (e.g. <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://en.wikipedia.org/wiki/Coplanarity"><param name="text" value="<html><u>Z-fighting</u></html>"><param name="textColor" value="blue"></object>.</td>
 	</tr>
 </table>
 

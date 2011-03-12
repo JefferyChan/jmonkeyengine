@@ -27,14 +27,12 @@ This tutorial explains how to create terrains from heightmaps and how to use spl
 <pre class="code java"><span class="kw1">package</span> <span class="co2">jme3test.helloworld</span>;
 &nbsp;
 <span class="kw1">import</span> <span class="co2">com.jme3.app.SimpleApplication</span>;
-<span class="kw1">import</span> <span class="co2">com.jme3.bounding.BoundingBox</span>;
 <span class="kw1">import</span> <span class="co2">com.jme3.material.Material</span>;
-<span class="kw1">import</span> <span class="co2">com.jme3.math.Vector3f</span>;
 <span class="kw1">import</span> <span class="co2">com.jme3.renderer.Camera</span>;
 <span class="kw1">import</span> <span class="co2">com.jme3.terrain.geomipmap.TerrainLodControl</span>;
 <span class="kw1">import</span> <span class="co2">com.jme3.terrain.heightmap.AbstractHeightMap</span>;
 <span class="kw1">import</span> <span class="co2">com.jme3.terrain.geomipmap.TerrainQuad</span>;
-<span class="kw1">import</span> <span class="co2">com.jme3.terrain.heightmap.HillHeightMap</span>;
+<span class="kw1">import</span> <span class="co2">com.jme3.terrain.heightmap.HillHeightMap</span>; <span class="co1">// is used in example 2</span>
 <span class="kw1">import</span> <span class="co2">com.jme3.terrain.heightmap.ImageBasedHeightMap</span>;
 <span class="kw1">import</span> <span class="co2">com.jme3.texture.Texture</span>;
 <span class="kw1">import</span> <span class="co2">com.jme3.texture.Texture.WrapMode</span>;
@@ -82,7 +80,8 @@ This tutorial explains how to create terrains from heightmaps and how to use spl
     mat_terrain.<span class="me1">setFloat</span><span class="br0">&#40;</span><span class="st0">&quot;m_Tex3Scale&quot;</span>, 128f<span class="br0">&#41;</span>;
 &nbsp;
     <span class="co3">/** 2. Create the height map */</span>
-    <span class="kw1">final</span> Texture heightMapImage <span class="sy0">=</span> assetManager.<span class="me1">loadTexture</span><span class="br0">&#40;</span><span class="st0">&quot;Textures/Terrain/splat/mountains512.png&quot;</span><span class="br0">&#41;</span>;
+    <span class="kw1">final</span> Texture heightMapImage <span class="sy0">=</span> 
+        assetManager.<span class="me1">loadTexture</span><span class="br0">&#40;</span><span class="st0">&quot;Textures/Terrain/splat/mountains512.png&quot;</span><span class="br0">&#41;</span>;
     <span class="kw1">final</span> AbstractHeightMap heightmap <span class="sy0">=</span>
         <span class="kw1">new</span> ImageBasedHeightMap<span class="br0">&#40;</span>
             ImageToAwt.<span class="me1">convert</span><span class="br0">&#40;</span>
@@ -127,7 +126,7 @@ Heightmaps are an efficient way of representing the shape of a hilly landscape. 
 </p>
 
 <p>
-<img src="/wiki/lib/exe/fetch.php">
+<img src="nbdocs:/com/jme3/gde/core/docs/jme2/terrain-from-float-array.png">
 </p>
 
 <p>
@@ -159,7 +158,7 @@ Look at the next screenshot: In the top left you see the 128&times;128 grayscale
 </p>
 
 <p>
-<img src="/wiki/lib/exe/fetch.php">
+<img src="nbdocs:/com/jme3/gde/core/docs/jme2/terrain-from-heightmap.png">}
 </p>
 
 <p>
@@ -327,15 +326,15 @@ Three other textures are the layers that we have previously decided to paint: gr
     mat_terrain.<span class="me1">setTexture</span><span class="br0">&#40;</span><span class="st0">&quot;m_Tex3&quot;</span>, rock<span class="br0">&#41;</span>;
     mat_terrain.<span class="me1">setFloat</span><span class="br0">&#40;</span><span class="st0">&quot;m_Tex3Scale&quot;</span>, 128f<span class="br0">&#41;</span>;</pre>
 <p>
-The individual texture scales (e.g. <code>mat_terrain.setFloat(“m_Tex3Scale”, 128f);</code>) depend on the size of the textures you use. You can tell you picked the wrong scales for the scene if, for example, your road tiles appear like tiny grains of sand, or the blades of grass look like twigs.
+The individual texture scales (e.g. <code>mat_terrain.setFloat(“m_Tex3Scale”, 128f);</code>) depend on the size of the textures you use. You can tell you picked a too small scale if, for example, your road tiles appear like tiny grains of sand, or to big if the blades of grass look like twigs.
 </p>
 
 <p>
-As you see, we also use <code>setWrap(WrapMode.Repeat)</code> to make the small texture fill the wide area. If the repetition is too visible, try adjusting the Tex*Scale value.
+We use <code>setWrap(WrapMode.Repeat)</code> to make the small texture fill the wide area. If the repetition is too visible, try adjusting the Tex*Scale value.
 </p>
 
 <p>
-Later, after we have created the actual terrain object, we must not forgot to set the material:
+Later, after we have created the actual terrain object, we must not forgot to set the material on it:
 </p>
 <pre class="code java">terrain.<span class="me1">setMaterial</span><span class="br0">&#40;</span>mat_terrain<span class="br0">&#41;</span>;</pre>
 </div>
@@ -349,11 +348,14 @@ Internally, the generated terrain mesh is broken down into tiles and blocks. Thi
 </p>
 
 <p>
-Let&#039;s assume we want to generate a small 512&times;512 terrain. We already have created the heightmap object. Here are the steps that we perform everytime we create a new terrain:
+Let&#039;s assume we want to generate a small 512&times;512 terrain. We already have created the heightmap object. Here are the steps that we perform everytime we create a new terrain.
+</p>
 
+<p>
+We create a TerrainQuad with the following arguments:
 </p>
 <ol>
-<li class="level1"><div class="li"> We create a TerrainQuad and name it. e.g. “my terrain”.</div>
+<li class="level1"><div class="li"> Name: E.g. <code>my terrain</code>.</div>
 </li>
 <li class="level1"><div class="li"> Tile size: We want to create terrain tiles of size 64&times;64, so we supply 64+1 = 65.</div>
 <ul>
@@ -363,15 +365,21 @@ Let&#039;s assume we want to generate a small 512&times;512 terrain. We already 
 </li>
 <li class="level1"><div class="li"> Block size: Since we prepared a heightmap of size 512&times;512, we supply 512+1 = 513.</div>
 <ul>
-<li class="level2"><div class="li"> If you supply twice as much as the heightmap size (1024+1=1025), you&#039;d get a stretched out, wider, flatter terrain.</div>
+<li class="level2"><div class="li"> If the the block size is double the heightmap size (1024+1=1025), you get a stretched out, wider, flatter terrain.</div>
 </li>
-<li class="level2"><div class="li"> If you supply half as much as the heightmap size (256+1=257), you&#039;d get a smaller, more detailed terrain.</div>
+<li class="level2"><div class="li"> If the the block size is half the heightmap size (256+1=257), you get a smaller, more detailed terrain.</div>
 </li>
 </ul>
 </li>
 <li class="level1"><div class="li"> Finally, we supply the 512&times;512 heightmap object that we have previously created.</div>
 </li>
 </ol>
+
+<p>
+
+Here&#039;s the code: 
+
+</p>
 <pre class="code">terrain = new TerrainQuad(
   &quot;my terrain&quot;,               // name
   65,                         // tile size
@@ -442,11 +450,16 @@ You can also let jME create a random landscape.
 
 </p>
 <ol>
-<li class="level1"><div class="li"> What result do you get when you replace the two heightmap lines by the following two lines and run the sample?</div>
+<li class="level1"><div class="li"> What result do you get when you replace the two heightmap lines by the following lines and run the sample?</div>
 </li>
 </ol>
-<pre class="code java">    <span class="kw1">try</span> <span class="br0">&#123;</span> heightmap <span class="sy0">=</span> <span class="kw1">new</span> HillHeightMap<span class="br0">&#40;</span><span class="nu0">1025</span>, <span class="nu0">1000</span>, <span class="nu0">50</span>, <span class="nu0">100</span>, <span class="br0">&#40;</span><span class="kw4">byte</span><span class="br0">&#41;</span> <span class="nu0">3</span><span class="br0">&#41;</span>;
-    <span class="br0">&#125;</span> <span class="kw1">catch</span> <span class="br0">&#40;</span><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Aexception+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object> ex<span class="br0">&#41;</span> <span class="br0">&#123;</span> ex.<span class="me1">printStackTrace</span><span class="br0">&#40;</span><span class="br0">&#41;</span>; <span class="br0">&#125;</span></pre><ol>
+<pre class="code java">HillHeightMap heightmap <span class="sy0">=</span> <span class="kw2">null</span>;
+&nbsp;
+<span class="kw1">try</span> <span class="br0">&#123;</span>
+    heightmap <span class="sy0">=</span> <span class="kw1">new</span> HillHeightMap<span class="br0">&#40;</span><span class="nu0">513</span>, <span class="nu0">1000</span>, <span class="nu0">50</span>, <span class="nu0">100</span>, <span class="br0">&#40;</span><span class="kw4">byte</span><span class="br0">&#41;</span> <span class="nu0">3</span><span class="br0">&#41;</span>;
+<span class="br0">&#125;</span> <span class="kw1">catch</span> <span class="br0">&#40;</span><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Aexception+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object> ex<span class="br0">&#41;</span> <span class="br0">&#123;</span>
+    ex.<span class="me1">printStackTrace</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
+<span class="br0">&#125;</span></pre><ol>
 <li class="level1"><div class="li"> Change one value at a time and the run the sample again. Note the differences. Can you find out which of the values has which effect on the generated terrain?</div>
 <ul>
 <li class="level2"><div class="li"> Which value controls the size? </div>

@@ -183,6 +183,10 @@ public class ProjectAssetManager extends DesktopAssetManager {
         return project.getProjectDirectory().getPath() + "/" + getFolderName();
     }
 
+    public FileObject getAssetFolder(){
+        return project.getProjectDirectory().getFileObject(getFolderName());
+    }
+
     public String getAbsoluteAssetPath(String path) {
         for (Iterator<String> it = folderName.iterator(); it.hasNext();) {
             String string = project.getProjectDirectory().getPath() + "/" + it.next() + "/" + path;

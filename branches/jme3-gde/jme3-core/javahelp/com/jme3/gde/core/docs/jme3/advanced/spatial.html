@@ -4,90 +4,75 @@
 
 <p>
 
-This is an introduction to the concept of of Spatials, the elements of the 3D scene graph. The scene graph is a data structure that manages all objects in your 3D world. For example it keeps track of the 3D models that you load and position. When you extend a Java class from com.jme3.app.SimpleApplication, you inherit the scene graph and rootNode.
+This is an introduction to the concept of of Spatials, the elements of the 3D scene graph. The scene graph is a data structure that manages all objects in your 3D world. For example it keeps track of the 3D models that you load and position. When you extend a Java class from com.jme3.app.SimpleApplication, you inherit the scene graph and rootNode. 
 </p>
 
 <p>
-The main element of the scene graph is a Spatial called rootNode. All other Spatials are <em>attached</em> to the rootNode in a parent-child relationship.
+The main element of the scene graph is a Spatial called rootNode. All other Spatials are <em>attached</em> to the rootNode in a parent-child relationship. If you think you want to understand the scene graph better, please read <a href="/com/jme3/gde/core/docs/jme3/scenegraph_for_dummies.html" class="wikilink1" title="jme3:scenegraph_for_dummies">Scenegraph for dummies</a> first.
+</p>
+
+</div>
+
+<h2><a name="node_versus_geometry" id="node_versus_geometry">Node versus Geometry</a></h2>
+<div class="level2">
+
+<p>
+
+A Spatial is either a Node or a Geometry.
 </p>
 
 <p>
-A Spatial is either a <a href="/com/jme3/gde/core/docs/jme3/advanced/node.html" class="wikilink1" title="jme3:advanced:node">Node</a> or a <a href="/com/jme3/gde/core/docs/jme3/advanced/geometry.html" class="wikilink1" title="jme3:advanced:geometry">Geometry</a>:
+<img src="nbdocs:/com/jme3/gde/core/docs/jme3/intermediate/scene-graph.png">
+
 </p>
 <table class="inline">
 	<tr class="row0">
 		<td class="col0 rightalign">  </td><th class="col1" colspan="2"> Spatials </th>
 	</tr>
 	<tr class="row1">
-		<th class="col0"> Purpose: </th><td class="col1" colspan="2"> A Spatial is an abstract data structure that stores transformations (translation, rotation, scale) of elements of the scene graph. </td>
+		<th class="col0"> Purpose: </th><td class="col1" colspan="2"> A Spatial is an abstract data structure that stores transformations (translation, rotation, scale) of elements of the scene graph. A Spatial can be saved and loaded using the AssetManager. </td>
 	</tr>
 	<tr class="row2">
-		<td class="col0 rightalign">  </td><th class="col1"> Geometry </th><th class="col2"> Node </th>
+		<td class="col0 rightalign">  </td><th class="col1"> com.jme3.scene.Geometry </th><th class="col2"> com.jme3.scene.Node </th>
 	</tr>
 	<tr class="row3">
 		<th class="col0"> Visibility: </th><td class="col1"> A Geometry represents a visible 3-D object in the scene graph. </td><td class="col2"> A Node is an invisible “handle” for a group of objects in the scene graph. </td>
 	</tr>
 	<tr class="row4">
-		<th class="col0"> Purpose: </th><td class="col1"> A Geometry stores an object&#039;s looks: Every Geometry has a mesh (shape), and a material (surface) specifying color, texture, and opacity/transparency. </td><td class="col2"> A Node groups Geometries and other Nodes together: When you transform a parent Node, all its child Nodes are transformed as well. </td>
+		<th class="col0 leftalign"> Purpose:    </th><td class="col1"> Use Geometries to represent an object&#039;s looks: Every Geometry contains a polygon mesh and a material, specifying its shape, color, texture, and opacity/transparency. <br/>
+ You can attach a Geometry to an Node. </td><td class="col2"> Use nodes to structure and group Geometries and other Nodes. Every Node is attached to parent node, and the node can have children attached to itself. When you transform a parent node, all its children are transformed as well. </td>
 	</tr>
 	<tr class="row5">
-		<th class="col0"> Content: </th><td class="col1"> transformations, mesh, material. </td><td class="col2"> transformations, no mesh, no material. </td>
+		<th class="col0 leftalign"> Content:    </th><td class="col1"> Transformations, mesh, material. </td><td class="col2"> Transformations. No mesh, no material.</td>
 	</tr>
 	<tr class="row6">
-		<th class="col0"> Examples: </th><td class="col1"> A box, a sphere, player, a building, a piece of terrain, a vehicle, missiles, NPCs, etc… </td><td class="col2"> The rootNode, the guiNode, an audio node, a custom grouping node, etc. </td>
+		<th class="col0 leftalign"> Examples:   </th><td class="col1"> A box, a sphere, player, a building, a piece of terrain, a vehicle, missiles, NPCs, etc… </td><td class="col2"> The rootNode, the guiNode, an audio node, a custom grouping node, etc… </td>
 	</tr>
 </table>
 
 <p>
 
-You never create a Spatial with <code>new Spatial()</code>, it&#039;s abstract. Instead you create (e.g. load) a Node or Geometry object, and cast it to Spatial. You use the Spatial type in methods that accept both Nodes and Geometries as arguments.
+<strong>Important:</strong> You never create a Spatial with <code>Spatial s = new Spatial();</code> – it&#039;s abstract. Instead you create (e.g. load) a Node or Geometry object, and cast it to Spatial. You use the Spatial type in methods that accept both Nodes and Geometries as arguments.
 </p>
 
 </div>
 
-<h2><a name="node" id="node">Node</a></h2>
-<div class="level2">
+<h3><a name="mesh" id="mesh">Mesh</a></h3>
+<div class="level3">
 
 <p>
 
-A com.jme3.scene.Node is an invisible Spatial. You attach Spatials (Geometries and other Nodes) to a Node to group them. 
-</p>
-
-<p>
-Learn more about <a href="/com/jme3/gde/core/docs/jme3/advanced/node.html" class="wikilink1" title="jme3:advanced:node">Node</a>s here.
-</p>
-
-</div>
-
-<h2><a name="geometry" id="geometry">Geometry</a></h2>
-<div class="level2">
-
-<p>
-
-A com.jme3.scene.Geometry is a visible Spatial. The visible shape is represented by a polygon Mesh in the Geometry object. 
-</p>
-
-<p>
-The Mesh in the Geometry can be <a href="/com/jme3/gde/core/docs/jme3/advanced/shape.html" class="wikilink1" title="jme3:advanced:shape">Shape</a>s, <a href="/com/jme3/gde/core/docs/jme3/advanced/custom_meshes.html" class="wikilink1" title="jme3:advanced:custom_meshes">Custom Meshes</a>, or loaded <a href="/com/jme3/gde/core/docs/jme3/advanced/3d_models.html" class="wikilink1" title="jme3:advanced:3d_models">3D models</a>.
+The polygon <a href="/com/jme3/gde/core/docs/jme3/advanced/mesh.html" class="wikilink1" title="jme3:advanced:mesh">Mesh</a> inside a Geometry can be one of three things:
 
 </p>
 <ul>
-<li class="level1"><div class="li"> <strong>Mesh:</strong> All visible game elements in a scene are made up of polygon meshes (com.jme3.scene.Mesh). </div>
-<ul>
-<li class="level2"><div class="li"> <strong>Shapes:</strong> The simplest type of Meshes are jME&#039;s default <a href="/com/jme3/gde/core/docs/jme3/advanced/shape.html" class="wikilink1" title="jme3:advanced:shape">Shape</a>s such as cubes and spheres. You can use several Shapes to build complex Geometries. Shapes are built-in and can be created without using the AssetManager.</div>
+<li class="level1"><div class="li"> <strong>Shapes:</strong> The simplest type of Meshes are jME&#039;s default <a href="/com/jme3/gde/core/docs/jme3/advanced/shape.html" class="wikilink1" title="jme3:advanced:shape">Shape</a>s such as cubes and spheres. You can use several Shapes to build complex Geometries. Shapes are built-in and can be created without using the AssetManager.</div>
 </li>
-<li class="level2"><div class="li"> <strong>3D Models:</strong> <a href="/com/jme3/gde/core/docs/jme3/advanced/3d_models.html" class="wikilink1" title="jme3:advanced:3d_models">3D models and scenes</a> are also made up of meshes, but are more complex than Shapes. You create Models and Scenes in external 3D Mesh Editors and export them as Ogre <acronym title="Extensible Markup Language">XML</acronym> or Wavefront OBJ. Use the <a href="/com/jme3/gde/core/docs/jme3/advanced/asset_manager.html" class="wikilink1" title="jme3:advanced:asset_manager">Asset Manager</a> to load models into a your jME3 game.</div>
+<li class="level1"><div class="li"> <strong>3D Models:</strong> <a href="/com/jme3/gde/core/docs/jme3/advanced/3d_models.html" class="wikilink1" title="jme3:advanced:3d_models">3D models and scenes</a> are also made up of meshes, but are more complex than Shapes. You create Models and Scenes in external 3D Mesh Editors and export them as Ogre <acronym title="Extensible Markup Language">XML</acronym> or Wavefront OBJ. Use the <a href="/com/jme3/gde/core/docs/jme3/advanced/asset_manager.html" class="wikilink1" title="jme3:advanced:asset_manager">Asset Manager</a> to load models into a your jME3 game.</div>
 </li>
-<li class="level2"><div class="li"> <strong>Custom Meshes:</strong> You can create <a href="/com/jme3/gde/core/docs/jme3/advanced/custom_meshes.html" class="wikilink1" title="jme3:advanced:custom_meshes">Custom Meshes</a> programmatically.</div>
+<li class="level1"><div class="li"> <strong>Custom Meshes:</strong> Advanced users can create <a href="/com/jme3/gde/core/docs/jme3/advanced/custom_meshes.html" class="wikilink1" title="jme3:advanced:custom_meshes">Custom Meshes</a> programmatically.</div>
 </li>
 </ul>
-</li>
-</ul>
-
-<p>
-
-Learn more about <a href="/com/jme3/gde/core/docs/jme3/advanced/geometry.html" class="wikilink1" title="jme3:advanced:geometry">Geometries</a> here.
-</p>
 
 </div>
 

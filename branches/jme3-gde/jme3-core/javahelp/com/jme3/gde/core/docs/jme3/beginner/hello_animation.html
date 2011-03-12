@@ -285,7 +285,7 @@ You don&#039;t have to be able to read or write these xml files (Blender does th
 Add the following code snippet to <code>simpleInitApp()</code> to make the bones (that you just read about) visible! 
 </p>
 <pre class="code java">     SkeletonDebugger skeletonDebug <span class="sy0">=</span> <span class="kw1">new</span> SkeletonDebugger<span class="br0">&#40;</span><span class="st0">&quot;skeleton&quot;</span>, control.<span class="me1">getSkeleton</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
-     Material mat <span class="sy0">=</span> <span class="kw1">new</span> Material<span class="br0">&#40;</span>assetManager, <span class="st0">&quot;Common/MatDefs/Misc/WireColor.j3md&quot;</span><span class="br0">&#41;</span>;
+     Material mat <span class="sy0">=</span> <span class="kw1">new</span> Material<span class="br0">&#40;</span>assetManager, <span class="st0">&quot;Common/MatDefs/Misc/Unshaded.j3md&quot;</span><span class="br0">&#41;</span>;
      mat.<span class="me1">setColor</span><span class="br0">&#40;</span><span class="st0">&quot;Color&quot;</span>, ColorRGBA.<span class="me1">Green</span><span class="br0">&#41;</span>;
      mat.<span class="me1">getAdditionalRenderState</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">setDepthTest</span><span class="br0">&#40;</span><span class="kw2">false</span><span class="br0">&#41;</span>;
      skeletonDebug.<span class="me1">setMaterial</span><span class="br0">&#40;</span>mat<span class="br0">&#41;</span>;

@@ -4,11 +4,15 @@
 
 <p>
 
-For a visual introduction to the scene graph check out our <a href="/com/jme3/gde/core/docs/jme3/scenegraph_for_dummies.html" class="wikilink1" title="jme3:scenegraph_for_dummies"> Scene Graph for Dummies</a> presentation.
+Before you start making games, make sure you understand general <a href="/com/jme3/gde/core/docs/jme3/terminology.html" class="wikilink1" title="jme3:terminology">3D Gaming terminology</a>.
 </p>
 
 <p>
-Before you start making games, make sure you understand general <a href="/com/jme3/gde/core/docs/jme3/terminology.html" class="wikilink1" title="jme3:terminology">3D Gaming terminology</a> and the following jME3 concepts.
+Second, if you are a beginner, we recommend our <a href="/com/jme3/gde/core/docs/jme3/scenegraph_for_dummies.html" class="wikilink1" title="jme3:scenegraph_for_dummies">Scene Graph for Dummies</a> presentation for a visual introduction to the concept of a scene graph. 
+</p>
+
+<p>
+Then continue learning about jME3 concepts here.
 </p>
 
 </div>
@@ -68,26 +72,7 @@ The unit of meassurement is <code>world unit</code> (wu). Typically, 1 wu is con
 
 <p>
 
-The scene graph represents your 3D world. Objects in the jME3 scene graph are called <em>Spatials</em>.
-</p>
-<ul>
-<li class="level1"><div class="li"> A Spatial can be loaded, transformed, and saved.</div>
-</li>
-<li class="level1"><div class="li"> A Spatial contains transformation values (location, rotation, scale), relative to the coordinate system.</div>
-</li>
-<li class="level1"><div class="li"> Everything attached to the <em>rootNode</em> is part of the scene graph.</div>
-<ul>
-<li class="level2"><div class="li"> Geometries are visible Spatials that appear in the scene.</div>
-</li>
-<li class="level2"><div class="li"> Nodes are invisible Spatials that are used as handles and for grouping.</div>
-</li>
-</ul>
-</li>
-</ul>
-
-<p>
-
-<em>Attaching</em> a Spatial to the rootNode (or any other nodes) adds the Spatial to the scene graph; <em>detaching</em> removes it.
+The scene graph represents your 3D world. Objects in the jME3 scene graph are called <a href="/com/jme3/gde/core/docs/jme3/advanced/spatial.html" class="wikilink1" title="jme3:advanced:spatial">Spatial</a>s. Everything attached to the <em>rootNode</em> is part of the scene graph. <em>Attaching</em> a Spatial to the rootNode (or other nodes) adds the Spatial to the scene; <em>detaching</em> removes it.
 </p>
 
 <p>
@@ -101,7 +86,7 @@ The scene graph represents your 3D world. Objects in the jME3 scene graph are ca
 
 <p>
 
-There are two types of Spatials, <em>Nodes</em> and <em>Geometries</em>.
+A Spatial can be transformed, loaded and saved. There are two types of Spatials, <em>Nodes</em> and <em>Geometries</em>.
 
 </p>
 <table class="inline">
@@ -115,13 +100,13 @@ There are two types of Spatials, <em>Nodes</em> and <em>Geometries</em>.
 		<td class="col0 rightalign">  </td><th class="col1"> Geometry </th><th class="col2"> Node </th>
 	</tr>
 	<tr class="row3">
-		<th class="col0"> Visibility: </th><td class="col1"> A Geometry represents a visible 3-D object. </td><td class="col2"> A Node is an invisible “handle” for a group of objects. </td>
+		<th class="col0"> Visibility: </th><td class="col1"> A visible 3-D object. </td><td class="col2"> An invisible “handle” for a group of objects. </td>
 	</tr>
 	<tr class="row4">
-		<th class="col0"> Purpose: </th><td class="col1"> A Geometry stores an object&#039;s looks: Every Geometry has a mesh (shape), and a material (surface) specifying color, texture, and opacity/transparency. </td><td class="col2"> A Node groups Geometries and other Nodes together: When you transform a parent Node, all its child Nodes are transformed as well. </td>
+		<th class="col0"> Purpose: </th><td class="col1"> Represents the “look” of an object: Shape, color, texture, opacity/transparency. </td><td class="col2"> Groups Geometries and other Nodes together: You transform a Node to affect all attached Nodes. </td>
 	</tr>
 	<tr class="row5">
-		<th class="col0"> Content: </th><td class="col1"> transformations, mesh, material. </td><td class="col2"> transformations, no mesh, no material. </td>
+		<th class="col0"> Content: </th><td class="col1"> Transformations, mesh, material. </td><td class="col2"> Transformations. No mesh, no material. </td>
 	</tr>
 	<tr class="row6">
 		<th class="col0"> Examples: </th><td class="col1"> A box, a sphere, player, a building, a piece of terrain, a vehicle, missiles, NPCs, etc… </td><td class="col2"> The rootNode, the guiNode, an audio node, a custom grouping node, etc. </td>
@@ -135,7 +120,7 @@ There are two types of Spatials, <em>Nodes</em> and <em>Geometries</em>.
 
 <p>
 
-Before you start, you should have completed the <a href="/com/jme3/gde/core/docs/jme3/beginner.html" class="wikilink1" title="jme3:beginner">Hello World tutorial series</a>. It shows how to load and create Spatials, how to lay out a scene by attaching and transforming Spatials, and how to add interaction and effects to a game.
+Before you start creating your game, you should have completed the <a href="/com/jme3/gde/core/docs/jme3/beginner.html" class="wikilink1" title="jme3:beginner">Hello World tutorial series</a>. It shows how to load and create Spatials, how to lay out a scene by attaching and transforming Spatials, and how to add interaction and effects to a game.
 </p>
 
 <p>

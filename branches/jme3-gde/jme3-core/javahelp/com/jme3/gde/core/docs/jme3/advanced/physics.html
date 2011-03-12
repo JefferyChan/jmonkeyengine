@@ -367,7 +367,7 @@ On a PhysicsControl, you can set the following physical properties.
 		<td class="col0"> setRestitution(0.0f) </td><td class="col1"> How bouncy the object is. For a rubber object set this &gt; 0.0f. This setting has an impact on performance. </td>
 	</tr>
 	<tr class="row6">
-		<td class="col0"> setKinematic(true) </td><td class="col1"> A kinematic node is not affected by gravity, but it is solid and affects other physics objects. It has a mass and you can control its position using setPhysicsLocation(). You can attach joints to it. </td>
+		<td class="col0"> setKinematic(true) </td><td class="col1"> A kinematic node is not affected by gravity, but it is solid and affects other physics objects. It has a mass its position is updated from the spatials translation. You can attach joints to it. </td>
 	</tr>
 	<tr class="row7">
 		<td class="col0"> setGravity(new Vector3f(0f,-1f,0f)) </td><td class="col1"> You can change the gravity of a physics object after it was added to the physics space. </td>
@@ -525,20 +525,15 @@ Physics also supports the following features:
  removeCollideWithGroup(COLLISION_GROUP_01)</td><td class="col1">Collision Groups are integer bit masks – enums are available in CollisionObject. All physics objects are by default in COLLISION_GROUP_01. Two objects collide when the collideWithGroups set of one contains the collisionGroup of the other.</td>
 	</tr>
 	<tr class="row3">
-		<td class="col0"> attachDebugShape(assetManager) <br/>
- updateDebugShape() <br/>
- detachDebugShape() </td><td class="col1"> Displays a wireframe of the assumed physical shape around the object. Use this for debugging when analyzing unexpected behaviour. Does not work with detached physics, please switch to PARALLEL or SEQUENTIAL for debugging.</td>
-	</tr>
-	<tr class="row4">
 		<td class="col0"> setDamping(float, float)</td><td class="col1">The first value is the linear threshold and the second the angular.</td>
 	</tr>
-	<tr class="row5">
+	<tr class="row4">
 		<td class="col0"> setAngularFactor(1f)</td><td class="col1">Set the amount of rotation that will be applied. A value of zero will cancel all rotational force outcome.</td>
 	</tr>
-	<tr class="row6">
+	<tr class="row5">
 		<td class="col0"> setCcdSweptSphereRadius()</td><td class="col1">?</td>
 	</tr>
-	<tr class="row7">
+	<tr class="row6">
 		<td class="col0"> setSleepingThreshold(float,float)</td><td class="col1">Sets the sleeping thresholds wich define when the object gets deactivated to save ressources. Low values keep the object active when it barely moves. The first value is the linear threshold and the second the angular.</td>
 	</tr>
 </table>

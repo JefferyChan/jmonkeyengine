@@ -148,19 +148,19 @@ Thanks to double1984 for contributing this fun sample!
 &nbsp;
   <span class="co3">/** Initialize the materials used in this scene. */</span>
   <span class="kw1">public</span> <span class="kw4">void</span> initMaterials<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-    wall_mat <span class="sy0">=</span> <span class="kw1">new</span> Material<span class="br0">&#40;</span>assetManager, <span class="st0">&quot;Common/MatDefs/Misc/SimpleTextured.j3md&quot;</span><span class="br0">&#41;</span>;
+    wall_mat <span class="sy0">=</span> <span class="kw1">new</span> Material<span class="br0">&#40;</span>assetManager, <span class="st0">&quot;Common/MatDefs/Misc/Unshaded.j3md&quot;</span><span class="br0">&#41;</span>;
     TextureKey key <span class="sy0">=</span> <span class="kw1">new</span> TextureKey<span class="br0">&#40;</span><span class="st0">&quot;Textures/Terrain/BrickWall/BrickWall.jpg&quot;</span><span class="br0">&#41;</span>;
     key.<span class="me1">setGenerateMips</span><span class="br0">&#40;</span><span class="kw2">true</span><span class="br0">&#41;</span>;
     Texture tex <span class="sy0">=</span> assetManager.<span class="me1">loadTexture</span><span class="br0">&#40;</span>key<span class="br0">&#41;</span>;
     wall_mat.<span class="me1">setTexture</span><span class="br0">&#40;</span><span class="st0">&quot;ColorMap&quot;</span>, tex<span class="br0">&#41;</span>;
 &nbsp;
-    stone_mat <span class="sy0">=</span> <span class="kw1">new</span> Material<span class="br0">&#40;</span>assetManager, <span class="st0">&quot;Common/MatDefs/Misc/SimpleTextured.j3md&quot;</span><span class="br0">&#41;</span>;
+    stone_mat <span class="sy0">=</span> <span class="kw1">new</span> Material<span class="br0">&#40;</span>assetManager, <span class="st0">&quot;Common/MatDefs/Misc/Unshaded.j3md&quot;</span><span class="br0">&#41;</span>;
     TextureKey key2 <span class="sy0">=</span> <span class="kw1">new</span> TextureKey<span class="br0">&#40;</span><span class="st0">&quot;Textures/Terrain/Rock/Rock.PNG&quot;</span><span class="br0">&#41;</span>;
     key2.<span class="me1">setGenerateMips</span><span class="br0">&#40;</span><span class="kw2">true</span><span class="br0">&#41;</span>;
     Texture tex2 <span class="sy0">=</span> assetManager.<span class="me1">loadTexture</span><span class="br0">&#40;</span>key2<span class="br0">&#41;</span>;
     stone_mat.<span class="me1">setTexture</span><span class="br0">&#40;</span><span class="st0">&quot;ColorMap&quot;</span>, tex2<span class="br0">&#41;</span>;
 &nbsp;
-    floor_mat <span class="sy0">=</span> <span class="kw1">new</span> Material<span class="br0">&#40;</span>assetManager, <span class="st0">&quot;Common/MatDefs/Misc/SimpleTextured.j3md&quot;</span><span class="br0">&#41;</span>;
+    floor_mat <span class="sy0">=</span> <span class="kw1">new</span> Material<span class="br0">&#40;</span>assetManager, <span class="st0">&quot;Common/MatDefs/Misc/Unshaded.j3md&quot;</span><span class="br0">&#41;</span>;
     TextureKey key3 <span class="sy0">=</span> <span class="kw1">new</span> TextureKey<span class="br0">&#40;</span><span class="st0">&quot;Textures/Terrain/Pond/Pond.png&quot;</span><span class="br0">&#41;</span>;
     key3.<span class="me1">setGenerateMips</span><span class="br0">&#40;</span><span class="kw2">true</span><span class="br0">&#41;</span>;
     Texture tex3 <span class="sy0">=</span> assetManager.<span class="me1">loadTexture</span><span class="br0">&#40;</span>key3<span class="br0">&#41;</span>;
@@ -533,6 +533,15 @@ The action of shooting a new cannon ball is defined as follows:
     <span class="br0">&#125;</span>;</pre>
 <p>
 In the moment the cannonball appears in the scene, it flies off with the velocity (and in the direction) that we have specified using <code>setLinearVelocity()</code> inside <code>makeCannonBall()</code>. The newly created cannon ball flies off, hits the wall, and exerts a <em>physical force</em> that shifts the individual bricks. 
+</p>
+
+</div>
+
+<h2><a name="movement_of_the_physics_enabled_spatial" id="movement_of_the_physics_enabled_spatial">Movement of the physics enabled Spatial</a></h2>
+<div class="level2">
+
+<p>
+The location of the spatial is defined by the RigidBodyControl, move that to move the spatial or if its a non-world-object set the RigidBodyControl to kinematic mode to have it move along with the spatial. This will make the RigidBody be unaffected by the physics but it will effect the physics objects around it based on its location and amount of movement that is applied. Note that a kinematic RigidBody needs to have a mass!
 </p>
 
 </div>

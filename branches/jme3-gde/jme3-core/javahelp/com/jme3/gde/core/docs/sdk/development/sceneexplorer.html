@@ -32,17 +32,12 @@ Theres also AbstractSceneExplorerNode which brings some other useful features yo
 <p>
 The SceneExplorerNode can be used for Spatial and Control type objects.
 </p>
-<pre class="code java"><span class="kw1">package</span> <span class="co2">com.jme3.gde.core.sceneexplorer.nodes</span>;
-&nbsp;
-<span class="kw1">import</span> <span class="co2">com.jme3.material.Material</span>;
-<span class="kw1">import</span> <span class="co2">com.jme3.scene.Geometry</span>;
-<span class="kw1">import</span> <span class="co2">com.jme3.scene.Mesh</span>;
-<span class="kw1">import</span> <span class="co2">java.awt.Image</span>;
-<span class="kw1">import</span> <span class="co2">org.openide.cookies.SaveCookie</span>;
-<span class="kw1">import</span> <span class="co2">org.openide.nodes.Sheet</span>;
-<span class="kw1">import</span> <span class="co2">org.openide.util.ImageUtilities</span>;
-&nbsp;
-@org.<span class="me1">openide</span>.<span class="me1">util</span>.<span class="me1">lookup</span>.<span class="me1">ServiceProvider</span><span class="br0">&#40;</span>service<span class="sy0">=</span>SceneExplorerNode.<span class="kw1">class</span><span class="br0">&#41;</span>
+
+</div>
+
+<h3><a name="spatial_example" id="spatial_example">Spatial Example</a></h3>
+<div class="level3">
+<pre class="code java">@org.<span class="me1">openide</span>.<span class="me1">util</span>.<span class="me1">lookup</span>.<span class="me1">ServiceProvider</span><span class="br0">&#40;</span>service<span class="sy0">=</span>SceneExplorerNode.<span class="kw1">class</span><span class="br0">&#41;</span>
 <span class="kw1">public</span> <span class="kw1">class</span> JmeGeometry <span class="kw1">extends</span> JmeSpatial <span class="br0">&#123;</span>
 &nbsp;
     <span class="kw1">private</span> <span class="kw1">static</span> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Aimage+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object> smallImage <span class="sy0">=</span>
@@ -101,6 +96,107 @@ The SceneExplorerNode can be used for Spatial and Control type objects.
         SceneExplorerChildren children<span class="sy0">=</span><span class="kw1">new</span> SceneExplorerChildren<span class="br0">&#40;</span><span class="br0">&#40;</span>com.<span class="me1">jme3</span>.<span class="me1">scene</span>.<span class="me1">Spatial</span><span class="br0">&#41;</span>key<span class="br0">&#41;</span>;
         children.<span class="me1">setReadOnly</span><span class="br0">&#40;</span>readOnly<span class="br0">&#41;</span>;
         <span class="kw1">return</span> <span class="kw1">new</span> org.<span class="me1">openide</span>.<span class="me1">nodes</span>.<span class="me1">Node</span><span class="br0">&#91;</span><span class="br0">&#93;</span><span class="br0">&#123;</span><span class="kw1">new</span> JmeGeometry<span class="br0">&#40;</span><span class="br0">&#40;</span>Geometry<span class="br0">&#41;</span> key, children<span class="br0">&#41;</span>.<span class="me1">setReadOnly</span><span class="br0">&#40;</span>readOnly<span class="br0">&#41;</span><span class="br0">&#125;</span>;
+    <span class="br0">&#125;</span>
+<span class="br0">&#125;</span></pre>
+</div>
+
+<h3><a name="control_example" id="control_example">Control Example</a></h3>
+<div class="level3">
+<pre class="code java">@org.<span class="me1">openide</span>.<span class="me1">util</span>.<span class="me1">lookup</span>.<span class="me1">ServiceProvider</span><span class="br0">&#40;</span>service<span class="sy0">=</span>SceneExplorerNode.<span class="kw1">class</span><span class="br0">&#41;</span>
+<span class="kw1">public</span> <span class="kw1">class</span> JmeGhostControl <span class="kw1">extends</span> AbstractSceneExplorerNode <span class="br0">&#123;</span>
+&nbsp;
+    <span class="kw1">private</span> <span class="kw1">static</span> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Aimage+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object> smallImage <span class="sy0">=</span>
+            ImageUtilities.<span class="me1">loadImage</span><span class="br0">&#40;</span><span class="st0">&quot;com/jme3/gde/core/sceneexplorer/nodes/icons/ghostcontrol.gif&quot;</span><span class="br0">&#41;</span>;
+    <span class="kw1">private</span> GhostControl geom;
+&nbsp;
+    <span class="kw1">public</span> JmeGhostControl<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+    <span class="br0">&#125;</span>
+&nbsp;
+    <span class="kw1">public</span> JmeGhostControl<span class="br0">&#40;</span>GhostControl spatial, DataObject dataObject<span class="br0">&#41;</span> <span class="br0">&#123;</span>
+        <span class="kw1">super</span><span class="br0">&#40;</span>dataObject<span class="br0">&#41;</span>;
+        getLookupContents<span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">add</span><span class="br0">&#40;</span><span class="kw1">this</span><span class="br0">&#41;</span>;
+        getLookupContents<span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">add</span><span class="br0">&#40;</span>spatial<span class="br0">&#41;</span>;
+        <span class="kw1">this</span>.<span class="me1">geom</span> <span class="sy0">=</span> spatial;
+        setName<span class="br0">&#40;</span><span class="st0">&quot;GhostControl&quot;</span><span class="br0">&#41;</span>;
+    <span class="br0">&#125;</span>
+&nbsp;
+    @Override
+    <span class="kw1">public</span> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Aimage+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object> getIcon<span class="br0">&#40;</span><span class="kw4">int</span> type<span class="br0">&#41;</span> <span class="br0">&#123;</span>
+        <span class="kw1">return</span> smallImage;
+    <span class="br0">&#125;</span>
+&nbsp;
+    @Override
+    <span class="kw1">public</span> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Aimage+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object> getOpenedIcon<span class="br0">&#40;</span><span class="kw4">int</span> type<span class="br0">&#41;</span> <span class="br0">&#123;</span>
+        <span class="kw1">return</span> smallImage;
+    <span class="br0">&#125;</span>
+&nbsp;
+    <span class="kw1">protected</span> SystemAction<span class="br0">&#91;</span><span class="br0">&#93;</span> createActions<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+        <span class="kw1">return</span> <span class="kw1">new</span> SystemAction<span class="br0">&#91;</span><span class="br0">&#93;</span><span class="br0">&#123;</span>
+                    <span class="co1">//                    SystemAction.get(CopyAction.class),</span>
+                    <span class="co1">//                    SystemAction.get(CutAction.class),</span>
+                    <span class="co1">//                    SystemAction.get(PasteAction.class),</span>
+                    SystemAction.<span class="me1">get</span><span class="br0">&#40;</span>DeleteAction.<span class="kw1">class</span><span class="br0">&#41;</span>
+                <span class="br0">&#125;</span>;
+    <span class="br0">&#125;</span>
+&nbsp;
+    @Override
+    <span class="kw1">public</span> <span class="kw4">boolean</span> canDestroy<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+        <span class="kw1">return</span> <span class="sy0">!</span>readOnly;
+    <span class="br0">&#125;</span>
+&nbsp;
+    @Override
+    <span class="kw1">public</span> <span class="kw4">void</span> destroy<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="kw1">throws</span> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Aioexception+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object> <span class="br0">&#123;</span>
+        <span class="kw1">super</span>.<span class="me1">destroy</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
+        <span class="kw1">final</span> Spatial spat<span class="sy0">=</span>getParentNode<span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">getLookup</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">lookup</span><span class="br0">&#40;</span>Spatial.<span class="kw1">class</span><span class="br0">&#41;</span>;
+        <span class="kw1">try</span> <span class="br0">&#123;</span>
+            SceneApplication.<span class="me1">getApplication</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">enqueue</span><span class="br0">&#40;</span><span class="kw1">new</span> Callable<span class="sy0">&lt;</span>Void<span class="sy0">&gt;</span><span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+&nbsp;
+                <span class="kw1">public</span> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Avoid+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object> <span class="br0">&#123;</span>
+                    spat.<span class="me1">removeControl</span><span class="br0">&#40;</span>geom<span class="br0">&#41;</span>;
+                    <span class="kw1">return</span> <span class="kw2">null</span>;
+                <span class="br0">&#125;</span>
+            <span class="br0">&#125;</span><span class="br0">&#41;</span>.<span class="me1">get</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
+            <span class="br0">&#40;</span><span class="br0">&#40;</span>AbstractSceneExplorerNode<span class="br0">&#41;</span>getParentNode<span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>.<span class="me1">refresh</span><span class="br0">&#40;</span><span class="kw2">true</span><span class="br0">&#41;</span>;
+        <span class="br0">&#125;</span> <span class="kw1">catch</span> <span class="br0">&#40;</span><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Ainterruptedexception+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object> ex<span class="br0">&#41;</span> <span class="br0">&#123;</span>
+            Exceptions.<span class="me1">printStackTrace</span><span class="br0">&#40;</span>ex<span class="br0">&#41;</span>;
+        <span class="br0">&#125;</span> <span class="kw1">catch</span> <span class="br0">&#40;</span>ExecutionException ex<span class="br0">&#41;</span> <span class="br0">&#123;</span>
+            Exceptions.<span class="me1">printStackTrace</span><span class="br0">&#40;</span>ex<span class="br0">&#41;</span>;
+        <span class="br0">&#125;</span>
+    <span class="br0">&#125;</span>
+&nbsp;
+    @Override
+    <span class="kw1">protected</span> Sheet createSheet<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+        Sheet sheet <span class="sy0">=</span> <span class="kw1">super</span>.<span class="me1">createSheet</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
+        Sheet.<object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Aset+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object> set <span class="sy0">=</span> Sheet.<span class="me1">createPropertiesSet</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
+        set.<span class="me1">setDisplayName</span><span class="br0">&#40;</span><span class="st0">&quot;GhostControl&quot;</span><span class="br0">&#41;</span>;
+        set.<span class="me1">setName</span><span class="br0">&#40;</span>GhostControl.<span class="kw1">class</span>.<span class="me1">getName</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
+        GhostControl obj <span class="sy0">=</span> geom;<span class="co1">//getLookup().lookup(Spatial.class);</span>
+        <span class="kw1">if</span> <span class="br0">&#40;</span>obj <span class="sy0">==</span> <span class="kw2">null</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+            <span class="kw1">return</span> sheet;
+        <span class="br0">&#125;</span>
+&nbsp;
+        set.<span class="me1">put</span><span class="br0">&#40;</span>makeProperty<span class="br0">&#40;</span>obj, Vector3f.<span class="kw1">class</span>, <span class="st0">&quot;getPhysicsLocation&quot;</span>, <span class="st0">&quot;setPhysicsLocation&quot;</span>, <span class="st0">&quot;Physics Location&quot;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
+        set.<span class="me1">put</span><span class="br0">&#40;</span>makeProperty<span class="br0">&#40;</span>obj, Quaternion.<span class="kw1">class</span>, <span class="st0">&quot;getPhysicsRotation&quot;</span>, <span class="st0">&quot;setPhysicsRotation&quot;</span>, <span class="st0">&quot;Physics Rotation&quot;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
+&nbsp;
+        set.<span class="me1">put</span><span class="br0">&#40;</span>makeProperty<span class="br0">&#40;</span>obj, CollisionShape.<span class="kw1">class</span>, <span class="st0">&quot;getCollisionShape&quot;</span>, <span class="st0">&quot;setCollisionShape&quot;</span>, <span class="st0">&quot;Collision Shape&quot;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
+        set.<span class="me1">put</span><span class="br0">&#40;</span>makeProperty<span class="br0">&#40;</span>obj, <span class="kw4">int</span>.<span class="kw1">class</span>, <span class="st0">&quot;getCollisionGroup&quot;</span>, <span class="st0">&quot;setCollisionGroup&quot;</span>, <span class="st0">&quot;Collision Group&quot;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
+        set.<span class="me1">put</span><span class="br0">&#40;</span>makeProperty<span class="br0">&#40;</span>obj, <span class="kw4">int</span>.<span class="kw1">class</span>, <span class="st0">&quot;getCollideWithGroups&quot;</span>, <span class="st0">&quot;setCollideWithGroups&quot;</span>, <span class="st0">&quot;Collide With Groups&quot;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
+&nbsp;
+        sheet.<span class="me1">put</span><span class="br0">&#40;</span>set<span class="br0">&#41;</span>;
+        <span class="kw1">return</span> sheet;
+&nbsp;
+    <span class="br0">&#125;</span>
+&nbsp;
+    <span class="kw1">public</span> <span class="kw1">Class</span> getExplorerObjectClass<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+        <span class="kw1">return</span> GhostControl.<span class="kw1">class</span>;
+    <span class="br0">&#125;</span>
+&nbsp;
+    <span class="kw1">public</span> <span class="kw1">Class</span> getExplorerNodeClass<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+        <span class="kw1">return</span> JmeGhostControl.<span class="kw1">class</span>;
+    <span class="br0">&#125;</span>
+&nbsp;
+    <span class="kw1">public</span> org.<span class="me1">openide</span>.<span class="me1">nodes</span>.<span class="me1">Node</span><span class="br0">&#91;</span><span class="br0">&#93;</span> createNodes<span class="br0">&#40;</span><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Aobject+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object> key, DataObject key2, <span class="kw4">boolean</span> cookie<span class="br0">&#41;</span> <span class="br0">&#123;</span>
+        <span class="kw1">return</span> <span class="kw1">new</span> org.<span class="me1">openide</span>.<span class="me1">nodes</span>.<span class="me1">Node</span><span class="br0">&#91;</span><span class="br0">&#93;</span><span class="br0">&#123;</span><span class="kw1">new</span> JmeGhostControl<span class="br0">&#40;</span><span class="br0">&#40;</span>GhostControl<span class="br0">&#41;</span> key, key2<span class="br0">&#41;</span>.<span class="me1">setReadOnly</span><span class="br0">&#40;</span>cookie<span class="br0">&#41;</span><span class="br0">&#125;</span>;
     <span class="br0">&#125;</span>
 <span class="br0">&#125;</span></pre>
 </div>

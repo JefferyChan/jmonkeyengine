@@ -10,8 +10,7 @@ Next: <a href="/com/jme3/gde/core/docs/jme3/beginner/hello_effects.html" class="
 
 <p>
 
-This tutorial explains how to add 3D sound to a game, and how to trigger when sounds are to be played. We will use an Audio Listener, an Audio Renderer, and Audio Nodes.
-
+This tutorial explains how to add 3D sound to a game, and how to trigger when sounds are to be played. We will use an Audio Listener, an Audio Renderer, two Audio Nodes, and an Action Listener.
 </p>
 
 </div>
@@ -49,8 +48,8 @@ This tutorial explains how to add 3D sound to a game, and how to trigger when so
     <span class="co3">/** just a blue box floating in space */</span>
     <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Abox+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object><span class="br0">&#40;</span>Vector3f.<span class="me1">ZERO</span>, <span class="nu0">1</span>, <span class="nu0">1</span>, <span class="nu0">1</span><span class="br0">&#41;</span>;
     player <span class="sy0">=</span> <span class="kw1">new</span> Geometry<span class="br0">&#40;</span><span class="st0">&quot;Player&quot;</span>, box1<span class="br0">&#41;</span>;
-    Material mat1 <span class="sy0">=</span> <span class="kw1">new</span> Material<span class="br0">&#40;</span>assetManager, <span class="st0">&quot;Common/MatDefs/Misc/SolidColor.j3md&quot;</span><span class="br0">&#41;</span>;
-    mat1.<span class="me1">setColor</span><span class="br0">&#40;</span><span class="st0">&quot;m_Color&quot;</span>, ColorRGBA.<span class="me1">Blue</span><span class="br0">&#41;</span>;
+    Material mat1 <span class="sy0">=</span> <span class="kw1">new</span> Material<span class="br0">&#40;</span>assetManager, <span class="st0">&quot;Common/MatDefs/Misc/Unshaded.j3md&quot;</span><span class="br0">&#41;</span>;
+    mat1.<span class="me1">setColor</span><span class="br0">&#40;</span><span class="st0">&quot;Color&quot;</span>, ColorRGBA.<span class="me1">Blue</span><span class="br0">&#41;</span>;
     player.<span class="me1">setMaterial</span><span class="br0">&#40;</span>mat1<span class="br0">&#41;</span>;
     rootNode.<span class="me1">attachChild</span><span class="br0">&#40;</span>player<span class="br0">&#41;</span>;
 &nbsp;
@@ -142,10 +141,6 @@ Setting up the ActionListener should also be familiar from previous tutorials. W
     <span class="br0">&#125;</span>
   <span class="br0">&#125;</span>;</pre>
 <p>
-Finally we use the <code>simpleUpdate()</code> loop to keep the <code>listener</code> moving with the camera. More about that below. 
-</p>
-
-<p>
 Next we have a closer look at <code>initAudio()</code> to learn how to use the <code>AudioRenderer</code> and <code>AudioNode</code>s.
 </p>
 
@@ -235,21 +230,35 @@ The only difference is where they are called:
 
 <p>
 
-To keep up the 3D audio effect, jME needs to know the position of the sound source, and the position of the listener. This is why we use the <code>simpleUpdate()</code> method to move the listener with the camera.
+To keep up the 3D audio effect, jME needs to know the position of the sound source, and the position of the audio listener. The <code>listener</code> is a built-in object in a SimpleApplication and it is not related to an ActonListener. 
+</p>
+
+<p>
+I order to make the most of 3D audio, we use the <code>simpleUpdate()</code> method to move the listener with the camera.
 </p>
 <pre class="code java">   <span class="kw1">public</span> <span class="kw4">void</span> simpleUpdate<span class="br0">&#40;</span><span class="kw4">float</span> tpf<span class="br0">&#41;</span> <span class="br0">&#123;</span>
     listener.<span class="me1">setLocation</span><span class="br0">&#40;</span>cam.<span class="me1">getLocation</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
     listener.<span class="me1">setRotation</span><span class="br0">&#40;</span>cam.<span class="me1">getRotation</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
   <span class="br0">&#125;</span></pre>
-<p>
-Note that in this example, we defined the nature sound as coming from a certain position, but not the gunshot sound. This means the gunshot can be heard everywhere with the same volume.
-</p>
+</div>
+
+<h2><a name="global_or_positional" id="global_or_positional">Global or Positional?</a></h2>
+<div class="level2">
 
 <p>
-In a game with moving enemies you would probably make the audio_gun node positional too, and move it to the location of the shooting enemy before playing it – this way a player with stereo speakers could hear from which direction the gunshot is coming. Equally, you may have game levels where you want one background sound to play globally, in this case, you would not make the audio_nature a positional sound.
+
+In this example, we defined the nature sound as coming from a certain position, but not the gunshot sound. This means the gunshot can be heard everywhere with the same volume. 
+
 </p>
+<ul>
+<li class="level1"><div class="li"> In a game with moving enemies you maight want to make the audio_gun node positional, and move it to the location of the shooting enemy before playing it – this way a player with stereo speakers could hear from which direction the gunshot is coming. </div>
+</li>
+<li class="level1"><div class="li"> Similarly, you may have game levels where you want one background sound to play globally, in this case, you would not make the audio_nature a positional sound.</div>
+</li>
+</ul>
 
 <p>
+
 In short, you must choose in every situation whether you want a sound to be global or positional.
 </p>
 

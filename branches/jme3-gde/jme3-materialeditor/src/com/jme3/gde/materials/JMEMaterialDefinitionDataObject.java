@@ -31,16 +31,16 @@
  */
 package com.jme3.gde.materials;
 
-import com.jme3.gde.core.assets.AssetDataObject;
 import java.io.IOException;
 import org.openide.filesystems.FileObject;
 import org.openide.loaders.DataObjectExistsException;
+import org.openide.loaders.MultiDataObject;
 import org.openide.loaders.MultiFileLoader;
 import org.openide.nodes.CookieSet;
 import org.openide.nodes.Node;
 import org.openide.text.DataEditorSupport;
 
-public class JMEMaterialDefinitionDataObject extends AssetDataObject {
+public class JMEMaterialDefinitionDataObject extends MultiDataObject {
 
     public JMEMaterialDefinitionDataObject(FileObject pf, MultiFileLoader loader) throws DataObjectExistsException, IOException {
         super(pf, loader);

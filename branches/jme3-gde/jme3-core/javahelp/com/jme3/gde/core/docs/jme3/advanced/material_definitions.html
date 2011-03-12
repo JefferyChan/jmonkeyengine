@@ -4,7 +4,11 @@
 
 <p>
 
-Typically, you prepare a set of custom materials, for example in the <code>initSimpleApp()</code> method, and use them throughout the game. If you use one material very often, also read about storing material configurations in custom <a href="/com/jme3/gde/core/docs/jme3/advanced/j3m_material_files.html" class="wikilink1" title="jme3:advanced:j3m_material_files">j3m Material Files</a>.
+Typically, you create a set of custom materials, and use them throughout the game. For example, you can initialize and configure your materials objects in the <code>initSimpleApp()</code> method, and then load 3D models (Geometries) and use setMaterial() on them. 
+</p>
+
+<p>
+<strong>Tip:</strong> If you use one custom material very often, additionally read about storing material configurations in user-friendly <a href="/com/jme3/gde/core/docs/jme3/advanced/j3m_material_files.html" class="wikilink1" title="jme3:advanced:j3m_material_files">j3m Material Files</a>.
 </p>
 
 </div>
@@ -14,7 +18,7 @@ Typically, you prepare a set of custom materials, for example in the <code>initS
 <ol>
 <li class="level1"><div class="li"> Choose a Material Definition from the <a href="/com/jme3/gde/core/docs/jme3/advanced/materials_overview.html" class="wikilink1" title="jme3:advanced:materials_overview">Materials Overview</a> list that has the features that you need. </div>
 <ul>
-<li class="level2"><div class="li"> Tip: If you don&#039;t know, start with <code>Unshaded.j3md</code> or <code>SimpleTextured.j3md</code>.</div>
+<li class="level2"><div class="li"> Tip: If you don&#039;t know, you can always start with <code>Unshaded.j3md</code>.</div>
 </li>
 </ul>
 </li>
@@ -22,13 +26,13 @@ Typically, you prepare a set of custom materials, for example in the <code>initS
 <ol>
 <li class="level2"><div class="li"> Create and save the necessary Texture files to the assets directory.</div>
 <ul>
-<li class="level3"><div class="li"> ColorMap; DiffuseMap, NormalMap, AlphaMap, etc…</div>
+<li class="level3"><div class="li"> E.g. ColorMap; DiffuseMap, NormalMap, AlphaMap, etc…</div>
 </li>
 </ul>
 </li>
 <li class="level2"><div class="li"> Determine the required values to achieve the effect that you want.</div>
 <ul>
-<li class="level3"><div class="li"> Colors, floats, booleans, etc… </div>
+<li class="level3"><div class="li"> E.g. Colors, floats, booleans, etc… </div>
 </li>
 </ul>
 </li>
@@ -41,7 +45,7 @@ Typically, you prepare a set of custom materials, for example in the <code>initS
 <h2><a name="using_a_material" id="using_a_material">Using a Material</a></h2>
 <div class="level2">
 <ol>
-<li class="level1"><div class="li"> In you Java code, create a Material object based on the .j3md file: e.g. <pre class="code java">Material mat <span class="sy0">=</span> <span class="kw1">new</span> Material<span class="br0">&#40;</span>assetManager, <span class="st0">&quot;Common/MatDefs/Misc/ColoredTextured.j3md&quot;</span><span class="br0">&#41;</span>;</pre></div>
+<li class="level1"><div class="li"> In you Java code, create a Material object based on the .j3md file: e.g. <pre class="code java">Material mat <span class="sy0">=</span> <span class="kw1">new</span> Material<span class="br0">&#40;</span>assetManager, <span class="st0">&quot;Common/MatDefs/Misc/Unshaded.j3md&quot;</span><span class="br0">&#41;</span>;</pre></div>
 </li>
 <li class="level1"><div class="li"> Configure your Material by setting the appropriate values listed in the <a href="/com/jme3/gde/core/docs/jme3/advanced/materials_overview.html" class="wikilink1" title="jme3:advanced:materials_overview">Materials Overview</a> table. Here are examples of the methods that set the different data types:</div>
 <ul>
@@ -59,7 +63,7 @@ Typically, you prepare a set of custom materials, for example in the <code>initS
 </li>
 <li class="level1"><div class="li"> Use your prepared material on a Geometry: <pre class="code java">myGeometry.<span class="me1">setMaterial</span><span class="br0">&#40;</span>mat<span class="br0">&#41;</span>;</pre></div>
 </li>
-<li class="level1"><div class="li"> Optionally: You can adjust the texture scale: <pre class="code java">geometry.<span class="me1">scaleTextureCoordinates</span><span class="br0">&#40;</span><span class="kw1">new</span> Vector2f<span class="br0">&#40;</span>1f, .5f<span class="br0">&#41;</span><span class="br0">&#41;</span>;</pre></div>
+<li class="level1"><div class="li"> (Optional) Adjust the texture scale: <pre class="code java">geometry.<span class="me1">scaleTextureCoordinates</span><span class="br0">&#40;</span><span class="kw1">new</span> Vector2f<span class="br0">&#40;</span>1f, .5f<span class="br0">&#41;</span><span class="br0">&#41;</span>;</pre></div>
 </li>
 </ol>
 
@@ -67,11 +71,22 @@ Typically, you prepare a set of custom materials, for example in the <code>initS
 
 <h2><a name="examples" id="examples">Examples</a></h2>
 <div class="level2">
+
+<p>
+
+A simpled textured material.
+
+</p>
 <pre class="code java">Material mat <span class="sy0">=</span> <span class="kw1">new</span> Material<span class="br0">&#40;</span>assetManager, 
-    <span class="st0">&quot;Common/MatDefs/Misc/SimpleTextured.j3md&quot;</span><span class="br0">&#41;</span>;
+    <span class="st0">&quot;Common/MatDefs/Misc/Unshaded.j3md&quot;</span><span class="br0">&#41;</span>;
 mat.<span class="me1">setTexture</span><span class="br0">&#40;</span><span class="st0">&quot;ColorMap&quot;</span>, assetManager.<span class="me1">loadTexture</span><span class="br0">&#40;</span>
-    <span class="st0">&quot;Interface/Logo/Monkey.jpg&quot;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;</pre><pre class="code java">Material mat <span class="sy0">=</span> <span class="kw1">new</span> Material<span class="br0">&#40;</span>assetManager, 
-    <span class="st0">&quot;Common/MatDefs/Misc/ColoredTextured.j3md&quot;</span><span class="br0">&#41;</span>;
+    <span class="st0">&quot;Interface/Logo/Monkey.jpg&quot;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;</pre>
+<p>
+A textured material with a color bleeding through transparent areas.
+
+</p>
+<pre class="code java">Material mat <span class="sy0">=</span> <span class="kw1">new</span> Material<span class="br0">&#40;</span>assetManager, 
+    <span class="st0">&quot;Common/MatDefs/Misc/Unshaded.j3md&quot;</span><span class="br0">&#41;</span>;
 mat.<span class="me1">setTexture</span><span class="br0">&#40;</span><span class="st0">&quot;ColorMap&quot;</span>, assetManager.<span class="me1">loadTexture</span><span class="br0">&#40;</span>
     <span class="st0">&quot;Textures/ColoredTex/Monkey.png&quot;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
 mat.<span class="me1">setColor</span><span class="br0">&#40;</span><span class="st0">&quot;Color&quot;</span>, ColorRGBA.<span class="me1">Blue</span><span class="br0">&#41;</span>;</pre>
@@ -83,5 +98,10 @@ Geometry geom <span class="sy0">=</span> <span class="kw1">new</span> Geometry<s
 <span class="co1">// ... insert Material definition...</span>
 geom.<span class="me1">setMaterial</span><span class="br0">&#40;</span>mat<span class="br0">&#41;</span>;
 rootNode.<span class="me1">attachChild</span><span class="br0">&#40;</span>geom<span class="br0">&#41;</span>;</pre>
+<p>
+<strong>Tip:</strong> You can find these and other common code snippets in the jMonkeyPlatform Code Palette. Drag and drop them into your source code.
+
+</p>
+
 </div>
 <p><em><a href="http://jmonkeyengine.org/wiki/doku.php/jme3:advanced:material_definitions?do=export_xhtmlbody">view online version</a></em></p>

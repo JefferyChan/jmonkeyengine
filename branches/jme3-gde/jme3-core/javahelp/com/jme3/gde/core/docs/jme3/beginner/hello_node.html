@@ -46,15 +46,15 @@ In this Tutorial we will have a look at a simple 3D scene. You will learn that t
         <span class="co1">// create a blue box at coordinates (1,-1,1)</span>
         <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Abox+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object><span class="br0">&#40;</span> <span class="kw1">new</span> Vector3f<span class="br0">&#40;</span><span class="nu0">1</span>,<span class="sy0">-</span><span class="nu0">1</span>,<span class="nu0">1</span><span class="br0">&#41;</span>, <span class="nu0">1</span>,<span class="nu0">1</span>,<span class="nu0">1</span><span class="br0">&#41;</span>;
         Geometry blue <span class="sy0">=</span> <span class="kw1">new</span> Geometry<span class="br0">&#40;</span><span class="st0">&quot;Box&quot;</span>, box1<span class="br0">&#41;</span>;
-        Material mat1 <span class="sy0">=</span> <span class="kw1">new</span> Material<span class="br0">&#40;</span>assetManager, <span class="st0">&quot;Common/MatDefs/Misc/SolidColor.j3md&quot;</span><span class="br0">&#41;</span>;
-        mat1.<span class="me1">setColor</span><span class="br0">&#40;</span><span class="st0">&quot;m_Color&quot;</span>, ColorRGBA.<span class="me1">Blue</span><span class="br0">&#41;</span>;
+        Material mat1 <span class="sy0">=</span> <span class="kw1">new</span> Material<span class="br0">&#40;</span>assetManager, <span class="st0">&quot;Common/MatDefs/Misc/Unshaded.j3md&quot;</span><span class="br0">&#41;</span>;
+        mat1.<span class="me1">setColor</span><span class="br0">&#40;</span><span class="st0">&quot;Color&quot;</span>, ColorRGBA.<span class="me1">Blue</span><span class="br0">&#41;</span>;
         blue.<span class="me1">setMaterial</span><span class="br0">&#40;</span>mat1<span class="br0">&#41;</span>;
 &nbsp;
         <span class="co1">// create a red box straight above the blue one at (1,3,1)</span>
         <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Abox+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object><span class="br0">&#40;</span> <span class="kw1">new</span> Vector3f<span class="br0">&#40;</span><span class="nu0">1</span>,<span class="nu0">3</span>,<span class="nu0">1</span><span class="br0">&#41;</span>, <span class="nu0">1</span>,<span class="nu0">1</span>,<span class="nu0">1</span><span class="br0">&#41;</span>;
         Geometry red <span class="sy0">=</span> <span class="kw1">new</span> Geometry<span class="br0">&#40;</span><span class="st0">&quot;Box&quot;</span>, box2<span class="br0">&#41;</span>;
-        Material mat2 <span class="sy0">=</span> <span class="kw1">new</span> Material<span class="br0">&#40;</span>assetManager, <span class="st0">&quot;Common/MatDefs/Misc/SolidColor.j3md&quot;</span><span class="br0">&#41;</span>;
-        mat2.<span class="me1">setColor</span><span class="br0">&#40;</span><span class="st0">&quot;m_Color&quot;</span>, ColorRGBA.<span class="me1">Red</span><span class="br0">&#41;</span>;
+        Material mat2 <span class="sy0">=</span> <span class="kw1">new</span> Material<span class="br0">&#40;</span>assetManager, <span class="st0">&quot;Common/MatDefs/Misc/Unshaded.j3md&quot;</span><span class="br0">&#41;</span>;
+        mat2.<span class="me1">setColor</span><span class="br0">&#40;</span><span class="st0">&quot;Color&quot;</span>, ColorRGBA.<span class="me1">Red</span><span class="br0">&#41;</span>;
         red.<span class="me1">setMaterial</span><span class="br0">&#40;</span>mat2<span class="br0">&#41;</span>;
 &nbsp;
         <span class="co1">// create a pivot node at (0,0,0) and attach it to root</span>
@@ -121,8 +121,8 @@ So what exactly happens in this code snippet? Note that we are using the <code>s
 </li>
 <li class="level2"><div class="li"> We give it a solid blue material. <pre class="code java">        <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Abox+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object><span class="br0">&#40;</span> <span class="kw1">new</span> Vector3f<span class="br0">&#40;</span><span class="nu0">1</span>,<span class="sy0">-</span><span class="nu0">1</span>,<span class="nu0">1</span><span class="br0">&#41;</span>, <span class="nu0">1</span>,<span class="nu0">1</span>,<span class="nu0">1</span><span class="br0">&#41;</span>;
         Geometry blue <span class="sy0">=</span> <span class="kw1">new</span> Geometry<span class="br0">&#40;</span><span class="st0">&quot;Box&quot;</span>, box1<span class="br0">&#41;</span>;
-        Material mat1 <span class="sy0">=</span> <span class="kw1">new</span> Material<span class="br0">&#40;</span>assetManager, <span class="st0">&quot;Common/MatDefs/Misc/SolidColor.j3md&quot;</span><span class="br0">&#41;</span>;
-        mat1.<span class="me1">setColor</span><span class="br0">&#40;</span><span class="st0">&quot;m_Color&quot;</span>, ColorRGBA.<span class="me1">Blue</span><span class="br0">&#41;</span>;
+        Material mat1 <span class="sy0">=</span> <span class="kw1">new</span> Material<span class="br0">&#40;</span>assetManager, <span class="st0">&quot;Common/MatDefs/Misc/Unshaded.j3md&quot;</span><span class="br0">&#41;</span>;
+        mat1.<span class="me1">setColor</span><span class="br0">&#40;</span><span class="st0">&quot;Color&quot;</span>, ColorRGBA.<span class="me1">Blue</span><span class="br0">&#41;</span>;
         blue.<span class="me1">setMaterial</span><span class="br0">&#40;</span>mat1<span class="br0">&#41;</span>;</pre></div>
 </li>
 </ul>
@@ -135,8 +135,8 @@ So what exactly happens in this code snippet? Note that we are using the <code>s
 </li>
 <li class="level2"><div class="li"> We give it a solid red material<pre class="code java">        <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Abox+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object><span class="br0">&#40;</span> <span class="kw1">new</span> Vector3f<span class="br0">&#40;</span><span class="nu0">1</span>,<span class="nu0">3</span>,<span class="nu0">1</span><span class="br0">&#41;</span>, <span class="nu0">1</span>,<span class="nu0">1</span>,<span class="nu0">1</span><span class="br0">&#41;</span>;
         Geometry red <span class="sy0">=</span> <span class="kw1">new</span> Geometry<span class="br0">&#40;</span><span class="st0">&quot;Box&quot;</span>, box2<span class="br0">&#41;</span>;
-        Material mat2 <span class="sy0">=</span> <span class="kw1">new</span> Material<span class="br0">&#40;</span>assetManager, <span class="st0">&quot;Common/MatDefs/Misc/SolidColor.j3md&quot;</span><span class="br0">&#41;</span>;
-        mat2.<span class="me1">setColor</span><span class="br0">&#40;</span><span class="st0">&quot;m_Color&quot;</span>, ColorRGBA.<span class="me1">Red</span><span class="br0">&#41;</span>;
+        Material mat2 <span class="sy0">=</span> <span class="kw1">new</span> Material<span class="br0">&#40;</span>assetManager, <span class="st0">&quot;Common/MatDefs/Misc/Unshaded.j3md&quot;</span><span class="br0">&#41;</span>;
+        mat2.<span class="me1">setColor</span><span class="br0">&#40;</span><span class="st0">&quot;Color&quot;</span>, ColorRGBA.<span class="me1">Red</span><span class="br0">&#41;</span>;
         red.<span class="me1">setMaterial</span><span class="br0">&#40;</span>mat2<span class="br0">&#41;</span>;</pre></div>
 </li>
 </ul>
@@ -190,25 +190,16 @@ You work with two types of Spatials in your scenegraph: Nodes and Geometries. He
 </p>
 <table class="inline">
 	<tr class="row0">
-		<td class="col0 rightalign">  </td><th class="col1" colspan="2"> Spatial </th>
-	</tr>
-	<tr class="row1">
-		<th class="col0"> Purpose: </th><td class="col1" colspan="2"> A Spatial is an abstract data structure that stores transformations (translation, rotation, scale). </td>
-	</tr>
-	<tr class="row2">
 		<td class="col0 rightalign">  </td><th class="col1"> Geometry </th><th class="col2"> Node </th>
 	</tr>
+	<tr class="row1">
+		<th class="col0"> Visibility: </th><td class="col1"> A visible 3-D object. </td><td class="col2"> An invisible “handle”. </td>
+	</tr>
+	<tr class="row2">
+		<th class="col0"> Purpose: </th><td class="col1"> A Geometry stores an object&#039;s looks. </td><td class="col2"> A Node groups Geometries and other Nodes together. </td>
+	</tr>
 	<tr class="row3">
-		<th class="col0"> Visibility: </th><td class="col1"> A Geometry represents a visible 3-D object. </td><td class="col2"> A Node is an invisible “handle”. </td>
-	</tr>
-	<tr class="row4">
-		<th class="col0"> Purpose: </th><td class="col1"> A Geometry stores an object&#039;s looks: Every Geometry has a mesh (shape), and a material (surface) specifying color, texture, and opacity/transparency. </td><td class="col2"> A Node groups Geometries and other Nodes together: When you transform a parent Node, all its child Nodes are transformed as well. </td>
-	</tr>
-	<tr class="row5">
-		<th class="col0"> Content: </th><td class="col1"> transformations, mesh, material. </td><td class="col2"> transformations, no mesh, no material. </td>
-	</tr>
-	<tr class="row6">
-		<th class="col0"> Examples: </th><td class="col1"> A box, a sphere, player, a building, a piece of terrain, a vehicle, missiles, NPCs, etc… </td><td class="col2"> The default <code>rootNode</code>, the <code>guiNode</code> (for on-screen text); a floor node, a custom vehicle-with-passengers node, an audio node, etc. </td>
+		<th class="col0"> Examples: </th><td class="col1"> A box, a sphere, player, a building, a piece of terrain, a vehicle, missiles, NPCs, etc… </td><td class="col2"> The default <code>rootNode</code>, the <code>guiNode</code> (for on-screen text); a floor node, a custom vehicle-with-passengers node, an audio node, etc… </td>
 	</tr>
 </table>
 
@@ -268,11 +259,11 @@ There are three types of 3D transformation: Translation (moving), Scaling (resiz
  Example: Make it 10 times longer, one tenth of the height, same width: <pre class="code java">thing.<span class="me1">setLocalScale</span><span class="br0">&#40;</span> 10.0f, 0.1f, 1.0f  <span class="br0">&#41;</span>;</pre><pre class="code java">thing.<span class="me1">scale</span><span class="br0">&#40;</span> 10.0f, 0.1f, 1.0f <span class="br0">&#41;</span>;</pre></td><td class="col2">length</td><td class="col3">height</td><td class="col4">width</td>
 	</tr>
 	<tr class="row3">
-		<td class="col0"> Turn objects </td><td class="col1"> <strong>Rotation:</strong> 3-D rotation is a bit tricky (<a href="/com/jme3/gde/core/docs/rotate.html" class="wikilink2" title="rotate" rel="nofollow">learn details here</a>). In short: You can rotate around three axes, pitch, yaw, and roll. <br/>
+		<td class="col0"> Turn objects </td><td class="col1"> <strong>Rotation:</strong> 3-D rotation is a bit tricky (<a href="/com/jme3/gde/core/docs/jme2/rotate.html" class="wikilink1" title="jme2:rotate">learn details here</a>). In short: You can rotate around three axes, pitch, yaw, and roll. <br/>
  Important: <strong>You do not specify the rotation in degrees from 0° to 360°, but in radians from 0.0f to 6.28f (FastMath.PI*2) !</strong> <br/>
  Example: To roll an object 180° around the z axis: <pre class="code java">thing.<span class="me1">rotate</span><span class="br0">&#40;</span> 0f , 0f , FastMath.<span class="me1">PI</span> <span class="br0">&#41;</span>;</pre>
 <p>
-  Tip: If your game idea calls for a serious amount of rotations, it is worth looking into <a href="/com/jme3/gde/core/docs/quaternion.html" class="wikilink2" title="quaternion" rel="nofollow">quaternion</a>s, a data structure that can combine and store rotations efficiently. 
+  Tip: If your game idea calls for a serious amount of rotations, it is worth looking into <a href="/com/jme3/gde/core/docs/jme2/quaternion.html" class="wikilink1" title="jme2:quaternion">quaternion</a>s, a data structure that can combine and store rotations efficiently. 
 </p>
 <pre class="code java">thing.<span class="me1">setLocalRotation</span><span class="br0">&#40;</span> <span class="kw1">new</span> Quaternion<span class="br0">&#40;</span><span class="br0">&#41;</span>. <span class="me1">fromAngleAxis</span><span class="br0">&#40;</span>FastMath.<span class="me1">PI</span><span class="sy0">/</span><span class="nu0">2</span>, <span class="kw1">new</span> Vector3f<span class="br0">&#40;</span><span class="nu0">1</span>,0,0<span class="br0">&#41;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;</pre></td><td class="col2">pitch</td><td class="col3">yaw</td><td class="col4">roll</td>
 	</tr>

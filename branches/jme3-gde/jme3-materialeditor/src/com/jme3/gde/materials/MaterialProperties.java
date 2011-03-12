@@ -6,7 +6,6 @@ package com.jme3.gde.materials;
 
 import com.jme3.gde.core.assets.ProjectAssetManager;
 import com.jme3.system.JmeSystem;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -18,6 +17,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileSystem;
 import org.openide.filesystems.FileUtil;
@@ -160,7 +161,8 @@ public class MaterialProperties {
 
     private void initMatDef() {
         //try to read from assets folder
-        matDef = FileUtil.toFileObject(new File(manager.getFolderName() + "/" + getMatDefName()).getAbsoluteFile());
+        matDef = manager.getAssetFolder().getFileObject(getMatDefName());
+
         //try to read from classpath if not in assets folder and store in a virtual filesystem folder
         if (matDef == null || !matDef.isValid()) {
             try {
@@ -230,10 +232,12 @@ public class MaterialProperties {
             } catch (IOException ex) {
                 Exceptions.printStackTrace(ex);
             }
+        } else {
+            Logger.getLogger(MaterialProperties.class.getName()).log(Level.WARNING, "Could not read MaterialDef!");
         }
         for (Iterator<Map.Entry<String, MaterialProperty>> it = materialParameters.entrySet().iterator(); it.hasNext();) {
             Map.Entry<String, MaterialProperty> entry = it.next();
-            if(!matDefEntries.contains(entry.getKey())){
+            if (!matDefEntries.contains(entry.getKey())) {
                 it.remove();
             }
         }
@@ -434,7 +438,7 @@ public class MaterialProperties {
         this.name = name;
     }
 
-    public void setAsText(String text) throws IOException{
+    public void setAsText(String text) throws IOException {
         OutputStreamWriter out = new OutputStreamWriter(material.getOutputStream());
         out.write(text, 0, text.length());
         out.close();
