@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -33,6 +34,7 @@ public class MaterialProperties {
     private FileObject matDef;
     private Map<String, MaterialProperty> materialParameters = new HashMap<String, MaterialProperty>();
     private Map<String, MaterialProperty> additionalRenderStates = new HashMap<String, MaterialProperty>();
+    private List<String> matDefEntries = new ArrayList<String>();
     private ProjectAssetManager manager;
     private FileSystem fs;
     public static final String[] variableTypes = new String[]{"Int", "Boolean", "Float", "Vector2", "Vector3", "Vector4", "Color", "Texture2D", "TextureCubeMap"};
@@ -156,8 +158,6 @@ public class MaterialProperties {
     }
 
     private void initMatDef() {
-        //TODO: remove only those not existing for possible switching
-        materialParameters.clear();
         //try to read from assets folder
         matDef = FileUtil.toFileObject(new File(manager.getFolderName() + "/" + getMatDefName()).getAbsoluteFile());
         //try to read from classpath if not in assets folder and store in a virtual filesystem folder
@@ -188,6 +188,7 @@ public class MaterialProperties {
      */
     private void parseMatDef() {
         //load matdef
+        matDefEntries.clear();
         boolean params = false;
         int level = 0;
         if (matDef != null && matDef.isValid()) {
@@ -212,6 +213,7 @@ public class MaterialProperties {
                             String string = variableTypes[i];
                             if (defLine.startsWith(string)) {
                                 String name = trimName(defLine.replaceFirst(string, ""));
+                                matDefEntries.add(name);
                                 MaterialProperty prop = materialParameters.get(name);
                                 if (prop == null) {
                                     prop = new MaterialProperty();
@@ -226,6 +228,12 @@ public class MaterialProperties {
                 }
             } catch (IOException ex) {
                 Exceptions.printStackTrace(ex);
+            }
+        }
+        for (Iterator<Map.Entry<String, MaterialProperty>> it = materialParameters.entrySet().iterator(); it.hasNext();) {
+            Map.Entry<String, MaterialProperty> entry = it.next();
+            if(!matDefEntries.contains(entry.getKey())){
+                it.remove();
             }
         }
     }
@@ -276,7 +284,7 @@ public class MaterialProperties {
                     if (params) {
                         for (Iterator<Map.Entry<String, MaterialProperty>> it = materialParameters.entrySet().iterator(); it.hasNext();) {
                             Map.Entry<String, MaterialProperty> entry = it.next();
-                            if (!setValues.contains(entry.getKey())) {
+                            if (!setValues.contains(entry.getKey()) && matDefEntries.contains(entry.getKey())) {
                                 MaterialProperty prop = entry.getValue();
                                 if (prop.getValue() != null && prop.getValue().length() > 0) {
                                     String myLine = "        " + prop.getName() + " : " + prop.getValue() + "\n";
@@ -334,6 +342,8 @@ public class MaterialProperties {
                             } else {
                                 newLine = null;
                             }
+                        } else if (!matDefEntries.contains(myName)) {
+                            newLine = null;
                         }
                     }
                 }
