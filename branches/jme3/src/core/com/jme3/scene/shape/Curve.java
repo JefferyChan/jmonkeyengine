@@ -104,6 +104,9 @@ public class Curve extends Mesh {
 	 *            amount of subsegments between position control points
 	 */
 	private void createBezierMesh(int nbSubSegments) {
+		if(nbSubSegments==0) {
+			nbSubSegments = 1;
+		}
 		int centerPointsAmount = (spline.getControlPoints().size() + 2) / 3;
 		
 		//calculating vertices
