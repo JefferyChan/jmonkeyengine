@@ -15,7 +15,7 @@
                 <interact onClick="startIntro()"/>
                 <effect>
                     <onStartScreen name="fade" startColor="#0000" endColor="#000f" length="1500" startDelay="1500"/>
-                    <onEndScreen name="move" mode="out" direction="bottom" length="300" startDelay="0" inherit="true"/>
+                    <onEndScreen name="imageSize" startSize="1.0" endSize="0.0" length="300" inherit="true"/>
                 </effect>
             </image>
         </layer>
@@ -27,8 +27,8 @@
             <panel id="mainPanel" childLayout="vertical" height="80%" width="80%" align="center" valign="center">
                 <image align="center" valign="center" filename="Textures/f1-help.png" >
                     <effect>
-                        <onStartScreen name="move" mode="in" direction="top" length="300" startDelay="0" inherit="true"/>
-                        <onEndScreen name="move" mode="out" direction="bottom" length="300" startDelay="0" inherit="true"/>
+                        <onStartScreen name="imageSize" startSize="0.0" endSize="1.0" length="300" inherit="true"/>
+                        <onEndScreen name="imageSize" startSize="1.0" endSize="0.0" length="300" inherit="true"/>
                     </effect>
                     <interact onClick="startUpdating()"/>
                 </image>
@@ -42,8 +42,8 @@
             <panel id="mainPanel" childLayout="vertical" height="80%" width="80%" align="center" valign="center">
                 <image align="center" valign="center" filename="Textures/updating.png" >
                     <effect>
-                        <onStartScreen name="move" mode="in" direction="top" length="300" startDelay="0" inherit="true"/>
-                        <onEndScreen name="move" mode="out" direction="bottom" length="300" startDelay="0" inherit="true"/>
+                        <onStartScreen name="imageSize" startSize="0.0" endSize="1.0" length="300" inherit="true"/>
+                        <onEndScreen name="imageSize" startSize="1.0" endSize="0.0" length="300" inherit="true"/>
                     </effect>
                     <interact onClick="startPlanet()"/>
                 </image>
@@ -64,8 +64,8 @@
                 <control id="checkbox" name="checkbox" checked="false" align="right" />
                 <text style="nifty-label" text="dont show again   " align="right" />
                 <effect>
-                    <onStartScreen name="move" mode="in" direction="top" length="300" startDelay="0" inherit="true"/>
-                    <onEndScreen name="move" mode="out" direction="bottom" length="300" startDelay="0" inherit="true"/>
+                    <onStartScreen name="imageSize" startSize="0.0" endSize="1.0" length="300" inherit="true"/>
+                    <onEndScreen name="imageSize" startSize="1.0" endSize="0.0" length="300" inherit="true"/>
                 </effect>
             </panel>
         </layer>
