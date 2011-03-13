@@ -66,10 +66,7 @@ public class TestHoverTank extends SimpleApplication {
         chaseCam.setMinVerticalRotation(-FastMath.PI / 2);
         viewPort.setBackgroundColor(ColorRGBA.DarkGray);
 
-
-
         Geometry tankGeom = (Geometry) tank.getChild(0);
-        //    tankGeom.getMaterial().selectTechnique("Glow");
         LodControl control = new LodControl();
         tankGeom.addControl(control);
         rootNode.attachChild(tank);

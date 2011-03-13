@@ -2,7 +2,6 @@
 #define ATTENUATION
 //#define HQ_ATTENUATION
 
-
 varying vec2 texCoord;
 
 varying vec4 AmbientSum;
@@ -52,15 +51,8 @@ varying vec3 lightVec;
 #ifdef USE_REFLECTION 
     uniform float m_ReflectionPower;
     uniform float m_ReflectionIntensity;
-    varying vec3 refVec;
-#endif
+    varying vec4 refVec;
 
-#ifdef USE_REFRACTION 
-    uniform float m_RefractionIntensity;
-    varying vec3 rfrRed, rfrGreen, rfrBlue;
-#endif
-
-#if defined(USE_REFLECTION) || defined(USE_REFRACTION) 
     uniform ENVMAP m_EnvMap;
 #endif
 
@@ -195,27 +187,21 @@ void main(){
            diffuseColor.rgb  *= texture2D(m_ColorRamp, vec2(light.x, 0.0)).rgb;
            specularColor.rgb *= texture2D(m_ColorRamp, vec2(light.y, 0.0)).rgb;
        #endif
-    
-     gl_FragColor =  AmbientSum * diffuseColor +
-                       DiffuseSum * diffuseColor  * light.x +
-                       SpecularSum * specularColor * light.y;
 
        #ifdef USE_REFLECTION
-            vec4 refColor = Optics_GetEnvColor(m_EnvMap, refVec);
-            gl_FragColor  = mix(gl_FragColor , refColor, pow(specularColor,vec4(m_ReflectionPower)) * gl_FragColor * m_ReflectionIntensity);
-            
-       #endif  
-       
-       #ifdef USE_REFRACTION
+            vec4 refColor = Optics_GetEnvColor(m_EnvMap, refVec.xyz);
 
-            vec4 rfrColor = vec4(0.0, 0.0, 0.0, 1.0);
-            rfrColor.r = Optics_GetEnvColor(m_EnvMap, rfrRed).r;
-            rfrColor.g = Optics_GetEnvColor(m_EnvMap, rfrGreen).g;
-            rfrColor.b = Optics_GetEnvColor(m_EnvMap, rfrBlue).b;
-            
-            gl_FragColor  = mix(gl_FragColor , rfrColor, m_RefractionIntensity);
-            
-       #endif  
+            // Interpolate light specularity toward reflection color
+            // Multiply result by specular map
+            specularColor = mix(SpecularSum * light.y, refColor, refVec.w) * specularColor;
+
+            SpecularSum = vec4(1.0);
+            light.y = 1.0;
+       #endif
+
+       gl_FragColor =  AmbientSum * diffuseColor +
+                       DiffuseSum * diffuseColor  * light.x +
+                       SpecularSum * specularColor * light.y;
     #endif
     gl_FragColor.a = alpha;
 }

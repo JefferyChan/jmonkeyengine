@@ -73,28 +73,17 @@ MaterialDef Phong Lighting {
         // The glow color of the object
         Color GlowColor
 
-        // set to true to use reflection
-        Boolean UseReflection
-
-        // the power used for specular reflection
-        Float ReflectionPower;
-        
-        // The intensity of the reflection
-        Float ReflectionIntensity;
-
-        
-        // set to true to use refraction
-        Boolean UseRefraction
-
-        // the refraction intensity
-        Float RefractionIntensity
+        // Parameters for fresnel
+        // X = bias
+        // Y = scale
+        // Z = power
+        Vector3 FresnelParams
 
         // Env Map for reflection
         TextureCubeMap EnvMap
 
         // the env map is a spheremap and not a cube map
         Boolean EnvMapAsSphereMap
-
     }
 
     Technique {
@@ -132,8 +121,7 @@ MaterialDef Phong Lighting {
             ALPHAMAP : AlphaMap
             COLORRAMP : ColorRamp
 
-            USE_REFLECTION : UseReflection
-            USE_REFRACTION : UseRefraction
+            USE_REFLECTION : EnvMap
             SPHERE_MAP : SphereMap
         }
     }

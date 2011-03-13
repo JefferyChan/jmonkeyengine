@@ -278,7 +278,6 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
         if (param instanceof MatParamTexture) {
             return (MatParamTexture) param;
         }
-
         return null;
     }
 
@@ -297,13 +296,16 @@ public class Material implements Cloneable, Savable, Comparable<Material> {
             } else {
                 logger.log(Level.WARNING, "Material parameter {0} uses a deprecated naming convention use {1} instead ", new Object[]{name, newName});
             }
+        }else if (paramDef == null){
+            throw new IllegalArgumentException("Material parameter is not defined: " + name);
         }
 
-        if (type != null && paramDef != null && paramDef.getVarType() != type) {
+        if (type != null && paramDef.getVarType() != type) {
             logger.logp(Level.WARNING, "Material parameter being set: {0} with "
                     + "type {1} doesn't match definition type {2}",
                     name, type.name(), paramDef.getVarType());
         }
+        
         return newName;
     }
 

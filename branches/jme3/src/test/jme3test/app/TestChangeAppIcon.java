@@ -47,16 +47,18 @@ public class TestChangeAppIcon extends SimpleApplication {
 
     private static final Logger log=Logger.getLogger(TestChangeAppIcon.class.getName());
 
-    public void main(String[] args) {
+    public static void main(String[] args) {
         TestChangeAppIcon app = new TestChangeAppIcon();
         AppSettings settings = new AppSettings(true);
 
         try {
+            Class<TestChangeAppIcon> clazz = TestChangeAppIcon.class;
+
             settings.setIcons(new BufferedImage[]{
-                        ImageIO.read(getClass().getResourceAsStream("/Interface/icons/SmartMonkey256.png")),
-                        ImageIO.read(getClass().getResourceAsStream("/Interface/icons/SmartMonkey128.png")),
-                        ImageIO.read(getClass().getResourceAsStream("/Interface/icons/SmartMonkey32.png")),
-                        ImageIO.read(getClass().getResourceAsStream("/Interface/icons/SmartMonkey16.png")),
+                        ImageIO.read(clazz.getResourceAsStream("/Interface/icons/SmartMonkey256.png")),
+                        ImageIO.read(clazz.getResourceAsStream("/Interface/icons/SmartMonkey128.png")),
+                        ImageIO.read(clazz.getResourceAsStream("/Interface/icons/SmartMonkey32.png")),
+                        ImageIO.read(clazz.getResourceAsStream("/Interface/icons/SmartMonkey16.png")),
                     });
         } catch (IOException e) {
             log.log(java.util.logging.Level.WARNING, "Unable to load program icons", e);
@@ -67,14 +69,11 @@ public class TestChangeAppIcon extends SimpleApplication {
 
     @Override
     public void simpleInitApp() {
-                /** Write text on the screen (HUD) */
+        // Write text on the screen (HUD)
         guiNode.detachAllChildren();
-        guiFont = assetManager.loadFont("Interface/Fonts/Default.fnt");
-        BitmapText helloText = new BitmapText(guiFont, false);
-        helloText.setSize(guiFont.getCharSet().getRenderedSize());
+        BitmapText helloText = new BitmapText(guiFont);
         helloText.setText("The icon of the app should be a smart monkey!");
         helloText.setLocalTranslation(300, helloText.getLineHeight(), 0);
         guiNode.attachChild(helloText);
-
     }
 }

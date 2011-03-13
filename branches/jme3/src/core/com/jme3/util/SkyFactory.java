@@ -52,7 +52,6 @@ public class SkyFactory {
         cubeImage.addData(downImg.getData(0));
         cubeImage.addData(upImg.getData(0));
 
-        
         cubeImage.addData(southImg.getData(0));
         cubeImage.addData(northImg.getData(0));
 
