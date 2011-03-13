@@ -83,7 +83,7 @@ public final class BoneAnimation implements Savable {
     void setTime(float time, Skeleton skeleton, float weight, BitSet affectedBones){
         for (int i = 0; i < tracks.length; i++){
             if (affectedBones == null
-             || affectedBones.get(tracks[i].getTargetBoneIndex()))
+             || affectedBones.get(tracks[i].getTargetBoneIndex()))               
                 tracks[i].setTime(time, skeleton, weight);
         }
     }

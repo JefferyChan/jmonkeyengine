@@ -29,7 +29,6 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package com.jme3.animation;
 
 import com.jme3.export.JmeExporter;
@@ -50,7 +49,6 @@ public final class BoneTrack implements Savable {
      * Bone index in the skeleton which this track effects.
      */
     private int targetBoneIndex;
-
     /**
      * Transforms and times for track.
      */
@@ -58,7 +56,6 @@ public final class BoneTrack implements Savable {
     private CompactQuaternionArray rotations;
     private CompactVector3Array scales;
     private float[] times;
-
     // temp vectors for interpolation
     private transient final Vector3f tempV = new Vector3f();
     private transient final Quaternion tempQ = new Quaternion();
@@ -66,24 +63,24 @@ public final class BoneTrack implements Savable {
     private transient final Vector3f tempV2 = new Vector3f();
     private transient final Quaternion tempQ2 = new Quaternion();
     private transient final Vector3f tempS2 = new Vector3f();
-    
+
     /**
      * Serialization-only. Do not use.
      */
-    public BoneTrack(){
+    public BoneTrack() {
     }
 
-    public BoneTrack(int targetBoneIndex, float[] times, Vector3f[] translations, Quaternion[] rotations){
+    public BoneTrack(int targetBoneIndex, float[] times, Vector3f[] translations, Quaternion[] rotations) {
         this.targetBoneIndex = targetBoneIndex;
         this.setKeyframes(times, translations, rotations);
     }
-    
-    public BoneTrack(int targetBoneIndex, float[] times, Vector3f[] translations, Quaternion[] rotations, Vector3f[] scales){
+
+    public BoneTrack(int targetBoneIndex, float[] times, Vector3f[] translations, Quaternion[] rotations, Vector3f[] scales) {
         this(targetBoneIndex, times, translations, rotations);
         this.setKeyframes(times, translations, rotations);
     }
 
-    public BoneTrack(int targetBoneIndex){
+    public BoneTrack(int targetBoneIndex) {
         this.targetBoneIndex = targetBoneIndex;
     }
 
@@ -96,9 +93,9 @@ public final class BoneTrack implements Savable {
     }
 
     public Vector3f[] getScales() {
-		return scales==null ? null : scales.toObjectArray();
-	}
-    
+        return scales == null ? null : scales.toObjectArray();
+    }
+
     public float[] getTimes() {
         return times;
     }
@@ -107,10 +104,10 @@ public final class BoneTrack implements Savable {
         return translations.toObjectArray();
     }
 
-    public void setKeyframes(float[] times, Vector3f[] translations, Quaternion[] rotations){
+    public void setKeyframes(float[] times, Vector3f[] translations, Quaternion[] rotations) {
         if (times.length == 0) {
-			throw new RuntimeException("BoneTrack with no keyframes!");
-		}
+            throw new RuntimeException("BoneTrack with no keyframes!");
+        }
 
         assert times.length == translations.length && times.length == rotations.length;
 
@@ -121,17 +118,17 @@ public final class BoneTrack implements Savable {
         this.rotations = new CompactQuaternionArray();
         this.rotations.add(rotations);
         this.rotations.freeze();
-    }  
+    }
 
-    public void setKeyframes(float[] times, Vector3f[] translations, Quaternion[] rotations, Vector3f[] scales){
+    public void setKeyframes(float[] times, Vector3f[] translations, Quaternion[] rotations, Vector3f[] scales) {
         this.setKeyframes(times, translations, rotations);
-        if(scales!=null) {
-        	this.scales = new CompactVector3Array();
-        	this.scales.add(scales);
-        	this.scales.freeze();
+        if (scales != null) {
+            this.scales = new CompactVector3Array();
+            this.scales.add(scales);
+            this.scales.freeze();
         }
-    } 
-    
+    }
+
     /**
      * Modify the bone which this track modifies in the skeleton to contain
      * the correct animation transforms for a given time.
@@ -141,58 +138,59 @@ public final class BoneTrack implements Savable {
         Bone target = skeleton.getBone(targetBoneIndex);
 
         int lastFrame = times.length - 1;
-        if (time < 0 || lastFrame == 0){
+        if (time < 0 || lastFrame == 0) {
             rotations.get(0, tempQ);
             translations.get(0, tempV);
-            if(scales!=null) {
-            	scales.get(0, tempS);
+            if (scales != null) {
+                scales.get(0, tempS);
             }
-        }else if (time >= times[lastFrame]){
+        } else if (time >= times[lastFrame]) {
             rotations.get(lastFrame, tempQ);
             translations.get(lastFrame, tempV);
-            if(scales!=null) {
-            	scales.get(lastFrame, tempS);
+            if (scales != null) {
+                scales.get(lastFrame, tempS);
             }
-        }else{
+        } else {
             int startFrame = 0;
-            int endFrame   = 1;
-            // use len-1 so we never overflow the array
-            for (int i = 0; i < times.length-1; i++){
-                if (times[i] < time){
-                    startFrame = i;
-                    endFrame   = i + 1;
-                }
+            int endFrame = 1;
+            // use lastFrame so we never overflow the array
+            int i;
+            for (i = 0; i < lastFrame && times[i] < time; i++) {
+                startFrame = i;                
             }
-            float blend =  (time - times[startFrame])
-                         / (times[endFrame] - times[startFrame]);
+            //i is now startFrame+1;
+            endFrame = i ;
+
+            float blend = (time - times[startFrame])
+                    / (times[endFrame] - times[startFrame]);
 
             rotations.get(startFrame, tempQ);
             translations.get(startFrame, tempV);
-            if(scales!=null) {
-            	scales.get(startFrame, tempS);
+            if (scales != null) {
+                scales.get(startFrame, tempS);
             }
             rotations.get(endFrame, tempQ2);
             translations.get(endFrame, tempV2);
-            if(scales!=null) {
-            	scales.get(startFrame, tempS2);
+            if (scales != null) {
+                scales.get(startFrame, tempS2);
             }
             tempQ.slerp(tempQ2, blend);
             tempV.interpolate(tempV2, blend);
-            tempS.interpolate(tempS, blend);
+            tempS.interpolate(tempS2, blend);
         }
 
-        if (weight != 1f){
+        if (weight != 1f) {
 //            tempQ.slerp(Quaternion.IDENTITY, 1f - weight);
 //            tempV.multLocal(weight);
-            target.blendAnimTransforms(tempV, tempQ, weight);
+            target.blendAnimTransforms(tempV, tempQ, scales != null?tempS:null, weight);
 //            target.setAnimTransforms(tempV, tempQ);
-        }else{
-            target.setAnimTransforms(tempV, tempQ);
+        } else {
+            target.setAnimTransforms(tempV, tempQ, scales != null?tempS:null);
         }
     }
 
     @Override
-	public void write(JmeExporter ex) throws IOException {
+    public void write(JmeExporter ex) throws IOException {
         OutputCapsule oc = ex.getCapsule(this);
         oc.write(targetBoneIndex, "boneIndex", 0);
         oc.write(translations, "translations", null);
@@ -202,7 +200,7 @@ public final class BoneTrack implements Savable {
     }
 
     @Override
-	public void read(JmeImporter im) throws IOException {
+    public void read(JmeImporter im) throws IOException {
         InputCapsule ic = im.getCapsule(this);
         targetBoneIndex = ic.readInt("boneIndex", 0);
 
@@ -214,21 +212,21 @@ public final class BoneTrack implements Savable {
 
 
         //Backward compatibility for old j3o files generated before revision 6807
-        if(translations==null){
+        if (translations == null) {
             Savable[] sav = ic.readSavableArray("translations", null);
-            if (sav != null){
+            if (sav != null) {
                 translations = new CompactVector3Array();
-                Vector3f[] transCopy= new Vector3f[sav.length];
+                Vector3f[] transCopy = new Vector3f[sav.length];
                 System.arraycopy(sav, 0, transCopy, 0, sav.length);
                 translations.add(transCopy);
                 translations.freeze();
             }
         }
-        if(rotations==null){
+        if (rotations == null) {
             Savable[] sav = ic.readSavableArray("rotations", null);
-            if (sav != null){
+            if (sav != null) {
                 rotations = new CompactQuaternionArray();
-                Quaternion[] rotCopy= new Quaternion[sav.length];
+                Quaternion[] rotCopy = new Quaternion[sav.length];
                 System.arraycopy(sav, 0, rotCopy, 0, sav.length);
                 rotations.add(rotCopy);
                 rotations.freeze();

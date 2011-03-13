@@ -29,7 +29,6 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package com.jme3.animation;
 
 import com.jme3.export.JmeExporter;
@@ -53,7 +52,6 @@ public final class Skeleton implements Savable {
 
     private Bone[] rootBones;
     private Bone[] boneList;
-
     /**
      * Contains the skinning matrices, multiplying it by a vertex effected by a bone
      * will cause it to go to the animated position.
@@ -64,20 +62,21 @@ public final class Skeleton implements Savable {
      * Creates a skeleton from a bone list. The root bone is found automatically.
      * @param boneList
      */
-    public Skeleton(Bone[] boneList){
+    public Skeleton(Bone[] boneList) {
         this.boneList = boneList;
 
         List<Bone> rootBoneList = new ArrayList<Bone>();
-        for (int i = boneList.length - 1; i >= 0; i--){
+        for (int i = boneList.length - 1; i >= 0; i--) {
             Bone b = boneList[i];
-            if (b.getParent() == null)
+            if (b.getParent() == null) {
                 rootBoneList.add(b);
+            }
         }
         rootBones = rootBoneList.toArray(new Bone[rootBoneList.size()]);
 
         createSkinningMatrices();
 
-        for (int i = rootBones.length - 1; i >= 0; i--){
+        for (int i = rootBones.length - 1; i >= 0; i--) {
             Bone rootBone = rootBones[i];
             rootBone.update();
             rootBone.setBindingPose();
@@ -89,20 +88,22 @@ public final class Skeleton implements Savable {
      * Most of the skeleton data is deeply-copied except the bone bind and inverseBind transforms.
      * @param source
      */
-    public Skeleton(Skeleton source){
+    public Skeleton(Skeleton source) {
         Bone[] sourceList = source.boneList;
         boneList = new Bone[sourceList.length];
-        for (int i = 0; i < sourceList.length; i++)
+        for (int i = 0; i < sourceList.length; i++) {
             boneList[i] = new Bone(sourceList[i]);
+        }
 
         rootBones = new Bone[source.rootBones.length];
-        for (int i = 0; i < rootBones.length; i++){
+        for (int i = 0; i < rootBones.length; i++) {
             rootBones[i] = recreateBoneStructure(source.rootBones[i]);
         }
         createSkinningMatrices();
 
-        for (int i = rootBones.length - 1; i >= 0; i--)
+        for (int i = rootBones.length - 1; i >= 0; i--) {
             rootBones[i].update();
+        }
     }
 
     /**
@@ -113,16 +114,17 @@ public final class Skeleton implements Savable {
     public Skeleton() {
     }
 
-    private void createSkinningMatrices(){
+    private void createSkinningMatrices() {
         skinningMatrixes = new Matrix4f[boneList.length];
-        for (int i = 0; i < skinningMatrixes.length; i++)
+        for (int i = 0; i < skinningMatrixes.length; i++) {
             skinningMatrixes[i] = new Matrix4f();
+        }
     }
 
-    private Bone recreateBoneStructure(Bone sourceRoot){
+    private Bone recreateBoneStructure(Bone sourceRoot) {
         Bone targetRoot = getBone(sourceRoot.getName());
         List<Bone> children = sourceRoot.getChildren();
-        for (int i = 0; i < children.size(); i++){
+        for (int i = 0; i < children.size(); i++) {
             Bone sourceChild = children.get(i);
             // find my version of the child
             Bone targetChild = getBone(sourceChild.getName());
@@ -137,64 +139,81 @@ public final class Skeleton implements Savable {
      * Updates world transforms for all bones in this skeleton.
      * Typically called after setting local animation transforms.
      */
-    public void updateWorldVectors(){
-        for (int i = rootBones.length - 1; i >= 0; i--)
+    public void updateWorldVectors() {
+        for (int i = rootBones.length - 1; i >= 0; i--) {
             rootBones[i].update();
+        }
     }
 
     /**
      * Saves the current skeleton state as it's binding pose.
      */
-    public void setBindingPose(){
-        for (int i = rootBones.length - 1; i >= 0; i--)
+    public void setBindingPose() {
+        for (int i = rootBones.length - 1; i >= 0; i--) {
             rootBones[i].setBindingPose();
+        }
     }
 
     /**
      * Reset the skeleton to bind pose.
      */
-    public final void reset(){
-        for (int i = rootBones.length-1; i >= 0; i--)
+    public final void reset() {
+        for (int i = rootBones.length - 1; i >= 0; i--) {
             rootBones[i].reset();
+        }
     }
 
-    public final void resetAndUpdate(){
-        for (int i = rootBones.length-1; i >= 0; i--){
+    public final void resetAndUpdate() {
+        for (int i = rootBones.length - 1; i >= 0; i--) {
             Bone rootBone = rootBones[i];
             rootBone.reset();
             rootBone.update();
         }
     }
 
-    public Bone[] getRoots(){
+    public Bone[] getRoots() {
         return rootBones;
     }
 
-    public Bone getBone(int index){
+    public Bone getBone(int index) {
         return boneList[index];
     }
 
-    public Bone getBone(String name){
-        for (int i = 0; i < boneList.length; i++)
-            if (boneList[i].getName().equals(name))
+    public Bone getBone(String name) {
+        for (int i = 0; i < boneList.length; i++) {
+            if (boneList[i].getName().equals(name)) {
                 return boneList[i];
+            }
+        }
 
         return null;
     }
 
-    public int getBoneIndex(Bone bone){
-        for (int i = 0; i < boneList.length; i++)
-            if (boneList[i] == bone)
+    public int getBoneIndex(Bone bone) {
+        for (int i = 0; i < boneList.length; i++) {
+            if (boneList[i] == bone) {
                 return i;
+            }
+        }
 
         return -1;
     }
 
-    public Matrix4f[] computeSkinningMatrices(){
+    public int getBoneIndex(String name) {
+        for (int i = 0; i < boneList.length; i++) {           
+            if (boneList[i].getName().equals(name)) {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    public Matrix4f[] computeSkinningMatrices() {
         TempVars vars = TempVars.get();
         assert vars.lock();
-        for (int i = 0; i < boneList.length; i++){
-            boneList[i].getOffsetTransform(skinningMatrixes[i], vars.quat1, vars.vect1);
+        for (int i = 0; i < boneList.length; i++) {
+            boneList[i].getOffsetTransform(skinningMatrixes[i], vars.quat1, vars.vect1, vars.vect2);
         }
         assert vars.unlock();
         return skinningMatrixes;
@@ -204,10 +223,11 @@ public final class Skeleton implements Savable {
         return boneList.length;
     }
 
-    public String toString(){
+    @Override
+    public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("Skeleton - "+boneList.length+" bones, "+rootBones.length+" roots\n");
-        for (Bone rootBone : rootBones){
+        sb.append("Skeleton - ").append(boneList.length).append(" bones, ").append(rootBones.length).append(" roots\n");
+        for (Bone rootBone : rootBones) {
             sb.append(rootBone.toString());
         }
         return sb.toString();
@@ -219,14 +239,14 @@ public final class Skeleton implements Savable {
         Savable[] boneRootsAsSav = input.readSavableArray("rootBones", null);
         rootBones = new Bone[boneRootsAsSav.length];
         System.arraycopy(boneRootsAsSav, 0, rootBones, 0, boneRootsAsSav.length);
-        
+
         Savable[] boneListAsSavable = input.readSavableArray("boneList", null);
         boneList = new Bone[boneListAsSavable.length];
         System.arraycopy(boneListAsSavable, 0, boneList, 0, boneListAsSavable.length);
-        
+
         createSkinningMatrices();
 
-        for (Bone rootBone : rootBones){
+        for (Bone rootBone : rootBones) {
             rootBone.update();
             rootBone.setBindingPose();
         }

@@ -50,6 +50,7 @@ public class TestOgreComplexAnim extends SimpleApplication {
 
     private AnimControl control;
     private float angle = 0;
+    private float scale = 1;
     private float rate = 1;
 
     public static void main(String[] args) {
@@ -115,8 +116,9 @@ public class TestOgreComplexAnim extends SimpleApplication {
     @Override
     public void simpleUpdate(float tpf){
         Bone b = control.getSkeleton().getBone("spinehigh");
-
-        angle += tpf * rate;
+        Bone b2 = control.getSkeleton().getBone("uparm.left");
+        
+        angle += tpf * rate;        
         if (angle > FastMath.HALF_PI / 2f){
             angle = FastMath.HALF_PI / 2f;
             rate = -1;
@@ -129,7 +131,12 @@ public class TestOgreComplexAnim extends SimpleApplication {
         q.fromAngles(0, angle, 0);
 
         b.setUserControl(true);
-        b.setUserTransforms(Vector3f.ZERO, q, Vector3f.UNIT_XYZ);
+        b.setUserTransforms(Vector3f.ZERO, q, new Vector3f(angle, angle, angle));
+        
+//        b2.setUserControl(true);
+//        b2.setUserTransforms(Vector3f.ZERO, Quaternion.IDENTITY, new Vector3f(angle, angle, angle));
+//       
+  
     }
 
 }
