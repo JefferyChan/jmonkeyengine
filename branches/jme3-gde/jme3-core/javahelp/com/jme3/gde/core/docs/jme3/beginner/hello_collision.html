@@ -1,11 +1,11 @@
 
-<h1><a name="getting_started_with_jme3_9_-_hello_collision" id="getting_started_with_jme3_9_-_hello_collision">Getting Started with JME3 (9) - Hello Collision</a></h1>
-<div class="level1">
+<h1><a>Getting Started with JME3 (9) - Hello Collision</a></h1>
+<div>
 
 <p>
 
-Previous: <a href="/com/jme3/gde/core/docs/jme3/beginner/hello_picking.html" class="wikilink1" title="jme3:beginner:hello_picking">Hello Picking</a>,
-Next: <a href="/com/jme3/gde/core/docs/jme3/beginner/hello_audio.html" class="wikilink1" title="jme3:beginner:hello_audio">Hello Audio</a>
+Previous: <a href="/com/jme3/gde/core/docs/jme3/beginner/hello_picking.html">Hello Picking</a>,
+Next: <a href="/com/jme3/gde/core/docs/jme3/beginner/hello_audio.html">Hello Audio</a>
 </p>
 
 <p>
@@ -26,14 +26,14 @@ The solution shown here can be used for first-person shooters, mazes, and simila
 
 </div>
 
-<h2><a name="sample_code" id="sample_code">Sample Code</a></h2>
-<div class="level2">
+<h2><a>Sample Code</a></h2>
+<div>
 
 <p>
 
 If you don&#039;t have it yet, <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://jmonkeyengine.googlecode.com/svn/branches/jme3/town.zip"><param name="text" value="<html><u>download the town.zip</u></html>"><param name="textColor" value="blue"></object> sample scene. 
 </p>
-<pre class="code">jMonkeyProjects$ ls -1 BasicGame
+<pre>jMonkeyProjects$ ls -1 BasicGame
 assets/
 build.xml
 town.zip
@@ -42,132 +42,132 @@ src/</pre>
 <p>
 Place town.zip in the root directory of your JME3 project.
 </p>
-<pre class="code java"><span class="kw1">package</span> <span class="co2">jme3test.helloworld</span>;
+<pre>package jme3test.helloworld;
 &nbsp;
-<span class="kw1">import</span> <span class="co2">com.jme3.app.SimpleApplication</span>;
-<span class="kw1">import</span> <span class="co2">com.jme3.asset.plugins.ZipLocator</span>;
-<span class="kw1">import</span> <span class="co2">com.jme3.bullet.BulletAppState</span>;
-<span class="kw1">import</span> <span class="co2">com.jme3.bullet.collision.shapes.CapsuleCollisionShape</span>;
-<span class="kw1">import</span> <span class="co2">com.jme3.bullet.collision.shapes.CollisionShape</span>;
-<span class="kw1">import</span> <span class="co2">com.jme3.bullet.control.CharacterControl</span>;
-<span class="kw1">import</span> <span class="co2">com.jme3.bullet.control.RigidBodyControl</span>;
-<span class="kw1">import</span> <span class="co2">com.jme3.bullet.util.CollisionShapeFactory</span>;
-<span class="kw1">import</span> <span class="co2">com.jme3.input.KeyInput</span>;
-<span class="kw1">import</span> <span class="co2">com.jme3.input.controls.ActionListener</span>;
-<span class="kw1">import</span> <span class="co2">com.jme3.input.controls.KeyTrigger</span>;
-<span class="kw1">import</span> <span class="co2">com.jme3.light.AmbientLight</span>;
-<span class="kw1">import</span> <span class="co2">com.jme3.light.DirectionalLight</span>;
-<span class="kw1">import</span> <span class="co2">com.jme3.math.ColorRGBA</span>;
-<span class="kw1">import</span> <span class="co2">com.jme3.math.Vector3f</span>;
-<span class="kw1">import</span> <span class="co2">com.jme3.scene.Node</span>;
-<span class="kw1">import</span> <span class="co2">com.jme3.scene.Spatial</span>;
+import com.jme3.app.SimpleApplication;
+import com.jme3.asset.plugins.ZipLocator;
+import com.jme3.bullet.BulletAppState;
+import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
+import com.jme3.bullet.collision.shapes.CollisionShape;
+import com.jme3.bullet.control.CharacterControl;
+import com.jme3.bullet.control.RigidBodyControl;
+import com.jme3.bullet.util.CollisionShapeFactory;
+import com.jme3.input.KeyInput;
+import com.jme3.input.controls.ActionListener;
+import com.jme3.input.controls.KeyTrigger;
+import com.jme3.light.AmbientLight;
+import com.jme3.light.DirectionalLight;
+import com.jme3.math.ColorRGBA;
+import com.jme3.math.Vector3f;
+import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 &nbsp;
-<span class="co3">/**
+<span>/**
  * Example 9 - How to make walls and floors solid.
  * This version uses Physics and a custom Action Listener.
  * @author normen, with edits by Zathras
  */</span>
-<span class="kw1">public</span> <span class="kw1">class</span> HelloCollision <span class="kw1">extends</span> SimpleApplication
-  <span class="kw1">implements</span> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Aactionlistener+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object> <span class="br0">&#123;</span>
+public class HelloCollision extends SimpleApplication
+  implements ActionListener &#123;
 &nbsp;
-  <span class="kw1">private</span> Spatial sceneModel;
-  <span class="kw1">private</span> BulletAppState bulletAppState;
-  <span class="kw1">private</span> RigidBodyControl landscape;
-  <span class="kw1">private</span> CharacterControl player;
-  <span class="kw1">private</span> Vector3f walkDirection <span class="sy0">=</span> <span class="kw1">new</span> Vector3f<span class="br0">&#40;</span><span class="br0">&#41;</span>;
-  <span class="kw1">private</span> <span class="kw4">boolean</span> left <span class="sy0">=</span> <span class="kw2">false</span>, right <span class="sy0">=</span> <span class="kw2">false</span>, up <span class="sy0">=</span> <span class="kw2">false</span>, down <span class="sy0">=</span> <span class="kw2">false</span>;
+  private Spatial sceneModel;
+  private BulletAppState bulletAppState;
+  private RigidBodyControl landscape;
+  private CharacterControl player;
+  private Vector3f walkDirection = new Vector3f&#40;&#41;;
+  private boolean left = false, right = false, up = false, down = false;
 &nbsp;
-  <span class="kw1">public</span> <span class="kw1">static</span> <span class="kw4">void</span> main<span class="br0">&#40;</span><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Astring+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object><span class="br0">&#91;</span><span class="br0">&#93;</span> args<span class="br0">&#41;</span> <span class="br0">&#123;</span>
-    HelloCollision app <span class="sy0">=</span> <span class="kw1">new</span> HelloCollision<span class="br0">&#40;</span><span class="br0">&#41;</span>;
-    app.<span class="me1">start</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
-  <span class="br0">&#125;</span>
+  public static void main&#40;String&#91;&#93; args&#41; &#123;
+    HelloCollision app = new HelloCollision&#40;&#41;;
+    app.start&#40;&#41;;
+  &#125;
 &nbsp;
-  <span class="kw1">public</span> <span class="kw4">void</span> simpleInitApp<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-    <span class="co3">/** Set up Physics */</span>
-    bulletAppState <span class="sy0">=</span> <span class="kw1">new</span> BulletAppState<span class="br0">&#40;</span><span class="br0">&#41;</span>;
-    stateManager.<span class="me1">attach</span><span class="br0">&#40;</span>bulletAppState<span class="br0">&#41;</span>;
+  public void simpleInitApp&#40;&#41; &#123;
+    /** Set up Physics */
+    bulletAppState = new BulletAppState&#40;&#41;;
+    stateManager.attach&#40;bulletAppState&#41;;
 &nbsp;
-    <span class="co1">// We re-use the flyby camera for rotation, while positioning is handled by physics</span>
-    viewPort.<span class="me1">setBackgroundColor</span><span class="br0">&#40;</span><span class="kw1">new</span> ColorRGBA<span class="br0">&#40;</span>0.7f,0.8f,1f,1f<span class="br0">&#41;</span><span class="br0">&#41;</span>;
-    flyCam.<span class="me1">setMoveSpeed</span><span class="br0">&#40;</span><span class="nu0">100</span><span class="br0">&#41;</span>;
-    setUpKeys<span class="br0">&#40;</span><span class="br0">&#41;</span>;
-    setUpLight<span class="br0">&#40;</span><span class="br0">&#41;</span>;
+    // We re-use the flyby camera for rotation, while positioning is handled by physics
+    viewPort.setBackgroundColor&#40;new ColorRGBA&#40;0.7f,0.8f,1f,1f&#41;&#41;;
+    flyCam.setMoveSpeed&#40;100&#41;;
+    setUpKeys&#40;&#41;;
+    setUpLight&#40;&#41;;
 &nbsp;
-    <span class="co1">// We load the scene from the zip file and adjust its size.</span>
-    assetManager.<span class="me1">registerLocator</span><span class="br0">&#40;</span><span class="st0">&quot;town.zip&quot;</span>, ZipLocator.<span class="kw1">class</span>.<span class="me1">getName</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
-    sceneModel <span class="sy0">=</span> assetManager.<span class="me1">loadModel</span><span class="br0">&#40;</span><span class="st0">&quot;main.scene&quot;</span><span class="br0">&#41;</span>;
-    sceneModel.<span class="me1">setLocalScale</span><span class="br0">&#40;</span>2f<span class="br0">&#41;</span>;
+    // We load the scene from the zip file and adjust its size.
+    assetManager.registerLocator&#40;&quot;town.zip&quot;, ZipLocator.class.getName&#40;&#41;&#41;;
+    sceneModel = assetManager.loadModel&#40;&quot;main.scene&quot;&#41;;
+    sceneModel.setLocalScale&#40;2f&#41;;
 &nbsp;
-    <span class="co1">// We set up collision detection for the scene by creating a</span>
-    <span class="co1">// compound collision shape and a static physics node with mass zero.</span>
-    CollisionShape sceneShape <span class="sy0">=</span>
-      CollisionShapeFactory.<span class="me1">createMeshShape</span><span class="br0">&#40;</span><span class="br0">&#40;</span>Node<span class="br0">&#41;</span> sceneModel<span class="br0">&#41;</span>;
-    landscape <span class="sy0">=</span> <span class="kw1">new</span> RigidBodyControl<span class="br0">&#40;</span>sceneShape, 0<span class="br0">&#41;</span>;
-    sceneModel.<span class="me1">addControl</span><span class="br0">&#40;</span>landscape<span class="br0">&#41;</span>;
+    // We set up collision detection for the scene by creating a
+    // compound collision shape and a static physics node with mass zero.
+    CollisionShape sceneShape =
+      CollisionShapeFactory.createMeshShape&#40;&#40;Node&#41; sceneModel&#41;;
+    landscape = new RigidBodyControl&#40;sceneShape, 0&#41;;
+    sceneModel.addControl&#40;landscape&#41;;
 &nbsp;
-    <span class="co1">// We set up collision detection for the player by creating</span>
-    <span class="co1">// a capsule collision shape and a physics character node.</span>
-    <span class="co1">// The physics character node offers extra settings for</span>
-    <span class="co1">// size, stepheight, jumping, falling, and gravity.</span>
-    <span class="co1">// We also put the player in its starting position.</span>
-    CapsuleCollisionShape capsuleShape <span class="sy0">=</span> <span class="kw1">new</span> CapsuleCollisionShape<span class="br0">&#40;</span>1.5f, 6f, <span class="nu0">1</span><span class="br0">&#41;</span>;
-    player <span class="sy0">=</span> <span class="kw1">new</span> CharacterControl<span class="br0">&#40;</span>capsuleShape, 0.05f<span class="br0">&#41;</span>;
-    player.<span class="me1">setJumpSpeed</span><span class="br0">&#40;</span><span class="nu0">20</span><span class="br0">&#41;</span>;
-    player.<span class="me1">setFallSpeed</span><span class="br0">&#40;</span><span class="nu0">30</span><span class="br0">&#41;</span>;
-    player.<span class="me1">setGravity</span><span class="br0">&#40;</span><span class="nu0">30</span><span class="br0">&#41;</span>;
-    player.<span class="me1">setPhysicsLocation</span><span class="br0">&#40;</span><span class="kw1">new</span> Vector3f<span class="br0">&#40;</span>0, <span class="nu0">10</span>, 0<span class="br0">&#41;</span><span class="br0">&#41;</span>;
+    // We set up collision detection for the player by creating
+    // a capsule collision shape and a physics character node.
+    // The physics character node offers extra settings for
+    // size, stepheight, jumping, falling, and gravity.
+    // We also put the player in its starting position.
+    CapsuleCollisionShape capsuleShape = new CapsuleCollisionShape&#40;1.5f, 6f, 1&#41;;
+    player = new CharacterControl&#40;capsuleShape, 0.05f&#41;;
+    player.setJumpSpeed&#40;20&#41;;
+    player.setFallSpeed&#40;30&#41;;
+    player.setGravity&#40;30&#41;;
+    player.setPhysicsLocation&#40;new Vector3f&#40;0, 10, 0&#41;&#41;;
 &nbsp;
-    <span class="co1">// We attach the scene and the player to the rootnode and the physics space,</span>
-    <span class="co1">// to make them appear in the game world.</span>
-    rootNode.<span class="me1">attachChild</span><span class="br0">&#40;</span>sceneModel<span class="br0">&#41;</span>;
-    bulletAppState.<span class="me1">getPhysicsSpace</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">add</span><span class="br0">&#40;</span>landscape<span class="br0">&#41;</span>;
-    bulletAppState.<span class="me1">getPhysicsSpace</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">add</span><span class="br0">&#40;</span>player<span class="br0">&#41;</span>;
-  <span class="br0">&#125;</span>
+    // We attach the scene and the player to the rootnode and the physics space,
+    // to make them appear in the game world.
+    rootNode.attachChild&#40;sceneModel&#41;;
+    bulletAppState.getPhysicsSpace&#40;&#41;.add&#40;landscape&#41;;
+    bulletAppState.getPhysicsSpace&#40;&#41;.add&#40;player&#41;;
+  &#125;
 &nbsp;
-    <span class="kw1">private</span> <span class="kw4">void</span> setUpLight<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-        <span class="co1">// We add light so we see the scene</span>
-        AmbientLight al <span class="sy0">=</span> <span class="kw1">new</span> AmbientLight<span class="br0">&#40;</span><span class="br0">&#41;</span>;
-        al.<span class="me1">setColor</span><span class="br0">&#40;</span>ColorRGBA.<span class="me1">White</span>.<span class="me1">mult</span><span class="br0">&#40;</span>1.3f<span class="br0">&#41;</span><span class="br0">&#41;</span>;
-        rootNode.<span class="me1">addLight</span><span class="br0">&#40;</span>al<span class="br0">&#41;</span>;
+    private void setUpLight&#40;&#41; &#123;
+        // We add light so we see the scene
+        AmbientLight al = new AmbientLight&#40;&#41;;
+        al.setColor&#40;ColorRGBA.White.mult&#40;1.3f&#41;&#41;;
+        rootNode.addLight&#40;al&#41;;
 &nbsp;
-        DirectionalLight dl <span class="sy0">=</span> <span class="kw1">new</span> DirectionalLight<span class="br0">&#40;</span><span class="br0">&#41;</span>;
-        dl.<span class="me1">setColor</span><span class="br0">&#40;</span>ColorRGBA.<span class="me1">White</span><span class="br0">&#41;</span>; 
-        dl.<span class="me1">setDirection</span><span class="br0">&#40;</span><span class="kw1">new</span> Vector3f<span class="br0">&#40;</span>2.8f, <span class="sy0">-</span>2.8f, <span class="sy0">-</span>2.8f<span class="br0">&#41;</span>.<span class="me1">normalizeLocal</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
-        rootNode.<span class="me1">addLight</span><span class="br0">&#40;</span>dl<span class="br0">&#41;</span>;
-    <span class="br0">&#125;</span>
+        DirectionalLight dl = new DirectionalLight&#40;&#41;;
+        dl.setColor&#40;ColorRGBA.White&#41;; 
+        dl.setDirection&#40;new Vector3f&#40;2.8f, -2.8f, -2.8f&#41;.normalizeLocal&#40;&#41;&#41;;
+        rootNode.addLight&#40;dl&#41;;
+    &#125;
 &nbsp;
-  <span class="co3">/** We over-write some navigational key mappings here, so we can
+  <span>/** We over-write some navigational key mappings here, so we can
    * add physics-controlled walking and jumping: */</span>
-  <span class="kw1">private</span> <span class="kw4">void</span> setUpKeys<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-    inputManager.<span class="me1">addMapping</span><span class="br0">&#40;</span><span class="st0">&quot;Lefts&quot;</span>,  <span class="kw1">new</span> KeyTrigger<span class="br0">&#40;</span>KeyInput.<span class="me1">KEY_A</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
-    inputManager.<span class="me1">addMapping</span><span class="br0">&#40;</span><span class="st0">&quot;Rights&quot;</span>, <span class="kw1">new</span> KeyTrigger<span class="br0">&#40;</span>KeyInput.<span class="me1">KEY_D</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
-    inputManager.<span class="me1">addMapping</span><span class="br0">&#40;</span><span class="st0">&quot;Ups&quot;</span>,    <span class="kw1">new</span> KeyTrigger<span class="br0">&#40;</span>KeyInput.<span class="me1">KEY_W</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
-    inputManager.<span class="me1">addMapping</span><span class="br0">&#40;</span><span class="st0">&quot;Downs&quot;</span>,  <span class="kw1">new</span> KeyTrigger<span class="br0">&#40;</span>KeyInput.<span class="me1">KEY_S</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
-    inputManager.<span class="me1">addMapping</span><span class="br0">&#40;</span><span class="st0">&quot;Jumps&quot;</span>,  <span class="kw1">new</span> KeyTrigger<span class="br0">&#40;</span>KeyInput.<span class="me1">KEY_SPACE</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
-    inputManager.<span class="me1">addListener</span><span class="br0">&#40;</span><span class="kw1">this</span>, <span class="st0">&quot;Lefts&quot;</span><span class="br0">&#41;</span>;
-    inputManager.<span class="me1">addListener</span><span class="br0">&#40;</span><span class="kw1">this</span>, <span class="st0">&quot;Rights&quot;</span><span class="br0">&#41;</span>;
-    inputManager.<span class="me1">addListener</span><span class="br0">&#40;</span><span class="kw1">this</span>, <span class="st0">&quot;Ups&quot;</span><span class="br0">&#41;</span>;
-    inputManager.<span class="me1">addListener</span><span class="br0">&#40;</span><span class="kw1">this</span>, <span class="st0">&quot;Downs&quot;</span><span class="br0">&#41;</span>;
-    inputManager.<span class="me1">addListener</span><span class="br0">&#40;</span><span class="kw1">this</span>, <span class="st0">&quot;Jumps&quot;</span><span class="br0">&#41;</span>;
-  <span class="br0">&#125;</span>
+  private void setUpKeys&#40;&#41; &#123;
+    inputManager.addMapping&#40;&quot;Lefts&quot;,  new KeyTrigger&#40;KeyInput.KEY_A&#41;&#41;;
+    inputManager.addMapping&#40;&quot;Rights&quot;, new KeyTrigger&#40;KeyInput.KEY_D&#41;&#41;;
+    inputManager.addMapping&#40;&quot;Ups&quot;,    new KeyTrigger&#40;KeyInput.KEY_W&#41;&#41;;
+    inputManager.addMapping&#40;&quot;Downs&quot;,  new KeyTrigger&#40;KeyInput.KEY_S&#41;&#41;;
+    inputManager.addMapping&#40;&quot;Jumps&quot;,  new KeyTrigger&#40;KeyInput.KEY_SPACE&#41;&#41;;
+    inputManager.addListener&#40;this, &quot;Lefts&quot;&#41;;
+    inputManager.addListener&#40;this, &quot;Rights&quot;&#41;;
+    inputManager.addListener&#40;this, &quot;Ups&quot;&#41;;
+    inputManager.addListener&#40;this, &quot;Downs&quot;&#41;;
+    inputManager.addListener&#40;this, &quot;Jumps&quot;&#41;;
+  &#125;
 &nbsp;
-  <span class="co3">/** These are our custom actions triggered by key presses.
+  <span>/** These are our custom actions triggered by key presses.
    * We do not walk yet, we just keep track of the direction the user pressed. */</span>
-  <span class="kw1">public</span> <span class="kw4">void</span> onAction<span class="br0">&#40;</span><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Astring+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object> binding, <span class="kw4">boolean</span> value, <span class="kw4">float</span> tpf<span class="br0">&#41;</span> <span class="br0">&#123;</span>
-    <span class="kw1">if</span> <span class="br0">&#40;</span>binding.<span class="me1">equals</span><span class="br0">&#40;</span><span class="st0">&quot;Lefts&quot;</span><span class="br0">&#41;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-      <span class="kw1">if</span> <span class="br0">&#40;</span>value<span class="br0">&#41;</span> <span class="br0">&#123;</span> left <span class="sy0">=</span> <span class="kw2">true</span>; <span class="br0">&#125;</span>  <span class="kw1">else</span> <span class="br0">&#123;</span> left <span class="sy0">=</span> <span class="kw2">false</span>; <span class="br0">&#125;</span>
-    <span class="br0">&#125;</span> <span class="kw1">else</span> <span class="kw1">if</span> <span class="br0">&#40;</span>binding.<span class="me1">equals</span><span class="br0">&#40;</span><span class="st0">&quot;Rights&quot;</span><span class="br0">&#41;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-      <span class="kw1">if</span> <span class="br0">&#40;</span>value<span class="br0">&#41;</span> <span class="br0">&#123;</span> right <span class="sy0">=</span> <span class="kw2">true</span>; <span class="br0">&#125;</span> <span class="kw1">else</span> <span class="br0">&#123;</span> right <span class="sy0">=</span> <span class="kw2">false</span>; <span class="br0">&#125;</span>
-    <span class="br0">&#125;</span> <span class="kw1">else</span> <span class="kw1">if</span> <span class="br0">&#40;</span>binding.<span class="me1">equals</span><span class="br0">&#40;</span><span class="st0">&quot;Ups&quot;</span><span class="br0">&#41;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-      <span class="kw1">if</span> <span class="br0">&#40;</span>value<span class="br0">&#41;</span> <span class="br0">&#123;</span> up <span class="sy0">=</span> <span class="kw2">true</span>; <span class="br0">&#125;</span>    <span class="kw1">else</span> <span class="br0">&#123;</span> up <span class="sy0">=</span> <span class="kw2">false</span>; <span class="br0">&#125;</span>
-    <span class="br0">&#125;</span> <span class="kw1">else</span> <span class="kw1">if</span> <span class="br0">&#40;</span>binding.<span class="me1">equals</span><span class="br0">&#40;</span><span class="st0">&quot;Downs&quot;</span><span class="br0">&#41;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-      <span class="kw1">if</span> <span class="br0">&#40;</span>value<span class="br0">&#41;</span> <span class="br0">&#123;</span> down <span class="sy0">=</span> <span class="kw2">true</span>; <span class="br0">&#125;</span>  <span class="kw1">else</span> <span class="br0">&#123;</span> down <span class="sy0">=</span> <span class="kw2">false</span>; <span class="br0">&#125;</span>
-    <span class="br0">&#125;</span> <span class="kw1">else</span> <span class="kw1">if</span> <span class="br0">&#40;</span>binding.<span class="me1">equals</span><span class="br0">&#40;</span><span class="st0">&quot;Jumps&quot;</span><span class="br0">&#41;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-      player.<span class="me1">jump</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
-    <span class="br0">&#125;</span>
-  <span class="br0">&#125;</span>
+  public void onAction&#40;String binding, boolean value, float tpf&#41; &#123;
+    if &#40;binding.equals&#40;&quot;Lefts&quot;&#41;&#41; &#123;
+      if &#40;value&#41; &#123; left = true; &#125;  else &#123; left = false; &#125;
+    &#125; else if &#40;binding.equals&#40;&quot;Rights&quot;&#41;&#41; &#123;
+      if &#40;value&#41; &#123; right = true; &#125; else &#123; right = false; &#125;
+    &#125; else if &#40;binding.equals&#40;&quot;Ups&quot;&#41;&#41; &#123;
+      if &#40;value&#41; &#123; up = true; &#125;    else &#123; up = false; &#125;
+    &#125; else if &#40;binding.equals&#40;&quot;Downs&quot;&#41;&#41; &#123;
+      if &#40;value&#41; &#123; down = true; &#125;  else &#123; down = false; &#125;
+    &#125; else if &#40;binding.equals&#40;&quot;Jumps&quot;&#41;&#41; &#123;
+      player.jump&#40;&#41;;
+    &#125;
+  &#125;
 &nbsp;
-  <span class="co3">/**
+  <span>/**
    * This is the main event loop--walking happens here.
    * We check in which direction the player is walking by interpreting
    * the camera direction forward (camDir) and to the side (camLeft).
@@ -175,54 +175,54 @@ Place town.zip in the root directory of your JME3 project.
    * We also make sure here that the camera moves with player.
    */</span>
   @Override
-  <span class="kw1">public</span> <span class="kw4">void</span> simpleUpdate<span class="br0">&#40;</span><span class="kw4">float</span> tpf<span class="br0">&#41;</span> <span class="br0">&#123;</span>
-    Vector3f camDir <span class="sy0">=</span> cam.<span class="me1">getDirection</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">clone</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">multLocal</span><span class="br0">&#40;</span>0.6f<span class="br0">&#41;</span>;
-    Vector3f camLeft <span class="sy0">=</span> cam.<span class="me1">getLeft</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">clone</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">multLocal</span><span class="br0">&#40;</span>0.4f<span class="br0">&#41;</span>;
-    walkDirection.<span class="me1">set</span><span class="br0">&#40;</span>0, 0, 0<span class="br0">&#41;</span>;
-    <span class="kw1">if</span> <span class="br0">&#40;</span>left<span class="br0">&#41;</span>  <span class="br0">&#123;</span> walkDirection.<span class="me1">addLocal</span><span class="br0">&#40;</span>camLeft<span class="br0">&#41;</span>; <span class="br0">&#125;</span>
-    <span class="kw1">if</span> <span class="br0">&#40;</span>right<span class="br0">&#41;</span> <span class="br0">&#123;</span> walkDirection.<span class="me1">addLocal</span><span class="br0">&#40;</span>camLeft.<span class="me1">negate</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>; <span class="br0">&#125;</span>
-    <span class="kw1">if</span> <span class="br0">&#40;</span>up<span class="br0">&#41;</span>    <span class="br0">&#123;</span> walkDirection.<span class="me1">addLocal</span><span class="br0">&#40;</span>camDir<span class="br0">&#41;</span>; <span class="br0">&#125;</span>
-    <span class="kw1">if</span> <span class="br0">&#40;</span>down<span class="br0">&#41;</span>  <span class="br0">&#123;</span> walkDirection.<span class="me1">addLocal</span><span class="br0">&#40;</span>camDir.<span class="me1">negate</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>; <span class="br0">&#125;</span>
-    player.<span class="me1">setWalkDirection</span><span class="br0">&#40;</span>walkDirection<span class="br0">&#41;</span>;
-    cam.<span class="me1">setLocation</span><span class="br0">&#40;</span>player.<span class="me1">getPhysicsLocation</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
-  <span class="br0">&#125;</span>
-<span class="br0">&#125;</span></pre>
+  public void simpleUpdate&#40;float tpf&#41; &#123;
+    Vector3f camDir = cam.getDirection&#40;&#41;.clone&#40;&#41;.multLocal&#40;0.6f&#41;;
+    Vector3f camLeft = cam.getLeft&#40;&#41;.clone&#40;&#41;.multLocal&#40;0.4f&#41;;
+    walkDirection.set&#40;0, 0, 0&#41;;
+    if &#40;left&#41;  &#123; walkDirection.addLocal&#40;camLeft&#41;; &#125;
+    if &#40;right&#41; &#123; walkDirection.addLocal&#40;camLeft.negate&#40;&#41;&#41;; &#125;
+    if &#40;up&#41;    &#123; walkDirection.addLocal&#40;camDir&#41;; &#125;
+    if &#40;down&#41;  &#123; walkDirection.addLocal&#40;camDir.negate&#40;&#41;&#41;; &#125;
+    player.setWalkDirection&#40;walkDirection&#41;;
+    cam.setLocation&#40;player.getPhysicsLocation&#40;&#41;&#41;;
+  &#125;
+&#125;</pre>
 <p>
 Run the sample. You should see a town square with houses and a monument. Use the WASD keys and the mouse to navigate around in first person view. Run forward and jump by pressing W and Space. Note how you step over the sidewalk, and up the steps to the monument. You can walk in the alleys between the houses, but the walls are solid. Don&#039;t walk over the edge of the world! <img src="/wiki/lib/images/smileys/icon_smile.gif" class="middle" alt=":-)" />
 </p>
 
 </div>
 
-<h2><a name="understanding_the_code" id="understanding_the_code">Understanding the Code</a></h2>
-<div class="level2">
+<h2><a>Understanding the Code</a></h2>
+<div>
 
 <p>
 
 Let&#039;s start with the class declaration: 
 </p>
-<pre class="code java"><span class="kw1">extends</span> SimpleApplication <span class="kw1">implements</span> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Aactionlistener+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object></pre>
+<pre>extends SimpleApplication implements ActionListener</pre>
 <p>
 SimpleApplication is the base class for all jME3 games. We also have this class implement the <code>ActionListener</code> interface because we want to customize the navigational inputs later.
 </p>
-<pre class="code java">  <span class="kw1">private</span> Spatial sceneModel;
-  <span class="kw1">private</span> BulletAppState bulletAppState;
-  <span class="kw1">private</span> RigidBodyControl landscape;
-  <span class="kw1">private</span> CharacterControl player;
-  <span class="kw1">private</span> Vector3f walkDirection <span class="sy0">=</span> <span class="kw1">new</span> Vector3f<span class="br0">&#40;</span><span class="br0">&#41;</span>;
-  <span class="kw1">private</span> <span class="kw4">boolean</span> left <span class="sy0">=</span> <span class="kw2">false</span>, right <span class="sy0">=</span> <span class="kw2">false</span>, up <span class="sy0">=</span> <span class="kw2">false</span>, down <span class="sy0">=</span> <span class="kw2">false</span>;</pre>
+<pre>  private Spatial sceneModel;
+  private BulletAppState bulletAppState;
+  private RigidBodyControl landscape;
+  private CharacterControl player;
+  private Vector3f walkDirection = new Vector3f&#40;&#41;;
+  private boolean left = false, right = false, up = false, down = false;</pre>
 <p>
 We initialize a few private fields:
 </p>
 <ul>
-<li class="level1"><div class="li"> The BulletAppState gives this SimpleApplication access to physics features (such as collision detection) supplied by jME3&#039;s jBullet integration</div>
+<li><div> The BulletAppState gives this SimpleApplication access to physics features (such as collision detection) supplied by jME3&#039;s jBullet integration</div>
 </li>
-<li class="level1"><div class="li"> The Spatial sceneModel is a normal OgreXML model loaded as a Spatial. </div>
+<li><div> The Spatial sceneModel is a normal OgreXML model loaded as a Spatial. </div>
 </li>
-<li class="level1"><div class="li"> You use the model as the game&#039;s landscape by adding a RigidBodyControl to it. </div>
+<li><div> You use the model as the game&#039;s landscape by adding a RigidBodyControl to it. </div>
 </li>
-<li class="level1"><div class="li"> The (invisible) first-person player is represented by a CharacterControl object.</div>
+<li><div> The (invisible) first-person player is represented by a CharacterControl object.</div>
 </li>
-<li class="level1"><div class="li"> The fields <code>walkDirection</code> and the four Booleans are used for physics-controlled navigation. </div>
+<li><div> The fields <code>walkDirection</code> and the four Booleans are used for physics-controlled navigation. </div>
 </li>
 </ul>
 
@@ -233,17 +233,17 @@ Let&#039;s have a look at all the details:
 
 </div>
 
-<h2><a name="initializing_the_game" id="initializing_the_game">Initializing the Game</a></h2>
-<div class="level2">
+<h2><a>Initializing the Game</a></h2>
+<div>
 
 <p>
 
 As usual, you initialize the game in the <code>simpleInitApp()</code> method.
 </p>
-<pre class="code java">    viewPort.<span class="me1">setBackgroundColor</span><span class="br0">&#40;</span><span class="kw1">new</span> ColorRGBA<span class="br0">&#40;</span>0.7f,0.8f,1f,1f<span class="br0">&#41;</span><span class="br0">&#41;</span>;
-    flyCam.<span class="me1">setMoveSpeed</span><span class="br0">&#40;</span><span class="nu0">100</span><span class="br0">&#41;</span>;
-    setUpKeys<span class="br0">&#40;</span><span class="br0">&#41;</span>;
-    setUpLight<span class="br0">&#40;</span><span class="br0">&#41;</span>;</pre>
+<pre>    viewPort.setBackgroundColor&#40;new ColorRGBA&#40;0.7f,0.8f,1f,1f&#41;&#41;;
+    flyCam.setMoveSpeed&#40;100&#41;;
+    setUpKeys&#40;&#41;;
+    setUpLight&#40;&#41;;</pre>
 <p>
 We switch the background color from balck to light blue, since this is a scene with a sky.
 You repurpose the default flyCam camera as first-person camera and set its speed. 
@@ -253,36 +253,36 @@ The auxiliary method <code>setUpKeys()</code> configures input mappings–we wil
 
 </div>
 
-<h3><a name="the_physics-controlled_scene" id="the_physics-controlled_scene">The Physics-Controlled Scene</a></h3>
-<div class="level3">
+<h3><a>The Physics-Controlled Scene</a></h3>
+<div>
 
 <p>
 
 The first thing you do in every physics game is create a BulletAppState object. It gives you access to jME3&#039;s jBullet integration which handles physical forces and collisions.
 </p>
-<pre class="code java">    bulletAppState <span class="sy0">=</span> <span class="kw1">new</span> BulletAppState<span class="br0">&#40;</span><span class="br0">&#41;</span>;
-    stateManager.<span class="me1">attach</span><span class="br0">&#40;</span>bulletAppState<span class="br0">&#41;</span>;</pre>
+<pre>    bulletAppState = new BulletAppState&#40;&#41;;
+    stateManager.attach&#40;bulletAppState&#41;;</pre>
 <p>
 For the scene, you load the <code>sceneModel</code> from a zip file, and adjust the size. 
 </p>
-<pre class="code java">    assetManager.<span class="me1">registerLocator</span><span class="br0">&#40;</span><span class="st0">&quot;town.zip&quot;</span>, ZipLocator.<span class="kw1">class</span>.<span class="me1">getName</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
-    sceneModel <span class="sy0">=</span> assetManager.<span class="me1">loadModel</span><span class="br0">&#40;</span><span class="st0">&quot;main.scene&quot;</span><span class="br0">&#41;</span>;
-    sceneModel.<span class="me1">setLocalScale</span><span class="br0">&#40;</span>2f<span class="br0">&#41;</span>;</pre>
+<pre>    assetManager.registerLocator&#40;&quot;town.zip&quot;, ZipLocator.class.getName&#40;&#41;&#41;;
+    sceneModel = assetManager.loadModel&#40;&quot;main.scene&quot;&#41;;
+    sceneModel.setLocalScale&#40;2f&#41;;</pre>
 <p>
 The file <code>town.zip</code> is included as a sample model in the JME3 sources – you can <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://jmonkeyengine.googlecode.com/svn/branches/jme3/town.zip"><param name="text" value="<html><u>download it here</u></html>"><param name="textColor" value="blue"></object>. (Optionally, use any OgreXML scene of your own.) For this sample, place the zip file in the application&#039;s top level directory (that is, next to src/, assets/, build.xml).
 </p>
-<pre class="code java">    CollisionShape sceneShape <span class="sy0">=</span>
-      CollisionShapeFactory.<span class="me1">createMeshShape</span><span class="br0">&#40;</span><span class="br0">&#40;</span>Node<span class="br0">&#41;</span> sceneModel<span class="br0">&#41;</span>;
-    landscape <span class="sy0">=</span> <span class="kw1">new</span> RigidBodyControl<span class="br0">&#40;</span>sceneShape, 0<span class="br0">&#41;</span>;
-    sceneModel.<span class="me1">addControl</span><span class="br0">&#40;</span>landscape<span class="br0">&#41;</span>;</pre>
+<pre>    CollisionShape sceneShape =
+      CollisionShapeFactory.createMeshShape&#40;&#40;Node&#41; sceneModel&#41;;
+    landscape = new RigidBodyControl&#40;sceneShape, 0&#41;;
+    sceneModel.addControl&#40;landscape&#41;;</pre>
 <p>
 To use collision detection, you want to add a RigidBodyControl to the <code>sceneModel</code> Spatial. The RigidBodyControl for a complex model takes two arguments: A Collision Shape, and the object&#039;s mass.  
 
 </p>
 <ul>
-<li class="level1"><div class="li"> JME3 offers a <code>CollisionShapeFactory</code> that precalculates a mesh-accurate collision shape for a Spatial. We choose to generate a <code>CompoundCollisionShape</code>, which has MeshCollisionShapes as its children. <strong>Note:</strong> This type of collision shape is optimal for immobile objects, such as terrain, houses, and whole shooter levels. </div>
+<li><div> JME3 offers a <code>CollisionShapeFactory</code> that precalculates a mesh-accurate collision shape for a Spatial. We choose to generate a <code>CompoundCollisionShape</code>, which has MeshCollisionShapes as its children. <strong>Note:</strong> This type of collision shape is optimal for immobile objects, such as terrain, houses, and whole shooter levels. </div>
 </li>
-<li class="level1"><div class="li"> You set the mass to zero since a scene is static and its mass irrevelant. </div>
+<li><div> You set the mass to zero since a scene is static and its mass irrevelant. </div>
 </li>
 </ul>
 
@@ -290,65 +290,65 @@ To use collision detection, you want to add a RigidBodyControl to the <code>scen
 
 Add the control to the Spatial to make give it physical properties. Attach the sceneModel to the rootNode to make it visible.
 </p>
-<pre class="code java">    rootNode.<span class="me1">attachChild</span><span class="br0">&#40;</span>sceneModel<span class="br0">&#41;</span>;</pre>
+<pre>    rootNode.attachChild&#40;sceneModel&#41;;</pre>
 <p>
 <strong>Tip:</strong> Remember to always add a light source so you can see the scene.
 </p>
 
 </div>
 
-<h3><a name="the_physics-controlled_player" id="the_physics-controlled_player">The Physics-Controlled Player</a></h3>
-<div class="level3">
+<h3><a>The Physics-Controlled Player</a></h3>
+<div>
 
 <p>
 
 Next you set up collision detection for the first-person player. 
 </p>
-<pre class="code java">    CapsuleCollisionShape capsuleShape <span class="sy0">=</span> <span class="kw1">new</span> CapsuleCollisionShape<span class="br0">&#40;</span>1.5f, 6f, <span class="nu0">1</span><span class="br0">&#41;</span>;</pre>
+<pre>    CapsuleCollisionShape capsuleShape = new CapsuleCollisionShape&#40;1.5f, 6f, 1&#41;;</pre>
 <p>
 Again, you create a CollisionShape: This time we choose a CapsuleCollisionShape, a cylinder with a rounded top and bottom. <strong>Note:</strong> This shape is optimal for a person: It&#039;s tall and the roundness helps to get stuck less often on obstacles. 
 </p>
 <ul>
-<li class="level1"><div class="li"> Supply the CapsuleCollisionShape constructor with the desired size of the bounding capsule to fit the shape of your character. In this example the character is 2*1.5f units wide, and 6f units tall. </div>
+<li><div> Supply the CapsuleCollisionShape constructor with the desired size of the bounding capsule to fit the shape of your character. In this example the character is 2*1.5f units wide, and 6f units tall. </div>
 </li>
-<li class="level1"><div class="li"> The final integer argument specifies the orientation of the cylinder: 1 is the Y-axis, which fits an upright person. For many animals and vehicles you would use 0 or 2.</div>
+<li><div> The final integer argument specifies the orientation of the cylinder: 1 is the Y-axis, which fits an upright person. For many animals and vehicles you would use 0 or 2.</div>
 </li>
 </ul>
-<pre class="code java">    player <span class="sy0">=</span> <span class="kw1">new</span> CharacterControl<span class="br0">&#40;</span>capsuleShape, 0.05f<span class="br0">&#41;</span>;</pre>
+<pre>    player = new CharacterControl&#40;capsuleShape, 0.05f&#41;;</pre>
 <p>
 Now you use the CollisionShape to create a <code>CharacterControl</code> that represents the player. The last argument of the CharacterControl constructor (here <code>.05f</code>) is the size of a step that the character should be able to surmount.
 </p>
-<pre class="code java">    player.<span class="me1">setJumpSpeed</span><span class="br0">&#40;</span><span class="nu0">20</span><span class="br0">&#41;</span>;
-    player.<span class="me1">setFallSpeed</span><span class="br0">&#40;</span><span class="nu0">30</span><span class="br0">&#41;</span>;
-    player.<span class="me1">setGravity</span><span class="br0">&#40;</span><span class="nu0">30</span><span class="br0">&#41;</span>;</pre>
+<pre>    player.setJumpSpeed&#40;20&#41;;
+    player.setFallSpeed&#40;30&#41;;
+    player.setGravity&#40;30&#41;;</pre>
 <p>
 Apart from step height and character size, the <code>CharacterControl</code> lets you configure jumping, falling, and gravity speeds. Adjust the values to fit your game situation.
 </p>
-<pre class="code java">    player.<span class="me1">setPhysicsLocation</span><span class="br0">&#40;</span><span class="kw1">new</span> Vector3f<span class="br0">&#40;</span>0, <span class="nu0">10</span>, 0<span class="br0">&#41;</span><span class="br0">&#41;</span>;</pre>
+<pre>    player.setPhysicsLocation&#40;new Vector3f&#40;0, 10, 0&#41;&#41;;</pre>
 <p>
 Finally we put the player in its starting position and update its state – remember to use     setPhysicsLocation() instead of setLocalTranslation(). since you are dealing with a physical object.
 </p>
 
 </div>
 
-<h3><a name="activating_the_physicsspace" id="activating_the_physicsspace">Activating the PhysicsSpace</a></h3>
-<div class="level3">
+<h3><a>Activating the PhysicsSpace</a></h3>
+<div>
 
 <p>
 
 As in every JME3 application, you must attach the scene and the player to the <code>rootNode</code> to make them appear in the game world.
 </p>
-<pre class="code java">    rootNode.<span class="me1">attachChild</span><span class="br0">&#40;</span>landscape<span class="br0">&#41;</span>;
-    rootNode.<span class="me1">attachChild</span><span class="br0">&#40;</span>player<span class="br0">&#41;</span>;</pre>
+<pre>    rootNode.attachChild&#40;landscape&#41;;
+    rootNode.attachChild&#40;player&#41;;</pre>
 <p>
 Remember that for physical games, you must also add all solid objects (usually the characters and the scene) to the <code>PhysicsSpace</code>!
 </p>
-<pre class="code java">    bulletAppState.<span class="me1">getPhysicsSpace</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">add</span><span class="br0">&#40;</span>landscape<span class="br0">&#41;</span>;
-    bulletAppState.<span class="me1">getPhysicsSpace</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">add</span><span class="br0">&#40;</span>player<span class="br0">&#41;</span>;</pre>
+<pre>    bulletAppState.getPhysicsSpace&#40;&#41;.add&#40;landscape&#41;;
+    bulletAppState.getPhysicsSpace&#40;&#41;.add&#40;player&#41;;</pre>
 </div>
 
-<h2><a name="navigation" id="navigation">Navigation</a></h2>
-<div class="level2">
+<h2><a>Navigation</a></h2>
+<div>
 
 <p>
 
@@ -365,49 +365,49 @@ This is why we must re-define the flyCam&#039;s navigational key mappings to use
 
 </div>
 
-<h3><a name="inputmanager" id="inputmanager">1. inputManager</a></h3>
-<div class="level3">
+<h3><a>1. inputManager</a></h3>
+<div>
 
 <p>
 
 Configure the familiar WASD inputs for walking, and Space for jumping. 
 </p>
-<pre class="code java">    inputManager.<span class="me1">addMapping</span><span class="br0">&#40;</span><span class="st0">&quot;Lefts&quot;</span>,  <span class="kw1">new</span> KeyTrigger<span class="br0">&#40;</span>KeyInput.<span class="me1">KEY_A</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
-    inputManager.<span class="me1">addMapping</span><span class="br0">&#40;</span><span class="st0">&quot;Rights&quot;</span>, <span class="kw1">new</span> KeyTrigger<span class="br0">&#40;</span>KeyInput.<span class="me1">KEY_D</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
-    inputManager.<span class="me1">addMapping</span><span class="br0">&#40;</span><span class="st0">&quot;Ups&quot;</span>,    <span class="kw1">new</span> KeyTrigger<span class="br0">&#40;</span>KeyInput.<span class="me1">KEY_W</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
-    inputManager.<span class="me1">addMapping</span><span class="br0">&#40;</span><span class="st0">&quot;Downs&quot;</span>,  <span class="kw1">new</span> KeyTrigger<span class="br0">&#40;</span>KeyInput.<span class="me1">KEY_S</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
-    inputManager.<span class="me1">addMapping</span><span class="br0">&#40;</span><span class="st0">&quot;Jumps&quot;</span>,  <span class="kw1">new</span> KeyTrigger<span class="br0">&#40;</span>KeyInput.<span class="me1">KEY_SPACE</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
-    inputManager.<span class="me1">addListener</span><span class="br0">&#40;</span><span class="kw1">this</span>, <span class="st0">&quot;Lefts&quot;</span><span class="br0">&#41;</span>;
-    inputManager.<span class="me1">addListener</span><span class="br0">&#40;</span><span class="kw1">this</span>, <span class="st0">&quot;Rights&quot;</span><span class="br0">&#41;</span>;
-    inputManager.<span class="me1">addListener</span><span class="br0">&#40;</span><span class="kw1">this</span>, <span class="st0">&quot;Ups&quot;</span><span class="br0">&#41;</span>;
-    inputManager.<span class="me1">addListener</span><span class="br0">&#40;</span><span class="kw1">this</span>, <span class="st0">&quot;Downs&quot;</span><span class="br0">&#41;</span>;
-    inputManager.<span class="me1">addListener</span><span class="br0">&#40;</span><span class="kw1">this</span>, <span class="st0">&quot;Jumps&quot;</span><span class="br0">&#41;</span>;</pre>
+<pre>    inputManager.addMapping&#40;&quot;Lefts&quot;,  new KeyTrigger&#40;KeyInput.KEY_A&#41;&#41;;
+    inputManager.addMapping&#40;&quot;Rights&quot;, new KeyTrigger&#40;KeyInput.KEY_D&#41;&#41;;
+    inputManager.addMapping&#40;&quot;Ups&quot;,    new KeyTrigger&#40;KeyInput.KEY_W&#41;&#41;;
+    inputManager.addMapping&#40;&quot;Downs&quot;,  new KeyTrigger&#40;KeyInput.KEY_S&#41;&#41;;
+    inputManager.addMapping&#40;&quot;Jumps&quot;,  new KeyTrigger&#40;KeyInput.KEY_SPACE&#41;&#41;;
+    inputManager.addListener&#40;this, &quot;Lefts&quot;&#41;;
+    inputManager.addListener&#40;this, &quot;Rights&quot;&#41;;
+    inputManager.addListener&#40;this, &quot;Ups&quot;&#41;;
+    inputManager.addListener&#40;this, &quot;Downs&quot;&#41;;
+    inputManager.addListener&#40;this, &quot;Jumps&quot;&#41;;</pre>
 <p>
 In the code sample above, this block of code was moved into an auxiliary method <code>setupKeys()</code> that is called from <code>simpleInitApp()</code>–this is just to keep the code more readable.
 </p>
 
 </div>
 
-<h3><a name="onaction" id="onaction">2. onAction()</a></h3>
-<div class="level3">
+<h3><a>2. onAction()</a></h3>
+<div>
 
 <p>
 
 Remember that we declared this class an <code>ActionListener</code> so we could customize the flyCam. The <code>ActionListener</code> interface requires us to implement the <code>onAction()</code> method: You re-define the actions triggered by navigation key presses to work with physics.
 </p>
-<pre class="code java">  <span class="kw1">public</span> <span class="kw4">void</span> onAction<span class="br0">&#40;</span><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Astring+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object> binding, <span class="kw4">boolean</span> value, <span class="kw4">float</span> tpf<span class="br0">&#41;</span> <span class="br0">&#123;</span>
-    <span class="kw1">if</span> <span class="br0">&#40;</span>binding.<span class="me1">equals</span><span class="br0">&#40;</span><span class="st0">&quot;Lefts&quot;</span><span class="br0">&#41;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-      <span class="kw1">if</span> <span class="br0">&#40;</span>value<span class="br0">&#41;</span> <span class="br0">&#123;</span> left <span class="sy0">=</span> <span class="kw2">true</span>; <span class="br0">&#125;</span>  <span class="kw1">else</span> <span class="br0">&#123;</span> left <span class="sy0">=</span> <span class="kw2">false</span>; <span class="br0">&#125;</span>
-    <span class="br0">&#125;</span> <span class="kw1">else</span> <span class="kw1">if</span> <span class="br0">&#40;</span>binding.<span class="me1">equals</span><span class="br0">&#40;</span><span class="st0">&quot;Rights&quot;</span><span class="br0">&#41;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-      <span class="kw1">if</span> <span class="br0">&#40;</span>value<span class="br0">&#41;</span> <span class="br0">&#123;</span> right <span class="sy0">=</span> <span class="kw2">true</span>; <span class="br0">&#125;</span> <span class="kw1">else</span> <span class="br0">&#123;</span> right <span class="sy0">=</span> <span class="kw2">false</span>; <span class="br0">&#125;</span>
-    <span class="br0">&#125;</span> <span class="kw1">else</span> <span class="kw1">if</span> <span class="br0">&#40;</span>binding.<span class="me1">equals</span><span class="br0">&#40;</span><span class="st0">&quot;Ups&quot;</span><span class="br0">&#41;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-      <span class="kw1">if</span> <span class="br0">&#40;</span>value<span class="br0">&#41;</span> <span class="br0">&#123;</span> up <span class="sy0">=</span> <span class="kw2">true</span>; <span class="br0">&#125;</span>    <span class="kw1">else</span> <span class="br0">&#123;</span> up <span class="sy0">=</span> <span class="kw2">false</span>; <span class="br0">&#125;</span>
-    <span class="br0">&#125;</span> <span class="kw1">else</span> <span class="kw1">if</span> <span class="br0">&#40;</span>binding.<span class="me1">equals</span><span class="br0">&#40;</span><span class="st0">&quot;Downs&quot;</span><span class="br0">&#41;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-      <span class="kw1">if</span> <span class="br0">&#40;</span>value<span class="br0">&#41;</span> <span class="br0">&#123;</span> down <span class="sy0">=</span> <span class="kw2">true</span>; <span class="br0">&#125;</span>  <span class="kw1">else</span> <span class="br0">&#123;</span> down <span class="sy0">=</span> <span class="kw2">false</span>; <span class="br0">&#125;</span>
-    <span class="br0">&#125;</span> <span class="kw1">else</span> <span class="kw1">if</span> <span class="br0">&#40;</span>binding.<span class="me1">equals</span><span class="br0">&#40;</span><span class="st0">&quot;Jumps&quot;</span><span class="br0">&#41;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-      player.<span class="me1">jump</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
-    <span class="br0">&#125;</span>
-  <span class="br0">&#125;</span></pre>
+<pre>  public void onAction&#40;String binding, boolean value, float tpf&#41; &#123;
+    if &#40;binding.equals&#40;&quot;Lefts&quot;&#41;&#41; &#123;
+      if &#40;value&#41; &#123; left = true; &#125;  else &#123; left = false; &#125;
+    &#125; else if &#40;binding.equals&#40;&quot;Rights&quot;&#41;&#41; &#123;
+      if &#40;value&#41; &#123; right = true; &#125; else &#123; right = false; &#125;
+    &#125; else if &#40;binding.equals&#40;&quot;Ups&quot;&#41;&#41; &#123;
+      if &#40;value&#41; &#123; up = true; &#125;    else &#123; up = false; &#125;
+    &#125; else if &#40;binding.equals&#40;&quot;Downs&quot;&#41;&#41; &#123;
+      if &#40;value&#41; &#123; down = true; &#125;  else &#123; down = false; &#125;
+    &#125; else if &#40;binding.equals&#40;&quot;Jumps&quot;&#41;&#41; &#123;
+      player.jump&#40;&#41;;
+    &#125;
+  &#125;</pre>
 <p>
 Every time the user presses one of the WASD keys, you keep track of the direction the user wants to go – by storing this info in four directional Booleans. We will use them soon.
 </p>
@@ -422,8 +422,8 @@ The only movement that you do not have to implement yourself is the jumping acti
 
 </div>
 
-<h3><a name="setwalkdirection" id="setwalkdirection">3. setWalkDirection()</a></h3>
-<div class="level3">
+<h3><a>3. setWalkDirection()</a></h3>
+<div>
 
 <p>
 
@@ -431,17 +431,17 @@ In <code>onAction()</code> you have determined in which direction the user wants
 Now you need poll the current rotation of the camera to find to which vectors “forward” and “left” correspond in the coordinate system.
 This last and most important code snippet goes into the main event loop, <code>simpleUpdate()</code>. 
 </p>
-<pre class="code java">    Vector3f camDir <span class="sy0">=</span> cam.<span class="me1">getDirection</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">clone</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">multLocal</span><span class="br0">&#40;</span>0.6f<span class="br0">&#41;</span>;
-    Vector3f camLeft <span class="sy0">=</span> cam.<span class="me1">getLeft</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">clone</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">multLocal</span><span class="br0">&#40;</span>0.4f<span class="br0">&#41;</span>;
-    walkDirection.<span class="me1">set</span><span class="br0">&#40;</span>0, 0, 0<span class="br0">&#41;</span>;
-    <span class="kw1">if</span> <span class="br0">&#40;</span>left<span class="br0">&#41;</span>  <span class="br0">&#123;</span> walkDirection.<span class="me1">addLocal</span><span class="br0">&#40;</span>camLeft<span class="br0">&#41;</span>; <span class="br0">&#125;</span>
-    <span class="kw1">if</span> <span class="br0">&#40;</span>right<span class="br0">&#41;</span> <span class="br0">&#123;</span> walkDirection.<span class="me1">addLocal</span><span class="br0">&#40;</span>camLeft.<span class="me1">negate</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>; <span class="br0">&#125;</span>
-    <span class="kw1">if</span> <span class="br0">&#40;</span>up<span class="br0">&#41;</span>    <span class="br0">&#123;</span> walkDirection.<span class="me1">addLocal</span><span class="br0">&#40;</span>camDir<span class="br0">&#41;</span>; <span class="br0">&#125;</span>
-    <span class="kw1">if</span> <span class="br0">&#40;</span>down<span class="br0">&#41;</span>  <span class="br0">&#123;</span> walkDirection.<span class="me1">addLocal</span><span class="br0">&#40;</span>camDir.<span class="me1">negate</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>; <span class="br0">&#125;</span></pre>
+<pre>    Vector3f camDir = cam.getDirection&#40;&#41;.clone&#40;&#41;.multLocal&#40;0.6f&#41;;
+    Vector3f camLeft = cam.getLeft&#40;&#41;.clone&#40;&#41;.multLocal&#40;0.4f&#41;;
+    walkDirection.set&#40;0, 0, 0&#41;;
+    if &#40;left&#41;  &#123; walkDirection.addLocal&#40;camLeft&#41;; &#125;
+    if &#40;right&#41; &#123; walkDirection.addLocal&#40;camLeft.negate&#40;&#41;&#41;; &#125;
+    if &#40;up&#41;    &#123; walkDirection.addLocal&#40;camDir&#41;; &#125;
+    if &#40;down&#41;  &#123; walkDirection.addLocal&#40;camDir.negate&#40;&#41;&#41;; &#125;</pre>
 <p>
 Reset the variable <code>walkDirection</code> to zero. Then add to it all latest motion vectors that you polled from the camera. It is posible for a character to move forward and to the left simultaneously.
 </p>
-<pre class="code java">player.<span class="me1">setWalkDirection</span><span class="br0">&#40;</span>walkDirection<span class="br0">&#41;</span>;</pre>
+<pre>player.setWalkDirection&#40;walkDirection&#41;;</pre>
 <p>
 This one line does the “walking” magic: Always use <code>setWalkDirection()</code> to make a physics-controlled object move continuously, and the physics engine automatically handles collision detection for you! 
 </p>
@@ -453,15 +453,15 @@ This one line does the “walking” magic: Always use <code>setWalkDirection()<
 <p>
 Lastly, do not forget to make the first-person camera object move along with the physics-controlled player node: 
 </p>
-<pre class="code java">    cam.<span class="me1">setLocation</span><span class="br0">&#40;</span>player.<span class="me1">getPhysicsLocation</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;</pre>
+<pre>    cam.setLocation&#40;player.getPhysicsLocation&#40;&#41;&#41;;</pre>
 <p>
 That&#039;s it!
 </p>
 
 </div>
 
-<h2><a name="conclusion" id="conclusion">Conclusion</a></h2>
-<div class="level2">
+<h2><a>Conclusion</a></h2>
+<div>
 
 <p>
 
@@ -471,17 +471,17 @@ You also made certain to use <code>player.setWalkDirection(walkDirection)</code>
 </p>
 
 <p>
-To learn more about different ways of loading models and scene have a look at <a href="/com/jme3/gde/core/docs/jme3/beginner/hello_asset.html" class="wikilink1" title="jme3:beginner:hello_asset">Hello Asset</a>,<a href="/com/jme3/gde/core/docs/sdk/scene_explorer.html" class="wikilink1" title="sdk:scene_explorer">Scene Explorer</a> and <a href="/com/jme3/gde/core/docs/sdk/scene_composer.html" class="wikilink1" title="sdk:scene_composer">Scene Composer</a>
+To learn more about different ways of loading models and scene have a look at <a href="/com/jme3/gde/core/docs/jme3/beginner/hello_asset.html">Hello Asset</a>,<a href="/com/jme3/gde/core/docs/sdk/scene_explorer.html">Scene Explorer</a> and <a href="/com/jme3/gde/core/docs/sdk/scene_composer.html">Scene Composer</a>
 </p>
 
 <p>
 There are also other possible solutions for this task that do not require physics. 
 Have a look at <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://code.google.com/p/jmonkeyengine/source/browse/branches/jme3/src/test/jme3test/collision/TestSimpleCollision.java?r=5192&amp;spec=svn5192"><param name="text" value="<html><u>jme3test.collision.TestSimpleCollision.java</u></html>"><param name="textColor" value="blue"></object> (and SphereMotionAllowedListener.java).
-To learn more about complex physics scenes where several mobile physical objects bump into each other, read <a href="/com/jme3/gde/core/docs/jme3/beginner/hello_physics.html" class="wikilink1" title="jme3:beginner:hello_physics">Hello Physics</a>.
+To learn more about complex physics scenes where several mobile physical objects bump into each other, read <a href="/com/jme3/gde/core/docs/jme3/beginner/hello_physics.html">Hello Physics</a>.
 </p>
 
 <p>
-Do you want to hear your player say “ouch!” when he bumps into a wall? Continue with learning <a href="/com/jme3/gde/core/docs/jme3/beginner/hello_audio.html" class="wikilink1" title="jme3:beginner:hello_audio">how to add sound</a> to your game.
+Do you want to hear your player say “ouch!” when he bumps into a wall? Continue with learning <a href="/com/jme3/gde/core/docs/jme3/beginner/hello_audio.html">how to add sound</a> to your game.
 
 </p>
 

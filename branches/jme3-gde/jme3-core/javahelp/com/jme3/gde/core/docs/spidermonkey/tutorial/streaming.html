@@ -1,6 +1,6 @@
 
-<h1><a name="streaming_service" id="streaming_service">Streaming service</a></h1>
-<div class="level1">
+<h1><a>Streaming service</a></h1>
+<div>
 
 <p>
 The streaming service is meant for situations where you want to transfer files, or other types of data to clients. In this tutorial we&#039;ll discuss how it works, and how to use it.
@@ -14,12 +14,12 @@ Let&#039;s start off with how it works; streaming service uses messages to trans
 Let&#039;s transfer a file to a client:
 
 </p>
-<pre class="code java">StreamingService sService <span class="sy0">=</span> client.<span class="me1">getService</span><span class="br0">&#40;</span>StreamingService.<span class="kw1">class</span><span class="br0">&#41;</span>;
-sService.<span class="me1">addStreamListener</span><span class="br0">&#40;</span><span class="kw1">this</span><span class="br0">&#41;</span>;
+<pre>StreamingService sService = client.getService&#40;StreamingService.class&#41;;
+sService.addStreamListener&#40;this&#41;;
 &nbsp;
-sService <span class="sy0">=</span> server.<span class="me1">getService</span><span class="br0">&#40;</span>StreamingService.<span class="kw1">class</span><span class="br0">&#41;</span>;
-Client receiver <span class="sy0">=</span> server.<span class="me1">getConnectors</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">get</span><span class="br0">&#40;</span>0<span class="br0">&#41;</span>; <span class="co1">// Note that you can't use 'client' here, since it's not a connector.</span>
-sService.<span class="me1">offerStream</span><span class="br0">&#40;</span>receiver, <span class="kw1">new</span> StreamMessage<span class="br0">&#40;</span><span class="br0">&#41;</span>, <span class="kw1">new</span> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Afileinputstream+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object><span class="br0">&#40;</span><span class="st0">&quot;test.txt&quot;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>; <span class="co1">// StreamMessage used here as start and end message, but can be anything to describe the stream on the other end.</span></pre>
+sService = server.getService&#40;StreamingService.class&#41;;
+Client receiver = server.getConnectors&#40;&#41;.get&#40;0&#41;; // Note that you can't use 'client' here, since it's not a connector.
+sService.offerStream&#40;receiver, new StreamMessage&#40;&#41;, new FileInputStream&#40;&quot;test.txt&quot;&#41;&#41;; // StreamMessage used here as start and end message, but can be anything to describe the stream on the other end.</pre>
 <p>
 
 As you can see, this system uses the Service system. First, we get the client&#039;s StreamingService, and register ourselves as a listener. Then we get the server&#039;s version of the StreamingService, from which you can stream things. Then we get a connector client (the first one), and send the file via an InputStream.
@@ -29,21 +29,21 @@ As you can see, this system uses the Service system. First, we get the client&#0
 Now to receive this stuff is simple;
 
 </p>
-<pre class="code java"><span class="kw1">public</span> <span class="kw4">boolean</span> streamOffered<span class="br0">&#40;</span>StreamMessage message<span class="br0">&#41;</span> <span class="br0">&#123;</span>
-   <span class="co1">// Here you'd normally check the message what this stream is all about, and </span>
-   <span class="co1">// base your acception criteria on that.</span>
-   fileStream <span class="sy0">=</span> <span class="kw1">new</span> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Afileoutputstream+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object><span class="br0">&#40;</span><span class="st0">&quot;test.txt&quot;</span><span class="br0">&#41;</span>;
-   <span class="kw1">return</span> <span class="kw2">true</span>; <span class="co1">// Sure, we'll just accept this message.</span>
-<span class="br0">&#125;</span>
+<pre>public boolean streamOffered&#40;StreamMessage message&#41; &#123;
+   // Here you'd normally check the message what this stream is all about, and 
+   // base your acception criteria on that.
+   fileStream = new FileOutputStream&#40;&quot;test.txt&quot;&#41;;
+   return true; // Sure, we'll just accept this message.
+&#125;
 &nbsp;
-<span class="kw1">public</span> <span class="kw4">void</span> streamDataReceived<span class="br0">&#40;</span>StreamDataMessage message<span class="br0">&#41;</span> <span class="br0">&#123;</span>
-   fileStream.<span class="me1">write</span><span class="br0">&#40;</span>message.<span class="me1">getData</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
-<span class="br0">&#125;</span>
+public void streamDataReceived&#40;StreamDataMessage message&#41; &#123;
+   fileStream.write&#40;message.getData&#40;&#41;&#41;;
+&#125;
 &nbsp;
-<span class="kw1">public</span> <span class="kw4">void</span> streamCompleted<span class="br0">&#40;</span>StreamMessage message<span class="br0">&#41;</span> <span class="br0">&#123;</span>
-   fileStream.<span class="me1">flush</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
-   fileStream.<span class="me1">close</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
-<span class="br0">&#125;</span></pre>
+public void streamCompleted&#40;StreamMessage message&#41; &#123;
+   fileStream.flush&#40;&#41;;
+   fileStream.close&#40;&#41;;
+&#125;</pre>
 <p>
 
 That was all; simple right?

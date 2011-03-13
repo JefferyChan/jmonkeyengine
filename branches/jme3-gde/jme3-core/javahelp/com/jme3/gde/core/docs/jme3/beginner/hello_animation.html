@@ -1,11 +1,11 @@
 
-<h1><a name="getting_started_with_jme3_7_-_hello_animation" id="getting_started_with_jme3_7_-_hello_animation">Getting Started with JME3 (7) - Hello Animation</a></h1>
-<div class="level1">
+<h1><a>Getting Started with JME3 (7) - Hello Animation</a></h1>
+<div>
 
 <p>
 
-Previous: <a href="/com/jme3/gde/core/docs/jme3/beginner/hello_material.html" class="wikilink1" title="jme3:beginner:hello_material">Hello Material</a>,
-Next: <a href="/com/jme3/gde/core/docs/jme3/beginner/hello_picking.html" class="wikilink1" title="jme3:beginner:hello_picking">Hello Picking</a>
+Previous: <a href="/com/jme3/gde/core/docs/jme3/beginner/hello_material.html">Hello Material</a>,
+Next: <a href="/com/jme3/gde/core/docs/jme3/beginner/hello_picking.html">Hello Picking</a>
 </p>
 
 <p>
@@ -22,94 +22,94 @@ This tutorial shows how to add an animation controller and channels, and how to 
 
 </div>
 
-<h2><a name="sample_code" id="sample_code">Sample Code</a></h2>
-<div class="level2">
-<pre class="code java"><span class="kw1">package</span> <span class="co2">jme3test.helloworld</span>;
+<h2><a>Sample Code</a></h2>
+<div>
+<pre>package jme3test.helloworld;
 &nbsp;
-<span class="kw1">import</span> <span class="co2">com.jme3.animation.AnimChannel</span>;
-<span class="kw1">import</span> <span class="co2">com.jme3.animation.AnimControl</span>;
-<span class="kw1">import</span> <span class="co2">com.jme3.animation.AnimEventListener</span>;
-<span class="kw1">import</span> <span class="co2">com.jme3.animation.LoopMode</span>;
-<span class="kw1">import</span> <span class="co2">com.jme3.app.SimpleApplication</span>;
-<span class="kw1">import</span> <span class="co2">com.jme3.input.KeyInput</span>;
-<span class="kw1">import</span> <span class="co2">com.jme3.input.controls.ActionListener</span>;
-<span class="kw1">import</span> <span class="co2">com.jme3.input.controls.KeyTrigger</span>;
-<span class="kw1">import</span> <span class="co2">com.jme3.light.DirectionalLight</span>;
-<span class="kw1">import</span> <span class="co2">com.jme3.math.ColorRGBA</span>;
-<span class="kw1">import</span> <span class="co2">com.jme3.math.Vector3f</span>;
-<span class="kw1">import</span> <span class="co2">com.jme3.scene.Node</span>;
+import com.jme3.animation.AnimChannel;
+import com.jme3.animation.AnimControl;
+import com.jme3.animation.AnimEventListener;
+import com.jme3.animation.LoopMode;
+import com.jme3.app.SimpleApplication;
+import com.jme3.input.KeyInput;
+import com.jme3.input.controls.ActionListener;
+import com.jme3.input.controls.KeyTrigger;
+import com.jme3.light.DirectionalLight;
+import com.jme3.math.ColorRGBA;
+import com.jme3.math.Vector3f;
+import com.jme3.scene.Node;
 &nbsp;
-<span class="co3">/** Sample 7 - how to load an OgreXML model and play an animation, 
+<span>/** Sample 7 - how to load an OgreXML model and play an animation, 
  * using channels, a controller, and an AnimEventListener. */</span>
-<span class="kw1">public</span> <span class="kw1">class</span> HelloAnimation <span class="kw1">extends</span> SimpleApplication
-  <span class="kw1">implements</span> AnimEventListener <span class="br0">&#123;</span>
+public class HelloAnimation extends SimpleApplication
+  implements AnimEventListener &#123;
 &nbsp;
-  <span class="kw1">private</span> AnimChannel channel;
-  <span class="kw1">private</span> AnimControl control;
+  private AnimChannel channel;
+  private AnimControl control;
   Node player;
 &nbsp;
-  <span class="kw1">public</span> <span class="kw1">static</span> <span class="kw4">void</span> main<span class="br0">&#40;</span><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Astring+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object><span class="br0">&#91;</span><span class="br0">&#93;</span> args<span class="br0">&#41;</span> <span class="br0">&#123;</span>
-    HelloAnimation app <span class="sy0">=</span> <span class="kw1">new</span> HelloAnimation<span class="br0">&#40;</span><span class="br0">&#41;</span>;
-    app.<span class="me1">start</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
-  <span class="br0">&#125;</span>
+  public static void main&#40;String&#91;&#93; args&#41; &#123;
+    HelloAnimation app = new HelloAnimation&#40;&#41;;
+    app.start&#40;&#41;;
+  &#125;
 &nbsp;
   @Override
-  <span class="kw1">public</span> <span class="kw4">void</span> simpleInitApp<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-    viewPort.<span class="me1">setBackgroundColor</span><span class="br0">&#40;</span>ColorRGBA.<span class="me1">LightGray</span><span class="br0">&#41;</span>;
-    initKeys<span class="br0">&#40;</span><span class="br0">&#41;</span>;
+  public void simpleInitApp&#40;&#41; &#123;
+    viewPort.setBackgroundColor&#40;ColorRGBA.LightGray&#41;;
+    initKeys&#40;&#41;;
 &nbsp;
-    DirectionalLight dl <span class="sy0">=</span> <span class="kw1">new</span> DirectionalLight<span class="br0">&#40;</span><span class="br0">&#41;</span>;
-    dl.<span class="me1">setDirection</span><span class="br0">&#40;</span><span class="kw1">new</span> Vector3f<span class="br0">&#40;</span><span class="sy0">-</span>0.1f, <span class="sy0">-</span>1f, <span class="sy0">-</span><span class="nu0">1</span><span class="br0">&#41;</span>.<span class="me1">normalizeLocal</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
-    rootNode.<span class="me1">addLight</span><span class="br0">&#40;</span>dl<span class="br0">&#41;</span>;
+    DirectionalLight dl = new DirectionalLight&#40;&#41;;
+    dl.setDirection&#40;new Vector3f&#40;-0.1f, -1f, -1&#41;.normalizeLocal&#40;&#41;&#41;;
+    rootNode.addLight&#40;dl&#41;;
 &nbsp;
-    player <span class="sy0">=</span> <span class="br0">&#40;</span>Node<span class="br0">&#41;</span> assetManager.<span class="me1">loadModel</span><span class="br0">&#40;</span><span class="st0">&quot;Models/Oto/Oto.mesh.xml&quot;</span><span class="br0">&#41;</span>;
-    player.<span class="me1">setLocalScale</span><span class="br0">&#40;</span>0.5f<span class="br0">&#41;</span>;
-    rootNode.<span class="me1">attachChild</span><span class="br0">&#40;</span>player<span class="br0">&#41;</span>;
+    player = &#40;Node&#41; assetManager.loadModel&#40;&quot;Models/Oto/Oto.mesh.xml&quot;&#41;;
+    player.setLocalScale&#40;0.5f&#41;;
+    rootNode.attachChild&#40;player&#41;;
 &nbsp;
-    control <span class="sy0">=</span> player.<span class="me1">getControl</span><span class="br0">&#40;</span>AnimControl.<span class="kw1">class</span><span class="br0">&#41;</span>;
-    control.<span class="me1">addListener</span><span class="br0">&#40;</span><span class="kw1">this</span><span class="br0">&#41;</span>;
-    channel <span class="sy0">=</span> control.<span class="me1">createChannel</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
-    channel.<span class="me1">setAnim</span><span class="br0">&#40;</span><span class="st0">&quot;stand&quot;</span><span class="br0">&#41;</span>;
-  <span class="br0">&#125;</span>
+    control = player.getControl&#40;AnimControl.class&#41;;
+    control.addListener&#40;this&#41;;
+    channel = control.createChannel&#40;&#41;;
+    channel.setAnim&#40;&quot;stand&quot;&#41;;
+  &#125;
 &nbsp;
-  <span class="kw1">public</span> <span class="kw4">void</span> onAnimCycleDone<span class="br0">&#40;</span>AnimControl control, AnimChannel channel, <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Astring+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object> animName<span class="br0">&#41;</span> <span class="br0">&#123;</span>
-    <span class="kw1">if</span> <span class="br0">&#40;</span>animName.<span class="me1">equals</span><span class="br0">&#40;</span><span class="st0">&quot;Walk&quot;</span><span class="br0">&#41;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-      channel.<span class="me1">setAnim</span><span class="br0">&#40;</span><span class="st0">&quot;stand&quot;</span>, 0.50f<span class="br0">&#41;</span>;
-      channel.<span class="me1">setLoopMode</span><span class="br0">&#40;</span>LoopMode.<span class="me1">DontLoop</span><span class="br0">&#41;</span>;
-      channel.<span class="me1">setSpeed</span><span class="br0">&#40;</span>1f<span class="br0">&#41;</span>;
-    <span class="br0">&#125;</span>
-  <span class="br0">&#125;</span>
+  public void onAnimCycleDone&#40;AnimControl control, AnimChannel channel, String animName&#41; &#123;
+    if &#40;animName.equals&#40;&quot;Walk&quot;&#41;&#41; &#123;
+      channel.setAnim&#40;&quot;stand&quot;, 0.50f&#41;;
+      channel.setLoopMode&#40;LoopMode.DontLoop&#41;;
+      channel.setSpeed&#40;1f&#41;;
+    &#125;
+  &#125;
 &nbsp;
-  <span class="kw1">public</span> <span class="kw4">void</span> onAnimChange<span class="br0">&#40;</span>AnimControl control, AnimChannel channel, <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Astring+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object> animName<span class="br0">&#41;</span> <span class="br0">&#123;</span>
-    <span class="co1">// unused</span>
-  <span class="br0">&#125;</span>
+  public void onAnimChange&#40;AnimControl control, AnimChannel channel, String animName&#41; &#123;
+    // unused
+  &#125;
 &nbsp;
-  <span class="co3">/** Custom Keybinding: Map named actions to inputs. */</span>
-  <span class="kw1">private</span> <span class="kw4">void</span> initKeys<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-    inputManager.<span class="me1">addMapping</span><span class="br0">&#40;</span><span class="st0">&quot;Walk&quot;</span>, <span class="kw1">new</span> KeyTrigger<span class="br0">&#40;</span>KeyInput.<span class="me1">KEY_SPACE</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
-    inputManager.<span class="me1">addListener</span><span class="br0">&#40;</span>actionListener, <span class="st0">&quot;Walk&quot;</span><span class="br0">&#41;</span>;
-  <span class="br0">&#125;</span>
+  /** Custom Keybinding: Map named actions to inputs. */
+  private void initKeys&#40;&#41; &#123;
+    inputManager.addMapping&#40;&quot;Walk&quot;, new KeyTrigger&#40;KeyInput.KEY_SPACE&#41;&#41;;
+    inputManager.addListener&#40;actionListener, &quot;Walk&quot;&#41;;
+  &#125;
 &nbsp;
-  <span class="kw1">private</span> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Aactionlistener+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object><span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-    <span class="kw1">public</span> <span class="kw4">void</span> onAction<span class="br0">&#40;</span><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Astring+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object> name, <span class="kw4">boolean</span> keyPressed, <span class="kw4">float</span> tpf<span class="br0">&#41;</span> <span class="br0">&#123;</span>
-      <span class="kw1">if</span> <span class="br0">&#40;</span>name.<span class="me1">equals</span><span class="br0">&#40;</span><span class="st0">&quot;Walk&quot;</span><span class="br0">&#41;</span> <span class="sy0">&amp;&amp;</span> <span class="sy0">!</span>keyPressed<span class="br0">&#41;</span> <span class="br0">&#123;</span>
-        <span class="kw1">if</span> <span class="br0">&#40;</span><span class="sy0">!</span>channel.<span class="me1">getAnimationName</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">equals</span><span class="br0">&#40;</span><span class="st0">&quot;Walk&quot;</span><span class="br0">&#41;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-          channel.<span class="me1">setAnim</span><span class="br0">&#40;</span><span class="st0">&quot;Walk&quot;</span>, 0.50f<span class="br0">&#41;</span>;
-          channel.<span class="me1">setLoopMode</span><span class="br0">&#40;</span>LoopMode.<span class="me1">Loop</span><span class="br0">&#41;</span>;
-        <span class="br0">&#125;</span>
-      <span class="br0">&#125;</span>
-    <span class="br0">&#125;</span>
-  <span class="br0">&#125;</span>;
+  private ActionListener&#40;&#41; &#123;
+    public void onAction&#40;String name, boolean keyPressed, float tpf&#41; &#123;
+      if &#40;name.equals&#40;&quot;Walk&quot;&#41; &amp;&amp; !keyPressed&#41; &#123;
+        if &#40;!channel.getAnimationName&#40;&#41;.equals&#40;&quot;Walk&quot;&#41;&#41; &#123;
+          channel.setAnim&#40;&quot;Walk&quot;, 0.50f&#41;;
+          channel.setLoopMode&#40;LoopMode.Loop&#41;;
+        &#125;
+      &#125;
+    &#125;
+  &#125;;
 &nbsp;
-<span class="br0">&#125;</span></pre>
+&#125;</pre>
 </div>
 
-<h2><a name="creating_and_loading_animated_models" id="creating_and_loading_animated_models">Creating and Loading Animated Models</a></h2>
-<div class="level2">
+<h2><a>Creating and Loading Animated Models</a></h2>
+<div>
 
 <p>
 
-You create animated models with a tool such as Blender. Take some time and learn how to create your own models in these <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.blender.org/education-help/tutorials/animation/"><param name="text" value="<html><u>Ninja</u></html>"><param name="textColor" value="blue"></object>). 
+You create animated models with a tool such as Blender. Take some time and learn how to create your own models in these <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.blender.org/education-help/tutorials/animation/"><param name="text" value="<html><u>Blender Animation Tutorials</u></html>"><param name="textColor" value="blue"></object>. For now, download and use a free model, such as the one included here as an example (<object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://jmonkeyengine.googlecode.com/svn/branches/jme3/src/test-data/Models/Oto/"><param name="text" value="<html><u>Oto Golem</u></html>"><param name="textColor" value="blue"></object>, <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://jmonkeyengine.googlecode.com/svn/branches/jme3/src/test-data/Models/Ninja/"><param name="text" value="<html><u>Ninja</u></html>"><param name="textColor" value="blue"></object>). 
 </p>
 
 <p>
@@ -120,66 +120,66 @@ You create animated models with a tool such as Blender. Take some time and learn
 <p>
 Loading an animated model is pretty straight-forward, just as you have learned in the previous chapters. Animated Ogre models come as a set of files: The model is in <code>Oto.mesh.xml</code>, and the animation details are in <code>Oto.skeleton.xml</code> (plus materials and textures). Check that all files of the model are indeed in the right <code>Model</code> subdirectory.
 </p>
-<pre class="code java">    <span class="coMULTI">/* Displaying the model requires a light source */</span>
-    DirectionalLight dl <span class="sy0">=</span> <span class="kw1">new</span> DirectionalLight<span class="br0">&#40;</span><span class="br0">&#41;</span>;
-    dl.<span class="me1">setDirection</span><span class="br0">&#40;</span><span class="kw1">new</span> Vector3f<span class="br0">&#40;</span><span class="sy0">-</span>0.1f, <span class="sy0">-</span>1f, <span class="sy0">-</span><span class="nu0">1</span><span class="br0">&#41;</span>.<span class="me1">normalizeLocal</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
-    rootNode.<span class="me1">addLight</span><span class="br0">&#40;</span>dl<span class="br0">&#41;</span>;
+<pre>    /* Displaying the model requires a light source */
+    DirectionalLight dl = new DirectionalLight&#40;&#41;;
+    dl.setDirection&#40;new Vector3f&#40;-0.1f, -1f, -1&#41;.normalizeLocal&#40;&#41;&#41;;
+    rootNode.addLight&#40;dl&#41;;
 &nbsp;
-    <span class="coMULTI">/* load and attach the model as usual */</span>
-    player <span class="sy0">=</span> assetManager.<span class="me1">loadModel</span><span class="br0">&#40;</span><span class="st0">&quot;Models/Oto/Oto.mesh.xml&quot;</span><span class="br0">&#41;</span>;
-    player.<span class="me1">setLocalScale</span><span class="br0">&#40;</span>0.5f<span class="br0">&#41;</span>; <span class="co1">// resize</span>
-    rootNode.<span class="me1">attachChild</span><span class="br0">&#40;</span>player<span class="br0">&#41;</span>;</pre>
+    /* load and attach the model as usual */
+    player = assetManager.loadModel&#40;&quot;Models/Oto/Oto.mesh.xml&quot;&#41;;
+    player.setLocalScale&#40;0.5f&#41;; // resize
+    rootNode.attachChild&#40;player&#41;;</pre>
 <p>
 Don&#039;t forget to add a light source to make the material visible.
 </p>
 
 </div>
 
-<h2><a name="animation_controler_and_channel" id="animation_controler_and_channel">Animation Controler and Channel</a></h2>
-<div class="level2">
+<h2><a>Animation Controler and Channel</a></h2>
+<div>
 
 <p>
 
 After you load the animated model, you register it to the Animation Controller. 
 </p>
 <ul>
-<li class="level1"><div class="li"> The controller object gives you access to the available animation sequences. </div>
+<li><div> The controller object gives you access to the available animation sequences. </div>
 </li>
-<li class="level1"><div class="li"> The controller can have several channels, each channel can run one animation sequence at a time. </div>
+<li><div> The controller can have several channels, each channel can run one animation sequence at a time. </div>
 </li>
-<li class="level1"><div class="li"> To run several sequences, you create several channels, and set them each to their animation.</div>
+<li><div> To run several sequences, you create several channels, and set them each to their animation.</div>
 </li>
 </ul>
-<pre class="code java">    <span class="coMULTI">/* Load the animation controls, listen to animation events, 
+<pre>    <span>/* Load the animation controls, listen to animation events, 
      * create an animation channel, and bring the model in its default position.  */</span>
-    control <span class="sy0">=</span> player.<span class="me1">getControl</span><span class="br0">&#40;</span>AnimControl.<span class="kw1">class</span><span class="br0">&#41;</span>;
-    control.<span class="me1">addListener</span><span class="br0">&#40;</span><span class="kw1">this</span><span class="br0">&#41;</span>;
-    channel <span class="sy0">=</span> control.<span class="me1">createChannel</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
-    channel.<span class="me1">setAnim</span><span class="br0">&#40;</span><span class="st0">&quot;stand&quot;</span><span class="br0">&#41;</span>;</pre>
+    control = player.getControl&#40;AnimControl.class&#41;;
+    control.addListener&#40;this&#41;;
+    channel = control.createChannel&#40;&#41;;
+    channel.setAnim&#40;&quot;stand&quot;&#41;;</pre>
 </div>
 
-<h2><a name="responding_to_animation_events" id="responding_to_animation_events">Responding to Animation Events</a></h2>
-<div class="level2">
+<h2><a>Responding to Animation Events</a></h2>
+<div>
 
 <p>
 
 Add <code>implements AnimEventListener</code> to the class declaration. This interface gives you access to events that notify you when a sequence is done, or when you change from one sequence to another, so you can respond to it. In this example, you reset the character to a standing position after a <code>Walk</code> cycle is done.
 </p>
-<pre class="code java">  <span class="kw1">public</span> <span class="kw4">void</span> onAnimCycleDone<span class="br0">&#40;</span>AnimControl control, AnimChannel channel, <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Astring+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object> animName<span class="br0">&#41;</span> <span class="br0">&#123;</span>
-    <span class="kw1">if</span> <span class="br0">&#40;</span>animName.<span class="me1">equals</span><span class="br0">&#40;</span><span class="st0">&quot;Walk&quot;</span><span class="br0">&#41;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-      channel.<span class="me1">setAnim</span><span class="br0">&#40;</span><span class="st0">&quot;stand&quot;</span>, 0.50f<span class="br0">&#41;</span>;
-      channel.<span class="me1">setLoopMode</span><span class="br0">&#40;</span>LoopMode.<span class="me1">DontLoop</span><span class="br0">&#41;</span>;
-      channel.<span class="me1">setSpeed</span><span class="br0">&#40;</span>1f<span class="br0">&#41;</span>;
-    <span class="br0">&#125;</span>
-  <span class="br0">&#125;</span>
+<pre>  public void onAnimCycleDone&#40;AnimControl control, AnimChannel channel, String animName&#41; &#123;
+    if &#40;animName.equals&#40;&quot;Walk&quot;&#41;&#41; &#123;
+      channel.setAnim&#40;&quot;stand&quot;, 0.50f&#41;;
+      channel.setLoopMode&#40;LoopMode.DontLoop&#41;;
+      channel.setSpeed&#40;1f&#41;;
+    &#125;
+  &#125;
 &nbsp;
-  <span class="kw1">public</span> <span class="kw4">void</span> onAnimChange<span class="br0">&#40;</span>AnimControl control, AnimChannel channel, <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Astring+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object> animName<span class="br0">&#41;</span> <span class="br0">&#123;</span>
-    <span class="co1">// unused</span>
-  <span class="br0">&#125;</span></pre>
+  public void onAnimChange&#40;AnimControl control, AnimChannel channel, String animName&#41; &#123;
+    // unused
+  &#125;</pre>
 </div>
 
-<h2><a name="trigger_animations_after_user_input" id="trigger_animations_after_user_input">Trigger Animations After User Input</a></h2>
-<div class="level2">
+<h2><a>Trigger Animations After User Input</a></h2>
+<div>
 
 <p>
 
@@ -187,57 +187,57 @@ There are ambient animations like animals or trees that you may want to trigger 
 
 </p>
 <ol>
-<li class="level1"><div class="li"> Initialize a new input controller (in <code>simpleInitApp()</code>). </div>
+<li><div> Initialize a new input controller (in <code>simpleInitApp()</code>). </div>
 <ul>
-<li class="level2"><div class="li"> Don&#039;t forget to call the <code>initKey()</code> convenience method from <code>simpleInitApp()</code>.</div>
+<li><div> Don&#039;t forget to call the <code>initKey()</code> convenience method from <code>simpleInitApp()</code>.</div>
 </li>
 </ul>
 </li>
-<li class="level1"><div class="li"> Add a key mapping with the name the action you want to trigger. </div>
+<li><div> Add a key mapping with the name the action you want to trigger. </div>
 <ul>
-<li class="level2"><div class="li"> Here for example, you map <code>Walk</code> to the Spacebar key.</div>
+<li><div> Here for example, you map <code>Walk</code> to the Spacebar key.</div>
 </li>
 </ul>
 </li>
-<li class="level1"><div class="li"> Add an input listener for the <code>Walk</code> action.</div>
+<li><div> Add an input listener for the <code>Walk</code> action.</div>
 </li>
 </ol>
-<pre class="code java">  <span class="kw1">private</span> <span class="kw4">void</span> initKeys<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-    inputManager.<span class="me1">addMapping</span><span class="br0">&#40;</span><span class="st0">&quot;Walk&quot;</span>, <span class="kw1">new</span> KeyTrigger<span class="br0">&#40;</span>KeyInput.<span class="me1">KEY_SPACE</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
-    inputManager.<span class="me1">addListener</span><span class="br0">&#40;</span>actionListener, <span class="st0">&quot;Walk&quot;</span><span class="br0">&#41;</span>;
-  <span class="br0">&#125;</span></pre>
+<pre>  private void initKeys&#40;&#41; &#123;
+    inputManager.addMapping&#40;&quot;Walk&quot;, new KeyTrigger&#40;KeyInput.KEY_SPACE&#41;&#41;;
+    inputManager.addListener&#40;actionListener, &quot;Walk&quot;&#41;;
+  &#125;</pre>
 <p>
 To use the input controller, you need to implement the actionLister: 
 Test for each action by name, and set the channel to the corresponding animation to run.
 
 </p>
 <ul>
-<li class="level1"><div class="li"> The second parameter of setAnim() is the blendTime (?). </div>
+<li><div> The second parameter of setAnim() is the blendTime (?). </div>
 </li>
-<li class="level1"><div class="li"> LoopMode can be Loop (repeat), Cycle (?), and DontLoop (only once). </div>
+<li><div> LoopMode can be Loop (repeat), Cycle (?), and DontLoop (only once). </div>
 </li>
-<li class="level1"><div class="li"> If needed, use channel.setTime() to set the speed of this animation.</div>
+<li><div> If needed, use channel.setTime() to set the speed of this animation.</div>
 </li>
 </ul>
-<pre class="code java">  <span class="kw1">private</span> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Aactionlistener+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object><span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-    <span class="kw1">public</span> <span class="kw4">void</span> onAction<span class="br0">&#40;</span><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Astring+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object> name, <span class="kw4">boolean</span> keyPressed, <span class="kw4">float</span> tpf<span class="br0">&#41;</span> <span class="br0">&#123;</span>
-        <span class="kw1">if</span> <span class="br0">&#40;</span>name.<span class="me1">equals</span><span class="br0">&#40;</span><span class="st0">&quot;Walk&quot;</span><span class="br0">&#41;</span> <span class="sy0">&amp;&amp;</span> <span class="sy0">!</span>keyPressed<span class="br0">&#41;</span> <span class="br0">&#123;</span>
-            <span class="kw1">if</span> <span class="br0">&#40;</span><span class="sy0">!</span>channel.<span class="me1">getAnimationName</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">equals</span><span class="br0">&#40;</span><span class="st0">&quot;Walk&quot;</span><span class="br0">&#41;</span><span class="br0">&#41;</span><span class="br0">&#123;</span>
-                channel.<span class="me1">setAnim</span><span class="br0">&#40;</span><span class="st0">&quot;Walk&quot;</span>, 0.50f<span class="br0">&#41;</span>;
-                channel.<span class="me1">setLoopMode</span><span class="br0">&#40;</span>LoopMode.<span class="me1">Cycle</span><span class="br0">&#41;</span>;
-            <span class="br0">&#125;</span>
-        <span class="br0">&#125;</span> 
-    <span class="br0">&#125;</span>
-  <span class="br0">&#125;</span>;</pre>
+<pre>  private ActionListener&#40;&#41; &#123;
+    public void onAction&#40;String name, boolean keyPressed, float tpf&#41; &#123;
+        if &#40;name.equals&#40;&quot;Walk&quot;&#41; &amp;&amp; !keyPressed&#41; &#123;
+            if &#40;!channel.getAnimationName&#40;&#41;.equals&#40;&quot;Walk&quot;&#41;&#41;&#123;
+                channel.setAnim&#40;&quot;Walk&quot;, 0.50f&#41;;
+                channel.setLoopMode&#40;LoopMode.Cycle&#41;;
+            &#125;
+        &#125; 
+    &#125;
+  &#125;;</pre>
 </div>
 
-<h2><a name="exercises" id="exercises">Exercises</a></h2>
-<div class="level2">
+<h2><a>Exercises</a></h2>
+<div>
 
 </div>
 
-<h4><a name="two_animations" id="two_animations">Two Animations</a></h4>
-<div class="level4">
+<h4><a>Two Animations</a></h4>
+<div>
 
 <p>
 
@@ -245,18 +245,18 @@ Make the a mouse click trigger another animation sequence!
 
 </p>
 <ol>
-<li class="level1"><div class="li"> Create a second channel in the controller</div>
+<li><div> Create a second channel in the controller</div>
 </li>
-<li class="level2"><div class="li"> Create a new key trigger mapping and action (see: <a href="/com/jme3/gde/core/docs/jme3/beginner/hello_input_system.html" class="wikilink1" title="jme3:beginner:hello_input_system">Hello Input</a>)</div>
+<li><div> Create a new key trigger mapping and action (see: <a href="/com/jme3/gde/core/docs/jme3/beginner/hello_input_system.html">Hello Input</a>)</div>
 </li>
-<li class="level2"><div class="li"> Tip: Do you want to find out what animation sequences are available in the model? Use: <pre class="code java"><span class="kw1">for</span> <span class="br0">&#40;</span><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Astring+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object>.<span class="me1">out</span>.<span class="me1">println</span><span class="br0">&#40;</span>anim<span class="br0">&#41;</span>; <span class="br0">&#125;</span></pre></div>
+<li><div> Tip: Do you want to find out what animation sequences are available in the model? Use: <pre>for &#40;System.out.println&#40;anim&#41;; &#125;</pre></div>
 </li>
 </ol>
 
 </div>
 
-<h4><a name="revealing_the_skeleton_1" id="revealing_the_skeleton_1">Revealing the Skeleton (1)</a></h4>
-<div class="level4">
+<h4><a>Revealing the Skeleton (1)</a></h4>
+<div>
 
 <p>
 
@@ -267,37 +267,37 @@ Open the <code>skeleton.xml</code> file in a text editor of your choice.
 You don&#039;t have to be able to read or write these xml files (Blender does that for you) – but it is good to know what the xml files are there for and how skeletons work. “There&#039;s no magic to it!”
 </p>
 <ul>
-<li class="level1"><div class="li"> Note how the bones are numbered and named. All names of animated models follow a naming scheme.</div>
+<li><div> Note how the bones are numbered and named. All names of animated models follow a naming scheme.</div>
 </li>
-<li class="level1"><div class="li"> Note the bone hierarchy that specifies how the bones are connected.</div>
+<li><div> Note the bone hierarchy that specifies how the bones are connected.</div>
 </li>
-<li class="level1"><div class="li"> Note the list of animations: Each animation has a name, and several tracks. Each track tells individual bones how and when to transform. These animation steps are called keyframes. </div>
+<li><div> Note the list of animations: Each animation has a name, and several tracks. Each track tells individual bones how and when to transform. These animation steps are called keyframes. </div>
 </li>
 </ul>
 
 </div>
 
-<h4><a name="revealing_the_skeleton_2" id="revealing_the_skeleton_2">Revealing the Skeleton (2)</a></h4>
-<div class="level4">
+<h4><a>Revealing the Skeleton (2)</a></h4>
+<div>
 
 <p>
 
 Add the following code snippet to <code>simpleInitApp()</code> to make the bones (that you just read about) visible! 
 </p>
-<pre class="code java">     SkeletonDebugger skeletonDebug <span class="sy0">=</span> <span class="kw1">new</span> SkeletonDebugger<span class="br0">&#40;</span><span class="st0">&quot;skeleton&quot;</span>, control.<span class="me1">getSkeleton</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
-     Material mat <span class="sy0">=</span> <span class="kw1">new</span> Material<span class="br0">&#40;</span>assetManager, <span class="st0">&quot;Common/MatDefs/Misc/Unshaded.j3md&quot;</span><span class="br0">&#41;</span>;
-     mat.<span class="me1">setColor</span><span class="br0">&#40;</span><span class="st0">&quot;Color&quot;</span>, ColorRGBA.<span class="me1">Green</span><span class="br0">&#41;</span>;
-     mat.<span class="me1">getAdditionalRenderState</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">setDepthTest</span><span class="br0">&#40;</span><span class="kw2">false</span><span class="br0">&#41;</span>;
-     skeletonDebug.<span class="me1">setMaterial</span><span class="br0">&#40;</span>mat<span class="br0">&#41;</span>;
-     player.<span class="me1">attachChild</span><span class="br0">&#40;</span>skeletonDebug<span class="br0">&#41;</span>;</pre>
+<pre>     SkeletonDebugger skeletonDebug = new SkeletonDebugger&#40;&quot;skeleton&quot;, control.getSkeleton&#40;&#41;&#41;;
+     Material mat = new Material&#40;assetManager, &quot;Common/MatDefs/Misc/Unshaded.j3md&quot;&#41;;
+     mat.setColor&#40;&quot;Color&quot;, ColorRGBA.Green&#41;;
+     mat.getAdditionalRenderState&#40;&#41;.setDepthTest&#40;false&#41;;
+     skeletonDebug.setMaterial&#40;mat&#41;;
+     player.attachChild&#40;skeletonDebug&#41;;</pre>
 <p>
 Can you identify individual bones in the skeleton? 
 </p>
 
 </div>
 
-<h2><a name="conclusion" id="conclusion">Conclusion</a></h2>
-<div class="level2">
+<h2><a>Conclusion</a></h2>
+<div>
 
 <p>
 
@@ -305,13 +305,13 @@ Now you can load animated models, identify stored animations, and trigger by usi
 </p>
 
 <p>
-Now that your character can walk, wouldn&#039;t it be cool if it could also pick up things, or aim a weapon at things, or open doors? Time to learn more about <a href="/com/jme3/gde/core/docs/jme3/beginner/hello_picking.html" class="wikilink1" title="jme3:beginner:hello_picking">picking</a>!
+Now that your character can walk, wouldn&#039;t it be cool if it could also pick up things, or aim a weapon at things, or open doors? Time to learn more about <a href="/com/jme3/gde/core/docs/jme3/beginner/hello_picking.html">picking</a>!
 
 </p>
 <hr />
 
 <p>
-See also: <a href="https://docs.google.com/leaf?id=0B9hhZie2D-fEYmRkMTYwN2YtMzQ0My00NTM4LThhOTYtZTk1MTRlYTNjYTc3&amp;hl=en" class="urlextern" title="https://docs.google.com/leaf?id=0B9hhZie2D-fEYmRkMTYwN2YtMzQ0My00NTM4LThhOTYtZTk1MTRlYTNjYTc3&amp;hl=en"  rel="nofollow">Creating Animated OgreXML Models in Blender</a>
+See also: <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="https://docs.google.com/leaf?id=0B9hhZie2D-fEYmRkMTYwN2YtMzQ0My00NTM4LThhOTYtZTk1MTRlYTNjYTc3&amp;hl=en"><param name="text" value="<html><u>Creating Animated OgreXML Models in Blender</u></html>"><param name="textColor" value="blue"></object>
 
 </p>
 

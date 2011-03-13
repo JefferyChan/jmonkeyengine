@@ -1,6 +1,6 @@
 
-<h1><a name="connecting" id="connecting">Connecting</a></h1>
-<div class="level1">
+<h1><a>Connecting</a></h1>
+<div>
 
 <p>
 This very first tutorial is going to teach you how to open a server and a client, and connect them to eachother. I&#039;ll also discuss how connection registration works. Since this is a very simple process in SpiderMonkey, this tutorial will be quite short.
@@ -8,24 +8,24 @@ This very first tutorial is going to teach you how to open a server and a client
 
 </div>
 
-<h3><a name="simple_connections" id="simple_connections">Simple connections</a></h3>
-<div class="level3">
+<h3><a>Simple connections</a></h3>
+<div>
 
 <p>
 Creating a server is as simple as doing this:
 
 </p>
-<pre class="code java">Server myServer <span class="sy0">=</span> <span class="kw1">new</span> Server<span class="br0">&#40;</span><span class="nu0">4040</span>, <span class="nu0">5050</span><span class="br0">&#41;</span>;
-myServer.<span class="me1">start</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;</pre>
+<pre>Server myServer = new Server&#40;4040, 5050&#41;;
+myServer.start&#40;&#41;;</pre>
 <p>
 This initializes and starts a server on TCP port 4040 and UDP port 5050. Now it&#039;s time to connect a client:
 </p>
-<pre class="code java">Client client <span class="sy0">=</span> <span class="kw1">new</span> Client<span class="br0">&#40;</span><span class="st0">&quot;localhost&quot;</span>, <span class="nu0">4040</span>, <span class="nu0">5050</span><span class="br0">&#41;</span>;
-client.<span class="me1">start</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;</pre>
+<pre>Client client = new Client&#40;&quot;localhost&quot;, 4040, 5050&#41;;
+client.start&#40;&#41;;</pre>
 <p>
 This initializes and starts a client, and it will immediately connect to localhost, TCP port 4040, and UDP port 5050. In the log, you&#039;ll get to see this:
 </p>
-<pre class="code">
+<pre>
 Sep 16, 2010 11:52:16 AM com.jme3.network.connection.TCPConnection bind
 INFO: [Server#1][TCP] Bound to 0.0.0.0/0.0.0.0:4040
 Sep 16, 2010 11:52:16 AM com.jme3.network.connection.UDPConnection bind
@@ -50,18 +50,18 @@ As you can see, this is a combined log of the client and server. Even though it 
 
 </div>
 
-<h3><a name="connector_filters" id="connector_filters">Connector filters</a></h3>
-<div class="level3">
+<h3><a>Connector filters</a></h3>
+<div>
 
 <p>
 You can also filter connections (or connectors as I call them) in SpiderMonkey. You can do this by implementing the ConnectorFilter interface:
 </p>
-<pre class="code java"><span class="kw1">public</span> <span class="kw1">class</span> MyConnectorFilter <span class="kw1">implements</span> ConnectorFilter <span class="br0">&#123;</span>
-   <span class="kw1">public</span> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Astring+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object> filterConnector<span class="br0">&#40;</span>InetSocketAddress address<span class="br0">&#41;</span> <span class="br0">&#123;</span>
-      <span class="kw1">if</span> <span class="br0">&#40;</span>address.<span class="me1">isLoopbackAddress</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span> <span class="kw1">return</span> <span class="st0">&quot;I don't like locals!&quot;</span>;
-      <span class="kw1">return</span> <span class="kw2">null</span>;
-   <span class="br0">&#125;</span>  
-<span class="br0">&#125;</span></pre>
+<pre>public class MyConnectorFilter implements ConnectorFilter &#123;
+   public String filterConnector&#40;InetSocketAddress address&#41; &#123;
+      if &#40;address.isLoopbackAddress&#40;&#41;&#41; return &quot;I don't like locals!&quot;;
+      return null;
+   &#125;  
+&#125;</pre>
 <p>
 
 Return null for no filtering, or a String with the reason if you want to filter this person.
@@ -69,24 +69,24 @@ Return null for no filtering, or a String with the reason if you want to filter 
 
 </div>
 
-<h3><a name="discover_hosts" id="discover_hosts">Discover hosts</a></h3>
-<div class="level3">
+<h3><a>Discover hosts</a></h3>
+<div>
 
 <p>
 SpiderMonkey Clients are also able to discover hosts running in the LAN. This is also a very simple process, and can be done as follows:
 
 </p>
-<pre class="code java">Client client <span class="sy0">=</span> <span class="kw1">new</span> Client<span class="br0">&#40;</span><span class="br0">&#41;</span>;
-List<span class="sy0">&lt;</span>InetAddress<span class="sy0">&gt;</span> foundHosts <span class="sy0">=</span> client.<span class="me1">discoverHosts</span><span class="br0">&#40;</span><span class="nu0">5050</span>, <span class="nu0">5000</span><span class="br0">&#41;</span>;</pre>
+<pre>Client client = new Client&#40;&#41;;
+List&lt;InetAddress&gt; foundHosts = client.discoverHosts&#40;5050, 5000&#41;;</pre>
 <p>
 
 This starts the host discovery on port 5050, and listens for servers for 5 seconds. Typically, servers respond pretty fast so a few seconds should be enough. To do something with these hosts it&#039;s as simple as doing:
 
 </p>
-<pre class="code java"><span class="kw1">for</span> <span class="br0">&#40;</span><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Ainetaddress+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object> host <span class="sy0">:</span> foundHosts<span class="br0">&#41;</span> <span class="br0">&#123;</span>
-    client.<span class="me1">connect</span><span class="br0">&#40;</span>host.<span class="me1">getCanonicalHostName</span><span class="br0">&#40;</span><span class="br0">&#41;</span>, <span class="nu0">4040</span>, <span class="nu0">5050</span><span class="br0">&#41;</span>;
-<span class="br0">&#125;</span>
-client.<span class="me1">start</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;</pre>
+<pre>for &#40;InetAddress host : foundHosts&#41; &#123;
+    client.connect&#40;host.getCanonicalHostName&#40;&#41;, 4040, 5050&#41;;
+&#125;
+client.start&#40;&#41;;</pre>
 <p>
 
 Do note that this would connect to every host found, so this does not work properly, but the idea is that you can configure it the way you want it. Don&#039;t forget to start() the client.

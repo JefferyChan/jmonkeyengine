@@ -1,6 +1,6 @@
 
-<h1><a name="optimization_reference" id="optimization_reference">Optimization reference</a></h1>
-<div class="level1">
+<h1><a>Optimization reference</a></h1>
+<div>
 
 <p>
 
@@ -9,8 +9,8 @@ This page is intended as a reference collection of optimization tricks that can 
 
 </div>
 
-<h2><a name="maintain_low_geometry_count" id="maintain_low_geometry_count">Maintain low Geometry count</a></h2>
-<div class="level2">
+<h2><a>Maintain low Geometry count</a></h2>
+<div>
 
 <p>
 
@@ -22,7 +22,7 @@ The reson for this is, that for every object a render command must be done, here
 <strong>Possible optimization techniques</strong>
 </p>
 <ul>
-<li class="level1"><div class="li"> Use GeometryBatchFactory.optimize(node) to merge the meshes of the geometries contained in the given node into fewer batches (based on common Material used).</div>
+<li><div> Use GeometryBatchFactory.optimize(node) to merge the meshes of the geometries contained in the given node into fewer batches (based on common Material used).</div>
 </li>
 </ul>
 
@@ -31,23 +31,23 @@ The reson for this is, that for every object a render command must be done, here
 <strong>Side-effects</strong>
 </p>
 <ul>
-<li class="level1"><div class="li"> Using GeometryBatchFactory merges individual Geometries into a single mesh. Thereby it becomes hard to apply specific Materials or to remove a single Geometry. Therefore it should be used for static Geometry only that does not require frequent changes or individual materials/texturing.</div>
+<li><div> Using GeometryBatchFactory merges individual Geometries into a single mesh. Thereby it becomes hard to apply specific Materials or to remove a single Geometry. Therefore it should be used for static Geometry only that does not require frequent changes or individual materials/texturing.</div>
 </li>
-<li class="level1"><div class="li">Using Texture atlases might be a way to provide a limited individual texturing.</div>
+<li><div>Using Texture atlases might be a way to provide a limited individual texturing.</div>
 </li>
 </ul>
 
 </div>
 
-<h2><a name="avoid_creating_new_objects" id="avoid_creating_new_objects">Avoid creating new objects</a></h2>
-<div class="level2">
+<h2><a>Avoid creating new objects</a></h2>
+<div>
 
 <p>
 
 When you use math operations like vectorA.mult(vectorB); new objects are created that have to be garbage collected when you don&#039;t use them anymore. Check your math operations for opportunities to use the local version of the math operations, e.g. vectorA.multLocal(vectorB). This way the result is stored in vectorA and no new object needs to be created.
 </p>
-<div class="tags"><span>
-	<a href="/wiki/doku.php/tag:performance?do=showtag&amp;tag=tag%3Aperformance" class="wikilink1" title="tag:performance" rel="tag">performance</a>
+<div><span>
+	<a href="/wiki/doku.php/tag:performance?do=showtag&amp;tag=tag%3Aperformance">performance</a>
 </span></div>
 
 </div>

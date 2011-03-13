@@ -1,11 +1,11 @@
 
-<h1><a name="getting_started_with_jme3_5_-_hello_input_system" id="getting_started_with_jme3_5_-_hello_input_system">Getting Started with JME3 (5) - Hello Input System</a></h1>
-<div class="level1">
+<h1><a>Getting Started with JME3 (5) - Hello Input System</a></h1>
+<div>
 
 <p>
 
-Previous: <a href="/com/jme3/gde/core/docs/jme3/beginner/hello_main_event_loop.html" class="wikilink1" title="jme3:beginner:hello_main_event_loop">Hello Event Loop</a>,
-Next: <a href="/com/jme3/gde/core/docs/jme3/beginner/hello_material.html" class="wikilink1" title="jme3:beginner:hello_material">Hello Material</a>
+Previous: <a href="/com/jme3/gde/core/docs/jme3/beginner/hello_main_event_loop.html">Hello Event Loop</a>,
+Next: <a href="/com/jme3/gde/core/docs/jme3/beginner/hello_material.html">Hello Material</a>
 </p>
 
 <p>
@@ -19,102 +19,102 @@ Every game has its custom keybindings, and this tutorial explains how you define
 
 </div>
 
-<h2><a name="sample_code" id="sample_code">Sample Code</a></h2>
-<div class="level2">
-<pre class="code java"><span class="kw1">package</span> <span class="co2">jme3test.helloworld</span>;
+<h2><a>Sample Code</a></h2>
+<div>
+<pre>package jme3test.helloworld;
 &nbsp;
-<span class="kw1">import</span> <span class="co2">com.jme3.app.SimpleApplication</span>;
-<span class="kw1">import</span> <span class="co2">com.jme3.material.Material</span>;
-<span class="kw1">import</span> <span class="co2">com.jme3.math.Vector3f</span>;
-<span class="kw1">import</span> <span class="co2">com.jme3.scene.Geometry</span>;
-<span class="kw1">import</span> <span class="co2">com.jme3.scene.shape.Box</span>;
-<span class="kw1">import</span> <span class="co2">com.jme3.math.ColorRGBA</span>;
-<span class="kw1">import</span> <span class="co2">com.jme3.input.KeyInput</span>;
-<span class="kw1">import</span> <span class="co2">com.jme3.input.MouseInput</span>;
-<span class="kw1">import</span> <span class="co2">com.jme3.input.controls.ActionListener</span>;
-<span class="kw1">import</span> <span class="co2">com.jme3.input.controls.AnalogListener</span>;
-<span class="kw1">import</span> <span class="co2">com.jme3.input.controls.KeyTrigger</span>;
-<span class="kw1">import</span> <span class="co2">com.jme3.input.controls.MouseButtonTrigger</span>;
+import com.jme3.app.SimpleApplication;
+import com.jme3.material.Material;
+import com.jme3.math.Vector3f;
+import com.jme3.scene.Geometry;
+import com.jme3.scene.shape.Box;
+import com.jme3.math.ColorRGBA;
+import com.jme3.input.KeyInput;
+import com.jme3.input.MouseInput;
+import com.jme3.input.controls.ActionListener;
+import com.jme3.input.controls.AnalogListener;
+import com.jme3.input.controls.KeyTrigger;
+import com.jme3.input.controls.MouseButtonTrigger;
 &nbsp;
-<span class="co3">/** Sample 5 - how to map keys and mousebuttons to actions */</span>
-<span class="kw1">public</span> <span class="kw1">class</span> HelloInput <span class="kw1">extends</span> SimpleApplication <span class="br0">&#123;</span>
+/** Sample 5 - how to map keys and mousebuttons to actions */
+public class HelloInput extends SimpleApplication &#123;
 &nbsp;
-  <span class="kw1">public</span> <span class="kw1">static</span> <span class="kw4">void</span> main<span class="br0">&#40;</span><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Astring+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object><span class="br0">&#91;</span><span class="br0">&#93;</span> args<span class="br0">&#41;</span> <span class="br0">&#123;</span>
-    HelloInput app <span class="sy0">=</span> <span class="kw1">new</span> HelloInput<span class="br0">&#40;</span><span class="br0">&#41;</span>;
-    app.<span class="me1">start</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
-  <span class="br0">&#125;</span>
-  <span class="kw1">protected</span> Geometry player;
-  <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Aboolean+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object> isRunning<span class="sy0">=</span><span class="kw2">true</span>;
+  public static void main&#40;String&#91;&#93; args&#41; &#123;
+    HelloInput app = new HelloInput&#40;&#41;;
+    app.start&#40;&#41;;
+  &#125;
+  protected Geometry player;
+  Boolean isRunning=true;
 &nbsp;
   @Override
-  <span class="kw1">public</span> <span class="kw4">void</span> simpleInitApp<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-    <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Abox+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object><span class="br0">&#40;</span>Vector3f.<span class="me1">ZERO</span>, <span class="nu0">1</span>, <span class="nu0">1</span>, <span class="nu0">1</span><span class="br0">&#41;</span>;
-    player <span class="sy0">=</span> <span class="kw1">new</span> Geometry<span class="br0">&#40;</span><span class="st0">&quot;Player&quot;</span>, b<span class="br0">&#41;</span>;
-    Material mat <span class="sy0">=</span> <span class="kw1">new</span> Material<span class="br0">&#40;</span>assetManager, <span class="st0">&quot;Common/MatDefs/Misc/Unshaded.j3md&quot;</span><span class="br0">&#41;</span>;
-    mat.<span class="me1">setColor</span><span class="br0">&#40;</span><span class="st0">&quot;Color&quot;</span>, ColorRGBA.<span class="me1">Blue</span><span class="br0">&#41;</span>;
-    player.<span class="me1">setMaterial</span><span class="br0">&#40;</span>mat<span class="br0">&#41;</span>;
-    rootNode.<span class="me1">attachChild</span><span class="br0">&#40;</span>player<span class="br0">&#41;</span>;
-    initKeys<span class="br0">&#40;</span><span class="br0">&#41;</span>; <span class="co1">// load my custom keybinding</span>
-  <span class="br0">&#125;</span>
+  public void simpleInitApp&#40;&#41; &#123;
+    Box&#40;Vector3f.ZERO, 1, 1, 1&#41;;
+    player = new Geometry&#40;&quot;Player&quot;, b&#41;;
+    Material mat = new Material&#40;assetManager, &quot;Common/MatDefs/Misc/Unshaded.j3md&quot;&#41;;
+    mat.setColor&#40;&quot;Color&quot;, ColorRGBA.Blue&#41;;
+    player.setMaterial&#40;mat&#41;;
+    rootNode.attachChild&#40;player&#41;;
+    initKeys&#40;&#41;; // load my custom keybinding
+  &#125;
 &nbsp;
-  <span class="co3">/** Custom Keybinding: Map named actions to inputs. */</span>
-  <span class="kw1">private</span> <span class="kw4">void</span> initKeys<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-    <span class="co1">// You can map one or several inputs to one named action</span>
-    inputManager.<span class="me1">addMapping</span><span class="br0">&#40;</span><span class="st0">&quot;Pause&quot;</span>,  <span class="kw1">new</span> KeyTrigger<span class="br0">&#40;</span>KeyInput.<span class="me1">KEY_P</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
-    inputManager.<span class="me1">addMapping</span><span class="br0">&#40;</span><span class="st0">&quot;Left&quot;</span>,   <span class="kw1">new</span> KeyTrigger<span class="br0">&#40;</span>KeyInput.<span class="me1">KEY_J</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
-    inputManager.<span class="me1">addMapping</span><span class="br0">&#40;</span><span class="st0">&quot;Right&quot;</span>,  <span class="kw1">new</span> KeyTrigger<span class="br0">&#40;</span>KeyInput.<span class="me1">KEY_K</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
-    inputManager.<span class="me1">addMapping</span><span class="br0">&#40;</span><span class="st0">&quot;Rotate&quot;</span>, <span class="kw1">new</span> KeyTrigger<span class="br0">&#40;</span>KeyInput.<span class="me1">KEY_SPACE</span><span class="br0">&#41;</span>,
-                                      <span class="kw1">new</span> MouseButtonTrigger<span class="br0">&#40;</span>MouseInput.<span class="me1">BUTTON_LEFT</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
-    <span class="co1">// Add the names to the action listener.</span>
-    inputManager.<span class="me1">addListener</span><span class="br0">&#40;</span>actionListener, <span class="kw1">new</span> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Astring+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object><span class="br0">&#91;</span><span class="br0">&#93;</span><span class="br0">&#123;</span><span class="st0">&quot;Pause&quot;</span><span class="br0">&#125;</span><span class="br0">&#41;</span>;
-    inputManager.<span class="me1">addListener</span><span class="br0">&#40;</span>analogListener, <span class="kw1">new</span> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Astring+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object><span class="br0">&#91;</span><span class="br0">&#93;</span><span class="br0">&#123;</span><span class="st0">&quot;Left&quot;</span>, <span class="st0">&quot;Right&quot;</span>, <span class="st0">&quot;Rotate&quot;</span><span class="br0">&#125;</span><span class="br0">&#41;</span>;
+  /** Custom Keybinding: Map named actions to inputs. */
+  private void initKeys&#40;&#41; &#123;
+    // You can map one or several inputs to one named action
+    inputManager.addMapping&#40;&quot;Pause&quot;,  new KeyTrigger&#40;KeyInput.KEY_P&#41;&#41;;
+    inputManager.addMapping&#40;&quot;Left&quot;,   new KeyTrigger&#40;KeyInput.KEY_J&#41;&#41;;
+    inputManager.addMapping&#40;&quot;Right&quot;,  new KeyTrigger&#40;KeyInput.KEY_K&#41;&#41;;
+    inputManager.addMapping&#40;&quot;Rotate&quot;, new KeyTrigger&#40;KeyInput.KEY_SPACE&#41;,
+                                      new MouseButtonTrigger&#40;MouseInput.BUTTON_LEFT&#41;&#41;;
+    // Add the names to the action listener.
+    inputManager.addListener&#40;actionListener, new String&#91;&#93;&#123;&quot;Pause&quot;&#125;&#41;;
+    inputManager.addListener&#40;analogListener, new String&#91;&#93;&#123;&quot;Left&quot;, &quot;Right&quot;, &quot;Rotate&quot;&#125;&#41;;
 &nbsp;
-  <span class="br0">&#125;</span>
+  &#125;
 &nbsp;
-  <span class="kw1">private</span> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Aactionlistener+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object><span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-    <span class="kw1">public</span> <span class="kw4">void</span> onAction<span class="br0">&#40;</span><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Astring+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object> name, <span class="kw4">boolean</span> keyPressed, <span class="kw4">float</span> tpf<span class="br0">&#41;</span> <span class="br0">&#123;</span>
-      <span class="kw1">if</span> <span class="br0">&#40;</span>name.<span class="me1">equals</span><span class="br0">&#40;</span><span class="st0">&quot;Pause&quot;</span><span class="br0">&#41;</span> <span class="sy0">&amp;&amp;</span> <span class="sy0">!</span>keyPressed<span class="br0">&#41;</span> <span class="br0">&#123;</span>
-        isRunning <span class="sy0">=</span> <span class="sy0">!</span>isRunning;
-      <span class="br0">&#125;</span>
-    <span class="br0">&#125;</span>
-  <span class="br0">&#125;</span>;
+  private ActionListener&#40;&#41; &#123;
+    public void onAction&#40;String name, boolean keyPressed, float tpf&#41; &#123;
+      if &#40;name.equals&#40;&quot;Pause&quot;&#41; &amp;&amp; !keyPressed&#41; &#123;
+        isRunning = !isRunning;
+      &#125;
+    &#125;
+  &#125;;
 &nbsp;
-  <span class="kw1">private</span> AnalogListener analogListener <span class="sy0">=</span> <span class="kw1">new</span> AnalogListener<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-    <span class="kw1">public</span> <span class="kw4">void</span> onAnalog<span class="br0">&#40;</span><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Astring+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object> name, <span class="kw4">float</span> value, <span class="kw4">float</span> tpf<span class="br0">&#41;</span> <span class="br0">&#123;</span>
-      <span class="kw1">if</span> <span class="br0">&#40;</span>isRunning<span class="br0">&#41;</span> <span class="br0">&#123;</span>
-        <span class="kw1">if</span> <span class="br0">&#40;</span>name.<span class="me1">equals</span><span class="br0">&#40;</span><span class="st0">&quot;Rotate&quot;</span><span class="br0">&#41;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-          player.<span class="me1">rotate</span><span class="br0">&#40;</span>0, value<span class="sy0">*</span>speed, 0<span class="br0">&#41;</span>;
-        <span class="br0">&#125;</span>
-        <span class="kw1">if</span> <span class="br0">&#40;</span>name.<span class="me1">equals</span><span class="br0">&#40;</span><span class="st0">&quot;Right&quot;</span><span class="br0">&#41;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-          Vector3f v <span class="sy0">=</span> player.<span class="me1">getLocalTranslation</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
-          player.<span class="me1">setLocalTranslation</span><span class="br0">&#40;</span>v.<span class="me1">x</span> <span class="sy0">+</span> value<span class="sy0">*</span>speed, v.<span class="me1">y</span>, v.<span class="me1">z</span><span class="br0">&#41;</span>;
-        <span class="br0">&#125;</span>
-        <span class="kw1">if</span> <span class="br0">&#40;</span>name.<span class="me1">equals</span><span class="br0">&#40;</span><span class="st0">&quot;Left&quot;</span><span class="br0">&#41;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-          Vector3f v <span class="sy0">=</span> player.<span class="me1">getLocalTranslation</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
-          player.<span class="me1">setLocalTranslation</span><span class="br0">&#40;</span>v.<span class="me1">x</span> <span class="sy0">-</span> value<span class="sy0">*</span>speed, v.<span class="me1">y</span>, v.<span class="me1">z</span><span class="br0">&#41;</span>;
-        <span class="br0">&#125;</span>
-      <span class="br0">&#125;</span> <span class="kw1">else</span> <span class="br0">&#123;</span>
-        <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Asystem+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object>.<span class="me1">out</span>.<span class="me1">println</span><span class="br0">&#40;</span><span class="st0">&quot;Press P to unpause.&quot;</span><span class="br0">&#41;</span>;
-      <span class="br0">&#125;</span>
-    <span class="br0">&#125;</span>
-  <span class="br0">&#125;</span>;
-<span class="br0">&#125;</span></pre>
+  private AnalogListener analogListener = new AnalogListener&#40;&#41; &#123;
+    public void onAnalog&#40;String name, float value, float tpf&#41; &#123;
+      if &#40;isRunning&#41; &#123;
+        if &#40;name.equals&#40;&quot;Rotate&quot;&#41;&#41; &#123;
+          player.rotate&#40;0, value*speed, 0&#41;;
+        &#125;
+        if &#40;name.equals&#40;&quot;Right&quot;&#41;&#41; &#123;
+          Vector3f v = player.getLocalTranslation&#40;&#41;;
+          player.setLocalTranslation&#40;v.x + value*speed, v.y, v.z&#41;;
+        &#125;
+        if &#40;name.equals&#40;&quot;Left&quot;&#41;&#41; &#123;
+          Vector3f v = player.getLocalTranslation&#40;&#41;;
+          player.setLocalTranslation&#40;v.x - value*speed, v.y, v.z&#41;;
+        &#125;
+      &#125; else &#123;
+        System.out.println&#40;&quot;Press P to unpause.&quot;&#41;;
+      &#125;
+    &#125;
+  &#125;;
+&#125;</pre>
 <p>
 Build and run the example. 
 </p>
 <ul>
-<li class="level1"><div class="li"> Press the Spacebar or click to rotate the cube. </div>
+<li><div> Press the Spacebar or click to rotate the cube. </div>
 </li>
-<li class="level1"><div class="li"> Press the J and K keys to move the cube.</div>
+<li><div> Press the J and K keys to move the cube.</div>
 </li>
-<li class="level1"><div class="li"> Press P to pause and unpause the game. While paused, the game should not respond to any input, other than <code>P</code>.</div>
+<li><div> Press P to pause and unpause the game. While paused, the game should not respond to any input, other than <code>P</code>.</div>
 </li>
 </ul>
 
 </div>
 
-<h2><a name="defining_mappings_and_triggers" id="defining_mappings_and_triggers">Defining Mappings and Triggers</a></h2>
-<div class="level2">
+<h2><a>Defining Mappings and Triggers</a></h2>
+<div>
 
 <p>
 
@@ -122,12 +122,12 @@ First you register each mapping name with its trigger(s). Remember the following
 
 </p>
 <ul>
-<li class="level1"><div class="li"> The trigger can be a key press or mouse action.</div>
+<li><div> The trigger can be a key press or mouse action.</div>
 </li>
-<li class="level1"><div class="li"> The mapping name is a string that you can choose. <br/>
+<li><div> The mapping name is a string that you can choose. <br/>
  The name should describe the action, not the trigger.</div>
 </li>
-<li class="level1"><div class="li"> One named mapping can have several triggers. <br/>
+<li><div> One named mapping can have several triggers. <br/>
  The “Rotate” action can be triggered by a click and by pressing the spacebar.</div>
 </li>
 </ul>
@@ -137,36 +137,36 @@ First you register each mapping name with its trigger(s). Remember the following
 Have a look at the code:
 </p>
 <ol>
-<li class="level1"><div class="li"> You register the mapping named “Rotate” to the Spacebar trigger <br/>
+<li><div> You register the mapping named “Rotate” to the Spacebar trigger <br/>
  <code>new KeyTrigger(KeyInput.KEY_SPACE)</code>). </div>
 </li>
-<li class="level1"><div class="li"> In the same line, you also register “Rotate” to the mouse button trigger <br/>
+<li><div> In the same line, you also register “Rotate” to the mouse button trigger <br/>
  <code>new MouseButtonTrigger(MouseInput.BUTTON_LEFT)</code></div>
 </li>
-<li class="level1"><div class="li"> You map the <code>Pause, Left, Right</code> mappings to the P, J, K keys, respectively. </div>
+<li><div> You map the <code>Pause, Left, Right</code> mappings to the P, J, K keys, respectively. </div>
 </li>
-<li class="level1"><div class="li"> You register the (on/off) pause action to the ActionListener </div>
+<li><div> You register the (on/off) pause action to the ActionListener </div>
 </li>
-<li class="level1"><div class="li"> You register the (gradual) movement actions to the AnalogListener</div>
+<li><div> You register the (gradual) movement actions to the AnalogListener</div>
 </li>
 </ol>
-<pre class="code java">    <span class="co1">// You can map one or several inputs to one named action</span>
-    inputManager.<span class="me1">addMapping</span><span class="br0">&#40;</span><span class="st0">&quot;Pause&quot;</span>,  <span class="kw1">new</span> KeyTrigger<span class="br0">&#40;</span>KeyInput.<span class="me1">KEY_P</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
-    inputManager.<span class="me1">addMapping</span><span class="br0">&#40;</span><span class="st0">&quot;Left&quot;</span>,   <span class="kw1">new</span> KeyTrigger<span class="br0">&#40;</span>KeyInput.<span class="me1">KEY_J</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
-    inputManager.<span class="me1">addMapping</span><span class="br0">&#40;</span><span class="st0">&quot;Right&quot;</span>,  <span class="kw1">new</span> KeyTrigger<span class="br0">&#40;</span>KeyInput.<span class="me1">KEY_K</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
-    inputManager.<span class="me1">addMapping</span><span class="br0">&#40;</span><span class="st0">&quot;Rotate&quot;</span>, <span class="kw1">new</span> KeyTrigger<span class="br0">&#40;</span>KeyInput.<span class="me1">KEY_SPACE</span><span class="br0">&#41;</span>,
-                                      <span class="kw1">new</span> MouseButtonTrigger<span class="br0">&#40;</span>MouseInput.<span class="me1">BUTTON_LEFT</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
-    <span class="co1">// Add the names to the action listener.</span>
-    inputManager.<span class="me1">addListener</span><span class="br0">&#40;</span>actionListener, <span class="kw1">new</span> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Astring+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object><span class="br0">&#91;</span><span class="br0">&#93;</span><span class="br0">&#123;</span><span class="st0">&quot;Pause&quot;</span><span class="br0">&#125;</span><span class="br0">&#41;</span>;
-    inputManager.<span class="me1">addListener</span><span class="br0">&#40;</span>analogListener, <span class="kw1">new</span> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Astring+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object><span class="br0">&#91;</span><span class="br0">&#93;</span><span class="br0">&#123;</span><span class="st0">&quot;Left&quot;</span>, <span class="st0">&quot;Right&quot;</span>, <span class="st0">&quot;Rotate&quot;</span><span class="br0">&#125;</span><span class="br0">&#41;</span>;</pre>
+<pre>    // You can map one or several inputs to one named action
+    inputManager.addMapping&#40;&quot;Pause&quot;,  new KeyTrigger&#40;KeyInput.KEY_P&#41;&#41;;
+    inputManager.addMapping&#40;&quot;Left&quot;,   new KeyTrigger&#40;KeyInput.KEY_J&#41;&#41;;
+    inputManager.addMapping&#40;&quot;Right&quot;,  new KeyTrigger&#40;KeyInput.KEY_K&#41;&#41;;
+    inputManager.addMapping&#40;&quot;Rotate&quot;, new KeyTrigger&#40;KeyInput.KEY_SPACE&#41;,
+                                      new MouseButtonTrigger&#40;MouseInput.BUTTON_LEFT&#41;&#41;;
+    // Add the names to the action listener.
+    inputManager.addListener&#40;actionListener, new String&#91;&#93;&#123;&quot;Pause&quot;&#125;&#41;;
+    inputManager.addListener&#40;analogListener, new String&#91;&#93;&#123;&quot;Left&quot;, &quot;Right&quot;, &quot;Rotate&quot;&#125;&#41;;</pre>
 <p>
 This code usually goes into the <code>simpleInitApp()</code> method. But since we will likely add many keybindings, we extract these lines and wrap them in an auxiliary method, <code>initKeys()</code>. The <code>initKeys()</code> method is not part of the Input Controls interface – so you can name it whatever you like. Just don&#039;t forget to call your method from the <code>initSimpleApp()</code> method.
 </p>
 
 </div>
 
-<h2><a name="implementing_the_actions" id="implementing_the_actions">Implementing the Actions</a></h2>
-<div class="level2">
+<h2><a>Implementing the Actions</a></h2>
+<div>
 
 <p>
 
@@ -182,50 +182,50 @@ In this example, we set the following mappings:
 
 </p>
 <ol>
-<li class="level1"><div class="li"> The <em>Rotate</em> mapping triggers the action <code>player.rotate(0, value, 0)</code>. </div>
+<li><div> The <em>Rotate</em> mapping triggers the action <code>player.rotate(0, value, 0)</code>. </div>
 </li>
-<li class="level1"><div class="li"> The <em>Left</em> and <em>Right</em> mappings increase and decrease the player&#039;s x coordinate. </div>
+<li><div> The <em>Left</em> and <em>Right</em> mappings increase and decrease the player&#039;s x coordinate. </div>
 </li>
-<li class="level1"><div class="li"> The <em>Pause</em> mapping flips a boolean <code>isRunning</code>. </div>
+<li><div> The <em>Pause</em> mapping flips a boolean <code>isRunning</code>. </div>
 </li>
-<li class="level1"><div class="li"> We also want to check the boolean <code>isRunning</code> before any action (other than unpausing) is executed.</div>
+<li><div> We also want to check the boolean <code>isRunning</code> before any action (other than unpausing) is executed.</div>
 </li>
 </ol>
-<pre class="code java">  <span class="kw1">private</span> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Aactionlistener+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object><span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-    <span class="kw1">public</span> <span class="kw4">void</span> onAction<span class="br0">&#40;</span><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Astring+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object> name, <span class="kw4">boolean</span> keyPressed, <span class="kw4">float</span> tpf<span class="br0">&#41;</span> <span class="br0">&#123;</span>
-      <span class="kw1">if</span> <span class="br0">&#40;</span>name.<span class="me1">equals</span><span class="br0">&#40;</span><span class="st0">&quot;Pause&quot;</span><span class="br0">&#41;</span> <span class="sy0">&amp;&amp;</span> <span class="sy0">!</span>keyPressed<span class="br0">&#41;</span> <span class="br0">&#123;</span>
-        isRunning <span class="sy0">=</span> <span class="sy0">!</span>isRunning;
-      <span class="br0">&#125;</span>
-    <span class="br0">&#125;</span>
-  <span class="br0">&#125;</span>;
+<pre>  private ActionListener&#40;&#41; &#123;
+    public void onAction&#40;String name, boolean keyPressed, float tpf&#41; &#123;
+      if &#40;name.equals&#40;&quot;Pause&quot;&#41; &amp;&amp; !keyPressed&#41; &#123;
+        isRunning = !isRunning;
+      &#125;
+    &#125;
+  &#125;;
 &nbsp;
-  <span class="kw1">private</span> AnalogListener analogListener <span class="sy0">=</span> <span class="kw1">new</span> AnalogListener<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-    <span class="kw1">public</span> <span class="kw4">void</span> onAnalog<span class="br0">&#40;</span><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Astring+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object> name, <span class="kw4">float</span> value, <span class="kw4">float</span> tpf<span class="br0">&#41;</span> <span class="br0">&#123;</span>
-      <span class="kw1">if</span> <span class="br0">&#40;</span>isRunning<span class="br0">&#41;</span> <span class="br0">&#123;</span>
-        <span class="kw1">if</span> <span class="br0">&#40;</span>name.<span class="me1">equals</span><span class="br0">&#40;</span><span class="st0">&quot;Rotate&quot;</span><span class="br0">&#41;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-          player.<span class="me1">rotate</span><span class="br0">&#40;</span>0, value<span class="sy0">*</span>speed, 0<span class="br0">&#41;</span>;
-        <span class="br0">&#125;</span>
-        <span class="kw1">if</span> <span class="br0">&#40;</span>name.<span class="me1">equals</span><span class="br0">&#40;</span><span class="st0">&quot;Right&quot;</span><span class="br0">&#41;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-          Vector3f v <span class="sy0">=</span> player.<span class="me1">getLocalTranslation</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
-          player.<span class="me1">setLocalTranslation</span><span class="br0">&#40;</span>v.<span class="me1">x</span> <span class="sy0">+</span> value<span class="sy0">*</span>speed, v.<span class="me1">y</span>, v.<span class="me1">z</span><span class="br0">&#41;</span>;
-        <span class="br0">&#125;</span>
-        <span class="kw1">if</span> <span class="br0">&#40;</span>name.<span class="me1">equals</span><span class="br0">&#40;</span><span class="st0">&quot;Left&quot;</span><span class="br0">&#41;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-          Vector3f v <span class="sy0">=</span> player.<span class="me1">getLocalTranslation</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
-          player.<span class="me1">setLocalTranslation</span><span class="br0">&#40;</span>v.<span class="me1">x</span> <span class="sy0">-</span> value<span class="sy0">*</span>speed, v.<span class="me1">y</span>, v.<span class="me1">z</span><span class="br0">&#41;</span>;
-        <span class="br0">&#125;</span>
-      <span class="br0">&#125;</span> <span class="kw1">else</span> <span class="br0">&#123;</span>
-        <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Asystem+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object>.<span class="me1">out</span>.<span class="me1">println</span><span class="br0">&#40;</span><span class="st0">&quot;Press P to unpause.&quot;</span><span class="br0">&#41;</span>;
-      <span class="br0">&#125;</span>
-    <span class="br0">&#125;</span>
-  <span class="br0">&#125;</span>;</pre>
+  private AnalogListener analogListener = new AnalogListener&#40;&#41; &#123;
+    public void onAnalog&#40;String name, float value, float tpf&#41; &#123;
+      if &#40;isRunning&#41; &#123;
+        if &#40;name.equals&#40;&quot;Rotate&quot;&#41;&#41; &#123;
+          player.rotate&#40;0, value*speed, 0&#41;;
+        &#125;
+        if &#40;name.equals&#40;&quot;Right&quot;&#41;&#41; &#123;
+          Vector3f v = player.getLocalTranslation&#40;&#41;;
+          player.setLocalTranslation&#40;v.x + value*speed, v.y, v.z&#41;;
+        &#125;
+        if &#40;name.equals&#40;&quot;Left&quot;&#41;&#41; &#123;
+          Vector3f v = player.getLocalTranslation&#40;&#41;;
+          player.setLocalTranslation&#40;v.x - value*speed, v.y, v.z&#41;;
+        &#125;
+      &#125; else &#123;
+        System.out.println&#40;&quot;Press P to unpause.&quot;&#41;;
+      &#125;
+    &#125;
+  &#125;;</pre>
 <p>
 It&#039;s okay to use only one of the two Listeners, and not implement the other one, if you are not using this type of interaction. In the following, we have a closer look how to decide which of the two listeners is best suited for which situation.
 </p>
 
 </div>
 
-<h2><a name="analog_pressed_or_released" id="analog_pressed_or_released">Analog, Pressed, or Released?</a></h2>
-<div class="level2">
+<h2><a>Analog, Pressed, or Released?</a></h2>
+<div>
 
 <p>
 
@@ -236,15 +236,15 @@ Technically, every input can be an “Analog” or a “on-off Action”. Here i
 Mappings registered to the <strong>AnalogListener</strong> are triggered repeatedly and gradually. 
 </p>
 <ul>
-<li class="level1"><div class="li"> Parameters: </div>
+<li><div> Parameters: </div>
 <ol>
-<li class="level2"><div class="li"> JME gives you access to the name of the triggered action.</div>
+<li><div> JME gives you access to the name of the triggered action.</div>
 </li>
-<li class="level2"><div class="li"> JME gives you access to a gradual value between 0-9 how long the key has been pressed.</div>
+<li><div> JME gives you access to a gradual value between 0-9 how long the key has been pressed.</div>
 </li>
 </ol>
 </li>
-<li class="level1"><div class="li"> Example: Navigational events (e.g. Left, Right, Rotate, Run, Strafe), situations where you interact continuously. </div>
+<li><div> Example: Navigational events (e.g. Left, Right, Rotate, Run, Strafe), situations where you interact continuously. </div>
 </li>
 </ul>
 
@@ -253,15 +253,15 @@ Mappings registered to the <strong>AnalogListener</strong> are triggered repeate
 Mappings registered to the <strong>ActionListener</strong> are treated in an absolute way – “Pressed or released? On or off?”
 </p>
 <ul>
-<li class="level1"><div class="li"> Parameters: </div>
+<li><div> Parameters: </div>
 <ol>
-<li class="level2"><div class="li"> JME gives you access to the name of the triggered action.</div>
+<li><div> JME gives you access to the name of the triggered action.</div>
 </li>
-<li class="level2"><div class="li"> JME gives you access to a boolean whether the key is pressed or not.</div>
+<li><div> JME gives you access to a boolean whether the key is pressed or not.</div>
 </li>
 </ol>
 </li>
-<li class="level1"><div class="li"> Example: Pause button, shooting, selecting, jumping, one-time click interactions.</div>
+<li><div> Example: Pause button, shooting, selecting, jumping, one-time click interactions.</div>
 </li>
 </ul>
 
@@ -269,43 +269,43 @@ Mappings registered to the <strong>ActionListener</strong> are treated in an abs
 
 <strong>Tip:</strong> It&#039;s very common that you want an action to be only triggered once, in the moment when the key is <em>released</em>. For instance when opening a door, flipping a boolean state, or picking up an item. To achieve that, you use an <code>ActionListener</code> and test for <code>… &amp;&amp; !keyPressed</code>. For an example, look at the Pause button code.
 </p>
-<pre class="code java">      <span class="kw1">if</span> <span class="br0">&#40;</span>name.<span class="me1">equals</span><span class="br0">&#40;</span><span class="st0">&quot;Pause&quot;</span><span class="br0">&#41;</span> <span class="sy0">&amp;&amp;</span> <span class="sy0">!</span>keyPressed<span class="br0">&#41;</span> <span class="br0">&#123;</span>
-        isRunning <span class="sy0">=</span> <span class="sy0">!</span>isRunning;
-      <span class="br0">&#125;</span></pre>
+<pre>      if &#40;name.equals&#40;&quot;Pause&quot;&#41; &amp;&amp; !keyPressed&#41; &#123;
+        isRunning = !isRunning;
+      &#125;</pre>
 </div>
 
-<h2><a name="table_of_triggers" id="table_of_triggers">Table of Triggers</a></h2>
-<div class="level2">
+<h2><a>Table of Triggers</a></h2>
+<div>
 
 <p>
 
 You can find the list of input constants in the files <code>src/core/com/jme3/input/KeyInput.java</code>, <code>JoyInput.java</code>, and <code>MouseInput.java</code>. Here is an overview of the most common triggers constants:
 
 </p>
-<table class="inline">
-	<tr class="row0">
-		<th class="col0"> Trigger </th><th class="col1"> Code </th>
+<table>
+	<tr>
+		<th> Trigger </th><th> Code </th>
 	</tr>
-	<tr class="row1">
-		<td class="col0"> Mouse button: Left Click </td><td class="col1"> MouseButtonTrigger(MouseInput.BUTTON_LEFT) </td>
+	<tr>
+		<td> Mouse button: Left Click </td><td> MouseButtonTrigger(MouseInput.BUTTON_LEFT) </td>
 	</tr>
-	<tr class="row2">
-		<td class="col0"> Mouse button: Right Click </td><td class="col1"> MouseButtonTrigger(MouseInput.BUTTON_RIGHT) </td>
+	<tr>
+		<td> Mouse button: Right Click </td><td> MouseButtonTrigger(MouseInput.BUTTON_RIGHT) </td>
 	</tr>
-	<tr class="row3">
-		<td class="col0"> Keyboard: Characters and Numbers </td><td class="col1"> KeyTrigger(KeyInput.KEY_X) </td>
+	<tr>
+		<td> Keyboard: Characters and Numbers </td><td> KeyTrigger(KeyInput.KEY_X) </td>
 	</tr>
-	<tr class="row4">
-		<td class="col0 leftalign"> Keyboard: Spacebar  </td><td class="col1"> KeyTrigger(KeyInput.KEY_SPACE) </td>
+	<tr>
+		<td> Keyboard: Spacebar  </td><td> KeyTrigger(KeyInput.KEY_SPACE) </td>
 	</tr>
-	<tr class="row5">
-		<td class="col0"> Keyboard: Return, Enter </td><td class="col1 leftalign"> KeyTrigger(KeyInput.KEY_RETURN), KeyTrigger(KeyInput.KEY_NUMPADENTER)  </td>
+	<tr>
+		<td> Keyboard: Return, Enter </td><td> KeyTrigger(KeyInput.KEY_RETURN), KeyTrigger(KeyInput.KEY_NUMPADENTER)  </td>
 	</tr>
-	<tr class="row6">
-		<td class="col0"> Keyboard: Escape </td><td class="col1"> KeyTrigger(KeyInput.KEY_ESCAPE) </td>
+	<tr>
+		<td> Keyboard: Escape </td><td> KeyTrigger(KeyInput.KEY_ESCAPE) </td>
 	</tr>
-	<tr class="row7">
-		<td class="col0"> Keyboard: Arrows </td><td class="col1"> KeyTrigger(KeyInput.KEY_UP), KeyTrigger(KeyInput.KEY_DOWN) <br/>
+	<tr>
+		<td> Keyboard: Arrows </td><td> KeyTrigger(KeyInput.KEY_UP), KeyTrigger(KeyInput.KEY_DOWN) <br/>
  KeyTrigger(KeyInput.KEY_LEFT), KeyTrigger(KeyInput.KEY_RIGHT) </td>
 	</tr>
 </table>
@@ -317,27 +317,27 @@ You can find the list of input constants in the files <code>src/core/com/jme3/in
 
 </div>
 
-<h2><a name="exercises" id="exercises">Exercises</a></h2>
-<div class="level2">
+<h2><a>Exercises</a></h2>
+<div>
 <ol>
-<li class="level1"><div class="li"> Add mappings for moving the player (box) up and down with the H and L keys.</div>
+<li><div> Add mappings for moving the player (box) up and down with the H and L keys.</div>
 </li>
-<li class="level1"><div class="li"> Modify the mappings so that you can also trigger the up an down motion with the mouse scroll wheel.</div>
+<li><div> Modify the mappings so that you can also trigger the up an down motion with the mouse scroll wheel.</div>
 <ul>
-<li class="level2"><div class="li"> Tip: Use <code>new MouseAxisTrigger(MouseInput.AXIS_WHEEL, true)</code></div>
+<li><div> Tip: Use <code>new MouseAxisTrigger(MouseInput.AXIS_WHEEL, true)</code></div>
 </li>
 </ul>
 </li>
-<li class="level1"><div class="li"> In which situation would it be better to use variables for the MouseInput/KeyInput definitions? <pre class="code java"><span class="kw4">int</span> usersPauseKey <span class="sy0">=</span> KeyInput.<span class="me1">KEY_P</span>; 
+<li><div> In which situation would it be better to use variables for the MouseInput/KeyInput definitions? <pre>int usersPauseKey = KeyInput.KEY_P; 
 ...
-<span class="me1">inputManager</span>.<span class="me1">addMapping</span><span class="br0">&#40;</span><span class="st0">&quot;Pause&quot;</span>,  <span class="kw1">new</span> KeyTrigger<span class="br0">&#40;</span>usersPauseKey<span class="br0">&#41;</span><span class="br0">&#41;</span>;</pre></div>
+inputManager.addMapping&#40;&quot;Pause&quot;,  new KeyTrigger&#40;usersPauseKey&#41;&#41;;</pre></div>
 </li>
 </ol>
 
 </div>
 
-<h2><a name="conclusion" id="conclusion">Conclusion</a></h2>
-<div class="level2">
+<h2><a>Conclusion</a></h2>
+<div>
 
 <p>
 
@@ -345,7 +345,7 @@ You now how to add custom interactions to your game: You know now that you first
 </p>
 
 <p>
-Now you can already write a little interactive game! But wouldn&#039;t it be cooler if these old boxes were a bit more fancy? Let&#039;s continue with learning about <a href="/com/jme3/gde/core/docs/jme3/beginner/hello_material.html" class="wikilink1" title="jme3:beginner:hello_material">materials</a>.
+Now you can already write a little interactive game! But wouldn&#039;t it be cooler if these old boxes were a bit more fancy? Let&#039;s continue with learning about <a href="/com/jme3/gde/core/docs/jme3/beginner/hello_material.html">materials</a>.
 
 </p>
 

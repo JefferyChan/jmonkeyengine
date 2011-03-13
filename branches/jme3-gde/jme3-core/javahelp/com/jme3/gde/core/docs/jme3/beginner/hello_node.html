@@ -1,11 +1,11 @@
 
-<h1><a name="getting_started_with_jme3_2_-_hello_node" id="getting_started_with_jme3_2_-_hello_node">Getting Started with JME3 (2) - Hello Node</a></h1>
-<div class="level1">
+<h1><a>Getting Started with JME3 (2) - Hello Node</a></h1>
+<div>
 
 <p>
 
-Previous: <a href="/com/jme3/gde/core/docs/jme3/beginner/hello_simpleapplication.html" class="wikilink1" title="jme3:beginner:hello_simpleapplication">Hello SimpleApplication</a>,
-Next: <a href="/com/jme3/gde/core/docs/jme3/beginner/hello_asset.html" class="wikilink1" title="jme3:beginner:hello_asset">Hello Assets</a>.
+Previous: <a href="/com/jme3/gde/core/docs/jme3/beginner/hello_simpleapplication.html">Hello SimpleApplication</a>,
+Next: <a href="/com/jme3/gde/core/docs/jme3/beginner/hello_asset.html">Hello Assets</a>.
 </p>
 
 <p>
@@ -13,70 +13,70 @@ When creating a 3D game, you start out with creating a scene and some objects. Y
 </p>
 
 <p>
-In this Tutorial we will have a look at a simple 3D scene. You will learn that the 3D world is represented in a scene graph, and why the rootNode is important. You will learn how to create simple objects and how to transform them – move, scale, rotate. You will understand the difference between the two types of Spatials in the scene graph, Node and Geometry. For a visual introduction to the scene graph check out our <a href="/com/jme3/gde/core/docs/jme3/scenegraph_for_dummies.html" class="wikilink1" title="jme3:scenegraph_for_dummies"> Scene Graph for Dummies</a> presentation.
+In this Tutorial we will have a look at a simple 3D scene. You will learn that the 3D world is represented in a scene graph, and why the rootNode is important. You will learn how to create simple objects and how to transform them – move, scale, rotate. You will understand the difference between the two types of Spatials in the scene graph, Node and Geometry. For a visual introduction to the scene graph check out our <a href="/com/jme3/gde/core/docs/jme3/scenegraph_for_dummies.html"> Scene Graph for Dummies</a> presentation.
 </p>
 
 </div>
 
-<h2><a name="code_sample" id="code_sample">Code Sample</a></h2>
-<div class="level2">
-<pre class="code java"><span class="kw1">package</span> <span class="co2">jme3test.helloworld</span>;
+<h2><a>Code Sample</a></h2>
+<div>
+<pre>package jme3test.helloworld;
 &nbsp;
-<span class="kw1">import</span> <span class="co2">com.jme3.app.SimpleApplication</span>;
-<span class="kw1">import</span> <span class="co2">com.jme3.material.Material</span>;
-<span class="kw1">import</span> <span class="co2">com.jme3.math.Vector3f</span>;
-<span class="kw1">import</span> <span class="co2">com.jme3.scene.Geometry</span>;
-<span class="kw1">import</span> <span class="co2">com.jme3.scene.shape.Box</span>;
-<span class="kw1">import</span> <span class="co2">com.jme3.math.ColorRGBA</span>;
-<span class="kw1">import</span> <span class="co2">com.jme3.scene.Node</span>;
+import com.jme3.app.SimpleApplication;
+import com.jme3.material.Material;
+import com.jme3.math.Vector3f;
+import com.jme3.scene.Geometry;
+import com.jme3.scene.shape.Box;
+import com.jme3.math.ColorRGBA;
+import com.jme3.scene.Node;
 &nbsp;
-<span class="co3">/** Sample 2 - How to use nodes as handles to manipulate objects in the scene graph.
+<span>/** Sample 2 - How to use nodes as handles to manipulate objects in the scene graph.
  * You can rotate, translate, and scale objects by manipulating their parent nodes.
  * The Root Node is special: Only what is attached to the Root Node appears in the scene. */</span>
-<span class="kw1">public</span> <span class="kw1">class</span> HelloNode <span class="kw1">extends</span> SimpleApplication <span class="br0">&#123;</span>
+public class HelloNode extends SimpleApplication &#123;
 &nbsp;
-    <span class="kw1">public</span> <span class="kw1">static</span> <span class="kw4">void</span> main<span class="br0">&#40;</span><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Astring+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object><span class="br0">&#91;</span><span class="br0">&#93;</span> args<span class="br0">&#41;</span><span class="br0">&#123;</span>
-        HelloNode app <span class="sy0">=</span> <span class="kw1">new</span> HelloNode<span class="br0">&#40;</span><span class="br0">&#41;</span>;
-        app.<span class="me1">start</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
-    <span class="br0">&#125;</span>
+    public static void main&#40;String&#91;&#93; args&#41;&#123;
+        HelloNode app = new HelloNode&#40;&#41;;
+        app.start&#40;&#41;;
+    &#125;
 &nbsp;
     @Override
-    <span class="kw1">public</span> <span class="kw4">void</span> simpleInitApp<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+    public void simpleInitApp&#40;&#41; &#123;
 &nbsp;
-        <span class="co1">// create a blue box at coordinates (1,-1,1)</span>
-        <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Abox+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object><span class="br0">&#40;</span> <span class="kw1">new</span> Vector3f<span class="br0">&#40;</span><span class="nu0">1</span>,<span class="sy0">-</span><span class="nu0">1</span>,<span class="nu0">1</span><span class="br0">&#41;</span>, <span class="nu0">1</span>,<span class="nu0">1</span>,<span class="nu0">1</span><span class="br0">&#41;</span>;
-        Geometry blue <span class="sy0">=</span> <span class="kw1">new</span> Geometry<span class="br0">&#40;</span><span class="st0">&quot;Box&quot;</span>, box1<span class="br0">&#41;</span>;
-        Material mat1 <span class="sy0">=</span> <span class="kw1">new</span> Material<span class="br0">&#40;</span>assetManager, <span class="st0">&quot;Common/MatDefs/Misc/Unshaded.j3md&quot;</span><span class="br0">&#41;</span>;
-        mat1.<span class="me1">setColor</span><span class="br0">&#40;</span><span class="st0">&quot;Color&quot;</span>, ColorRGBA.<span class="me1">Blue</span><span class="br0">&#41;</span>;
-        blue.<span class="me1">setMaterial</span><span class="br0">&#40;</span>mat1<span class="br0">&#41;</span>;
+        // create a blue box at coordinates (1,-1,1)
+        Box&#40; new Vector3f&#40;1,-1,1&#41;, 1,1,1&#41;;
+        Geometry blue = new Geometry&#40;&quot;Box&quot;, box1&#41;;
+        Material mat1 = new Material&#40;assetManager, &quot;Common/MatDefs/Misc/Unshaded.j3md&quot;&#41;;
+        mat1.setColor&#40;&quot;Color&quot;, ColorRGBA.Blue&#41;;
+        blue.setMaterial&#40;mat1&#41;;
 &nbsp;
-        <span class="co1">// create a red box straight above the blue one at (1,3,1)</span>
-        <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Abox+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object><span class="br0">&#40;</span> <span class="kw1">new</span> Vector3f<span class="br0">&#40;</span><span class="nu0">1</span>,<span class="nu0">3</span>,<span class="nu0">1</span><span class="br0">&#41;</span>, <span class="nu0">1</span>,<span class="nu0">1</span>,<span class="nu0">1</span><span class="br0">&#41;</span>;
-        Geometry red <span class="sy0">=</span> <span class="kw1">new</span> Geometry<span class="br0">&#40;</span><span class="st0">&quot;Box&quot;</span>, box2<span class="br0">&#41;</span>;
-        Material mat2 <span class="sy0">=</span> <span class="kw1">new</span> Material<span class="br0">&#40;</span>assetManager, <span class="st0">&quot;Common/MatDefs/Misc/Unshaded.j3md&quot;</span><span class="br0">&#41;</span>;
-        mat2.<span class="me1">setColor</span><span class="br0">&#40;</span><span class="st0">&quot;Color&quot;</span>, ColorRGBA.<span class="me1">Red</span><span class="br0">&#41;</span>;
-        red.<span class="me1">setMaterial</span><span class="br0">&#40;</span>mat2<span class="br0">&#41;</span>;
+        // create a red box straight above the blue one at (1,3,1)
+        Box&#40; new Vector3f&#40;1,3,1&#41;, 1,1,1&#41;;
+        Geometry red = new Geometry&#40;&quot;Box&quot;, box2&#41;;
+        Material mat2 = new Material&#40;assetManager, &quot;Common/MatDefs/Misc/Unshaded.j3md&quot;&#41;;
+        mat2.setColor&#40;&quot;Color&quot;, ColorRGBA.Red&#41;;
+        red.setMaterial&#40;mat2&#41;;
 &nbsp;
-        <span class="co1">// create a pivot node at (0,0,0) and attach it to root</span>
-        Node pivot <span class="sy0">=</span> <span class="kw1">new</span> Node<span class="br0">&#40;</span><span class="st0">&quot;pivot&quot;</span><span class="br0">&#41;</span>;
-        rootNode.<span class="me1">attachChild</span><span class="br0">&#40;</span>pivot<span class="br0">&#41;</span>;
+        // create a pivot node at (0,0,0) and attach it to root
+        Node pivot = new Node&#40;&quot;pivot&quot;&#41;;
+        rootNode.attachChild&#40;pivot&#41;;
 &nbsp;
-        <span class="co1">// attach the two boxes to the *pivot* node!</span>
-        pivot.<span class="me1">attachChild</span><span class="br0">&#40;</span>blue<span class="br0">&#41;</span>;
-        pivot.<span class="me1">attachChild</span><span class="br0">&#40;</span>red<span class="br0">&#41;</span>;
-        <span class="co1">// rotate pivot node: Both boxes have rotated!</span>
-        pivot.<span class="me1">rotate</span><span class="br0">&#40;</span> 0.4f , 0.4f , 0.0f <span class="br0">&#41;</span>;
+        // attach the two boxes to the *pivot* node!
+        pivot.attachChild&#40;blue&#41;;
+        pivot.attachChild&#40;red&#41;;
+        // rotate pivot node: Both boxes have rotated!
+        pivot.rotate&#40; 0.4f , 0.4f , 0.0f &#41;;
 &nbsp;
-    <span class="br0">&#125;</span>
-<span class="br0">&#125;</span></pre>
+    &#125;
+&#125;</pre>
 <p>
 Build and run the code sample. You should see two colored boxes tilted at the same angle.
 </p>
 
 </div>
 
-<h2><a name="understanding_the_terminology" id="understanding_the_terminology">Understanding the Terminology</a></h2>
-<div class="level2">
+<h2><a>Understanding the Terminology</a></h2>
+<div>
 
 <p>
 
@@ -84,28 +84,28 @@ In this tutorial, you will learn some new terms:
 
 </p>
 <ol>
-<li class="level1"><div class="li"> The <em>scene graph</em> represents your 3D world.</div>
+<li><div> The <em>scene graph</em> represents your 3D world.</div>
 </li>
-<li class="level1"><div class="li"> Objects in the scene graph (such as the boxes in this example) are called <em>Spatials</em>.</div>
+<li><div> Objects in the scene graph (such as the boxes in this example) are called <em>Spatials</em>.</div>
 <ul>
-<li class="level2"><div class="li"> A Spatial is a collection of information about an object: its location, rotation, and scale.</div>
+<li><div> A Spatial is a collection of information about an object: its location, rotation, and scale.</div>
 </li>
-<li class="level2"><div class="li"> A Spatial can be loaded, transformed, and saved.</div>
+<li><div> A Spatial can be loaded, transformed, and saved.</div>
 </li>
 </ul>
 </li>
-<li class="level1"><div class="li"> There are two types of Spatials, <em>Nodes</em> and <em>Geometries</em>.</div>
+<li><div> There are two types of Spatials, <em>Nodes</em> and <em>Geometries</em>.</div>
 </li>
-<li class="level1"><div class="li"> To add a Spatial to the scene graph, you attach the Spatial to the <em>rootNode</em>. </div>
+<li><div> To add a Spatial to the scene graph, you attach the Spatial to the <em>rootNode</em>. </div>
 </li>
-<li class="level1"><div class="li"> Everything attached to the <em>rootNode</em> is part of the scene graph.</div>
+<li><div> Everything attached to the <em>rootNode</em> is part of the scene graph.</div>
 </li>
 </ol>
 
 </div>
 
-<h2><a name="understanding_the_code" id="understanding_the_code">Understanding the Code</a></h2>
-<div class="level2">
+<h2><a>Understanding the Code</a></h2>
+<div>
 
 <p>
 
@@ -113,61 +113,61 @@ So what exactly happens in this code snippet? Note that we are using the <code>s
 
 </p>
 <ol>
-<li class="level1"><div class="li"> We create a box Geometry. </div>
+<li><div> We create a box Geometry. </div>
 <ul>
-<li class="level2"><div class="li"> The box Geometry&#039;s extends are (1,1,1), that makes it 2x2x2 world units big. </div>
+<li><div> The box Geometry&#039;s extends are (1,1,1), that makes it 2x2x2 world units big. </div>
 </li>
-<li class="level2"><div class="li"> We place the box at (1,-1,1)</div>
+<li><div> We place the box at (1,-1,1)</div>
 </li>
-<li class="level2"><div class="li"> We give it a solid blue material. <pre class="code java">        <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Abox+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object><span class="br0">&#40;</span> <span class="kw1">new</span> Vector3f<span class="br0">&#40;</span><span class="nu0">1</span>,<span class="sy0">-</span><span class="nu0">1</span>,<span class="nu0">1</span><span class="br0">&#41;</span>, <span class="nu0">1</span>,<span class="nu0">1</span>,<span class="nu0">1</span><span class="br0">&#41;</span>;
-        Geometry blue <span class="sy0">=</span> <span class="kw1">new</span> Geometry<span class="br0">&#40;</span><span class="st0">&quot;Box&quot;</span>, box1<span class="br0">&#41;</span>;
-        Material mat1 <span class="sy0">=</span> <span class="kw1">new</span> Material<span class="br0">&#40;</span>assetManager, <span class="st0">&quot;Common/MatDefs/Misc/Unshaded.j3md&quot;</span><span class="br0">&#41;</span>;
-        mat1.<span class="me1">setColor</span><span class="br0">&#40;</span><span class="st0">&quot;Color&quot;</span>, ColorRGBA.<span class="me1">Blue</span><span class="br0">&#41;</span>;
-        blue.<span class="me1">setMaterial</span><span class="br0">&#40;</span>mat1<span class="br0">&#41;</span>;</pre></div>
+<li><div> We give it a solid blue material. <pre>        Box&#40; new Vector3f&#40;1,-1,1&#41;, 1,1,1&#41;;
+        Geometry blue = new Geometry&#40;&quot;Box&quot;, box1&#41;;
+        Material mat1 = new Material&#40;assetManager, &quot;Common/MatDefs/Misc/Unshaded.j3md&quot;&#41;;
+        mat1.setColor&#40;&quot;Color&quot;, ColorRGBA.Blue&#41;;
+        blue.setMaterial&#40;mat1&#41;;</pre></div>
 </li>
 </ul>
 </li>
-<li class="level1"><div class="li"> We create a second box Geometry. </div>
+<li><div> We create a second box Geometry. </div>
 <ul>
-<li class="level2"><div class="li"> This box Geometry is also 2x2x2 world units big. </div>
+<li><div> This box Geometry is also 2x2x2 world units big. </div>
 </li>
-<li class="level2"><div class="li"> We place the second box at (1,3,1). This is straight above the blue box, with a gap of 2 world units inbetween.</div>
+<li><div> We place the second box at (1,3,1). This is straight above the blue box, with a gap of 2 world units inbetween.</div>
 </li>
-<li class="level2"><div class="li"> We give it a solid red material<pre class="code java">        <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Abox+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object><span class="br0">&#40;</span> <span class="kw1">new</span> Vector3f<span class="br0">&#40;</span><span class="nu0">1</span>,<span class="nu0">3</span>,<span class="nu0">1</span><span class="br0">&#41;</span>, <span class="nu0">1</span>,<span class="nu0">1</span>,<span class="nu0">1</span><span class="br0">&#41;</span>;
-        Geometry red <span class="sy0">=</span> <span class="kw1">new</span> Geometry<span class="br0">&#40;</span><span class="st0">&quot;Box&quot;</span>, box2<span class="br0">&#41;</span>;
-        Material mat2 <span class="sy0">=</span> <span class="kw1">new</span> Material<span class="br0">&#40;</span>assetManager, <span class="st0">&quot;Common/MatDefs/Misc/Unshaded.j3md&quot;</span><span class="br0">&#41;</span>;
-        mat2.<span class="me1">setColor</span><span class="br0">&#40;</span><span class="st0">&quot;Color&quot;</span>, ColorRGBA.<span class="me1">Red</span><span class="br0">&#41;</span>;
-        red.<span class="me1">setMaterial</span><span class="br0">&#40;</span>mat2<span class="br0">&#41;</span>;</pre></div>
+<li><div> We give it a solid red material<pre>        Box&#40; new Vector3f&#40;1,3,1&#41;, 1,1,1&#41;;
+        Geometry red = new Geometry&#40;&quot;Box&quot;, box2&#41;;
+        Material mat2 = new Material&#40;assetManager, &quot;Common/MatDefs/Misc/Unshaded.j3md&quot;&#41;;
+        mat2.setColor&#40;&quot;Color&quot;, ColorRGBA.Red&#41;;
+        red.setMaterial&#40;mat2&#41;;</pre></div>
 </li>
 </ul>
 </li>
-<li class="level1"><div class="li"> We create a Node. </div>
+<li><div> We create a Node. </div>
 <ul>
-<li class="level2"><div class="li"> By default the Node is placed at (0,0,0). </div>
+<li><div> By default the Node is placed at (0,0,0). </div>
 </li>
-<li class="level2"><div class="li"> We attach the Node to the rootNode.</div>
+<li><div> We attach the Node to the rootNode.</div>
 </li>
-<li class="level2"><div class="li"> An attached Node has no visible appearance in the scene. <pre class="code java">        Node pivot <span class="sy0">=</span> <span class="kw1">new</span> Node<span class="br0">&#40;</span><span class="st0">&quot;pivot&quot;</span><span class="br0">&#41;</span>;
-        rootNode.<span class="me1">attachChild</span><span class="br0">&#40;</span>pivot<span class="br0">&#41;</span>;</pre></div>
+<li><div> An attached Node has no visible appearance in the scene. <pre>        Node pivot = new Node&#40;&quot;pivot&quot;&#41;;
+        rootNode.attachChild&#40;pivot&#41;;</pre></div>
 </li>
 </ul>
 </li>
-<li class="level1"><div class="li"> Note that we have not attached the two boxes to anything yet! </div>
+<li><div> Note that we have not attached the two boxes to anything yet! </div>
 <ul>
-<li class="level2"><div class="li"> <em>If we ran the application now, the scenegraph would appear empty.</em></div>
+<li><div> <em>If we ran the application now, the scenegraph would appear empty.</em></div>
 </li>
 </ul>
 </li>
-<li class="level1"><div class="li"> We attach the two boxes to the node.</div>
+<li><div> We attach the two boxes to the node.</div>
 <ul>
-<li class="level2"><div class="li"> <em>If we ran the app now, we would see two boxes: one straight above the other.</em> <pre class="code java">        pivot.<span class="me1">attachChild</span><span class="br0">&#40;</span>blue<span class="br0">&#41;</span>;
-        pivot.<span class="me1">attachChild</span><span class="br0">&#40;</span>red<span class="br0">&#41;</span>; </pre></div>
+<li><div> <em>If we ran the app now, we would see two boxes: one straight above the other.</em> <pre>        pivot.attachChild&#40;blue&#41;;
+        pivot.attachChild&#40;red&#41;; </pre></div>
 </li>
 </ul>
 </li>
-<li class="level1"><div class="li"> Now, we rotate the node.</div>
+<li><div> Now, we rotate the node.</div>
 <ul>
-<li class="level2"><div class="li"> <em>When we run the application now, we see two boxes on top of each other – but both are tilted at the same angle.</em> <pre class="code java">        pivot.<span class="me1">rotate</span><span class="br0">&#40;</span> 0.4f , 0.4f , 0.0f <span class="br0">&#41;</span>;</pre></div>
+<li><div> <em>When we run the application now, we see two boxes on top of each other – but both are tilted at the same angle.</em> <pre>        pivot.rotate&#40; 0.4f , 0.4f , 0.0f &#41;;</pre></div>
 </li>
 </ul>
 </li>
@@ -180,128 +180,128 @@ What has happened? We have attached two box Geometries to a Node. Then we used t
 
 </div>
 
-<h3><a name="definitiongeometry_vs_node" id="definitiongeometry_vs_node">Definition: Geometry vs Node</a></h3>
-<div class="level3">
+<h3><a>Definition: Geometry vs Node</a></h3>
+<div>
 
 <p>
 
 You work with two types of Spatials in your scenegraph: Nodes and Geometries. Here is the difference:
 
 </p>
-<table class="inline">
-	<tr class="row0">
-		<td class="col0 rightalign">  </td><th class="col1"> Geometry </th><th class="col2"> Node </th>
+<table>
+	<tr>
+		<td>  </td><th> Geometry </th><th> Node </th>
 	</tr>
-	<tr class="row1">
-		<th class="col0"> Visibility: </th><td class="col1"> A visible 3-D object. </td><td class="col2"> An invisible “handle”. </td>
+	<tr>
+		<th> Visibility: </th><td> A visible 3-D object. </td><td> An invisible “handle”. </td>
 	</tr>
-	<tr class="row2">
-		<th class="col0"> Purpose: </th><td class="col1"> A Geometry stores an object&#039;s looks. </td><td class="col2"> A Node groups Geometries and other Nodes together. </td>
+	<tr>
+		<th> Purpose: </th><td> A Geometry stores an object&#039;s looks. </td><td> A Node groups Geometries and other Nodes together. </td>
 	</tr>
-	<tr class="row3">
-		<th class="col0"> Examples: </th><td class="col1"> A box, a sphere, player, a building, a piece of terrain, a vehicle, missiles, NPCs, etc… </td><td class="col2"> The default <code>rootNode</code>, the <code>guiNode</code> (for on-screen text); a floor node, a custom vehicle-with-passengers node, an audio node, etc… </td>
-	</tr>
-</table>
-
-</div>
-
-<h2><a name="faqhow_to_populate_the_scenegraph" id="faqhow_to_populate_the_scenegraph">FAQ: How to Populate the Scenegraph?</a></h2>
-<div class="level2">
-<table class="inline">
-	<tr class="row0">
-		<th class="col0"> Task? </th><th class="col1"> Solution! </th>
-	</tr>
-	<tr class="row1">
-		<td class="col0"> Create a Spatial </td><td class="col1"> Create a shape and give it a Material. For instance a box shape: <pre class="code java"><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Abox+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object><span class="br0">&#40;</span>Vector3f.<span class="me1">ZERO</span>, <span class="nu0">1</span>, <span class="nu0">1</span>, <span class="nu0">1</span><span class="br0">&#41;</span>;
-Geometry thing <span class="sy0">=</span> <span class="kw1">new</span> Geometry<span class="br0">&#40;</span><span class="st0">&quot;thing&quot;</span>, mesh<span class="br0">&#41;</span>;
-Material mat <span class="sy0">=</span> <span class="kw1">new</span> Material<span class="br0">&#40;</span>assetManager, <span class="st0">&quot;Common/MatDefs/Misc/ShowNormals.j3md&quot;</span><span class="br0">&#41;</span>;
-thing.<span class="me1">setMaterial</span><span class="br0">&#40;</span>mat<span class="br0">&#41;</span>;</pre></td>
-	</tr>
-	<tr class="row2">
-		<td class="col0"> Make an object appear in the scene </td><td class="col1"> Attach the Spatial to the <code>rootNode</code>, or to any node that is attached to the rootNode. <pre class="code java">rootNode.<span class="me1">attachChild</span><span class="br0">&#40;</span>thing<span class="br0">&#41;</span>;</pre></td>
-	</tr>
-	<tr class="row3">
-		<td class="col0"> Remove objects from the scene </td><td class="col1"> Detach the Spatial from the <code>rootNode</code>, and from any node that is attached to the rootNode. <pre class="code java">rootNode.<span class="me1">detachChild</span><span class="br0">&#40;</span>thing<span class="br0">&#41;</span>;</pre><pre class="code java">rootNode.<span class="me1">detachAllChildren</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;</pre></td>
-	</tr>
-	<tr class="row4">
-		<td class="col0"> Find a Spatial in the scene by the object&#039;s name or ID </td><td class="col1"> Look at the node&#039;s children. <pre class="code java">Spatial thing <span class="sy0">=</span> rootNode.<span class="me1">getChild</span><span class="br0">&#40;</span><span class="st0">&quot;thing&quot;</span><span class="br0">&#41;</span>;</pre><pre class="code java">Spatial twentythird <span class="sy0">=</span> rootNode.<span class="me1">getChild</span><span class="br0">&#40;</span><span class="nu0">22</span><span class="br0">&#41;</span>;</pre></td>
-	</tr>
-	<tr class="row5">
-		<td class="col0"> Specify what should be loaded at the start </td><td class="col1"> Everything you initialize and attach to the <code>rootNode</code> in the <code>simpleInitApp()</code> method is part of the scene at the start of the game. </td>
+	<tr>
+		<th> Examples: </th><td> A box, a sphere, player, a building, a piece of terrain, a vehicle, missiles, NPCs, etc… </td><td> The default <code>rootNode</code>, the <code>guiNode</code> (for on-screen text); a floor node, a custom vehicle-with-passengers node, an audio node, etc… </td>
 	</tr>
 </table>
 
 </div>
 
-<h2><a name="how_to_transform_objects" id="how_to_transform_objects">How to Transform Objects?</a></h2>
-<div class="level2">
+<h2><a>FAQ: How to Populate the Scenegraph?</a></h2>
+<div>
+<table>
+	<tr>
+		<th> Task? </th><th> Solution! </th>
+	</tr>
+	<tr>
+		<td> Create a Spatial </td><td> Create a shape and give it a Material. For instance a box shape: <pre>Box&#40;Vector3f.ZERO, 1, 1, 1&#41;;
+Geometry thing = new Geometry&#40;&quot;thing&quot;, mesh&#41;;
+Material mat = new Material&#40;assetManager, &quot;Common/MatDefs/Misc/ShowNormals.j3md&quot;&#41;;
+thing.setMaterial&#40;mat&#41;;</pre></td>
+	</tr>
+	<tr>
+		<td> Make an object appear in the scene </td><td> Attach the Spatial to the <code>rootNode</code>, or to any node that is attached to the rootNode. <pre>rootNode.attachChild&#40;thing&#41;;</pre></td>
+	</tr>
+	<tr>
+		<td> Remove objects from the scene </td><td> Detach the Spatial from the <code>rootNode</code>, and from any node that is attached to the rootNode. <pre>rootNode.detachChild&#40;thing&#41;;</pre><pre>rootNode.detachAllChildren&#40;&#41;;</pre></td>
+	</tr>
+	<tr>
+		<td> Find a Spatial in the scene by the object&#039;s name or ID </td><td> Look at the node&#039;s children. <pre>Spatial thing = rootNode.getChild&#40;&quot;thing&quot;&#41;;</pre><pre>Spatial twentythird = rootNode.getChild&#40;22&#41;;</pre></td>
+	</tr>
+	<tr>
+		<td> Specify what should be loaded at the start </td><td> Everything you initialize and attach to the <code>rootNode</code> in the <code>simpleInitApp()</code> method is part of the scene at the start of the game. </td>
+	</tr>
+</table>
+
+</div>
+
+<h2><a>How to Transform Objects?</a></h2>
+<div>
 
 <p>
 
 There are three types of 3D transformation: Translation (moving), Scaling (resizing), and Rotation (turning). 
 
 </p>
-<table class="inline">
-	<tr class="row0">
-		<th class="col0"> Task? </th><th class="col1"> Solution! </th><th class="col2"> X </th><th class="col3"> Y </th><th class="col4"> Z </th>
+<table>
+	<tr>
+		<th> Task? </th><th> Solution! </th><th> X </th><th> Y </th><th> Z </th>
 	</tr>
-	<tr class="row1">
-		<td class="col0"> Position and move objects </td><td class="col1"> <strong>Translation:</strong> Specify the new location in three dimensions: right/left, up/down, forward/backward. <br/>
- Example 1. To move an object <em>to</em> specific coordinates, such as (0,40.2f,-2), use: <pre class="code java">thing.<span class="me1">setLocalTranslation</span><span class="br0">&#40;</span> <span class="kw1">new</span> Vector3f<span class="br0">&#40;</span> 0.0f, 40.2f, <span class="sy0">-</span>2.0f <span class="br0">&#41;</span> <span class="br0">&#41;</span>;</pre>
+	<tr>
+		<td> Position and move objects </td><td> <strong>Translation:</strong> Specify the new location in three dimensions: right/left, up/down, forward/backward. <br/>
+ Example 1. To move an object <em>to</em> specific coordinates, such as (0,40.2f,-2), use: <pre>thing.setLocalTranslation&#40; new Vector3f&#40; 0.0f, 40.2f, -2.0f &#41; &#41;;</pre>
 <p>
  <br/>
  Example 2: To move an object <em>by</em> a certain amount, e.g. higher up (y=40.2f) and further back (z=-2.0f): 
 </p>
-<pre class="code java">thing.<span class="me1">move</span><span class="br0">&#40;</span> 0.0f, 40.2f, <span class="sy0">-</span>2.0f <span class="br0">&#41;</span>;</pre></td><td class="col2">right/left</td><td class="col3">up/down</td><td class="col4">foreward/ backward</td>
+<pre>thing.move&#40; 0.0f, 40.2f, -2.0f &#41;;</pre></td><td>right/left</td><td>up/down</td><td>foreward/ backward</td>
 	</tr>
-	<tr class="row2">
-		<td class="col0"> Resize objects </td><td class="col1"> <strong>Scaling:</strong> To resize a Spatial, specify the scale factor in each dimension: length, height, width. A value between 0.0f and 1.0f will shrink the object; a value bigger than 1.0f will make it grow; and 1.0f will keep this dimension the same. Using the same value for each dimension scales an object proportionally, using different values stretches it. <br/>
- Example: Make it 10 times longer, one tenth of the height, same width: <pre class="code java">thing.<span class="me1">setLocalScale</span><span class="br0">&#40;</span> 10.0f, 0.1f, 1.0f  <span class="br0">&#41;</span>;</pre><pre class="code java">thing.<span class="me1">scale</span><span class="br0">&#40;</span> 10.0f, 0.1f, 1.0f <span class="br0">&#41;</span>;</pre></td><td class="col2">length</td><td class="col3">height</td><td class="col4">width</td>
+	<tr>
+		<td> Resize objects </td><td> <strong>Scaling:</strong> To resize a Spatial, specify the scale factor in each dimension: length, height, width. A value between 0.0f and 1.0f will shrink the object; a value bigger than 1.0f will make it grow; and 1.0f will keep this dimension the same. Using the same value for each dimension scales an object proportionally, using different values stretches it. <br/>
+ Example: Make it 10 times longer, one tenth of the height, same width: <pre>thing.setLocalScale&#40; 10.0f, 0.1f, 1.0f  &#41;;</pre><pre>thing.scale&#40; 10.0f, 0.1f, 1.0f &#41;;</pre></td><td>length</td><td>height</td><td>width</td>
 	</tr>
-	<tr class="row3">
-		<td class="col0"> Turn objects </td><td class="col1"> <strong>Rotation:</strong> 3-D rotation is a bit tricky (<a href="/com/jme3/gde/core/docs/jme2/rotate.html" class="wikilink1" title="jme2:rotate">learn details here</a>). In short: You can rotate around three axes, pitch, yaw, and roll. <br/>
+	<tr>
+		<td> Turn objects </td><td> <strong>Rotation:</strong> 3-D rotation is a bit tricky (<a href="/com/jme3/gde/core/docs/jme2/rotate.html">learn details here</a>). In short: You can rotate around three axes, pitch, yaw, and roll. <br/>
  Important: <strong>You do not specify the rotation in degrees from 0° to 360°, but in radians from 0.0f to 6.28f (FastMath.PI*2) !</strong> <br/>
- Example: To roll an object 180° around the z axis: <pre class="code java">thing.<span class="me1">rotate</span><span class="br0">&#40;</span> 0f , 0f , FastMath.<span class="me1">PI</span> <span class="br0">&#41;</span>;</pre>
+ Example: To roll an object 180° around the z axis: <pre>thing.rotate&#40; 0f , 0f , FastMath.PI &#41;;</pre>
 <p>
-  Tip: If your game idea calls for a serious amount of rotations, it is worth looking into <a href="/com/jme3/gde/core/docs/jme2/quaternion.html" class="wikilink1" title="jme2:quaternion">quaternion</a>s, a data structure that can combine and store rotations efficiently. 
+  Tip: If your game idea calls for a serious amount of rotations, it is worth looking into <a href="/com/jme3/gde/core/docs/jme2/quaternion.html">quaternion</a>s, a data structure that can combine and store rotations efficiently. 
 </p>
-<pre class="code java">thing.<span class="me1">setLocalRotation</span><span class="br0">&#40;</span> <span class="kw1">new</span> Quaternion<span class="br0">&#40;</span><span class="br0">&#41;</span>. <span class="me1">fromAngleAxis</span><span class="br0">&#40;</span>FastMath.<span class="me1">PI</span><span class="sy0">/</span><span class="nu0">2</span>, <span class="kw1">new</span> Vector3f<span class="br0">&#40;</span><span class="nu0">1</span>,0,0<span class="br0">&#41;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;</pre></td><td class="col2">pitch</td><td class="col3">yaw</td><td class="col4">roll</td>
+<pre>thing.setLocalRotation&#40; new Quaternion&#40;&#41;. fromAngleAxis&#40;FastMath.PI/2, new Vector3f&#40;1,0,0&#41;&#41;&#41;;</pre></td><td>pitch</td><td>yaw</td><td>roll</td>
 	</tr>
 </table>
 
 </div>
 
-<h2><a name="how_to_troubleshoot_nodes" id="how_to_troubleshoot_nodes">How to Troubleshoot Nodes?</a></h2>
-<div class="level2">
+<h2><a>How to Troubleshoot Nodes?</a></h2>
+<div>
 
 <p>
 
 If you get unexpected results, check whether you made the following common mistakes:
 
 </p>
-<table class="inline">
-	<tr class="row0">
-		<th class="col0"> Problem? </th><th class="col1"> Solution! </th>
+<table>
+	<tr>
+		<th> Problem? </th><th> Solution! </th>
 	</tr>
-	<tr class="row1">
-		<td class="col0"> Created Geometry does not appear in scene </td><td class="col1"> Have you attached it to (a node that is attached to) the rootNode? <br/>
+	<tr>
+		<td> Created Geometry does not appear in scene </td><td> Have you attached it to (a node that is attached to) the rootNode? <br/>
  Does it have a Material? <br/>
  What is its translation (positition)? Is it covered up by another Geometry? </td>
 	</tr>
-	<tr class="row2">
-		<td class="col0"> Spatial rotates wrong </td><td class="col1"> Did you use radian values, and not degrees? <br/>
+	<tr>
+		<td> Spatial rotates wrong </td><td> Did you use radian values, and not degrees? <br/>
  Did you rotate the intended pivot node? <br/>
  Did you rotate around the right axis? </td>
 	</tr>
-	<tr class="row3">
-		<td class="col0"> Geometry has an unexpected Material </td><td class="col1 leftalign"> Did you reuse a Material from another Geometry and have inadvertently changed its properties?  </td>
+	<tr>
+		<td> Geometry has an unexpected Material </td><td> Did you reuse a Material from another Geometry and have inadvertently changed its properties?  </td>
 	</tr>
 </table>
 
 </div>
 
-<h2><a name="conclusion" id="conclusion">Conclusion</a></h2>
-<div class="level2">
+<h2><a>Conclusion</a></h2>
+<div>
 
 <p>
 
@@ -309,7 +309,7 @@ You have learned that the 3D world is a Scene Graph of Spatials: Visible Geometr
 </p>
 
 <p>
-Since standard shapes like spheres and boxes get old fast, continue with the next chapter where you learn to <a href="/com/jme3/gde/core/docs/jme3/beginner/hello_asset.html" class="wikilink1" title="jme3:beginner:hello_asset">load assets, such as 3-D models</a>.
+Since standard shapes like spheres and boxes get old fast, continue with the next chapter where you learn to <a href="/com/jme3/gde/core/docs/jme3/beginner/hello_asset.html">load assets, such as 3-D models</a>.
 </p>
 
 </div>

@@ -1,6 +1,6 @@
 
-<h1><a name="how_to_use_material_definitions_.j3md" id="how_to_use_material_definitions_.j3md">How to Use Material Definitions (.j3md)</a></h1>
-<div class="level1">
+<h1><a>How to Use Material Definitions (.j3md)</a></h1>
+<div>
 
 <p>
 
@@ -8,31 +8,31 @@ Typically, you create a set of custom materials, and use them throughout the gam
 </p>
 
 <p>
-<strong>Tip:</strong> If you use one custom material very often, additionally read about storing material configurations in user-friendly <a href="/com/jme3/gde/core/docs/jme3/advanced/j3m_material_files.html" class="wikilink1" title="jme3:advanced:j3m_material_files">j3m Material Files</a>.
+<strong>Tip:</strong> If you use one custom material very often, additionally read about storing material configurations in user-friendly <a href="/com/jme3/gde/core/docs/jme3/advanced/j3m_material_files.html">j3m Material Files</a>.
 </p>
 
 </div>
 
-<h2><a name="preparing_a_material" id="preparing_a_material">Preparing a Material</a></h2>
-<div class="level2">
+<h2><a>Preparing a Material</a></h2>
+<div>
 <ol>
-<li class="level1"><div class="li"> Choose a Material Definition from the <a href="/com/jme3/gde/core/docs/jme3/advanced/materials_overview.html" class="wikilink1" title="jme3:advanced:materials_overview">Materials Overview</a> list that has the features that you need. </div>
+<li><div> Choose a Material Definition from the <a href="/com/jme3/gde/core/docs/jme3/advanced/materials_overview.html">Materials Overview</a> list that has the features that you need. </div>
 <ul>
-<li class="level2"><div class="li"> Tip: If you don&#039;t know, you can always start with <code>Unshaded.j3md</code>.</div>
+<li><div> Tip: If you don&#039;t know, you can always start with <code>Unshaded.j3md</code>.</div>
 </li>
 </ul>
 </li>
-<li class="level1"><div class="li"> Look at the applicable parameters of the Material Definition and determine which ones you need to achieve the desired effect. Most parameters are optional.</div>
+<li><div> Look at the applicable parameters of the Material Definition and determine which ones you need to achieve the desired effect. Most parameters are optional.</div>
 <ol>
-<li class="level2"><div class="li"> Create and save the necessary Texture files to the assets directory.</div>
+<li><div> Create and save the necessary Texture files to the assets directory.</div>
 <ul>
-<li class="level3"><div class="li"> E.g. ColorMap; DiffuseMap, NormalMap, AlphaMap, etc…</div>
+<li><div> E.g. ColorMap; DiffuseMap, NormalMap, AlphaMap, etc…</div>
 </li>
 </ul>
 </li>
-<li class="level2"><div class="li"> Determine the required values to achieve the effect that you want.</div>
+<li><div> Determine the required values to achieve the effect that you want.</div>
 <ul>
-<li class="level3"><div class="li"> E.g. Colors, floats, booleans, etc… </div>
+<li><div> E.g. Colors, floats, booleans, etc… </div>
 </li>
 </ul>
 </li>
@@ -42,62 +42,62 @@ Typically, you create a set of custom materials, and use them throughout the gam
 
 </div>
 
-<h2><a name="using_a_material" id="using_a_material">Using a Material</a></h2>
-<div class="level2">
+<h2><a>Using a Material</a></h2>
+<div>
 <ol>
-<li class="level1"><div class="li"> In you Java code, create a Material object based on the .j3md file: e.g. <pre class="code java">Material mat <span class="sy0">=</span> <span class="kw1">new</span> Material<span class="br0">&#40;</span>assetManager, <span class="st0">&quot;Common/MatDefs/Misc/Unshaded.j3md&quot;</span><span class="br0">&#41;</span>;</pre></div>
+<li><div> In you Java code, create a Material object based on the .j3md file: e.g. <pre>Material mat = new Material&#40;assetManager, &quot;Common/MatDefs/Misc/Unshaded.j3md&quot;&#41;;</pre></div>
 </li>
-<li class="level1"><div class="li"> Configure your Material by setting the appropriate values listed in the <a href="/com/jme3/gde/core/docs/jme3/advanced/materials_overview.html" class="wikilink1" title="jme3:advanced:materials_overview">Materials Overview</a> table. Here are examples of the methods that set the different data types:</div>
+<li><div> Configure your Material by setting the appropriate values listed in the <a href="/com/jme3/gde/core/docs/jme3/advanced/materials_overview.html">Materials Overview</a> table. Here are examples of the methods that set the different data types:</div>
 <ul>
-<li class="level2"><div class="li"> <code>mat.setColor(   “Color”,       ColorRGBA.White );</code></div>
+<li><div> <code>mat.setColor(   “Color”,       ColorRGBA.White );</code></div>
 </li>
-<li class="level2"><div class="li"> <code>mat.setTexture( “ColorMap”,    assetManager.loadTexture(“Interface/Logo/Monkey.png” ));</code></div>
+<li><div> <code>mat.setTexture( “ColorMap”,    assetManager.loadTexture(“Interface/Logo/Monkey.png” ));</code></div>
 </li>
-<li class="level2"><div class="li"> <code>mat.setFloat(   “Shininess”,   5f);</code></div>
+<li><div> <code>mat.setFloat(   “Shininess”,   5f);</code></div>
 </li>
-<li class="level2"><div class="li"> <code>mat.setBoolean( “SphereMap”,   true);</code></div>
+<li><div> <code>mat.setBoolean( “SphereMap”,   true);</code></div>
 </li>
-<li class="level2"><div class="li"> <code>mat.setVector3( “NormalScale”, new Vector3f(1f,1f,1f));</code></div>
+<li><div> <code>mat.setVector3( “NormalScale”, new Vector3f(1f,1f,1f));</code></div>
 </li>
 </ul>
 </li>
-<li class="level1"><div class="li"> Use your prepared material on a Geometry: <pre class="code java">myGeometry.<span class="me1">setMaterial</span><span class="br0">&#40;</span>mat<span class="br0">&#41;</span>;</pre></div>
+<li><div> Use your prepared material on a Geometry: <pre>myGeometry.setMaterial&#40;mat&#41;;</pre></div>
 </li>
-<li class="level1"><div class="li"> (Optional) Adjust the texture scale: <pre class="code java">geometry.<span class="me1">scaleTextureCoordinates</span><span class="br0">&#40;</span><span class="kw1">new</span> Vector2f<span class="br0">&#40;</span>1f, .5f<span class="br0">&#41;</span><span class="br0">&#41;</span>;</pre></div>
+<li><div> (Optional) Adjust the texture scale: <pre>geometry.scaleTextureCoordinates&#40;new Vector2f&#40;1f, .5f&#41;&#41;;</pre></div>
 </li>
 </ol>
 
 </div>
 
-<h2><a name="examples" id="examples">Examples</a></h2>
-<div class="level2">
+<h2><a>Examples</a></h2>
+<div>
 
 <p>
 
 A simpled textured material.
 
 </p>
-<pre class="code java">Material mat <span class="sy0">=</span> <span class="kw1">new</span> Material<span class="br0">&#40;</span>assetManager, 
-    <span class="st0">&quot;Common/MatDefs/Misc/Unshaded.j3md&quot;</span><span class="br0">&#41;</span>;
-mat.<span class="me1">setTexture</span><span class="br0">&#40;</span><span class="st0">&quot;ColorMap&quot;</span>, assetManager.<span class="me1">loadTexture</span><span class="br0">&#40;</span>
-    <span class="st0">&quot;Interface/Logo/Monkey.jpg&quot;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;</pre>
+<pre>Material mat = new Material&#40;assetManager, 
+    &quot;Common/MatDefs/Misc/Unshaded.j3md&quot;&#41;;
+mat.setTexture&#40;&quot;ColorMap&quot;, assetManager.loadTexture&#40;
+    &quot;Interface/Logo/Monkey.jpg&quot;&#41;&#41;;</pre>
 <p>
 A textured material with a color bleeding through transparent areas.
 
 </p>
-<pre class="code java">Material mat <span class="sy0">=</span> <span class="kw1">new</span> Material<span class="br0">&#40;</span>assetManager, 
-    <span class="st0">&quot;Common/MatDefs/Misc/Unshaded.j3md&quot;</span><span class="br0">&#41;</span>;
-mat.<span class="me1">setTexture</span><span class="br0">&#40;</span><span class="st0">&quot;ColorMap&quot;</span>, assetManager.<span class="me1">loadTexture</span><span class="br0">&#40;</span>
-    <span class="st0">&quot;Textures/ColoredTex/Monkey.png&quot;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
-mat.<span class="me1">setColor</span><span class="br0">&#40;</span><span class="st0">&quot;Color&quot;</span>, ColorRGBA.<span class="me1">Blue</span><span class="br0">&#41;</span>;</pre>
+<pre>Material mat = new Material&#40;assetManager, 
+    &quot;Common/MatDefs/Misc/Unshaded.j3md&quot;&#41;;
+mat.setTexture&#40;&quot;ColorMap&quot;, assetManager.loadTexture&#40;
+    &quot;Textures/ColoredTex/Monkey.png&quot;&#41;&#41;;
+mat.setColor&#40;&quot;Color&quot;, ColorRGBA.Blue&#41;;</pre>
 <p>
 You can test these examples within the following code snippet. It creates a box and applies the material:
 </p>
-<pre class="code java"> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Abox+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object><span class="br0">&#40;</span>Vector3f.<span class="me1">ZERO</span>, <span class="nu0">1</span>, <span class="nu0">1</span>, <span class="nu0">1</span><span class="br0">&#41;</span>;
-Geometry geom <span class="sy0">=</span> <span class="kw1">new</span> Geometry<span class="br0">&#40;</span><span class="st0">&quot;Box&quot;</span>, b<span class="br0">&#41;</span>;
-<span class="co1">// ... insert Material definition...</span>
-geom.<span class="me1">setMaterial</span><span class="br0">&#40;</span>mat<span class="br0">&#41;</span>;
-rootNode.<span class="me1">attachChild</span><span class="br0">&#40;</span>geom<span class="br0">&#41;</span>;</pre>
+<pre> Box&#40;Vector3f.ZERO, 1, 1, 1&#41;;
+Geometry geom = new Geometry&#40;&quot;Box&quot;, b&#41;;
+// ... insert Material definition...
+geom.setMaterial&#40;mat&#41;;
+rootNode.attachChild&#40;geom&#41;;</pre>
 <p>
 <strong>Tip:</strong> You can find these and other common code snippets in the jMonkeyPlatform Code Palette. Drag and drop them into your source code.
 

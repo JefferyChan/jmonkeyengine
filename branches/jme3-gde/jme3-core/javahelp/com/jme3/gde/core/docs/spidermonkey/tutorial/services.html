@@ -1,6 +1,6 @@
 
-<h1><a name="service_system" id="service_system">Service system</a></h1>
-<div class="level1">
+<h1><a>Service system</a></h1>
+<div>
 
 <p>
 The service system is meant to create a common way of using plugins. It is a tiny system, on Server and Client level. In this tutorial I&#039;ll tell you how to use services, and how to create your own.
@@ -8,28 +8,28 @@ The service system is meant to create a common way of using plugins. It is a tin
 
 </div>
 
-<h3><a name="creating_services" id="creating_services">Creating services</a></h3>
-<div class="level3">
+<h3><a>Creating services</a></h3>
+<div>
 
 <p>
 Creating services is really easy - you just have to implement the Service interface. <strong>Make sure you don&#039;t do anything time consuming</strong> since the developer may not be expecting it. Services can choose to support Server, Client, or both. To implement this, use the appropriate constructors:
 
 </p>
-<pre class="code java"><span class="kw1">public</span> <span class="kw1">class</span> MyExampleService <span class="kw1">implements</span> Service <span class="br0">&#123;</span>
-   <span class="kw1">public</span> MyExampleService<span class="br0">&#40;</span>Server server<span class="br0">&#41;</span> <span class="br0">&#123;</span>
-      <span class="co1">// By adding the constructor with the Server as argument, this service</span>
-      <span class="co1">//  now supports servers.</span>
-   <span class="br0">&#125;</span>
+<pre>public class MyExampleService implements Service &#123;
+   public MyExampleService&#40;Server server&#41; &#123;
+      // By adding the constructor with the Server as argument, this service
+      //  now supports servers.
+   &#125;
 &nbsp;
-   <span class="kw1">public</span> MyExampleService<span class="br0">&#40;</span>Client client<span class="br0">&#41;</span> <span class="br0">&#123;</span>
-      <span class="co1">// Same goes for client. I could just leave this constructor out, and</span>
-      <span class="co1">//  SpiderMonkey would determine this service does not support client mode.</span>
-   <span class="br0">&#125;</span>
-<span class="br0">&#125;</span></pre>
+   public MyExampleService&#40;Client client&#41; &#123;
+      // Same goes for client. I could just leave this constructor out, and
+      //  SpiderMonkey would determine this service does not support client mode.
+   &#125;
+&#125;</pre>
 </div>
 
-<h3><a name="using_services" id="using_services">Using services</a></h3>
-<div class="level3">
+<h3><a>Using services</a></h3>
+<div>
 
 <p>
 The Server and Client class both have a method called getService(). It retrieves a service based on class name, and instantiates it if necessary. From there you can use the service.

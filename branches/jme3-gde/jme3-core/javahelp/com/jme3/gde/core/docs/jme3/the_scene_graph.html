@@ -1,14 +1,14 @@
 
-<h1><a name="the_scene_graph_and_other_jme3_terminology" id="the_scene_graph_and_other_jme3_terminology">The Scene Graph and Other jME3 Terminology</a></h1>
-<div class="level1">
+<h1><a>The Scene Graph and Other jME3 Terminology</a></h1>
+<div>
 
 <p>
 
-Before you start making games, make sure you understand general <a href="/com/jme3/gde/core/docs/jme3/terminology.html" class="wikilink1" title="jme3:terminology">3D Gaming terminology</a>.
+Before you start making games, make sure you understand general <a href="/com/jme3/gde/core/docs/jme3/terminology.html">3D Gaming terminology</a>.
 </p>
 
 <p>
-Second, if you are a beginner, we recommend our <a href="/com/jme3/gde/core/docs/jme3/scenegraph_for_dummies.html" class="wikilink1" title="jme3:scenegraph_for_dummies">Scene Graph for Dummies</a> presentation for a visual introduction to the concept of a scene graph. 
+Second, if you are a beginner, we recommend our <a href="/com/jme3/gde/core/docs/jme3/scenegraph_for_dummies.html">Scene Graph for Dummies</a> presentation for a visual introduction to the concept of a scene graph. 
 </p>
 
 <p>
@@ -17,8 +17,8 @@ Then continue learning about jME3 concepts here.
 
 </div>
 
-<h2><a name="coordinate_system" id="coordinate_system">Coordinate System</a></h2>
-<div class="level2">
+<h2><a>Coordinate System</a></h2>
+<div>
 
 <p>
 
@@ -34,19 +34,19 @@ The coordinate system consists of:
 
 </p>
 <ul>
-<li class="level1"><div class="li"> The origin, a single point in space.</div>
+<li><div> The origin, a single point in space.</div>
 <ul>
-<li class="level2"><div class="li"> This point is always at coordinate (0,0,0)</div>
+<li><div> This point is always at coordinate (0,0,0)</div>
 </li>
 </ul>
 </li>
-<li class="level1"><div class="li"> Three coordinate axes that are mutually perpendicular, and meet in the origin. </div>
+<li><div> Three coordinate axes that are mutually perpendicular, and meet in the origin. </div>
 <ul>
-<li class="level2"><div class="li"> The X axis is “right/left”</div>
+<li><div> The X axis is “right/left”</div>
 </li>
-<li class="level2"><div class="li"> The Y axis is “up/down”</div>
+<li><div> The Y axis is “up/down”</div>
 </li>
-<li class="level2"><div class="li"> The Z axis is “towards you/away from you”</div>
+<li><div> The Z axis is “towards you/away from you”</div>
 </li>
 </ul>
 </li>
@@ -67,12 +67,12 @@ The unit of meassurement is <code>world unit</code> (wu). Typically, 1 wu is con
 
 </div>
 
-<h2><a name="scene_graph_and_rootnode" id="scene_graph_and_rootnode">Scene Graph and RootNode</a></h2>
-<div class="level2">
+<h2><a>Scene Graph and RootNode</a></h2>
+<div>
 
 <p>
 
-The scene graph represents your 3D world. Objects in the jME3 scene graph are called <a href="/com/jme3/gde/core/docs/jme3/advanced/spatial.html" class="wikilink1" title="jme3:advanced:spatial">Spatial</a>s. Everything attached to the <em>rootNode</em> is part of the scene graph. <em>Attaching</em> a Spatial to the rootNode (or other nodes) adds the Spatial to the scene; <em>detaching</em> removes it.
+The scene graph represents your 3D world. Objects in the jME3 scene graph are called <a href="/com/jme3/gde/core/docs/jme3/advanced/spatial.html">Spatial</a>s. Everything attached to the <em>rootNode</em> is part of the scene graph. <em>Attaching</em> a Spatial to the rootNode (or other nodes) adds the Spatial to the scene; <em>detaching</em> removes it.
 </p>
 
 <p>
@@ -81,50 +81,50 @@ The scene graph represents your 3D world. Objects in the jME3 scene graph are ca
 
 </div>
 
-<h2><a name="spatialsnode_vs_geometry" id="spatialsnode_vs_geometry">Spatials: Node vs Geometry</a></h2>
-<div class="level2">
+<h2><a>Spatials: Node vs Geometry</a></h2>
+<div>
 
 <p>
 
 A Spatial can be transformed, loaded and saved. There are two types of Spatials, <em>Nodes</em> and <em>Geometries</em>.
 
 </p>
-<table class="inline">
-	<tr class="row0">
-		<td class="col0 rightalign">  </td><th class="col1" colspan="2"> Spatial </th>
+<table>
+	<tr>
+		<td>  </td><th> Spatial </th>
 	</tr>
-	<tr class="row1">
-		<th class="col0"> Purpose: </th><td class="col1" colspan="2"> A Spatial is an abstract data structure that stores transformations (translation, rotation, scale). </td>
+	<tr>
+		<th> Purpose: </th><td> A Spatial is an abstract data structure that stores transformations (translation, rotation, scale). </td>
 	</tr>
-	<tr class="row2">
-		<td class="col0 rightalign">  </td><th class="col1"> Geometry </th><th class="col2"> Node </th>
+	<tr>
+		<td>  </td><th> Geometry </th><th> Node </th>
 	</tr>
-	<tr class="row3">
-		<th class="col0"> Visibility: </th><td class="col1"> A visible 3-D object. </td><td class="col2"> An invisible “handle” for a group of objects. </td>
+	<tr>
+		<th> Visibility: </th><td> A visible 3-D object. </td><td> An invisible “handle” for a group of objects. </td>
 	</tr>
-	<tr class="row4">
-		<th class="col0"> Purpose: </th><td class="col1"> Represents the “look” of an object: Shape, color, texture, opacity/transparency. </td><td class="col2"> Groups Geometries and other Nodes together: You transform a Node to affect all attached Nodes. </td>
+	<tr>
+		<th> Purpose: </th><td> Represents the “look” of an object: Shape, color, texture, opacity/transparency. </td><td> Groups Geometries and other Nodes together: You transform a Node to affect all attached Nodes. </td>
 	</tr>
-	<tr class="row5">
-		<th class="col0"> Content: </th><td class="col1"> Transformations, mesh, material. </td><td class="col2"> Transformations. No mesh, no material. </td>
+	<tr>
+		<th> Content: </th><td> Transformations, mesh, material. </td><td> Transformations. No mesh, no material. </td>
 	</tr>
-	<tr class="row6">
-		<th class="col0"> Examples: </th><td class="col1"> A box, a sphere, player, a building, a piece of terrain, a vehicle, missiles, NPCs, etc… </td><td class="col2"> The rootNode, the guiNode, an audio node, a custom grouping node, etc. </td>
+	<tr>
+		<th> Examples: </th><td> A box, a sphere, player, a building, a piece of terrain, a vehicle, missiles, NPCs, etc… </td><td> The rootNode, the guiNode, an audio node, a custom grouping node, etc. </td>
 	</tr>
 </table>
 
 </div>
 
-<h2><a name="how_to_use_this_knowledge" id="how_to_use_this_knowledge">How to Use This Knowledge?</a></h2>
-<div class="level2">
+<h2><a>How to Use This Knowledge?</a></h2>
+<div>
 
 <p>
 
-Before you start creating your game, you should have completed the <a href="/com/jme3/gde/core/docs/jme3/beginner.html" class="wikilink1" title="jme3:beginner">Hello World tutorial series</a>. It shows how to load and create Spatials, how to lay out a scene by attaching and transforming Spatials, and how to add interaction and effects to a game.
+Before you start creating your game, you should have completed the <a href="/com/jme3/gde/core/docs/jme3/beginner.html">Hello World tutorial series</a>. It shows how to load and create Spatials, how to lay out a scene by attaching and transforming Spatials, and how to add interaction and effects to a game.
 </p>
 
 <p>
-The <a href="/com/jme3/gde/core/docs/jme3.html" class="wikilink1" title="jme3">intermediate and advanced documentation</a> gives you more details on how to put all the parts together to create an awesome Java 3D game!
+The <a href="/com/jme3/gde/core/docs/jme3.html">intermediate and advanced documentation</a> gives you more details on how to put all the parts together to create an awesome Java 3D game!
 
 </p>
 

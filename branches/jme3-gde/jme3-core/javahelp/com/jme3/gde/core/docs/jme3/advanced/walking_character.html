@@ -1,6 +1,6 @@
 
-<h1><a name="walking_character" id="walking_character">Walking Character</a></h1>
-<div class="level1">
+<h1><a>Walking Character</a></h1>
+<div>
 
 <p>
 
@@ -21,112 +21,112 @@ This is why jME3 offers a special CharacterControl to implement walking characte
 
 </div>
 
-<h2><a name="sample_code" id="sample_code">Sample Code</a></h2>
-<div class="level2">
+<h2><a>Sample Code</a></h2>
+<div>
 
 <p>
 
 The full code sample can be found here:
 </p>
 <ul>
-<li class="level1"><div class="li"> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://code.google.com/p/jmonkeyengine/source/browse/branches/jme3/src/test/jme3test/bullet/TestWalkingChar.java"><param name="text" value="<html><u>TestPhysicsCharacter.java</u></html>"><param name="textColor" value="blue"></object> (third-person view)</div>
+<li><div> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://code.google.com/p/jmonkeyengine/source/browse/branches/jme3/src/test/jme3test/bullet/TestWalkingChar.java"><param name="text" value="<html><u>TestPhysicsCharacter.java</u></html>"><param name="textColor" value="blue"></object> (third-person view)</div>
 </li>
-<li class="level1"><div class="li"> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://code.google.com/p/jmonkeyengine/source/browse/branches/jme3/src/test/jme3test/bullet/TestWalkingChar.java"><param name="text" value="<html><u>TestWalkingChar.java</u></html>"><param name="textColor" value="blue"></object> (third-person view)</div>
+<li><div> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://code.google.com/p/jmonkeyengine/source/browse/branches/jme3/src/test/jme3test/bullet/TestWalkingChar.java"><param name="text" value="<html><u>TestWalkingChar.java</u></html>"><param name="textColor" value="blue"></object> (third-person view)</div>
 </li>
-<li class="level1"><div class="li"> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://code.google.com/p/jmonkeyengine/source/browse/branches/jme3/src/test/jme3test/bullet/TestQ3.java"><param name="text" value="<html><u>TestQ3.java</u></html>"><param name="textColor" value="blue"></object> (first-person view)</div>
+<li><div> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://code.google.com/p/jmonkeyengine/source/browse/branches/jme3/src/test/jme3test/bullet/TestQ3.java"><param name="text" value="<html><u>TestQ3.java</u></html>"><param name="textColor" value="blue"></object> (first-person view)</div>
 </li>
 </ul>
 
 </div>
 
-<h2><a name="overview_of_this_physics_application" id="overview_of_this_physics_application">Overview of this Physics Application</a></h2>
-<div class="level2">
+<h2><a>Overview of this Physics Application</a></h2>
+<div>
 <ol>
-<li class="level1"><div class="li"> Create a SimpleApplication with a <a href="/com/jme3/gde/core/docs/jme3/advanced/physics.html" class="wikilink1" title="jme3:advanced:physics">BulletAppState</a> </div>
+<li><div> Create a SimpleApplication with a <a href="/com/jme3/gde/core/docs/jme3/advanced/physics.html">BulletAppState</a> </div>
 <ul>
-<li class="level2"><div class="li"> This gives us a Physics Space</div>
+<li><div> This gives us a Physics Space</div>
 </li>
 </ul>
 </li>
-<li class="level1"><div class="li"> Load any physical game level model, terrain, or floor</div>
+<li><div> Load any physical game level model, terrain, or floor</div>
 </li>
-<li class="level1"><div class="li"> Load an animated character model</div>
+<li><div> Load an animated character model</div>
 </li>
-<li class="level1"><div class="li"> Set up animation channel and controller</div>
+<li><div> Set up animation channel and controller</div>
 </li>
-<li class="level1"><div class="li"> Add a CharacterControl to the model</div>
+<li><div> Add a CharacterControl to the model</div>
 </li>
 </ol>
 
 </div>
 
-<h2><a name="creating_the_character" id="creating_the_character">Creating the Character</a></h2>
-<div class="level2">
+<h2><a>Creating the Character</a></h2>
+<div>
 <ol>
-<li class="level1"><div class="li"> Initialze physical character behaviour, including collision shape </div>
+<li><div> Initialze physical character behaviour, including collision shape </div>
 <ol>
-<li class="level2"><div class="li"> Create CapsuleCollisionShape of the right size for the model.</div>
+<li><div> Create CapsuleCollisionShape of the right size for the model.</div>
 <ul>
-<li class="level3"><div class="li"> A Capsule is a cylinder with rounded top and bottom: A good collision shape for a character since it reduces the risk of getting stuck on obstacles.</div>
+<li><div> A Capsule is a cylinder with rounded top and bottom: A good collision shape for a character since it reduces the risk of getting stuck on obstacles.</div>
 </li>
 </ul>
 </li>
-<li class="level2"><div class="li"> Create a CharacterControl from the collision shape</div>
+<li><div> Create a CharacterControl from the collision shape</div>
 </li>
 </ol>
 </li>
-<li class="level1"><div class="li"> Load the visible character model, and add the physical behaviour to it</div>
+<li><div> Load the visible character model, and add the physical behaviour to it</div>
 <ol>
-<li class="level2"><div class="li"> Load an animated model (e.g. “Models/Oto/Oto.mesh.xml”).</div>
+<li><div> Load an animated model (e.g. “Models/Oto/Oto.mesh.xml”).</div>
 </li>
-<li class="level2"><div class="li"> Add the CharacterControl to the character model.</div>
+<li><div> Add the CharacterControl to the character model.</div>
 </li>
 </ol>
 </li>
-<li class="level1"><div class="li"> Make character visible and physical</div>
+<li><div> Make character visible and physical</div>
 <ol>
-<li class="level2"><div class="li"> Attach the model to the rootNode to make it appear in the scene.</div>
+<li><div> Attach the model to the rootNode to make it appear in the scene.</div>
 </li>
-<li class="level2"><div class="li"> Add the CharacterControl to the PhysicsSpace to make it physical.</div>
-</li>
-</ol>
+<li><div> Add the CharacterControl to the PhysicsSpace to make it physical.</div>
 </li>
 </ol>
-<pre class="code java"><span class="co1">// initialze physical character behaviour, including collision shape</span>
-CapsuleCollisionShape capsule <span class="sy0">=</span> <span class="kw1">new</span> CapsuleCollisionShape<span class="br0">&#40;</span>3f, 4f<span class="br0">&#41;</span>;
-CharacterControl character <span class="sy0">=</span> <span class="kw1">new</span> CharacterControl<span class="br0">&#40;</span>capsule, 0.01f<span class="br0">&#41;</span>;
-<span class="co1">// load the visible character model and add the physical behaviour to it</span>
-Node model <span class="sy0">=</span> <span class="br0">&#40;</span>Node<span class="br0">&#41;</span> assetManager.<span class="me1">loadModel</span><span class="br0">&#40;</span><span class="st0">&quot;Models/Oto/Oto.mesh.xml&quot;</span><span class="br0">&#41;</span>;
-model.<span class="me1">addControl</span><span class="br0">&#40;</span>character<span class="br0">&#41;</span>;
-<span class="co1">// Make character visible and physical</span>
-rootNode.<span class="me1">attachChild</span><span class="br0">&#40;</span>model<span class="br0">&#41;</span>;      <span class="co1">// make it visible</span>
-getPhysicsSpace<span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">add</span><span class="br0">&#40;</span>character<span class="br0">&#41;</span>; <span class="co1">// make it physical</span></pre>
+</li>
+</ol>
+<pre>// initialze physical character behaviour, including collision shape
+CapsuleCollisionShape capsule = new CapsuleCollisionShape&#40;3f, 4f&#41;;
+CharacterControl character = new CharacterControl&#40;capsule, 0.01f&#41;;
+// load the visible character model and add the physical behaviour to it
+Node model = &#40;Node&#41; assetManager.loadModel&#40;&quot;Models/Oto/Oto.mesh.xml&quot;&#41;;
+model.addControl&#40;character&#41;;
+// Make character visible and physical
+rootNode.attachChild&#40;model&#41;;      // make it visible
+getPhysicsSpace&#40;&#41;.add&#40;character&#41;; // make it physical</pre>
 </div>
 
-<h2><a name="setting_up_the_animation_controller" id="setting_up_the_animation_controller">Setting Up the Animation Controller</a></h2>
-<div class="level2">
+<h2><a>Setting Up the Animation Controller</a></h2>
+<div>
 
 <p>
 
 We create two AninChannels, for example one for walking, one for shooting. The shootingChannel only controls one arm, while the walking channels controls the whole animation.
 </p>
-<pre class="code java">AnimControl animationControl <span class="sy0">=</span> model.<span class="me1">getControl</span><span class="br0">&#40;</span>AnimControl.<span class="kw1">class</span><span class="br0">&#41;</span>;
-animationControl.<span class="me1">addListener</span><span class="br0">&#40;</span><span class="kw1">this</span><span class="br0">&#41;</span>;
+<pre>AnimControl animationControl = model.getControl&#40;AnimControl.class&#41;;
+animationControl.addListener&#40;this&#41;;
 &nbsp;
-AnimChannel animationChannel <span class="sy0">=</span> animationControl.<span class="me1">createChannel</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
-AnimChannel shootingChannel <span class="sy0">=</span> animationControl.<span class="me1">createChannel</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
+AnimChannel animationChannel = animationControl.createChannel&#40;&#41;;
+AnimChannel shootingChannel = animationControl.createChannel&#40;&#41;;
 &nbsp;
-shootingChannel.<span class="me1">addBone</span><span class="br0">&#40;</span>animationControl.<span class="me1">getSkeleton</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">getBone</span><span class="br0">&#40;</span><span class="st0">&quot;uparm.right&quot;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
-shootingChannel.<span class="me1">addBone</span><span class="br0">&#40;</span>animationControl.<span class="me1">getSkeleton</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">getBone</span><span class="br0">&#40;</span><span class="st0">&quot;arm.right&quot;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
-shootingChannel.<span class="me1">addBone</span><span class="br0">&#40;</span>animationControl.<span class="me1">getSkeleton</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">getBone</span><span class="br0">&#40;</span><span class="st0">&quot;hand.right&quot;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;</pre>
+shootingChannel.addBone&#40;animationControl.getSkeleton&#40;&#41;.getBone&#40;&quot;uparm.right&quot;&#41;&#41;;
+shootingChannel.addBone&#40;animationControl.getSkeleton&#40;&#41;.getBone&#40;&quot;arm.right&quot;&#41;&#41;;
+shootingChannel.addBone&#40;animationControl.getSkeleton&#40;&#41;.getBone&#40;&quot;hand.right&quot;&#41;&#41;;</pre>
 <p>
 The extra shooting channel exists so the character can lift an arm to shoot and walk at the same time.
 </p>
 
 </div>
 
-<h2><a name="walking" id="walking">Walking</a></h2>
-<div class="level2">
+<h2><a>Walking</a></h2>
+<div>
 
 <p>
 Work in progress (this is being updated for the new physics and chase cam.)

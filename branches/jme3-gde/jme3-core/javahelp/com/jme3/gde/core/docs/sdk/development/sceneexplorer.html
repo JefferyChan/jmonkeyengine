@@ -1,11 +1,11 @@
 
-<h1><a name="the_sceneexplorer" id="the_sceneexplorer">The SceneExplorer</a></h1>
-<div class="level1">
+<h1><a>The SceneExplorer</a></h1>
+<div>
 
 </div>
 
-<h2><a name="adding_node_types_to_sceneexplorer" id="adding_node_types_to_sceneexplorer">Adding Node types to SceneExplorer</a></h2>
-<div class="level2">
+<h2><a>Adding Node types to SceneExplorer</a></h2>
+<div>
 
 <p>
 
@@ -17,7 +17,7 @@ If your plugin brings in its own SceneGraph objects you can still have them work
 
 You will have to create your own class that extends org.openide.nodes.Node and implement the interface com.jme3.gde.core.sceneexplorer.nodes.SceneExplorerNode. Then you register that class by adding 
 </p>
-<pre class="code">@org.openide.util.lookup.ServiceProvider(service=com.jme3.gde.core.sceneexplorer.nodes.SceneExplorerNode.class)</pre>
+<pre>@org.openide.util.lookup.ServiceProvider(service=com.jme3.gde.core.sceneexplorer.nodes.SceneExplorerNode.class)</pre>
 
 <p>
  above the “public class MyClass” line in your class. Thats all, your Spatial type will automatically be used and displayed in the SceneExplorer.
@@ -35,260 +35,260 @@ The SceneExplorerNode can be used for Spatial and Control type objects.
 
 </div>
 
-<h3><a name="spatial_example" id="spatial_example">Spatial Example</a></h3>
-<div class="level3">
-<pre class="code java">@org.<span class="me1">openide</span>.<span class="me1">util</span>.<span class="me1">lookup</span>.<span class="me1">ServiceProvider</span><span class="br0">&#40;</span>service<span class="sy0">=</span>SceneExplorerNode.<span class="kw1">class</span><span class="br0">&#41;</span>
-<span class="kw1">public</span> <span class="kw1">class</span> JmeGeometry <span class="kw1">extends</span> JmeSpatial <span class="br0">&#123;</span>
+<h3><a>Spatial Example</a></h3>
+<div>
+<pre>@org.openide.util.lookup.ServiceProvider&#40;service=SceneExplorerNode.class&#41;
+public class JmeGeometry extends JmeSpatial &#123;
 &nbsp;
-    <span class="kw1">private</span> <span class="kw1">static</span> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Aimage+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object> smallImage <span class="sy0">=</span>
-            ImageUtilities.<span class="me1">loadImage</span><span class="br0">&#40;</span><span class="st0">&quot;com/jme3/gde/core/sceneexplorer/nodes/icons/geometry.gif&quot;</span><span class="br0">&#41;</span>;
-    <span class="kw1">private</span> Geometry geom;
+    private static Image smallImage =
+            ImageUtilities.loadImage&#40;&quot;com/jme3/gde/core/sceneexplorer/nodes/icons/geometry.gif&quot;&#41;;
+    private Geometry geom;
 &nbsp;
-    <span class="kw1">public</span> JmeGeometry<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-    <span class="br0">&#125;</span>
+    public JmeGeometry&#40;&#41; &#123;
+    &#125;
 &nbsp;
-    <span class="kw1">public</span> JmeGeometry<span class="br0">&#40;</span>Geometry spatial, SceneExplorerChildren children<span class="br0">&#41;</span> <span class="br0">&#123;</span>
-        <span class="kw1">super</span><span class="br0">&#40;</span>spatial, children<span class="br0">&#41;</span>;
-        getLookupContents<span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">add</span><span class="br0">&#40;</span>spatial<span class="br0">&#41;</span>;
-        <span class="kw1">this</span>.<span class="me1">geom</span> <span class="sy0">=</span> spatial;
-        setName<span class="br0">&#40;</span>spatial.<span class="me1">getName</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
-    <span class="br0">&#125;</span>
-&nbsp;
-    @Override
-    <span class="kw1">public</span> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Aimage+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object> getIcon<span class="br0">&#40;</span><span class="kw4">int</span> type<span class="br0">&#41;</span> <span class="br0">&#123;</span>
-        <span class="kw1">return</span> smallImage;
-    <span class="br0">&#125;</span>
+    public JmeGeometry&#40;Geometry spatial, SceneExplorerChildren children&#41; &#123;
+        super&#40;spatial, children&#41;;
+        getLookupContents&#40;&#41;.add&#40;spatial&#41;;
+        this.geom = spatial;
+        setName&#40;spatial.getName&#40;&#41;&#41;;
+    &#125;
 &nbsp;
     @Override
-    <span class="kw1">public</span> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Aimage+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object> getOpenedIcon<span class="br0">&#40;</span><span class="kw4">int</span> type<span class="br0">&#41;</span> <span class="br0">&#123;</span>
-        <span class="kw1">return</span> smallImage;
-    <span class="br0">&#125;</span>
+    public Image getIcon&#40;int type&#41; &#123;
+        return smallImage;
+    &#125;
 &nbsp;
     @Override
-    <span class="kw1">protected</span> Sheet createSheet<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-        Sheet sheet <span class="sy0">=</span> <span class="kw1">super</span>.<span class="me1">createSheet</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
-        Sheet.<object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Aset+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object> set <span class="sy0">=</span> Sheet.<span class="me1">createPropertiesSet</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
-        set.<span class="me1">setDisplayName</span><span class="br0">&#40;</span><span class="st0">&quot;Geometry&quot;</span><span class="br0">&#41;</span>;
-        set.<span class="me1">setName</span><span class="br0">&#40;</span>Geometry.<span class="kw1">class</span>.<span class="me1">getName</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
-        Geometry obj <span class="sy0">=</span> geom;<span class="co1">//getLookup().lookup(Geometry.class);</span>
-        <span class="kw1">if</span> <span class="br0">&#40;</span>obj <span class="sy0">==</span> <span class="kw2">null</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-            <span class="kw1">return</span> sheet;
-        <span class="br0">&#125;</span>
+    public Image getOpenedIcon&#40;int type&#41; &#123;
+        return smallImage;
+    &#125;
 &nbsp;
-        set.<span class="me1">put</span><span class="br0">&#40;</span>makeProperty<span class="br0">&#40;</span>obj, <span class="kw4">int</span>.<span class="kw1">class</span>, <span class="st0">&quot;getLodLevel&quot;</span>, <span class="st0">&quot;setLodLevel&quot;</span>, <span class="st0">&quot;Lod Level&quot;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
-        set.<span class="me1">put</span><span class="br0">&#40;</span>makeProperty<span class="br0">&#40;</span>obj, Material.<span class="kw1">class</span>, <span class="st0">&quot;getMaterial&quot;</span>, <span class="st0">&quot;setMaterial&quot;</span>, <span class="st0">&quot;Material&quot;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
-        set.<span class="me1">put</span><span class="br0">&#40;</span>makeProperty<span class="br0">&#40;</span>obj, Mesh.<span class="kw1">class</span>, <span class="st0">&quot;getMesh&quot;</span>, <span class="st0">&quot;Mesh&quot;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
+    @Override
+    protected Sheet createSheet&#40;&#41; &#123;
+        Sheet sheet = super.createSheet&#40;&#41;;
+        Sheet.Set set = Sheet.createPropertiesSet&#40;&#41;;
+        set.setDisplayName&#40;&quot;Geometry&quot;&#41;;
+        set.setName&#40;Geometry.class.getName&#40;&#41;&#41;;
+        Geometry obj = geom;//getLookup().lookup(Geometry.class);
+        if &#40;obj == null&#41; &#123;
+            return sheet;
+        &#125;
 &nbsp;
-        sheet.<span class="me1">put</span><span class="br0">&#40;</span>set<span class="br0">&#41;</span>;
-        <span class="kw1">return</span> sheet;
+        set.put&#40;makeProperty&#40;obj, int.class, &quot;getLodLevel&quot;, &quot;setLodLevel&quot;, &quot;Lod Level&quot;&#41;&#41;;
+        set.put&#40;makeProperty&#40;obj, Material.class, &quot;getMaterial&quot;, &quot;setMaterial&quot;, &quot;Material&quot;&#41;&#41;;
+        set.put&#40;makeProperty&#40;obj, Mesh.class, &quot;getMesh&quot;, &quot;Mesh&quot;&#41;&#41;;
 &nbsp;
-    <span class="br0">&#125;</span>
+        sheet.put&#40;set&#41;;
+        return sheet;
 &nbsp;
-    <span class="kw1">public</span> <span class="kw1">Class</span> getExplorerObjectClass<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-        <span class="kw1">return</span> Geometry.<span class="kw1">class</span>;
-    <span class="br0">&#125;</span>
+    &#125;
 &nbsp;
-    <span class="kw1">public</span> <span class="kw1">Class</span> getExplorerNodeClass<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-        <span class="kw1">return</span> JmeGeometry.<span class="kw1">class</span>;
-    <span class="br0">&#125;</span>
+    public Class getExplorerObjectClass&#40;&#41; &#123;
+        return Geometry.class;
+    &#125;
 &nbsp;
-    <span class="kw1">public</span> org.<span class="me1">openide</span>.<span class="me1">nodes</span>.<span class="me1">Node</span><span class="br0">&#91;</span><span class="br0">&#93;</span> createNodes<span class="br0">&#40;</span><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Aobject+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object> key2, <span class="kw4">boolean</span> readOnly<span class="br0">&#41;</span> <span class="br0">&#123;</span>
-        SceneExplorerChildren children<span class="sy0">=</span><span class="kw1">new</span> SceneExplorerChildren<span class="br0">&#40;</span><span class="br0">&#40;</span>com.<span class="me1">jme3</span>.<span class="me1">scene</span>.<span class="me1">Spatial</span><span class="br0">&#41;</span>key<span class="br0">&#41;</span>;
-        children.<span class="me1">setReadOnly</span><span class="br0">&#40;</span>readOnly<span class="br0">&#41;</span>;
-        <span class="kw1">return</span> <span class="kw1">new</span> org.<span class="me1">openide</span>.<span class="me1">nodes</span>.<span class="me1">Node</span><span class="br0">&#91;</span><span class="br0">&#93;</span><span class="br0">&#123;</span><span class="kw1">new</span> JmeGeometry<span class="br0">&#40;</span><span class="br0">&#40;</span>Geometry<span class="br0">&#41;</span> key, children<span class="br0">&#41;</span>.<span class="me1">setReadOnly</span><span class="br0">&#40;</span>readOnly<span class="br0">&#41;</span><span class="br0">&#125;</span>;
-    <span class="br0">&#125;</span>
-<span class="br0">&#125;</span></pre>
+    public Class getExplorerNodeClass&#40;&#41; &#123;
+        return JmeGeometry.class;
+    &#125;
+&nbsp;
+    public org.openide.nodes.Node&#91;&#93; createNodes&#40;Object key2, boolean readOnly&#41; &#123;
+        SceneExplorerChildren children=new SceneExplorerChildren&#40;&#40;com.jme3.scene.Spatial&#41;key&#41;;
+        children.setReadOnly&#40;readOnly&#41;;
+        return new org.openide.nodes.Node&#91;&#93;&#123;new JmeGeometry&#40;&#40;Geometry&#41; key, children&#41;.setReadOnly&#40;readOnly&#41;&#125;;
+    &#125;
+&#125;</pre>
 </div>
 
-<h3><a name="control_example" id="control_example">Control Example</a></h3>
-<div class="level3">
-<pre class="code java">@org.<span class="me1">openide</span>.<span class="me1">util</span>.<span class="me1">lookup</span>.<span class="me1">ServiceProvider</span><span class="br0">&#40;</span>service<span class="sy0">=</span>SceneExplorerNode.<span class="kw1">class</span><span class="br0">&#41;</span>
-<span class="kw1">public</span> <span class="kw1">class</span> JmeGhostControl <span class="kw1">extends</span> AbstractSceneExplorerNode <span class="br0">&#123;</span>
+<h3><a>Control Example</a></h3>
+<div>
+<pre>@org.openide.util.lookup.ServiceProvider&#40;service=SceneExplorerNode.class&#41;
+public class JmeGhostControl extends AbstractSceneExplorerNode &#123;
 &nbsp;
-    <span class="kw1">private</span> <span class="kw1">static</span> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Aimage+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object> smallImage <span class="sy0">=</span>
-            ImageUtilities.<span class="me1">loadImage</span><span class="br0">&#40;</span><span class="st0">&quot;com/jme3/gde/core/sceneexplorer/nodes/icons/ghostcontrol.gif&quot;</span><span class="br0">&#41;</span>;
-    <span class="kw1">private</span> GhostControl geom;
+    private static Image smallImage =
+            ImageUtilities.loadImage&#40;&quot;com/jme3/gde/core/sceneexplorer/nodes/icons/ghostcontrol.gif&quot;&#41;;
+    private GhostControl geom;
 &nbsp;
-    <span class="kw1">public</span> JmeGhostControl<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-    <span class="br0">&#125;</span>
+    public JmeGhostControl&#40;&#41; &#123;
+    &#125;
 &nbsp;
-    <span class="kw1">public</span> JmeGhostControl<span class="br0">&#40;</span>GhostControl spatial, DataObject dataObject<span class="br0">&#41;</span> <span class="br0">&#123;</span>
-        <span class="kw1">super</span><span class="br0">&#40;</span>dataObject<span class="br0">&#41;</span>;
-        getLookupContents<span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">add</span><span class="br0">&#40;</span><span class="kw1">this</span><span class="br0">&#41;</span>;
-        getLookupContents<span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">add</span><span class="br0">&#40;</span>spatial<span class="br0">&#41;</span>;
-        <span class="kw1">this</span>.<span class="me1">geom</span> <span class="sy0">=</span> spatial;
-        setName<span class="br0">&#40;</span><span class="st0">&quot;GhostControl&quot;</span><span class="br0">&#41;</span>;
-    <span class="br0">&#125;</span>
-&nbsp;
-    @Override
-    <span class="kw1">public</span> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Aimage+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object> getIcon<span class="br0">&#40;</span><span class="kw4">int</span> type<span class="br0">&#41;</span> <span class="br0">&#123;</span>
-        <span class="kw1">return</span> smallImage;
-    <span class="br0">&#125;</span>
+    public JmeGhostControl&#40;GhostControl spatial, DataObject dataObject&#41; &#123;
+        super&#40;dataObject&#41;;
+        getLookupContents&#40;&#41;.add&#40;this&#41;;
+        getLookupContents&#40;&#41;.add&#40;spatial&#41;;
+        this.geom = spatial;
+        setName&#40;&quot;GhostControl&quot;&#41;;
+    &#125;
 &nbsp;
     @Override
-    <span class="kw1">public</span> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Aimage+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object> getOpenedIcon<span class="br0">&#40;</span><span class="kw4">int</span> type<span class="br0">&#41;</span> <span class="br0">&#123;</span>
-        <span class="kw1">return</span> smallImage;
-    <span class="br0">&#125;</span>
-&nbsp;
-    <span class="kw1">protected</span> SystemAction<span class="br0">&#91;</span><span class="br0">&#93;</span> createActions<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-        <span class="kw1">return</span> <span class="kw1">new</span> SystemAction<span class="br0">&#91;</span><span class="br0">&#93;</span><span class="br0">&#123;</span>
-                    <span class="co1">//                    SystemAction.get(CopyAction.class),</span>
-                    <span class="co1">//                    SystemAction.get(CutAction.class),</span>
-                    <span class="co1">//                    SystemAction.get(PasteAction.class),</span>
-                    SystemAction.<span class="me1">get</span><span class="br0">&#40;</span>DeleteAction.<span class="kw1">class</span><span class="br0">&#41;</span>
-                <span class="br0">&#125;</span>;
-    <span class="br0">&#125;</span>
+    public Image getIcon&#40;int type&#41; &#123;
+        return smallImage;
+    &#125;
 &nbsp;
     @Override
-    <span class="kw1">public</span> <span class="kw4">boolean</span> canDestroy<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-        <span class="kw1">return</span> <span class="sy0">!</span>readOnly;
-    <span class="br0">&#125;</span>
+    public Image getOpenedIcon&#40;int type&#41; &#123;
+        return smallImage;
+    &#125;
+&nbsp;
+    protected SystemAction&#91;&#93; createActions&#40;&#41; &#123;
+        return new SystemAction&#91;&#93;&#123;
+                    //                    SystemAction.get(CopyAction.class),
+                    //                    SystemAction.get(CutAction.class),
+                    //                    SystemAction.get(PasteAction.class),
+                    SystemAction.get&#40;DeleteAction.class&#41;
+                &#125;;
+    &#125;
 &nbsp;
     @Override
-    <span class="kw1">public</span> <span class="kw4">void</span> destroy<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="kw1">throws</span> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Aioexception+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object> <span class="br0">&#123;</span>
-        <span class="kw1">super</span>.<span class="me1">destroy</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
-        <span class="kw1">final</span> Spatial spat<span class="sy0">=</span>getParentNode<span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">getLookup</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">lookup</span><span class="br0">&#40;</span>Spatial.<span class="kw1">class</span><span class="br0">&#41;</span>;
-        <span class="kw1">try</span> <span class="br0">&#123;</span>
-            SceneApplication.<span class="me1">getApplication</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">enqueue</span><span class="br0">&#40;</span><span class="kw1">new</span> Callable<span class="sy0">&lt;</span>Void<span class="sy0">&gt;</span><span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-&nbsp;
-                <span class="kw1">public</span> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Avoid+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object> <span class="br0">&#123;</span>
-                    spat.<span class="me1">removeControl</span><span class="br0">&#40;</span>geom<span class="br0">&#41;</span>;
-                    <span class="kw1">return</span> <span class="kw2">null</span>;
-                <span class="br0">&#125;</span>
-            <span class="br0">&#125;</span><span class="br0">&#41;</span>.<span class="me1">get</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
-            <span class="br0">&#40;</span><span class="br0">&#40;</span>AbstractSceneExplorerNode<span class="br0">&#41;</span>getParentNode<span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>.<span class="me1">refresh</span><span class="br0">&#40;</span><span class="kw2">true</span><span class="br0">&#41;</span>;
-        <span class="br0">&#125;</span> <span class="kw1">catch</span> <span class="br0">&#40;</span><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Ainterruptedexception+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object> ex<span class="br0">&#41;</span> <span class="br0">&#123;</span>
-            Exceptions.<span class="me1">printStackTrace</span><span class="br0">&#40;</span>ex<span class="br0">&#41;</span>;
-        <span class="br0">&#125;</span> <span class="kw1">catch</span> <span class="br0">&#40;</span>ExecutionException ex<span class="br0">&#41;</span> <span class="br0">&#123;</span>
-            Exceptions.<span class="me1">printStackTrace</span><span class="br0">&#40;</span>ex<span class="br0">&#41;</span>;
-        <span class="br0">&#125;</span>
-    <span class="br0">&#125;</span>
+    public boolean canDestroy&#40;&#41; &#123;
+        return !readOnly;
+    &#125;
 &nbsp;
     @Override
-    <span class="kw1">protected</span> Sheet createSheet<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-        Sheet sheet <span class="sy0">=</span> <span class="kw1">super</span>.<span class="me1">createSheet</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
-        Sheet.<object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Aset+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object> set <span class="sy0">=</span> Sheet.<span class="me1">createPropertiesSet</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
-        set.<span class="me1">setDisplayName</span><span class="br0">&#40;</span><span class="st0">&quot;GhostControl&quot;</span><span class="br0">&#41;</span>;
-        set.<span class="me1">setName</span><span class="br0">&#40;</span>GhostControl.<span class="kw1">class</span>.<span class="me1">getName</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
-        GhostControl obj <span class="sy0">=</span> geom;<span class="co1">//getLookup().lookup(Spatial.class);</span>
-        <span class="kw1">if</span> <span class="br0">&#40;</span>obj <span class="sy0">==</span> <span class="kw2">null</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-            <span class="kw1">return</span> sheet;
-        <span class="br0">&#125;</span>
+    public void destroy&#40;&#41; throws IOException &#123;
+        super.destroy&#40;&#41;;
+        final Spatial spat=getParentNode&#40;&#41;.getLookup&#40;&#41;.lookup&#40;Spatial.class&#41;;
+        try &#123;
+            SceneApplication.getApplication&#40;&#41;.enqueue&#40;new Callable&lt;Void&gt;&#40;&#41; &#123;
 &nbsp;
-        set.<span class="me1">put</span><span class="br0">&#40;</span>makeProperty<span class="br0">&#40;</span>obj, Vector3f.<span class="kw1">class</span>, <span class="st0">&quot;getPhysicsLocation&quot;</span>, <span class="st0">&quot;setPhysicsLocation&quot;</span>, <span class="st0">&quot;Physics Location&quot;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
-        set.<span class="me1">put</span><span class="br0">&#40;</span>makeProperty<span class="br0">&#40;</span>obj, Quaternion.<span class="kw1">class</span>, <span class="st0">&quot;getPhysicsRotation&quot;</span>, <span class="st0">&quot;setPhysicsRotation&quot;</span>, <span class="st0">&quot;Physics Rotation&quot;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
+                public Exception &#123;
+                    spat.removeControl&#40;geom&#41;;
+                    return null;
+                &#125;
+            &#125;&#41;.get&#40;&#41;;
+            &#40;&#40;AbstractSceneExplorerNode&#41;getParentNode&#40;&#41;&#41;.refresh&#40;true&#41;;
+        &#125; catch &#40;InterruptedException ex&#41; &#123;
+            Exceptions.printStackTrace&#40;ex&#41;;
+        &#125; catch &#40;ExecutionException ex&#41; &#123;
+            Exceptions.printStackTrace&#40;ex&#41;;
+        &#125;
+    &#125;
 &nbsp;
-        set.<span class="me1">put</span><span class="br0">&#40;</span>makeProperty<span class="br0">&#40;</span>obj, CollisionShape.<span class="kw1">class</span>, <span class="st0">&quot;getCollisionShape&quot;</span>, <span class="st0">&quot;setCollisionShape&quot;</span>, <span class="st0">&quot;Collision Shape&quot;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
-        set.<span class="me1">put</span><span class="br0">&#40;</span>makeProperty<span class="br0">&#40;</span>obj, <span class="kw4">int</span>.<span class="kw1">class</span>, <span class="st0">&quot;getCollisionGroup&quot;</span>, <span class="st0">&quot;setCollisionGroup&quot;</span>, <span class="st0">&quot;Collision Group&quot;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
-        set.<span class="me1">put</span><span class="br0">&#40;</span>makeProperty<span class="br0">&#40;</span>obj, <span class="kw4">int</span>.<span class="kw1">class</span>, <span class="st0">&quot;getCollideWithGroups&quot;</span>, <span class="st0">&quot;setCollideWithGroups&quot;</span>, <span class="st0">&quot;Collide With Groups&quot;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
+    @Override
+    protected Sheet createSheet&#40;&#41; &#123;
+        Sheet sheet = super.createSheet&#40;&#41;;
+        Sheet.Set set = Sheet.createPropertiesSet&#40;&#41;;
+        set.setDisplayName&#40;&quot;GhostControl&quot;&#41;;
+        set.setName&#40;GhostControl.class.getName&#40;&#41;&#41;;
+        GhostControl obj = geom;//getLookup().lookup(Spatial.class);
+        if &#40;obj == null&#41; &#123;
+            return sheet;
+        &#125;
 &nbsp;
-        sheet.<span class="me1">put</span><span class="br0">&#40;</span>set<span class="br0">&#41;</span>;
-        <span class="kw1">return</span> sheet;
+        set.put&#40;makeProperty&#40;obj, Vector3f.class, &quot;getPhysicsLocation&quot;, &quot;setPhysicsLocation&quot;, &quot;Physics Location&quot;&#41;&#41;;
+        set.put&#40;makeProperty&#40;obj, Quaternion.class, &quot;getPhysicsRotation&quot;, &quot;setPhysicsRotation&quot;, &quot;Physics Rotation&quot;&#41;&#41;;
 &nbsp;
-    <span class="br0">&#125;</span>
+        set.put&#40;makeProperty&#40;obj, CollisionShape.class, &quot;getCollisionShape&quot;, &quot;setCollisionShape&quot;, &quot;Collision Shape&quot;&#41;&#41;;
+        set.put&#40;makeProperty&#40;obj, int.class, &quot;getCollisionGroup&quot;, &quot;setCollisionGroup&quot;, &quot;Collision Group&quot;&#41;&#41;;
+        set.put&#40;makeProperty&#40;obj, int.class, &quot;getCollideWithGroups&quot;, &quot;setCollideWithGroups&quot;, &quot;Collide With Groups&quot;&#41;&#41;;
 &nbsp;
-    <span class="kw1">public</span> <span class="kw1">Class</span> getExplorerObjectClass<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-        <span class="kw1">return</span> GhostControl.<span class="kw1">class</span>;
-    <span class="br0">&#125;</span>
+        sheet.put&#40;set&#41;;
+        return sheet;
 &nbsp;
-    <span class="kw1">public</span> <span class="kw1">Class</span> getExplorerNodeClass<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-        <span class="kw1">return</span> JmeGhostControl.<span class="kw1">class</span>;
-    <span class="br0">&#125;</span>
+    &#125;
 &nbsp;
-    <span class="kw1">public</span> org.<span class="me1">openide</span>.<span class="me1">nodes</span>.<span class="me1">Node</span><span class="br0">&#91;</span><span class="br0">&#93;</span> createNodes<span class="br0">&#40;</span><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Aobject+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object> key, DataObject key2, <span class="kw4">boolean</span> cookie<span class="br0">&#41;</span> <span class="br0">&#123;</span>
-        <span class="kw1">return</span> <span class="kw1">new</span> org.<span class="me1">openide</span>.<span class="me1">nodes</span>.<span class="me1">Node</span><span class="br0">&#91;</span><span class="br0">&#93;</span><span class="br0">&#123;</span><span class="kw1">new</span> JmeGhostControl<span class="br0">&#40;</span><span class="br0">&#40;</span>GhostControl<span class="br0">&#41;</span> key, key2<span class="br0">&#41;</span>.<span class="me1">setReadOnly</span><span class="br0">&#40;</span>cookie<span class="br0">&#41;</span><span class="br0">&#125;</span>;
-    <span class="br0">&#125;</span>
-<span class="br0">&#125;</span></pre>
+    public Class getExplorerObjectClass&#40;&#41; &#123;
+        return GhostControl.class;
+    &#125;
+&nbsp;
+    public Class getExplorerNodeClass&#40;&#41; &#123;
+        return JmeGhostControl.class;
+    &#125;
+&nbsp;
+    public org.openide.nodes.Node&#91;&#93; createNodes&#40;Object key, DataObject key2, boolean cookie&#41; &#123;
+        return new org.openide.nodes.Node&#91;&#93;&#123;new JmeGhostControl&#40;&#40;GhostControl&#41; key, key2&#41;.setReadOnly&#40;cookie&#41;&#125;;
+    &#125;
+&#125;</pre>
 </div>
 
-<h2><a name="adding_items_to_the_add_and_tools_menus" id="adding_items_to_the_add_and_tools_menus">Adding items to the add and tools menus</a></h2>
-<div class="level2">
+<h2><a>Adding items to the add and tools menus</a></h2>
+<div>
 
 <p>
 For adding Spatials, Contols and for general tools theres premade abstract classes that you can use to extend the options. Undo/Redo is handled by the abstract class.
 </p>
 
 <p>
-<p><div class="noteimportant">Note that the classes you create are singletons which are used across multiple nodes and you should not store any data in local variables!
+<p><div>Note that the classes you create are singletons which are used across multiple nodes and you should not store any data in local variables!
 </div></p>
 </p>
 
 <p>
 To add a new Tool, use the AbstractToolAction:
 </p>
-<pre class="code java">@org.<span class="me1">openide</span>.<span class="me1">util</span>.<span class="me1">lookup</span>.<span class="me1">ServiceProvider</span><span class="br0">&#40;</span>service <span class="sy0">=</span> ToolAction.<span class="kw1">class</span><span class="br0">&#41;</span>
-<span class="kw1">public</span> <span class="kw1">class</span> GenerateTangentsTool <span class="kw1">extends</span> AbstractToolAction <span class="br0">&#123;</span>
+<pre>@org.openide.util.lookup.ServiceProvider&#40;service = ToolAction.class&#41;
+public class GenerateTangentsTool extends AbstractToolAction &#123;
 &nbsp;
-    <span class="kw1">public</span> GenerateTangentsTool<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-        name <span class="sy0">=</span> <span class="st0">&quot;Generate Tangents&quot;</span>;
-    <span class="br0">&#125;</span>
-&nbsp;
-    @Override
-    <span class="kw1">protected</span> <span class="kw4">boolean</span> doApplyTool<span class="br0">&#40;</span>AbstractSceneExplorerNode rootNode<span class="br0">&#41;</span> <span class="br0">&#123;</span>
-        Geometry geom <span class="sy0">=</span> rootNode.<span class="me1">getLookup</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">lookup</span><span class="br0">&#40;</span>Geometry.<span class="kw1">class</span><span class="br0">&#41;</span>;
-        Mesh mesh <span class="sy0">=</span> geom.<span class="me1">getMesh</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
-        <span class="kw1">if</span> <span class="br0">&#40;</span>mesh <span class="sy0">!=</span> <span class="kw2">null</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-            TangentBinormalGenerator.<span class="me1">generate</span><span class="br0">&#40;</span>mesh<span class="br0">&#41;</span>;
-        <span class="br0">&#125;</span>
-        <span class="kw1">return</span> <span class="kw2">true</span>;
-    <span class="br0">&#125;</span>
+    public GenerateTangentsTool&#40;&#41; &#123;
+        name = &quot;Generate Tangents&quot;;
+    &#125;
 &nbsp;
     @Override
-    <span class="kw1">protected</span> <span class="kw4">void</span> doUndoTool<span class="br0">&#40;</span>AbstractSceneExplorerNode rootNode<span class="br0">&#41;</span> <span class="br0">&#123;</span>
-        Geometry geom <span class="sy0">=</span> rootNode.<span class="me1">getLookup</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">lookup</span><span class="br0">&#40;</span>Geometry.<span class="kw1">class</span><span class="br0">&#41;</span>;
-        Mesh mesh <span class="sy0">=</span> geom.<span class="me1">getMesh</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
-        <span class="kw1">if</span> <span class="br0">&#40;</span>mesh <span class="sy0">!=</span> <span class="kw2">null</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-            mesh.<span class="me1">clearBuffer</span><span class="br0">&#40;</span>Type.<span class="me1">Tangent</span><span class="br0">&#41;</span>;
-        <span class="br0">&#125;</span>
-    <span class="br0">&#125;</span>
+    protected boolean doApplyTool&#40;AbstractSceneExplorerNode rootNode&#41; &#123;
+        Geometry geom = rootNode.getLookup&#40;&#41;.lookup&#40;Geometry.class&#41;;
+        Mesh mesh = geom.getMesh&#40;&#41;;
+        if &#40;mesh != null&#41; &#123;
+            TangentBinormalGenerator.generate&#40;mesh&#41;;
+        &#125;
+        return true;
+    &#125;
 &nbsp;
-    <span class="kw1">public</span> Class<span class="sy0">&lt;?&gt;</span> getNodeClass<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-        <span class="kw1">return</span> JmeGeometry.<span class="kw1">class</span>;
-    <span class="br0">&#125;</span>
+    @Override
+    protected void doUndoTool&#40;AbstractSceneExplorerNode rootNode&#41; &#123;
+        Geometry geom = rootNode.getLookup&#40;&#41;.lookup&#40;Geometry.class&#41;;
+        Mesh mesh = geom.getMesh&#40;&#41;;
+        if &#40;mesh != null&#41; &#123;
+            mesh.clearBuffer&#40;Type.Tangent&#41;;
+        &#125;
+    &#125;
 &nbsp;
-<span class="br0">&#125;</span></pre>
+    public Class&lt;?&gt; getNodeClass&#40;&#41; &#123;
+        return JmeGeometry.class;
+    &#125;
+&nbsp;
+&#125;</pre>
 <p>
 For a new Spatial or Control, use AbstractNewSpatialAction
 </p>
-<pre class="code java">@org.<span class="me1">openide</span>.<span class="me1">util</span>.<span class="me1">lookup</span>.<span class="me1">ServiceProvider</span><span class="br0">&#40;</span>service <span class="sy0">=</span> NewSpatialAction.<span class="kw1">class</span><span class="br0">&#41;</span>
-<span class="kw1">public</span> <span class="kw1">class</span> NewSpecialSpatialAction <span class="kw1">extends</span> AbstractNewSpatialAction <span class="br0">&#123;</span>
+<pre>@org.openide.util.lookup.ServiceProvider&#40;service = NewSpatialAction.class&#41;
+public class NewSpecialSpatialAction extends AbstractNewSpatialAction &#123;
 &nbsp;
-    <span class="kw1">public</span> NewSpecialSpatialAction<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-        name <span class="sy0">=</span> <span class="st0">&quot;Spatial&quot;</span>;
-    <span class="br0">&#125;</span>
+    public NewSpecialSpatialAction&#40;&#41; &#123;
+        name = &quot;Spatial&quot;;
+    &#125;
 &nbsp;
     @Override
-    <span class="kw1">protected</span> Spatial doCreateSpatial<span class="br0">&#40;</span>Node parent<span class="br0">&#41;</span> <span class="br0">&#123;</span>
-        Spatial spatial<span class="sy0">=</span><span class="kw1">new</span> Node<span class="br0">&#40;</span><span class="br0">&#41;</span>;
-        <span class="kw1">return</span> spatial;
-    <span class="br0">&#125;</span>
-<span class="br0">&#125;</span></pre>
+    protected Spatial doCreateSpatial&#40;Node parent&#41; &#123;
+        Spatial spatial=new Node&#40;&#41;;
+        return spatial;
+    &#125;
+&#125;</pre>
 <p>
 
  
 or AbstractNewControlAction:
 </p>
-<pre class="code java">@org.<span class="me1">openide</span>.<span class="me1">util</span>.<span class="me1">lookup</span>.<span class="me1">ServiceProvider</span><span class="br0">&#40;</span>service <span class="sy0">=</span> NewControlAction.<span class="kw1">class</span><span class="br0">&#41;</span>
-<span class="kw1">public</span> <span class="kw1">class</span> NewRigidBodyAction <span class="kw1">extends</span> AbstractNewControlAction <span class="br0">&#123;</span>
+<pre>@org.openide.util.lookup.ServiceProvider&#40;service = NewControlAction.class&#41;
+public class NewRigidBodyAction extends AbstractNewControlAction &#123;
 &nbsp;
-    <span class="kw1">public</span> NewRigidBodyAction<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-        name <span class="sy0">=</span> <span class="st0">&quot;Static RigidBody&quot;</span>;
-    <span class="br0">&#125;</span>
+    public NewRigidBodyAction&#40;&#41; &#123;
+        name = &quot;Static RigidBody&quot;;
+    &#125;
 &nbsp;
     @Override
-    <span class="kw1">protected</span> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Acontrol+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object> doCreateControl<span class="br0">&#40;</span>Spatial spatial<span class="br0">&#41;</span> <span class="br0">&#123;</span>
-        RigidBodyControl control <span class="sy0">=</span> spatial.<span class="me1">getControl</span><span class="br0">&#40;</span>RigidBodyControl.<span class="kw1">class</span><span class="br0">&#41;</span>;
-        <span class="kw1">if</span> <span class="br0">&#40;</span>control <span class="sy0">!=</span> <span class="kw2">null</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-            spatial.<span class="me1">removeControl</span><span class="br0">&#40;</span>control<span class="br0">&#41;</span>;
-        <span class="br0">&#125;</span>
-        Node parent <span class="sy0">=</span> spatial.<span class="me1">getParent</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
-        spatial.<span class="me1">removeFromParent</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
-        control <span class="sy0">=</span> <span class="kw1">new</span> RigidBodyControl<span class="br0">&#40;</span>0<span class="br0">&#41;</span>;
-        <span class="kw1">if</span> <span class="br0">&#40;</span>parent <span class="sy0">!=</span> <span class="kw2">null</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-            parent.<span class="me1">attachChild</span><span class="br0">&#40;</span>spatial<span class="br0">&#41;</span>;
-        <span class="br0">&#125;</span>
-        <span class="kw1">return</span> control;
-    <span class="br0">&#125;</span>
-<span class="br0">&#125;</span></pre>
+    protected Control doCreateControl&#40;Spatial spatial&#41; &#123;
+        RigidBodyControl control = spatial.getControl&#40;RigidBodyControl.class&#41;;
+        if &#40;control != null&#41; &#123;
+            spatial.removeControl&#40;control&#41;;
+        &#125;
+        Node parent = spatial.getParent&#40;&#41;;
+        spatial.removeFromParent&#40;&#41;;
+        control = new RigidBodyControl&#40;0&#41;;
+        if &#40;parent != null&#41; &#123;
+            parent.attachChild&#40;spatial&#41;;
+        &#125;
+        return control;
+    &#125;
+&#125;</pre>
 </div>
 <p><em><a href="http://jmonkeyengine.org/wiki/doku.php/sdk:development:sceneexplorer?do=export_xhtmlbody">view online version</a></em></p>

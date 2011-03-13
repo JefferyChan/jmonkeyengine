@@ -1,6 +1,6 @@
 
-<h1><a name="jme3_headless_server" id="jme3_headless_server">jME3 Headless Server</a></h1>
-<div class="level1">
+<h1><a>jME3 Headless Server</a></h1>
+<div>
 
 <p>
 
@@ -13,42 +13,42 @@ It&#039;s very easy to change your current (client) game to function as a server
 
 </div>
 
-<h2><a name="client_code" id="client_code">Client Code</a></h2>
-<div class="level2">
+<h2><a>Client Code</a></h2>
+<div>
 
 <p>
 
 First, let&#039;s take a look at the default way of creating a new game (in its simplest form):
 </p>
-<pre class="code java"><span class="kw1">public</span> <span class="kw1">static</span> <span class="kw4">void</span> main<span class="br0">&#40;</span><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Astring+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object><span class="br0">&#91;</span><span class="br0">&#93;</span> args<span class="br0">&#41;</span> <span class="br0">&#123;</span>
-  Application app <span class="sy0">=</span> <span class="kw1">new</span> Main<span class="br0">&#40;</span><span class="br0">&#41;</span>;
-  app.<span class="me1">start</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
-<span class="br0">&#125;</span></pre>
+<pre>public static void main&#40;String&#91;&#93; args&#41; &#123;
+  Application app = new Main&#40;&#41;;
+  app.start&#40;&#41;;
+&#125;</pre>
 </div>
 
-<h2><a name="headless_server_code" id="headless_server_code">Headless Server Code</a></h2>
-<div class="level2">
+<h2><a>Headless Server Code</a></h2>
+<div>
 
 <p>
 
 Now, with a simple change you can start your game in Headless mode. This means that all input and audio/visual output will be ignored. That&#039;s a good thing for a server.
 </p>
-<pre class="code java"><span class="kw1">import</span> <span class="co2">com.jme3.system.JmeContext</span>;
-<span class="kw1">import</span> <span class="co2">com.jme3.system.JmeContext.Type</span>;
+<pre>import com.jme3.system.JmeContext;
+import com.jme3.system.JmeContext.Type;
 &nbsp;
-<span class="kw1">public</span> <span class="kw1">static</span> <span class="kw4">void</span> main<span class="br0">&#40;</span><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Astring+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object><span class="br0">&#91;</span><span class="br0">&#93;</span> args<span class="br0">&#41;</span> <span class="br0">&#123;</span>
-  Application app <span class="sy0">=</span> <span class="kw1">new</span> Main<span class="br0">&#40;</span><span class="br0">&#41;</span>;
-  app.<span class="me1">start</span><span class="br0">&#40;</span>JmeContext.<span class="me1">Type</span>.<span class="me1">Headless</span><span class="br0">&#41;</span>;
-<span class="br0">&#125;</span></pre>
+public static void main&#40;String&#91;&#93; args&#41; &#123;
+  Application app = new Main&#40;&#41;;
+  app.start&#40;JmeContext.Type.Headless&#41;;
+&#125;</pre>
 <p>
-<p><div class="noteclassic">Although all input/output is ignored, the server <em>does</em> keep game state and <em>does</em> call the <code>simpleUpdate()</code> as expected.
+<p><div>Although all input/output is ignored, the server <em>does</em> keep game state and <em>does</em> call the <code>simpleUpdate()</code> as expected.
 </div></p>
 </p>
 
 </div>
 
-<h2><a name="next_steps" id="next_steps">Next steps</a></h2>
-<div class="level2">
+<h2><a>Next steps</a></h2>
+<div>
 
 <p>
 
@@ -56,20 +56,20 @@ Okay, so you can now start your game in a headless &#039;server mode&#039;, wher
 
 </p>
 <ul>
-<li class="level1"><div class="li"> Parse <code>String[] args</code> from the <code>main</code>-method to enable server mode on demand (e.g. start your server like <code>java -jar mygame.jar –server</code>.</div>
+<li><div> Parse <code>String[] args</code> from the <code>main</code>-method to enable server mode on demand (e.g. start your server like <code>java -jar mygame.jar –server</code>.</div>
 </li>
-<li class="level1"><div class="li"> Integrate <a href="/com/jme3/gde/core/docs/spidermonkey.html" class="wikilink1" title="spidermonkey">SpiderMonkey</a>, to provide game updates to the server over a network.</div>
+<li><div> Integrate <a href="/com/jme3/gde/core/docs/spidermonkey.html">SpiderMonkey</a>, to provide game updates to the server over a network.</div>
 </li>
-<li class="level1"><div class="li"> Only execute code that&#039;s needed. (E.g. place all rendering code inside an <code>if (servermode)</code>-block) (or <code>if (!servermode)</code> for the client).</div>
+<li><div> Only execute code that&#039;s needed. (E.g. place all rendering code inside an <code>if (servermode)</code>-block) (or <code>if (!servermode)</code> for the client).</div>
 </li>
-<li class="level1"><div class="li"> Add decent <a href="/com/jme3/gde/core/docs/jme3/advanced/logging.html" class="wikilink1" title="jme3:advanced:logging">logging</a> so your server actually makes sense.</div>
+<li><div> Add decent <a href="/com/jme3/gde/core/docs/jme3/advanced/logging.html">logging</a> so your server actually makes sense.</div>
 </li>
 </ul>
-<div class="tags"><span>
-	<a href="/wiki/doku.php/tag:intermediate?do=showtag&amp;tag=tag%3Aintermediate" class="wikilink1" title="tag:intermediate" rel="tag">intermediate</a>,
-	<a href="/wiki/doku.php/tag:server?do=showtag&amp;tag=tag%3Aserver" class="wikilink1" title="tag:server" rel="tag">server</a>,
-	<a href="/wiki/doku.php/tag:spidermonkey?do=showtag&amp;tag=tag%3Aspidermonkey" class="wikilink1" title="tag:spidermonkey" rel="tag">spidermonkey</a>,
-	<a href="/wiki/doku.php/tag:headless?do=showtag&amp;tag=tag%3Aheadless" class="wikilink1" title="tag:headless" rel="tag">headless</a>
+<div><span>
+	<a href="/wiki/doku.php/tag:intermediate?do=showtag&amp;tag=tag%3Aintermediate">intermediate</a>,
+	<a href="/wiki/doku.php/tag:server?do=showtag&amp;tag=tag%3Aserver">server</a>,
+	<a href="/wiki/doku.php/tag:spidermonkey?do=showtag&amp;tag=tag%3Aspidermonkey">spidermonkey</a>,
+	<a href="/wiki/doku.php/tag:headless?do=showtag&amp;tag=tag%3Aheadless">headless</a>
 </span></div>
 
 </div>

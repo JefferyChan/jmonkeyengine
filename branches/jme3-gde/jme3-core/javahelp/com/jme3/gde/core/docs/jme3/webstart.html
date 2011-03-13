@@ -3,29 +3,29 @@
 When running under WebStart, jMonkeyEngine may not have permission to extract the native libraries to the current directory. To avoid this problem, you can instruct WebStart to load the native libraries itself using the JNLP file, and then instruct jME3 not to try to do so itself.
 </p>
 
-<h4><a name="simple_way" id="simple_way">Simple way</a></h4>
-<div class="level4">
+<h4><a>Simple way</a></h4>
+<div>
 
 <p>
 
 You can import the LWJGL JNLP extension directly into your extension, however be aware that your application will break whenever they update their jars. Simply add this line to your JNLP:
 </p>
-<pre class="code xml"><span class="sc3"><span class="re1">&lt;extension</span> <span class="re0">name</span>=<span class="st0">&quot;lwjgl&quot;</span> <span class="re0">href</span>=<span class="st0">&quot;http://lwjgl.org/webstart/2.7.1/extension.jnlp&quot;</span> <span class="re2">/&gt;</span></span></pre>
+<pre><span>&lt;extension name=&quot;lwjgl&quot; href=&quot;http://lwjgl.org/webstart/2.7.1/extension.jnlp&quot; /&gt;</span></pre>
 </div>
 
-<h4><a name="reliable_way" id="reliable_way">Reliable way</a></h4>
-<div class="level4">
+<h4><a>Reliable way</a></h4>
+<div>
 
 </div>
 
-<h5><a name="native_jars" id="native_jars">Native jars</a></h5>
-<div class="level5">
+<h5><a>Native jars</a></h5>
+<div>
 
 <p>
 
 You can download the LWJGL native jars from their site, or to ensure you&#039;re using the exact same version as bundled with your jME3 release, make your own:
 </p>
-<pre class="code">
+<pre>
 mkdir tmp
 cd tmp
 jar xfv ../jME3-lwjgl-natives.jar
@@ -43,42 +43,42 @@ Remember to sign all the jar files and move them into the right place from the t
 
 </div>
 
-<h5><a name="jnlp_file" id="jnlp_file">JNLP file</a></h5>
-<div class="level5">
+<h5><a>JNLP file</a></h5>
+<div>
 
 <p>
 
 Add the following to your JNLP file:
 </p>
-<pre class="code xml">  <span class="sc3"><span class="re1">&lt;resources</span> <span class="re0">os</span>=<span class="st0">&quot;Windows&quot;</span><span class="re2">&gt;</span></span>
-    <span class="sc3"><span class="re1">&lt;j2se</span> <span class="re0">version</span>=<span class="st0">&quot;1.4+&quot;</span><span class="re2">/&gt;</span></span>
-    <span class="sc3"><span class="re1">&lt;nativelib</span> <span class="re0">href</span>=<span class="st0">&quot;native_windows.jar&quot;</span><span class="re2">/&gt;</span></span>
-  <span class="sc3"><span class="re1">&lt;/resources<span class="re2">&gt;</span></span></span>
-  <span class="sc3"><span class="re1">&lt;resources</span> <span class="re0">os</span>=<span class="st0">&quot;Linux&quot;</span><span class="re2">&gt;</span></span>
-    <span class="sc3"><span class="re1">&lt;j2se</span> <span class="re0">version</span>=<span class="st0">&quot;1.4+&quot;</span><span class="re2">/&gt;</span></span>
-    <span class="sc3"><span class="re1">&lt;nativelib</span> <span class="re0">href</span>=<span class="st0">&quot;native_linux.jar&quot;</span><span class="re2">/&gt;</span></span>
-  <span class="sc3"><span class="re1">&lt;/resources<span class="re2">&gt;</span></span></span>
-  <span class="sc3"><span class="re1">&lt;resources</span> <span class="re0">os</span>=<span class="st0">&quot;Mac OS X&quot;</span><span class="re2">&gt;</span></span>
-    <span class="sc3"><span class="re1">&lt;j2se</span> <span class="re0">version</span>=<span class="st0">&quot;1.4+&quot;</span><span class="re2">/&gt;</span></span>
-    <span class="sc3"><span class="re1">&lt;nativelib</span> <span class="re0">href</span>=<span class="st0">&quot;native_macosx.jar&quot;</span><span class="re2">/&gt;</span></span>
-  <span class="sc3"><span class="re1">&lt;/resources<span class="re2">&gt;</span></span></span>
-  <span class="sc3"><span class="re1">&lt;resources</span> <span class="re0">os</span>=<span class="st0">&quot;SunOS&quot;</span> <span class="re0">arch</span>=<span class="st0">&quot;x86&quot;</span><span class="re2">&gt;</span></span>
-    <span class="sc3"><span class="re1">&lt;j2se</span> <span class="re0">version</span>=<span class="st0">&quot;1.4+&quot;</span><span class="re2">/&gt;</span></span>
-    <span class="sc3"><span class="re1">&lt;nativelib</span> <span class="re0">href</span>=<span class="st0">&quot;native_solaris.jar&quot;</span><span class="re2">/&gt;</span></span>
-  <span class="sc3"><span class="re1">&lt;/resources<span class="re2">&gt;</span></span></span></pre>
+<pre>  <span>&lt;resources os=&quot;Windows&quot;&gt;</span>
+    <span>&lt;j2se version=&quot;1.4+&quot;/&gt;</span>
+    <span>&lt;nativelib href=&quot;native_windows.jar&quot;/&gt;</span>
+  <span><span>&lt;/resources&gt;</span></span>
+  <span>&lt;resources os=&quot;Linux&quot;&gt;</span>
+    <span>&lt;j2se version=&quot;1.4+&quot;/&gt;</span>
+    <span>&lt;nativelib href=&quot;native_linux.jar&quot;/&gt;</span>
+  <span><span>&lt;/resources&gt;</span></span>
+  <span>&lt;resources os=&quot;Mac OS X&quot;&gt;</span>
+    <span>&lt;j2se version=&quot;1.4+&quot;/&gt;</span>
+    <span>&lt;nativelib href=&quot;native_macosx.jar&quot;/&gt;</span>
+  <span><span>&lt;/resources&gt;</span></span>
+  <span>&lt;resources os=&quot;SunOS&quot; arch=&quot;x86&quot;&gt;</span>
+    <span>&lt;j2se version=&quot;1.4+&quot;/&gt;</span>
+    <span>&lt;nativelib href=&quot;native_solaris.jar&quot;/&gt;</span>
+  <span><span>&lt;/resources&gt;</span></span></pre>
 </div>
 
-<h5><a name="set_low-permissions_mode" id="set_low-permissions_mode">Set low-permissions mode</a></h5>
-<div class="level5">
+<h5><a>Set low-permissions mode</a></h5>
+<div>
 
 <p>
 
 In your main() method, if running under WebStart, tell jME3 it is running in a low-permission environment so that it doesn&#039;t try to load the natives itself:
 </p>
-<pre class="code java">  <span class="kw1">public</span> <span class="kw1">static</span> <span class="kw4">void</span> main<span class="br0">&#40;</span><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Astring+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object><span class="br0">&#91;</span><span class="br0">&#93;</span> args<span class="br0">&#41;</span>
-  <span class="br0">&#123;</span>
-      <span class="kw1">if</span> <span class="br0">&#40;</span><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Asystem+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object>.<span class="me1">getProperty</span><span class="br0">&#40;</span><span class="st0">&quot;javawebstart.version&quot;</span><span class="br0">&#41;</span> <span class="sy0">!=</span> <span class="kw2">null</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-        JmeSystem.<span class="me1">setLowPermissions</span><span class="br0">&#40;</span><span class="kw2">true</span><span class="br0">&#41;</span>;
-      <span class="br0">&#125;</span></pre>
+<pre>  public static void main&#40;String&#91;&#93; args&#41;
+  &#123;
+      if &#40;System.getProperty&#40;&quot;javawebstart.version&quot;&#41; != null&#41; &#123;
+        JmeSystem.setLowPermissions&#40;true&#41;;
+      &#125;</pre>
 </div>
 <p><em><a href="http://jmonkeyengine.org/wiki/doku.php/jme3:webstart?do=export_xhtmlbody">view online version</a></em></p>

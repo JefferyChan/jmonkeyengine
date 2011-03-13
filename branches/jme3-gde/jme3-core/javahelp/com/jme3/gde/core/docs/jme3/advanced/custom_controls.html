@@ -1,25 +1,25 @@
 
-<h1><a name="custom_controls" id="custom_controls">Custom Controls</a></h1>
-<div class="level1">
+<h1><a>Custom Controls</a></h1>
+<div>
 
 <p>
 
-<code>com.jme3.scene.control.Control</code> is a customizable jME3 interface that allows you to cleanly implement Game Logic. You use Controls to control the behaviour of types of Spatials. To control global game behaviour see <a href="/com/jme3/gde/core/docs/jme3/advanced/application_states.html" class="wikilink1" title="jme3:advanced:application_states">Application States</a> – you can use both together.
+<code>com.jme3.scene.control.Control</code> is a customizable jME3 interface that allows you to cleanly implement Game Logic. You use Controls to control the behaviour of types of Spatials. To control global game behaviour see <a href="/com/jme3/gde/core/docs/jme3/advanced/application_states.html">Application States</a> – you can use both together.
 </p>
 
 <p>
 To control the behaviour of types of entities:
 </p>
 <ol>
-<li class="level1"><div class="li"> You define a custom control and implement its behaviour in the Control&#039;s update() method.</div>
+<li><div> You define a custom control and implement its behaviour in the Control&#039;s update() method.</div>
 <ul>
-<li class="level2"><div class="li"> You can pass arguments and manipulate the spatial in any way: Modify its transformation (move, scale, rotate), play animations, check for enemies around it and react, etc. </div>
+<li><div> You can pass arguments and manipulate the spatial in any way: Modify its transformation (move, scale, rotate), play animations, check for enemies around it and react, etc. </div>
 </li>
 </ul>
 </li>
-<li class="level1"><div class="li"> Add the control to a Spatial (<code>spatial.addControl(myControl)</code>), and the Spatial&#039;s game state is updated automatically from now on. </div>
+<li><div> Add the control to a Spatial (<code>spatial.addControl(myControl)</code>), and the Spatial&#039;s game state is updated automatically from now on. </div>
 </li>
-<li class="level1"><div class="li"> Create one control for each type of behavior. When you add several controls to one spatial, they will be executed in the order they were added.</div>
+<li><div> Create one control for each type of behavior. When you add several controls to one spatial, they will be executed in the order they were added.</div>
 </li>
 </ol>
 
@@ -30,8 +30,8 @@ To implement game logic for a Spatial, you will either extend AbstractControl, o
 
 </div>
 
-<h2><a name="usage_examples" id="usage_examples">Usage Examples</a></h2>
-<div class="level2">
+<h2><a>Usage Examples</a></h2>
+<div>
 
 <p>
  
@@ -43,20 +43,20 @@ Existing examples in the code base include:
 
 </p>
 <ul>
-<li class="level1"><div class="li"> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://code.google.com/p/jmonkeyengine/source/browse/branches/jme3/src/core/com/jme3/animation/AnimControl.java"><param name="text" value="<html><u>AnimControl.java</u></html>"><param name="textColor" value="blue"></object> allows manipulation of skeletal animation, including blending an channels.</div>
+<li><div> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://code.google.com/p/jmonkeyengine/source/browse/branches/jme3/src/core/com/jme3/animation/AnimControl.java"><param name="text" value="<html><u>AnimControl.java</u></html>"><param name="textColor" value="blue"></object> allows manipulation of skeletal animation, including blending an channels.</div>
 </li>
-<li class="level1"><div class="li"> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://code.google.com/p/jmonkeyengine/source/browse/branches/jme3/src/core/com/jme3/scene/control/CameraControl.java"><param name="text" value="<html><u>CameraControl.java</u></html>"><param name="textColor" value="blue"></object> allows you to sync the camera position with the position of a given spatial.</div>
+<li><div> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://code.google.com/p/jmonkeyengine/source/browse/branches/jme3/src/core/com/jme3/scene/control/CameraControl.java"><param name="text" value="<html><u>CameraControl.java</u></html>"><param name="textColor" value="blue"></object> allows you to sync the camera position with the position of a given spatial.</div>
 </li>
-<li class="level1"><div class="li"> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://code.google.com/p/jmonkeyengine/source/browse/branches/jme3/src/core/com/jme3/scene/control/BillboardControl.java"><param name="text" value="<html><u>BillboardControl.java</u></html>"><param name="textColor" value="blue"></object> displays a flat picture orthogonally, e.g. a speech bubble or informational dialog.</div>
+<li><div> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://code.google.com/p/jmonkeyengine/source/browse/branches/jme3/src/core/com/jme3/scene/control/BillboardControl.java"><param name="text" value="<html><u>BillboardControl.java</u></html>"><param name="textColor" value="blue"></object> displays a flat picture orthogonally, e.g. a speech bubble or informational dialog.</div>
 </li>
-<li class="level1"><div class="li"> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://code.google.com/p/jmonkeyengine/source/browse/branches/jme3/src/#src%2Fjbullet%2Fcom%2Fjme3%2Fbullet%2Fcontrol"><param name="text" value="<html><u>PhysicsControl</u></html>"><param name="textColor" value="blue"></object> subclasses (such as CharacterControl, RigidBodyControl, VehicleControl) allow you to add physical properties to any spatial. PhysicsControls tie into capabilities provided by the BulletAppState. </div>
+<li><div> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://code.google.com/p/jmonkeyengine/source/browse/branches/jme3/src/#src%2Fjbullet%2Fcom%2Fjme3%2Fbullet%2Fcontrol"><param name="text" value="<html><u>PhysicsControl</u></html>"><param name="textColor" value="blue"></object> subclasses (such as CharacterControl, RigidBodyControl, VehicleControl) allow you to add physical properties to any spatial. PhysicsControls tie into capabilities provided by the BulletAppState. </div>
 </li>
 </ul>
 
 </div>
 
-<h2><a name="the_control_interface" id="the_control_interface">The Control Interface</a></h2>
-<div class="level2">
+<h2><a>The Control Interface</a></h2>
+<div>
 
 <p>
 
@@ -64,11 +64,11 @@ The interface can be found under <code>com.jme3.scene.control.Control</code>. It
 
 </p>
 <ul>
-<li class="level1"><div class="li"> <code>cloneForSpatial(Spatial)</code>: Clones the Control and attaches it to a clone of the given Spatial.</div>
+<li><div> <code>cloneForSpatial(Spatial)</code>: Clones the Control and attaches it to a clone of the given Spatial.</div>
 </li>
-<li class="level1"><div class="li"> <code>setEnabled(boolean)</code>: Enable or disable the control. If disabled, update() does nothing. Goes with accessor <code>isEnabled();</code>.</div>
+<li><div> <code>setEnabled(boolean)</code>: Enable or disable the control. If disabled, update() does nothing. Goes with accessor <code>isEnabled();</code>.</div>
 </li>
-<li class="level1"><div class="li"> There are also some internal methods that you do not call from user code: <code>setSpatial(Spatial s)</code>, <code>update(float tpf);</code>, <code>render(RenderManager rm, ViewPort vp)</code>.</div>
+<li><div> There are also some internal methods that you do not call from user code: <code>setSpatial(Spatial s)</code>, <code>update(float tpf);</code>, <code>render(RenderManager rm, ViewPort vp)</code>.</div>
 </li>
 </ul>
 
@@ -81,95 +81,95 @@ If you want to create a Control that also extends an existing class, then create
 1. Create a custom control interface 
 
 </p>
-<pre class="code java"><span class="kw1">public</span> <span class="kw1">interface</span> MyControl <span class="kw1">extends</span> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Acontrol+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object> <span class="br0">&#123;</span> 
-    <span class="kw1">public</span> <span class="kw4">void</span> setSomething<span class="br0">&#40;</span><span class="kw4">int</span> x<span class="br0">&#41;</span>; <span class="co1">// add your custom methods</span>
-<span class="br0">&#125;</span></pre>
+<pre>public interface MyControl extends Control &#123; 
+    public void setSomething&#40;int x&#41;; // add your custom methods
+&#125;</pre>
 <p>
 
 2. Create custom classes implementing your control interface 
 
 </p>
-<pre class="code java"><span class="kw1">public</span> <span class="kw1">class</span> ControlledThing <span class="kw1">extends</span> MyThing <span class="kw1">implements</span> MyControl <span class="br0">&#123;</span>
+<pre>public class ControlledThing extends MyThing implements MyControl &#123;
 &nbsp;
-    <span class="kw1">protected</span> Spatial spatial;
-    <span class="kw1">protected</span> <span class="kw4">boolean</span> enabled <span class="sy0">=</span> <span class="kw2">true</span>;
+    protected Spatial spatial;
+    protected boolean enabled = true;
 &nbsp;
-    <span class="kw1">public</span> ControlledThing<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span> <span class="br0">&#125;</span>
+    public ControlledThing&#40;&#41; &#123; &#125;
 &nbsp;
-    <span class="kw1">public</span> ControlledThing<span class="br0">&#40;</span><span class="kw4">int</span> x<span class="br0">&#41;</span> <span class="br0">&#123;</span>
-        <span class="kw1">super</span><span class="br0">&#40;</span>x<span class="br0">&#41;</span>;
-    <span class="br0">&#125;</span>
-&nbsp;
-    @Override
-    <span class="kw1">public</span> <span class="kw4">void</span> update<span class="br0">&#40;</span><span class="kw4">float</span> tpf<span class="br0">&#41;</span> <span class="br0">&#123;</span>
-        <span class="kw1">if</span> <span class="br0">&#40;</span>enabled <span class="sy0">&amp;&amp;</span> spatial <span class="sy0">!=</span> <span class="kw2">null</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-            <span class="co1">// ...</span>
-            <span class="co1">// Write custom code to control the spatial here!</span>
-        <span class="br0">&#125;</span>
-    <span class="br0">&#125;</span>
+    public ControlledThing&#40;int x&#41; &#123;
+        super&#40;x&#41;;
+    &#125;
 &nbsp;
     @Override
-    <span class="kw1">public</span> <span class="kw4">void</span> render<span class="br0">&#40;</span>RenderManager rm, ViewPort vp<span class="br0">&#41;</span> <span class="br0">&#123;</span>
-        <span class="co1">// optional, e.g. to display a debug shape</span>
-    <span class="br0">&#125;</span>
+    public void update&#40;float tpf&#41; &#123;
+        if &#40;enabled &amp;&amp; spatial != null&#41; &#123;
+            // ...
+            // Write custom code to control the spatial here!
+        &#125;
+    &#125;
 &nbsp;
     @Override
-    <span class="kw1">public</span> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Acontrol+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object> cloneForSpatial<span class="br0">&#40;</span>Spatial spatial<span class="br0">&#41;</span> <span class="br0">&#123;</span>
-        ControlledThing control <span class="sy0">=</span> <span class="kw1">new</span> ControlledThing<span class="br0">&#40;</span>y<span class="br0">&#41;</span>;
-        <span class="co1">// ...</span>
-        spatial.<span class="me1">setControl</span><span class="br0">&#40;</span>control<span class="br0">&#41;</span>;
-        <span class="kw1">return</span> control;
-    <span class="br0">&#125;</span>
+    public void render&#40;RenderManager rm, ViewPort vp&#41; &#123;
+        // optional, e.g. to display a debug shape
+    &#125;
 &nbsp;
     @Override
-    <span class="kw1">public</span> <span class="kw4">void</span> setEnabled<span class="br0">&#40;</span><span class="kw4">boolean</span> enabled<span class="br0">&#41;</span> <span class="br0">&#123;</span>
-        <span class="kw1">this</span>.<span class="me1">enabled</span> <span class="sy0">=</span> enabled;
-        <span class="co1">// ...</span>
-    <span class="br0">&#125;</span>
+    public Control cloneForSpatial&#40;Spatial spatial&#41; &#123;
+        ControlledThing control = new ControlledThing&#40;y&#41;;
+        // ...
+        spatial.setControl&#40;control&#41;;
+        return control;
+    &#125;
 &nbsp;
     @Override
-    <span class="kw1">public</span> <span class="kw4">boolean</span> isEnabled<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-        <span class="kw1">return</span> enabled;
-    <span class="br0">&#125;</span>
+    public void setEnabled&#40;boolean enabled&#41; &#123;
+        this.enabled = enabled;
+        // ...
+    &#125;
 &nbsp;
     @Override
-    <span class="kw1">public</span> <span class="kw4">void</span> setSomething<span class="br0">&#40;</span><span class="kw4">int</span> z<span class="br0">&#41;</span> <span class="br0">&#123;</span>
-        <span class="co1">// your custom method ...</span>
-    <span class="br0">&#125;</span>
+    public boolean isEnabled&#40;&#41; &#123;
+        return enabled;
+    &#125;
 &nbsp;
     @Override
-    <span class="kw1">public</span> <span class="kw4">void</span> write<span class="br0">&#40;</span>JmeExporter ex<span class="br0">&#41;</span> <span class="kw1">throws</span> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Aioexception+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object> <span class="br0">&#123;</span>
-        <span class="kw1">super</span>.<span class="me1">write</span><span class="br0">&#40;</span>ex<span class="br0">&#41;</span>;
-        OutputCapsule oc <span class="sy0">=</span> ex.<span class="me1">getCapsule</span><span class="br0">&#40;</span><span class="kw1">this</span><span class="br0">&#41;</span>;
-        oc.<span class="me1">write</span><span class="br0">&#40;</span>enabled, <span class="st0">&quot;enabled&quot;</span>, <span class="kw2">true</span><span class="br0">&#41;</span>;
-        oc.<span class="me1">write</span><span class="br0">&#40;</span>spatial, <span class="st0">&quot;spatial&quot;</span>, <span class="kw2">null</span><span class="br0">&#41;</span>;
-        <span class="co1">// write custom variables ....</span>
-    <span class="br0">&#125;</span>
+    public void setSomething&#40;int z&#41; &#123;
+        // your custom method ...
+    &#125;
 &nbsp;
     @Override
-    <span class="kw1">public</span> <span class="kw4">void</span> read<span class="br0">&#40;</span>JmeImporter im<span class="br0">&#41;</span> <span class="kw1">throws</span> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Aioexception+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object> <span class="br0">&#123;</span>
-        <span class="kw1">super</span>.<span class="me1">read</span><span class="br0">&#40;</span>im<span class="br0">&#41;</span>;
-        InputCapsule ic <span class="sy0">=</span> im.<span class="me1">getCapsule</span><span class="br0">&#40;</span><span class="kw1">this</span><span class="br0">&#41;</span>;
-        enabled <span class="sy0">=</span> ic.<span class="me1">readBoolean</span><span class="br0">&#40;</span><span class="st0">&quot;enabled&quot;</span>, <span class="kw2">true</span><span class="br0">&#41;</span>;
-        spatial <span class="sy0">=</span> <span class="br0">&#40;</span>Spatial<span class="br0">&#41;</span> ic.<span class="me1">readSavable</span><span class="br0">&#40;</span><span class="st0">&quot;spatial&quot;</span>, <span class="kw2">null</span><span class="br0">&#41;</span>;
-        <span class="co1">// read custom variables ....</span>
-    <span class="br0">&#125;</span>    
-<span class="br0">&#125;</span></pre>
+    public void write&#40;JmeExporter ex&#41; throws IOException &#123;
+        super.write&#40;ex&#41;;
+        OutputCapsule oc = ex.getCapsule&#40;this&#41;;
+        oc.write&#40;enabled, &quot;enabled&quot;, true&#41;;
+        oc.write&#40;spatial, &quot;spatial&quot;, null&#41;;
+        // write custom variables ....
+    &#125;
+&nbsp;
+    @Override
+    public void read&#40;JmeImporter im&#41; throws IOException &#123;
+        super.read&#40;im&#41;;
+        InputCapsule ic = im.getCapsule&#40;this&#41;;
+        enabled = ic.readBoolean&#40;&quot;enabled&quot;, true&#41;;
+        spatial = &#40;Spatial&#41; ic.readSavable&#40;&quot;spatial&quot;, null&#41;;
+        // read custom variables ....
+    &#125;    
+&#125;</pre>
 </div>
 
-<h2><a name="abstractcontrol" id="abstractcontrol">AbstractControl</a></h2>
-<div class="level2">
+<h2><a>AbstractControl</a></h2>
+<div>
 
 <p>
 
 This class can be found under <code>com.jme3.scene.control.AbstractControl</code>.
 </p>
 <ul>
-<li class="level1"><div class="li"> This is a default abstract class that implements the Control interface.</div>
+<li><div> This is a default abstract class that implements the Control interface.</div>
 </li>
-<li class="level1"><div class="li"> It gives you access to a boolean <code>enabled</code>, and a Spatial <code>spatial</code>.</div>
+<li><div> It gives you access to a boolean <code>enabled</code>, and a Spatial <code>spatial</code>.</div>
 </li>
-<li class="level1"><div class="li"> Extend AbstractControl to create a custom Control.</div>
+<li><div> Extend AbstractControl to create a custom Control.</div>
 </li>
 </ul>
 
@@ -177,53 +177,53 @@ This class can be found under <code>com.jme3.scene.control.AbstractControl</code
 
 Usage: Your custom subclass must implement the three methods <code>controlUpdate()</code>, <code>controlRender()</code>, and <code>cloneForSpatial()</code> as shown here:
 </p>
-<pre class="code java"><span class="kw1">public</span> <span class="kw1">class</span> MyControl <span class="kw1">extends</span> AbstractControl <span class="kw1">implements</span> Savable, <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Acloneable+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object> <span class="br0">&#123;</span>
+<pre>public class MyControl extends AbstractControl implements Savable, Cloneable &#123;
 &nbsp;
-  <span class="kw1">private</span> Thing thing; <span class="co1">// some custom class of yours</span>
+  private Thing thing; // some custom class of yours
 &nbsp;
-  <span class="kw1">public</span> MyControl<span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#123;</span><span class="br0">&#125;</span> <span class="co1">// empty serialization constructor</span>
+  public MyControl&#40;&#41;&#123;&#125; // empty serialization constructor
 &nbsp;
-  <span class="kw1">public</span> MyControl<span class="br0">&#40;</span>thing<span class="br0">&#41;</span> <span class="br0">&#123;</span> <span class="co1">// some custom constructor</span>
-    <span class="kw1">super</span><span class="br0">&#40;</span>spatial<span class="br0">&#41;</span>;
-    <span class="kw1">this</span>.<span class="me1">thing</span> <span class="sy0">=</span> thing;
-  <span class="br0">&#125;</span>
-&nbsp;
-  @Override
-  <span class="kw1">protected</span> <span class="kw4">void</span> controlUpdate<span class="br0">&#40;</span><span class="kw4">float</span> tpf<span class="br0">&#41;</span><span class="br0">&#123;</span>
-    <span class="kw1">if</span><span class="br0">&#40;</span>spatial <span class="sy0">!=</span> <span class="kw2">null</span> <span class="sy0">&amp;&amp;</span> thing <span class="sy0">!=</span> <span class="kw2">null</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-      <span class="co1">// Implement your custom control here ...</span>
-    <span class="br0">&#125;</span>
-  <span class="br0">&#125;</span>
+  public MyControl&#40;thing&#41; &#123; // some custom constructor
+    super&#40;spatial&#41;;
+    this.thing = thing;
+  &#125;
 &nbsp;
   @Override
-  <span class="kw1">protected</span> <span class="kw4">void</span> controlRender<span class="br0">&#40;</span>RenderManager rm, ViewPort vp<span class="br0">&#41;</span><span class="br0">&#123;</span>
-     <span class="co1">// ... optionial</span>
-  <span class="br0">&#125;</span>
+  protected void controlUpdate&#40;float tpf&#41;&#123;
+    if&#40;spatial != null &amp;&amp; thing != null&#41; &#123;
+      // Implement your custom control here ...
+    &#125;
+  &#125;
 &nbsp;
   @Override
-  <span class="kw1">public</span> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Acontrol+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object> cloneForSpatial<span class="br0">&#40;</span>Spatial spatial<span class="br0">&#41;</span><span class="br0">&#123;</span>
-    <span class="kw1">final</span> MyControl control <span class="sy0">=</span> <span class="kw1">new</span> MyControl<span class="br0">&#40;</span>...<span class="br0">&#41;</span>;
-    spatial.<span class="me1">setControl</span><span class="br0">&#40;</span>control<span class="br0">&#41;</span>;
-    <span class="kw1">return</span> control;
-  <span class="br0">&#125;</span>
+  protected void controlRender&#40;RenderManager rm, ViewPort vp&#41;&#123;
+     // ... optionial
+  &#125;
 &nbsp;
   @Override
-  <span class="kw1">public</span> <span class="kw4">void</span> read<span class="br0">&#40;</span>JmeImporter im<span class="br0">&#41;</span> <span class="kw1">throws</span> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Aioexception+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object> <span class="br0">&#123;</span>
-      <span class="kw1">super</span>.<span class="me1">read</span><span class="br0">&#40;</span>im<span class="br0">&#41;</span>;
-      <span class="co1">// im.getCapsule(this).read(...);</span>
-  <span class="br0">&#125;</span>
+  public Control cloneForSpatial&#40;Spatial spatial&#41;&#123;
+    final MyControl control = new MyControl&#40;...&#41;;
+    spatial.setControl&#40;control&#41;;
+    return control;
+  &#125;
 &nbsp;
   @Override
-  <span class="kw1">public</span> <span class="kw4">void</span> write<span class="br0">&#40;</span>JmeExporter ex<span class="br0">&#41;</span> <span class="kw1">throws</span> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Aioexception+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object> <span class="br0">&#123;</span>
-      <span class="kw1">super</span>.<span class="me1">write</span><span class="br0">&#40;</span>ex<span class="br0">&#41;</span>;
-      <span class="co1">// ex.getCapsule(this).write(...);</span>
-  <span class="br0">&#125;</span>
+  public void read&#40;JmeImporter im&#41; throws IOException &#123;
+      super.read&#40;im&#41;;
+      // im.getCapsule(this).read(...);
+  &#125;
 &nbsp;
-<span class="br0">&#125;</span></pre>
+  @Override
+  public void write&#40;JmeExporter ex&#41; throws IOException &#123;
+      super.write&#40;ex&#41;;
+      // ex.getCapsule(this).write(...);
+  &#125;
+&nbsp;
+&#125;</pre>
 </div>
 
-<h2><a name="best_practices" id="best_practices">Best Practices</a></h2>
-<div class="level2">
+<h2><a>Best Practices</a></h2>
+<div>
 
 <p>
 
@@ -233,46 +233,46 @@ Usage: Your custom subclass must implement the three methods <code>controlUpdate
 <p>
 Here an example from the monkeyzone code:
 </p>
-<pre class="code java"><span class="kw1">public</span> <span class="kw1">class</span> CharacterAnimControl <span class="kw1">implements</span> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Acontrol+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object> <span class="br0">&#123;</span>
+<pre>public class CharacterAnimControl implements Control &#123;
   ...
-  <span class="kw1">public</span> <span class="kw4">void</span> setSpatial<span class="br0">&#40;</span>Spatial spatial<span class="br0">&#41;</span> <span class="br0">&#123;</span>
+  public void setSpatial&#40;Spatial spatial&#41; &#123;
     ...
-    <span class="me1">animControl</span>      <span class="sy0">=</span> spatial.<span class="me1">getControl</span><span class="br0">&#40;</span>AnimControl.<span class="kw1">class</span><span class="br0">&#41;</span>;
-    characterControl <span class="sy0">=</span> spatial.<span class="me1">getControl</span><span class="br0">&#40;</span>CharacterControl.<span class="kw1">class</span><span class="br0">&#41;</span>;
+    animControl      = spatial.getControl&#40;AnimControl.class&#41;;
+    characterControl = spatial.getControl&#40;CharacterControl.class&#41;;
     ...
-  <span class="br0">&#125;</span>
-<span class="br0">&#125;</span></pre>
+  &#125;
+&#125;</pre>
 <p>
 <strong>Tip:</strong> You can create custom Control interfaces so a set of different Controls provide the same methods and can be accessed with the interface class type.
 </p>
-<pre class="code java"><span class="kw1">public</span> <span class="kw1">interface</span> ManualControl <span class="kw1">extends</span> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Acontrol+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object> <span class="br0">&#123;</span>
-    <span class="kw1">public</span> <span class="kw4">void</span> steerX<span class="br0">&#40;</span><span class="kw4">float</span> value<span class="br0">&#41;</span>;
-    <span class="kw1">public</span> <span class="kw4">void</span> steerY<span class="br0">&#40;</span><span class="kw4">float</span> value<span class="br0">&#41;</span>;
-    <span class="kw1">public</span> <span class="kw4">void</span> moveX<span class="br0">&#40;</span><span class="kw4">float</span> value<span class="br0">&#41;</span>;
-    <span class="kw1">public</span> <span class="kw4">void</span> moveY<span class="br0">&#40;</span><span class="kw4">float</span> value<span class="br0">&#41;</span>;
-    <span class="kw1">public</span> <span class="kw4">void</span> moveZ<span class="br0">&#40;</span><span class="kw4">float</span> value<span class="br0">&#41;</span>;
+<pre>public interface ManualControl extends Control &#123;
+    public void steerX&#40;float value&#41;;
+    public void steerY&#40;float value&#41;;
+    public void moveX&#40;float value&#41;;
+    public void moveY&#40;float value&#41;;
+    public void moveZ&#40;float value&#41;;
    ...
-<span class="br0">&#125;</span></pre>
+&#125;</pre>
 <p>
 Then you create custom sub-Controls and implement the methods accordingly to the context:
 </p>
-<pre class="code java"><span class="kw1">public</span> <span class="kw1">class</span> ManualVehicleControl   <span class="kw1">extends</span> ManualControl <span class="br0">&#123;</span>...<span class="br0">&#125;</span></pre>
+<pre>public class ManualVehicleControl   extends ManualControl &#123;...&#125;</pre>
 <p>
  and
 
 </p>
-<pre class="code java"><span class="kw1">public</span> <span class="kw1">class</span> ManualCharacterControl <span class="kw1">extends</span> ManualControl <span class="br0">&#123;</span>...<span class="br0">&#125;</span></pre>
+<pre>public class ManualCharacterControl extends ManualControl &#123;...&#125;</pre>
 <p>
 Then add the appropriate controls to spatials:
 </p>
-<pre class="code java">characterSpatial.<span class="me1">addControl</span><span class="br0">&#40;</span><span class="kw1">new</span> ManualCharacterControl<span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
+<pre>characterSpatial.addControl&#40;new ManualCharacterControl&#40;&#41;&#41;;
 ...
-<span class="me1">vehicleSpatial</span>.<span class="me1">addControl</span><span class="br0">&#40;</span><span class="kw1">new</span> ManualVehicleControl<span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
+vehicleSpatial.addControl&#40;new ManualVehicleControl&#40;&#41;&#41;;
 ...</pre>
 <p>
 <strong>Tip:</strong> Use the getControl() method on a Spatial, get a specific Control object, and activate its behaviour!
 </p>
-<pre class="code java">ManualControl c <span class="sy0">=</span> mySpatial.<span class="me1">getControl</span><span class="br0">&#40;</span>ManualControl.<span class="kw1">class</span><span class="br0">&#41;</span>;
-c.<span class="me1">steerX</span><span class="br0">&#40;</span>steerX<span class="br0">&#41;</span>;</pre>
+<pre>ManualControl c = mySpatial.getControl&#40;ManualControl.class&#41;;
+c.steerX&#40;steerX&#41;;</pre>
 </div>
 <p><em><a href="http://jmonkeyengine.org/wiki/doku.php/jme3:advanced:custom_controls?do=export_xhtmlbody">view online version</a></em></p>

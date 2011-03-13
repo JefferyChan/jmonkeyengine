@@ -1,13 +1,13 @@
 
-<h1><a name="getting_started_with_jme3_4_-_hello_event_loop" id="getting_started_with_jme3_4_-_hello_event_loop">Getting Started with JME3 (4) - Hello Event Loop</a></h1>
-<div class="level1">
+<h1><a>Getting Started with JME3 (4) - Hello Event Loop</a></h1>
+<div>
 
 <p>
 
 <br/>
 
-Previous: <a href="/com/jme3/gde/core/docs/jme3/beginner/hello_asset.html" class="wikilink1" title="jme3:beginner:hello_asset">Hello Assets</a>,
-Next: <a href="/com/jme3/gde/core/docs/jme3/beginner/hello_input_system.html" class="wikilink1" title="jme3:beginner:hello_input_system">Hello Input System</a>
+Previous: <a href="/com/jme3/gde/core/docs/jme3/beginner/hello_asset.html">Hello Assets</a>,
+Next: <a href="/com/jme3/gde/core/docs/jme3/beginner/hello_input_system.html">Hello Input System</a>
 <br/>
 
 <br/>
@@ -17,54 +17,54 @@ Now that you know how to load assets such as 3-D models, you want them to implem
 
 </div>
 
-<h2><a name="code_sample" id="code_sample">Code Sample</a></h2>
-<div class="level2">
-<pre class="code java"><span class="kw1">package</span> <span class="co2">jme3test.helloworld</span>;
+<h2><a>Code Sample</a></h2>
+<div>
+<pre>package jme3test.helloworld;
 &nbsp;
-<span class="kw1">import</span> <span class="co2">com.jme3.app.SimpleApplication</span>;
-<span class="kw1">import</span> <span class="co2">com.jme3.material.Material</span>;
-<span class="kw1">import</span> <span class="co2">com.jme3.math.ColorRGBA</span>;
-<span class="kw1">import</span> <span class="co2">com.jme3.math.Vector3f</span>;
-<span class="kw1">import</span> <span class="co2">com.jme3.scene.Geometry</span>;
-<span class="kw1">import</span> <span class="co2">com.jme3.scene.shape.Box</span>;
+import com.jme3.app.SimpleApplication;
+import com.jme3.material.Material;
+import com.jme3.math.ColorRGBA;
+import com.jme3.math.Vector3f;
+import com.jme3.scene.Geometry;
+import com.jme3.scene.shape.Box;
 &nbsp;
-<span class="co3">/** Sample 4 - how to trigger repeating actions from the main event loop.
+<span>/** Sample 4 - how to trigger repeating actions from the main event loop.
  * In this example, we make the player character rotate. */</span>
-<span class="kw1">public</span> <span class="kw1">class</span> HelloLoop <span class="kw1">extends</span> SimpleApplication <span class="br0">&#123;</span>
+public class HelloLoop extends SimpleApplication &#123;
 &nbsp;
-    <span class="kw1">public</span> <span class="kw1">static</span> <span class="kw4">void</span> main<span class="br0">&#40;</span><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Astring+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object><span class="br0">&#91;</span><span class="br0">&#93;</span> args<span class="br0">&#41;</span><span class="br0">&#123;</span>
-        HelloLoop app <span class="sy0">=</span> <span class="kw1">new</span> HelloLoop<span class="br0">&#40;</span><span class="br0">&#41;</span>;
-        app.<span class="me1">start</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
-    <span class="br0">&#125;</span>
+    public static void main&#40;String&#91;&#93; args&#41;&#123;
+        HelloLoop app = new HelloLoop&#40;&#41;;
+        app.start&#40;&#41;;
+    &#125;
 &nbsp;
-    <span class="kw1">protected</span> Geometry player;
+    protected Geometry player;
 &nbsp;
     @Override
-    <span class="kw1">public</span> <span class="kw4">void</span> simpleInitApp<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+    public void simpleInitApp&#40;&#41; &#123;
 &nbsp;
-        <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Abox+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object><span class="br0">&#40;</span>Vector3f.<span class="me1">ZERO</span>, <span class="nu0">1</span>, <span class="nu0">1</span>, <span class="nu0">1</span><span class="br0">&#41;</span>;
-        player <span class="sy0">=</span> <span class="kw1">new</span> Geometry<span class="br0">&#40;</span><span class="st0">&quot;blue cube&quot;</span>, b<span class="br0">&#41;</span>;
-        Material mat <span class="sy0">=</span> <span class="kw1">new</span> Material<span class="br0">&#40;</span>assetManager, <span class="st0">&quot;Common/MatDefs/Misc/Unshaded.j3md&quot;</span><span class="br0">&#41;</span>;
-        mat.<span class="me1">setColor</span><span class="br0">&#40;</span><span class="st0">&quot;Color&quot;</span>, ColorRGBA.<span class="me1">Blue</span><span class="br0">&#41;</span>;
-        player.<span class="me1">setMaterial</span><span class="br0">&#40;</span>mat<span class="br0">&#41;</span>;
-        rootNode.<span class="me1">attachChild</span><span class="br0">&#40;</span>player<span class="br0">&#41;</span>;
-    <span class="br0">&#125;</span>
+        Box&#40;Vector3f.ZERO, 1, 1, 1&#41;;
+        player = new Geometry&#40;&quot;blue cube&quot;, b&#41;;
+        Material mat = new Material&#40;assetManager, &quot;Common/MatDefs/Misc/Unshaded.j3md&quot;&#41;;
+        mat.setColor&#40;&quot;Color&quot;, ColorRGBA.Blue&#41;;
+        player.setMaterial&#40;mat&#41;;
+        rootNode.attachChild&#40;player&#41;;
+    &#125;
 &nbsp;
-    <span class="coMULTI">/* This is the main event loop */</span>
+    /* This is the main event loop */
     @Override
-    <span class="kw1">public</span> <span class="kw4">void</span> simpleUpdate<span class="br0">&#40;</span><span class="kw4">float</span> tpf<span class="br0">&#41;</span> <span class="br0">&#123;</span>
-        <span class="co1">// make the player rotate</span>
-        player.<span class="me1">rotate</span><span class="br0">&#40;</span>0, <span class="nu0">2</span><span class="sy0">*</span>tpf, 0<span class="br0">&#41;</span>; 
-    <span class="br0">&#125;</span>
-<span class="br0">&#125;</span></pre>
+    public void simpleUpdate&#40;float tpf&#41; &#123;
+        // make the player rotate
+        player.rotate&#40;0, 2*tpf, 0&#41;; 
+    &#125;
+&#125;</pre>
 <p>
 Build and run the file: You see a constantly rotating cube. 
 </p>
 
 </div>
 
-<h2><a name="understanding_the_code" id="understanding_the_code">Understanding the Code</a></h2>
-<div class="level2">
+<h2><a>Understanding the Code</a></h2>
+<div>
 
 <p>
 
@@ -77,16 +77,16 @@ Compared to our previous code samples you note that the player Geometry is now a
 Now have a closer look at the <code>simpleUpdate()</code> method, this is the main event loop. 
 </p>
 <ul>
-<li class="level1"><div class="li"> The <code>player.rotate(0, 2*tpf, 0);</code> line changes the rotation of the player object. </div>
+<li><div> The <code>player.rotate(0, 2*tpf, 0);</code> line changes the rotation of the player object. </div>
 </li>
-<li class="level1"><div class="li"> We use the <code>tpf</code> variable (“time per frame”) to time this action depending on the current frames per second rate. This means the cube rotates with the same speed on fast machines, and the game remains playable.</div>
+<li><div> We use the <code>tpf</code> variable (“time per frame”) to time this action depending on the current frames per second rate. This means the cube rotates with the same speed on fast machines, and the game remains playable.</div>
 </li>
 </ul>
 
 </div>
 
-<h2><a name="the_event_loop" id="the_event_loop">The Event Loop</a></h2>
-<div class="level2">
+<h2><a>The Event Loop</a></h2>
+<div>
 
 <p>
 
@@ -98,15 +98,15 @@ A rotating object is just a simple example. In the event loop, you can update sc
 
 </p>
 <ul>
-<li class="level1"><div class="li"> The event loop starts after the <code>simpleInitApp()</code> method has set up the scenegraph and state variables.</div>
+<li><div> The event loop starts after the <code>simpleInitApp()</code> method has set up the scenegraph and state variables.</div>
 </li>
-<li class="level1"><div class="li"> JME executes everything in the <code>simpleUpdate()</code> method repeatedly, as fast as possible.</div>
+<li><div> JME executes everything in the <code>simpleUpdate()</code> method repeatedly, as fast as possible.</div>
 <ol>
-<li class="level2"><div class="li"> Use the loop to poll the game state and initiate actions. </div>
+<li><div> Use the loop to poll the game state and initiate actions. </div>
 </li>
-<li class="level2"><div class="li"> Use the loop to trigger reactions and update the game state.</div>
+<li><div> Use the loop to trigger reactions and update the game state.</div>
 </li>
-<li class="level2"><div class="li"> Use it wisely, because having too many calls in the loop also slows down the game. </div>
+<li><div> Use it wisely, because having too many calls in the loop also slows down the game. </div>
 </li>
 </ol>
 </li>
@@ -114,33 +114,33 @@ A rotating object is just a simple example. In the event loop, you can update sc
 
 </div>
 
-<h2><a name="exercises" id="exercises">Exercises</a></h2>
-<div class="level2">
+<h2><a>Exercises</a></h2>
+<div>
 
 <p>
 
 Here are some fun things to try:
 </p>
 <ol>
-<li class="level1"><div class="li"> What happens if you give the rotate() method negative numbers?</div>
+<li><div> What happens if you give the rotate() method negative numbers?</div>
 </li>
-<li class="level1"><div class="li"> Can you create two models next to each other, and make one rotate twice as fast as the other? (use the <code>tpf</code>)</div>
+<li><div> Can you create two models next to each other, and make one rotate twice as fast as the other? (use the <code>tpf</code>)</div>
 </li>
-<li class="level1"><div class="li"> Can you make a cube that pulsates? (grows and shrinks)</div>
+<li><div> Can you make a cube that pulsates? (grows and shrinks)</div>
 </li>
-<li class="level1"><div class="li"> Can you make a rolling cube? (spin around the x axis, and translate along the z axis)</div>
+<li><div> Can you make a rolling cube? (spin around the x axis, and translate along the z axis)</div>
 </li>
 </ol>
 
 <p>
 
-Look back at the <a href="/com/jme3/gde/core/docs/jme3/beginner/hello_node.html" class="wikilink1" title="jme3:beginner:hello_node">Hello Node</a> tutorial if you do not remember the transformation methods for scaling, translating, and rotating.
+Look back at the <a href="/com/jme3/gde/core/docs/jme3/beginner/hello_node.html">Hello Node</a> tutorial if you do not remember the transformation methods for scaling, translating, and rotating.
 </p>
 
 </div>
 
-<h2><a name="conclusion" id="conclusion">Conclusion</a></h2>
-<div class="level2">
+<h2><a>Conclusion</a></h2>
+<div>
 
 <p>
 
@@ -148,12 +148,12 @@ Now you are listening to the update loop, “the heart beat” of the game, and 
 </p>
 
 <p>
-The next thing the game needs is some <em>inter</em>action! Continue learning how to <a href="/com/jme3/gde/core/docs/jme3/beginner/hello_input_system.html" class="wikilink1" title="jme3:beginner:hello_input_system">respond to user input</a>.
+The next thing the game needs is some <em>inter</em>action! Continue learning how to <a href="/com/jme3/gde/core/docs/jme3/beginner/hello_input_system.html">respond to user input</a>.
 </p>
 <hr />
 
 <p>
-See also: Advanced jME3 developers additionally use <a href="/com/jme3/gde/core/docs/jme3/advanced/application_states.html" class="wikilink1" title="jme3:advanced:application_states">Application States</a> and <a href="/com/jme3/gde/core/docs/jme3/advanced/custom_controls.html" class="wikilink1" title="jme3:advanced:custom_controls">Custom Controls</a> to implement more complex mechanics in their game loops. You will come across these topics later when you proceed to advanced documentation.
+See also: Advanced jME3 developers additionally use <a href="/com/jme3/gde/core/docs/jme3/advanced/application_states.html">Application States</a> and <a href="/com/jme3/gde/core/docs/jme3/advanced/custom_controls.html">Custom Controls</a> to implement more complex mechanics in their game loops. You will come across these topics later when you proceed to advanced documentation.
 </p>
 
 </div>

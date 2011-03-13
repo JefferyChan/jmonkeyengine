@@ -1,6 +1,6 @@
 
-<h1><a name="terramonkey_-_jme3_s_terrain_system" id="terramonkey_-_jme3_s_terrain_system">TerraMonkey - jME3&#039;s Terrain System</a></h1>
-<div class="level1">
+<h1><a>TerraMonkey - jME3&#039;s Terrain System</a></h1>
+<div>
 
 <p>
 
@@ -9,58 +9,58 @@ The goal of TerraMonkey is to provide a base implementation that will be usable 
 
 </div>
 
-<h2><a name="overview" id="overview">Overview</a></h2>
-<div class="level2">
+<h2><a>Overview</a></h2>
+<div>
 
 <p>
 
 TerraMonkey is a GeoMipMapping quad tree of terrain tiles that supports real time editing and texture splatting. That&#039;s a mouth full! Lets look at each part:
 </p>
 <ul>
-<li class="level1"><div class="li"> <strong>GeoMipMapping:</strong> a method of changing the level of detail (LOD) of geometry tiles based on how far away they are from the camera. Between the edges of two tiles, it will seam those edges together so you don&#039;t get gaps or holes. For an in-depth read on how it works, here is a pdf <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.flipcode.com/archives/article_geomipmaps.pdf"><param name="text" value="<html><u>http://www.flipcode.com/archives/article_geomipmaps.pdf</u></html>"><param name="textColor" value="blue"></object>.</div>
+<li><div> <strong>GeoMipMapping:</strong> a method of changing the level of detail (LOD) of geometry tiles based on how far away they are from the camera. Between the edges of two tiles, it will seam those edges together so you don&#039;t get gaps or holes. For an in-depth read on how it works, here is a pdf <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.flipcode.com/archives/article_geomipmaps.pdf"><param name="text" value="<html><u>http://www.flipcode.com/archives/article_geomipmaps.pdf</u></html>"><param name="textColor" value="blue"></object>.</div>
 </li>
-<li class="level1"><div class="li"> <strong>Quad Tree:</strong> The entire terrain structure is made up of TerrainPatches (these hold the actual meshes) as leaves in a quad tree (TerrainQuad). TerrainQuads are subdivided by 4 until they reach minimum size, then a TerrainPatch is created, and that is where the actual geometry mesh lives. This allows for fast culling of the terrain that you can&#039;t see.</div>
+<li><div> <strong>Quad Tree:</strong> The entire terrain structure is made up of TerrainPatches (these hold the actual meshes) as leaves in a quad tree (TerrainQuad). TerrainQuads are subdivided by 4 until they reach minimum size, then a TerrainPatch is created, and that is where the actual geometry mesh lives. This allows for fast culling of the terrain that you can&#039;t see.</div>
 </li>
-<li class="level1"><div class="li"> <strong>Splatting:</strong> The ability to paint multiple textures onto your terrain. What differs here from JME2 is that this is all done in a shader, no more render passes. So it performs much faster.</div>
+<li><div> <strong>Splatting:</strong> The ability to paint multiple textures onto your terrain. What differs here from JME2 is that this is all done in a shader, no more render passes. So it performs much faster.</div>
 </li>
-<li class="level1"><div class="li"> <strong>Real-time editing:</strong> TerraMonkey will be editable in JMonkeyPlatform, and you will be able to do it in real time: raising and lowering terrain.</div>
+<li><div> <strong>Real-time editing:</strong> TerraMonkey will be editable in JMonkeyPlatform, and you will be able to do it in real time: raising and lowering terrain.</div>
 </li>
 </ul>
 
 </div>
 
-<h2><a name="current_features" id="current_features">Current Features:</a></h2>
-<div class="level2">
+<h2><a>Current Features:</a></h2>
+<div>
 <ul>
-<li class="level1"><div class="li"> Support for up to 3 splat textures.</div>
+<li><div> Support for up to 3 splat textures.</div>
 </li>
-<li class="level1"><div class="li"> GeoMipMapping</div>
+<li><div> GeoMipMapping</div>
 </li>
-<li class="level1"><div class="li"> can be supplied a heightmap</div>
+<li><div> can be supplied a heightmap</div>
 </li>
 </ul>
 
 </div>
 
-<h2><a name="planned_features" id="planned_features">Planned Features:</a></h2>
-<div class="level2">
+<h2><a>Planned Features:</a></h2>
+<div>
 <ul>
-<li class="level1"><div class="li"> jMonkeyPlatform terrain editor</div>
+<li><div> jMonkeyPlatform terrain editor</div>
 </li>
-<li class="level1"><div class="li"> Support for up to 16 splat textures.</div>
+<li><div> Support for up to 16 splat textures.</div>
 </li>
-<li class="level1"><div class="li"> Hydraulic erosion and procedural texture generation</div>
+<li><div> Hydraulic erosion and procedural texture generation</div>
 </li>
-<li class="level1"><div class="li"> Streaming terrain (ie. “infinite” terrain)</div>
+<li><div> Streaming terrain (ie. “infinite” terrain)</div>
 </li>
-<li class="level1"><div class="li"> Holes: caves, cliffs</div>
+<li><div> Holes: caves, cliffs</div>
 </li>
 </ul>
 
 </div>
 
-<h2><a name="geo_mip_mapping" id="geo_mip_mapping">Geo Mip Mapping</a></h2>
-<div class="level2">
+<h2><a>Geo Mip Mapping</a></h2>
+<div>
 
 <p>
 You have seen GeoMipMapping implemented in games before. This is where the farther away terrain has fewer polygons, and as you move closer, more polygons fill in. The whole terrain is divided into a grid of patches, and each one has its own LOD. The GeoMipMapping algorithm will look at each patch, and its neighbours, to determine how to render the geometry. It will seam the edges between two patches with different LOD.
@@ -77,8 +77,8 @@ If you are eager, you can read up more detail how GeoMipMapping works here: <obj
 
 </div>
 
-<h2><a name="terrain_quad_tree" id="terrain_quad_tree">Terrain Quad Tree</a></h2>
-<div class="level2">
+<h2><a>Terrain Quad Tree</a></h2>
+<div>
 
 <p>
 TerraMonkey is a quad tree. Each node is a TerrainQuad, and each leaf is a TerrainPatch. A TerrainQuad has either 4 child TerrainQuads, or 4 child TerrainPatches. The TerrainPatch holds the actual mesh geometry. This structure is almost exactly the same as JME2&#039;s TerrainPage system. Except now each leaf has a reference to its neighbours, so it doesn&#039;t ever have to traverse the tree to get them.
@@ -86,8 +86,8 @@ TerraMonkey is a quad tree. Each node is a TerrainQuad, and each leaf is a Terra
 
 </div>
 
-<h2><a name="texture_splatting" id="texture_splatting">Texture Splatting</a></h2>
-<div class="level2">
+<h2><a>Texture Splatting</a></h2>
+<div>
 
 <p>
 
@@ -103,70 +103,70 @@ Thoughts, ideas, and recommendations are appreciated!
 
 </div>
 
-<h2><a name="code_sample" id="code_sample">Code Sample</a></h2>
-<div class="level2">
+<h2><a>Code Sample</a></h2>
+<div>
 
 <p>
 First, we load our textures and the heightmap texture for the terrain
 </p>
-<pre class="code java"><span class="co1">// Create material from Terrain Material Definition</span>
-matRock <span class="sy0">=</span> <span class="kw1">new</span> Material<span class="br0">&#40;</span>assetManager, <span class="st0">&quot;Common/MatDefs/Terrain/Terrain.j3md&quot;</span><span class="br0">&#41;</span>;
-<span class="co1">// Load alpha map (for splat textures)</span>
-matRock.<span class="me1">setTexture</span><span class="br0">&#40;</span><span class="st0">&quot;m_Alpha&quot;</span>, assetManager.<span class="me1">loadTexture</span><span class="br0">&#40;</span><span class="st0">&quot;Textures/Terrain/splat/alphamap.png&quot;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
-<span class="co1">// load heightmap image (for the terrain heightmap)</span>
-Texture heightMapImage <span class="sy0">=</span> assetManager.<span class="me1">loadTexture</span><span class="br0">&#40;</span><span class="st0">&quot;Textures/Terrain/splat/mountains512.png&quot;</span><span class="br0">&#41;</span>;
+<pre>// Create material from Terrain Material Definition
+matRock = new Material&#40;assetManager, &quot;Common/MatDefs/Terrain/Terrain.j3md&quot;&#41;;
+// Load alpha map (for splat textures)
+matRock.setTexture&#40;&quot;m_Alpha&quot;, assetManager.loadTexture&#40;&quot;Textures/Terrain/splat/alphamap.png&quot;&#41;&#41;;
+// load heightmap image (for the terrain heightmap)
+Texture heightMapImage = assetManager.loadTexture&#40;&quot;Textures/Terrain/splat/mountains512.png&quot;&#41;;
 &nbsp;
-<span class="co1">// load grass texture</span>
-Texture grass <span class="sy0">=</span> assetManager.<span class="me1">loadTexture</span><span class="br0">&#40;</span><span class="st0">&quot;Textures/Terrain/splat/grass.jpg&quot;</span><span class="br0">&#41;</span>;
-grass.<span class="me1">setWrap</span><span class="br0">&#40;</span>WrapMode.<span class="me1">Repeat</span><span class="br0">&#41;</span>;
-matRock.<span class="me1">setTexture</span><span class="br0">&#40;</span><span class="st0">&quot;m_Tex1&quot;</span>, grass<span class="br0">&#41;</span>;
-matRock.<span class="me1">setFloat</span><span class="br0">&#40;</span><span class="st0">&quot;m_Tex1Scale&quot;</span>, 64f<span class="br0">&#41;</span>;
+// load grass texture
+Texture grass = assetManager.loadTexture&#40;&quot;Textures/Terrain/splat/grass.jpg&quot;&#41;;
+grass.setWrap&#40;WrapMode.Repeat&#41;;
+matRock.setTexture&#40;&quot;m_Tex1&quot;, grass&#41;;
+matRock.setFloat&#40;&quot;m_Tex1Scale&quot;, 64f&#41;;
 &nbsp;
-<span class="co1">// load dirt texture</span>
-Texture dirt <span class="sy0">=</span> assetManager.<span class="me1">loadTexture</span><span class="br0">&#40;</span><span class="st0">&quot;Textures/Terrain/splat/dirt.jpg&quot;</span><span class="br0">&#41;</span>;
-dirt.<span class="me1">setWrap</span><span class="br0">&#40;</span>WrapMode.<span class="me1">Repeat</span><span class="br0">&#41;</span>;
-matRock.<span class="me1">setTexture</span><span class="br0">&#40;</span><span class="st0">&quot;m_Tex2&quot;</span>, dirt<span class="br0">&#41;</span>;
-matRock.<span class="me1">setFloat</span><span class="br0">&#40;</span><span class="st0">&quot;m_Tex2Scale&quot;</span>, 32f<span class="br0">&#41;</span>;
+// load dirt texture
+Texture dirt = assetManager.loadTexture&#40;&quot;Textures/Terrain/splat/dirt.jpg&quot;&#41;;
+dirt.setWrap&#40;WrapMode.Repeat&#41;;
+matRock.setTexture&#40;&quot;m_Tex2&quot;, dirt&#41;;
+matRock.setFloat&#40;&quot;m_Tex2Scale&quot;, 32f&#41;;
 &nbsp;
-<span class="co1">// load rock texture</span>
-Texture rock <span class="sy0">=</span> assetManager.<span class="me1">loadTexture</span><span class="br0">&#40;</span><span class="st0">&quot;Textures/Terrain/splat/road.jpg&quot;</span><span class="br0">&#41;</span>;
-rock.<span class="me1">setWrap</span><span class="br0">&#40;</span>WrapMode.<span class="me1">Repeat</span><span class="br0">&#41;</span>;
-matRock.<span class="me1">setTexture</span><span class="br0">&#40;</span><span class="st0">&quot;m_Tex3&quot;</span>, rock<span class="br0">&#41;</span>;
-matRock.<span class="me1">setFloat</span><span class="br0">&#40;</span><span class="st0">&quot;m_Tex3Scale&quot;</span>, 128f<span class="br0">&#41;</span>;</pre>
+// load rock texture
+Texture rock = assetManager.loadTexture&#40;&quot;Textures/Terrain/splat/road.jpg&quot;&#41;;
+rock.setWrap&#40;WrapMode.Repeat&#41;;
+matRock.setTexture&#40;&quot;m_Tex3&quot;, rock&#41;;
+matRock.setFloat&#40;&quot;m_Tex3Scale&quot;, 128f&#41;;</pre>
 <p>
 We create the heightmap from the <code>heightMapImage</code>.
 </p>
-<pre class="code java">AbstractHeightMap heightmap <span class="sy0">=</span> <span class="kw2">null</span>;
-heightmap <span class="sy0">=</span> <span class="kw1">new</span> ImageBasedHeightMap<span class="br0">&#40;</span>
-    ImageToAwt.<span class="me1">convert</span><span class="br0">&#40;</span>heightMapImage.<span class="me1">getImage</span><span class="br0">&#40;</span><span class="br0">&#41;</span>, <span class="kw2">false</span>, <span class="kw2">true</span>, 0<span class="br0">&#41;</span>, 1f<span class="br0">&#41;</span>;
-heightmap.<span class="me1">load</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;</pre>
+<pre>AbstractHeightMap heightmap = null;
+heightmap = new ImageBasedHeightMap&#40;
+    ImageToAwt.convert&#40;heightMapImage.getImage&#40;&#41;, false, true, 0&#41;, 1f&#41;;
+heightmap.load&#40;&#41;;</pre>
 <p>
 
 Next we create the actual terrain. 
 </p>
 <ul>
-<li class="level1"><div class="li"> The terrain tiles are 65&times;65.</div>
+<li><div> The terrain tiles are 65&times;65.</div>
 </li>
-<li class="level1"><div class="li"> The total size of the terrain is 513&times;513, but it can easily be up to 1025&times;1025.</div>
+<li><div> The total size of the terrain is 513&times;513, but it can easily be up to 1025&times;1025.</div>
 </li>
-<li class="level1"><div class="li"> It uses the heightmap to generate the height values.</div>
+<li><div> It uses the heightmap to generate the height values.</div>
 </li>
 </ul>
-<pre class="code java">terrain <span class="sy0">=</span> <span class="kw1">new</span> TerrainQuad<span class="br0">&#40;</span><span class="st0">&quot;terrain&quot;</span>, <span class="nu0">65</span>, <span class="nu0">513</span>, heightmap.<span class="me1">getHeightMap</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
-terrain.<span class="me1">setMaterial</span><span class="br0">&#40;</span>matRock<span class="br0">&#41;</span>;
-terrain.<span class="me1">setModelBound</span><span class="br0">&#40;</span><span class="kw1">new</span> BoundingBox<span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
-terrain.<span class="me1">updateModelBound</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
-terrain.<span class="me1">setLocalScale</span><span class="br0">&#40;</span>2f, 1f, 2f<span class="br0">&#41;</span>; <span class="co1">// scale to make it less steep</span>
+<pre>terrain = new TerrainQuad&#40;&quot;terrain&quot;, 65, 513, heightmap.getHeightMap&#40;&#41;&#41;;
+terrain.setMaterial&#40;matRock&#41;;
+terrain.setModelBound&#40;new BoundingBox&#40;&#41;&#41;;
+terrain.updateModelBound&#40;&#41;;
+terrain.setLocalScale&#40;2f, 1f, 2f&#41;; // scale to make it less steep
 &nbsp;
-List<span class="sy0">&lt;</span>Camera<span class="sy0">&gt;</span> cameras <span class="sy0">=</span> <span class="kw1">new</span> ArrayList<span class="sy0">&lt;</span>Camera<span class="sy0">&gt;</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
-cameras.<span class="me1">add</span><span class="br0">&#40;</span>getCamera<span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
-TerrainLodControl control <span class="sy0">=</span> <span class="kw1">new</span> TerrainLodControl<span class="br0">&#40;</span>terrain, cameras<span class="br0">&#41;</span>;
-terrain.<span class="me1">addControl</span><span class="br0">&#40;</span>control<span class="br0">&#41;</span>;
+List&lt;Camera&gt; cameras = new ArrayList&lt;Camera&gt;&#40;&#41;;
+cameras.add&#40;getCamera&#40;&#41;&#41;;
+TerrainLodControl control = new TerrainLodControl&#40;terrain, cameras&#41;;
+terrain.addControl&#40;control&#41;;
 &nbsp;
-rootNode.<span class="me1">attachChild</span><span class="br0">&#40;</span>terrain<span class="br0">&#41;</span>;</pre>
+rootNode.attachChild&#40;terrain&#41;;</pre>
 <p>
 PS: As an alternative to an image-based height map, you can also generate a Hill hightmap:
 </p>
-<pre class="code java">heightmap <span class="sy0">=</span> <span class="kw1">new</span> HillHeightMap<span class="br0">&#40;</span><span class="nu0">1025</span>, <span class="nu0">1000</span>, <span class="nu0">50</span>, <span class="nu0">100</span>, <span class="br0">&#40;</span><span class="kw4">byte</span><span class="br0">&#41;</span> <span class="nu0">3</span><span class="br0">&#41;</span>;</pre>
+<pre>heightmap = new HillHeightMap&#40;1025, 1000, 50, 100, &#40;byte&#41; 3&#41;;</pre>
 </div>
 <p><em><a href="http://jmonkeyengine.org/wiki/doku.php/jme3:advanced:terrain?do=export_xhtmlbody">view online version</a></em></p>

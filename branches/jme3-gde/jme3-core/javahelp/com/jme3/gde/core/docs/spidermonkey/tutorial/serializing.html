@@ -1,6 +1,6 @@
 
-<h1><a name="serialization_system" id="serialization_system">Serialization system</a></h1>
-<div class="level1">
+<h1><a>Serialization system</a></h1>
+<div>
 
 <p>
 In this lesson you&#039;ll learn about a pretty advanced system of SpiderMonkey. Why so early, you may ask; it&#039;s because it is an important aspect of SpiderMonkey, that you need to understand to effectively network your games.
@@ -13,46 +13,46 @@ Let&#039;s start with a general explanation of how the serialization system work
 
 </div>
 
-<h3><a name="writing_your_own_serializer" id="writing_your_own_serializer">Writing your own serializer</a></h3>
-<div class="level3">
+<h3><a>Writing your own serializer</a></h3>
+<div>
 
 <p>
 There is going to be a situation where you need to serialize something yourself, whether you like it or not. We&#039;re going through how you&#039;re going to do, by writing a entirely new Serializer - please note that this Serializer is not necessary in SpiderMonkey, since SpiderMonkey can serialize Serializable, and InetAddress4 implements Serializable (though it does save a LOT of bytes by doing it yourself). The field that makes an InetAddress4 an InetAddress4 is the IP address, so that&#039;s what we&#039;re going to serialize. Let&#039;s start by going through the basics of extending the Serializer class:
 
 </p>
-<pre class="code java"><span class="kw1">public</span> <span class="kw1">class</span> Inet4AddressSerializer <span class="kw1">extends</span> Serializer <span class="br0">&#123;</span>
-   <span class="kw1">public</span> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Ainetaddress+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object>
-      <span class="kw1">return</span> <span class="kw2">null</span>;
-   <span class="br0">&#125;</span>
+<pre>public class Inet4AddressSerializer extends Serializer &#123;
+   public IOException
+      return null;
+   &#125;
 &nbsp;
-   <span class="kw1">public</span> <span class="kw4">void</span> writeObject<span class="br0">&#40;</span>ByteBuffer buffer, <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Aobject+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object> <span class="br0">&#123;</span>
-      <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Ainetaddress+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object><span class="br0">&#41;</span>object;
-   <span class="br0">&#125;</span>
-<span class="br0">&#125;</span></pre>
+   public void writeObject&#40;ByteBuffer buffer, IOException &#123;
+      InetAddress&#41;object;
+   &#125;
+&#125;</pre>
 <p>
 
 As you can see, you have to extend Serializer and implement the methods T readObject(ByteBuffer, Class) and writeObject(ByteBuffer, Object). These are the methods that actually do the job. Obviously, writeObject is used when sending, and readObject is used when reading. The next part is just Java coding - you just kind of have to know the <acronym title="Application Programming Interface">API</acronym> of those objects you&#039;re serializing to convert into bytes. This one&#039;s really simple though ;)
 </p>
-<pre class="code java"><span class="kw1">public</span> <span class="kw1">class</span> Inet4AddressSerializer <span class="kw1">extends</span> Serializer <span class="br0">&#123;</span>
+<pre>public class Inet4AddressSerializer extends Serializer &#123;
    @Override
-   <span class="kw1">public</span> <span class="sy0">&lt;</span>T<span class="sy0">&gt;</span> T readObject<span class="br0">&#40;</span>ByteBuffer data, Class<span class="sy0">&lt;</span>T<span class="sy0">&gt;</span> c<span class="br0">&#41;</span> <span class="kw1">throws</span> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Aioexception+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object> <span class="br0">&#123;</span>
-       <span class="kw4">byte</span><span class="br0">&#91;</span><span class="br0">&#93;</span> address <span class="sy0">=</span> <span class="kw1">new</span> <span class="kw4">byte</span><span class="br0">&#91;</span><span class="nu0">4</span><span class="br0">&#93;</span>;
-       data.<span class="me1">get</span><span class="br0">&#40;</span>address<span class="br0">&#41;</span>;
-       <span class="kw1">return</span> <span class="br0">&#40;</span>T<span class="br0">&#41;</span>Inet4Address.<span class="me1">getByAddress</span><span class="br0">&#40;</span>address<span class="br0">&#41;</span>;
-   <span class="br0">&#125;</span>
+   public &lt;T&gt; T readObject&#40;ByteBuffer data, Class&lt;T&gt; c&#41; throws IOException &#123;
+       byte&#91;&#93; address = new byte&#91;4&#93;;
+       data.get&#40;address&#41;;
+       return &#40;T&#41;Inet4Address.getByAddress&#40;address&#41;;
+   &#125;
 &nbsp;
    @Override
-   <span class="kw1">public</span> <span class="kw4">void</span> writeObject<span class="br0">&#40;</span>ByteBuffer buffer, <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Aobject+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object> <span class="br0">&#123;</span>
-       Inet4Address address <span class="sy0">=</span> <span class="br0">&#40;</span>Inet4Address<span class="br0">&#41;</span>object;
-       buffer.<span class="me1">put</span><span class="br0">&#40;</span>address.<span class="me1">getAddress</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
-   <span class="br0">&#125;</span>
-<span class="br0">&#125;</span></pre>
+   public void writeObject&#40;ByteBuffer buffer, IOException &#123;
+       Inet4Address address = &#40;Inet4Address&#41;object;
+       buffer.put&#40;address.getAddress&#40;&#41;&#41;;
+   &#125;
+&#125;</pre>
 <p>
 
 So now you&#039;ve got this serializer, and you don&#039;t know what to do with it. Well, you need to register it to a class, and what other class would you want to register it to, than Inet4Address?
 
 </p>
-<pre class="code">
+<pre>
 Serializer.registerClass(Inet4Address.class, new Inet4AddressSerializer());
 </pre>
 
@@ -60,18 +60,18 @@ Serializer.registerClass(Inet4Address.class, new Inet4AddressSerializer());
 
 And now you can use the Inet4Address anywhere in a Message! Now we&#039;ll test this Serializer, and see if we can get the IP on the other side:
 </p>
-<pre class="code java"><span class="kw1">public</span> <span class="kw1">class</span> AddressMessage <span class="kw1">extends</span> Message <span class="br0">&#123;</span>
-  <span class="kw1">public</span> Inet4Address addr;
-  <span class="kw1">public</span> AddressMessage<span class="br0">&#40;</span>Inet4Address addr<span class="br0">&#41;</span> <span class="br0">&#123;</span> <span class="kw1">this</span>.<span class="me1">addr</span> <span class="sy0">=</span> addr; <span class="br0">&#125;</span>
-<span class="br0">&#125;</span>
+<pre>public class AddressMessage extends Message &#123;
+  public Inet4Address addr;
+  public AddressMessage&#40;Inet4Address addr&#41; &#123; this.addr = addr; &#125;
+&#125;
 ...
-<span class="me1">client</span>.<span class="me1">send</span><span class="br0">&#40;</span><span class="kw1">new</span> AddressMessage<span class="br0">&#40;</span>Inet4Address.<span class="me1">getByName</span><span class="br0">&#40;</span><span class="st0">&quot;google.com&quot;</span><span class="br0">&#41;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;</pre>
+client.send&#40;new AddressMessage&#40;Inet4Address.getByName&#40;&quot;google.com&quot;&#41;&#41;&#41;;</pre>
 <p>
 
 Results in a message being received, which prints out as:
 
 </p>
-<pre class="code">
+<pre>
 /66.102.13.106
 </pre>
 

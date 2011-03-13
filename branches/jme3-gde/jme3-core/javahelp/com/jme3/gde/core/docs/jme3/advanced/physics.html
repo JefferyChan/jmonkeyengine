@@ -1,6 +1,6 @@
 
-<h1><a name="physicsgravity_collisions_forces" id="physicsgravity_collisions_forces">Physics: Gravity, Collisions, Forces</a></h1>
-<div class="level1">
+<h1><a>Physics: Gravity, Collisions, Forces</a></h1>
+<div>
 
 <p>
 The jMonkeyEngine3 has built-in support for <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://jbullet.advel.cz"><param name="text" value="<html><u>jBullet physics</u></html>"><param name="textColor" value="blue"></object> via the <code>com.jme3.bullet</code> package.
@@ -10,8 +10,8 @@ Game Physics are used in applications that simulate mass/gravity, collisions, an
 
 </div>
 
-<h2><a name="technical_overview" id="technical_overview">Technical Overview</a></h2>
-<div class="level2">
+<h2><a>Technical Overview</a></h2>
+<div>
 
 <p>
 
@@ -26,13 +26,13 @@ A bullet physics space can be created with a BulletAppState. The updating and sy
 A “normal” update loop with physics looks like this:
 </p>
 <ol>
-<li class="level1"><div class="li"> collision callbacks (BulletAppState.update())</div>
+<li><div> collision callbacks (BulletAppState.update())</div>
 </li>
-<li class="level1"><div class="li"> user update (simpleUpdate / update)</div>
+<li><div> user update (simpleUpdate / update)</div>
 </li>
-<li class="level1"><div class="li"> physics to scenegraph syncing/applying (updateLogicalState())</div>
+<li><div> physics to scenegraph syncing/applying (updateLogicalState())</div>
 </li>
-<li class="level1"><div class="li"> stepping physics (before / in parallel to Application.render())</div>
+<li><div> stepping physics (before / in parallel to Application.render())</div>
 </li>
 </ol>
 
@@ -43,8 +43,8 @@ When you use physics, 1 unit (1.0f) equals 1 meter, weight is expressed in kilog
 
 </div>
 
-<h2><a name="sample_code" id="sample_code">Sample Code</a></h2>
-<div class="level2">
+<h2><a>Sample Code</a></h2>
+<div>
 
 <p>
 
@@ -52,20 +52,20 @@ Full code samples are here:
 
 </p>
 <ul>
-<li class="level1"><div class="li"> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://code.google.com/p/jmonkeyengine/source/browse/branches/jme3/src/test/jme3test/bullet/TestBrickWall.java"><param name="text" value="<html><u>TestBrickWall.java</u></html>"><param name="textColor" value="blue"></object></div>
+<li><div> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://code.google.com/p/jmonkeyengine/source/browse/branches/jme3/src/test/jme3test/bullet/TestBrickWall.java"><param name="text" value="<html><u>TestBrickWall.java</u></html>"><param name="textColor" value="blue"></object></div>
 </li>
-<li class="level1"><div class="li"> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://code.google.com/p/jmonkeyengine/source/browse/branches/jme3/src/test/jme3test/bullet/TestQ3.java"><param name="text" value="<html><u>TestQ3.java</u></html>"><param name="textColor" value="blue"></object></div>
+<li><div> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://code.google.com/p/jmonkeyengine/source/browse/branches/jme3/src/test/jme3test/bullet/TestQ3.java"><param name="text" value="<html><u>TestQ3.java</u></html>"><param name="textColor" value="blue"></object></div>
 </li>
-<li class="level1"><div class="li"> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://code.google.com/p/jmonkeyengine/source/browse/branches/jme3/src/test/jme3test/bullet/TestSimplePhysics.java"><param name="text" value="<html><u>TestSimplePhysics.java</u></html>"><param name="textColor" value="blue"></object></div>
+<li><div> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://code.google.com/p/jmonkeyengine/source/browse/branches/jme3/src/test/jme3test/bullet/TestSimplePhysics.java"><param name="text" value="<html><u>TestSimplePhysics.java</u></html>"><param name="textColor" value="blue"></object></div>
 </li>
-<li class="level1"><div class="li"> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://code.google.com/p/jmonkeyengine/source/browse/branches/jme3/src/test/jme3test/bullet/TestWalkingChar.java"><param name="text" value="<html><u>TestWalkingChar.java</u></html>"><param name="textColor" value="blue"></object></div>
+<li><div> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://code.google.com/p/jmonkeyengine/source/browse/branches/jme3/src/test/jme3test/bullet/TestWalkingChar.java"><param name="text" value="<html><u>TestWalkingChar.java</u></html>"><param name="textColor" value="blue"></object></div>
 </li>
 </ul>
 
 </div>
 
-<h2><a name="physics_application" id="physics_application">Physics Application</a></h2>
-<div class="level2">
+<h2><a>Physics Application</a></h2>
+<div>
 
 <p>
 
@@ -77,13 +77,13 @@ Do the following once per application to gain access to the <code>physicsSpace</
 
 </p>
 <ol>
-<li class="level1"><div class="li"> Make you application extend <code>com.jme3.app.SimpleApplication</code>.</div>
+<li><div> Make you application extend <code>com.jme3.app.SimpleApplication</code>.</div>
 </li>
-<li class="level1"><div class="li"> Create a BulletAppState field: <pre class="code java"><span class="kw1">private</span> BulletAppState bulletAppState;</pre></div>
+<li><div> Create a BulletAppState field: <pre>private BulletAppState bulletAppState;</pre></div>
 </li>
-<li class="level1"><div class="li"> Initialize your bulletAppState and attach it to the state manager: <pre class="code java"><span class="kw1">public</span> <span class="kw4">void</span> simpleInitApp<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-    bulletAppState <span class="sy0">=</span> <span class="kw1">new</span> BulletAppState<span class="br0">&#40;</span><span class="br0">&#41;</span>;
-    stateManager.<span class="me1">attach</span><span class="br0">&#40;</span>bulletAppState<span class="br0">&#41;</span>;
+<li><div> Initialize your bulletAppState and attach it to the state manager: <pre>public void simpleInitApp&#40;&#41; &#123;
+    bulletAppState = new BulletAppState&#40;&#41;;
+    stateManager.attach&#40;bulletAppState&#41;;
     ...</pre></div>
 </li>
 </ol>
@@ -93,34 +93,34 @@ Do the following once per application to gain access to the <code>physicsSpace</
 You can also access the BulletAppState via the state manager:
 
 </p>
-<pre class="code java">stateManager.<span class="me1">getState</span><span class="br0">&#40;</span>BulletAppState.<span class="kw1">class</span><span class="br0">&#41;</span></pre>
+<pre>stateManager.getState&#40;BulletAppState.class&#41;</pre>
 <p>
 For each Spatial that you want to be physical:
 
 </p>
 <ol>
-<li class="level1"><div class="li"> Create a CollisionShape.</div>
+<li><div> Create a CollisionShape.</div>
 </li>
-<li class="level1"><div class="li"> Create a PhysicsControl by supplying the CollisionShape and mass.</div>
+<li><div> Create a PhysicsControl by supplying the CollisionShape and mass.</div>
 <ul>
-<li class="level2"><div class="li"> E.g. <code>com.jme3.bullet.control.RigidBodyControl</code></div>
+<li><div> E.g. <code>com.jme3.bullet.control.RigidBodyControl</code></div>
 </li>
 </ul>
 </li>
-<li class="level1"><div class="li"> Add the PhysicsControl to the Spatial.</div>
+<li><div> Add the PhysicsControl to the Spatial.</div>
 </li>
-<li class="level1"><div class="li"> Add the PhysicsControl to the physicsSpace object.</div>
+<li><div> Add the PhysicsControl to the physicsSpace object.</div>
 </li>
-<li class="level1"><div class="li"> Attach the Spatial to the rootNode, as usual.</div>
+<li><div> Attach the Spatial to the rootNode, as usual.</div>
 </li>
-<li class="level1"><div class="li"> (Optional) Implement the <code>PhysicsCollisionListener</code> interface to respond to <code>PhysicsCollisionEvent</code>s if desired.</div>
+<li><div> (Optional) Implement the <code>PhysicsCollisionListener</code> interface to respond to <code>PhysicsCollisionEvent</code>s if desired.</div>
 </li>
 </ol>
 
 </div>
 
-<h3><a name="collision_shapes" id="collision_shapes">Collision Shapes</a></h3>
-<div class="level3">
+<h3><a>Collision Shapes</a></h3>
+<div>
 
 <p>
 
@@ -131,43 +131,43 @@ Before you can create a Physics Control, you must create a Collision Shape from 
 The Collision Shape is a simplified shape for which physics are easier to calculate than for the real shape of the model. This approach speeds up the simulation greatly.
 
 </p>
-<table class="inline">
-	<tr class="row0">
-		<th class="col0 leftalign"> Shape                     </th><th class="col1"> Purpose </th>
+<table>
+	<tr>
+		<th> Shape                     </th><th> Purpose </th>
 	</tr>
-	<tr class="row1">
-		<td class="col0 leftalign"> BoxCollisionShape         </td><td class="col1"> Box shaped objects such as bricks, crates, simple obstacles. Does not roll. </td>
+	<tr>
+		<td> BoxCollisionShape         </td><td> Box shaped objects such as bricks, crates, simple obstacles. Does not roll. </td>
 	</tr>
-	<tr class="row2">
-		<td class="col0 leftalign"> SphereCollisionShape      </td><td class="col1"> Spherical objects such as balls. Can roll. </td>
+	<tr>
+		<td> SphereCollisionShape      </td><td> Spherical objects such as balls. Can roll. </td>
 	</tr>
-	<tr class="row3">
-		<td class="col0 leftalign"> CylinderCollisionShape    </td><td class="col1"> Tube-shaped pillars, disc-shaped wheels. Can roll on one side. </td>
+	<tr>
+		<td> CylinderCollisionShape    </td><td> Tube-shaped pillars, disc-shaped wheels. Can roll on one side. </td>
 	</tr>
-	<tr class="row4">
-		<td class="col0 leftalign"> CapsuleCollisionShape     </td><td class="col1"> A compound of a cylinder plus two spheres at the top and bottom. Rotated upright, this shape is optimal for character nodes: A cylinder-shaped body does not get stuck at corners and vertical obstacles; the rounded top and bottom do not get stuck on stair steps and ground obstacles. Is locked to stay upright, does not roll. </td>
+	<tr>
+		<td> CapsuleCollisionShape     </td><td> A compound of a cylinder plus two spheres at the top and bottom. Rotated upright, this shape is optimal for character nodes: A cylinder-shaped body does not get stuck at corners and vertical obstacles; the rounded top and bottom do not get stuck on stair steps and ground obstacles. Is locked to stay upright, does not roll. </td>
 	</tr>
-	<tr class="row5">
-		<td class="col0 leftalign"> CompoundCollisionShape    </td><td class="col1"> A CompoundCollisionShape allows custom combinations of box/sphere/cylinder shapes to form another more complex shape. </td>
+	<tr>
+		<td> CompoundCollisionShape    </td><td> A CompoundCollisionShape allows custom combinations of box/sphere/cylinder shapes to form another more complex shape. </td>
 	</tr>
-	<tr class="row6">
-		<td class="col0 leftalign"> MeshCollisionShape        </td><td class="col1"> A free-form mesh-accurate shape that wraps itself around a mesh. <br/>
+	<tr>
+		<td> MeshCollisionShape        </td><td> A free-form mesh-accurate shape that wraps itself around a mesh. <br/>
  <strong>Limitations:</strong> Only non-mesh collision shapes (sphere, box, cylinder, compound) can collide with mesh-accurate collision shapes. The Mesh Collision Shape only works for static obstacles, e.g. for a game level model. </td>
 	</tr>
-	<tr class="row7">
-		<td class="col0 leftalign"> GImpactCollisionShape     </td><td class="col1"> This free-form Mesh Collision Shape can be used for moving objects. Uses <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://gimpact.sourceforge.net/"><param name="text" value="<html><u>http://gimpact.sourceforge.net/</u></html>"><param name="textColor" value="blue"></object>. <strong>Limitations:</strong> CPU intensive, use sparingly! We recommend using HullCollisionShapes or CompoundShapes made of simple shapes if you need improved performance. </td>
+	<tr>
+		<td> GImpactCollisionShape     </td><td> This free-form Mesh Collision Shape can be used for moving objects. Uses <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://gimpact.sourceforge.net/"><param name="text" value="<html><u>http://gimpact.sourceforge.net/</u></html>"><param name="textColor" value="blue"></object>. <strong>Limitations:</strong> CPU intensive, use sparingly! We recommend using HullCollisionShapes or CompoundShapes made of simple shapes if you need improved performance. </td>
 	</tr>
-	<tr class="row8">
-		<td class="col0"> HeightFieldCollisionShape </td><td class="col1"> Optimized Mesh Collision Shape for static terrains. This shape is much faster than a other Free-Form Mesh Shapes. Requires heightmap data.</td>
+	<tr>
+		<td> HeightFieldCollisionShape </td><td> Optimized Mesh Collision Shape for static terrains. This shape is much faster than a other Free-Form Mesh Shapes. Requires heightmap data.</td>
 	</tr>
-	<tr class="row9">
-		<td class="col0"> HullCollisionShape </td><td class="col1"> A collision shape that is based on a mesh but is a simplified convex version. </td>
+	<tr>
+		<td> HullCollisionShape </td><td> A collision shape that is based on a mesh but is a simplified convex version. </td>
 	</tr>
-	<tr class="row10">
-		<td class="col0"> SimplexCollisionShape </td><td class="col1">A physical point, line, triangle, or quad Collision Shape, defined by one to four points.</td>
+	<tr>
+		<td> SimplexCollisionShape </td><td>A physical point, line, triangle, or quad Collision Shape, defined by one to four points.</td>
 	</tr>
-	<tr class="row11">
-		<td class="col0"> PlaneCollisionShape </td><td class="col1"> A 2D plane that can be used as flat solid floor or wall. </td>
+	<tr>
+		<td> PlaneCollisionShape </td><td> A 2D plane that can be used as flat solid floor or wall. </td>
 	</tr>
 </table>
 
@@ -182,54 +182,54 @@ Let&#039;s look at the constructor:
 
 </div>
 
-<h3><a name="collision_shape_code_samples" id="collision_shape_code_samples">Collision Shape Code Samples</a></h3>
-<div class="level3">
+<h3><a>Collision Shape Code Samples</a></h3>
+<div>
 
 <p>
 
 MeshCompoundShape and MeshCollisionShape are both mesh-accurate and are intended for immobile scene objects, such as terrains, buildings, or whole shooter levels. Limitation: Only collisions of non-mesh-accurate shapes (sphere, box, etc) shapes can be detected against mesh-accurate shapes.
 </p>
-<pre class="code java">CompoundCollisionShape myComplexShape <span class="sy0">=</span> 
-    CollisionShapeFactory.<span class="me1">createMeshShape</span><span class="br0">&#40;</span><span class="br0">&#40;</span>Node<span class="br0">&#41;</span> myComplexGeometry <span class="br0">&#41;</span>;</pre>
+<pre>CompoundCollisionShape myComplexShape = 
+    CollisionShapeFactory.createMeshShape&#40;&#40;Node&#41; myComplexGeometry &#41;;</pre>
 <p>
 An angular, non-mesh-accurate compound shape:
 </p>
-<pre class="code java">CompoundCollisionShape boxShape <span class="sy0">=</span> 
-    CollisionShapeFactory.<span class="me1">createBoxCompoundShape</span><span class="br0">&#40;</span><span class="br0">&#40;</span>Node<span class="br0">&#41;</span> someBox<span class="br0">&#41;</span>;</pre>
+<pre>CompoundCollisionShape boxShape = 
+    CollisionShapeFactory.createBoxCompoundShape&#40;&#40;Node&#41; someBox&#41;;</pre>
 <p>
 SphereCollisionShape, BoxCollisionShape, CapsuleCollisionShape are also not mesh-accurate, but have better performance. The can be added to anything, and collisions between them and any other shape can be detected.
 </p>
-<pre class="code java">SphereCollisionShape sphereShape <span class="sy0">=</span> 
-    <span class="kw1">new</span> SphereCollisionShape<span class="br0">&#40;</span>1.0f<span class="br0">&#41;</span>;</pre>
+<pre>SphereCollisionShape sphereShape = 
+    new SphereCollisionShape&#40;1.0f&#41;;</pre>
 </div>
 
-<h2><a name="physics_controls" id="physics_controls">Physics Controls</a></h2>
-<div class="level2">
+<h2><a>Physics Controls</a></h2>
+<div>
 
 <p>
 
 Available PhysicsControls in the com.jme3.bullet.control package are:
 
 </p>
-<table class="inline">
-	<tr class="row0">
-		<th class="col0">Physics Control</th><th class="col1">Purpose</th>
+<table>
+	<tr>
+		<th>Physics Control</th><th>Purpose</th>
 	</tr>
-	<tr class="row1">
-		<td class="col0">RigidBodyControl</td><td class="col1">Use for physical objects in the scene, e.g. projectiles and obstacles – things that are freely affected by physical forces, be it by collision or falling.</td>
+	<tr>
+		<td>RigidBodyControl</td><td>Use for physical objects in the scene, e.g. projectiles and obstacles – things that are freely affected by physical forces, be it by collision or falling.</td>
 	</tr>
-	<tr class="row2">
-		<td class="col0">CharacterControl</td><td class="col1">Use for characters (persons, animals) that stand upright, orthogonally to the X/Z plane. When directional forces are applied to a CharacterControl&#039;ed Spatial, it does not tip over (as a RigidBodyControl&#039;ed Spatial would), but it moves upright (as a walking character would).</td>
+	<tr>
+		<td>CharacterControl</td><td>Use for characters (persons, animals) that stand upright, orthogonally to the X/Z plane. When directional forces are applied to a CharacterControl&#039;ed Spatial, it does not tip over (as a RigidBodyControl&#039;ed Spatial would), but it moves upright (as a walking character would).</td>
 	</tr>
-	<tr class="row3">
-		<td class="col0">GhostControl</td><td class="col1">A GhostControl is a PhysicsControl that detects overlaps with other physical objects. A GhostControl is <em>non-solid</em> and moves with the Spatial it is attached to. Use this for game elements that do not have a visible solid Geometry: Aggro radius, motion detectors, photoelectric sensors, radioactive areas, life-draining ghosts, etc. </td>
+	<tr>
+		<td>GhostControl</td><td>A GhostControl is a PhysicsControl that detects overlaps with other physical objects. A GhostControl is <em>non-solid</em> and moves with the Spatial it is attached to. Use this for game elements that do not have a visible solid Geometry: Aggro radius, motion detectors, photoelectric sensors, radioactive areas, life-draining ghosts, etc. </td>
 	</tr>
-	<tr class="row4">
-		<td class="col0">VehicleControl <br/>
- PhysicsVehicleWheel</td><td class="col1"> Implements <a href="/com/jme3/gde/core/docs/jme3/advanced/vehicles.html" class="wikilink1" title="jme3:advanced:vehicles">terrestric vehicle</a> behaviour.</td>
+	<tr>
+		<td>VehicleControl <br/>
+ PhysicsVehicleWheel</td><td> Implements <a href="/com/jme3/gde/core/docs/jme3/advanced/vehicles.html">terrestric vehicle</a> behaviour.</td>
 	</tr>
-	<tr class="row5">
-		<td class="col0">RagDollControl</td><td class="col1"> Implements <a href="/com/jme3/gde/core/docs/jme3/advanced/ragdoll.html" class="wikilink1" title="jme3:advanced:ragdoll">Ragdoll</a> behaviour.</td>
+	<tr>
+		<td>RagDollControl</td><td> Implements <a href="/com/jme3/gde/core/docs/jme3/advanced/ragdoll.html">Ragdoll</a> behaviour.</td>
 	</tr>
 </table>
 
@@ -240,8 +240,8 @@ Bullet Physics are available in jME3 through a several classes. You will use Phy
 
 </div>
 
-<h4><a name="bullet_physics_controls" id="bullet_physics_controls">Bullet Physics Controls</a></h4>
-<div class="level4">
+<h4><a>Bullet Physics Controls</a></h4>
+<div>
 
 <p>
 
@@ -254,8 +254,8 @@ Package: com.jme3.bullet.control
 
 </div>
 
-<h4><a name="bullet_physics_objects" id="bullet_physics_objects">Bullet Physics Objects</a></h4>
-<div class="level4">
+<h4><a>Bullet Physics Objects</a></h4>
+<div>
 
 <p>
 
@@ -268,8 +268,8 @@ Package: com.jme3.bullet.objects
 
 </div>
 
-<h4><a name="deprecated_bullet_physics_nodes" id="deprecated_bullet_physics_nodes">(Deprecated) Bullet Physics Nodes</a></h4>
-<div class="level4">
+<h4><a>(Deprecated) Bullet Physics Nodes</a></h4>
+<div>
 
 <p>
 
@@ -282,143 +282,143 @@ Package: com.jme3.bullet.nodes
 
 </div>
 
-<h3><a name="physics_controls_code_samples" id="physics_controls_code_samples">Physics Controls Code Samples</a></h3>
-<div class="level3">
+<h3><a>Physics Controls Code Samples</a></h3>
+<div>
 
 <p>
 
 The various Physics Control constructors expect a Collision Shape (here thingShape) and a mass (a float).
 </p>
-<pre class="code java">RigidBodyControl myControl<span class="sy0">=</span><span class="kw1">new</span> RigidBodyControl<span class="br0">&#40;</span> thingShape , 1.0f <span class="br0">&#41;</span>;</pre>
+<pre>RigidBodyControl myControl=new RigidBodyControl&#40; thingShape , 1.0f &#41;;</pre>
 <p>
 To make the Physics Control visible in the scene, you must attach the Control to a Geometry (e.g. a model named myGeometry):
 </p>
-<pre class="code java">myGeometry.<span class="me1">addControl</span><span class="br0">&#40;</span>myControl<span class="br0">&#41;</span>;</pre>
+<pre>myGeometry.addControl&#40;myControl&#41;;</pre>
 <p>
 This code sample creates a physical Character:
 </p>
-<pre class="code java"><span class="co1">// Load a normal model</span>
-Node model <span class="sy0">=</span> <span class="br0">&#40;</span>Node<span class="br0">&#41;</span> assetManager.<span class="me1">loadModel</span><span class="br0">&#40;</span><span class="st0">&quot;Models/myCharacterModel.mesh.xml&quot;</span><span class="br0">&#41;</span>;
-rootNode.<span class="me1">attachChild</span><span class="br0">&#40;</span>model<span class="br0">&#41;</span>;
-<span class="co1">// Create a appropriate physical shape for it </span>
-CapsuleCollisionShape capsuleShape <span class="sy0">=</span> <span class="kw1">new</span> CapsuleCollisionShape<span class="br0">&#40;</span>1.5f, 6f, <span class="nu0">1</span><span class="br0">&#41;</span>;
-CharacterControl character_phys <span class="sy0">=</span> <span class="kw1">new</span> CharacterControl<span class="br0">&#40;</span>capsuleShape, 0.01f<span class="br0">&#41;</span>;
-<span class="co1">// Attach physical properties to model and PhysicsSpace</span>
-model.<span class="me1">addControl</span><span class="br0">&#40;</span>character_phys<span class="br0">&#41;</span>;    
-bulletAppState.<span class="me1">getPhysicsSpace</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">add</span><span class="br0">&#40;</span>character_phys<span class="br0">&#41;</span>;</pre>
+<pre>// Load a normal model
+Node model = &#40;Node&#41; assetManager.loadModel&#40;&quot;Models/myCharacterModel.mesh.xml&quot;&#41;;
+rootNode.attachChild&#40;model&#41;;
+// Create a appropriate physical shape for it 
+CapsuleCollisionShape capsuleShape = new CapsuleCollisionShape&#40;1.5f, 6f, 1&#41;;
+CharacterControl character_phys = new CharacterControl&#40;capsuleShape, 0.01f&#41;;
+// Attach physical properties to model and PhysicsSpace
+model.addControl&#40;character_phys&#41;;    
+bulletAppState.getPhysicsSpace&#40;&#41;.add&#40;character_phys&#41;;</pre>
 <p>
 Tip: Spheres and Boxes will fall back to their correct default Collision Shape if you don&#039;t specify a shape in the RigidBodyControl constructor. The following creates a box with Box Collision Shape:
 </p>
-<pre class="code java"><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Abox+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object><span class="br0">&#40;</span><span class="nu0">1</span>,<span class="nu0">1</span>,<span class="nu0">1</span><span class="br0">&#41;</span>;
-myBox.<span class="me1">addControl</span><span class="br0">&#40;</span><span class="kw1">new</span> RigidBodyControl<span class="br0">&#40;</span> 1.0f <span class="br0">&#41;</span><span class="br0">&#41;</span>;
-bulletAppState.<span class="me1">getPhysicsSpace</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">add</span><span class="br0">&#40;</span>myBox<span class="br0">&#41;</span>;</pre>
+<pre>Box&#40;1,1,1&#41;;
+myBox.addControl&#40;new RigidBodyControl&#40; 1.0f &#41;&#41;;
+bulletAppState.getPhysicsSpace&#40;&#41;.add&#40;myBox&#41;;</pre>
 </div>
 
-<h2><a name="physics_space" id="physics_space">Physics Space</a></h2>
-<div class="level2">
+<h2><a>Physics Space</a></h2>
+<div>
 
 <p>
 
 The Physics Space is an object in BulletAppState that is like a rootNode for Physics Controls.
 </p>
 <ol>
-<li class="level1"><div class="li"> First specify parameters such as gravity and accuracy.<pre class="code java">bulletAppState.<span class="me1">getPhysicsSpace</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">setGravity</span><span class="br0">&#40;</span><span class="kw1">new</span> Vector3f<span class="br0">&#40;</span>0f,<span class="sy0">-</span>1f,0f<span class="br0">&#41;</span><span class="br0">&#41;</span>;
-bulletAppState.<span class="me1">getPhysicsSpace</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">setAccuracy</span><span class="br0">&#40;</span>0.005f<span class="br0">&#41;</span>;</pre></div>
+<li><div> First specify parameters such as gravity and accuracy.<pre>bulletAppState.getPhysicsSpace&#40;&#41;.setGravity&#40;new Vector3f&#40;0f,-1f,0f&#41;&#41;;
+bulletAppState.getPhysicsSpace&#40;&#41;.setAccuracy&#40;0.005f&#41;;</pre></div>
 </li>
-<li class="level1"><div class="li"> Physics Controls must be added to the PhysicsSpace.<pre class="code java">bulletAppState.<span class="me1">getPhysicsSpace</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">add</span><span class="br0">&#40;</span>myPhysicsControl<span class="br0">&#41;</span>; ...</pre></div>
+<li><div> Physics Controls must be added to the PhysicsSpace.<pre>bulletAppState.getPhysicsSpace&#40;&#41;.add&#40;myPhysicsControl&#41;; ...</pre></div>
 </li>
-<li class="level1"><div class="li"> Physics Control must be added to their Spatial. <pre class="code java">myModel.<span class="me1">addControl</span><span class="br0">&#40;</span>myPhysicsControl<span class="br0">&#41;</span>; ...</pre></div>
+<li><div> Physics Control must be added to their Spatial. <pre>myModel.addControl&#40;myPhysicsControl&#41;; ...</pre></div>
 </li>
-<li class="level1"><div class="li"> The Spatial must be attached to the rootNode, as always. <pre class="code java">rootNode.<span class="me1">attachChild</span><span class="br0">&#40;</span>myModel<span class="br0">&#41;</span>; ...</pre></div>
+<li><div> The Spatial must be attached to the rootNode, as always. <pre>rootNode.attachChild&#40;myModel&#41;; ...</pre></div>
 </li>
-<li class="level1"><div class="li"> You remove physical objects from the scene like this: <pre class="code java">bulletAppState.<span class="me1">getPhysicsSpace</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">remove</span><span class="br0">&#40;</span>myPhysicsControl<span class="br0">&#41;</span>; 
-myModel.<span class="me1">removeFromParent</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;</pre></div>
+<li><div> You remove physical objects from the scene like this: <pre>bulletAppState.getPhysicsSpace&#40;&#41;.remove&#40;myPhysicsControl&#41;; 
+myModel.removeFromParent&#40;&#41;;</pre></div>
 </li>
 </ol>
 
 </div>
 
-<h2><a name="properties_of_physical_objects" id="properties_of_physical_objects">Properties of Physical Objects</a></h2>
-<div class="level2">
+<h2><a>Properties of Physical Objects</a></h2>
+<div>
 
 <p>
 
 On a PhysicsControl, you can set the following physical properties.
 
 </p>
-<table class="inline">
-	<tr class="row0">
-		<th class="col0"> RigidBodyControl Method </th><th class="col1"> Property </th>
+<table>
+	<tr>
+		<th> RigidBodyControl Method </th><th> Property </th>
 	</tr>
-	<tr class="row1">
-		<td class="col0"> setFriction(1f) </td><td class="col1"> Friction. </td>
+	<tr>
+		<td> setFriction(1f) </td><td> Friction. </td>
 	</tr>
-	<tr class="row2">
-		<td class="col0"> setMass(1f) </td><td class="col1"> Sets the mass. Dynamic objects have masses &gt; 0.0f. <br/>
+	<tr>
+		<td> setMass(1f) </td><td> Sets the mass. Dynamic objects have masses &gt; 0.0f. <br/>
  Static immobile obstacles (including buildings and terrains) have mass 0.0f. </td>
 	</tr>
-	<tr class="row3">
-		<td class="col0"> setPhysicsLocation()</td><td class="col1">Positions the object. Do not use setLocalTranslation().</td>
+	<tr>
+		<td> setPhysicsLocation()</td><td>Positions the object. Do not use setLocalTranslation().</td>
 	</tr>
-	<tr class="row4">
-		<td class="col0"> setPhysicsRotation()</td><td class="col1">Rotates the object. Do not use setLocalRotate().</td>
+	<tr>
+		<td> setPhysicsRotation()</td><td>Rotates the object. Do not use setLocalRotate().</td>
 	</tr>
-	<tr class="row5">
-		<td class="col0"> setRestitution(0.0f) </td><td class="col1"> How bouncy the object is. For a rubber object set this &gt; 0.0f. This setting has an impact on performance. </td>
+	<tr>
+		<td> setRestitution(0.0f) </td><td> How bouncy the object is. For a rubber object set this &gt; 0.0f. This setting has an impact on performance. </td>
 	</tr>
-	<tr class="row6">
-		<td class="col0"> setKinematic(true) </td><td class="col1"> A kinematic node is not affected by gravity, but it is solid and affects other physics objects. It has a mass its position is updated from the spatials translation. You can attach joints to it. </td>
+	<tr>
+		<td> setKinematic(true) </td><td> A kinematic node is not affected by gravity, but it is solid and affects other physics objects. It has a mass its position is updated from the spatials translation. You can attach joints to it. </td>
 	</tr>
-	<tr class="row7">
-		<td class="col0"> setGravity(new Vector3f(0f,-1f,0f)) </td><td class="col1"> You can change the gravity of a physics object after it was added to the physics space. </td>
+	<tr>
+		<td> setGravity(new Vector3f(0f,-1f,0f)) </td><td> You can change the gravity of a physics object after it was added to the physics space. </td>
 	</tr>
-	<tr class="row8">
-		<td class="col0"> setCcdMotionThreshold(0.1f) </td><td class="col1"> The amount of motion in 1 physics tick to trigger the continuous motion detection. </td>
+	<tr>
+		<td> setCcdMotionThreshold(0.1f) </td><td> The amount of motion in 1 physics tick to trigger the continuous motion detection. </td>
 	</tr>
 </table>
-<table class="inline">
-	<tr class="row0">
-		<th class="col0"> CharacterControl Method </th><th class="col1"> Property </th>
+<table>
+	<tr>
+		<th> CharacterControl Method </th><th> Property </th>
 	</tr>
-	<tr class="row1">
-		<td class="col0"> setFallSpeed(1f) </td><td class="col1"> Fall speed (down) </td>
+	<tr>
+		<td> setFallSpeed(1f) </td><td> Fall speed (down) </td>
 	</tr>
-	<tr class="row2">
-		<td class="col0"> setJumpSpeed(1f) </td><td class="col1"> Jump speed (up) </td>
+	<tr>
+		<td> setJumpSpeed(1f) </td><td> Jump speed (up) </td>
 	</tr>
-	<tr class="row3">
-		<td class="col0 leftalign"> setMaxSlope(1.5f)   </td><td class="col1"> How steep the slopes are that the character can still climb. </td>
+	<tr>
+		<td> setMaxSlope(1.5f)   </td><td> How steep the slopes are that the character can still climb. </td>
 	</tr>
-	<tr class="row4">
-		<td class="col0"> setUpAxis(1)</td><td class="col1"> 0 = X axis , 1 = Y axis , 2 = Z axis. E.g. for characters and vehicle, up is usually along the the Y axis. </td>
+	<tr>
+		<td> setUpAxis(1)</td><td> 0 = X axis , 1 = Y axis , 2 = Z axis. E.g. for characters and vehicle, up is usually along the the Y axis. </td>
 	</tr>
-	<tr class="row5">
-		<td class="col0 leftalign"> setGravity(1f)   </td><td class="col1"> You can change the Gravity of a physics object after it was added to the physics space</td>
+	<tr>
+		<td> setGravity(1f)   </td><td> You can change the Gravity of a physics object after it was added to the physics space</td>
 	</tr>
 </table>
 
 </div>
 
-<h3><a name="kinematic_vs_dynamic_vs_static" id="kinematic_vs_dynamic_vs_static">Kinematic vs Dynamic vs Static</a></h3>
-<div class="level3">
+<h3><a>Kinematic vs Dynamic vs Static</a></h3>
+<div>
 
 <p>
 
 Physical objects…
 </p>
 <ul>
-<li class="level1"><div class="li"> must not overlap. </div>
+<li><div> must not overlap. </div>
 </li>
-<li class="level1"><div class="li"> can detect collisions and report several values about the impact. </div>
+<li><div> can detect collisions and report several values about the impact. </div>
 </li>
-<li class="level1"><div class="li"> can respond dynamically or statically or kinematically to collisions.</div>
+<li><div> can respond dynamically or statically or kinematically to collisions.</div>
 </li>
 </ul>
 
 </div>
 
-<h4><a name="dynamic" id="dynamic">Dynamic</a></h4>
-<div class="level4">
+<h4><a>Dynamic</a></h4>
+<div>
 
 <p>
 
@@ -427,8 +427,8 @@ A dynamic physics object is one that falls when in mid-air, it bounces off obsta
 
 </div>
 
-<h4><a name="static" id="static">Static</a></h4>
-<div class="level4">
+<h4><a>Static</a></h4>
+<div>
 
 <p>
 
@@ -437,8 +437,8 @@ You can create static physical objects without mass. They are still treated as s
 
 </div>
 
-<h4><a name="kinematic" id="kinematic">Kinematic</a></h4>
-<div class="level4">
+<h4><a>Kinematic</a></h4>
+<div>
 
 <p>
 
@@ -450,55 +450,55 @@ Kinematic RigidBodys have a mass, but they are not affected by gravity. When non
 </p>
 
 <p>
-<strong>Tip:</strong> Spatials with a kinematic RigidBodyControl can be moved programmatically, e.g. using setLocalTranslation() in the update() loop, or by an Animation Path. You can also “hang them up in mid-air” and attach other PhysicsNodes to them using <a href="/com/jme3/gde/core/docs/jme3/advanced/hinges_and_joints.html" class="wikilink1" title="jme3:advanced:hinges_and_joints">hinges and joints</a>.  
+<strong>Tip:</strong> Spatials with a kinematic RigidBodyControl can be moved programmatically, e.g. using setLocalTranslation() in the update() loop, or by an Animation Path. You can also “hang them up in mid-air” and attach other PhysicsNodes to them using <a href="/com/jme3/gde/core/docs/jme3/advanced/hinges_and_joints.html">hinges and joints</a>.  
 </p>
-<pre class="code java">airhook.<span class="me1">setKinematic</span><span class="br0">&#40;</span><span class="kw2">true</span><span class="br0">&#41;</span>;</pre>
+<pre>airhook.setKinematic&#40;true&#41;;</pre>
 </div>
 
-<h2><a name="forcesmoving_physical_objects" id="forcesmoving_physical_objects">Forces: Moving Physical Objects</a></h2>
-<div class="level2">
+<h2><a>Forces: Moving Physical Objects</a></h2>
+<div>
 
 <p>
 
 Use the following methods to move physics objects.
 
 </p>
-<table class="inline">
-	<tr class="row0">
-		<th class="col0"> Method </th><th class="col1"> Motion </th>
+<table>
+	<tr>
+		<th> Method </th><th> Motion </th>
 	</tr>
-	<tr class="row1">
-		<td class="col0"> setAngularVelocity(new Vector3f(0f,0f,1f)) </td><td class="col1"> Set the current rotational speed of the object </td>
+	<tr>
+		<td> setAngularVelocity(new Vector3f(0f,0f,1f)) </td><td> Set the current rotational speed of the object </td>
 	</tr>
-	<tr class="row2">
-		<td class="col0"> setLinearVelocity(new Vector3f(0f,0f,1f)) </td><td class="col1"> Set the current linear speed of this object </td>
+	<tr>
+		<td> setLinearVelocity(new Vector3f(0f,0f,1f)) </td><td> Set the current linear speed of this object </td>
 	</tr>
-	<tr class="row3">
-		<td class="col0"> setWalkDirection(new Vector3f(0f,0f,0.1f))</td><td class="col1"> Make a physical character walk (characters are locked to prevent falling over and use a simple physics simulation). Use <code>setWalkDirection(Vector3f.ZERO)</code> to stop a directional motion. </td>
+	<tr>
+		<td> setWalkDirection(new Vector3f(0f,0f,0.1f))</td><td> Make a physical character walk (characters are locked to prevent falling over and use a simple physics simulation). Use <code>setWalkDirection(Vector3f.ZERO)</code> to stop a directional motion. </td>
 	</tr>
-	<tr class="row4">
-		<td class="col0"> applyCentralForce(…) </td><td class="col1 leftalign"> Move (push) the object once with a certain moment, expressed as a Vector3f.  </td>
+	<tr>
+		<td> applyCentralForce(…) </td><td> Move (push) the object once with a certain moment, expressed as a Vector3f.  </td>
 	</tr>
-	<tr class="row5">
-		<td class="col0"> applyForce(…) </td><td class="col1"> Move (push) the object once with a certain moment, expressed as a Vector3f. Optionally, you can specify where on the object the pushing force hits. </td>
+	<tr>
+		<td> applyForce(…) </td><td> Move (push) the object once with a certain moment, expressed as a Vector3f. Optionally, you can specify where on the object the pushing force hits. </td>
 	</tr>
-	<tr class="row6">
-		<td class="col0"> applyContinuousForce(…) </td><td class="col1"> Keep moving (pushing) the object with continuous force in one direction, expressed as a Vector3f. Optionally, you can specifiy where on the object the pushing force hits. You can <code>applyContinuousForce(false)</code> to stop the force. </td>
+	<tr>
+		<td> applyContinuousForce(…) </td><td> Keep moving (pushing) the object with continuous force in one direction, expressed as a Vector3f. Optionally, you can specifiy where on the object the pushing force hits. You can <code>applyContinuousForce(false)</code> to stop the force. </td>
 	</tr>
-	<tr class="row7">
-		<td class="col0"> applyTorque(…) </td><td class="col1"> Rotate (twist) the object once around its axes, expressed as a Vector3f. </td>
+	<tr>
+		<td> applyTorque(…) </td><td> Rotate (twist) the object once around its axes, expressed as a Vector3f. </td>
 	</tr>
-	<tr class="row8">
-		<td class="col0"> applyContinuousTorque(…) </td><td class="col1"> Keep rotating (twisting) the object continuously around its axes, expressed as a Vector3f. You can <code>applyContinuousTorque(false)</code> to stop the rotation.</td>
+	<tr>
+		<td> applyContinuousTorque(…) </td><td> Keep rotating (twisting) the object continuously around its axes, expressed as a Vector3f. You can <code>applyContinuousTorque(false)</code> to stop the rotation.</td>
 	</tr>
-	<tr class="row9">
-		<td class="col0"> applyImpulse(…) </td><td class="col1"> An idealised change of momentum. This is the kind of push that you would use on a pool billiard ball. </td>
+	<tr>
+		<td> applyImpulse(…) </td><td> An idealised change of momentum. This is the kind of push that you would use on a pool billiard ball. </td>
 	</tr>
-	<tr class="row10">
-		<td class="col0"> applyTorqueImpulse(…) </td><td class="col1"> An idealised change of momentum. This is the kind of push that you would use on a pool billiard ball. </td>
+	<tr>
+		<td> applyTorqueImpulse(…) </td><td> An idealised change of momentum. This is the kind of push that you would use on a pool billiard ball. </td>
 	</tr>
-	<tr class="row11">
-		<td class="col0">clearForces()</td><td class="col1">Cancels out all forces (force, torque) etc and stops the motion.</td>
+	<tr>
+		<td>clearForces()</td><td>Cancels out all forces (force, torque) etc and stops the motion.</td>
 	</tr>
 </table>
 
@@ -511,37 +511,37 @@ Use the following methods to move physics objects.
 Physics also supports the following features:
 
 </p>
-<table class="inline">
-	<tr class="row0">
-		<th class="col0"> Method </th><th class="col1"> Property </th>
+<table>
+	<tr>
+		<th> Method </th><th> Property </th>
 	</tr>
-	<tr class="row1">
-		<td class="col0"> setCollisionShape(collisionShape)</td><td class="col1">Changes the collision shape.</td>
+	<tr>
+		<td> setCollisionShape(collisionShape)</td><td>Changes the collision shape.</td>
 	</tr>
-	<tr class="row2">
-		<td class="col0"> setCollideWithGroups() <br/>
+	<tr>
+		<td> setCollideWithGroups() <br/>
  setCollisionGroup() <br/>
  addCollideWithGroup(COLLISION_GROUP_01) <br/>
- removeCollideWithGroup(COLLISION_GROUP_01)</td><td class="col1">Collision Groups are integer bit masks – enums are available in CollisionObject. All physics objects are by default in COLLISION_GROUP_01. Two objects collide when the collideWithGroups set of one contains the collisionGroup of the other.</td>
+ removeCollideWithGroup(COLLISION_GROUP_01)</td><td>Collision Groups are integer bit masks – enums are available in CollisionObject. All physics objects are by default in COLLISION_GROUP_01. Two objects collide when the collideWithGroups set of one contains the collisionGroup of the other.</td>
 	</tr>
-	<tr class="row3">
-		<td class="col0"> setDamping(float, float)</td><td class="col1">The first value is the linear threshold and the second the angular.</td>
+	<tr>
+		<td> setDamping(float, float)</td><td>The first value is the linear threshold and the second the angular.</td>
 	</tr>
-	<tr class="row4">
-		<td class="col0"> setAngularFactor(1f)</td><td class="col1">Set the amount of rotation that will be applied. A value of zero will cancel all rotational force outcome.</td>
+	<tr>
+		<td> setAngularFactor(1f)</td><td>Set the amount of rotation that will be applied. A value of zero will cancel all rotational force outcome.</td>
 	</tr>
-	<tr class="row5">
-		<td class="col0"> setCcdSweptSphereRadius()</td><td class="col1">?</td>
+	<tr>
+		<td> setCcdSweptSphereRadius()</td><td>?</td>
 	</tr>
-	<tr class="row6">
-		<td class="col0"> setSleepingThreshold(float,float)</td><td class="col1">Sets the sleeping thresholds wich define when the object gets deactivated to save ressources. Low values keep the object active when it barely moves. The first value is the linear threshold and the second the angular.</td>
+	<tr>
+		<td> setSleepingThreshold(float,float)</td><td>Sets the sleeping thresholds wich define when the object gets deactivated to save ressources. Low values keep the object active when it barely moves. The first value is the linear threshold and the second the angular.</td>
 	</tr>
 </table>
 
 </div>
 
-<h2><a name="responding_to_a_physicscollisionevent" id="responding_to_a_physicscollisionevent">Responding to a PhysicsCollisionEvent</a></h2>
-<div class="level2">
+<h2><a>Responding to a PhysicsCollisionEvent</a></h2>
+<div>
 
 <p>
 
@@ -552,22 +552,22 @@ If you do not implement the PhysicsCollisionListener interface, a collisions wil
 If you want to respond to a collision event with a custom action however, then you need to implement the PhysicsCollisionListener interface. Typical actions triggered by collisions include:
 </p>
 <ul>
-<li class="level1"><div class="li"> increasing a counter (score points)</div>
+<li><div> increasing a counter (score points)</div>
 </li>
-<li class="level1"><div class="li"> decreasing a counter (health points)</div>
+<li><div> decreasing a counter (health points)</div>
 </li>
-<li class="level1"><div class="li"> triggering an effect (explosion)</div>
+<li><div> triggering an effect (explosion)</div>
 </li>
-<li class="level1"><div class="li"> playing a sound (explosion, ouch) </div>
+<li><div> playing a sound (explosion, ouch) </div>
 </li>
-<li class="level1"><div class="li"> … and countless more</div>
+<li><div> … and countless more</div>
 </li>
 </ul>
 
 </div>
 
-<h3><a name="overriding_the_collision_method" id="overriding_the_collision_method">Overriding the Collision() Method</a></h3>
-<div class="level3">
+<h3><a>Overriding the Collision() Method</a></h3>
+<div>
 
 <p>
 
@@ -577,52 +577,52 @@ To respond to the PhysicsCollisionEvent you have to override the <code>collision
 <p>
 After you identify the colliding nodes, specify the action to trigger when this pair collides. Note that you cannot know which one will be Node A or Node B, you have to deal with either variant.
 </p>
-<pre class="code java">    <span class="kw1">public</span> <span class="kw4">void</span> collision<span class="br0">&#40;</span>PhysicsCollisionEvent event<span class="br0">&#41;</span> <span class="br0">&#123;</span>
-        <span class="kw1">if</span> <span class="br0">&#40;</span> event.<span class="me1">getNodeA</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">getName</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">equals</span><span class="br0">&#40;</span><span class="st0">&quot;player&quot;</span><span class="br0">&#41;</span> <span class="br0">&#41;</span> <span class="br0">&#123;</span>
-            <span class="kw1">final</span> Node node <span class="sy0">=</span> event.<span class="me1">getNodeA</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
-            <span class="co3">/** ... do something with the node ... */</span>
-        <span class="br0">&#125;</span> <span class="kw1">else</span> <span class="kw1">if</span> <span class="br0">&#40;</span> event.<span class="me1">getNodeB</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">getName</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">equals</span><span class="br0">&#40;</span><span class="st0">&quot;player&quot;</span><span class="br0">&#41;</span> <span class="br0">&#41;</span> <span class="br0">&#123;</span>
-            <span class="kw1">final</span> Node node <span class="sy0">=</span> event.<span class="me1">getNodeB</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
-            <span class="co3">/** ... do something with the node ... */</span>
-        <span class="br0">&#125;</span>
-    <span class="br0">&#125;</span></pre>
+<pre>    public void collision&#40;PhysicsCollisionEvent event&#41; &#123;
+        if &#40; event.getNodeA&#40;&#41;.getName&#40;&#41;.equals&#40;&quot;player&quot;&#41; &#41; &#123;
+            final Node node = event.getNodeA&#40;&#41;;
+            /** ... do something with the node ... */
+        &#125; else if &#40; event.getNodeB&#40;&#41;.getName&#40;&#41;.equals&#40;&quot;player&quot;&#41; &#41; &#123;
+            final Node node = event.getNodeB&#40;&#41;;
+            /** ... do something with the node ... */
+        &#125;
+    &#125;</pre>
 <p>
-<p><div class="noteimportant">Note that after the collision() method ends, the PhysicsCollisionEvent is cleared. You must get all objects and values you need within the collision() method.
+<p><div>Note that after the collision() method ends, the PhysicsCollisionEvent is cleared. You must get all objects and values you need within the collision() method.
 </div></p>
 </p>
 
 </div>
 
-<h3><a name="reading_details_from_a_physicscollisionevent" id="reading_details_from_a_physicscollisionevent">Reading Details From a PhysicsCollisionEvent</a></h3>
-<div class="level3">
+<h3><a>Reading Details From a PhysicsCollisionEvent</a></h3>
+<div>
 
 <p>
 
 The PhysicsCollisionEvent <code>event</code> gives you access to detailed information about the collision. You already know the event objects can identify which nodes collided, but it even knows how hard they collided:
 
 </p>
-<table class="inline">
-	<tr class="row0">
-		<th class="col0 leftalign">Method                        </th><th class="col1">Purpose</th>
+<table>
+	<tr>
+		<th>Method                        </th><th>Purpose</th>
 	</tr>
-	<tr class="row1">
-		<td class="col0 leftalign"> getNodeA() <br/>
- getNodeB()     </td><td class="col1"> The two participants in the collision. You cannot know in advance whether some node will be recorded as A or B, you always have to consider both cases. </td>
+	<tr>
+		<td> getNodeA() <br/>
+ getNodeB()     </td><td> The two participants in the collision. You cannot know in advance whether some node will be recorded as A or B, you always have to consider both cases. </td>
 	</tr>
-	<tr class="row2">
-		<td class="col0 leftalign"> getAppliedImpulse()          </td><td class="col1"> A float value representing the collision impulse </td>
+	<tr>
+		<td> getAppliedImpulse()          </td><td> A float value representing the collision impulse </td>
 	</tr>
-	<tr class="row3">
-		<td class="col0 leftalign"> getAppliedImpulseLateral1()  </td><td class="col1"> A float value representing the lateral collision impulse </td>
+	<tr>
+		<td> getAppliedImpulseLateral1()  </td><td> A float value representing the lateral collision impulse </td>
 	</tr>
-	<tr class="row4">
-		<td class="col0 leftalign"> getAppliedImpulseLateral2()  </td><td class="col1"> A float value representing the lateral collision impulse </td>
+	<tr>
+		<td> getAppliedImpulseLateral2()  </td><td> A float value representing the lateral collision impulse </td>
 	</tr>
-	<tr class="row5">
-		<td class="col0 leftalign"> getCombinedFriction()        </td><td class="col1"> A float value representing the collision friction </td>
+	<tr>
+		<td> getCombinedFriction()        </td><td> A float value representing the collision friction </td>
 	</tr>
-	<tr class="row6">
-		<td class="col0 leftalign"> getCombinedRestitution()     </td><td class="col1"> A float value representing the collision restitution (bounciness) </td>
+	<tr>
+		<td> getCombinedRestitution()     </td><td> A float value representing the collision restitution (bounciness) </td>
 	</tr>
 </table>
 
@@ -633,8 +633,8 @@ Note that after the collision method has been called the object is not valid any
 
 </div>
 
-<h2><a name="best_practices" id="best_practices">Best Practices</a></h2>
-<div class="level2">
+<h2><a>Best Practices</a></h2>
+<div>
 
 <p>
 

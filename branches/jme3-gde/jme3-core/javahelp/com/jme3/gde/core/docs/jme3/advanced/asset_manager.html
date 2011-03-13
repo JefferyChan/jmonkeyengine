@@ -1,6 +1,6 @@
 
-<h1><a name="assetmanager" id="assetmanager">AssetManager</a></h1>
-<div class="level1">
+<h1><a>AssetManager</a></h1>
+<div>
 
 <p>
 
@@ -18,8 +18,8 @@ You can use the inherited <code>assetManager</code> object directly, or use the 
 <p>
 Here is an example how you load assets using the  AssetManager. This lines loads a default Material from the Common directory:
 </p>
-<pre class="code java">Material mat <span class="sy0">=</span> <span class="br0">&#40;</span>Material<span class="br0">&#41;</span> assetManager.<span class="me1">loadAsset</span><span class="br0">&#40;</span>
-    <span class="kw1">new</span> AssetKey<span class="br0">&#40;</span><span class="st0">&quot;Common/Materials/RedColor.j3m&quot;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;</pre>
+<pre>Material mat = &#40;Material&#41; assetManager.loadAsset&#40;
+    new AssetKey&#40;&quot;Common/Materials/RedColor.j3m&quot;&#41;&#41;;</pre>
 <p>
 The Material is “somewhere” in the jME3 JAR, but the default Asset Manager is configured to handle a <code>Common/…</code> path correctly, so you don&#039;t have to specify the whole path.
 </p>
@@ -31,7 +31,7 @@ Additionally, You can configure the Asset Manager and add any path to its root. 
 <p>
 <strong>In project created with  jMonkeyPlatform, jME3 searches for models in the <code>assets</code> directory of your project by default.</strong> This is our recommended directory structure for storing assets:
 </p>
-<pre class="code">
+<pre>
 MyGame/assets/Interface/
 MyGame/assets/MatDefs/
 MyGame/assets/Materials/
@@ -50,58 +50,58 @@ These are just the most common examples, you can name the directories inside the
 
 </div>
 
-<h2><a name="loading_assets" id="loading_assets">Loading Assets</a></h2>
-<div class="level2">
-<pre class="code">      Material mat_brick = new Material( 
+<h2><a>Loading Assets</a></h2>
+<div>
+<pre>      Material mat_brick = new Material( 
           assetManager, &quot;Common/MatDefs/Misc/SimpleTextured.j3md&quot;);</pre>
-<pre class="code">      mat_brick.setTexture(&quot;m_ColorMap&quot;, 
+<pre>      mat_brick.setTexture(&quot;m_ColorMap&quot;, 
           assetManager.loadTexture(&quot;Textures/Terrain/BrickWall/BrickWall.jpg&quot;));</pre>
-<pre class="code">      guiFont = assetManager.loadFont(&quot;Interface/Fonts/Default.fnt&quot;);</pre>
-<pre class="code">      Spatial ninja = assetManager.loadModel(&quot;Models/Ninja/Ninja.mesh.xml&quot;);</pre>
-<pre class="code java">    assetManager.<span class="me1">registerLocator</span><span class="br0">&#40;</span><span class="st0">&quot;town.zip&quot;</span>, ZipLocator.<span class="kw1">class</span>.<span class="me1">getName</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
-    Spatial scene <span class="sy0">=</span> assetManager.<span class="me1">loadModel</span><span class="br0">&#40;</span><span class="st0">&quot;main.scene&quot;</span><span class="br0">&#41;</span>;
-    rootNode.<span class="me1">attachChild</span><span class="br0">&#40;</span>scene<span class="br0">&#41;</span>;</pre>
+<pre>      guiFont = assetManager.loadFont(&quot;Interface/Fonts/Default.fnt&quot;);</pre>
+<pre>      Spatial ninja = assetManager.loadModel(&quot;Models/Ninja/Ninja.mesh.xml&quot;);</pre>
+<pre>    assetManager.registerLocator&#40;&quot;town.zip&quot;, ZipLocator.class.getName&#40;&#41;&#41;;
+    Spatial scene = assetManager.loadModel&#40;&quot;main.scene&quot;&#41;;
+    rootNode.attachChild&#40;scene&#41;;</pre>
 <p>
 Here is a HttpZipLocator that can download zipped models:
 </p>
-<pre class="code java">    assetManager.<span class="me1">registerLocator</span><span class="br0">&#40;</span><span class="st0">&quot;http://jmonkeyengine.googlecode.com/files/wildhouse.zip&quot;</span>, 
-                                 HttpZipLocator.<span class="kw1">class</span>.<span class="me1">getName</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
-    Spatial scene <span class="sy0">=</span> assetManager.<span class="me1">loadModel</span><span class="br0">&#40;</span><span class="st0">&quot;main.scene&quot;</span><span class="br0">&#41;</span>;
-    rootNode.<span class="me1">attachChild</span><span class="br0">&#40;</span>scene<span class="br0">&#41;</span>;</pre>
+<pre>    assetManager.registerLocator&#40;&quot;http://jmonkeyengine.googlecode.com/files/wildhouse.zip&quot;, 
+                                 HttpZipLocator.class.getName&#40;&#41;&#41;;
+    Spatial scene = assetManager.loadModel&#40;&quot;main.scene&quot;&#41;;
+    rootNode.attachChild&#40;scene&#41;;</pre>
 <p>
 JME3 offers ClasspathLocator, ZipLocator, FileLocator, HttpZipLocator, and UrlLocator (see <code>com.jme3.asset.plugins</code>). 
 </p>
-<table class="inline">
-	<tr class="row0">
-		<th class="col0"> Task? </th><th class="col1"> Solution! </th>
+<table>
+	<tr>
+		<th> Task? </th><th> Solution! </th>
 	</tr>
-	<tr class="row1">
-		<td class="col0"> Load a model with materials </td><td class="col1"> Use the asset managers <code>loadModel()</code> method and attach the Spatial to the rootNode. <pre class="code java">Spatial elephant <span class="sy0">=</span> assetManager.<span class="me1">loadModel</span><span class="br0">&#40;</span><span class="st0">&quot;Models/Elephant/Elephant.mesh.xml&quot;</span><span class="br0">&#41;</span>;
-rootNode.<span class="me1">attachChild</span><span class="br0">&#40;</span>elephant<span class="br0">&#41;</span>;</pre><pre class="code java">Spatial elephant <span class="sy0">=</span> assetManager.<span class="me1">loadModel</span><span class="br0">&#40;</span><span class="st0">&quot;Models/Elephant/Elephant.j3o&quot;</span><span class="br0">&#41;</span>;
-rootNode.<span class="me1">attachChild</span><span class="br0">&#40;</span>elephant<span class="br0">&#41;</span>;</pre></td>
+	<tr>
+		<td> Load a model with materials </td><td> Use the asset managers <code>loadModel()</code> method and attach the Spatial to the rootNode. <pre>Spatial elephant = assetManager.loadModel&#40;&quot;Models/Elephant/Elephant.mesh.xml&quot;&#41;;
+rootNode.attachChild&#40;elephant&#41;;</pre><pre>Spatial elephant = assetManager.loadModel&#40;&quot;Models/Elephant/Elephant.j3o&quot;&#41;;
+rootNode.attachChild&#40;elephant&#41;;</pre></td>
 	</tr>
-	<tr class="row2">
-		<td class="col0"> Load a model without materials </td><td class="col1"> If you have a model without materials, you have to add a default material to make it visible. <pre class="code java">Spatial teapot <span class="sy0">=</span> assetManager.<span class="me1">loadModel</span><span class="br0">&#40;</span><span class="st0">&quot;Models/Teapot/Teapot.obj&quot;</span><span class="br0">&#41;</span>;
-Material mat <span class="sy0">=</span> <span class="kw1">new</span> Material<span class="br0">&#40;</span>assetManager, <span class="st0">&quot;Common/MatDefs/Misc/ShowNormals.j3md&quot;</span><span class="br0">&#41;</span>;
-teapot.<span class="me1">setMaterial</span><span class="br0">&#40;</span>mat<span class="br0">&#41;</span>;
-rootNode.<span class="me1">attachChild</span><span class="br0">&#40;</span>teapot<span class="br0">&#41;</span>;</pre></td>
+	<tr>
+		<td> Load a model without materials </td><td> If you have a model without materials, you have to add a default material to make it visible. <pre>Spatial teapot = assetManager.loadModel&#40;&quot;Models/Teapot/Teapot.obj&quot;&#41;;
+Material mat = new Material&#40;assetManager, &quot;Common/MatDefs/Misc/ShowNormals.j3md&quot;&#41;;
+teapot.setMaterial&#40;mat&#41;;
+rootNode.attachChild&#40;teapot&#41;;</pre></td>
 	</tr>
-	<tr class="row3">
-		<td class="col0"> Load a scene </td><td class="col1"> You load scenes just like you load models: <pre class="code java">Spatial scene <span class="sy0">=</span> assetManager.<span class="me1">loadModel</span><span class="br0">&#40;</span><span class="st0">&quot;Scenes/house/main.scene&quot;</span><span class="br0">&#41;</span>;
-rootNode.<span class="me1">attachChild</span><span class="br0">&#40;</span>scene<span class="br0">&#41;</span>;</pre></td>
+	<tr>
+		<td> Load a scene </td><td> You load scenes just like you load models: <pre>Spatial scene = assetManager.loadModel&#40;&quot;Scenes/house/main.scene&quot;&#41;;
+rootNode.attachChild&#40;scene&#41;;</pre></td>
 	</tr>
 </table>
 
 </div>
 
-<h2><a name="nullpointerexceptioncannot_locate_resource" id="nullpointerexceptioncannot_locate_resource">NullPointerException: Cannot locate resource?</a></h2>
-<div class="level2">
+<h2><a>NullPointerException: Cannot locate resource?</a></h2>
+<div>
 
 <p>
 
 An error mesage similar to the following can occur in the console when you run executables, even if the game runs fine when started from the jMoneykPlatform. 
 </p>
-<pre class="code">com.jme3.asset.DesktopAssetManager loadAsset
+<pre>com.jme3.asset.DesktopAssetManager loadAsset
 WARNING: Cannot locate resource: Scenes/town/main.scene
 com.jme3.app.Application handleError
 SEVERE: Uncaught exception thrown in Thread[LWJGL Renderer Thread,5,main]
@@ -117,24 +117,24 @@ For a stand-alone build, you <strong>work with .j3o files only</strong>. The def
 </p>
 
 <p>
-You must use the jMonkeyPlatform&#039;s context menu action to <a href="/com/jme3/gde/core/docs/jme3/jmonkeyplatform/model_loader_and_viewer.html" class="wikilink2" title="jme3:jmonkeyplatform:model_loader_and_viewer" rel="nofollow">convert OgreXML models to .j3o format</a> to get rid of this error. 
+You must use the jMonkeyPlatform&#039;s context menu action to <a href="/com/jme3/gde/core/docs/jme3/jmonkeyplatform/model_loader_and_viewer.html">convert OgreXML models to .j3o format</a> to get rid of this error. 
 
 </p>
 <ol>
-<li class="level1"><div class="li"> Open the JME3 Project in the jMonkeyplatform.</div>
+<li><div> Open the JME3 Project in the jMonkeyplatform.</div>
 </li>
-<li class="level1"><div class="li"> Browse the Assets directory in the Projects window. </div>
+<li><div> Browse the Assets directory in the Projects window. </div>
 </li>
-<li class="level1"><div class="li"> Right-click a .mesh.xml file, and choose “convert to JME3 binary”. </div>
+<li><div> Right-click a .mesh.xml file, and choose “convert to JME3 binary”. </div>
 </li>
-<li class="level1"><div class="li"> The converted file appears in the same directory as the .mesh.xml file. It has the same name  and a .j3o suffix. </div>
+<li><div> The converted file appears in the same directory as the .mesh.xml file. It has the same name  and a .j3o suffix. </div>
 </li>
 </ol>
 
 </div>
 
-<h2><a name="asset_handlingcodeless_projects" id="asset_handlingcodeless_projects">Asset Handling: Codeless Projects</a></h2>
-<div class="level2">
+<h2><a>Asset Handling: Codeless Projects</a></h2>
+<div>
 
 <p>
 

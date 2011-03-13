@@ -1,6 +1,6 @@
 
-<h1><a name="debugging" id="debugging">Debugging</a></h1>
-<div class="level1">
+<h1><a>Debugging</a></h1>
+<div>
 
 <p>
 
@@ -25,128 +25,128 @@ Here are some different debug shapes:
 
 </div>
 
-<h2><a name="debug_shapes" id="debug_shapes">Debug Shapes</a></h2>
-<div class="level2">
+<h2><a>Debug Shapes</a></h2>
+<div>
 
 </div>
 
-<h3><a name="coordinate_axes" id="coordinate_axes">Coordinate Axes</a></h3>
-<div class="level3">
+<h3><a>Coordinate Axes</a></h3>
+<div>
 
 <p>
 
 The coordinate axes (com.jme3.scene.debug.Arrow) help you see the cardinal directions (X,Y,Z) from their center point. Scale the arrows to use them as a “ruler” for a certain length. 
 </p>
-<pre class="code java"><span class="kw1">private</span> <span class="kw4">void</span> attachCoordinateAxes<span class="br0">&#40;</span>Vector3f pos<span class="br0">&#41;</span><span class="br0">&#123;</span>
-  Arrow arrow <span class="sy0">=</span> <span class="kw1">new</span> Arrow<span class="br0">&#40;</span>Vector3f.<span class="me1">UNIT_X</span><span class="br0">&#41;</span>;
-  arrow.<span class="me1">setLineWidth</span><span class="br0">&#40;</span><span class="nu0">4</span><span class="br0">&#41;</span>; <span class="co1">// make arrow thicker</span>
-  putShape<span class="br0">&#40;</span>arrow, ColorRGBA.<span class="me1">Red</span><span class="br0">&#41;</span>.<span class="me1">setLocalTranslation</span><span class="br0">&#40;</span>pos<span class="br0">&#41;</span>;
+<pre>private void attachCoordinateAxes&#40;Vector3f pos&#41;&#123;
+  Arrow arrow = new Arrow&#40;Vector3f.UNIT_X&#41;;
+  arrow.setLineWidth&#40;4&#41;; // make arrow thicker
+  putShape&#40;arrow, ColorRGBA.Red&#41;.setLocalTranslation&#40;pos&#41;;
 &nbsp;
-  Arrow arrow <span class="sy0">=</span> <span class="kw1">new</span> Arrow<span class="br0">&#40;</span>Vector3f.<span class="me1">UNIT_Y</span><span class="br0">&#41;</span>;
-  arrow.<span class="me1">setLineWidth</span><span class="br0">&#40;</span><span class="nu0">4</span><span class="br0">&#41;</span>; <span class="co1">// make arrow thicker</span>
-  putShape<span class="br0">&#40;</span>arrow, ColorRGBA.<span class="me1">Green</span><span class="br0">&#41;</span>.<span class="me1">setLocalTranslation</span><span class="br0">&#40;</span>pos<span class="br0">&#41;</span>;
+  Arrow arrow = new Arrow&#40;Vector3f.UNIT_Y&#41;;
+  arrow.setLineWidth&#40;4&#41;; // make arrow thicker
+  putShape&#40;arrow, ColorRGBA.Green&#41;.setLocalTranslation&#40;pos&#41;;
 &nbsp;
-  Arrow arrow <span class="sy0">=</span> <span class="kw1">new</span> Arrow<span class="br0">&#40;</span>Vector3f.<span class="me1">UNIT_Z</span><span class="br0">&#41;</span>;
-  arrow.<span class="me1">setLineWidth</span><span class="br0">&#40;</span><span class="nu0">4</span><span class="br0">&#41;</span>; <span class="co1">// make arrow thicker</span>
-  putShape<span class="br0">&#40;</span>arrow, ColorRGBA.<span class="me1">Blue</span><span class="br0">&#41;</span>.<span class="me1">setLocalTranslation</span><span class="br0">&#40;</span>pos<span class="br0">&#41;</span>;
-<span class="br0">&#125;</span>
+  Arrow arrow = new Arrow&#40;Vector3f.UNIT_Z&#41;;
+  arrow.setLineWidth&#40;4&#41;; // make arrow thicker
+  putShape&#40;arrow, ColorRGBA.Blue&#41;.setLocalTranslation&#40;pos&#41;;
+&#125;
 &nbsp;
-<span class="kw1">private</span> Geometry putShape<span class="br0">&#40;</span>Mesh shape, ColorRGBA color<span class="br0">&#41;</span><span class="br0">&#123;</span>
-  Geometry g <span class="sy0">=</span> <span class="kw1">new</span> Geometry<span class="br0">&#40;</span><span class="st0">&quot;coordinate axis&quot;</span>, shape<span class="br0">&#41;</span>;
-  Material mat <span class="sy0">=</span> <span class="kw1">new</span> Material<span class="br0">&#40;</span>assetManager, <span class="st0">&quot;Common/MatDefs/Misc/Unshaded.j3md&quot;</span><span class="br0">&#41;</span>;
-  mat.<span class="me1">getAdditionalRenderState</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">setWireframe</span><span class="br0">&#40;</span><span class="kw2">true</span><span class="br0">&#41;</span>;
-  mat.<span class="me1">setColor</span><span class="br0">&#40;</span><span class="st0">&quot;Color&quot;</span>, color<span class="br0">&#41;</span>;
-  g.<span class="me1">setMaterial</span><span class="br0">&#40;</span>mat<span class="br0">&#41;</span>;
-  rootNode.<span class="me1">attachChild</span><span class="br0">&#40;</span>g<span class="br0">&#41;</span>;
-  <span class="kw1">return</span> g;
-<span class="br0">&#125;</span></pre>
+private Geometry putShape&#40;Mesh shape, ColorRGBA color&#41;&#123;
+  Geometry g = new Geometry&#40;&quot;coordinate axis&quot;, shape&#41;;
+  Material mat = new Material&#40;assetManager, &quot;Common/MatDefs/Misc/Unshaded.j3md&quot;&#41;;
+  mat.getAdditionalRenderState&#40;&#41;.setWireframe&#40;true&#41;;
+  mat.setColor&#40;&quot;Color&quot;, color&#41;;
+  g.setMaterial&#40;mat&#41;;
+  rootNode.attachChild&#40;g&#41;;
+  return g;
+&#125;</pre>
 </div>
 
-<h3><a name="wireframe_grid" id="wireframe_grid">Wireframe Grid</a></h3>
-<div class="level3">
+<h3><a>Wireframe Grid</a></h3>
+<div>
 
 <p>
 
 Use a wireframe grid (com.jme3.scene.debug.Grid) as a ruler or simple floor.
 </p>
-<pre class="code java"><span class="kw1">private</span> <span class="kw4">void</span> attachGrid<span class="br0">&#40;</span>Vector3f pos, <span class="kw4">float</span> size, ColorRGBA color<span class="br0">&#41;</span><span class="br0">&#123;</span>
-  Geometry g <span class="sy0">=</span> <span class="kw1">new</span> Geometry<span class="br0">&#40;</span><span class="st0">&quot;wireframe grid&quot;</span>, <span class="kw1">new</span> Grid<span class="br0">&#40;</span>size, size, 0.2f<span class="br0">&#41;</span> <span class="br0">&#41;</span>;
-  Material mat <span class="sy0">=</span> <span class="kw1">new</span> Material<span class="br0">&#40;</span>assetManager, <span class="st0">&quot;Common/MatDefs/Misc/Unshaded.j3md&quot;</span><span class="br0">&#41;</span>;
-  mat.<span class="me1">getAdditionalRenderState</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">setWireframe</span><span class="br0">&#40;</span><span class="kw2">true</span><span class="br0">&#41;</span>;
-  mat.<span class="me1">setColor</span><span class="br0">&#40;</span><span class="st0">&quot;Color&quot;</span>, color<span class="br0">&#41;</span>;
-  g.<span class="me1">setMaterial</span><span class="br0">&#40;</span>mat<span class="br0">&#41;</span>;
-  g.<span class="me1">center</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">move</span><span class="br0">&#40;</span>pos<span class="br0">&#41;</span>;
-  rootNode.<span class="me1">attachChild</span><span class="br0">&#40;</span>g<span class="br0">&#41;</span>;
-  <span class="kw1">return</span> g;
-<span class="br0">&#125;</span></pre>
+<pre>private void attachGrid&#40;Vector3f pos, float size, ColorRGBA color&#41;&#123;
+  Geometry g = new Geometry&#40;&quot;wireframe grid&quot;, new Grid&#40;size, size, 0.2f&#41; &#41;;
+  Material mat = new Material&#40;assetManager, &quot;Common/MatDefs/Misc/Unshaded.j3md&quot;&#41;;
+  mat.getAdditionalRenderState&#40;&#41;.setWireframe&#40;true&#41;;
+  mat.setColor&#40;&quot;Color&quot;, color&#41;;
+  g.setMaterial&#40;mat&#41;;
+  g.center&#40;&#41;.move&#40;pos&#41;;
+  rootNode.attachChild&#40;g&#41;;
+  return g;
+&#125;</pre>
 </div>
 
-<h3><a name="wireframe_cube" id="wireframe_cube">Wireframe Cube</a></h3>
-<div class="level3">
+<h3><a>Wireframe Cube</a></h3>
+<div>
 
 <p>
 
 Use a wireframe cube (com.jme3.scene.debug.WireBox) as a stand-in object to see whether your code scales, positions, or orients, loaded models right.
 </p>
-<pre class="code java"><span class="kw1">public</span> <span class="kw4">void</span> attachWireBox<span class="br0">&#40;</span>Vector3f pos, <span class="kw4">float</span> size, ColorRGBA color<span class="br0">&#41;</span><span class="br0">&#123;</span>
-  Geometry g <span class="sy0">=</span> <span class="kw1">new</span> Geometry<span class="br0">&#40;</span><span class="st0">&quot;wireframe cube&quot;</span>, <span class="kw1">new</span> WireBox<span class="br0">&#40;</span>size, size, size<span class="br0">&#41;</span><span class="br0">&#41;</span>;
-  Material mat <span class="sy0">=</span> <span class="kw1">new</span> Material<span class="br0">&#40;</span>assetManager, <span class="st0">&quot;Common/MatDefs/Misc/Unshaded.j3md&quot;</span><span class="br0">&#41;</span>;
-  mat.<span class="me1">getAdditionalRenderState</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">setWireframe</span><span class="br0">&#40;</span><span class="kw2">true</span><span class="br0">&#41;</span>;
-  mat.<span class="me1">setColor</span><span class="br0">&#40;</span><span class="st0">&quot;Color&quot;</span>, color<span class="br0">&#41;</span>;
-  g.<span class="me1">setMaterial</span><span class="br0">&#40;</span>mat<span class="br0">&#41;</span>;
-  g.<span class="me1">setLocalTranslation</span><span class="br0">&#40;</span>pos<span class="br0">&#41;</span>;
-  rootNode.<span class="me1">attachChild</span><span class="br0">&#40;</span>g<span class="br0">&#41;</span>;
-  <span class="kw1">return</span> g;
-<span class="br0">&#125;</span></pre>
+<pre>public void attachWireBox&#40;Vector3f pos, float size, ColorRGBA color&#41;&#123;
+  Geometry g = new Geometry&#40;&quot;wireframe cube&quot;, new WireBox&#40;size, size, size&#41;&#41;;
+  Material mat = new Material&#40;assetManager, &quot;Common/MatDefs/Misc/Unshaded.j3md&quot;&#41;;
+  mat.getAdditionalRenderState&#40;&#41;.setWireframe&#40;true&#41;;
+  mat.setColor&#40;&quot;Color&quot;, color&#41;;
+  g.setMaterial&#40;mat&#41;;
+  g.setLocalTranslation&#40;pos&#41;;
+  rootNode.attachChild&#40;g&#41;;
+  return g;
+&#125;</pre>
 </div>
 
-<h3><a name="wireframe_sphere" id="wireframe_sphere">Wireframe Sphere</a></h3>
-<div class="level3">
+<h3><a>Wireframe Sphere</a></h3>
+<div>
 
 <p>
 
 Use a wireframe sphere (com.jme3.scene.debug.WireSphere) as a stand-in object to see whether your code scales, positions, or orients, loaded models right.
 </p>
-<pre class="code java"><span class="kw1">private</span> <span class="kw4">void</span> attachWireSphere<span class="br0">&#40;</span>Vector3f pos, <span class="kw4">float</span> size, ColorRGBA color<span class="br0">&#41;</span><span class="br0">&#123;</span>
-  Geometry g <span class="sy0">=</span> <span class="kw1">new</span> Geometry<span class="br0">&#40;</span><span class="st0">&quot;wireframe sphere&quot;</span>, <span class="kw1">new</span> WireSphere<span class="br0">&#40;</span>size<span class="br0">&#41;</span><span class="br0">&#41;</span>;
-  Material mat <span class="sy0">=</span> <span class="kw1">new</span> Material<span class="br0">&#40;</span>assetManager, <span class="st0">&quot;Common/MatDefs/Misc/Unshaded.j3md&quot;</span><span class="br0">&#41;</span>;
-  mat.<span class="me1">getAdditionalRenderState</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">setWireframe</span><span class="br0">&#40;</span><span class="kw2">true</span><span class="br0">&#41;</span>;
-  mat.<span class="me1">setColor</span><span class="br0">&#40;</span><span class="st0">&quot;Color&quot;</span>, color<span class="br0">&#41;</span>;
-  g.<span class="me1">setMaterial</span><span class="br0">&#40;</span>mat<span class="br0">&#41;</span>;
-  g.<span class="me1">setLocalTranslation</span><span class="br0">&#40;</span>pos<span class="br0">&#41;</span>;
-  rootNode.<span class="me1">attachChild</span><span class="br0">&#40;</span>g<span class="br0">&#41;</span>;
-  <span class="kw1">return</span> g;
-<span class="br0">&#125;</span></pre>
+<pre>private void attachWireSphere&#40;Vector3f pos, float size, ColorRGBA color&#41;&#123;
+  Geometry g = new Geometry&#40;&quot;wireframe sphere&quot;, new WireSphere&#40;size&#41;&#41;;
+  Material mat = new Material&#40;assetManager, &quot;Common/MatDefs/Misc/Unshaded.j3md&quot;&#41;;
+  mat.getAdditionalRenderState&#40;&#41;.setWireframe&#40;true&#41;;
+  mat.setColor&#40;&quot;Color&quot;, color&#41;;
+  g.setMaterial&#40;mat&#41;;
+  g.setLocalTranslation&#40;pos&#41;;
+  rootNode.attachChild&#40;g&#41;;
+  return g;
+&#125;</pre>
 </div>
 
-<h2><a name="wireframe_for_physics" id="wireframe_for_physics">Wireframe for Physics</a></h2>
-<div class="level2">
+<h2><a>Wireframe for Physics</a></h2>
+<div>
 
 <p>
 
 You can display a wireframe of the (usually invisible) collision shape around all physical objects. Use this for debugging when analyzing unexpected behaviour. Does not work with DETACHED physics, please switch to PARALLEL or SEQUENTIAL for debugging.
 </p>
-<pre class="code java">physicsSpace.<span class="me1">enableDebug</span><span class="br0">&#40;</span>assetManager<span class="br0">&#41;</span>;</pre>
+<pre>physicsSpace.enableDebug&#40;assetManager&#41;;</pre>
 </div>
 
-<h2><a name="wireframe_for_animations" id="wireframe_for_animations">Wireframe for Animations</a></h2>
-<div class="level2">
+<h2><a>Wireframe for Animations</a></h2>
+<div>
 
 <p>
 
 Making the skeleton visible inside animated models can be handy for debugging animations. The <code>control</code> object is an AnimControl, <code>player</code> is the loaded model.
 </p>
-<pre class="code java">     SkeletonDebugger skeletonDebug <span class="sy0">=</span> 
-         <span class="kw1">new</span> SkeletonDebugger<span class="br0">&#40;</span><span class="st0">&quot;skeleton&quot;</span>, control.<span class="me1">getSkeleton</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
-     Material mat <span class="sy0">=</span> <span class="kw1">new</span> Material<span class="br0">&#40;</span>assetManager, <span class="st0">&quot;Common/MatDefs/Misc/Unshaded.j3md&quot;</span><span class="br0">&#41;</span>;
-     mat.<span class="me1">setColor</span><span class="br0">&#40;</span><span class="st0">&quot;Color&quot;</span>, ColorRGBA.<span class="me1">Green</span><span class="br0">&#41;</span>;
-     mat.<span class="me1">getAdditionalRenderState</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">setDepthTest</span><span class="br0">&#40;</span><span class="kw2">false</span><span class="br0">&#41;</span>;
-     skeletonDebug.<span class="me1">setMaterial</span><span class="br0">&#40;</span>mat<span class="br0">&#41;</span>;
-     player.<span class="me1">attachChild</span><span class="br0">&#40;</span>skeletonDebug<span class="br0">&#41;</span>;</pre>
+<pre>     SkeletonDebugger skeletonDebug = 
+         new SkeletonDebugger&#40;&quot;skeleton&quot;, control.getSkeleton&#40;&#41;&#41;;
+     Material mat = new Material&#40;assetManager, &quot;Common/MatDefs/Misc/Unshaded.j3md&quot;&#41;;
+     mat.setColor&#40;&quot;Color&quot;, ColorRGBA.Green&#41;;
+     mat.getAdditionalRenderState&#40;&#41;.setDepthTest&#40;false&#41;;
+     skeletonDebug.setMaterial&#40;mat&#41;;
+     player.attachChild&#40;skeletonDebug&#41;;</pre>
 </div>
 
-<h2><a name="exampletoggle_wireframe_on_model" id="exampletoggle_wireframe_on_model">Example: Toggle Wireframe on Model</a></h2>
-<div class="level2">
+<h2><a>Example: Toggle Wireframe on Model</a></h2>
+<div>
 
 <p>
 
@@ -158,20 +158,20 @@ Then you can add a switch to toggle the model&#039;s wireframe on and off, like 
 
 </p>
 <ol>
-<li class="level1"><div class="li"> Create a key input trigger that switches between the two materials: E.g. we toggle when the T key is pressed: <pre class="code java">    inputManager.<span class="me1">addMapping</span><span class="br0">&#40;</span><span class="st0">&quot;toggle wireframe&quot;</span>, <span class="kw1">new</span> KeyTrigger<span class="br0">&#40;</span>KeyInput.<span class="me1">KEY_T</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
-    inputManager.<span class="me1">addListener</span><span class="br0">&#40;</span>actionListener, <span class="st0">&quot;toggle wireframe&quot;</span><span class="br0">&#41;</span>;</pre></div>
+<li><div> Create a key input trigger that switches between the two materials: E.g. we toggle when the T key is pressed: <pre>    inputManager.addMapping&#40;&quot;toggle wireframe&quot;, new KeyTrigger&#40;KeyInput.KEY_T&#41;&#41;;
+    inputManager.addListener&#40;actionListener, &quot;toggle wireframe&quot;&#41;;</pre></div>
 </li>
-<li class="level1"><div class="li"> Now add the toggle action to the action listener <pre class="code java">  <span class="kw1">private</span> <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Aactionlistener+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object><span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+<li><div> Now add the toggle action to the action listener <pre>  private ActionListener&#40;&#41; &#123;
     @Override
-    <span class="kw1">public</span> <span class="kw4">void</span> onAction<span class="br0">&#40;</span><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Astring+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object> name, <span class="kw4">boolean</span> pressed, <span class="kw4">float</span> tpf<span class="br0">&#41;</span> <span class="br0">&#123;</span>
-      <span class="co1">// toggle wireframe</span>
-      <span class="kw1">if</span> <span class="br0">&#40;</span>name.<span class="me1">equals</span><span class="br0">&#40;</span><span class="st0">&quot;toggle wireframe&quot;</span><span class="br0">&#41;</span> <span class="sy0">&amp;&amp;</span> <span class="sy0">!</span>pressed<span class="br0">&#41;</span> <span class="br0">&#123;</span>
-        wireframe <span class="sy0">=</span> <span class="sy0">!</span>wireframe; <span class="co1">// toggle boolean</span>
-        mat.<span class="me1">getAdditionalRenderState</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">setWireframe</span><span class="br0">&#40;</span>wireframe<span class="br0">&#41;</span>; 
-      <span class="br0">&#125;</span>
-      <span class="co1">// else ... other input tests.</span>
-    <span class="br0">&#125;</span>
-  <span class="br0">&#125;</span>;</pre></div>
+    public void onAction&#40;String name, boolean pressed, float tpf&#41; &#123;
+      // toggle wireframe
+      if &#40;name.equals&#40;&quot;toggle wireframe&quot;&#41; &amp;&amp; !pressed&#41; &#123;
+        wireframe = !wireframe; // toggle boolean
+        mat.getAdditionalRenderState&#40;&#41;.setWireframe&#40;wireframe&#41;; 
+      &#125;
+      // else ... other input tests.
+    &#125;
+  &#125;;</pre></div>
 </li>
 </ol>
 

@@ -1,6 +1,6 @@
 
-<h1><a name="introduction_to_mathematical_functionality" id="introduction_to_mathematical_functionality">Introduction to Mathematical Functionality</a></h1>
-<div class="level1">
+<h1><a>Introduction to Mathematical Functionality</a></h1>
+<div>
 
 <p>
 
@@ -12,18 +12,18 @@ I&#039;ll discuss how these are used in the system for the core functionality. I
 </p>
 
 <p>
-To get a visual introduction to math in jME3 for the absolute beginner, check out our <a href="/com/jme3/gde/core/docs/jme3/math_for_dummies.html" class="wikilink1" title="jme3:math_for_dummies">Math for Dummies</a> introduction class.
+To get a visual introduction to math in jME3 for the absolute beginner, check out our <a href="/com/jme3/gde/core/docs/jme3/math_for_dummies.html">Math for Dummies</a> introduction class.
 </p>
 
 </div>
 
-<h2><a name="coordinate_system" id="coordinate_system">Coordinate System</a></h2>
-<div class="level2">
+<h2><a>Coordinate System</a></h2>
+<div>
 
 </div>
 
-<h3><a name="definition" id="definition">Definition</a></h3>
-<div class="level3">
+<h3><a>Definition</a></h3>
+<div>
 
 <p>
 
@@ -44,8 +44,8 @@ The definition of a coordinate system is defined in jME by the properties sent t
 
 </div>
 
-<h2><a name="transformations" id="transformations">Transformations</a></h2>
-<div class="level2">
+<h2><a>Transformations</a></h2>
+<div>
 
 <p>
 
@@ -54,8 +54,8 @@ Transformations define an operation that converts points from one coordinate sys
 
 </div>
 
-<h2><a name="visibility_determination" id="visibility_determination">Visibility Determination</a></h2>
-<div class="level2">
+<h2><a>Visibility Determination</a></h2>
+<div>
 
 <p>
 
@@ -64,18 +64,18 @@ Visibility Determination concerns itself with minimizing the amount of data that
 
 </div>
 
-<h1><a name="fundamental_types" id="fundamental_types">Fundamental Types</a></h1>
-<div class="level1">
+<h1><a>Fundamental Types</a></h1>
+<div>
 
 </div>
 
-<h2><a name="colorrgba" id="colorrgba">ColorRGBA</a></h2>
-<div class="level2">
+<h2><a>ColorRGBA</a></h2>
+<div>
 
 </div>
 
-<h3><a name="definition1" id="definition1">Definition</a></h3>
-<div class="level3">
+<h3><a>Definition</a></h3>
+<div>
 
 <p>
 
@@ -88,28 +88,28 @@ ColorRGBA defines a color value in the jME library. The color value is made of t
 
 </div>
 
-<h3><a name="jme_class" id="jme_class">jME Class</a></h3>
-<div class="level3">
+<h3><a>jME Class</a></h3>
+<div>
 
 <p>
 
 ColorRGBA defines a few static color values for ease of use. That is, rather than:
 </p>
-<pre class="code java">ColorRGBA red <span class="sy0">=</span> <span class="kw1">new</span> ColorRGBA<span class="br0">&#40;</span><span class="nu0">1</span>,0,0,<span class="nu0">1</span><span class="br0">&#41;</span>;
-object.<span class="me1">setSomeColor</span><span class="br0">&#40;</span>red<span class="br0">&#41;</span>;</pre>
+<pre>ColorRGBA red = new ColorRGBA&#40;1,0,0,1&#41;;
+object.setSomeColor&#40;red&#41;;</pre>
 <p>
 you can simply say:
 
 </p>
-<pre class="code java">object.<span class="me1">setSomeColor</span><span class="br0">&#40;</span>ColorRGBA.<span class="me1">red</span><span class="br0">&#41;</span></pre>
+<pre>object.setSomeColor&#40;ColorRGBA.red&#41;</pre>
 <p>
 ColorRGBA will also handle interpolation between two colors. Given a second color and a value between 0 and 1, a the owning ColorRGBA object will have its color values altered to this new interpolated color.
 </p>
 
 </div>
 
-<h2><a name="matrix" id="matrix">Matrix</a></h2>
-<div class="level2">
+<h2><a>Matrix</a></h2>
+<div>
 
 <p>
 
@@ -120,8 +120,8 @@ and <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param
 
 </div>
 
-<h3><a name="definition2" id="definition2">Definition</a></h3>
-<div class="level3">
+<h3><a>Definition</a></h3>
+<div>
 
 <p>
 
@@ -135,15 +135,15 @@ There are a few special matrices:
 <p>
 <em>zero matrix</em> is the Matrix with all zero entries. 
 </p>
-<table class="inline">
-	<tr class="row0">
-		<td class="col0">0</td><td class="col1">0</td><td class="col2">0</td>
+<table>
+	<tr>
+		<td>0</td><td>0</td><td>0</td>
 	</tr>
-	<tr class="row1">
-		<td class="col0">0</td><td class="col1">0</td><td class="col2">0</td>
+	<tr>
+		<td>0</td><td>0</td><td>0</td>
 	</tr>
-	<tr class="row2">
-		<td class="col0">0</td><td class="col1">0</td><td class="col2">0</td>
+	<tr>
+		<td>0</td><td>0</td><td>0</td>
 	</tr>
 </table>
 
@@ -151,15 +151,15 @@ There are a few special matrices:
 
 The <em>Identity Matrix</em> is the matrix with 1 on the diagonal entries and 0 for all other entries. 
 </p>
-<table class="inline">
-	<tr class="row0">
-		<td class="col0">1</td><td class="col1">0</td><td class="col2">0</td>
+<table>
+	<tr>
+		<td>1</td><td>0</td><td>0</td>
 	</tr>
-	<tr class="row1">
-		<td class="col0">0</td><td class="col1">1</td><td class="col2">0</td>
+	<tr>
+		<td>0</td><td>1</td><td>0</td>
 	</tr>
-	<tr class="row2">
-		<td class="col0">0</td><td class="col1">0</td><td class="col2">1</td>
+	<tr>
+		<td>0</td><td>0</td><td>1</td>
 	</tr>
 </table>
 
@@ -172,15 +172,15 @@ A Matrix is <em>invertible</em> if there is a matrix <em>M<sup>-1</sup></em> whe
 
 The <em>transpose</em> of a matrix <em>M = [m<sub>ij</sub>]</em> is <em>M<sup>T</sup> = [m<sub>ji</sub>]</em>. This causes the rows of <em>M</em> to become the columns of <em>M<sup>T</sup></em>.
 </p>
-<table class="inline">
-	<tr class="row0">
-		<td class="col0">1</td><td class="col1">1</td><td class="col2">1</td><td class="col3 rightalign">    </td><td class="col4">1</td><td class="col5">2</td><td class="col6">3</td>
+<table>
+	<tr>
+		<td>1</td><td>1</td><td>1</td><td>    </td><td>1</td><td>2</td><td>3</td>
 	</tr>
-	<tr class="row1">
-		<td class="col0">2</td><td class="col1">2</td><td class="col2">2</td><td class="col3"> ⇒ </td><td class="col4">1</td><td class="col5">2</td><td class="col6">3</td>
+	<tr>
+		<td>2</td><td>2</td><td>2</td><td> ⇒ </td><td>1</td><td>2</td><td>3</td>
 	</tr>
-	<tr class="row2">
-		<td class="col0">3</td><td class="col1">3</td><td class="col2">3</td><td class="col3 rightalign">    </td><td class="col4">1</td><td class="col5">2</td><td class="col6">3</td>
+	<tr>
+		<td>3</td><td>3</td><td>3</td><td>    </td><td>1</td><td>2</td><td>3</td>
 	</tr>
 </table>
 
@@ -188,15 +188,15 @@ The <em>transpose</em> of a matrix <em>M = [m<sub>ij</sub>]</em> is <em>M<sup>T<
 
 A Matrix is symmetric if <em>M</em> = <em>M<sup>T</sup></em>. 
 </p>
-<table class="inline">
-	<tr class="row0">
-		<td class="col0">X</td><td class="col1">A</td><td class="col2">B</td>
+<table>
+	<tr>
+		<td>X</td><td>A</td><td>B</td>
 	</tr>
-	<tr class="row1">
-		<td class="col0">A</td><td class="col1">X</td><td class="col2">C</td>
+	<tr>
+		<td>A</td><td>X</td><td>C</td>
 	</tr>
-	<tr class="row2">
-		<td class="col0">B</td><td class="col1">C</td><td class="col2">X</td>
+	<tr>
+		<td>B</td><td>C</td><td>X</td>
 	</tr>
 </table>
 
@@ -210,8 +210,8 @@ jME includes two types of Matrix classes: Matrix3f and Matrix4f. Matrix3f is a 3
 
 </div>
 
-<h3><a name="transformations1" id="transformations1">Transformations</a></h3>
-<div class="level3">
+<h3><a>Transformations</a></h3>
+<div>
 
 <p>
 
@@ -220,8 +220,8 @@ Multiplying a vector with a Matrix allows the vector to be transformed. Either r
 
 </div>
 
-<h4><a name="scaling" id="scaling">Scaling</a></h4>
-<div class="level4">
+<h4><a>Scaling</a></h4>
+<div>
 
 <p>
 
@@ -230,42 +230,42 @@ If a <em>diagonal Matrix</em>, defined by D = [d<sub>ij</sub>] and d<sub>ij</sub
 
 </div>
 
-<h4><a name="rotation" id="rotation">Rotation</a></h4>
-<div class="level4">
+<h4><a>Rotation</a></h4>
+<div>
 
 <p>
 
 A <em>rotation matrix</em> requires that the transpose and inverse are the same matrix (R<sup>-1</sup> = R<sup>T</sup>). The <em>rotation matrix</em> R can then be calculated as: R = I + (sin(angle)) S + (1 - cos(angle)S<sup>2</sup> where S is:
 
 </p>
-<table class="inline">
-	<tr class="row0">
-		<td class="col0">0</td><td class="col1">u<sub>2</sub></td><td class="col2">-u<sub>1</sub></td>
+<table>
+	<tr>
+		<td>0</td><td>u<sub>2</sub></td><td>-u<sub>1</sub></td>
 	</tr>
-	<tr class="row1">
-		<td class="col0">-u<sub>2</sub></td><td class="col1">0</td><td class="col2">u<sub>0</sub></td>
+	<tr>
+		<td>-u<sub>2</sub></td><td>0</td><td>u<sub>0</sub></td>
 	</tr>
-	<tr class="row2">
-		<td class="col0">u<sub>1</sub></td><td class="col1">-u<sub>0</sub></td><td class="col2">0</td>
+	<tr>
+		<td>u<sub>1</sub></td><td>-u<sub>0</sub></td><td>0</td>
 	</tr>
 </table>
 
 </div>
 
-<h4><a name="translation" id="translation">Translation</a></h4>
-<div class="level4">
+<h4><a>Translation</a></h4>
+<div>
 
 <p>
 
 Translation requires a 4&times;4 matrix, where the vector (x,y,z) is mapped to (x,y,z,1) for multiplication. The <em>Translation Matrix</em> is then defined as:
 
 </p>
-<table class="inline">
-	<tr class="row0">
-		<td class="col0">M</td><td class="col1">T</td>
+<table>
+	<tr>
+		<td>M</td><td>T</td>
 	</tr>
-	<tr class="row1">
-		<td class="col0">S<sup>T</sup></td><td class="col1">1</td>
+	<tr>
+		<td>S<sup>T</sup></td><td>1</td>
 	</tr>
 </table>
 
@@ -276,8 +276,8 @@ where M is the 3&times;3 matrix (containing any rotation/scale information), T i
 
 </div>
 
-<h3><a name="jme_class1" id="jme_class1">jME Class</a></h3>
-<div class="level3">
+<h3><a>jME Class</a></h3>
+<div>
 
 <p>
 
@@ -290,8 +290,8 @@ Most methods are straight forward, and I will leave documentation to the Javadoc
 
 </div>
 
-<h2><a name="vector" id="vector">Vector</a></h2>
-<div class="level2">
+<h2><a>Vector</a></h2>
+<div>
 
 <p>
 
@@ -302,8 +302,8 @@ and <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param
 
 </div>
 
-<h3><a name="definition3" id="definition3">Definition</a></h3>
-<div class="level3">
+<h3><a>Definition</a></h3>
+<div>
 
 <p>
 
@@ -320,13 +320,13 @@ We have two Vectors (2f and 3f) meaning we have tuples of 2 float values or 3 fl
 
 </div>
 
-<h3><a name="operations" id="operations">Operations</a></h3>
-<div class="level3">
+<h3><a>Operations</a></h3>
+<div>
 
 </div>
 
-<h4><a name="multiplication_by_scalar" id="multiplication_by_scalar">Multiplication by Scalar</a></h4>
-<div class="level4">
+<h4><a>Multiplication by Scalar</a></h4>
+<div>
 
 <p>
 
@@ -335,8 +335,8 @@ A Vector can be multiplied by a scalar value to produce a second Vector with the
 
 </div>
 
-<h4><a name="addition_and_subtraction" id="addition_and_subtraction">Addition and Subtraction</a></h4>
-<div class="level4">
+<h4><a>Addition and Subtraction</a></h4>
+<div>
 
 <p>
 
@@ -349,8 +349,8 @@ Adding or subtracting two Vectors occurs component-wise. That is the first compo
 
 </div>
 
-<h4><a name="magnitude" id="magnitude">Magnitude</a></h4>
-<div class="level4">
+<h4><a>Magnitude</a></h4>
+<div>
 
 <p>
 
@@ -367,8 +367,8 @@ A Vector can be <em>normalized</em> or made <em>unit length</em> by multiplying 
 
 </div>
 
-<h4><a name="dot_products" id="dot_products">Dot Products</a></h4>
-<div class="level4">
+<h4><a>Dot Products</a></h4>
+<div>
 
 <p>
 
@@ -386,8 +386,8 @@ If the dot product is 0 then the two Vectors are <em>orthogonal</em> or 90 degre
 
 </div>
 
-<h4><a name="cross_product" id="cross_product">Cross Product</a></h4>
-<div class="level4">
+<h4><a>Cross Product</a></h4>
+<div>
 
 <p>
 
@@ -400,8 +400,8 @@ The Cross Product of two Vectors returns a third Vector that is prependicular to
 
 </div>
 
-<h4><a name="jme_class2" id="jme_class2">jME Class</a></h4>
-<div class="level4">
+<h4><a>jME Class</a></h4>
+<div>
 
 <p>
 
@@ -410,8 +410,8 @@ Vector3f and Vector2f store their values (x, y, z) and (x, y) respectively as fl
 
 </div>
 
-<h2><a name="quaternion" id="quaternion">Quaternion</a></h2>
-<div class="level2">
+<h2><a>Quaternion</a></h2>
+<div>
 
 <p>
 
@@ -420,8 +420,8 @@ See <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param
 
 </div>
 
-<h3><a name="definition4" id="definition4">Definition</a></h3>
-<div class="level3">
+<h3><a>Definition</a></h3>
+<div>
 
 <p>
 
@@ -429,11 +429,11 @@ Quaternions define a subset of a hypercomplex number system. Quaternions are def
 </p>
 
 <p>
-Additional benefits of the Quaternion is reducing the chance of <a href="/com/jme3/gde/core/docs/jme3/gimbal_lock.html" class="wikilink2" title="jme3:gimbal_lock" rel="nofollow">Gimbal Lock</a> and allowing for easily interpolation between two rotations (spherical linear interpolation or slerp).
+Additional benefits of the Quaternion is reducing the chance of <a href="/com/jme3/gde/core/docs/jme3/gimbal_lock.html">Gimbal Lock</a> and allowing for easily interpolation between two rotations (spherical linear interpolation or slerp).
 </p>
 
 <p>
-While Quaternions are quite difficult to fully understand, there are an exceeding number of convenience methods to allow you to use them without having to understand the math behind it. Basically, these methods involve nothing more than setting the Quaternion&#039;s x,y,z,w values using other means of representing rotations. The Quaternion is then contained in <a href="/com/jme3/gde/core/docs/jme3/spatial.html" class="wikilink2" title="jme3:spatial" rel="nofollow">Spatial</a> as its local rotation component.
+While Quaternions are quite difficult to fully understand, there are an exceeding number of convenience methods to allow you to use them without having to understand the math behind it. Basically, these methods involve nothing more than setting the Quaternion&#039;s x,y,z,w values using other means of representing rotations. The Quaternion is then contained in <a href="/com/jme3/gde/core/docs/jme3/spatial.html">Spatial</a> as its local rotation component.
 </p>
 
 <p>
@@ -484,8 +484,8 @@ These basic operations allow us to convert various rotation representations to Q
 
 </div>
 
-<h3><a name="angle_axis" id="angle_axis">Angle Axis</a></h3>
-<div class="level3">
+<h3><a>Angle Axis</a></h3>
+<div>
 
 <p>
 
@@ -494,17 +494,17 @@ You might wish to represent your rotations as Angle Axis pairs. That is, you def
 
 </div>
 
-<h4><a name="example_-_rotate_a_spatial_using_fromangleaxis" id="example_-_rotate_a_spatial_using_fromangleaxis">Example - Rotate a Spatial Using fromAngleAxis</a></h4>
-<div class="level4">
-<pre class="code java"><span class="co1">//rotate about the Y-Axis by approximately 1 pi</span>
-Vector3f axis <span class="sy0">=</span> Vector3f.<span class="me1">UNIT_Y</span>; 
-<span class="co1">// UNIT_Y equals (0,1,0) and does not require to create a new object</span>
-<span class="kw4">float</span> angle <span class="sy0">=</span> 3.14f;
-s.<span class="me1">getLocalRotation</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">fromAngleAxis</span><span class="br0">&#40;</span>angle, axis<span class="br0">&#41;</span>;</pre>
+<h4><a>Example - Rotate a Spatial Using fromAngleAxis</a></h4>
+<div>
+<pre>//rotate about the Y-Axis by approximately 1 pi
+Vector3f axis = Vector3f.UNIT_Y; 
+// UNIT_Y equals (0,1,0) and does not require to create a new object
+float angle = 3.14f;
+s.getLocalRotation&#40;&#41;.fromAngleAxis&#40;angle, axis&#41;;</pre>
 </div>
 
-<h3><a name="three_angles" id="three_angles">Three Angles</a></h3>
-<div class="level3">
+<h3><a>Three Angles</a></h3>
+<div>
 
 <p>
 
@@ -513,61 +513,61 @@ You can also represent a rotation by defining three angles. The angles represent
 
 </div>
 
-<h4><a name="example_-_rotate_a_spatial_using_fromangles" id="example_-_rotate_a_spatial_using_fromangles">Example - Rotate a Spatial Using fromAngles</a></h4>
-<div class="level4">
-<pre class="code java"><span class="co1">//rotate 1 radian on the x, 3 on the y and 0 on z</span>
-<span class="kw4">float</span><span class="br0">&#91;</span><span class="br0">&#93;</span> angles <span class="sy0">=</span> <span class="br0">&#123;</span><span class="nu0">1</span>, <span class="nu0">3</span>, 0<span class="br0">&#125;</span>;
-s.<span class="me1">getLocalRotation</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">fromAngles</span><span class="br0">&#40;</span>angles<span class="br0">&#41;</span>;</pre>
+<h4><a>Example - Rotate a Spatial Using fromAngles</a></h4>
+<div>
+<pre>//rotate 1 radian on the x, 3 on the y and 0 on z
+float&#91;&#93; angles = &#123;1, 3, 0&#125;;
+s.getLocalRotation&#40;&#41;.fromAngles&#40;angles&#41;;</pre>
 </div>
 
-<h3><a name="three_axes" id="three_axes">Three Axes</a></h3>
-<div class="level3">
+<h3><a>Three Axes</a></h3>
+<div>
 
 <p>
 
-If you have three axes that define your rotation, where the axes define the left axis, up axis and directional axis respectively) you can make use of <code>fromAxes</code> to generate the Quaternion. It should be noted that this will generate a new <a href="/com/jme3/gde/core/docs/jme3/matrix.html" class="wikilink2" title="jme3:matrix" rel="nofollow">Matrix</a> object that is then garbage collected, thus, this method should not be used if it will be called many times. Again, <code>toAxes</code> will populate a <a href="/com/jme3/gde/core/docs/jme3/vector.html" class="wikilink2" title="jme3:vector" rel="nofollow">Vector3f</a> array.
+If you have three axes that define your rotation, where the axes define the left axis, up axis and directional axis respectively) you can make use of <code>fromAxes</code> to generate the Quaternion. It should be noted that this will generate a new <a href="/com/jme3/gde/core/docs/jme3/matrix.html">Matrix</a> object that is then garbage collected, thus, this method should not be used if it will be called many times. Again, <code>toAxes</code> will populate a <a href="/com/jme3/gde/core/docs/jme3/vector.html">Vector3f</a> array.
 </p>
 
 </div>
 
-<h4><a name="example_-_rotate_a_spatial_using_fromaxes" id="example_-_rotate_a_spatial_using_fromaxes">Example - Rotate a Spatial Using fromAxes</a></h4>
-<div class="level4">
-<pre class="code java"><span class="co1">//rotate a spatial to face up ~45 degrees</span>
-Vector3f<span class="br0">&#91;</span><span class="br0">&#93;</span> axes <span class="sy0">=</span> <span class="kw1">new</span> Vector3f<span class="br0">&#91;</span><span class="nu0">3</span><span class="br0">&#93;</span>;
-axes<span class="br0">&#91;</span>0<span class="br0">&#93;</span> <span class="sy0">=</span> <span class="kw1">new</span> Vector3f<span class="br0">&#40;</span><span class="sy0">-</span><span class="nu0">1</span>, 0, 0<span class="br0">&#41;</span>; <span class="co1">//left</span>
-axes<span class="br0">&#91;</span><span class="nu0">1</span><span class="br0">&#93;</span> <span class="sy0">=</span> <span class="kw1">new</span> Vector3f<span class="br0">&#40;</span>0, 0.5f, 0.5f<span class="br0">&#41;</span>; <span class="co1">//up</span>
-axes<span class="br0">&#91;</span><span class="nu0">2</span><span class="br0">&#93;</span> <span class="sy0">=</span> <span class="kw1">new</span> Vector3f<span class="br0">&#40;</span>0, 0.5f, 0.5f<span class="br0">&#41;</span>; <span class="co1">//dir</span>
+<h4><a>Example - Rotate a Spatial Using fromAxes</a></h4>
+<div>
+<pre>//rotate a spatial to face up ~45 degrees
+Vector3f&#91;&#93; axes = new Vector3f&#91;3&#93;;
+axes&#91;0&#93; = new Vector3f&#40;-1, 0, 0&#41;; //left
+axes&#91;1&#93; = new Vector3f&#40;0, 0.5f, 0.5f&#41;; //up
+axes&#91;2&#93; = new Vector3f&#40;0, 0.5f, 0.5f&#41;; //dir
 &nbsp;
-s.<span class="me1">getLocalRotation</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">fromAxes</span><span class="br0">&#40;</span>axes<span class="br0">&#41;</span>;</pre>
+s.getLocalRotation&#40;&#41;.fromAxes&#40;axes&#41;;</pre>
 </div>
 
-<h3><a name="rotation_matrix" id="rotation_matrix">Rotation Matrix</a></h3>
-<div class="level3">
+<h3><a>Rotation Matrix</a></h3>
+<div>
 
 <p>
 
-Commonly you might find yourself with a <a href="/com/jme3/gde/core/docs/jme3/matrix.html" class="wikilink2" title="jme3:matrix" rel="nofollow">Matrix</a> defining a rotation. In fact, it&#039;s very common to contain a rotation in a <a href="/com/jme3/gde/core/docs/jme3/matrix.html" class="wikilink2" title="jme3:matrix" rel="nofollow">Matrix</a> create a Quaternion, rotate the Quaternion, and then get the <a href="/com/jme3/gde/core/docs/jme3/matrix.html" class="wikilink2" title="jme3:matrix" rel="nofollow">Matrix</a> back. Quaternion contains a <code>fromRotationMatrix</code> method that will create the appropriate Quaternion based on the give <a href="/com/jme3/gde/core/docs/jme3/matrix.html" class="wikilink2" title="jme3:matrix" rel="nofollow">Matrix</a>. The <code>toRotationMatrix</code> will populate a given <a href="/com/jme3/gde/core/docs/jme3/matrix.html" class="wikilink2" title="jme3:matrix" rel="nofollow">Matrix</a>.
+Commonly you might find yourself with a <a href="/com/jme3/gde/core/docs/jme3/matrix.html">Matrix</a> defining a rotation. In fact, it&#039;s very common to contain a rotation in a <a href="/com/jme3/gde/core/docs/jme3/matrix.html">Matrix</a> create a Quaternion, rotate the Quaternion, and then get the <a href="/com/jme3/gde/core/docs/jme3/matrix.html">Matrix</a> back. Quaternion contains a <code>fromRotationMatrix</code> method that will create the appropriate Quaternion based on the give <a href="/com/jme3/gde/core/docs/jme3/matrix.html">Matrix</a>. The <code>toRotationMatrix</code> will populate a given <a href="/com/jme3/gde/core/docs/jme3/matrix.html">Matrix</a>.
 </p>
 
 </div>
 
-<h4><a name="example_-_rotate_a_spatial_using_a_rotation_matrix" id="example_-_rotate_a_spatial_using_a_rotation_matrix">Example - Rotate a Spatial Using a Rotation Matrix</a></h4>
-<div class="level4">
-<pre class="code java">&nbsp;
-Matrix3f mat <span class="sy0">=</span> <span class="kw1">new</span> Matrix3f<span class="br0">&#40;</span><span class="br0">&#41;</span>;
-mat.<span class="me1">setColumn</span><span class="br0">&#40;</span>0, <span class="kw1">new</span> Vector3f<span class="br0">&#40;</span><span class="nu0">1</span>,0,0<span class="br0">&#41;</span><span class="br0">&#41;</span>;
-mat.<span class="me1">setColumn</span><span class="br0">&#40;</span><span class="nu0">1</span>, <span class="kw1">new</span> Vector3f<span class="br0">&#40;</span>0,<span class="sy0">-</span><span class="nu0">1</span>,0<span class="br0">&#41;</span><span class="br0">&#41;</span>;
-mat.<span class="me1">setColumn</span><span class="br0">&#40;</span><span class="nu0">2</span>, <span class="kw1">new</span> Vector3f<span class="br0">&#40;</span>0,0,<span class="nu0">1</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
+<h4><a>Example - Rotate a Spatial Using a Rotation Matrix</a></h4>
+<div>
+<pre>&nbsp;
+Matrix3f mat = new Matrix3f&#40;&#41;;
+mat.setColumn&#40;0, new Vector3f&#40;1,0,0&#41;&#41;;
+mat.setColumn&#40;1, new Vector3f&#40;0,-1,0&#41;&#41;;
+mat.setColumn&#40;2, new Vector3f&#40;0,0,1&#41;&#41;;
 &nbsp;
-s.<span class="me1">getLocalRotation</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">fromRotationMatrix</span><span class="br0">&#40;</span>mat<span class="br0">&#41;</span>;</pre>
+s.getLocalRotation&#40;&#41;.fromRotationMatrix&#40;mat&#41;;</pre>
 <p>
 As you can see there are many ways to build a Quaternion. This allows you to work with rotations in a way that is conceptually easier to picture, but still build Quaternions for internal representation.
 </p>
 
 </div>
 
-<h3><a name="slerp" id="slerp">Slerp</a></h3>
-<div class="level3">
+<h3><a>Slerp</a></h3>
+<div>
 
 <p>
 
@@ -576,33 +576,33 @@ One of the biggest advantages to using Quaternions is allowing interpolation bet
 
 </div>
 
-<h4><a name="example_-_use_slerp_to_rotate_between_two_quaternions" id="example_-_use_slerp_to_rotate_between_two_quaternions">Example - Use Slerp to Rotate Between two Quaternions</a></h4>
-<div class="level4">
-<pre class="code java">Quaternion q1;
+<h4><a>Example - Use Slerp to Rotate Between two Quaternions</a></h4>
+<div>
+<pre>Quaternion q1;
 Quaternion q2;
 &nbsp;
-<span class="co1">//the rotation half-way between these two</span>
-Quaternion q3 <span class="sy0">=</span> q1.<span class="me1">slerp</span><span class="br0">&#40;</span>q2, 0.5f<span class="br0">&#41;</span>;</pre>
+//the rotation half-way between these two
+Quaternion q3 = q1.slerp&#40;q2, 0.5f&#41;;</pre>
 </div>
 
-<h3><a name="multiplication" id="multiplication">Multiplication</a></h3>
-<div class="level3">
+<h3><a>Multiplication</a></h3>
+<div>
 
 <p>
 
 You can concatenate (add) rotations: This means you turn the object first around one axis, then around the other, in one step.
 </p>
-<pre class="code java">Quaternion myRotation <span class="sy0">=</span> pitch90.<span class="me1">mult</span><span class="br0">&#40;</span>roll45<span class="br0">&#41;</span>; <span class="coMULTI">/* pitch and roll */</span></pre>
+<pre>Quaternion myRotation = pitch90.mult&#40;roll45&#41;; /* pitch and roll */</pre>
 <p>
 To rotate a Vector3f around its origin by the Quaternion amount, use the multLocal method of the Quaternion:
 </p>
-<pre class="code java">Quaternion myRotation <span class="sy0">=</span> pitch90;
-Vector3f myVector <span class="sy0">=</span> <span class="kw1">new</span> Vector3f<span class="br0">&#40;</span>0,0,<span class="sy0">-</span><span class="nu0">1</span><span class="br0">&#41;</span>;
-myRotation.<span class="me1">multLocal</span><span class="br0">&#40;</span>myVector<span class="br0">&#41;</span>;</pre>
+<pre>Quaternion myRotation = pitch90;
+Vector3f myVector = new Vector3f&#40;0,0,-1&#41;;
+myRotation.multLocal&#40;myVector&#41;;</pre>
 </div>
 
-<h1><a name="utility_classes" id="utility_classes">Utility Classes</a></h1>
-<div class="level1">
+<h1><a>Utility Classes</a></h1>
+<div>
 
 <p>
 
@@ -611,8 +611,8 @@ Along with the base Math classes, jME provides a number of Math classes to make 
 
 </div>
 
-<h2><a name="fast_math" id="fast_math">Fast Math</a></h2>
-<div class="level2">
+<h2><a>Fast Math</a></h2>
+<div>
 
 <p>
 
@@ -621,8 +621,8 @@ See <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param
 
 </div>
 
-<h3><a name="definition5" id="definition5">Definition</a></h3>
-<div class="level3">
+<h3><a>Definition</a></h3>
+<div>
 
 <p>
 
@@ -631,8 +631,8 @@ FastMath provides a number of convience methods, and where possible faster versi
 
 </div>
 
-<h3><a name="usage" id="usage">Usage</a></h3>
-<div class="level3">
+<h3><a>Usage</a></h3>
+<div>
 
 <p>
 
@@ -645,85 +645,85 @@ There are five major categories of functions that FastMath provides.
 
 </div>
 
-<h4><a name="trig_functions" id="trig_functions">Trig Functions</a></h4>
-<div class="level4">
+<h4><a>Trig Functions</a></h4>
+<div>
 <ul>
-<li class="level1"><div class="li">cos and acos - provide <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://en.wikipedia.org/wiki/cosine"><param name="text" value="<html><u>arc cosine</u></html>"><param name="textColor" value="blue"></object> values (make use of the look-up table if <code>USE_FAST_TRIG</code> is true)</div>
+<li><div>cos and acos - provide <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://en.wikipedia.org/wiki/cosine"><param name="text" value="<html><u>cosine</u></html>"><param name="textColor" value="blue"></object> and <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://en.wikipedia.org/wiki/arc cosine"><param name="text" value="<html><u>arc cosine</u></html>"><param name="textColor" value="blue"></object> values (make use of the look-up table if <code>USE_FAST_TRIG</code> is true)</div>
 </li>
-<li class="level1"><div class="li">sin and asin - provide <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://en.wikipedia.org/wiki/sine"><param name="text" value="<html><u>arc sine</u></html>"><param name="textColor" value="blue"></object> values (make use of the look-up table if <code>USE_FAST_TRIG</code> is true)</div>
+<li><div>sin and asin - provide <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://en.wikipedia.org/wiki/sine"><param name="text" value="<html><u>sine</u></html>"><param name="textColor" value="blue"></object> and <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://en.wikipedia.org/wiki/arc sine"><param name="text" value="<html><u>arc sine</u></html>"><param name="textColor" value="blue"></object> values (make use of the look-up table if <code>USE_FAST_TRIG</code> is true)</div>
 </li>
-<li class="level1"><div class="li">tan and atan - provide <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://en.wikipedia.org/wiki/tangent"><param name="text" value="<html><u>arc tangent</u></html>"><param name="textColor" value="blue"></object> values</div>
+<li><div>tan and atan - provide <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://en.wikipedia.org/wiki/tangent"><param name="text" value="<html><u>tangent</u></html>"><param name="textColor" value="blue"></object> and <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://en.wikipedia.org/wiki/arc tangent"><param name="text" value="<html><u>arc tangent</u></html>"><param name="textColor" value="blue"></object> values</div>
 </li>
 </ul>
 
 </div>
 
-<h4><a name="numerical_methods" id="numerical_methods">Numerical Methods</a></h4>
-<div class="level4">
+<h4><a>Numerical Methods</a></h4>
+<div>
 <ul>
-<li class="level1"><div class="li">ceil - provides the ceiling (smallest value that is greater than or equal to a given value and an integer)of a value.</div>
+<li><div>ceil - provides the ceiling (smallest value that is greater than or equal to a given value and an integer)of a value.</div>
 </li>
-<li class="level1"><div class="li">floor - provides the floor (largest value that is less than or equal to a given value and an integer) of a value.</div>
+<li><div>floor - provides the floor (largest value that is less than or equal to a given value and an integer) of a value.</div>
 </li>
-<li class="level1"><div class="li">exp - provides the <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://en.wikipedia.org/wiki/euler number"><param name="text" value="<html><u>euler number</u></html>"><param name="textColor" value="blue"></object> (e) raised to the provided value.</div>
+<li><div>exp - provides the <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://en.wikipedia.org/wiki/euler number"><param name="text" value="<html><u>euler number</u></html>"><param name="textColor" value="blue"></object> (e) raised to the provided value.</div>
 </li>
-<li class="level1"><div class="li">sqr - provides the square of a value (i.e. value * value).</div>
+<li><div>sqr - provides the square of a value (i.e. value * value).</div>
 </li>
-<li class="level1"><div class="li">pow - provides the first given number raised to the second.</div>
+<li><div>pow - provides the first given number raised to the second.</div>
 </li>
-<li class="level1"><div class="li">isPowerOfTwo - provides a boolean if a value is a power of two or not (e.g. 32, 64, 4).</div>
+<li><div>isPowerOfTwo - provides a boolean if a value is a power of two or not (e.g. 32, 64, 4).</div>
 </li>
-<li class="level1"><div class="li">abs - provides the <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://en.wikipedia.org/wiki/absolute value"><param name="text" value="<html><u>absolute value</u></html>"><param name="textColor" value="blue"></object> of a given number.</div>
+<li><div>abs - provides the <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://en.wikipedia.org/wiki/absolute value"><param name="text" value="<html><u>absolute value</u></html>"><param name="textColor" value="blue"></object> of a given number.</div>
 </li>
-<li class="level1"><div class="li">sign - provides the sign of a value (1 if positive, -1 if negative, 0 if 0). </div>
+<li><div>sign - provides the sign of a value (1 if positive, -1 if negative, 0 if 0). </div>
 </li>
-<li class="level1"><div class="li">log - provides the <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://en.wikipedia.org/wiki/natural logarithm"><param name="text" value="<html><u>natural logarithm</u></html>"><param name="textColor" value="blue"></object> of a value.</div>
+<li><div>log - provides the <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://en.wikipedia.org/wiki/natural logarithm"><param name="text" value="<html><u>natural logarithm</u></html>"><param name="textColor" value="blue"></object> of a value.</div>
 </li>
-<li class="level1"><div class="li">sqrt - provides the <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://en.wikipedia.org/wiki/square root"><param name="text" value="<html><u>square root</u></html>"><param name="textColor" value="blue"></object> of a value.</div>
+<li><div>sqrt - provides the <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://en.wikipedia.org/wiki/square root"><param name="text" value="<html><u>square root</u></html>"><param name="textColor" value="blue"></object> of a value.</div>
 </li>
-<li class="level1"><div class="li">invSqrt - provides the inverse <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://en.wikipedia.org/wiki/square root"><param name="text" value="<html><u>square root</u></html>"><param name="textColor" value="blue"></object> of a value (1 / sqrt(value).</div>
+<li><div>invSqrt - provides the inverse <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://en.wikipedia.org/wiki/square root"><param name="text" value="<html><u>square root</u></html>"><param name="textColor" value="blue"></object> of a value (1 / sqrt(value).</div>
 </li>
 </ul>
 
 </div>
 
-<h4><a name="linear_algebra" id="linear_algebra">Linear Algebra</a></h4>
-<div class="level4">
+<h4><a>Linear Algebra</a></h4>
+<div>
 <ul>
-<li class="level1"><div class="li">LERP - calculate the <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://en.wikipedia.org/wiki/Linear interpolation"><param name="text" value="<html><u>linear interpolation</u></html>"><param name="textColor" value="blue"></object> of two points given a time between 0 and 1.</div>
+<li><div>LERP - calculate the <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://en.wikipedia.org/wiki/Linear interpolation"><param name="text" value="<html><u>linear interpolation</u></html>"><param name="textColor" value="blue"></object> of two points given a time between 0 and 1.</div>
 </li>
-<li class="level1"><div class="li">determinant - calculates the <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://en.wikipedia.org/wiki/determinant"><param name="text" value="<html><u>determinant</u></html>"><param name="textColor" value="blue"></object> of a 4&times;4 matrix.</div>
+<li><div>determinant - calculates the <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://en.wikipedia.org/wiki/determinant"><param name="text" value="<html><u>determinant</u></html>"><param name="textColor" value="blue"></object> of a 4&times;4 matrix.</div>
 </li>
 </ul>
 
 </div>
 
-<h4><a name="geometric_functions" id="geometric_functions">Geometric Functions</a></h4>
-<div class="level4">
+<h4><a>Geometric Functions</a></h4>
+<div>
 <ul>
-<li class="level1"><div class="li">counterClockwise - given three points (defining a triangle), the winding is determined. 1 if counter-clockwise, -1 if clockwise and 0 if the points define a line.</div>
+<li><div>counterClockwise - given three points (defining a triangle), the winding is determined. 1 if counter-clockwise, -1 if clockwise and 0 if the points define a line.</div>
 </li>
-<li class="level1"><div class="li">pointInsideTriangle - calculates if a point is inside a triangle.</div>
+<li><div>pointInsideTriangle - calculates if a point is inside a triangle.</div>
 </li>
-<li class="level1"><div class="li">sphericalToCartesian - converts a point from <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://en.wikipedia.org/wiki/spherical coordinates"><param name="text" value="<html><u>cartesian coordinates</u></html>"><param name="textColor" value="blue"></object>.</div>
+<li><div>sphericalToCartesian - converts a point from <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://en.wikipedia.org/wiki/spherical coordinates"><param name="text" value="<html><u>spherical coordinates</u></html>"><param name="textColor" value="blue"></object> to <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://en.wikipedia.org/wiki/cartesian coordinates"><param name="text" value="<html><u>cartesian coordinates</u></html>"><param name="textColor" value="blue"></object>.</div>
 </li>
-<li class="level1"><div class="li">cartesianToSpherical - converts a point from <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://en.wikipedia.org/wiki/cartesian coordinates"><param name="text" value="<html><u>spherical coordinates</u></html>"><param name="textColor" value="blue"></object>.</div>
+<li><div>cartesianToSpherical - converts a point from <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://en.wikipedia.org/wiki/cartesian coordinates"><param name="text" value="<html><u>cartesian coordinates</u></html>"><param name="textColor" value="blue"></object> to <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://en.wikipedia.org/wiki/spherical coordinates"><param name="text" value="<html><u>spherical coordinates</u></html>"><param name="textColor" value="blue"></object>.</div>
 </li>
 </ul>
 
 </div>
 
-<h4><a name="misc" id="misc">Misc.</a></h4>
-<div class="level4">
+<h4><a>Misc.</a></h4>
+<div>
 <ul>
-<li class="level1"><div class="li">newRandomFloat - obtains a random float.</div>
+<li><div>newRandomFloat - obtains a random float.</div>
 </li>
 </ul>
 
 </div>
 
-<h2><a name="line" id="line">Line</a></h2>
-<div class="level2">
+<h2><a>Line</a></h2>
+<div>
 
 <p>
 
@@ -732,8 +732,8 @@ See <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param
 
 </div>
 
-<h3><a name="definition6" id="definition6">Definition</a></h3>
-<div class="level3">
+<h3><a>Definition</a></h3>
+<div>
 
 <p>
 
@@ -742,8 +742,8 @@ A line is a straight one-dimensional figure having no thickness and extending in
 
 </div>
 
-<h3><a name="usage1" id="usage1">Usage</a></h3>
-<div class="level3">
+<h3><a>Usage</a></h3>
+<div>
 
 <p>
 
@@ -756,14 +756,14 @@ jME defines a Line class that is defined by an origin and direction. In reality,
 
 </div>
 
-<h3><a name="example_1_-_find_a_random_point_on_a_line" id="example_1_-_find_a_random_point_on_a_line">Example 1 - Find a Random Point on a Line</a></h3>
-<div class="level3">
-<pre class="code java"><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Aline+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object><span class="br0">&#40;</span><span class="kw1">new</span> Vector3f<span class="br0">&#40;</span>0,<span class="nu0">1</span>,0<span class="br0">&#41;</span>, <span class="kw1">new</span> Vector3f<span class="br0">&#40;</span><span class="nu0">3</span>,<span class="nu0">2</span>,<span class="nu0">1</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
-Vector3f randomPoint <span class="sy0">=</span> l.<span class="me1">random</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;</pre>
+<h3><a>Example 1 - Find a Random Point on a Line</a></h3>
+<div>
+<pre>Line&#40;new Vector3f&#40;0,1,0&#41;, new Vector3f&#40;3,2,1&#41;&#41;;
+Vector3f randomPoint = l.random&#40;&#41;;</pre>
 </div>
 
-<h2><a name="plane" id="plane">Plane</a></h2>
-<div class="level2">
+<h2><a>Plane</a></h2>
+<div>
 
 <p>
 
@@ -772,8 +772,8 @@ See <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param
 
 </div>
 
-<h3><a name="definition7" id="definition7">Definition</a></h3>
-<div class="level3">
+<h3><a>Definition</a></h3>
+<div>
 
 <p>
 
@@ -806,8 +806,8 @@ This gives us the general equation: (ax + by + cz + d = 0)
 
 </div>
 
-<h3><a name="usage_in_jme" id="usage_in_jme">Usage in jME</a></h3>
-<div class="level3">
+<h3><a>Usage in jME</a></h3>
+<div>
 
 <p>
 
@@ -815,7 +815,7 @@ jME defines the Plane as ax + by + cz = -d. Therefore, during creation of the pl
 </p>
 
 <p>
-The most common usage of Plane is <a href="/com/jme3/gde/core/docs/jme3/introduction_to_the_camera.html" class="wikilink2" title="jme3:introduction_to_the_camera" rel="nofollow">Camera</a> frustum planes. Therefore, the primary purpose of Plane is to determine if a point is on the positive side, negative side, or intersecting a plane.
+The most common usage of Plane is <a href="/com/jme3/gde/core/docs/jme3/introduction_to_the_camera.html">Camera</a> frustum planes. Therefore, the primary purpose of Plane is to determine if a point is on the positive side, negative side, or intersecting a plane.
 </p>
 
 <p>
@@ -823,11 +823,11 @@ Plane defines the constants:
 
 </p>
 <ul>
-<li class="level1"><div class="li"><code>NEGATIVE_SIDE</code> - represents a point on the opposite side to which the normal points.</div>
+<li><div><code>NEGATIVE_SIDE</code> - represents a point on the opposite side to which the normal points.</div>
 </li>
-<li class="level1"><div class="li"><code>NO_SIDE</code> - represents a point that lays on the plane itself.</div>
+<li><div><code>NO_SIDE</code> - represents a point that lays on the plane itself.</div>
 </li>
-<li class="level1"><div class="li"><code>POSITIVE_SIDE</code> - represents a point on the side to which the normal points.</div>
+<li><div><code>POSITIVE_SIDE</code> - represents a point on the side to which the normal points.</div>
 </li>
 </ul>
 
@@ -838,92 +838,92 @@ These values are returned on a call to <code>whichSide</code>.
 
 </div>
 
-<h3><a name="example_1_-_determining_if_a_point_is_on_the_positive_side_of_a_plane" id="example_1_-_determining_if_a_point_is_on_the_positive_side_of_a_plane">Example 1 - Determining if a Point is On the Positive Side of a Plane</a></h3>
-<div class="level3">
-<pre class="code java">Vector3f normal <span class="sy0">=</span> <span class="kw1">new</span> Vector3f<span class="br0">&#40;</span>0,<span class="nu0">1</span>,0<span class="br0">&#41;</span>;
-<span class="kw4">float</span> constant <span class="sy0">=</span> <span class="kw1">new</span> Vector3f<span class="br0">&#40;</span><span class="nu0">1</span>,<span class="nu0">1</span>,<span class="nu0">1</span><span class="br0">&#41;</span>.<span class="me1">dot</span><span class="br0">&#40;</span>normal<span class="br0">&#41;</span>;
-Plane testPlane <span class="sy0">=</span> <span class="kw1">new</span> Plane<span class="br0">&#40;</span>normal, constant<span class="br0">&#41;</span>;
+<h3><a>Example 1 - Determining if a Point is On the Positive Side of a Plane</a></h3>
+<div>
+<pre>Vector3f normal = new Vector3f&#40;0,1,0&#41;;
+float constant = new Vector3f&#40;1,1,1&#41;.dot&#40;normal&#41;;
+Plane testPlane = new Plane&#40;normal, constant&#41;;
 &nbsp;
-<span class="kw4">int</span> side <span class="sy0">=</span> testPlane.<span class="me1">whichSide</span><span class="br0">&#40;</span><span class="kw1">new</span> Vector3f<span class="br0">&#40;</span><span class="nu0">2</span>,<span class="nu0">1</span>,0<span class="br0">&#41;</span>;
+int side = testPlane.whichSide&#40;new Vector3f&#40;2,1,0&#41;;
 &nbsp;
-<span class="kw1">if</span><span class="br0">&#40;</span>side <span class="sy0">==</span> Plane.<span class="me1">NO_SIDE</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-   <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Asystem+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object>.<span class="me1">out</span>.<span class="me1">println</span><span class="br0">&#40;</span><span class="st0">&quot;This point lies on the plane&quot;</span><span class="br0">&#41;</span>;
-<span class="br0">&#125;</span></pre>
+if&#40;side == Plane.NO_SIDE&#41; &#123;
+   System.out.println&#40;&quot;This point lies on the plane&quot;&#41;;
+&#125;</pre>
 </div>
 
-<h3><a name="example_2_-_for_the_layperson" id="example_2_-_for_the_layperson">Example 2 - For the Layperson</a></h3>
-<div class="level3">
+<h3><a>Example 2 - For the Layperson</a></h3>
+<div>
 
 <p>
 
 Using the standard constructor Plane(Vector3f normal, float constant), here is what you need to do to create a plane, and then use it to check which side of the plane a point is on.
 </p>
-<pre class="code java"><span class="kw1">package</span> <span class="co2">test</span>;
+<pre>package test;
 &nbsp;
-<span class="kw1">import</span> <span class="co2">java.util.logging.Logger</span>;
+import java.util.logging.Logger;
 &nbsp;
-<span class="kw1">import</span> <span class="co2">com.jme.math.*</span>;
+import com.jme.math.*;
 &nbsp;
-<span class="co3">/**
+<span>/**
  *@author Nick Wiggill
  */</span>
 &nbsp;
-<span class="kw1">public</span> <span class="kw1">class</span> TestPlanes
-<span class="br0">&#123;</span>
-  <span class="kw1">public</span> <span class="kw1">static</span> <span class="kw1">final</span> Logger logger <span class="sy0">=</span> Logger.<span class="me1">getLogger</span><span class="br0">&#40;</span>LevelGraphBuilder.<span class="kw1">class</span>.<span class="me1">getName</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
+public class TestPlanes
+&#123;
+  public static final Logger logger = Logger.getLogger&#40;LevelGraphBuilder.class.getName&#40;&#41;&#41;;
 &nbsp;
-  <span class="kw1">public</span> <span class="kw1">static</span> <span class="kw4">void</span> main<span class="br0">&#40;</span><object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Astring+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object>
-  <span class="br0">&#123;</span>
-    <span class="co1">//***Outline.</span>
-    <span class="co1">//This example shows how to construct a plane representation using</span>
-    <span class="co1">//com.jme.math.Plane.</span>
-    <span class="co1">//We will create a very simple, easily-imagined 3D plane. It will</span>
-    <span class="co1">//be perpendicular to the x axis (it's facing). It's &quot;centre&quot; (if</span>
-    <span class="co1">//such a thing exists in an infinite plane) will be positioned 1</span>
-    <span class="co1">//unit along the positive x axis.</span>
+  public static void main&#40;Exception
+  &#123;
+    //***Outline.
+    //This example shows how to construct a plane representation using
+    //com.jme.math.Plane.
+    //We will create a very simple, easily-imagined 3D plane. It will
+    //be perpendicular to the x axis (it's facing). It's &quot;centre&quot; (if
+    //such a thing exists in an infinite plane) will be positioned 1
+    //unit along the positive x axis.
 &nbsp;
-    <span class="co1">//***Step 1.</span>
-    <span class="co1">//The vector that represents the normal to the plane, in 3D space.</span>
-    <span class="co1">//Imagine a vector coming out of the origin in this direction.</span>
-    <span class="co1">//There is no displacement yet (see Step 2, below).</span>
-    Vector3f normal <span class="sy0">=</span> <span class="kw1">new</span> Vector3f<span class="br0">&#40;</span>5f,0,0<span class="br0">&#41;</span>;
+    //***Step 1.
+    //The vector that represents the normal to the plane, in 3D space.
+    //Imagine a vector coming out of the origin in this direction.
+    //There is no displacement yet (see Step 2, below).
+    Vector3f normal = new Vector3f&#40;5f,0,0&#41;;
 &nbsp;
-    <span class="co1">//***Step 2.</span>
-    <span class="co1">//This is our displacement vector. The plane remains facing in the</span>
-    <span class="co1">//direction we've specified using the normal above, but now we are</span>
-    <span class="co1">//are actually giving it a position other than the origin.</span>
-    <span class="co1">//We will use this displacement to define the variable &quot;constant&quot;</span>
-    <span class="co1">//needed to construct the plane. (see step 3)</span>
-    Vector3f displacement <span class="sy0">=</span> Vector3f.<span class="me1">UNIT_X</span>;
-    <span class="co1">//or</span>
-    <span class="co1">//Vector3f displacement = new Vector3f(1f, 0, 0);</span>
+    //***Step 2.
+    //This is our displacement vector. The plane remains facing in the
+    //direction we've specified using the normal above, but now we are
+    //are actually giving it a position other than the origin.
+    //We will use this displacement to define the variable &quot;constant&quot;
+    //needed to construct the plane. (see step 3)
+    Vector3f displacement = Vector3f.UNIT_X;
+    //or
+    //Vector3f displacement = new Vector3f(1f, 0, 0);
 &nbsp;
-    <span class="co1">//***Step 3.</span>
-    <span class="co1">//Here we generate the constant needed to define any plane. This</span>
-    <span class="co1">//is semi-arcane, don't let it worry you. All you need to</span>
-    <span class="co1">//do is use this same formula every time.</span>
-    <span class="kw4">float</span> constant <span class="sy0">=</span> displacement.<span class="me1">dot</span><span class="br0">&#40;</span>normal<span class="br0">&#41;</span>;
+    //***Step 3.
+    //Here we generate the constant needed to define any plane. This
+    //is semi-arcane, don't let it worry you. All you need to
+    //do is use this same formula every time.
+    float constant = displacement.dot&#40;normal&#41;;
 &nbsp;
-    <span class="co1">//***Step 4.</span>
-    <span class="co1">//Finally, construct the plane using the data you have assembled.</span>
-    Plane plane <span class="sy0">=</span> <span class="kw1">new</span> Plane<span class="br0">&#40;</span>normal, constant<span class="br0">&#41;</span>;
+    //***Step 4.
+    //Finally, construct the plane using the data you have assembled.
+    Plane plane = new Plane&#40;normal, constant&#41;;
 &nbsp;
-    <span class="co1">//***Some tests.</span>
-    logger.<span class="me1">info</span><span class="br0">&#40;</span><span class="st0">&quot;Plane info: &quot;</span><span class="sy0">+</span>plane.<span class="me1">toString</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>; <span class="co1">//trace our plane's information</span>
+    //***Some tests.
+    logger.info&#40;&quot;Plane info: &quot;+plane.toString&#40;&#41;&#41;; //trace our plane's information
 &nbsp;
-    Vector3f p1  <span class="sy0">=</span> <span class="kw1">new</span> Vector3f<span class="br0">&#40;</span>1.1f,0,0<span class="br0">&#41;</span>; <span class="co1">//beyond the plane (further from origin than plane)</span>
-    Vector3f p2  <span class="sy0">=</span> <span class="kw1">new</span> Vector3f<span class="br0">&#40;</span>0.9f,0,0<span class="br0">&#41;</span>; <span class="co1">//before the plane (closer to origin than plane)</span>
-    Vector3f p3  <span class="sy0">=</span> <span class="kw1">new</span> Vector3f<span class="br0">&#40;</span>1f,0,0<span class="br0">&#41;</span>; <span class="co1">//on the plane</span>
+    Vector3f p1  = new Vector3f&#40;1.1f,0,0&#41;; //beyond the plane (further from origin than plane)
+    Vector3f p2  = new Vector3f&#40;0.9f,0,0&#41;; //before the plane (closer to origin than plane)
+    Vector3f p3  = new Vector3f&#40;1f,0,0&#41;; //on the plane
 &nbsp;
-    logger.<span class="me1">info</span><span class="br0">&#40;</span><span class="st0">&quot;p1 position relative to plane is &quot;</span><span class="sy0">+</span>plane.<span class="me1">whichSide</span><span class="br0">&#40;</span>p1<span class="br0">&#41;</span><span class="br0">&#41;</span>; <span class="co1">//outputs NEGATIVE</span>
-    logger.<span class="me1">info</span><span class="br0">&#40;</span><span class="st0">&quot;p2 position relative to plane is &quot;</span><span class="sy0">+</span>plane.<span class="me1">whichSide</span><span class="br0">&#40;</span>p2<span class="br0">&#41;</span><span class="br0">&#41;</span>; <span class="co1">//outputs POSITIVE</span>
-    logger.<span class="me1">info</span><span class="br0">&#40;</span><span class="st0">&quot;p3 position relative to plane is &quot;</span><span class="sy0">+</span>plane.<span class="me1">whichSide</span><span class="br0">&#40;</span>p3<span class="br0">&#41;</span><span class="br0">&#41;</span>; <span class="co1">//outputs NONE</span>
-  <span class="br0">&#125;</span>
-<span class="br0">&#125;</span></pre>
+    logger.info&#40;&quot;p1 position relative to plane is &quot;+plane.whichSide&#40;p1&#41;&#41;; //outputs NEGATIVE
+    logger.info&#40;&quot;p2 position relative to plane is &quot;+plane.whichSide&#40;p2&#41;&#41;; //outputs POSITIVE
+    logger.info&#40;&quot;p3 position relative to plane is &quot;+plane.whichSide&#40;p3&#41;&#41;; //outputs NONE
+  &#125;
+&#125;</pre>
 </div>
 
-<h2><a name="ray" id="ray">Ray</a></h2>
-<div class="level2">
+<h2><a>Ray</a></h2>
+<div>
 
 <p>
 
@@ -932,8 +932,8 @@ See <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param
 
 </div>
 
-<h3><a name="definition8" id="definition8">Definition</a></h3>
-<div class="level3">
+<h3><a>Definition</a></h3>
+<div>
 
 <p>
 
@@ -941,18 +941,18 @@ Ray defines a line that starts at a point <strong>A</strong> and continues in a 
 </p>
 
 <p>
-This Ray is used extensively in jME for <a href="/com/jme3/gde/core/docs/jme3/picking.html" class="wikilink2" title="jme3:picking" rel="nofollow">Picking</a>. A Ray is cast from a point in screen space into the scene. Intersections are found and returned. To create a ray supply the object with two points, where the first point is the origin.
+This Ray is used extensively in jME for <a href="/com/jme3/gde/core/docs/jme3/picking.html">Picking</a>. A Ray is cast from a point in screen space into the scene. Intersections are found and returned. To create a ray supply the object with two points, where the first point is the origin.
 </p>
 
 </div>
 
-<h3><a name="example_1_-_create_a_ray_that_represents_where_the_camera_is_looking" id="example_1_-_create_a_ray_that_represents_where_the_camera_is_looking">Example 1 - Create a Ray That Represents Where the Camera is Looking</a></h3>
-<div class="level3">
-<pre class="code java">Ray ray <span class="sy0">=</span> <span class="kw1">new</span> Ray<span class="br0">&#40;</span>cam.<span class="me1">getLocation</span><span class="br0">&#40;</span><span class="br0">&#41;</span>, cam.<span class="me1">getDirection</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;</pre>
+<h3><a>Example 1 - Create a Ray That Represents Where the Camera is Looking</a></h3>
+<div>
+<pre>Ray ray = new Ray&#40;cam.getLocation&#40;&#41;, cam.getDirection&#40;&#41;&#41;;</pre>
 </div>
 
-<h2><a name="rectangle" id="rectangle">Rectangle</a></h2>
-<div class="level2">
+<h2><a>Rectangle</a></h2>
+<div>
 
 <p>
 
@@ -961,8 +961,8 @@ See <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param
 
 </div>
 
-<h3><a name="definition9" id="definition9">Definition</a></h3>
-<div class="level3">
+<h3><a>Definition</a></h3>
+<div>
 
 <p>
 
@@ -971,27 +971,27 @@ Rectangle defines a finite plane within three dimensional space that is specifie
 
 </div>
 
-<h3><a name="jme_usage" id="jme_usage">jME Usage</a></h3>
-<div class="level3">
+<h3><a>jME Usage</a></h3>
+<div>
 
 <p>
 
-Rectangle is a straight forward data class that simply maintains values that defines a Rectangle in 3D space. One interesting use is the <code>random</code> method that will create a random point on the Rectangle. The <a href="/com/jme3/gde/core/docs/jme3/particle_system.html" class="wikilink2" title="jme3:particle_system" rel="nofollow">Particle System</a> makes use of this to define an area that generates <a href="/com/jme3/gde/core/docs/jme3/particles.html" class="wikilink2" title="jme3:particles" rel="nofollow">Particles</a>.
+Rectangle is a straight forward data class that simply maintains values that defines a Rectangle in 3D space. One interesting use is the <code>random</code> method that will create a random point on the Rectangle. The <a href="/com/jme3/gde/core/docs/jme3/particle_system.html">Particle System</a> makes use of this to define an area that generates <a href="/com/jme3/gde/core/docs/jme3/particles.html">Particles</a>.
 </p>
 
 </div>
 
-<h3><a name="example_1_define_a_rectangle_and_get_a_point_from_it" id="example_1_define_a_rectangle_and_get_a_point_from_it">Example 1 : Define a Rectangle and Get a Point From It</a></h3>
-<div class="level3">
-<pre class="code java">Vector3f v1 <span class="sy0">=</span> <span class="kw1">new</span> Vector3f<span class="br0">&#40;</span><span class="nu0">1</span>,0,0<span class="br0">&#41;</span>;
-Vector3f v2 <span class="sy0">=</span> <span class="kw1">new</span> Vector3f<span class="br0">&#40;</span><span class="nu0">1</span>,<span class="nu0">1</span>,0<span class="br0">&#41;</span>;
-Vector3f v3 <span class="sy0">=</span> <span class="kw1">new</span> Vector3f<span class="br0">&#40;</span>0,<span class="nu0">1</span>,0<span class="br0">&#41;</span>;
-<object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://www.google.com/search?hl=en&amp;q=allinurl%3Arectangle+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><param name="text" value="<html><u></u></html>"><param name="textColor" value="blue"></object><span class="br0">&#40;</span>v1, v2, v3<span class="br0">&#41;</span>;
-Vector3f point <span class="sy0">=</span> r.<span class="me1">random</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;</pre>
+<h3><a>Example 1 : Define a Rectangle and Get a Point From It</a></h3>
+<div>
+<pre>Vector3f v1 = new Vector3f&#40;1,0,0&#41;;
+Vector3f v2 = new Vector3f&#40;1,1,0&#41;;
+Vector3f v3 = new Vector3f&#40;0,1,0&#41;;
+Rectangle&#40;v1, v2, v3&#41;;
+Vector3f point = r.random&#40;&#41;;</pre>
 </div>
 
-<h2><a name="triangle" id="triangle">Triangle</a></h2>
-<div class="level2">
+<h2><a>Triangle</a></h2>
+<div>
 
 <p>
 
@@ -1000,56 +1000,56 @@ See <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param
 
 </div>
 
-<h3><a name="definition10" id="definition10">Definition</a></h3>
-<div class="level3">
+<h3><a>Definition</a></h3>
+<div>
 
 <p>
 
-A triangle is a 3-sided polygon. Every triangle has three sides and three angles, some of which may be the same. If the triangle is a right triangle (one angle being 90 degrees), the side opposite the 90 degree angle is the hypotenuse, while the other two sides are the legs. All triangles are <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://en.wikipedia.org/wiki/Convex_polygon"><param name="text" value="<html><u>bicentric</u></html>"><param name="textColor" value="blue"></object>.
+A triangle is a 3-sided polygon. Every triangle has three sides and three angles, some of which may be the same. If the triangle is a right triangle (one angle being 90 degrees), the side opposite the 90 degree angle is the hypotenuse, while the other two sides are the legs. All triangles are <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://en.wikipedia.org/wiki/Convex_polygon"><param name="text" value="<html><u>convex</u></html>"><param name="textColor" value="blue"></object> and <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://mathworld.wolfram.com/BicentricPolygon.html"><param name="text" value="<html><u>bicentric</u></html>"><param name="textColor" value="blue"></object>.
 </p>
 
 </div>
 
-<h3><a name="usage2" id="usage2">Usage</a></h3>
-<div class="level3">
+<h3><a>Usage</a></h3>
+<div>
 
 <p>
 
-jME&#039;s Triangle class is a simple data class. It contains three <a href="/com/jme3/gde/core/docs/jme3/vector.html" class="wikilink2" title="jme3:vector" rel="nofollow">Vector3f</a> objects that represent the three points of the triangle. These can be retrieved via the <code>get</code> method. The <code>get</code> method, obtains the point based on the index provided. Similarly, the values can be set via the <code>set</code> method.
+jME&#039;s Triangle class is a simple data class. It contains three <a href="/com/jme3/gde/core/docs/jme3/vector.html">Vector3f</a> objects that represent the three points of the triangle. These can be retrieved via the <code>get</code> method. The <code>get</code> method, obtains the point based on the index provided. Similarly, the values can be set via the <code>set</code> method.
 </p>
 
 </div>
 
-<h3><a name="example_1_-_creating_a_triangle" id="example_1_-_creating_a_triangle">Example 1 - Creating a Triangle</a></h3>
-<div class="level3">
-<pre class="code java"><span class="co1">//the three points that make up the triangle</span>
-Vector3f p1 <span class="sy0">=</span> <span class="kw1">new</span> Vector3f<span class="br0">&#40;</span>0,<span class="nu0">1</span>,0<span class="br0">&#41;</span>;
-Vector3f p2 <span class="sy0">=</span> <span class="kw1">new</span> Vector3f<span class="br0">&#40;</span><span class="nu0">1</span>,<span class="nu0">1</span>,0<span class="br0">&#41;</span>;
-Vector3f p3 <span class="sy0">=</span> <span class="kw1">new</span> Vector3f<span class="br0">&#40;</span>0,<span class="nu0">1</span>,<span class="nu0">1</span><span class="br0">&#41;</span>;
-Triangle t <span class="sy0">=</span> <span class="kw1">new</span> Triangle<span class="br0">&#40;</span>p1, p2, p3<span class="br0">&#41;</span>;</pre>
+<h3><a>Example 1 - Creating a Triangle</a></h3>
+<div>
+<pre>//the three points that make up the triangle
+Vector3f p1 = new Vector3f&#40;0,1,0&#41;;
+Vector3f p2 = new Vector3f&#40;1,1,0&#41;;
+Vector3f p3 = new Vector3f&#40;0,1,1&#41;;
+Triangle t = new Triangle&#40;p1, p2, p3&#41;;</pre>
 </div>
 
-<h1><a name="tips_and_tricks" id="tips_and_tricks">Tips and Tricks</a></h1>
-<div class="level1">
+<h1><a>Tips and Tricks</a></h1>
+<div>
 
 </div>
 
-<h2><a name="how_do_i_get_height_width_of_a_spatial" id="how_do_i_get_height_width_of_a_spatial">How do I get height/width of a spatial?</a></h2>
-<div class="level2">
+<h2><a>How do I get height/width of a spatial?</a></h2>
+<div>
 
 <p>
 
 Cast the spatial to com.jme3.bounding.BoundingBox to be able to use getExtent().
 
 </p>
-<pre class="code java">Vector3f extent <span class="sy0">=</span> <span class="br0">&#40;</span><span class="br0">&#40;</span>BoundingBox<span class="br0">&#41;</span> spatial.<span class="me1">getWorldBound</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>.<span class="me1">getExtent</span><span class="br0">&#40;</span><span class="kw1">new</span> Vector3f<span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
-<span class="kw4">float</span> x <span class="sy0">=</span> <span class="br0">&#40;</span> <span class="br0">&#40;</span>BoundingBox<span class="br0">&#41;</span>spatial.<span class="me1">getWorldBound</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>.<span class="me1">getXExtent</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
-<span class="kw4">float</span> y <span class="sy0">=</span> <span class="br0">&#40;</span> <span class="br0">&#40;</span>BoundingBox<span class="br0">&#41;</span>spatial.<span class="me1">getWorldBound</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>.<span class="me1">getYExtent</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
-<span class="kw4">float</span> z <span class="sy0">=</span> <span class="br0">&#40;</span> <span class="br0">&#40;</span>BoundingBox<span class="br0">&#41;</span>spatial.<span class="me1">getWorldBound</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>.<span class="me1">getZExtent</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;</pre>
+<pre>Vector3f extent = &#40;&#40;BoundingBox&#41; spatial.getWorldBound&#40;&#41;&#41;.getExtent&#40;new Vector3f&#40;&#41;&#41;;
+float x = &#40; &#40;BoundingBox&#41;spatial.getWorldBound&#40;&#41;&#41;.getXExtent&#40;&#41;;
+float y = &#40; &#40;BoundingBox&#41;spatial.getWorldBound&#40;&#41;&#41;.getYExtent&#40;&#41;;
+float z = &#40; &#40;BoundingBox&#41;spatial.getWorldBound&#40;&#41;&#41;.getZExtent&#40;&#41;;</pre>
 </div>
 
-<h2><a name="how_do_i_position_the_center_of_a_geomtry" id="how_do_i_position_the_center_of_a_geomtry">How do I position the center of a Geomtry?</a></h2>
-<div class="level2">
-<pre class="code java">geo.<span class="me1">center</span><span class="br0">&#40;</span><span class="br0">&#41;</span>.<span class="me1">move</span><span class="br0">&#40;</span>pos<span class="br0">&#41;</span>;</pre>
+<h2><a>How do I position the center of a Geomtry?</a></h2>
+<div>
+<pre>geo.center&#40;&#41;.move&#40;pos&#41;;</pre>
 </div>
 <p><em><a href="http://jmonkeyengine.org/wiki/doku.php/jme3:math?do=export_xhtmlbody">view online version</a></em></p>
