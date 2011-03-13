@@ -194,19 +194,19 @@ public class TerrainEditorController {
         if (alphaDataObject == null)
             doCreateAlphaSaveDataObject();
         
-        final Terrain terrain = (Terrain)getTerrain(null);
-        final AlphaTextureSaveCookie cookie = new AlphaTextureSaveCookie(terrain, alphaDataObject.getDataObject());
-        alphaDataObject.setSaveCookie(cookie);
+        Terrain terrain = (Terrain)getTerrain(null);
+        AlphaTextureSaveCookie cookie = new AlphaTextureSaveCookie(terrain);
+        if(!alphaDataObject.getDataObject().isModified()){
+            alphaDataObject.setSaveCookie(cookie);
+        }
     }
 
     class AlphaTextureSaveCookie implements SaveCookie {
 
         private Terrain terrain;
-        private DataObject dataObject;
 
-        AlphaTextureSaveCookie(Terrain terrain, DataObject dataObject) {
+        AlphaTextureSaveCookie(Terrain terrain) {
             this.terrain = terrain;
-            this.dataObject = dataObject;
         }
 
         public String getId() {
