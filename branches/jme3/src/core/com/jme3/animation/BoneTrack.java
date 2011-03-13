@@ -122,7 +122,8 @@ public final class BoneTrack implements Savable {
 
     public void setKeyframes(float[] times, Vector3f[] translations, Quaternion[] rotations, Vector3f[] scales) {
         this.setKeyframes(times, translations, rotations);
-        if (scales != null) {
+        assert times.length == scales.length;
+        if (scales != null) {            
             this.scales = new CompactVector3Array();
             this.scales.add(scales);
             this.scales.freeze();
@@ -172,11 +173,11 @@ public final class BoneTrack implements Savable {
             rotations.get(endFrame, tempQ2);
             translations.get(endFrame, tempV2);
             if (scales != null) {
-                scales.get(startFrame, tempS2);
+                scales.get(endFrame, tempS2);
             }
             tempQ.slerp(tempQ2, blend);
             tempV.interpolate(tempV2, blend);
-            tempS.interpolate(tempS2, blend);
+            tempS.interpolate(tempS2, blend);           
         }
 
         if (weight != 1f) {
