@@ -38,6 +38,7 @@ import com.jme3.bounding.BoundingBox;
 import com.jme3.gde.core.assets.ProjectAssetManager;
 import com.jme3.gde.core.scene.SceneApplication;
 import com.jme3.gde.core.sceneexplorer.nodes.JmeSpatial;
+import com.jme3.gde.core.util.DataObjectSaveNode;
 import com.jme3.material.MatParam;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector2f;
@@ -81,7 +82,7 @@ public class TerrainEditorController {
     private Node terrainNode;
     private Node rootNode;
     private DataObject currentFileObject;
-    private DataObject alphaDataObject;
+    private DataObjectSaveNode alphaDataObject;
 
     // texture settings
     protected final String DEFAULT_TERRAIN_TEXTURE = "com/jme3/gde/terraineditor/dirt.jpg";
@@ -170,7 +171,7 @@ public class TerrainEditorController {
         Logger.getLogger(TerrainEditorController.class.getName()).info("Creating AlphaSaveDataObject, path: "+assetFolder+path);
         FileObject fb = FileUtil.toFileObject(new File(assetFolder+path));
         try {
-            alphaDataObject = DataObject.find(fb);
+            alphaDataObject = new DataObjectSaveNode(DataObject.find(fb));
         } catch (DataObjectNotFoundException ex) {
             Exceptions.printStackTrace(ex);
         }
@@ -193,7 +194,30 @@ public class TerrainEditorController {
         if (alphaDataObject == null)
             doCreateAlphaSaveDataObject();
         
-        alphaDataObject.setModified(state);
+        final Terrain terrain = (Terrain)getTerrain(null);
+        final AlphaTextureSaveCookie cookie = new AlphaTextureSaveCookie(terrain, alphaDataObject.getDataObject());
+        alphaDataObject.setSaveCookie(cookie);
+    }
+
+    class AlphaTextureSaveCookie implements SaveCookie {
+
+        private Terrain terrain;
+        private DataObject dataObject;
+
+        AlphaTextureSaveCookie(Terrain terrain, DataObject dataObject) {
+            this.terrain = terrain;
+            this.dataObject = dataObject;
+        }
+
+        public String getId() {
+            return terrain.getSpatial().getName();
+        }
+
+        public void save() throws IOException {
+            saveAlphaImages(terrain);
+            alphaDataObject.removeSaveCookie();
+        }
+
     }
 
     public boolean isNeedSave() {

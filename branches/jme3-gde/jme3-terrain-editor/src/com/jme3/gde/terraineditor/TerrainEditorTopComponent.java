@@ -116,7 +116,6 @@ public final class TerrainEditorTopComponent extends TopComponent implements Sce
     private boolean alreadyChoosing = false; // used for texture table selection
     private CreateTerrainWizardAction terrainWizard;
     private SkyboxWizardAction skyboxWizard;
-    private DataObjectSaveNode saveNode;
     private JmeSpatial selectedSpat;
 
     public enum TerrainEditButton {none, raiseTerrain, lowerTerrain, smoothTerrain, levelTerrain, paintTerrain, eraseTerrain};
@@ -802,27 +801,6 @@ public final class TerrainEditorTopComponent extends TopComponent implements Sce
 
     }
 
-    class AlphaTextureSaveCookie implements SaveCookie {
-
-        private Terrain terrain;
-        private DataObject dataObject;
-        
-        AlphaTextureSaveCookie(Terrain terrain, DataObject dataObject) {
-            this.terrain = terrain;
-            this.dataObject = dataObject;
-        }
-
-        public String getId() {
-            return terrain.getSpatial().getName();
-        }
-
-        public void save() throws IOException {
-            editorController.saveAlphaImages(terrain);
-            dataObject.setModified(false);// seems to be needed
-        }
-
-    }
-
     /**
      * listener for node selection changes
      */
@@ -1002,14 +980,10 @@ public final class TerrainEditorTopComponent extends TopComponent implements Sce
         }
     }
 
-    protected synchronized void addDataObject(DataObject dataObject) {
-        saveNode = new DataObjectSaveNode(dataObject);
-        final Terrain terrain = (Terrain)editorController.getTerrain(null);
-        final AlphaTextureSaveCookie cookie = new AlphaTextureSaveCookie(terrain, dataObject);
-        saveNode.setSaveCookie(cookie);
+    protected synchronized void addDataObject(final DataObjectSaveNode dataObject) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                addSaveNode(saveNode);
+                addSaveNode(dataObject);
             }
         });
     }
