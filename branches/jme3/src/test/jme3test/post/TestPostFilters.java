@@ -45,6 +45,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.post.FilterPostProcessor;
 import com.jme3.post.filters.ColorOverlayFilter;
 import com.jme3.post.filters.FadeFilter;
+import com.jme3.post.filters.RadialBlurFilter;
 import com.jme3.renderer.Caps;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Geometry;
@@ -72,7 +73,7 @@ public class TestPostFilters extends SimpleApplication implements ActionListener
             fpp = new FilterPostProcessor(assetManager);
             // fpp.setNumSamples(4);
             fpp.addFilter(new ColorOverlayFilter(ColorRGBA.LightGray));
-            //  fpp.addFilter(new RadialBlurFilter());
+            fpp.addFilter(new RadialBlurFilter());
             //fade=new FadeFilter(1.0f);
             //fpp.addFilter(fade);
 

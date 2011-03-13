@@ -1,7 +1,7 @@
 uniform sampler2D m_Texture;
 uniform float m_SampleDist;
 uniform float m_SampleStrength;
-uniform float[10] m_Samples;
+uniform float m_Samples[10];
 varying vec2 texCoord;
 
 void main(void)
