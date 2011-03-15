@@ -3,5 +3,4 @@
 *Menu*
  * [Introduction]
  * [http://www.jmonkeyengine.com/wiki/doku.php/jme3 jMonkeyEngine3]
- * [http://www.jmonkeyengine.com/wiki/doku.php/jme3:jmonkeyplatform jMonkeyPlatform]
- * [http://www.jmonkeyengine.com/wiki/doku.php?id=about_jme About]
+ * [http://www.jmonkeyengine.com/wiki/doku.php/sdk SDK]
