@@ -440,7 +440,7 @@
 				<include name="data/doc/**/*.*"/>
 			</fileset>
 		   	</zip>
-	    	<copy file="${jme2zip}" toDir="/var/www/nightly" overwrite="true" failonerror="true" verbose="true"/>
+         <copy file="${jme2zip}" toDir="/var/www/com/nightly" overwrite="true" failonerror="true" verbose="true"/>
 	    </target>
 	
 	<target name="sign-jars" depends="dist-all" description="sign JARs for JNLP distribution">
