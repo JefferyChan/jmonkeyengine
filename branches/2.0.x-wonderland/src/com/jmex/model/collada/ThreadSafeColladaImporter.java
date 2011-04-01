@@ -107,10 +107,14 @@ import com.jmex.model.collada.schema.accessorType;
 import com.jmex.model.collada.schema.animationType;
 import com.jmex.model.collada.schema.assetType;
 import com.jmex.model.collada.schema.bind_materialType;
+import com.jmex.model.collada.schema.blinnType;
 import com.jmex.model.collada.schema.cameraType;
 import com.jmex.model.collada.schema.collada_schema_1_4_1Doc;
 import com.jmex.model.collada.schema.colorType;
+import com.jmex.model.collada.schema.common_color_or_texture_type;
+import com.jmex.model.collada.schema.common_float_or_param_type;
 import com.jmex.model.collada.schema.common_newparam_type;
+import com.jmex.model.collada.schema.common_transparent_type;
 import com.jmex.model.collada.schema.controllerType;
 import com.jmex.model.collada.schema.effectType;
 import com.jmex.model.collada.schema.float4x4;
@@ -2662,14 +2666,21 @@ public class ThreadSafeColladaImporter {
      */
     private void processTechniqueCOMMON(techniqueType2 technique,
             ColladaMaterial mat) throws Exception {
+
+        techniqueCOMMONMaterialType wrapper = null;
+
         if (technique.haslambert()) {
-            processLambert(technique.getlambert(), mat);
+            wrapper = new lambertWrapper(technique.getlambert());
+        } else if (technique.hasphong()) {
+            wrapper = new phongWrapper(technique.getphong());
+        } else if (technique.hasblinn()) {
+            wrapper = new blinnWrapper(technique.getblinn());
         }
-        // blinn shading and phong shading are virtually the same, and OpenGL
-        // only has a single "smooth" attribute for this.
-        if (technique.hasphong()) {
-            processPhong(technique.getphong(), mat);
+
+        if (wrapper != null) {
+            processTechniqueCOMMONMaterial(wrapper, mat);
         }
+
         if (technique.hasextra()) {
             for (int i = 0; i < technique.getextraCount(); i++) {
                 ExtraPluginManager.processExtra(mat, technique.getextraAt(i));
@@ -2677,7 +2688,7 @@ public class ThreadSafeColladaImporter {
         }
     }
 
-    private void processPhong(phongType pt, ColladaMaterial mat)
+    private void processTechniqueCOMMONMaterial(techniqueCOMMONMaterialType pt, ColladaMaterial mat)
             throws Exception {
         // obtain the colors for the material
         MaterialState ms = DisplaySystem.getDisplaySystem().getRenderer()
@@ -2756,136 +2767,60 @@ public class ThreadSafeColladaImporter {
         }
 
         if (pt.hastransparent()) {
-            ColorRGBA diffuse = ms.getDiffuse();
-            if (pt.gettransparent().hasopaque() && pt.gettransparent().getopaque().toString().equals("A_ONE")) {
-                if (pt.gettransparent().hascolor()) {
-                    ColorRGBA c = getColor(pt.gettransparent().getcolor());
+            // refactored after consulting OpenSceneGraph implementation:
+            // http://www.openscenegraph.org/projects/osg/browser/OpenSceneGraph/trunk/src/osgPlugins/dae/daeRMaterials.cpp
+
+            ColorRGBA transparentColor = new ColorRGBA(transparency, transparency, transparency, transparency);
+            boolean nonZeroTransparentColor = false;
+
+            if (pt.gettransparent().hascolor()) {
+                transparentColor.set(getColor(pt.gettransparent().getcolor()));
+
+                if (pt.gettransparent().hasopaque() &&
+                    pt.gettransparent().getopaque().toString().equals("RGB_ZERO"))
+                {
+                    transparentColor.set(
+                            1.0f - transparentColor.r * transparency,
+                            1.0f - transparentColor.g * transparency,
+                            1.0f - transparentColor.b * transparency,
+                            1.0f - (transparentColor.r * 0.212671f +
+                                    transparentColor.g * 0.715160f +
+                                    transparentColor.b * 0.072169f) * transparency);
                     
-                    diffuse.a = 1.0f - c.a * transparency;
-                    ms.setDiffuse(diffuse);
-                }
-            } else {
-                if (pt.gettransparent().hascolor()) {
-                    ColorRGBA c = getColor(pt.gettransparent().getcolor());
-                    diffuse.a = 1.0f - (c.r * 0.212671f + c.g * 0.715160f + c.b * 0.072169f) * transparency;
-                    ms.setDiffuse(diffuse);
+                    // make sure it is not all zeros
+                    nonZeroTransparentColor = !transparentColor.equals(ColorRGBA.black);
+
+                } else {
+                    float a = transparentColor.a * transparency;
+                    transparentColor.set(a, a, a, a);
+
+                    // make sure it is not all ones
+                    nonZeroTransparentColor = !transparentColor.equals(ColorRGBA.white);
                 }
             }
-            if (pt.gettransparent().hastexture() || diffuse.a < 1.0f || alphaTexture) {
-                String at = System.getProperty("Collada.useAlphaTest");
-                if (at != null && at.equals("true")) {
-                    as.setBlendEnabled(false);
-                    as.setReference(0.5f);
-                    as.setTestFunction(BlendState.TestFunction.GreaterThan);
+
+            boolean transparent = pt.gettransparent().hastexture() ||
+                                  nonZeroTransparentColor ||
+                                  alphaTexture;
+            if (transparent) {
+                if (pt.gettransparent().hastexture()) {
+                    as.setBlendEnabled(true);
                     as.setTestEnabled(true);
-                } else {
                     as.setSourceFunction(BlendState.SourceFunction.SourceAlpha);
                     as.setDestinationFunction(BlendState.DestinationFunction.OneMinusSourceAlpha);
+                } else {
                     as.setBlendEnabled(true);
+                    as.setTestEnabled(true);
+                    as.setConstantColor(transparentColor);
+                    as.setSourceFunction(BlendState.SourceFunction.ConstantAlpha);
+                    as.setDestinationFunction(BlendState.DestinationFunction.OneMinusConstantAlpha);
                 }
+
                 mat.setState(as);
             }
         }
 
         mat.setState(ms);
-    }
-
-    private void processLambert(lambertType lt, ColladaMaterial mat)
-            throws Exception {
-        // lambert shading, create a FLAT shade state and material state
-        // with
-        // defined colors.
-        // obtain the colors for the material
-        MaterialState ms = DisplaySystem.getDisplaySystem().getRenderer()
-                .createMaterialState();
-        boolean alphaTexture = false;
-        // set the ambient color value of the material
-        if (lt.hasambient()) {
-            ms.setAmbient(getColor(lt.getambient().getcolor()));
-        }
-        // set the diffuse color value of the material
-        if (lt.hasdiffuse()) {
-            if (lt.getdiffuse().hascolor()) {
-                ms.setDiffuse(getColor(lt.getdiffuse().getcolor()));
-            }
-            if (lt.getdiffuse().hastexture()) {
-                // create a texturestate, and we will need to make use of
-                // texcoord to put this texture in the correct "unit"
-            	for (int i = 0; i < lt.getdiffuse().gettextureCount(); i++) {
-            		mat.setState(processTexture(
-                            lt.getdiffuse().gettextureAt(i), mat));
-                }
-
-                TextureState ts = (TextureState) mat.getState(RenderState.StateType.Texture);
-                if (ts != null) {
-                    for (int i = 0; i < ts.getNumberOfFixedUnits(); i++) {
-                        Texture t = ts.getTexture(i);
-                        if (t != null) {
-                            Image.Format f = t.getImage().getFormat();
-                            switch (f) {
-                                case RGBA_TO_DXT1:
-                                case RGBA_TO_DXT3:
-                                case RGBA_TO_DXT5:
-                                case RGBA12:
-                                case RGBA16:
-                                case RGBA16F:
-                                case RGBA2:
-                                case RGBA32F:
-                                case RGBA4:
-                                case RGBA8:
-                                    alphaTexture = true;
-                                    break;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        // set the emmission color value of the material
-        if (lt.hasemission()) {
-            ms.setEmissive(getColor(lt.getemission().getcolor()));
-        }
-
-        float transparency = 1.0f;
-        BlendState as = DisplaySystem.getDisplaySystem().getRenderer().createBlendState();
-
-        if (lt.hastransparency()) {
-            transparency = lt.gettransparency().getfloat2().getValue().floatValue();
-        }
-
-        if (lt.hastransparent()) {
-            ColorRGBA diffuse = ms.getDiffuse();
-            if (lt.gettransparent().hasopaque() && lt.gettransparent().getopaque().toString().equals("A_ONE")) {
-                if (lt.gettransparent().hascolor()) {
-                    ColorRGBA c = getColor(lt.gettransparent().getcolor());
-                    diffuse.a = 1.0f - c.a*transparency;
-                    ms.setDiffuse(diffuse);
-                }
-            } else {
-                if (lt.gettransparent().hascolor()) {
-                    ColorRGBA c = getColor(lt.gettransparent().getcolor());                   
-                    diffuse.a = 1.0f - (c.r*0.212671f + c.g*0.715160f + c.b*0.072169f)*transparency;
-                    ms.setDiffuse(diffuse);
-                }
-            }
-            if (lt.gettransparent().hastexture() || diffuse.a < 1.0f || alphaTexture) {
-                String at = System.getProperty("Collada.useAlphaTest");
-                if (at != null && at.equals("true")) {
-                    as.setBlendEnabled(false);
-                    as.setReference(0.5f);
-                    as.setTestFunction(BlendState.TestFunction.GreaterThan);
-                    as.setTestEnabled(true);
-                } else {
-                    as.setSourceFunction(BlendState.SourceFunction.SourceAlpha);
-                    as.setDestinationFunction(BlendState.DestinationFunction.OneMinusSourceAlpha);
-                    as.setBlendEnabled(true);
-                }
-                mat.setState(as);
-            }
-        }
-
-        mat.setState(ms);
-        // Ignored: reflective attributes, transparent attributes
     }
 
     /**
@@ -3473,75 +3408,26 @@ public class ThreadSafeColladaImporter {
 	    int tcUnit = 0;
 
             if (tri.hasmaterial()) {
-                // first set the appropriate materials to this mesh.
-                String matKey = (String) resourceLibrary.get(tri.getmaterial()
-                        .toString());
+                // do not set up materials here -- this has to wait until the
+                // binding has happened in processInstanceMaterials()
                 triMesh.setName(triMesh.getName()+"-"+tri.getmaterial().toString());
-                ColladaMaterial cm = (ColladaMaterial) resourceLibrary
-                    .get(matKey);
 
-                if (cm != null) {
-                	for (RenderState.StateType type : RenderState.StateType.values()) {
-                        if (cm.getState(type) != null) {
-                            if (type == RenderState.StateType.Blend) {
-                                triMesh.setRenderQueueMode(Renderer.QUEUE_TRANSPARENT);
-                            }
-                            // clone the state as different mesh's may have
-                            // different
-                            // attributes
-                            try {
-                                ByteArrayOutputStream out = new ByteArrayOutputStream();
-                                BinaryExporter.getInstance().save(
-                                        cm.getState(type), out);
-                                ByteArrayInputStream in = new ByteArrayInputStream(
-                                        out.toByteArray());
-                                RenderState rs = (RenderState) BinaryImporter
-                                        .getInstance().load(in);
-                                triMesh.setRenderState(rs);
-                            } catch (IOException e) {
-                                globalLogger
-                                        .throwing(
-                                                this.getClass().toString(),
-                                                "processTriMesh(meshType mesh, geometryType geom)",
-                                                e);
-                            }
-                        }
-                    }
-                    ArrayList<Controller> cList = cm.getControllerList();
-                    if (cList != null) {
-                        for (int c = 0; c < cList.size(); c++) {
-                            if (cList.get(c) instanceof TextureKeyframeController) {
-                                TextureState ts = (TextureState) triMesh
-                                        .getRenderState(RenderState.StateType.Texture);
-                                if (ts != null) {
-                                    // allow wrapping, as animated textures will
-                                    // almost always need it.
-                                    ts.getTexture().setWrap(Texture.WrapAxis.S, Texture.WrapMode.Repeat);
-                                    ts.getTexture().setWrap(Texture.WrapAxis.T, Texture.WrapMode.Repeat);
-                                    ((TextureKeyframeController) cList.get(c))
-                                            .setTexture(ts.getTexture());
-                                }
-                            }
-                        }
-                    }
-                    if (mesh.hasextra()) {
-                        for (int i = 0; i < mesh.getextraCount(); i++) {
-                            try {
-                                ExtraPluginManager.processExtra(triMesh, mesh
-                                        .getextraAt(i));
-                            } catch (Exception e) {
-                                if (!squelch) {
-                                    logger
-                                            .log(
-                                                    Level.INFO,
-                                                    "Error processing extra information for mesh",
-                                                    e);
-                                }
+                // jonathankap: should extras be processed per mesh or per instance?
+                if (mesh.hasextra()) {
+                    for (int i = 0; i < mesh.getextraCount(); i++) {
+                        try {
+                            ExtraPluginManager.processExtra(triMesh, mesh.getextraAt(i));
+                        } catch (Exception e) {
+                            if (!squelch) {
+                                logger.log(
+                                        Level.INFO,
+                                        "Error processing extra information for mesh",
+                                        e);
                             }
                         }
                     }
                 }
-
+             
                 subMaterialLibrary.put(triMesh, tri.getmaterial().toString());
             }
             // build the index buffer, this is going to be easy as it's only
@@ -3972,68 +3858,20 @@ public class ThreadSafeColladaImporter {
             TriMesh triMesh = new TriMesh(geom.getid().toString());
 
             if (poly.hasmaterial()) {
-                // first set the appropriate materials to this mesh.
-                String matKey = (String) resourceLibrary.get(poly.getmaterial()
-                        .toString());
-                ColladaMaterial cm = (ColladaMaterial) resourceLibrary
-                        .get(matKey);
-                if (cm != null) {
-                    for (RenderState.StateType type : RenderState.StateType.values()) {
-                        if (cm.getState(type) != null) {
-                            if (type == RenderState.StateType.Blend) {
-                                triMesh.setRenderQueueMode(Renderer.QUEUE_TRANSPARENT);
-                            }
-                            // clone the state as different mesh's may have
-                            // different
-                            // attributes
-                            try {
-                                ByteArrayOutputStream out = new ByteArrayOutputStream();
-                                BinaryExporter.getInstance().save(
-                                        cm.getState(type), out);
-                                ByteArrayInputStream in = new ByteArrayInputStream(
-                                        out.toByteArray());
-                                RenderState rs = (RenderState) BinaryImporter
-                                        .getInstance().load(in);
-                                triMesh.setRenderState(rs);
-                            } catch (IOException e) {
-                                globalLogger
-                                        .throwing(
-                                                this.getClass().toString(),
-                                                "processTriMesh(meshType mesh, geometryType geom)",
-                                                e);
-                            }
-                        }
-                    }
-                    ArrayList<Controller> cList = cm.getControllerList();
-                    if (cList != null) {
-                        for (int c = 0; c < cList.size(); c++) {
-                            if (cList.get(c) instanceof TextureKeyframeController) {
-                                TextureState ts = (TextureState) triMesh
-                                        .getRenderState(RenderState.StateType.Texture);
-                                if (ts != null) {
-                                    // allow wrapping, as animated textures will
-                                    // almost always need it.
-                                    ts.getTexture().setWrap(Texture.WrapAxis.S, Texture.WrapMode.Repeat);
-                                    ts.getTexture().setWrap(Texture.WrapAxis.T, Texture.WrapMode.Repeat);
-                                    ((TextureKeyframeController) cList.get(c))
-                                            .setTexture(ts.getTexture());
-                                }
-                            }
-                        }
-                    }
-                    if (mesh.hasextra()) {
-                        for (int i = 0; i < mesh.getextraCount(); i++) {
-                            try {
-                                ExtraPluginManager.processExtra(triMesh, mesh
-                                        .getextraAt(i));
-                            } catch (Exception e) {
-                                if (!squelch) {
-                                    logger
-                                            .log(
-                                                    Level.INFO,
-                                                    "Error processing extra information for mesh",
-                                                    e);
-                                }
+                // do not set up materials here -- this has to wait until the
+                // binding has happened in processInstanceMaterials()
+
+                // jonathankap: should extras be processed per mesh or per instance?
+                if (mesh.hasextra()) {
+                    for (int i = 0; i < mesh.getextraCount(); i++) {
+                        try {
+                            ExtraPluginManager.processExtra(triMesh, mesh.getextraAt(i));
+                        } catch (Exception e) {
+                            if (!squelch) {
+                                logger.log(
+                                        Level.INFO,
+                                        "Error processing extra information for mesh",
+                                        e);
                             }
                         }
                     }
@@ -4485,12 +4323,17 @@ public class ThreadSafeColladaImporter {
      */
     private void processNode(nodeType2 xmlNode, Node parent) throws Exception {
         String childName = null;
-        if (xmlNode.hasid())
+        String globalName = null;
+
+        if (xmlNode.hasid()) {
             childName = xmlNode.getid().toString();
-        else if (xmlNode.hassid())
+            globalName = childName;
+        } else if (xmlNode.hassid()) {
             childName = xmlNode.getsid().toString();
-        else if (xmlNode.hasname())
+        } else if (xmlNode.hasname()) {
             childName = xmlNode.getname().toString();
+        }
+
         Node child = null;
         if (xmlNode.hastype() && "JOINT".equals(xmlNode.gettype().toString())
                 && (xmlNode.hassid() || xmlNode.hasid())) {
@@ -4554,7 +4397,12 @@ public class ThreadSafeColladaImporter {
             }
 
         parent.attachChild(child);
-        put(childName, child);
+        
+        // only add the node if it has a global identifier, otherwise we could
+        // overlap with other nodes
+        if (globalName != null) {
+            put(globalName, child);
+        }
 
         if (xmlNode.hasinstance_camera()) {
             for (int i = 0; i < xmlNode.getinstance_cameraCount(); i++) {
@@ -4910,6 +4758,22 @@ public class ThreadSafeColladaImporter {
                     }
                 }
             }
+
+            ArrayList<Controller> cList = cm.getControllerList();
+            if (cList != null) {
+                for (int c = 0; c < cList.size(); c++) {
+                    if (cList.get(c) instanceof TextureKeyframeController) {
+                        TextureState ts = (TextureState) target.getRenderState(RenderState.StateType.Texture);
+                        if (ts != null) {
+                            // allow wrapping, as animated textures will
+                            // almost always need it.
+                            ts.getTexture().setWrap(Texture.WrapAxis.S, Texture.WrapMode.Repeat);
+                            ts.getTexture().setWrap(Texture.WrapAxis.T, Texture.WrapMode.Repeat);
+                            ((TextureKeyframeController) cList.get(c)).setTexture(ts.getTexture());
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -5005,5 +4869,213 @@ public class ThreadSafeColladaImporter {
          * @param throwable any associated exception, may be null
          */
         public void error(Level level, String msg, Throwable throwable);
+    }
+
+    private interface techniqueCOMMONMaterialType {
+        com.jmex.xml.xml.Node getOriginal();
+
+        boolean hasambient();
+        common_color_or_texture_type getambient() throws Exception;
+
+        boolean hasdiffuse();
+        common_color_or_texture_type getdiffuse() throws Exception;
+
+        boolean hasemission();
+        common_color_or_texture_type getemission() throws Exception;
+
+        boolean hasspecular();
+        common_color_or_texture_type getspecular() throws Exception;
+
+        boolean hasshininess();
+        common_float_or_param_type getshininess() throws Exception;
+
+        boolean hastransparency();
+        common_float_or_param_type gettransparency() throws Exception;
+
+        boolean hastransparent();
+        common_transparent_type gettransparent() throws Exception;
+    }
+
+    class blinnWrapper implements techniqueCOMMONMaterialType {
+        private final blinnType bt;
+
+        public blinnWrapper(blinnType bt) {
+            this.bt = bt;
+        }
+
+        public com.jmex.xml.xml.Node getOriginal() {
+            return bt;
+        }
+
+        public boolean hasambient() {
+            return bt.hasambient();
+        }
+        public common_color_or_texture_type getambient() throws Exception {
+            return bt.getambient();
+        }
+
+        public boolean hasdiffuse() {
+            return bt.hasdiffuse();
+        }
+        public common_color_or_texture_type getdiffuse() throws Exception {
+            return bt.getdiffuse();
+        }
+
+        public boolean hasemission() {
+            return bt.hasemission();
+        }
+        public common_color_or_texture_type getemission() throws Exception {
+            return bt.getemission();
+        }
+
+        public boolean hasspecular() {
+            return bt.hasspecular();
+        }
+        public common_color_or_texture_type getspecular() throws Exception {
+            return bt.getspecular();
+        }
+
+        public boolean hasshininess() {
+            return bt.hasshininess();
+        }
+        public common_float_or_param_type getshininess() throws Exception {
+            return bt.getshininess();
+        }
+
+        public boolean hastransparency() {
+            return bt.hastransparency();
+        }
+        public common_float_or_param_type gettransparency() throws Exception {
+            return bt.gettransparency();
+        }
+
+        public boolean hastransparent() {
+            return bt.hastransparent();
+        }
+        public common_transparent_type gettransparent() throws Exception {
+            return bt.gettransparent();
+        }
+    }
+
+    class phongWrapper implements techniqueCOMMONMaterialType {
+        private final phongType pt;
+
+        public phongWrapper(phongType pt) {
+            this.pt = pt;
+        }
+
+        public com.jmex.xml.xml.Node getOriginal() {
+            return pt;
+        }
+
+        public boolean hasambient() {
+            return pt.hasambient();
+        }
+        public common_color_or_texture_type getambient() throws Exception {
+            return pt.getambient();
+        }
+
+        public boolean hasdiffuse() {
+            return pt.hasdiffuse();
+        }
+        public common_color_or_texture_type getdiffuse() throws Exception {
+            return pt.getdiffuse();
+        }
+
+        public boolean hasemission() {
+            return pt.hasemission();
+        }
+        public common_color_or_texture_type getemission() throws Exception {
+            return pt.getemission();
+        }
+
+        public boolean hasspecular() {
+            return pt.hasspecular();
+        }
+        public common_color_or_texture_type getspecular() throws Exception {
+            return pt.getspecular();
+        }
+
+        public boolean hasshininess() {
+            return pt.hasshininess();
+        }
+        public common_float_or_param_type getshininess() throws Exception {
+            return pt.getshininess();
+        }
+
+        public boolean hastransparency() {
+            return pt.hastransparency();
+        }
+        public common_float_or_param_type gettransparency() throws Exception {
+            return pt.gettransparency();
+        }
+
+        public boolean hastransparent() {
+            return pt.hastransparent();
+        }
+        public common_transparent_type gettransparent() throws Exception {
+            return pt.gettransparent();
+        }
+    }
+
+    class lambertWrapper implements techniqueCOMMONMaterialType {
+        private final lambertType lt;
+
+        public lambertWrapper(lambertType pt) {
+            this.lt = pt;
+        }
+
+        public com.jmex.xml.xml.Node getOriginal() {
+            return lt;
+        }
+
+        public boolean hasambient() {
+            return lt.hasambient();
+        }
+        public common_color_or_texture_type getambient() throws Exception {
+            return lt.getambient();
+        }
+
+        public boolean hasdiffuse() {
+            return lt.hasdiffuse();
+        }
+        public common_color_or_texture_type getdiffuse() throws Exception {
+            return lt.getdiffuse();
+        }
+
+        public boolean hasemission() {
+            return lt.hasemission();
+        }
+        public common_color_or_texture_type getemission() throws Exception {
+            return lt.getemission();
+        }
+
+        public boolean hasspecular() {
+            return false;
+        }
+        public common_color_or_texture_type getspecular() throws Exception {
+            throw new UnsupportedOperationException("No specular in lambert");
+        }
+
+        public boolean hasshininess() {
+            return false;
+        }
+        public common_float_or_param_type getshininess() throws Exception {
+            throw new UnsupportedOperationException("No shininess in lambert");
+        }
+
+        public boolean hastransparency() {
+            return lt.hastransparency();
+        }
+        public common_float_or_param_type gettransparency() throws Exception {
+            return lt.gettransparency();
+        }
+
+        public boolean hastransparent() {
+            return lt.hastransparent();
+        }
+        public common_transparent_type gettransparent() throws Exception {
+            return lt.gettransparent();
+        }
     }
 }
