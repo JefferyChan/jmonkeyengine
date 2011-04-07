@@ -81,16 +81,16 @@ public class DirectionalShadowMapPass extends Pass {
             1.0f); // bias from [-1, 1] to [0, 1]
 
     /** The renderer used to produce the shadow map */
-    private TextureRenderer shadowMapRenderer;
+    protected TextureRenderer shadowMapRenderer;
     /** The texture storing the shadow map */
     private Texture2D shadowMapTexture;
     /** The near plane when rendering the shadow map */
-    private float nearPlane = 1f;
+    protected float nearPlane = 1f;
     /**
      * The far plane when rendering the shadow map - currently tuned for the
      * test
      */
-    private float farPlane = 3000.0f;
+    protected float farPlane = 3000.0f;
     /**
      * The location the shadow light source is looking at - must point at the
      * focus of the scene
@@ -153,7 +153,7 @@ public class DirectionalShadowMapPass extends Pass {
     private RenderState[] preStates = new RenderState[RenderState.StateType.values().length];
 
     /** The colour of shadows cast */
-    private ColorRGBA shadowCol = new ColorRGBA(0, 0, 0, 0.3f);
+    protected ColorRGBA shadowCol = new ColorRGBA(0, 0, 0, 0.3f);
     /** The optional shader for smoothing */
     private GLSLShaderObjectsState shader;
     /** True if the pass should use shaders */
