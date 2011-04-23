@@ -93,7 +93,7 @@
     </target>
     
     <target name="-nativelib-linux" if="isLinux">
-        <cc name="${bullet.linux.compiler}" warnings="severe" debug="${bullet.compile.debug}" link="shared" outfile="${bullet.output.dir}/${bullet.library.name}" objdir="${bullet.output.dir}">
+        <cc name="${bullet.linux.compiler}" warnings="severe" debug="${bullet.compile.debug}" link="shared" outfile="${bullet.output.dir}/${bullet.library.name}" objdir="${bullet.build.dir}">
             <fileset dir="${bullet.source.dir}">
                 <include name="*.cpp">
                 </include>
@@ -111,7 +111,7 @@
     </target>
 
     <target name="-nativelib-windows" if="isWindows">
-        <cc name="${bullet.windows.compiler}" warnings="severe" debug="${bullet.compile.debug}" link="shared" outfile="${bullet.output.dir}\${bullet.library.name}" objdir="${bullet.output.dir}">
+        <cc name="${bullet.windows.compiler}" warnings="severe" debug="${bullet.compile.debug}" link="shared" outfile="${bullet.output.dir}\${bullet.library.name}" objdir="${bullet.build.dir}">
             <fileset dir="${bullet.source.dir}">
                 <include name="*.cpp">
                 </include>
