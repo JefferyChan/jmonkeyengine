@@ -35,7 +35,12 @@
  * Author: Normen Hansen
  */
 jmePhysicsSpace::jmePhysicsSpace(JNIEnv* env, jobject javaSpace) {
+    //TODO: global ref? maybe not -> PhantomRef
     this->javaPhysicsSpace = env->NewGlobalRef(javaSpace);
+    if (env->ExceptionCheck()) {
+        env->Throw(env->ExceptionOccurred());
+        return;
+    }
     this->jniEnv = env;
 }
 

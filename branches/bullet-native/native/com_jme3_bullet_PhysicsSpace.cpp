@@ -29,6 +29,11 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+#include "btBulletDynamicsCommon.h"
+#include "btBulletCollisionCommon.h"
+//#include "BulletCollision/CollisionDispatch/btCollisionObject.h"
+//#include "BulletCollision/CollisionDispatch/btGhostObject.h"
+
 #include "com_jme3_bullet_PhysicsSpace.h"
 #include "jmePhysicsSpace.h"
 
@@ -211,7 +216,19 @@ extern "C" {
      */
     JNIEXPORT void JNICALL Java_com_jme3_bullet_PhysicsSpace_addVehicle
     (JNIEnv * env, jobject object, jlong spaceId, jlong objectId){
-        
+        jmePhysicsSpace* space = (jmePhysicsSpace*) spaceId;
+        btActionInterface* actionObject = (btActionInterface*) objectId;
+        if(space == NULL){
+            jclass newExc=env->FindClass("java/lang/IllegalStateException");
+            env->ThrowNew(newExc, "The physics space does not exist.");
+            return;
+        }
+        if(actionObject == NULL){
+            jclass newExc=env->FindClass("java/lang/IllegalStateException");
+            env->ThrowNew(newExc, "The vehicle object does not exist.");
+            return;
+        }
+        space->getDynamicsWorld()->addVehicle(actionObject);
     }
 
     /*
@@ -221,7 +238,19 @@ extern "C" {
      */
     JNIEXPORT void JNICALL Java_com_jme3_bullet_PhysicsSpace_removeVehicle
     (JNIEnv * env, jobject object, jlong spaceId, jlong objectId){
-        
+        jmePhysicsSpace* space = (jmePhysicsSpace*) spaceId;
+        btActionInterface* actionObject = (btActionInterface*) objectId;
+        if(space == NULL){
+            jclass newExc=env->FindClass("java/lang/IllegalStateException");
+            env->ThrowNew(newExc, "The physics space does not exist.");
+            return;
+        }
+        if(actionObject == NULL){
+            jclass newExc=env->FindClass("java/lang/IllegalStateException");
+            env->ThrowNew(newExc, "The action object does not exist.");
+            return;
+        }
+        space->getDynamicsWorld()->removeVehicle(actionObject);
     }
 
     /*
@@ -231,7 +260,19 @@ extern "C" {
      */
     JNIEXPORT void JNICALL Java_com_jme3_bullet_PhysicsSpace_addConstraint
     (JNIEnv * env, jobject object, jlong spaceId, jlong objectId){
-        
+        jmePhysicsSpace* space = (jmePhysicsSpace*) spaceId;
+        btTypedConstraint* constraint = (btTypedConstraint*) objectId;
+        if(space == NULL){
+            jclass newExc=env->FindClass("java/lang/IllegalStateException");
+            env->ThrowNew(newExc, "The physics space does not exist.");
+            return;
+        }
+        if(constraint == NULL){
+            jclass newExc=env->FindClass("java/lang/IllegalStateException");
+            env->ThrowNew(newExc, "The constraint object does not exist.");
+            return;
+        }
+        space->getDynamicsWorld()->addConstraint(constraint);
     }
 
     /*
@@ -241,7 +282,19 @@ extern "C" {
      */
     JNIEXPORT void JNICALL Java_com_jme3_bullet_PhysicsSpace_removeConstraint
     (JNIEnv * env, jobject object, jlong spaceId, jlong objectId){
-        
+        jmePhysicsSpace* space = (jmePhysicsSpace*) spaceId;
+        btTypedConstraint* constraint = (btTypedConstraint*) objectId;
+        if(space == NULL){
+            jclass newExc=env->FindClass("java/lang/IllegalStateException");
+            env->ThrowNew(newExc, "The physics space does not exist.");
+            return;
+        }
+        if(constraint == NULL){
+            jclass newExc=env->FindClass("java/lang/IllegalStateException");
+            env->ThrowNew(newExc, "The constraint object does not exist.");
+            return;
+        }
+        space->getDynamicsWorld()->removeConstraint(constraint);
     }
 
 #ifdef __cplusplus
