@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="build bullet natives" default="all" basedir="../../../">
+    <!-- load cpp compiler ant task -->
+    <taskdef resource="cpptasks.tasks" classpath="lib/antlibs/cpptasks.jar"/>
+    <!-- load properties -->
+    <property file="src/jbullet/native/bullet.properties"/>
+    <!-- condition for mac platform check -->
+    <condition property="isMac">
+        <and>
+            <os family="mac" />
+            <os family="unix" />
+        </and>
+    </condition>
+    <!-- condition for windows platform check -->
+    <condition property="isWindows">
+        <os family="windows" />
+    </condition>
+    <!-- condition for linux platform check -->
+    <condition property="isLinux">
+        <and>
+            <os family="unix"/>
+            <not>
+                <os family="mac"/>
+            </not>
+        </and>
+    </condition>
+    <!-- condition for x86_64 check -->
+    <condition property="isx86_64">
+        <os arch="x86_64" />
+    </condition>
+    
+    <fileset id="lib.jars" dir="${bullet.lib.dir}">
+        <include name="**/*.jar"/>
+    </fileset>
+    <fileset id="lib.jme.jars" dir="${bullet.jme.dir}">
+        <include name="**/*.jar"/>
+    </fileset>
+    
+    <pathconvert property="lib.importpath">
+        <fileset refid="lib.jars"/>
+        <fileset refid="lib.jme.jars"/>
+    </pathconvert>
+
+    <target name="build-bullet-natives" description="builds the native bullet library for the platform being run on" depends="-create-folders, create-native-headers, -nativelib-osx, -nativelib-windows, -nativelib-linux">
+    </target>
+    
+    <target name="create-native-headers" description="creates the native headers">
+        <javah destdir="${bullet.source.dir}" classpath="${lib.importpath}" force="yes">
+            <class name="com.jme3.bullet.PhysicsSpace"/>
+            <class name="com.jme3.bullet.collision.shapes.BoxCollisionShape"/>
+            <class name="com.jme3.bullet.collision.shapes.SphereCollisionShape"/>
+            <class name="com.jme3.bullet.collision.shapes.CapsuleCollisionShape"/>
+            <class name="com.jme3.bullet.collision.shapes.CylinderCollisionShape"/>
+            <class name="com.jme3.bullet.collision.shapes.MeshCollisionShape"/>
+        </javah>
+    </target>
+
+    <target name="-create-folders" description="creates the native headers">
+        <mkdir dir="${bullet.source.dir}"/>
+        <mkdir dir="${bullet.build.dir}"/>
+        <mkdir dir="${bullet.output.dir}"/>
+    </target>
+    
+    <target name="-nativelib-osx" if="isMac">
+        <cc name="${bullet.osx.compiler}" warnings="none" debug="${bullet.compile.debug}" link="shared" outfile="${bullet.output.dir}/${bullet.library.name}" objdir="${bullet.build.dir}">
+            <fileset dir="${bullet.source.dir}">
+                <include name="*.cpp">
+                </include>
+            </fileset>
+            <includepath path="${bullet.java.include}"/>
+            <includepath path="${bullet.bullet.include}"/>
+            <compilerarg value="-syslibroot ${bullet.osx.syslibroot}"/>
+            <compilerarg value="-arch"/>
+            <compilerarg value="ppc"/>
+            <compilerarg value="-arch"/>
+            <compilerarg value="i386"/>
+            <compilerarg value="-arch"/>
+            <compilerarg value="x86_64"/>
+            <linker name="${bullet.osx.compiler}">
+                <libset dir="${bullet.folder}/src/BulletMultiThreaded" libs="BulletMultiThreaded"/>
+                <libset dir="${bullet.folder}/src/BulletDynamics" libs="BulletDynamics"/>
+                <libset dir="${bullet.folder}/src/BulletCollision" libs="BulletCollision"/>
+                <libset dir="${bullet.folder}/src/LinearMath" libs="LinearMath"/>
+                <linkerarg value="-arch"/>
+                <linkerarg value="ppc"/>
+                <linkerarg value="-arch"/>
+                <linkerarg value="i386"/>
+                <linkerarg value="-arch"/>
+                <linkerarg value="x86_64"/>
+            </linker>
+        </cc>
+        <move file="${bullet.output.dir}/lib${bullet.library.name}.dylib" tofile="${bullet.output.dir}/lib${bullet.library.name}.jnilib" failonerror="true" verbose="true"/>
+    </target>
+    
+    <target name="-nativelib-linux" if="isLinux">
+        <cc name="${bullet.linux.compiler}" warnings="severe" debug="${bullet.compile.debug}" link="shared" outfile="${bullet.output.dir}/${bullet.library.name}" objdir="${bullet.output.dir}">
+            <fileset dir="${bullet.source.dir}">
+                <include name="*.cpp">
+                </include>
+            </fileset>
+            <includepath path="${bullet.java.include}"/>
+            <includepath path="${bullet.java.include}/linux"/>
+            <includepath path="${bullet.bullet.include}"/>
+            <linker name="${bullet.linux.compiler}">
+                <libset dir="${bullet.folder}/src/BulletMultiThreaded" libs="BulletMultiThreaded"/>
+                <libset dir="${bullet.folder}/src/BulletDynamics" libs="BulletDynamics"/>
+                <libset dir="${bullet.folder}/src/BulletCollision" libs="BulletCollision"/>
+                <libset dir="${bullet.folder}/src/LinearMath" libs="LinearMath"/>
+            </linker>
+        </cc>
+    </target>
+
+    <target name="-nativelib-windows" if="isWindows">
+        <cc name="${bullet.windows.compiler}" warnings="severe" debug="${bullet.compile.debug}" link="shared" outfile="${bullet.output.dir}\${bullet.library.name}" objdir="${bullet.output.dir}">
+            <fileset dir="${bullet.source.dir}">
+                <include name="*.cpp">
+                </include>
+            </fileset>
+            <includepath path="${bullet.java.include}"/>
+            <includepath path="${bullet.java.include}\win32"/>
+            <includepath path="${bullet.bullet.include}"/>
+           <!--compilerarg value="-m32"/-->
+            <linker name="${bullet.windows.compiler}">
+                <libset dir="${bullet.folder}\src\BulletMultiThreaded" libs="BulletMultiThreaded"/>
+                <libset dir="${bullet.folder}\src\BulletDynamics" libs="BulletDynamics"/>
+                <libset dir="${bullet.folder}\src\BulletCollision" libs="BulletCollision"/>
+                <libset dir="${bullet.folder}\src\LinearMath" libs="LinearMath"/>
+            </linker>
+        </cc>
+        <move file="${bullet.output.dir}\${bullet.library.name}.so" tofile="${bullet.output.dir}\${bullet.library.name}.dll" failonerror="false" verbose="true"/>
+    </target>
+</project>

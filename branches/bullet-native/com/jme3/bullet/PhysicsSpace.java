@@ -31,34 +31,34 @@
  */
 package com.jme3.bullet;
 
-import com.bulletphysics.BulletGlobals;
-import com.bulletphysics.ContactAddedCallback;
-import com.bulletphysics.ContactDestroyedCallback;
-import com.bulletphysics.ContactProcessedCallback;
-import com.bulletphysics.collision.broadphase.AxisSweep3;
-import com.bulletphysics.collision.broadphase.AxisSweep3_32;
-import com.bulletphysics.collision.broadphase.BroadphaseInterface;
-import com.bulletphysics.collision.broadphase.BroadphaseProxy;
-import com.bulletphysics.collision.broadphase.CollisionFilterGroups;
-import com.bulletphysics.collision.broadphase.DbvtBroadphase;
-import com.bulletphysics.collision.broadphase.OverlapFilterCallback;
-import com.bulletphysics.collision.broadphase.SimpleBroadphase;
-import com.bulletphysics.collision.dispatch.CollisionDispatcher;
-import com.bulletphysics.collision.dispatch.CollisionObject;
-import com.bulletphysics.collision.dispatch.CollisionWorld;
-import com.bulletphysics.collision.dispatch.CollisionWorld.LocalConvexResult;
-import com.bulletphysics.collision.dispatch.CollisionWorld.LocalRayResult;
-import com.bulletphysics.collision.dispatch.DefaultCollisionConfiguration;
-import com.bulletphysics.collision.dispatch.GhostPairCallback;
-import com.bulletphysics.collision.narrowphase.ManifoldPoint;
-import com.bulletphysics.collision.shapes.ConvexShape;
-import com.bulletphysics.dynamics.DiscreteDynamicsWorld;
-import com.bulletphysics.dynamics.DynamicsWorld;
-import com.bulletphysics.dynamics.InternalTickCallback;
-import com.bulletphysics.dynamics.RigidBody;
-import com.bulletphysics.dynamics.constraintsolver.ConstraintSolver;
-import com.bulletphysics.dynamics.constraintsolver.SequentialImpulseConstraintSolver;
-import com.bulletphysics.extras.gimpact.GImpactCollisionAlgorithm;
+//import com.bulletphysics.BulletGlobals;
+//import com.bulletphysics.ContactAddedCallback;
+//import com.bulletphysics.ContactDestroyedCallback;
+//import com.bulletphysics.ContactProcessedCallback;
+//import com.bulletphysics.collision.broadphase.AxisSweep3;
+//import com.bulletphysics.collision.broadphase.AxisSweep3_32;
+//import com.bulletphysics.collision.broadphase.BroadphaseInterface;
+//import com.bulletphysics.collision.broadphase.BroadphaseProxy;
+//import com.bulletphysics.collision.broadphase.CollisionFilterGroups;
+//import com.bulletphysics.collision.broadphase.DbvtBroadphase;
+//import com.bulletphysics.collision.broadphase.OverlapFilterCallback;
+//import com.bulletphysics.collision.broadphase.SimpleBroadphase;
+//import com.bulletphysics.collision.dispatch.CollisionDispatcher;
+//import com.bulletphysics.collision.dispatch.CollisionObject;
+//import com.bulletphysics.collision.dispatch.CollisionWorld;
+//import com.bulletphysics.collision.dispatch.CollisionWorld.LocalConvexResult;
+//import com.bulletphysics.collision.dispatch.CollisionWorld.LocalRayResult;
+//import com.bulletphysics.collision.dispatch.DefaultCollisionConfiguration;
+//import com.bulletphysics.collision.dispatch.GhostPairCallback;
+//import com.bulletphysics.collision.narrowphase.ManifoldPoint;
+//import com.bulletphysics.collision.shapes.ConvexShape;
+//import com.bulletphysics.dynamics.DiscreteDynamicsWorld;
+//import com.bulletphysics.dynamics.DynamicsWorld;
+//import com.bulletphysics.dynamics.InternalTickCallback;
+//import com.bulletphysics.dynamics.RigidBody;
+//import com.bulletphysics.dynamics.constraintsolver.ConstraintSolver;
+//import com.bulletphysics.dynamics.constraintsolver.SequentialImpulseConstraintSolver;
+//import com.bulletphysics.extras.gimpact.GImpactCollisionAlgorithm;
 import com.jme3.app.AppTask;
 import com.jme3.asset.AssetManager;
 import com.jme3.math.Vector3f;
@@ -102,6 +102,7 @@ public class PhysicsSpace {
     public static final int AXIS_X = 0;
     public static final int AXIS_Y = 1;
     public static final int AXIS_Z = 2;
+    private long physicsSpaceId;
     private static ThreadLocal<ConcurrentLinkedQueue<AppTask<?>>> pQueueTL =
             new ThreadLocal<ConcurrentLinkedQueue<AppTask<?>>>() {
 
@@ -112,14 +113,14 @@ public class PhysicsSpace {
             };
     private ConcurrentLinkedQueue<AppTask<?>> pQueue = new ConcurrentLinkedQueue<AppTask<?>>();
     private static ThreadLocal<PhysicsSpace> physicsSpaceTL = new ThreadLocal<PhysicsSpace>();
-    private DiscreteDynamicsWorld dynamicsWorld = null;
-    private BroadphaseInterface broadphase;
     private BroadphaseType broadphaseType = BroadphaseType.DBVT;
-    private CollisionDispatcher dispatcher;
-    private ConstraintSolver solver;
-    private DefaultCollisionConfiguration collisionConfiguration;
+//    private DiscreteDynamicsWorld dynamicsWorld = null;
+//    private BroadphaseInterface broadphase;
+//    private CollisionDispatcher dispatcher;
+//    private ConstraintSolver solver;
+//    private DefaultCollisionConfiguration collisionConfiguration;
 //    private Map<GhostObject, PhysicsGhostObject> physicsGhostNodes = new ConcurrentHashMap<GhostObject, PhysicsGhostObject>();
-    private Map<RigidBody, PhysicsRigidBody> physicsNodes = new ConcurrentHashMap<RigidBody, PhysicsRigidBody>();
+    private Map<Long, PhysicsRigidBody> physicsNodes = new ConcurrentHashMap<Long, PhysicsRigidBody>();
     private List<PhysicsJoint> physicsJoints = new LinkedList<PhysicsJoint>();
     private List<PhysicsCollisionListener> collisionListeners = new LinkedList<PhysicsCollisionListener>();
     private List<PhysicsCollisionEvent> collisionEvents = new LinkedList<PhysicsCollisionEvent>();
@@ -132,8 +133,8 @@ public class PhysicsSpace {
     private int maxSubSteps = 4;
     private javax.vecmath.Vector3f rayVec1 = new javax.vecmath.Vector3f();
     private javax.vecmath.Vector3f rayVec2 = new javax.vecmath.Vector3f();
-    private com.bulletphysics.linearmath.Transform sweepTrans1=new com.bulletphysics.linearmath.Transform(new javax.vecmath.Matrix3f());
-    private com.bulletphysics.linearmath.Transform sweepTrans2=new com.bulletphysics.linearmath.Transform(new javax.vecmath.Matrix3f());
+    private com.bulletphysics.linearmath.Transform sweepTrans1 = new com.bulletphysics.linearmath.Transform(new javax.vecmath.Matrix3f());
+    private com.bulletphysics.linearmath.Transform sweepTrans2 = new com.bulletphysics.linearmath.Transform(new javax.vecmath.Matrix3f());
     private AssetManager debugManager;
 
     /**
@@ -176,151 +177,152 @@ public class PhysicsSpace {
      * Has to be called from the (designated) physics thread
      */
     public void create() {
+        //TODO: boroadphase!
+        physicsSpaceId = createPhysicsSpace(worldMin.x, worldMin.y, worldMin.z, worldMax.x, worldMax.y, worldMax.z, 3);
         pQueueTL.set(pQueue);
-
-        collisionConfiguration = new DefaultCollisionConfiguration();
-        dispatcher = new CollisionDispatcher(collisionConfiguration);
-        switch (broadphaseType) {
-            case SIMPLE:
-                broadphase = new SimpleBroadphase();
-                break;
-            case AXIS_SWEEP_3:
-                broadphase = new AxisSweep3(Converter.convert(worldMin), Converter.convert(worldMax));
-                break;
-            case AXIS_SWEEP_3_32:
-                broadphase = new AxisSweep3_32(Converter.convert(worldMin), Converter.convert(worldMax));
-                break;
-            case DBVT:
-                broadphase = new DbvtBroadphase();
-                break;
-        }
-
-        solver = new SequentialImpulseConstraintSolver();
-
-        dynamicsWorld = new DiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration);
-        dynamicsWorld.setGravity(new javax.vecmath.Vector3f(0, -9.81f, 0));
-
-        broadphase.getOverlappingPairCache().setInternalGhostPairCallback(new GhostPairCallback());
-        GImpactCollisionAlgorithm.registerAlgorithm(dispatcher);
-
         physicsSpaceTL.set(this);
-        //register filter callback for tick / collision
-        setTickCallback();
-        setContactCallbacks();
-        //register filter callback for collision groups
-        setOverlapFilterCallback();
+
+//        collisionConfiguration = new DefaultCollisionConfiguration();
+//        dispatcher = new CollisionDispatcher(collisionConfiguration);
+//        switch (broadphaseType) {
+//            case SIMPLE:
+//                broadphase = new SimpleBroadphase();
+//                break;
+//            case AXIS_SWEEP_3:
+//                broadphase = new AxisSweep3(Converter.convert(worldMin), Converter.convert(worldMax));
+//                break;
+//            case AXIS_SWEEP_3_32:
+//                broadphase = new AxisSweep3_32(Converter.convert(worldMin), Converter.convert(worldMax));
+//                break;
+//            case DBVT:
+//                broadphase = new DbvtBroadphase();
+//                break;
+//        }
+//
+//        solver = new SequentialImpulseConstraintSolver();
+//
+//        dynamicsWorld = new DiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration);
+//        dynamicsWorld.setGravity(new javax.vecmath.Vector3f(0, -9.81f, 0));
+//
+//        broadphase.getOverlappingPairCache().setInternalGhostPairCallback(new GhostPairCallback());
+//        GImpactCollisionAlgorithm.registerAlgorithm(dispatcher);
+//
+//        //register filter callback for tick / collision
+//        setTickCallback();
+//        setContactCallbacks();
+//        //register filter callback for collision groups
+//        setOverlapFilterCallback();
     }
 
-    private void setOverlapFilterCallback() {
-        OverlapFilterCallback callback = new OverlapFilterCallback() {
+    private native long createPhysicsSpace(float minX, float minY, float minZ, float maxX, float maxY, float maxZ, int broadphaseType);
 
-            public boolean needBroadphaseCollision(BroadphaseProxy bp, BroadphaseProxy bp1) {
-                boolean collides = (bp.collisionFilterGroup & bp1.collisionFilterMask) != 0;
-                if (collides) {
-                    collides = (bp1.collisionFilterGroup & bp.collisionFilterMask) != 0;
-                }
-                if (collides) {
-                    assert (bp.clientObject instanceof com.bulletphysics.collision.dispatch.CollisionObject && bp.clientObject instanceof com.bulletphysics.collision.dispatch.CollisionObject);
-                    com.bulletphysics.collision.dispatch.CollisionObject colOb = (com.bulletphysics.collision.dispatch.CollisionObject) bp.clientObject;
-                    com.bulletphysics.collision.dispatch.CollisionObject colOb1 = (com.bulletphysics.collision.dispatch.CollisionObject) bp1.clientObject;
-                    assert (colOb.getUserPointer() != null && colOb1.getUserPointer() != null);
-                    PhysicsCollisionObject collisionObject = (PhysicsCollisionObject) colOb.getUserPointer();
-                    PhysicsCollisionObject collisionObject1 = (PhysicsCollisionObject) colOb1.getUserPointer();
-                    if ((collisionObject.getCollideWithGroups() & collisionObject1.getCollisionGroup()) > 0
-                            || (collisionObject1.getCollideWithGroups() & collisionObject.getCollisionGroup()) > 0) {
-                        PhysicsCollisionGroupListener listener = collisionGroupListeners.get(collisionObject.getCollisionGroup());
-                        PhysicsCollisionGroupListener listener1 = collisionGroupListeners.get(collisionObject1.getCollisionGroup());
-                        if (listener != null) {
-                            return listener.collide(collisionObject, collisionObject1);
-                        } else if (listener1 != null) {
-                            return listener1.collide(collisionObject, collisionObject1);
-                        }
-                        return true;
-                    } else {
-                        return false;
-                    }
-                }
-                return collides;
-            }
-        };
-        dynamicsWorld.getPairCache().setOverlapFilterCallback(callback);
-    }
-
-    private void setTickCallback() {
-        final PhysicsSpace space = this;
-        InternalTickCallback callback2 = new InternalTickCallback() {
-
-            @Override
-            public void internalTick(DynamicsWorld dw, float f) {
-                //execute task list
-                AppTask task = pQueue.poll();
-                task = pQueue.poll();
-                while (task != null) {
-                    while (task.isCancelled()) {
-                        task = pQueue.poll();
-                    }
-                    try {
-                        task.invoke();
-                    } catch (Exception ex) {
-                        Logger.getLogger(PhysicsSpace.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                    task = pQueue.poll();
-                }
-                for (Iterator<PhysicsTickListener> it = tickListeners.iterator(); it.hasNext();) {
-                    PhysicsTickListener physicsTickCallback = it.next();
-                    physicsTickCallback.prePhysicsTick(space, f);
-                }
-            }
-        };
-        dynamicsWorld.setPreTickCallback(callback2);
-        InternalTickCallback callback = new InternalTickCallback() {
-
-            @Override
-            public void internalTick(DynamicsWorld dw, float f) {
-                for (Iterator<PhysicsTickListener> it = tickListeners.iterator(); it.hasNext();) {
-                    PhysicsTickListener physicsTickCallback = it.next();
-                    physicsTickCallback.physicsTick(space, f);
-                }
-            }
-        };
-        dynamicsWorld.setInternalTickCallback(callback, this);
-    }
-
-    private void setContactCallbacks() {
-        BulletGlobals.setContactAddedCallback(new ContactAddedCallback() {
-
-            public boolean contactAdded(ManifoldPoint cp, com.bulletphysics.collision.dispatch.CollisionObject colObj0,
-                    int partId0, int index0, com.bulletphysics.collision.dispatch.CollisionObject colObj1, int partId1,
-                    int index1) {
-                System.out.println("contact added");
-                return true;
-            }
-        });
-
-        BulletGlobals.setContactProcessedCallback(new ContactProcessedCallback() {
-
-            public boolean contactProcessed(ManifoldPoint cp, Object body0, Object body1) {
-                if (body0 instanceof CollisionObject && body1 instanceof CollisionObject) {
-                    PhysicsCollisionObject node = null, node1 = null;
-                    CollisionObject rBody0 = (CollisionObject) body0;
-                    CollisionObject rBody1 = (CollisionObject) body1;
-                    node = (PhysicsCollisionObject) rBody0.getUserPointer();
-                    node1 = (PhysicsCollisionObject) rBody1.getUserPointer();
-                    collisionEvents.add(eventFactory.getEvent(PhysicsCollisionEvent.TYPE_PROCESSED, node, node1, cp));
-                }
-                return true;
-            }
-        });
-
-        BulletGlobals.setContactDestroyedCallback(new ContactDestroyedCallback() {
-
-            public boolean contactDestroyed(Object userPersistentData) {
-                System.out.println("contact destroyed");
-                return true;
-            }
-        });
-    }
-
+//    private void setOverlapFilterCallback() {
+//        OverlapFilterCallback callback = new OverlapFilterCallback() {
+//
+//            public boolean needBroadphaseCollision(BroadphaseProxy bp, BroadphaseProxy bp1) {
+//                boolean collides = (bp.collisionFilterGroup & bp1.collisionFilterMask) != 0;
+//                if (collides) {
+//                    collides = (bp1.collisionFilterGroup & bp.collisionFilterMask) != 0;
+//                }
+//                if (collides) {
+//                    assert (bp.clientObject instanceof com.bulletphysics.collision.dispatch.CollisionObject && bp.clientObject instanceof com.bulletphysics.collision.dispatch.CollisionObject);
+//                    com.bulletphysics.collision.dispatch.CollisionObject colOb = (com.bulletphysics.collision.dispatch.CollisionObject) bp.clientObject;
+//                    com.bulletphysics.collision.dispatch.CollisionObject colOb1 = (com.bulletphysics.collision.dispatch.CollisionObject) bp1.clientObject;
+//                    assert (colOb.getUserPointer() != null && colOb1.getUserPointer() != null);
+//                    PhysicsCollisionObject collisionObject = (PhysicsCollisionObject) colOb.getUserPointer();
+//                    PhysicsCollisionObject collisionObject1 = (PhysicsCollisionObject) colOb1.getUserPointer();
+//                    if ((collisionObject.getCollideWithGroups() & collisionObject1.getCollisionGroup()) > 0
+//                            || (collisionObject1.getCollideWithGroups() & collisionObject.getCollisionGroup()) > 0) {
+//                        PhysicsCollisionGroupListener listener = collisionGroupListeners.get(collisionObject.getCollisionGroup());
+//                        PhysicsCollisionGroupListener listener1 = collisionGroupListeners.get(collisionObject1.getCollisionGroup());
+//                        if (listener != null) {
+//                            return listener.collide(collisionObject, collisionObject1);
+//                        } else if (listener1 != null) {
+//                            return listener1.collide(collisionObject, collisionObject1);
+//                        }
+//                        return true;
+//                    } else {
+//                        return false;
+//                    }
+//                }
+//                return collides;
+//            }
+//        };
+//        dynamicsWorld.getPairCache().setOverlapFilterCallback(callback);
+//    }
+//    private void setTickCallback() {
+//        final PhysicsSpace space = this;
+//        InternalTickCallback callback2 = new InternalTickCallback() {
+//
+//            @Override
+//            public void internalTick(DynamicsWorld dw, float f) {
+//                //execute task list
+//                AppTask task = pQueue.poll();
+//                task = pQueue.poll();
+//                while (task != null) {
+//                    while (task.isCancelled()) {
+//                        task = pQueue.poll();
+//                    }
+//                    try {
+//                        task.invoke();
+//                    } catch (Exception ex) {
+//                        Logger.getLogger(PhysicsSpace.class.getName()).log(Level.SEVERE, null, ex);
+//                    }
+//                    task = pQueue.poll();
+//                }
+//                for (Iterator<PhysicsTickListener> it = tickListeners.iterator(); it.hasNext();) {
+//                    PhysicsTickListener physicsTickCallback = it.next();
+//                    physicsTickCallback.prePhysicsTick(space, f);
+//                }
+//            }
+//        };
+//        dynamicsWorld.setPreTickCallback(callback2);
+//        InternalTickCallback callback = new InternalTickCallback() {
+//
+//            @Override
+//            public void internalTick(DynamicsWorld dw, float f) {
+//                for (Iterator<PhysicsTickListener> it = tickListeners.iterator(); it.hasNext();) {
+//                    PhysicsTickListener physicsTickCallback = it.next();
+//                    physicsTickCallback.physicsTick(space, f);
+//                }
+//            }
+//        };
+//        dynamicsWorld.setInternalTickCallback(callback, this);
+//    }
+//    private void setContactCallbacks() {
+//        BulletGlobals.setContactAddedCallback(new ContactAddedCallback() {
+//
+//            public boolean contactAdded(ManifoldPoint cp, com.bulletphysics.collision.dispatch.CollisionObject colObj0,
+//                    int partId0, int index0, com.bulletphysics.collision.dispatch.CollisionObject colObj1, int partId1,
+//                    int index1) {
+//                System.out.println("contact added");
+//                return true;
+//            }
+//        });
+//
+//        BulletGlobals.setContactProcessedCallback(new ContactProcessedCallback() {
+//
+//            public boolean contactProcessed(ManifoldPoint cp, Object body0, Object body1) {
+//                if (body0 instanceof CollisionObject && body1 instanceof CollisionObject) {
+//                    PhysicsCollisionObject node = null, node1 = null;
+//                    CollisionObject rBody0 = (CollisionObject) body0;
+//                    CollisionObject rBody1 = (CollisionObject) body1;
+//                    node = (PhysicsCollisionObject) rBody0.getUserPointer();
+//                    node1 = (PhysicsCollisionObject) rBody1.getUserPointer();
+//                    collisionEvents.add(eventFactory.getEvent(PhysicsCollisionEvent.TYPE_PROCESSED, node, node1, cp));
+//                }
+//                return true;
+//            }
+//        });
+//
+//        BulletGlobals.setContactDestroyedCallback(new ContactDestroyedCallback() {
+//
+//            public boolean contactDestroyed(Object userPersistentData) {
+//                System.out.println("contact destroyed");
+//                return true;
+//            }
+//        });
+//    }
     /**
      * updates the physics space
      * @param time the current time value
@@ -335,12 +337,14 @@ public class PhysicsSpace {
      * @param maxSteps
      */
     public void update(float time, int maxSteps) {
-        if (getDynamicsWorld() == null) {
-            return;
-        }
+//        if (getDynamicsWorld() == null) {
+//            return;
+//        }
         //step simulation
-        dynamicsWorld.stepSimulation(time, maxSteps, accuracy);
+        stepSimulation(physicsSpaceId, time, maxSteps, accuracy);
     }
+
+    private native void stepSimulation(long space, float time, int maxSteps, float accuracy);
 
     public void distributeEvents() {
         //add collision callbacks
@@ -533,61 +537,81 @@ public class PhysicsSpace {
             }
         }
     }
-
+    
+    private native void addCollisionObject(long space, long id);
+    
+    private native void removeCollisionObject(long space, long id);
+    
+    private native void addCharacterObject(long space, long id);
+    
+    private native void removeCharacterObject(long space, long id);
+    
+    private native void addAction(long space, long id);
+    
+    private native void removeAction(long space, long id);
+    
+    private native void addVehicle(long space, long id);
+    
+    private native void removeVehicle(long space, long id);
+    
+    private native void addConstraint(long space, long id);
+    
+    private native void removeConstraint(long space, long id);
+    
     private void addGhostObject(PhysicsGhostObject node) {
         Logger.getLogger(PhysicsSpace.class.getName()).log(Level.INFO, "Adding ghost object {0} to physics space.", node.getObjectId());
-        dynamicsWorld.addCollisionObject(node.getObjectId());
+//        dynamicsWorld.addCollisionObject(node.getObjectId());
     }
 
     private void removeGhostObject(PhysicsGhostObject node) {
         Logger.getLogger(PhysicsSpace.class.getName()).log(Level.INFO, "Removing ghost object {0} from physics space.", node.getObjectId());
-        dynamicsWorld.removeCollisionObject(node.getObjectId());
+//        dynamicsWorld.removeCollisionObject(node.getObjectId());
     }
 
     private void addCharacter(PhysicsCharacter node) {
         Logger.getLogger(PhysicsSpace.class.getName()).log(Level.INFO, "Adding character {0} to physics space.", node.getObjectId());
 //        dynamicsWorld.addCollisionObject(node.getObjectId());
-        dynamicsWorld.addCollisionObject(node.getObjectId(), CollisionFilterGroups.CHARACTER_FILTER, (short) (CollisionFilterGroups.STATIC_FILTER | CollisionFilterGroups.DEFAULT_FILTER));
-        dynamicsWorld.addAction(node.getControllerId());
+//        dynamicsWorld.addCollisionObject(node.getObjectId(), CollisionFilterGroups.CHARACTER_FILTER, (short) (CollisionFilterGroups.STATIC_FILTER | CollisionFilterGroups.DEFAULT_FILTER));
+//        dynamicsWorld.addAction(node.getControllerId());
     }
 
     private void removeCharacter(PhysicsCharacter node) {
         Logger.getLogger(PhysicsSpace.class.getName()).log(Level.INFO, "Removing character {0} from physics space.", node.getObjectId());
-        dynamicsWorld.removeAction(node.getControllerId());
-        dynamicsWorld.removeCollisionObject(node.getObjectId());
+//        dynamicsWorld.removeAction(node.getControllerId());
+//        dynamicsWorld.removeCollisionObject(node.getObjectId());
     }
 
     private void addRigidBody(PhysicsRigidBody node) {
-        physicsNodes.put(node.getObjectId(), node);
-        dynamicsWorld.addRigidBody(node.getObjectId());
+//        physicsNodes.put(node.getObjectId(), node);
+//        dynamicsWorld.addRigidBody(node.getObjectId());
         Logger.getLogger(PhysicsSpace.class.getName()).log(Level.INFO, "Adding RigidBody {0} to physics space.", node.getObjectId());
         if (node instanceof PhysicsVehicle) {
             Logger.getLogger(PhysicsSpace.class.getName()).log(Level.INFO, "Adding vehicle constraint {0} to physics space.", ((PhysicsVehicle) node).getVehicleId());
             ((PhysicsVehicle) node).createVehicle(this);
-            dynamicsWorld.addVehicle(((PhysicsVehicle) node).getVehicleId());
+//            dynamicsWorld.addVehicle(((PhysicsVehicle) node).getVehicleId());
         }
     }
 
     private void removeRigidBody(PhysicsRigidBody node) {
         if (node instanceof PhysicsVehicle) {
             Logger.getLogger(PhysicsSpace.class.getName()).log(Level.INFO, "Removing vehicle constraint {0} from physics space.", ((PhysicsVehicle) node).getVehicleId());
-            dynamicsWorld.removeVehicle(((PhysicsVehicle) node).getVehicleId());
+//            dynamicsWorld.removeVehicle(((PhysicsVehicle) node).getVehicleId());
         }
         Logger.getLogger(PhysicsSpace.class.getName()).log(Level.INFO, "Removing RigidBody {0} from physics space.", node.getObjectId());
         physicsNodes.remove(node.getObjectId());
-        dynamicsWorld.removeRigidBody(node.getObjectId());
+//        dynamicsWorld.removeRigidBody(node.getObjectId());
     }
 
     private void addJoint(PhysicsJoint joint) {
         Logger.getLogger(PhysicsSpace.class.getName()).log(Level.INFO, "Adding Joint {0} to physics space.", joint.getObjectId());
         physicsJoints.add(joint);
-        dynamicsWorld.addConstraint(joint.getObjectId(), !joint.isCollisionBetweenLinkedBodys());
+//        dynamicsWorld.addConstraint(joint.getObjectId(), !joint.isCollisionBetweenLinkedBodys());
     }
 
     private void removeJoint(PhysicsJoint joint) {
         Logger.getLogger(PhysicsSpace.class.getName()).log(Level.INFO, "Removing Joint {0} from physics space.", joint.getObjectId());
         physicsJoints.remove(joint);
-        dynamicsWorld.removeConstraint(joint.getObjectId());
+//        dynamicsWorld.removeConstraint(joint.getObjectId());
     }
 
     /**
@@ -595,21 +619,21 @@ public class PhysicsSpace {
      * @param gravity
      */
     public void setGravity(Vector3f gravity) {
-        dynamicsWorld.setGravity(Converter.convert(gravity));
+//        dynamicsWorld.setGravity(Converter.convert(gravity));
     }
 
     /**
      * applies gravity value to all objects
      */
     public void applyGravity() {
-        dynamicsWorld.applyGravity();
+//        dynamicsWorld.applyGravity();
     }
 
     /**
      * clears forces of all objects
      */
     public void clearForces() {
-        dynamicsWorld.clearForces();
+//        dynamicsWorld.clearForces();
     }
 
     /**
@@ -661,7 +685,7 @@ public class PhysicsSpace {
      */
     public List<PhysicsRayTestResult> rayTest(Vector3f from, Vector3f to) {
         List<PhysicsRayTestResult> results = new LinkedList<PhysicsRayTestResult>();
-        dynamicsWorld.rayTest(Converter.convert(from, rayVec1), Converter.convert(to, rayVec2), new InternalRayListener(results));
+//        dynamicsWorld.rayTest(Converter.convert(from, rayVec1), Converter.convert(to, rayVec2), new InternalRayListener(results));
         return results;
     }
 
@@ -670,38 +694,38 @@ public class PhysicsSpace {
      */
     public List<PhysicsRayTestResult> rayTest(Vector3f from, Vector3f to, List<PhysicsRayTestResult> results) {
         results.clear();
-        dynamicsWorld.rayTest(Converter.convert(from, rayVec1), Converter.convert(to, rayVec2), new InternalRayListener(results));
+//        dynamicsWorld.rayTest(Converter.convert(from, rayVec1), Converter.convert(to, rayVec2), new InternalRayListener(results));
         return results;
     }
 
-    private class InternalRayListener extends CollisionWorld.RayResultCallback {
-
-        private List<PhysicsRayTestResult> results;
-
-        public InternalRayListener(List<PhysicsRayTestResult> results) {
-            this.results = results;
-        }
-
-        @Override
-        public float addSingleResult(LocalRayResult lrr, boolean bln) {
-            PhysicsCollisionObject obj = (PhysicsCollisionObject) lrr.collisionObject.getUserPointer();
-            results.add(new PhysicsRayTestResult(obj, Converter.convert(lrr.hitNormalLocal), lrr.hitFraction, bln));
-            return lrr.hitFraction;
-        }
-    }
+//    private class InternalRayListener extends CollisionWorld.RayResultCallback {
+//
+//        private List<PhysicsRayTestResult> results;
+//
+//        public InternalRayListener(List<PhysicsRayTestResult> results) {
+//            this.results = results;
+//        }
+//
+//        @Override
+//        public float addSingleResult(LocalRayResult lrr, boolean bln) {
+//            PhysicsCollisionObject obj = (PhysicsCollisionObject) lrr.collisionObject.getUserPointer();
+//            results.add(new PhysicsRayTestResult(obj, Converter.convert(lrr.hitNormalLocal), lrr.hitFraction, bln));
+//            return lrr.hitFraction;
+//        }
+//    }
 
     /**
      * Performs a sweep collision test and returns the results as a list of PhysicsSweepTestResults<br/>
      * You have to use different Transforms for start and end (at least distance > 0.4f).
      * SweepTest will not see a collision if it starts INSIDE an object and is moving AWAY from its center.
      */
-    public List<PhysicsSweepTestResult> sweepTest(CollisionShape shape, Transform start, Transform end){
+    public List<PhysicsSweepTestResult> sweepTest(CollisionShape shape, Transform start, Transform end) {
         List<PhysicsSweepTestResult> results = new LinkedList<PhysicsSweepTestResult>();
-        if(!(shape.getCShape() instanceof ConvexShape)){
-            Logger.getLogger(PhysicsSpace.class.getName()).log(Level.WARNING, "Trying to sweep test with incompatible mesh shape!");
-            return results;
-        }
-        dynamicsWorld.convexSweepTest((ConvexShape)shape.getCShape(), Converter.convert(start, sweepTrans1), Converter.convert(end, sweepTrans2), new InternalSweepListener(results));
+//        if (!(shape.getCShape() instanceof ConvexShape)) {
+//            Logger.getLogger(PhysicsSpace.class.getName()).log(Level.WARNING, "Trying to sweep test with incompatible mesh shape!");
+//            return results;
+//        }
+//        dynamicsWorld.convexSweepTest((ConvexShape) shape.getCShape(), Converter.convert(start, sweepTrans1), Converter.convert(end, sweepTrans2), new InternalSweepListener(results));
         return results;
 
     }
@@ -711,32 +735,31 @@ public class PhysicsSpace {
      * You have to use different Transforms for start and end (at least distance > 0.4f).
      * SweepTest will not see a collision if it starts INSIDE an object and is moving AWAY from its center.
      */
-    public List<PhysicsSweepTestResult> sweepTest(CollisionShape shape, Transform start, Transform end, List<PhysicsSweepTestResult> results){
+    public List<PhysicsSweepTestResult> sweepTest(CollisionShape shape, Transform start, Transform end, List<PhysicsSweepTestResult> results) {
         results.clear();
-        if(!(shape.getCShape() instanceof ConvexShape)){
-            Logger.getLogger(PhysicsSpace.class.getName()).log(Level.WARNING, "Trying to sweep test with incompatible mesh shape!");
-            return results;
-        }
-        dynamicsWorld.convexSweepTest((ConvexShape)shape.getCShape(), Converter.convert(start, sweepTrans1), Converter.convert(end, sweepTrans2), new InternalSweepListener(results));
+//        if (!(shape.getCShape() instanceof ConvexShape)) {
+//            Logger.getLogger(PhysicsSpace.class.getName()).log(Level.WARNING, "Trying to sweep test with incompatible mesh shape!");
+//            return results;
+//        }
+//        dynamicsWorld.convexSweepTest((ConvexShape) shape.getCShape(), Converter.convert(start, sweepTrans1), Converter.convert(end, sweepTrans2), new InternalSweepListener(results));
         return results;
     }
 
-    private class InternalSweepListener extends CollisionWorld.ConvexResultCallback{
-
-        private List<PhysicsSweepTestResult> results;
-
-        public InternalSweepListener(List<PhysicsSweepTestResult> results) {
-            this.results = results;
-        }
-
-        @Override
-        public float addSingleResult(LocalConvexResult lcr, boolean bln) {
-            PhysicsCollisionObject obj = (PhysicsCollisionObject) lcr.hitCollisionObject.getUserPointer();
-            results.add(new PhysicsSweepTestResult(obj, Converter.convert(lcr.hitNormalLocal), lcr.hitFraction, bln));
-            return lcr.hitFraction;
-        }
-
-    }
+//    private class InternalSweepListener extends CollisionWorld.ConvexResultCallback {
+//
+//        private List<PhysicsSweepTestResult> results;
+//
+//        public InternalSweepListener(List<PhysicsSweepTestResult> results) {
+//            this.results = results;
+//        }
+//
+//        @Override
+//        public float addSingleResult(LocalConvexResult lcr, boolean bln) {
+//            PhysicsCollisionObject obj = (PhysicsCollisionObject) lcr.hitCollisionObject.getUserPointer();
+//            results.add(new PhysicsSweepTestResult(obj, Converter.convert(lcr.hitNormalLocal), lcr.hitFraction, bln));
+//            return lcr.hitFraction;
+//        }
+//    }
 
     /**
      * destroys the current PhysicsSpace so that a new one can be created
@@ -745,17 +768,17 @@ public class PhysicsSpace {
         physicsNodes.clear();
         physicsJoints.clear();
 
-        dynamicsWorld.destroy();
-        dynamicsWorld = null;
+//        dynamicsWorld.destroy();
+//        dynamicsWorld = null;
     }
 
     /**
-     * used internally
-     * @return the dynamicsWorld
-     */
-    public DynamicsWorld getDynamicsWorld() {
-        return dynamicsWorld;
-    }
+//     * used internally
+//     * @return the dynamicsWorld
+//     */
+//    public DynamicsWorld getDynamicsWorld() {
+//        return dynamicsWorld;
+//    }
 
     public BroadphaseType getBroadphaseType() {
         return broadphaseType;
