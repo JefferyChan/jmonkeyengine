@@ -31,11 +31,9 @@
  */
 package com.jme3.bullet.collision.shapes;
 
-import com.bulletphysics.collision.shapes.BoxShape;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
 import com.jme3.math.Vector3f;
-import com.jme3.bullet.util.Converter;
 import com.jme3.export.InputCapsule;
 import com.jme3.export.OutputCapsule;
 import java.io.IOException;
@@ -79,9 +77,12 @@ public class BoxCollisionShape extends CollisionShape {
     }
 
     protected void createShape() {
-        cShape = new BoxShape(Converter.convert(halfExtents));
-        cShape.setLocalScaling(Converter.convert(getScale()));
-        cShape.setMargin(margin);
+        objectId = createShape(halfExtents);
+//        cShape = new BoxShape(Converter.convert(halfExtents));
+        setScale(scale);
+        setMargin(margin);
     }
+    
+    private native long createShape(Vector3f halfExtents);
 
 }

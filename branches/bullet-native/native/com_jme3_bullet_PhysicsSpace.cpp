@@ -36,6 +36,7 @@
 
 #include "com_jme3_bullet_PhysicsSpace.h"
 #include "jmePhysicsSpace.h"
+#include "jmeBulletUtil.h"
 
 /**
  * Author: Normen Hansen
@@ -120,6 +121,51 @@ extern "C" {
         }
         space->getDynamicsWorld()->removeCollisionObject(collisionObject);
     }
+
+    /*
+     * Class:     com_jme3_bullet_PhysicsSpace
+     * Method:    addRigidBody
+     * Signature: (JJ)V
+     */
+    JNIEXPORT void JNICALL Java_com_jme3_bullet_PhysicsSpace_addRigidBody
+      (JNIEnv * env, jobject object, jlong spaceId, jlong rigidBodyId){
+        jmePhysicsSpace* space = (jmePhysicsSpace*) spaceId;
+        btRigidBody* collisionObject = (btCollisionObject*) rigidBodyId;
+        if(space == NULL){
+            jclass newExc=env->FindClass("java/lang/IllegalStateException");
+            env->ThrowNew(newExc, "The physics space does not exist.");
+            return;
+        }
+        if(collisionObject == NULL){
+            jclass newExc=env->FindClass("java/lang/IllegalStateException");
+            env->ThrowNew(newExc, "The collision object does not exist.");
+            return;
+        }
+        space->getDynamicsWorld()->addRigidBody(collisionObject);
+    }
+
+    /*
+     * Class:     com_jme3_bullet_PhysicsSpace
+     * Method:    removeRigidBody
+     * Signature: (JJ)V
+     */
+    JNIEXPORT void JNICALL Java_com_jme3_bullet_PhysicsSpace_removeRigidBody
+      (JNIEnv * env, jobject object, jlong spaceId, jlong rigidBodyId){
+        jmePhysicsSpace* space = (jmePhysicsSpace*) spaceId;
+        btRigidBody* collisionObject = (btCollisionObject*) rigidBodyId;
+        if(space == NULL){
+            jclass newExc=env->FindClass("java/lang/IllegalStateException");
+            env->ThrowNew(newExc, "The physics space does not exist.");
+            return;
+        }
+        if(collisionObject == NULL){
+            jclass newExc=env->FindClass("java/lang/IllegalStateException");
+            env->ThrowNew(newExc, "The collision object does not exist.");
+            return;
+        }
+        space->getDynamicsWorld()->removeRigidBody(collisionObject);
+    }
+
 
     /*
      * Class:     com_jme3_bullet_PhysicsSpace
@@ -295,6 +341,35 @@ extern "C" {
             return;
         }
         space->getDynamicsWorld()->removeConstraint(constraint);
+    }
+
+    /*
+     * Class:     com_jme3_bullet_PhysicsSpace
+     * Method:    setGravity
+     * Signature: (JLcom/jme3/math/Vector3f;)V
+     */
+    JNIEXPORT void JNICALL Java_com_jme3_bullet_PhysicsSpace_setGravity
+      (JNIEnv * env, jobject object, jlong spaceId, jobject vector){
+        jmePhysicsSpace* space = (jmePhysicsSpace*) spaceId;
+        if(space == NULL){
+            jclass newExc=env->FindClass("java/lang/IllegalStateException");
+            env->ThrowNew(newExc, "The physics space does not exist.");
+            return;
+        }
+        btVector3 gravity = new btVector3();
+        jmeBulletUtil::convert(vector, gravity);
+        space->getDynamicsWorld()->setGravity(gravity);
+        free(gravity);
+    }
+
+    /*
+     * Class:     com_jme3_bullet_PhysicsSpace
+     * Method:    initNativePhysics
+     * Signature: ()V
+     */
+    JNIEXPORT void JNICALL Java_com_jme3_bullet_PhysicsSpace_initNativePhysics
+      (JNIEnv * env, jobject object){
+        jmeClasses::initJavaClasses(env);
     }
 
 #ifdef __cplusplus

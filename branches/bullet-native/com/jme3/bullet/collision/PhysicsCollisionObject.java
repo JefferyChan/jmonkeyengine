@@ -57,6 +57,7 @@ import java.util.List;
  */
 public abstract class PhysicsCollisionObject implements Savable {
 
+    protected long objectId;
     protected Spatial debugShape;
     protected Arrow debugArrow;
     protected Geometry debugArrowGeom;
@@ -267,6 +268,12 @@ public abstract class PhysicsCollisionObject implements Savable {
     public void setUserObject(Object userObject) {
         this.userObject = userObject;
     }
+    
+    public long getObjectId(){
+        return objectId;
+    }
+    
+    protected native void attachCollisionShape(long objectId, long collisionShapeId);
 
     @Override
     public void write(JmeExporter e) throws IOException {

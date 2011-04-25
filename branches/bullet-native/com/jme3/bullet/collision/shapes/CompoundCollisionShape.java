@@ -31,14 +31,11 @@
  */
 package com.jme3.bullet.collision.shapes;
 
-import com.bulletphysics.collision.shapes.CompoundShape;
-import com.bulletphysics.linearmath.Transform;
 import com.jme3.bullet.collision.shapes.infos.ChildCollisionShape;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
 import com.jme3.math.Matrix3f;
 import com.jme3.math.Vector3f;
-import com.jme3.bullet.util.Converter;
 import com.jme3.export.InputCapsule;
 import com.jme3.export.OutputCapsule;
 import java.io.IOException;
@@ -58,7 +55,7 @@ public class CompoundCollisionShape extends CollisionShape {
     protected ArrayList<ChildCollisionShape> children = new ArrayList<ChildCollisionShape>();
 
     public CompoundCollisionShape() {
-        cShape = new CompoundShape();
+        objectId = createShape();//new CompoundShape();
     }
 
     /**
@@ -67,10 +64,11 @@ public class CompoundCollisionShape extends CollisionShape {
      * @param location the local location of the child shape
      */
     public void addChildShape(CollisionShape shape, Vector3f location) {
-        Transform transA = new Transform(Converter.convert(new Matrix3f()));
-        Converter.convert(location, transA.origin);
-        children.add(new ChildCollisionShape(location.clone(), new Matrix3f(), shape));
-        ((CompoundShape) cShape).addChildShape(transA, shape.getCShape());
+//        Transform transA = new Transform(Converter.convert(new Matrix3f()));
+//        Converter.convert(location, transA.origin);
+//        children.add(new ChildCollisionShape(location.clone(), new Matrix3f(), shape));
+//        ((CompoundShape) objectId).addChildShape(transA, shape.getObjectId());
+        addChildShape(shape, location, new Matrix3f());
     }
 
     /**
@@ -82,21 +80,23 @@ public class CompoundCollisionShape extends CollisionShape {
         if(shape instanceof CompoundCollisionShape){
             throw new IllegalStateException("CompoundCollisionShapes cannot have CompoundCollisionShapes as children!");
         }
-        Transform transA = new Transform(Converter.convert(rotation));
-        Converter.convert(location, transA.origin);
-        Converter.convert(rotation, transA.basis);
+//        Transform transA = new Transform(Converter.convert(rotation));
+//        Converter.convert(location, transA.origin);
+//        Converter.convert(rotation, transA.basis);
         children.add(new ChildCollisionShape(location.clone(), rotation.clone(), shape));
-        ((CompoundShape) cShape).addChildShape(transA, shape.getCShape());
+        addChildShape(objectId, shape.getObjectId(), location, rotation);
+//        ((CompoundShape) objectId).addChildShape(transA, shape.getObjectId());
     }
 
     private void addChildShapeDirect(CollisionShape shape, Vector3f location, Matrix3f rotation) {
         if(shape instanceof CompoundCollisionShape){
             throw new IllegalStateException("CompoundCollisionShapes cannot have CompoundCollisionShapes as children!");
         }
-        Transform transA = new Transform(Converter.convert(rotation));
-        Converter.convert(location, transA.origin);
-        Converter.convert(rotation, transA.basis);
-        ((CompoundShape) cShape).addChildShape(transA, shape.getCShape());
+//        Transform transA = new Transform(Converter.convert(rotation));
+//        Converter.convert(location, transA.origin);
+//        Converter.convert(rotation, transA.basis);
+        addChildShape(objectId, shape.getObjectId(), location, rotation);
+//        ((CompoundShape) objectId).addChildShape(transA, shape.getObjectId());
     }
 
     /**
@@ -104,7 +104,8 @@ public class CompoundCollisionShape extends CollisionShape {
      * @param shape the child shape to remove
      */
     public void removeChildShape(CollisionShape shape) {
-        ((CompoundShape) cShape).removeChildShape(shape.getCShape());
+        removeChildShape(objectId, shape.getObjectId());
+//        ((CompoundShape) objectId).removeChildShape(shape.getObjectId());
         for (Iterator<ChildCollisionShape> it = children.iterator(); it.hasNext();) {
             ChildCollisionShape childCollisionShape = it.next();
             if (childCollisionShape.shape == shape) {
@@ -125,6 +126,12 @@ public class CompoundCollisionShape extends CollisionShape {
         Logger.getLogger(this.getClass().getName()).log(Level.WARNING, "CompoundCollisionShape cannot be scaled");
     }
 
+    private native long createShape();
+    
+    private native long addChildShape(long objectId, long childId, Vector3f location, Matrix3f rotation);
+    
+    private native long removeChildShape(long objectId, long childId);
+    
     public void write(JmeExporter ex) throws IOException {
         super.write(ex);
         OutputCapsule capsule = ex.getCapsule(this);
@@ -135,8 +142,8 @@ public class CompoundCollisionShape extends CollisionShape {
         super.read(im);
         InputCapsule capsule = im.getCapsule(this);
         children = capsule.readSavableArrayList("children", new ArrayList<ChildCollisionShape>());
-        cShape.setLocalScaling(Converter.convert(getScale()));
-        cShape.setMargin(margin);
+        setScale(scale);
+        setMargin(margin);
         loadChildren();
     }
 

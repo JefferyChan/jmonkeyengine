@@ -31,7 +31,7 @@
  */
 package com.jme3.bullet.joints;
 
-import com.bulletphysics.dynamics.constraintsolver.TypedConstraint;
+//import com.bulletphysics.dynamics.constraintsolver.TypedConstraint;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
 import com.jme3.math.Vector3f;
@@ -47,7 +47,7 @@ import java.io.IOException;
  */
 public abstract class PhysicsJoint implements Savable {
 
-    protected TypedConstraint constraint;
+    protected long objectId;
     protected PhysicsRigidBody nodeA;
     protected PhysicsRigidBody nodeB;
     protected Vector3f pivotA;
@@ -70,15 +70,17 @@ public abstract class PhysicsJoint implements Savable {
         nodeB.addJoint(this);
     }
 
-    public float getAppliedImpulse(){
-        return constraint.getAppliedImpulse();
+    public float getAppliedImpulse() {
+        return getAppliedImpulse(objectId);
     }
+
+    private native float getAppliedImpulse(long objectId);
 
     /**
      * @return the constraint
      */
-    public TypedConstraint getObjectId() {
-        return constraint;
+    public long getObjectId() {
+        return objectId;
     }
 
     /**
@@ -136,5 +138,4 @@ public abstract class PhysicsJoint implements Savable {
         this.pivotA = (Vector3f) capsule.readSavable("pivotA", new Vector3f());
         this.pivotB = (Vector3f) capsule.readSavable("pivotB", new Vector3f());
     }
-
 }

@@ -31,12 +31,10 @@
  */
 package com.jme3.bullet.joints;
 
-import com.bulletphysics.dynamics.constraintsolver.Point2PointConstraint;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
 import com.jme3.math.Vector3f;
 import com.jme3.bullet.objects.PhysicsRigidBody;
-import com.jme3.bullet.util.Converter;
 import com.jme3.export.InputCapsule;
 import com.jme3.export.OutputCapsule;
 import java.io.IOException;
@@ -63,28 +61,40 @@ public class Point2PointJoint extends PhysicsJoint {
     }
 
     public void setDamping(float value) {
-        ((Point2PointConstraint) constraint).setting.damping = value;
+        setDamping(objectId, value);
     }
+
+    private native void setDamping(long objectId, float value);
 
     public void setImpulseClamp(float value) {
-        ((Point2PointConstraint) constraint).setting.impulseClamp = value;
+        setImpulseClamp(objectId, value);
     }
+
+    private native void setImpulseClamp(long objectId, float value);
 
     public void setTau(float value) {
-        ((Point2PointConstraint) constraint).setting.tau = value;
+        setTau(objectId, value);
     }
+
+    private native void setTau(long objectId, float value);
 
     public float getDamping() {
-        return ((Point2PointConstraint) constraint).setting.damping;
+        return getDamping(objectId);
     }
+
+    private native float getDamping(long objectId);
 
     public float getImpulseClamp() {
-        return ((Point2PointConstraint) constraint).setting.impulseClamp;
+        return getImpulseClamp(objectId);
     }
 
+    private native float getImpulseClamp(long objectId);
+
     public float getTau() {
-        return ((Point2PointConstraint) constraint).setting.tau;
+        return getTau(objectId);
     }
+
+    private native float getTau(long objectId);
 
     @Override
     public void write(JmeExporter ex) throws IOException {
@@ -99,13 +109,15 @@ public class Point2PointJoint extends PhysicsJoint {
     public void read(JmeImporter im) throws IOException {
         super.read(im);
         createJoint();
-        InputCapsule cap=im.getCapsule(this);
+        InputCapsule cap = im.getCapsule(this);
         setDamping(cap.readFloat("damping", 1.0f));
         setDamping(cap.readFloat("tau", 0.3f));
         setDamping(cap.readFloat("impulseClamp", 0f));
     }
 
     protected void createJoint() {
-        constraint = new Point2PointConstraint(nodeA.getObjectId(), nodeB.getObjectId(), Converter.convert(pivotA), Converter.convert(pivotB));
+        objectId = createJoint(nodeA.getObjectId(), nodeB.getObjectId(), pivotA, pivotB);
     }
+
+    private native long createJoint(long objectIdA, long objectIdB, Vector3f pivotA, Vector3f pivotB);
 }

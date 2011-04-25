@@ -34,7 +34,6 @@ package com.jme3.bullet.collision.shapes;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
 import com.jme3.math.Vector3f;
-import com.jme3.bullet.util.Converter;
 import com.jme3.export.InputCapsule;
 import com.jme3.export.OutputCapsule;
 import com.jme3.export.Savable;
@@ -48,58 +47,67 @@ import java.io.IOException;
  */
 public abstract class CollisionShape implements Savable {
 
-    protected com.bulletphysics.collision.shapes.CollisionShape cShape;
+    protected long objectId;
     protected Vector3f scale = new Vector3f(1, 1, 1);
     protected float margin = 0.0f;
 
     public CollisionShape() {
     }
 
+//    /**
+//     * used internally, not safe
+//     */
+//    public void calculateLocalInertia(long objectId, float mass) {
+//        if (this.objectId == 0) {
+//            return;
+//        }
+////        if (this instanceof MeshCollisionShape) {
+////            vector.set(0, 0, 0);
+////        } else {
+//        calculateLocalInertia(objectId, this.objectId, mass);
+////            objectId.calculateLocalInertia(mass, vector);
+////        }
+//    }
+//    
+//    private native void calculateLocalInertia(long objectId, long shapeId, float mass);
+
     /**
-     * used internally, not safe
+     * used internally
      */
-    public void calculateLocalInertia(float mass, javax.vecmath.Vector3f vector) {
-        if (cShape == null) {
-            return;
-        }
-        if (this instanceof MeshCollisionShape) {
-            vector.set(0, 0, 0);
-        } else {
-            cShape.calculateLocalInertia(mass, vector);
-        }
+    public long getObjectId() {
+        return objectId;
     }
 
     /**
      * used internally
      */
-    public com.bulletphysics.collision.shapes.CollisionShape getCShape() {
-        return cShape;
-    }
-
-    /**
-     * used internally
-     */
-    public void setCShape(com.bulletphysics.collision.shapes.CollisionShape cShape) {
-        this.cShape = cShape;
+    public void setObjectId(long id) {
+        this.objectId = id;
     }
 
     public void setScale(Vector3f scale) {
         this.scale.set(scale);
-        cShape.setLocalScaling(Converter.convert(scale));
+        setLocalScaling(objectId, scale);
     }
-
-    public float getMargin() {
-        return cShape.getMargin();
-    }
-
-    public void setMargin(float margin) {
-        cShape.setMargin(margin);
-        this.margin = margin;
-    }
-
+    
     public Vector3f getScale() {
         return scale;
     }
+
+    public float getMargin() {
+        return getMargin(objectId);
+    }
+    
+    private native float getMargin(long objectId);
+
+    public void setMargin(float margin) {
+        setMargin(objectId, margin);
+        this.margin = margin;
+    }
+    
+    private native void setLocalScaling(long obectId, Vector3f scale);
+    
+    private native void setMargin(long objectId, float margin);
 
     public void write(JmeExporter ex) throws IOException {
         OutputCapsule capsule = ex.getCapsule(this);

@@ -31,8 +31,6 @@
  */
 package com.jme3.bullet.joints;
 
-import com.bulletphysics.dynamics.constraintsolver.Generic6DofConstraint;
-import com.bulletphysics.linearmath.Transform;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
 import com.jme3.math.Matrix3f;
@@ -40,7 +38,6 @@ import com.jme3.math.Vector3f;
 import com.jme3.bullet.joints.motors.RotationalLimitMotor;
 import com.jme3.bullet.joints.motors.TranslationalLimitMotor;
 import com.jme3.bullet.objects.PhysicsRigidBody;
-import com.jme3.bullet.util.Converter;
 import com.jme3.export.InputCapsule;
 import com.jme3.export.OutputCapsule;
 import java.io.IOException;
@@ -60,7 +57,8 @@ import java.util.LinkedList;
  */
 public class SixDofJoint extends PhysicsJoint {
 
-    private boolean useLinearReferenceFrameA = true;
+    private Matrix3f rotA, rotB;
+    private boolean useLinearReferenceFrameA;
     private LinkedList<RotationalLimitMotor> rotationalMotors = new LinkedList<RotationalLimitMotor>();
     private TranslationalLimitMotor translationalMotor;
     private Vector3f angularUpperLimit = new Vector3f(Vector3f.POSITIVE_INFINITY);
@@ -78,16 +76,10 @@ public class SixDofJoint extends PhysicsJoint {
     public SixDofJoint(PhysicsRigidBody nodeA, PhysicsRigidBody nodeB, Vector3f pivotA, Vector3f pivotB, Matrix3f rotA, Matrix3f rotB, boolean useLinearReferenceFrameA) {
         super(nodeA, nodeB, pivotA, pivotB);
         this.useLinearReferenceFrameA = useLinearReferenceFrameA;
+        this.rotA = rotA;
+        this.rotB = rotB;
 
-        Transform transA = new Transform(Converter.convert(rotA));
-        Converter.convert(pivotA, transA.origin);
-        Converter.convert(rotA, transA.basis);
-
-        Transform transB = new Transform(Converter.convert(rotB));
-        Converter.convert(pivotB, transB.origin);
-        Converter.convert(rotB, transB.basis);
-
-        constraint = new Generic6DofConstraint(nodeA.getObjectId(), nodeB.getObjectId(), transA, transB, useLinearReferenceFrameA);
+        objectId = createJoint(nodeA.getObjectId(), nodeB.getObjectId(), pivotA, rotA, pivotB, rotB, useLinearReferenceFrameA);
         gatherMotors();
     }
 
@@ -98,24 +90,24 @@ public class SixDofJoint extends PhysicsJoint {
     public SixDofJoint(PhysicsRigidBody nodeA, PhysicsRigidBody nodeB, Vector3f pivotA, Vector3f pivotB, boolean useLinearReferenceFrameA) {
         super(nodeA, nodeB, pivotA, pivotB);
         this.useLinearReferenceFrameA = useLinearReferenceFrameA;
+        rotA = new Matrix3f();
+        rotB = new Matrix3f();
 
-        Transform transA = new Transform(Converter.convert(new Matrix3f()));
-        Converter.convert(pivotA, transA.origin);
-
-        Transform transB = new Transform(Converter.convert(new Matrix3f()));
-        Converter.convert(pivotB, transB.origin);
-
-        constraint = new Generic6DofConstraint(nodeA.getObjectId(), nodeB.getObjectId(), transA, transB, useLinearReferenceFrameA);
+        objectId = createJoint(nodeA.getObjectId(), nodeB.getObjectId(), pivotA, rotA, pivotB, rotB, useLinearReferenceFrameA);
         gatherMotors();
     }
 
     private void gatherMotors() {
         for (int i = 0; i < 3; i++) {
-            RotationalLimitMotor rmot = new RotationalLimitMotor(((Generic6DofConstraint) constraint).getRotationalLimitMotor(i));
+            RotationalLimitMotor rmot = new RotationalLimitMotor(getRotationalLimitMotor(objectId, i));
             rotationalMotors.add(rmot);
         }
-        translationalMotor = new TranslationalLimitMotor(((Generic6DofConstraint) constraint).getTranslationalLimitMotor());
+        translationalMotor = new TranslationalLimitMotor(getTranslationalLimitMotor(objectId));
     }
+
+    private native long getRotationalLimitMotor(long objectId, int index);
+
+    private native long getTranslationalLimitMotor(long objectId);
 
     /**
      * returns the TranslationalLimitMotor of this 6DofJoint which allows
@@ -138,35 +130,40 @@ public class SixDofJoint extends PhysicsJoint {
 
     public void setLinearUpperLimit(Vector3f vector) {
         linearUpperLimit.set(vector);
-        ((Generic6DofConstraint) constraint).setLinearUpperLimit(Converter.convert(vector));
+        setLinearUpperLimit(objectId, vector);
     }
+
+    private native void setLinearUpperLimit(long objctId, Vector3f vector);
 
     public void setLinearLowerLimit(Vector3f vector) {
         linearLowerLimit.set(vector);
-        ((Generic6DofConstraint) constraint).setLinearLowerLimit(Converter.convert(vector));
+        setLinearLowerLimit(objectId, vector);
     }
+
+    private native void setLinearLowerLimit(long objctId, Vector3f vector);
 
     public void setAngularUpperLimit(Vector3f vector) {
         angularUpperLimit.set(vector);
-        ((Generic6DofConstraint) constraint).setAngularUpperLimit(Converter.convert(vector));
+        setAngularUpperLimit(objectId, vector);
     }
+
+    private native void setAngularUpperLimit(long objctId, Vector3f vector);
 
     public void setAngularLowerLimit(Vector3f vector) {
         angularLowerLimit.set(vector);
-        ((Generic6DofConstraint) constraint).setAngularLowerLimit(Converter.convert(vector));
+        setAngularLowerLimit(objectId, vector);
     }
+
+    private native void setAngularLowerLimit(long objctId, Vector3f vector);
+
+    private native long createJoint(long objectIdA, long objectIdB, Vector3f pivotA, Matrix3f rotA, Vector3f pivotB, Matrix3f rotB, boolean useLinearReferenceFrameA);
 
     @Override
     public void read(JmeImporter im) throws IOException {
         super.read(im);
         InputCapsule capsule = im.getCapsule(this);
 
-        Transform transA = new Transform(Converter.convert(new Matrix3f()));
-        Converter.convert(pivotA, transA.origin);
-
-        Transform transB = new Transform(Converter.convert(new Matrix3f()));
-        Converter.convert(pivotB, transB.origin);
-        constraint = new Generic6DofConstraint(nodeA.getObjectId(), nodeB.getObjectId(), transA, transB, useLinearReferenceFrameA);
+        objectId = createJoint(nodeA.getObjectId(), nodeB.getObjectId(), pivotA, rotA, pivotB, rotB, useLinearReferenceFrameA);
         gatherMotors();
 
         setAngularUpperLimit((Vector3f) capsule.readSavable("angularUpperLimit", new Vector3f(Vector3f.POSITIVE_INFINITY)));

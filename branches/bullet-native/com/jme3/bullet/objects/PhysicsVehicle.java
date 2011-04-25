@@ -32,10 +32,8 @@
 package com.jme3.bullet.objects;
 
 import com.bulletphysics.collision.dispatch.CollisionObject;
-import com.bulletphysics.dynamics.vehicle.DefaultVehicleRaycaster;
 import com.bulletphysics.dynamics.vehicle.RaycastVehicle;
-import com.bulletphysics.dynamics.vehicle.VehicleRaycaster;
-import com.bulletphysics.dynamics.vehicle.VehicleTuning;
+//import com.bulletphysics.dynamics.vehicle.VehicleTuning;
 import com.bulletphysics.dynamics.vehicle.WheelInfo;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
@@ -43,6 +41,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.CollisionShape;
+import com.jme3.bullet.objects.infos.VehicleTuning;
 import com.jme3.bullet.util.Converter;
 import com.jme3.export.InputCapsule;
 import com.jme3.export.OutputCapsule;
@@ -69,9 +68,10 @@ import java.util.Iterator;
  */
 public class PhysicsVehicle extends PhysicsRigidBody {
 
-    protected RaycastVehicle vehicle;
+    protected long vehicleId;
+    protected long rayCasterId;
     protected VehicleTuning tuning;
-    protected VehicleRaycaster rayCaster;
+//    protected VehicleRaycaster rayCaster;
     protected ArrayList<VehicleWheel> wheels = new ArrayList<VehicleWheel>();
     protected PhysicsSpace physicsSpace;
 
@@ -90,13 +90,16 @@ public class PhysicsVehicle extends PhysicsRigidBody {
      * used internally
      */
     public void updateWheels() {
-        if (vehicle != null) {
+        if (vehicleId != 0) {
             for (int i = 0; i < wheels.size(); i++) {
-                vehicle.updateWheelTransform(i, true);
+//                vehicleId.updateWheelTransform(i, true);
+                updateWheelTransform(vehicleId, i, true);
                 wheels.get(i).updatePhysicsState();
             }
         }
     }
+    
+    private native void updateWheelTransform(long vehicleId, int wheel, boolean interpolated);
 
     /**
      * used internally
@@ -115,7 +118,7 @@ public class PhysicsVehicle extends PhysicsRigidBody {
         if (tuning == null) {
             tuning = new VehicleTuning();
         }
-        rBody.setActivationState(CollisionObject.DISABLE_DEACTIVATION);
+//        rBody.setActivationState(CollisionObject.DISABLE_DEACTIVATION);
         motionState.setVehicle(this);
         if (physicsSpace != null) {
             createVehicle(physicsSpace);
@@ -131,13 +134,25 @@ public class PhysicsVehicle extends PhysicsRigidBody {
             return;
         }
 //        rayCaster = new DefaultVehicleRaycaster(space.getDynamicsWorld());
-        vehicle = new RaycastVehicle(tuning, rBody, rayCaster);
-        vehicle.setCoordinateSystem(0, 1, 2);
+        rayCasterId = createVehicleRaycaster(objectId, space.getSpaceId());
+//        vehicleId = new RaycastVehicle(tuning, rBody, rayCaster);
+        vehicleId = createRaycastVehicle(objectId, rayCasterId);
+        setCoordinateSystem(objectId, 0, 1, 2);
+//        vehicleId.setCoordinateSystem(0, 1, 2);
         for (VehicleWheel wheel : wheels) {
-            wheel.setWheelInfo(vehicle.addWheel(Converter.convert(wheel.getLocation()), Converter.convert(wheel.getDirection()), Converter.convert(wheel.getAxle()),
-                    wheel.getRestLength(), wheel.getRadius(), tuning, wheel.isFrontWheel()));
+            wheel.setWheelId(addWheel(objectId, wheel.getLocation(), wheel.getDirection(), wheel.getAxle(), wheel.getRestLength(), wheel.getRadius(), tuning, wheel.isFrontWheel()));
+//            wheel.setWheelInfo(vehicleId.addWheel(Converter.convert(wheel.getLocation()), Converter.convert(wheel.getDirection()), Converter.convert(wheel.getAxle()),
+//                    wheel.getRestLength(), wheel.getRadius(), tuning, wheel.isFrontWheel()));
         }
     }
+    
+    private native long createVehicleRaycaster(long objectId, long physicsSpaceId);
+    
+    private native long createRaycastVehicle(long objectId, long rayCasterId);
+    
+    private native void setCoordinateSystem(long objectId, int a, int b, int c);
+    
+    private native long addWheel(long objectId, Vector3f location, Vector3f direction, Vector3f axle, float restLength, float radius, VehicleTuning tuning,boolean frontWheel);
 
     /**
      * Add a wheel to this vehicle
@@ -171,10 +186,12 @@ public class PhysicsVehicle extends PhysicsRigidBody {
         } else {
             wheel = new VehicleWheel(spat, connectionPoint, direction, axle, suspensionRestLength, wheelRadius, isFrontWheel);
         }
-        if (vehicle != null) {
-            WheelInfo info = vehicle.addWheel(Converter.convert(connectionPoint), Converter.convert(direction), Converter.convert(axle),
-                    suspensionRestLength, wheelRadius, tuning, isFrontWheel);
-            wheel.setWheelInfo(info);
+        if (vehicleId != 0) {
+            wheel.setWheelId(addWheel(objectId, wheel.getLocation(), wheel.getDirection(), wheel.getAxle(), wheel.getRestLength(), wheel.getRadius(), tuning, wheel.isFrontWheel()));
+            
+//            WheelInfo info = vehicleId.addWheel(Converter.convert(connectionPoint), Converter.convert(direction), Converter.convert(axle),
+//                    suspensionRestLength, wheelRadius, tuning, isFrontWheel);
+//            wheel.setWheelInfo(info);
         }
         wheel.setFrictionSlip(tuning.frictionSlip);
         wheel.setMaxSuspensionTravelCm(tuning.maxSuspensionTravelCm);
@@ -378,6 +395,8 @@ public class PhysicsVehicle extends PhysicsRigidBody {
     public void setSuspensionStiffness(float suspensionStiffness) {
         tuning.suspensionStiffness = suspensionStiffness;
     }
+    
+    private native void setSuspensionStiffness(long vehicleId, float suspensionStiffness);
 
     /**
      * The stiffness constant for the suspension.  10.0 - Offroad buggy, 50.0 - Sports car, 200.0 - F1 Car
@@ -392,8 +411,10 @@ public class PhysicsVehicle extends PhysicsRigidBody {
      * Reset the suspension
      */
     public void resetSuspension() {
-        vehicle.resetSuspension();
+        resetSuspension(vehicleId);
     }
+    
+    private native void resetSuspension(long vehicleId);
 
     /**
      * Apply the given engine force to all wheels, works continuously
@@ -401,7 +422,7 @@ public class PhysicsVehicle extends PhysicsRigidBody {
      */
     public void accelerate(float force) {
         for (int i = 0; i < wheels.size(); i++) {
-            vehicle.applyEngineForce(force, i);
+            accelerate(i, force);
         }
     }
 
@@ -411,8 +432,11 @@ public class PhysicsVehicle extends PhysicsRigidBody {
      * @param force the force
      */
     public void accelerate(int wheel, float force) {
-        vehicle.applyEngineForce(force, wheel);
+        applyEngineForce(vehicleId, wheel, force);
+        
     }
+    
+    private native void applyEngineForce(long vehicleId, int wheel, float force);
 
     /**
      * Set the given steering value to all front wheels (0 = forward)
@@ -421,7 +445,7 @@ public class PhysicsVehicle extends PhysicsRigidBody {
     public void steer(float value) {
         for (int i = 0; i < wheels.size(); i++) {
             if (getWheel(i).isFrontWheel()) {
-                vehicle.setSteeringValue(value, i);
+                steer(i, value);
             }
         }
     }
@@ -432,8 +456,10 @@ public class PhysicsVehicle extends PhysicsRigidBody {
      * @param value the steering angle of the front wheels (Pi = 360deg)
      */
     public void steer(int wheel, float value) {
-        vehicle.setSteeringValue(value, wheel);
+        steer(vehicleId, wheel, value);
     }
+    
+    private native void steer(long vehicleId, int wheel, float value);
 
     /**
      * Apply the given brake force to all wheels, works continuously
@@ -441,7 +467,7 @@ public class PhysicsVehicle extends PhysicsRigidBody {
      */
     public void brake(float force) {
         for (int i = 0; i < wheels.size(); i++) {
-            vehicle.setBrake(force, i);
+            brake(i, force);
         }
     }
 
@@ -451,16 +477,20 @@ public class PhysicsVehicle extends PhysicsRigidBody {
      * @param force the force
      */
     public void brake(int wheel, float force) {
-        vehicle.setBrake(force, wheel);
+        brake(vehicleId, wheel, force);
     }
+    
+    private native float brake(long vehicleId, int wheel, float force);
 
     /**
      * Get the current speed of the vehicle in km/h
      * @return
      */
     public float getCurrentVehicleSpeedKmHour() {
-        return vehicle.getCurrentSpeedKmHour();
+        return getCurrentVehicleSpeedKmHour(vehicleId);
     }
+    
+    private native float getCurrentVehicleSpeedKmHour(long vehicleId);
 
     /**
      * Get the current forward vector of the vehicle in world coordinates
@@ -471,22 +501,23 @@ public class PhysicsVehicle extends PhysicsRigidBody {
         if (vector == null) {
             vector = new Vector3f();
         }
-        vehicle.getForwardVector(tempVec);
-        Converter.convert(tempVec, vector);
+        getForwardVector(vehicleId, vector);
         return vector;
     }
+    
+    private native void getForwardVector(long objectId, Vector3f vector);
 
     /**
      * used internally
      */
-    public RaycastVehicle getVehicleId() {
-        return vehicle;
+    public long getVehicleId() {
+        return vehicleId;
     }
 
-    @Override
-    public void destroy() {
-        super.destroy();
-    }
+//    @Override
+//    public void destroy() {
+//        super.destroy();
+//    }
 
     @Override
     protected Spatial getDebugShape() {

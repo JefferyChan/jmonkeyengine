@@ -32,7 +32,6 @@
 package com.jme3.bullet.joints.motors;
 
 import com.jme3.math.Vector3f;
-import com.jme3.bullet.util.Converter;
 
 /**
  *
@@ -40,61 +39,91 @@ import com.jme3.bullet.util.Converter;
  */
 public class TranslationalLimitMotor {
 
-    private com.bulletphysics.dynamics.constraintsolver.TranslationalLimitMotor motor;
+    private long motorId;
 
-    public TranslationalLimitMotor(com.bulletphysics.dynamics.constraintsolver.TranslationalLimitMotor motor) {
-        this.motor = motor;
+    public TranslationalLimitMotor(long motor) {
+        this.motorId = motor;
     }
 
-    public com.bulletphysics.dynamics.constraintsolver.TranslationalLimitMotor getMotor() {
-        return motor;
+    public long getMotor() {
+        return motorId;
     }
 
     public Vector3f getLowerLimit() {
-        return Converter.convert(motor.lowerLimit);
+        Vector3f vec = new Vector3f();
+        getLowerLimit(motorId, vec);
+        return vec;
     }
+
+    private native void getLowerLimit(long motorId, Vector3f vector);
 
     public void setLowerLimit(Vector3f lowerLimit) {
-        Converter.convert(lowerLimit, motor.lowerLimit);
+        setLowerLimit(motorId, lowerLimit);
     }
 
+    private native void setLowerLimit(long motorId, Vector3f vector);
+    
     public Vector3f getUpperLimit() {
-        return Converter.convert(motor.upperLimit);
+        Vector3f vec = new Vector3f();
+        getUpperLimit(motorId, vec);
+        return vec;
     }
+
+    private native void getUpperLimit(long motorId, Vector3f vector);
 
     public void setUpperLimit(Vector3f upperLimit) {
-        Converter.convert(upperLimit, motor.upperLimit);
+        setUpperLimit(motorId, upperLimit);
     }
+
+    private native void setUpperLimit(long motorId, Vector3f vector);
 
     public Vector3f getAccumulatedImpulse() {
-        return Converter.convert(motor.accumulatedImpulse);
+        Vector3f vec = new Vector3f();
+        getAccumulatedImpulse(motorId, vec);
+        return vec;
     }
 
+    private native void getAccumulatedImpulse(long motorId, Vector3f vector);
+    
     public void setAccumulatedImpulse(Vector3f accumulatedImpulse) {
-        Converter.convert(accumulatedImpulse, motor.accumulatedImpulse);
+        setAccumulatedImpulse(motorId, accumulatedImpulse);
     }
+
+    private native void setAccumulatedImpulse(long motorId, Vector3f vector);
 
     public float getLimitSoftness() {
-        return motor.limitSoftness;
+        return getLimitSoftness(motorId);
     }
+    
+    private native float getLimitSoftness(long motorId);
 
     public void setLimitSoftness(float limitSoftness) {
-        motor.limitSoftness = limitSoftness;
+        setLimitSoftness(motorId, limitSoftness);
     }
+    
+    private native void setLimitSoftness(long motorId, float limitSoftness);
 
     public float getDamping() {
-        return motor.damping;
+        return getDamping(motorId);
     }
 
+    private native float getDamping(long motorId);
+    
     public void setDamping(float damping) {
-        motor.damping = damping;
+        setDamping(motorId, damping);
     }
 
+    private native void setDamping(long motorId, float damping);
+    
     public float getRestitution() {
-        return motor.restitution;
+        return getRestitution(motorId);
     }
+    
+    private native float getRestitution(long motorId);
 
     public void setRestitution(float restitution) {
-        motor.restitution = restitution;
+        setRestitution(motorId, restitution);
     }
+
+    private native void setRestitution(long motorId, float restitution);
 }

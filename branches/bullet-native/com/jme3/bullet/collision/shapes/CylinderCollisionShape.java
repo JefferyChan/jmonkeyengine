@@ -31,13 +31,9 @@
  */
 package com.jme3.bullet.collision.shapes;
 
-import com.bulletphysics.collision.shapes.CylinderShape;
-import com.bulletphysics.collision.shapes.CylinderShapeX;
-import com.bulletphysics.collision.shapes.CylinderShapeZ;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
 import com.jme3.math.Vector3f;
-import com.jme3.bullet.util.Converter;
 import com.jme3.export.InputCapsule;
 import com.jme3.export.OutputCapsule;
 import java.io.IOException;
@@ -99,19 +95,24 @@ public class CylinderCollisionShape extends CollisionShape {
     }
 
     protected void createShape() {
-        switch (axis) {
-            case 0:
-                cShape = new CylinderShapeX(Converter.convert(halfExtents));
-                break;
-            case 1:
-                cShape = new CylinderShape(Converter.convert(halfExtents));
-                break;
-            case 2:
-                cShape = new CylinderShapeZ(Converter.convert(halfExtents));
-                break;
-        }
-        cShape.setLocalScaling(Converter.convert(getScale()));
-        cShape.setMargin(margin);
+        objectId = createShape(axis, halfExtents);
+//        switch (axis) {
+//            case 0:
+//                objectId = new CylinderShapeX(Converter.convert(halfExtents));
+//                break;
+//            case 1:
+//                objectId = new CylinderShape(Converter.convert(halfExtents));
+//                break;
+//            case 2:
+//                objectId = new CylinderShapeZ(Converter.convert(halfExtents));
+//                break;
+//        }
+//        objectId.setLocalScaling(Converter.convert(getScale()));
+//        objectId.setMargin(margin);
+        setScale(scale);
+        setMargin(margin);
     }
+    
+    private native long createShape(int axis, Vector3f halfExtents);
 
 }

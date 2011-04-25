@@ -2,11 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.jme3.bullet.collision.shapes;
 
 import com.bulletphysics.dom.HeightfieldTerrainShape;
-import com.jme3.bullet.util.Converter;
 import com.jme3.export.InputCapsule;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
@@ -29,78 +27,79 @@ import java.io.IOException;
  */
 public class HeightfieldCollisionShape extends CollisionShape {
 
-	//protected HeightfieldTerrainShape heightfieldShape;
-	protected int heightStickWidth;
-	protected int heightStickLength;
-	protected float[] heightfieldData;
-	protected float heightScale;
-	protected float minHeight;
-	protected float maxHeight;
-	protected int upAxis;
-	protected boolean flipQuadEdges;
+    protected int heightStickWidth;
+    protected int heightStickLength;
+    protected float[] heightfieldData;
+    protected float heightScale;
+    protected float minHeight;
+    protected float maxHeight;
+    protected int upAxis;
+    protected boolean flipQuadEdges;
 
-	public HeightfieldCollisionShape() {
+    public HeightfieldCollisionShape() {
+    }
 
-	}
+    public HeightfieldCollisionShape(float[] heightmap) {
+        createCollisionHeightfield(heightmap, Vector3f.UNIT_XYZ);
+    }
 
-	public HeightfieldCollisionShape(float[] heightmap) {
-		createCollisionHeightfield(heightmap, Vector3f.UNIT_XYZ);
-	}
+    public HeightfieldCollisionShape(float[] heightmap, Vector3f scale) {
+        createCollisionHeightfield(heightmap, scale);
+    }
 
-	public HeightfieldCollisionShape(float[] heightmap, Vector3f scale) {
-		createCollisionHeightfield(heightmap, scale);
-	}
+    protected void createCollisionHeightfield(float[] heightmap, Vector3f worldScale) {
+        this.scale = worldScale;
+        this.heightScale = 1;//don't change away from 1, we use worldScale instead to scale
 
-	protected void createCollisionHeightfield(float[] heightmap, Vector3f worldScale) {
-		this.scale = worldScale;
-		this.heightScale = 1;//don't change away from 1, we use worldScale instead to scale
-		
-		this.heightfieldData = heightmap;
+        this.heightfieldData = heightmap;
 
-		float min = heightfieldData[0];
-		float max = heightfieldData[0];
-		// calculate min and max height
-		for (int i=0; i<heightfieldData.length; i++) {
-			if (heightfieldData[i] < min)
-				min = heightfieldData[i];
-			if (heightfieldData[i] > max)
-				max = heightfieldData[i];
-		}
-		// we need to center the terrain collision box at 0,0,0 for BulletPhysics. And to do that we need to set the
-		// min and max height to be equal on either side of the y axis, otherwise it gets shifted and collision is incorrect.
-		if (max < 0)
-			max = -min;
-		else {
-			if (Math.abs(max) > Math.abs(min))
-				min = -max;
-			else
-				max = -min;
-		}
-		this.minHeight = min;
-		this.maxHeight = max;
+        float min = heightfieldData[0];
+        float max = heightfieldData[0];
+        // calculate min and max height
+        for (int i = 0; i < heightfieldData.length; i++) {
+            if (heightfieldData[i] < min) {
+                min = heightfieldData[i];
+            }
+            if (heightfieldData[i] > max) {
+                max = heightfieldData[i];
+            }
+        }
+        // we need to center the terrain collision box at 0,0,0 for BulletPhysics. And to do that we need to set the
+        // min and max height to be equal on either side of the y axis, otherwise it gets shifted and collision is incorrect.
+        if (max < 0) {
+            max = -min;
+        } else {
+            if (Math.abs(max) > Math.abs(min)) {
+                min = -max;
+            } else {
+                max = -min;
+            }
+        }
+        this.minHeight = min;
+        this.maxHeight = max;
 
-		this.upAxis = HeightfieldTerrainShape.YAXIS;
-		this.flipQuadEdges = false;
+        this.upAxis = HeightfieldTerrainShape.YAXIS;
+        this.flipQuadEdges = false;
 
-		heightStickWidth = (int) FastMath.sqrt(heightfieldData.length);
-		heightStickLength = heightStickWidth;
+        heightStickWidth = (int) FastMath.sqrt(heightfieldData.length);
+        heightStickLength = heightStickWidth;
 
 
-		createShape();
-	}
-	
-	protected void createShape() {
+        createShape();
+    }
 
-		HeightfieldTerrainShape shape = new HeightfieldTerrainShape(heightStickWidth, heightStickLength, heightfieldData, heightScale, minHeight, maxHeight, upAxis, flipQuadEdges);
-		shape.setLocalScaling(new javax.vecmath.Vector3f(scale.x, scale.y, scale.z));
-		cShape = shape;
-		cShape.setLocalScaling(Converter.convert(getScale()));
-                cShape.setMargin(margin);
-	}
+    protected void createShape() {
 
-	public Mesh createJmeMesh(){
+        objectId = createShape(heightStickWidth, heightStickLength, heightfieldData, heightScale, minHeight, maxHeight, upAxis, flipQuadEdges);
+        setScale(scale);
+        setMargin(margin);
+    }
+    
+    private native long createShape(int heightStickWidth, int heightStickLength, float[] heightfieldData, float heightScale, float minHeight, float maxHeight, int upAxis, boolean flipQuadEdges);
+
+    public Mesh createJmeMesh() {
         //TODO return Converter.convert(bulletMesh);
-		return null;
+        return null;
     }
 
     public void write(JmeExporter ex) throws IOException {
@@ -129,5 +128,4 @@ public class HeightfieldCollisionShape extends CollisionShape {
         flipQuadEdges = capsule.readBoolean("flipQuadEdges", false);
         createShape();
     }
-
 }

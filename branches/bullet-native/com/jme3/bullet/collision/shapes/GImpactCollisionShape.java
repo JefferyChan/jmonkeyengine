@@ -31,29 +31,29 @@
  */
 package com.jme3.bullet.collision.shapes;
 
-import com.bulletphysics.collision.shapes.IndexedMesh;
-import com.bulletphysics.collision.shapes.TriangleIndexVertexArray;
-import com.bulletphysics.extras.gimpact.GImpactMeshShape;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
-import com.jme3.math.Vector3f;
 import com.jme3.scene.Mesh;
-import com.jme3.bullet.util.Converter;
+import com.jme3.bullet.util.NativeMeshUtil;
 import com.jme3.export.InputCapsule;
 import com.jme3.export.OutputCapsule;
+import com.jme3.scene.VertexBuffer.Type;
+import com.jme3.scene.mesh.IndexBuffer;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
 
 /**
  * Basic mesh collision shape
  * @author normenhansen
  */
-public class GImpactCollisionShape extends CollisionShape{
+public class GImpactCollisionShape extends CollisionShape {
 
-    protected Vector3f worldScale;
+//    protected Vector3f worldScale;
     protected int numVertices, numTriangles, vertexStride, triangleIndexStride;
     protected ByteBuffer triangleIndexBase, vertexBase;
-    protected IndexedMesh bulletMesh;
+    protected long meshId;
+//    protected IndexedMesh bulletMesh;
 
     public GImpactCollisionShape() {
     }
@@ -63,33 +63,48 @@ public class GImpactCollisionShape extends CollisionShape{
      * @param mesh the Mesh to use
      */
     public GImpactCollisionShape(Mesh mesh) {
-        createCollisionMesh(mesh, new Vector3f(1,1,1));
+        createCollisionMesh(mesh);
     }
 
+    private void createCollisionMesh(Mesh mesh) {
+        triangleIndexBase = ByteBuffer.allocate(mesh.getTriangleCount() * 3 * 4);
+        vertexBase = ByteBuffer.allocate(mesh.getVertexCount() * 3 * 4);
+        numVertices = mesh.getVertexCount();
+        vertexStride = 12; //3 verts * 4 bytes per.
+        numTriangles = mesh.getTriangleCount();
+        triangleIndexStride = 12; //3 index entries * 4 bytes each.
 
-    private void createCollisionMesh(Mesh mesh, Vector3f worldScale) {
-        this.worldScale = worldScale;
-        bulletMesh = Converter.convert(mesh);
-        this.numVertices = bulletMesh.numVertices;
-        this.numTriangles = bulletMesh.numTriangles;
-        this.vertexStride = bulletMesh.vertexStride;
-        this.triangleIndexStride = bulletMesh.triangleIndexStride;
-        this.triangleIndexBase = bulletMesh.triangleIndexBase;
-        this.vertexBase = bulletMesh.vertexBase;
+        IndexBuffer indices = mesh.getIndexBuffer();
+        FloatBuffer vertices = mesh.getFloatBuffer(Type.Position);
+        vertices.rewind();
+
+        int verticesLength = mesh.getVertexCount() * 3;
+        for (int i = 0; i < verticesLength; i++) {
+            float tempFloat = vertices.get();
+            vertexBase.putFloat(tempFloat);
+        }
+
+        int indicesLength = mesh.getTriangleCount() * 3;
+        for (int i = 0; i < indicesLength; i++) {
+            triangleIndexBase.putInt(indices.get(i));
+        }
+        vertices.rewind();
+        vertices.clear();
+
         createShape();
     }
 
-    /**
-     * creates a jme mesh from the collision shape, only needed for debugging
-     */
-    public Mesh createJmeMesh(){
-        return Converter.convert(bulletMesh);
-    }
+//    /**
+//     * creates a jme mesh from the collision shape, only needed for debugging
+//     */
+//    public Mesh createJmeMesh() {
+//        return Converter.convert(bulletMesh);
+//    }
 
     public void write(JmeExporter ex) throws IOException {
         super.write(ex);
         OutputCapsule capsule = ex.getCapsule(this);
-        capsule.write(worldScale, "worldScale", new Vector3f(1, 1, 1));
+//        capsule.write(worldScale, "worldScale", new Vector3f(1, 1, 1));
         capsule.write(numVertices, "numVertices", 0);
         capsule.write(numTriangles, "numTriangles", 0);
         capsule.write(vertexStride, "vertexStride", 0);
@@ -102,7 +117,7 @@ public class GImpactCollisionShape extends CollisionShape{
     public void read(JmeImporter im) throws IOException {
         super.read(im);
         InputCapsule capsule = im.getCapsule(this);
-        worldScale = (Vector3f) capsule.readSavable("worldScale", new Vector3f(1, 1, 1));
+//        worldScale = (Vector3f) capsule.readSavable("worldScale", new Vector3f(1, 1, 1));
         numVertices = capsule.readInt("numVertices", 0);
         numTriangles = capsule.readInt("numTriangles", 0);
         vertexStride = capsule.readInt("vertexStride", 0);
@@ -114,20 +129,25 @@ public class GImpactCollisionShape extends CollisionShape{
     }
 
     protected void createShape() {
-        bulletMesh = new IndexedMesh();
-        bulletMesh.numVertices = numVertices;
-        bulletMesh.numTriangles = numTriangles;
-        bulletMesh.vertexStride = vertexStride;
-        bulletMesh.triangleIndexStride = triangleIndexStride;
-        bulletMesh.triangleIndexBase = triangleIndexBase;
-        bulletMesh.vertexBase = vertexBase;
-        bulletMesh.triangleIndexBase = triangleIndexBase;
-        TriangleIndexVertexArray tiv = new TriangleIndexVertexArray(numTriangles, triangleIndexBase, triangleIndexStride, numVertices, vertexBase, vertexStride);
-        cShape = new GImpactMeshShape(tiv);
-        cShape.setLocalScaling(Converter.convert(worldScale));
-        ((GImpactMeshShape)cShape).updateBound();
-        cShape.setLocalScaling(Converter.convert(getScale()));
-        cShape.setMargin(margin);
+//        bulletMesh = new IndexedMesh();
+//        bulletMesh.numVertices = numVertices;
+//        bulletMesh.numTriangles = numTriangles;
+//        bulletMesh.vertexStride = vertexStride;
+//        bulletMesh.triangleIndexStride = triangleIndexStride;
+//        bulletMesh.triangleIndexBase = triangleIndexBase;
+//        bulletMesh.vertexBase = vertexBase;
+//        bulletMesh.triangleIndexBase = triangleIndexBase;
+//        TriangleIndexVertexArray tiv = new TriangleIndexVertexArray(numTriangles, triangleIndexBase, triangleIndexStride, numVertices, vertexBase, vertexStride);
+//        objectId = new GImpactMeshShape(tiv);
+//        objectId.setLocalScaling(Converter.convert(worldScale));
+//        ((GImpactMeshShape)objectId).updateBound();
+//        objectId.setLocalScaling(Converter.convert(getScale()));
+//        objectId.setMargin(margin);
+        meshId = NativeMeshUtil.createTriangleIndexVertexArray(triangleIndexBase, vertexBase, numTriangles, numVertices, vertexStride, triangleIndexStride);
+        objectId = createShape(meshId);
+        setScale(scale);
+        setMargin(margin);
     }
 
+    private native long createShape(long meshId);
 }

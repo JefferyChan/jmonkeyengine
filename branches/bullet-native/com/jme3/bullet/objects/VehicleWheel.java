@@ -42,6 +42,7 @@ import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
 import com.jme3.export.OutputCapsule;
 import com.jme3.export.Savable;
+import com.jme3.math.Matrix3f;
 import java.io.IOException;
 
 /**
@@ -50,7 +51,8 @@ import java.io.IOException;
  */
 public class VehicleWheel implements Savable {
 
-    protected com.bulletphysics.dynamics.vehicle.WheelInfo wheelInfo;
+//    protected com.bulletphysics.dynamics.vehicle.WheelInfo wheelInfo;
+    protected long wheelId = 0;
     protected boolean frontWheel;
     protected Vector3f location = new Vector3f();
     protected Vector3f direction = new Vector3f();
@@ -67,7 +69,7 @@ public class VehicleWheel implements Savable {
     protected Vector3f wheelWorldLocation = new Vector3f();
     protected Quaternion wheelWorldRotation = new Quaternion();
     protected Spatial wheelSpatial;
-    protected com.jme3.math.Matrix3f tmp_Matrix = new com.jme3.math.Matrix3f();
+    protected Matrix3f tmp_Matrix = new com.jme3.math.Matrix3f();
     protected final Quaternion tmp_inverseWorldRotation = new Quaternion();
     private boolean applyLocal = false;
 
@@ -91,11 +93,17 @@ public class VehicleWheel implements Savable {
     }
 
     public synchronized void updatePhysicsState() {
-        Converter.convert(wheelInfo.worldTransform.origin, wheelWorldLocation);
-        Converter.convert(wheelInfo.worldTransform.basis, tmp_Matrix);
+//        Converter.convert(wheelInfo.worldTransform.origin, wheelWorldLocation);
+//        Converter.convert(wheelInfo.worldTransform.basis, tmp_Matrix);
+        getWheelLocation(wheelId, wheelWorldLocation);
+        getWheelRotation(wheelId, tmp_Matrix);
         wheelWorldRotation.fromRotationMatrix(tmp_Matrix);
     }
+    
+    private native void getWheelLocation(long wheelId, Vector3f location);
 
+    private native void getWheelRotation(long wheelId, Matrix3f location);
+    
     public synchronized void applyWheelTransform() {
         if (wheelSpatial == null) {
             return;
@@ -118,12 +126,12 @@ public class VehicleWheel implements Savable {
         }
     }
 
-    public com.bulletphysics.dynamics.vehicle.WheelInfo getWheelInfo() {
-        return wheelInfo;
+    public long getWheelId() {
+        return wheelId;
     }
 
-    public void setWheelInfo(com.bulletphysics.dynamics.vehicle.WheelInfo wheelInfo) {
-        this.wheelInfo = wheelInfo;
+    public void setWheelId(long wheelInfo) {
+        this.wheelId = wheelInfo;
         applyInfo();
     }
 
@@ -250,20 +258,32 @@ public class VehicleWheel implements Savable {
     }
 
     private void applyInfo() {
-        if (wheelInfo == null) {
+        if (wheelId == 0) {
             return;
         }
-        wheelInfo.suspensionStiffness = suspensionStiffness;
-        wheelInfo.wheelsDampingRelaxation = wheelsDampingRelaxation;
-        wheelInfo.wheelsDampingCompression = wheelsDampingCompression;
-        wheelInfo.frictionSlip = frictionSlip;
-        wheelInfo.rollInfluence = rollInfluence;
-        wheelInfo.maxSuspensionTravelCm = maxSuspensionTravelCm;
-        wheelInfo.maxSuspensionForce = maxSuspensionForce;
-        wheelInfo.wheelsRadius = radius;
-        wheelInfo.bIsFrontWheel = frontWheel;
-        wheelInfo.suspensionRestLength1 = restLength;
+//        wheelInfo.suspensionStiffness = suspensionStiffness;
+//        wheelInfo.wheelsDampingRelaxation = wheelsDampingRelaxation;
+//        wheelInfo.wheelsDampingCompression = wheelsDampingCompression;
+//        wheelInfo.frictionSlip = frictionSlip;
+//        wheelInfo.rollInfluence = rollInfluence;
+//        wheelInfo.maxSuspensionTravelCm = maxSuspensionTravelCm;
+//        wheelInfo.maxSuspensionForce = maxSuspensionForce;
+//        wheelInfo.wheelsRadius = radius;
+//        wheelInfo.bIsFrontWheel = frontWheel;
+//        wheelInfo.suspensionRestLength1 = restLength;
+        applyInfo(wheelId, suspensionStiffness, wheelsDampingRelaxation, wheelsDampingCompression, frictionSlip, rollInfluence, maxSuspensionTravelCm, maxSuspensionForce, radius, frontWheel, restLength);
     }
+    
+    private native void applyInfo(long wheelId, float suspensionStiffness,
+            float wheelsDampingRelaxation,
+            float wheelsDampingCompression,
+            float frictionSlip,
+            float rollInfluence,
+            float maxSuspensionTravelCm,
+            float maxSuspensionForce,
+            float wheelsRadius,
+            boolean frontWheel,
+            float suspensionRestLength);
 
     public float getRadius() {
         return radius;
@@ -288,44 +308,56 @@ public class VehicleWheel implements Savable {
      * @return the PhysicsCollisionObject (PhysicsRigidBody, PhysicsGhostObject)
      */
     public PhysicsCollisionObject getGroundObject() {
-        if (wheelInfo.raycastInfo.groundObject == null) {
+//        if (wheelInfo.raycastInfo.groundObject == null) {
+//            return null;
+//        } else if (wheelInfo.raycastInfo.groundObject instanceof RigidBody) {
+//            System.out.println("RigidBody");
+//            return (PhysicsRigidBody) ((RigidBody) wheelInfo.raycastInfo.groundObject).getUserPointer();
+//        } else {
             return null;
-        } else if (wheelInfo.raycastInfo.groundObject instanceof RigidBody) {
-            System.out.println("RigidBody");
-            return (PhysicsRigidBody) ((RigidBody) wheelInfo.raycastInfo.groundObject).getUserPointer();
-        } else {
-            return null;
-        }
+//        }
     }
 
     /**
      * returns the location where the wheel collides with the ground (world space)
      */
     public Vector3f getCollisionLocation(Vector3f vec) {
-        Converter.convert(wheelInfo.raycastInfo.contactPointWS, vec);
+//        Converter.convert(wheelInfo.raycastInfo.contactPointWS, vec);
+        getCollisionLocation(wheelId, vec);
         return vec;
     }
+    
+    private native void getCollisionLocation(long wheelId, Vector3f vec);
 
     /**
      * returns the location where the wheel collides with the ground (world space)
      */
     public Vector3f getCollisionLocation() {
-        return Converter.convert(wheelInfo.raycastInfo.contactPointWS);
+//        return Converter.convert(wheelInfo.raycastInfo.contactPointWS);
+        Vector3f vec = new Vector3f();
+        getCollisionLocation(wheelId, vec);
+        return vec;
     }
 
     /**
      * returns the normal where the wheel collides with the ground (world space)
      */
     public Vector3f getCollisionNormal(Vector3f vec) {
-        Converter.convert(wheelInfo.raycastInfo.contactNormalWS, vec);
+//        Converter.convert(wheelInfo.raycastInfo.contactNormalWS, vec);
+        getCollisionNormal(wheelId, vec);
         return vec;
     }
+
+    private native void getCollisionNormal(long wheelId, Vector3f vec);
 
     /**
      * returns the normal where the wheel collides with the ground (world space)
      */
     public Vector3f getCollisionNormal() {
-        return Converter.convert(wheelInfo.raycastInfo.contactNormalWS);
+//        return Converter.convert(wheelInfo.raycastInfo.contactNormalWS);
+        Vector3f vec = new Vector3f();
+        getCollisionNormal(wheelId, vec);
+        return vec;
     }
 
     /**
@@ -333,8 +365,11 @@ public class VehicleWheel implements Savable {
      * 0.0 = wheels are sliding, 1.0 = wheels have traction.
      */
     public float getSkidInfo() {
-        return wheelInfo.skidInfo;
+//        return wheelInfo.skidInfo;
+        return getSkidInfo(wheelId);
     }
+    
+    public native float getSkidInfo(long wheelId);
 
     @Override
     public void read(JmeImporter im) throws IOException {

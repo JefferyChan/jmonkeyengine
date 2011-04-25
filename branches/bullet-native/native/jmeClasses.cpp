@@ -134,4 +134,20 @@ void jmeClasses::initJavaClasses(JNIEnv* env) {
         env->Throw(env->ExceptionOccurred());
         return;
     }
+
+    Matrix3f = env->FindClass("com/jme3/math/Matrix3f");
+    if (env->ExceptionCheck()) {
+        env->Throw(env->ExceptionOccurred());
+        return;
+    }
+    Matrix3f_set = env->GetMethodID(Matrix3f, "set", "(IIF)Lcom/jme3/math/Matrix3f;");
+    if (env->ExceptionCheck()) {
+        env->Throw(env->ExceptionOccurred());
+        return;
+    }
+    Matrix3f_get = env->GetMethodID(Matrix3f, "get", "(II)F");
+    if (env->ExceptionCheck()) {
+        env->Throw(env->ExceptionOccurred());
+        return;
+    }
 }

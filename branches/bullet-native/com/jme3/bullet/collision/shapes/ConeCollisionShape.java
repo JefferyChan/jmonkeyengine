@@ -4,11 +4,7 @@
  */
 package com.jme3.bullet.collision.shapes;
 
-import com.bulletphysics.collision.shapes.ConeShape;
-import com.bulletphysics.collision.shapes.ConeShapeX;
-import com.bulletphysics.collision.shapes.ConeShapeZ;
 import com.jme3.bullet.PhysicsSpace;
-import com.jme3.bullet.util.Converter;
 import com.jme3.export.InputCapsule;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
@@ -64,14 +60,19 @@ public class ConeCollisionShape extends CollisionShape {
     }
 
     protected void createShape() {
-        if (axis == PhysicsSpace.AXIS_X) {
-            cShape = new ConeShapeX(radius, height);
-        } else if (axis == PhysicsSpace.AXIS_Y) {
-            cShape = new ConeShape(radius, height);
-        } else if (axis == PhysicsSpace.AXIS_Z) {
-            cShape = new ConeShapeZ(radius, height);
-        }
-        cShape.setLocalScaling(Converter.convert(getScale()));
-        cShape.setMargin(margin);
+        objectId = createShape(axis, radius, height);
+//        if (axis == PhysicsSpace.AXIS_X) {
+//            objectId = new ConeShapeX(radius, height);
+//        } else if (axis == PhysicsSpace.AXIS_Y) {
+//            objectId = new ConeShape(radius, height);
+//        } else if (axis == PhysicsSpace.AXIS_Z) {
+//            objectId = new ConeShapeZ(radius, height);
+//        }
+//        objectId.setLocalScaling(Converter.convert(getScale()));
+//        objectId.setMargin(margin);
+        setScale(scale);
+        setMargin(margin);
     }
+
+    private native long createShape(int axis, float radius, float height);
 }

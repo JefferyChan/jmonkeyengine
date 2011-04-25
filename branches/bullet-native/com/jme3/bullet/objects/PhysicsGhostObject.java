@@ -31,9 +31,6 @@
  */
 package com.jme3.bullet.objects;
 
-import com.bulletphysics.collision.dispatch.CollisionFlags;
-import com.bulletphysics.collision.dispatch.PairCachingGhostObject;
-import com.bulletphysics.linearmath.Transform;
 import com.jme3.math.Matrix3f;
 import com.jme3.math.Quaternion;
 import com.jme3.scene.Spatial;
@@ -59,13 +56,8 @@ import java.util.List;
  */
 public class PhysicsGhostObject extends PhysicsCollisionObject {
 
-    protected PairCachingGhostObject gObject;
     protected boolean locationDirty = false;
-    //TEMP VARIABLES
     protected final Quaternion tmp_inverseWorldRotation = new Quaternion();
-    protected Transform tempTrans = new Transform(Converter.convert(new Matrix3f()));
-    private com.jme3.math.Transform physicsLocation = new com.jme3.math.Transform();
-    protected javax.vecmath.Quat4f tempRot = new javax.vecmath.Quat4f();
     private List<PhysicsCollisionObject> overlappingObjects = new LinkedList<PhysicsCollisionObject>();
 
     public PhysicsGhostObject() {
@@ -82,21 +74,29 @@ public class PhysicsGhostObject extends PhysicsCollisionObject {
     }
 
     protected void buildObject() {
-        if (gObject == null) {
-            gObject = new PairCachingGhostObject();
-            gObject.setCollisionFlags(gObject.getCollisionFlags() | CollisionFlags.NO_CONTACT_RESPONSE);
+        if (objectId == 0) {
+//            gObject = new PairCachingGhostObject();
+            objectId = createGhostObject();
+            setGhostFlags(objectId);
         }
-        gObject.setCollisionShape(collisionShape.getCShape());
-        gObject.setUserPointer(this);
+//        if (gObject == null) {
+//            gObject = new PairCachingGhostObject();
+//            gObject.setCollisionFlags(gObject.getCollisionFlags() | CollisionFlags.NO_CONTACT_RESPONSE);
+//        }
+        attachCollisionShape(objectId, collisionShape.getObjectId());
     }
 
+    private native long createGhostObject();
+
+    private native void setGhostFlags(long objectId);
+    
     @Override
     public void setCollisionShape(CollisionShape collisionShape) {
         super.setCollisionShape(collisionShape);
-        if (gObject == null) {
+        if (objectId == 0) {
             buildObject();
         }else{
-            gObject.setCollisionShape(collisionShape.getCShape());
+            attachCollisionShape(objectId, collisionShape.getObjectId());
         }
     }
 
@@ -105,37 +105,30 @@ public class PhysicsGhostObject extends PhysicsCollisionObject {
      * @param location the location of the actual physics object
      */
     public void setPhysicsLocation(Vector3f location) {
-        gObject.getWorldTransform(tempTrans);
-        Converter.convert(location, tempTrans.origin);
-        gObject.setWorldTransform(tempTrans);
+        setPhysicsLocation(objectId, location);
     }
+    
+    private native void setPhysicsLocation(long objectId, Vector3f location);
 
     /**
      * Sets the physics object rotation
      * @param rotation the rotation of the actual physics object
      */
     public void setPhysicsRotation(Matrix3f rotation) {
-        gObject.getWorldTransform(tempTrans);
-        Converter.convert(rotation, tempTrans.basis);
-        gObject.setWorldTransform(tempTrans);
+        setPhysicsRotation(objectId, rotation);
     }
+    
+    private native void setPhysicsRotation(long objectId, Matrix3f rotation);
 
     /**
      * Sets the physics object rotation
      * @param rotation the rotation of the actual physics object
      */
     public void setPhysicsRotation(Quaternion rotation) {
-        gObject.getWorldTransform(tempTrans);
-        Converter.convert(rotation, tempTrans.basis);
-        gObject.setWorldTransform(tempTrans);
+        setPhysicsRotation(objectId, rotation);
     }
-
-    /**
-     * @return the physicsLocation
-     */
-    public com.jme3.math.Transform getPhysicsTransform() {
-        return physicsLocation;
-    }
+    
+    private native void setPhysicsRotation(long objectId, Quaternion rotation);
 
     /**
      * @return the physicsLocation
@@ -144,10 +137,11 @@ public class PhysicsGhostObject extends PhysicsCollisionObject {
         if (trans == null) {
             trans = new Vector3f();
         }
-        gObject.getWorldTransform(tempTrans);
-        Converter.convert(tempTrans.origin, physicsLocation.getTranslation());
-        return trans.set(physicsLocation.getTranslation());
+        getPhysicsLocation(objectId, trans);
+        return trans;
     }
+    
+    private native void getPhysicsLocation(long objectId, Vector3f vector);
 
     /**
      * @return the physicsLocation
@@ -156,10 +150,11 @@ public class PhysicsGhostObject extends PhysicsCollisionObject {
         if (rot == null) {
             rot = new Quaternion();
         }
-        gObject.getWorldTransform(tempTrans);
-        Converter.convert(tempTrans.getRotation(tempRot), physicsLocation.getRotation());
-        return rot.set(physicsLocation.getRotation());
+        getPhysicsRotation(objectId, rot);
+        return rot;
     }
+    
+    private native void getPhysicsRotation(long objectId, Quaternion rot);
 
     /**
      * @return the physicsLocation
@@ -168,41 +163,42 @@ public class PhysicsGhostObject extends PhysicsCollisionObject {
         if (rot == null) {
             rot = new Matrix3f();
         }
-        gObject.getWorldTransform(tempTrans);
-        Converter.convert(tempTrans.getRotation(tempRot), physicsLocation.getRotation());
-        return rot.set(physicsLocation.getRotation());
+        getPhysicsRotationMatrix(objectId, rot);
+        return rot;
     }
+    
+    private native void getPhysicsRotationMatrix(long objectId, Matrix3f rot);
 
     /**
      * @return the physicsLocation
      */
     public Vector3f getPhysicsLocation() {
-        gObject.getWorldTransform(tempTrans);
-        Converter.convert(tempTrans.origin, physicsLocation.getTranslation());
-        return physicsLocation.getTranslation();
+        Vector3f vec = new Vector3f();
+        getPhysicsLocation(objectId, vec);
+        return vec;
     }
-
+    
     /**
      * @return the physicsLocation
      */
     public Quaternion getPhysicsRotation() {
-        gObject.getWorldTransform(tempTrans);
-        Converter.convert(tempTrans.getRotation(tempRot), physicsLocation.getRotation());
-        return physicsLocation.getRotation();
+        Quaternion quat = new Quaternion();
+        getPhysicsRotation(objectId, quat);
+        return quat;
     }
 
     public Matrix3f getPhysicsRotationMatrix() {
-        gObject.getWorldTransform(tempTrans);
-        Converter.convert(tempTrans.getRotation(tempRot), physicsLocation.getRotation());
-        return physicsLocation.getRotation().toRotationMatrix();
+        Matrix3f mtx = new Matrix3f();
+        getPhysicsRotationMatrix(objectId, mtx);
+        return mtx;
     }
 
     /**
      * used internally
      */
-    public PairCachingGhostObject getObjectId() {
-        return gObject;
-    }
+//    public PairCachingGhostObject getObjectId() {
+//        return gObject;
+//    }
 
     /**
      * destroys this PhysicsGhostNode and removes it from memory
@@ -217,10 +213,10 @@ public class PhysicsGhostObject extends PhysicsCollisionObject {
      * @return All CollisionObjects overlapping with this GhostNode.
      */
     public List<PhysicsCollisionObject> getOverlappingObjects() {
-        overlappingObjects.clear();
-        for (com.bulletphysics.collision.dispatch.CollisionObject collObj : gObject.getOverlappingPairs()) {
-            overlappingObjects.add((PhysicsCollisionObject) collObj.getUserPointer());
-        }
+//        overlappingObjects.clear();
+//        for (com.bulletphysics.collision.dispatch.CollisionObject collObj : gObject.getOverlappingPairs()) {
+//            overlappingObjects.add((PhysicsCollisionObject) collObj.getUserPointer());
+//        }
         return overlappingObjects;
     }
 
@@ -229,8 +225,10 @@ public class PhysicsGhostObject extends PhysicsCollisionObject {
      * @return With how many other CollisionObjects this GhostNode is currently overlapping.
      */
     public int getOverlappingCount() {
-        return gObject.getNumOverlappingObjects();
+        return getOverlappingCount();
     }
+    
+    private native int getOverlappingCount(long objectId);
 
     /**
      *
@@ -242,24 +240,34 @@ public class PhysicsGhostObject extends PhysicsCollisionObject {
     }
 
     public void setCcdSweptSphereRadius(float radius) {
-        gObject.setCcdSweptSphereRadius(radius);
+        setCcdSweptSphereRadius(objectId, radius);
     }
+    
+    private native void setCcdSweptSphereRadius(long objectId, float radius);
 
     public void setCcdMotionThreshold(float threshold) {
-        gObject.setCcdMotionThreshold(threshold);
+        setCcdMotionThreshold(objectId, threshold);
     }
+
+    private native void setCcdMotionThreshold(long objectId, float threshold);
 
     public float getCcdSweptSphereRadius() {
-        return gObject.getCcdSweptSphereRadius();
+        return getCcdSweptSphereRadius(objectId);
     }
+    
+    private native float getCcdSweptSphereRadius(long objectId);
 
     public float getCcdMotionThreshold() {
-        return gObject.getCcdMotionThreshold();
+        return getCcdMotionThreshold(objectId);
     }
 
+    private native float getCcdMotionThreshold(long objectId);
+
     public float getCcdSquareMotionThreshold() {
-        return gObject.getCcdSquareMotionThreshold();
+        return getCcdSquareMotionThreshold(objectId);
     }
+
+    private native float getCcdSquareMotionThreshold(long objectId);
 
     @Override
     public void write(JmeExporter e) throws IOException {

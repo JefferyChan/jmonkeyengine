@@ -31,18 +31,17 @@
  */
 package com.jme3.bullet.collision.shapes;
 
-import com.bulletphysics.collision.shapes.BvhTriangleMeshShape;
-import com.bulletphysics.collision.shapes.IndexedMesh;
-import com.bulletphysics.collision.shapes.TriangleIndexVertexArray;
+import com.jme3.bullet.util.NativeMeshUtil;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
-import com.jme3.math.Vector3f;
 import com.jme3.scene.Mesh;
-import com.jme3.bullet.util.Converter;
 import com.jme3.export.InputCapsule;
 import com.jme3.export.OutputCapsule;
+import com.jme3.scene.VertexBuffer.Type;
+import com.jme3.scene.mesh.IndexBuffer;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
 
 /**
  * Basic mesh collision shape
@@ -52,7 +51,7 @@ public class MeshCollisionShape extends CollisionShape {
 
     protected int numVertices, numTriangles, vertexStride, triangleIndexStride;
     protected ByteBuffer triangleIndexBase, vertexBase;
-    protected IndexedMesh bulletMesh;
+    protected long meshId;
 
     public MeshCollisionShape() {
     }
@@ -62,27 +61,43 @@ public class MeshCollisionShape extends CollisionShape {
      * @param mesh the TriMesh to use
      */
     public MeshCollisionShape(Mesh mesh) {
-        createCollisionMesh(mesh, new Vector3f(1, 1, 1));
+        createCollisionMesh(mesh);
     }
 
-    private void createCollisionMesh(Mesh mesh, Vector3f worldScale) {
-        this.scale = worldScale;
-        bulletMesh = Converter.convert(mesh);
-        this.numVertices = bulletMesh.numVertices;
-        this.numTriangles = bulletMesh.numTriangles;
-        this.vertexStride = bulletMesh.vertexStride;
-        this.triangleIndexStride = bulletMesh.triangleIndexStride;
-        this.triangleIndexBase = bulletMesh.triangleIndexBase;
-        this.vertexBase = bulletMesh.vertexBase;
+    private void createCollisionMesh(Mesh mesh) {
+        triangleIndexBase = ByteBuffer.allocate(mesh.getTriangleCount() * 3 * 4);
+        vertexBase = ByteBuffer.allocate(mesh.getVertexCount() * 3 * 4);
+        numVertices = mesh.getVertexCount();
+        vertexStride = 12; //3 verts * 4 bytes per.
+        numTriangles = mesh.getTriangleCount();
+        triangleIndexStride = 12; //3 index entries * 4 bytes each.
+
+        IndexBuffer indices = mesh.getIndexBuffer();
+        FloatBuffer vertices = mesh.getFloatBuffer(Type.Position);
+        vertices.rewind();
+
+        int verticesLength = mesh.getVertexCount() * 3;
+        for (int i = 0; i < verticesLength; i++) {
+            float tempFloat = vertices.get();
+            vertexBase.putFloat(tempFloat);
+        }
+
+        int indicesLength = mesh.getTriangleCount() * 3;
+        for (int i = 0; i < indicesLength; i++) {
+            triangleIndexBase.putInt(indices.get(i));
+        }
+        vertices.rewind();
+        vertices.clear();
+
         createShape();
     }
 
     /**
      * creates a jme mesh from the collision shape, only needed for debugging
      */
-    public Mesh createJmeMesh(){
-        return Converter.convert(bulletMesh);
-    }
+//    public Mesh createJmeMesh(){
+//        return Converter.convert(bulletMesh);
+//    }
 
     public void write(JmeExporter ex) throws IOException {
         super.write(ex);
@@ -110,17 +125,23 @@ public class MeshCollisionShape extends CollisionShape {
     }
 
     protected void createShape() {
-        bulletMesh = new IndexedMesh();
-        bulletMesh.numVertices = numVertices;
-        bulletMesh.numTriangles = numTriangles;
-        bulletMesh.vertexStride = vertexStride;
-        bulletMesh.triangleIndexStride = triangleIndexStride;
-        bulletMesh.triangleIndexBase = triangleIndexBase;
-        bulletMesh.vertexBase = vertexBase;
-        bulletMesh.triangleIndexBase = triangleIndexBase;
-        TriangleIndexVertexArray tiv = new TriangleIndexVertexArray(numTriangles, triangleIndexBase, triangleIndexStride, numVertices, vertexBase, vertexStride);
-        cShape = new BvhTriangleMeshShape(tiv, true);
-        cShape.setLocalScaling(Converter.convert(getScale()));
-        cShape.setMargin(margin);
+//        bulletMesh = new IndexedMesh();
+//        bulletMesh.numVertices = numVertices;
+//        bulletMesh.numTriangles = numTriangles;
+//        bulletMesh.vertexStride = vertexStride;
+//        bulletMesh.triangleIndexStride = triangleIndexStride;
+//        bulletMesh.triangleIndexBase = triangleIndexBase;
+//        bulletMesh.vertexBase = vertexBase;
+//        bulletMesh.triangleIndexBase = triangleIndexBase;
+//        TriangleIndexVertexArray tiv = new TriangleIndexVertexArray(numTriangles, triangleIndexBase, triangleIndexStride, numVertices, vertexBase, vertexStride);
+//        objectId = new BvhTriangleMeshShape(tiv, true);
+//        objectId.setLocalScaling(Converter.convert(getScale()));
+//        objectId.setMargin(margin);
+        meshId = NativeMeshUtil.createTriangleIndexVertexArray(triangleIndexBase, vertexBase, numTriangles, numVertices, vertexStride, triangleIndexStride);
+        objectId = createShape(meshId);
+        setScale(scale);
+        setMargin(margin);
     }
+
+    private native long createShape(long meshId);
 }

@@ -121,18 +121,18 @@ public class DebugShapeFactory {
     }
 
     public static Mesh getDebugMesh(CollisionShape shape){
-        Mesh mesh=null;
-        if(shape.getCShape() instanceof ConvexShape){
-            mesh=new Mesh();
-            mesh.setBuffer(Type.Position, 3, getVertices((ConvexShape)shape.getCShape()));
-            mesh.getFloatBuffer(Type.Position).clear();
-        }
-        else if(shape.getCShape() instanceof ConcaveShape)
-        {
-            mesh=new Mesh();
-            mesh.setBuffer(Type.Position, 3, getVertices((ConcaveShape)shape.getCShape()));
-            mesh.getFloatBuffer(Type.Position).clear();
-        }
+        Mesh mesh=new Mesh();
+//        if(shape.getObjectId() instanceof ConvexShape){
+//            mesh=new Mesh();
+//            mesh.setBuffer(Type.Position, 3, getVertices((ConvexShape)shape.getObjectId()));
+//            mesh.getFloatBuffer(Type.Position).clear();
+//        }
+//        else if(shape.getObjectId() instanceof ConcaveShape)
+//        {
+//            mesh=new Mesh();
+//            mesh.setBuffer(Type.Position, 3, getVertices((ConcaveShape)shape.getObjectId()));
+//            mesh.getFloatBuffer(Type.Position).clear();
+//        }
         return mesh;
     }
 

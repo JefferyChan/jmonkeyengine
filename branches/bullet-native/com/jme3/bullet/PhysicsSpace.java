@@ -72,13 +72,13 @@ import com.jme3.bullet.collision.PhysicsSweepTestResult;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.PhysicsControl;
 import com.jme3.bullet.control.RigidBodyControl;
-import com.jme3.bullet.control.VehicleControl;
 import com.jme3.bullet.joints.PhysicsJoint;
 import com.jme3.bullet.objects.PhysicsGhostObject;
 import com.jme3.bullet.objects.PhysicsCharacter;
 import com.jme3.bullet.objects.PhysicsVehicle;
 import com.jme3.bullet.objects.PhysicsRigidBody;
-import com.jme3.bullet.util.Converter;
+import com.jme3.math.Matrix3f;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Transform;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
@@ -171,6 +171,10 @@ public class PhysicsSpace {
         this.worldMax.set(worldMax);
         this.broadphaseType = broadphaseType;
         create();
+        Quaternion qu;
+        Vector3f vec;
+        Matrix3f mtx;
+//        mtx.
     }
 
     /**
@@ -542,6 +546,10 @@ public class PhysicsSpace {
     
     private native void removeCollisionObject(long space, long id);
     
+    private native void addRigidBody(long space, long id);
+    
+    private native void removeRigidBody(long space, long id);
+    
     private native void addCharacterObject(long space, long id);
     
     private native void removeCharacterObject(long space, long id);
@@ -560,23 +568,26 @@ public class PhysicsSpace {
     
     private void addGhostObject(PhysicsGhostObject node) {
         Logger.getLogger(PhysicsSpace.class.getName()).log(Level.INFO, "Adding ghost object {0} to physics space.", node.getObjectId());
-//        dynamicsWorld.addCollisionObject(node.getObjectId());
+        addCollisionObject(physicsSpaceId, node.getObjectId());
     }
 
     private void removeGhostObject(PhysicsGhostObject node) {
         Logger.getLogger(PhysicsSpace.class.getName()).log(Level.INFO, "Removing ghost object {0} from physics space.", node.getObjectId());
-//        dynamicsWorld.removeCollisionObject(node.getObjectId());
+        removeCollisionObject(physicsSpaceId, node.getObjectId());
     }
 
     private void addCharacter(PhysicsCharacter node) {
         Logger.getLogger(PhysicsSpace.class.getName()).log(Level.INFO, "Adding character {0} to physics space.", node.getObjectId());
-//        dynamicsWorld.addCollisionObject(node.getObjectId());
+        addCharacterObject(physicsSpaceId, node.getObjectId());
+        addAction(physicsSpaceId, node.getControllerId());
 //        dynamicsWorld.addCollisionObject(node.getObjectId(), CollisionFilterGroups.CHARACTER_FILTER, (short) (CollisionFilterGroups.STATIC_FILTER | CollisionFilterGroups.DEFAULT_FILTER));
 //        dynamicsWorld.addAction(node.getControllerId());
     }
 
     private void removeCharacter(PhysicsCharacter node) {
         Logger.getLogger(PhysicsSpace.class.getName()).log(Level.INFO, "Removing character {0} from physics space.", node.getObjectId());
+        removeAction(physicsSpaceId, node.getControllerId());
+        removeCharacterObject(physicsSpaceId, node.getObjectId());
 //        dynamicsWorld.removeAction(node.getControllerId());
 //        dynamicsWorld.removeCollisionObject(node.getObjectId());
     }
@@ -584,10 +595,12 @@ public class PhysicsSpace {
     private void addRigidBody(PhysicsRigidBody node) {
 //        physicsNodes.put(node.getObjectId(), node);
 //        dynamicsWorld.addRigidBody(node.getObjectId());
+        addRigidBody(physicsSpaceId, node.getObjectId());
         Logger.getLogger(PhysicsSpace.class.getName()).log(Level.INFO, "Adding RigidBody {0} to physics space.", node.getObjectId());
         if (node instanceof PhysicsVehicle) {
             Logger.getLogger(PhysicsSpace.class.getName()).log(Level.INFO, "Adding vehicle constraint {0} to physics space.", ((PhysicsVehicle) node).getVehicleId());
             ((PhysicsVehicle) node).createVehicle(this);
+            addVehicle(physicsSpaceId, ((PhysicsVehicle) node).getVehicleId());
 //            dynamicsWorld.addVehicle(((PhysicsVehicle) node).getVehicleId());
         }
     }
@@ -595,22 +608,25 @@ public class PhysicsSpace {
     private void removeRigidBody(PhysicsRigidBody node) {
         if (node instanceof PhysicsVehicle) {
             Logger.getLogger(PhysicsSpace.class.getName()).log(Level.INFO, "Removing vehicle constraint {0} from physics space.", ((PhysicsVehicle) node).getVehicleId());
+            removeVehicle(physicsSpaceId, ((PhysicsVehicle) node).getVehicleId());
 //            dynamicsWorld.removeVehicle(((PhysicsVehicle) node).getVehicleId());
         }
         Logger.getLogger(PhysicsSpace.class.getName()).log(Level.INFO, "Removing RigidBody {0} from physics space.", node.getObjectId());
         physicsNodes.remove(node.getObjectId());
-//        dynamicsWorld.removeRigidBody(node.getObjectId());
+        removeRigidBody(physicsSpaceId, node.getObjectId());
     }
 
     private void addJoint(PhysicsJoint joint) {
         Logger.getLogger(PhysicsSpace.class.getName()).log(Level.INFO, "Adding Joint {0} to physics space.", joint.getObjectId());
         physicsJoints.add(joint);
+        addConstraint(physicsSpaceId, joint.getObjectId());
 //        dynamicsWorld.addConstraint(joint.getObjectId(), !joint.isCollisionBetweenLinkedBodys());
     }
 
     private void removeJoint(PhysicsJoint joint) {
         Logger.getLogger(PhysicsSpace.class.getName()).log(Level.INFO, "Removing Joint {0} from physics space.", joint.getObjectId());
         physicsJoints.remove(joint);
+        removeConstraint(physicsSpaceId, joint.getObjectId());
 //        dynamicsWorld.removeConstraint(joint.getObjectId());
     }
 
@@ -620,22 +636,25 @@ public class PhysicsSpace {
      */
     public void setGravity(Vector3f gravity) {
 //        dynamicsWorld.setGravity(Converter.convert(gravity));
+        setGravity(physicsSpaceId, gravity);
     }
+    
+    private native void setGravity(long spaceId, Vector3f gravity);
 
-    /**
-     * applies gravity value to all objects
-     */
-    public void applyGravity() {
-//        dynamicsWorld.applyGravity();
-    }
-
-    /**
-     * clears forces of all objects
-     */
-    public void clearForces() {
-//        dynamicsWorld.clearForces();
-    }
-
+//    /**
+//     * applies gravity value to all objects
+//     */
+//    public void applyGravity() {
+////        dynamicsWorld.applyGravity();
+//    }
+//
+//    /**
+//     * clears forces of all objects
+//     */
+//    public void clearForces() {
+////        dynamicsWorld.clearForces();
+//    }
+//
     /**
      * Adds the specified listener to the physics tick listeners.
      * The listeners are called on each physics step, which is not necessarily
@@ -776,9 +795,9 @@ public class PhysicsSpace {
 //     * used internally
 //     * @return the dynamicsWorld
 //     */
-//    public DynamicsWorld getDynamicsWorld() {
-//        return dynamicsWorld;
-//    }
+    public long getSpaceId() {
+        return physicsSpaceId;
+    }
 
     public BroadphaseType getBroadphaseType() {
         return broadphaseType;
@@ -875,6 +894,8 @@ public class PhysicsSpace {
     public AssetManager getDebugManager() {
         return debugManager;
     }
+    
+    public native void initNativePhysics();
 
     /**
      * interface with Broadphase types

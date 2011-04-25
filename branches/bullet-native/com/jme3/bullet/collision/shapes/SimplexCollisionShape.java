@@ -4,8 +4,6 @@
  */
 package com.jme3.bullet.collision.shapes;
 
-import com.bulletphysics.collision.shapes.BU_Simplex1to4;
-import com.jme3.bullet.util.Converter;
 import com.jme3.export.InputCapsule;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
@@ -71,15 +69,29 @@ public class SimplexCollisionShape extends CollisionShape {
 
     protected void createShape() {
         if (vector4 != null) {
-            cShape = new BU_Simplex1to4(Converter.convert(vector1), Converter.convert(vector2), Converter.convert(vector3), Converter.convert(vector4));
+            objectId = createShape(vector1, vector2, vector3, vector4);
+//            objectId = new BU_Simplex1to4(Converter.convert(vector1), Converter.convert(vector2), Converter.convert(vector3), Converter.convert(vector4));
         } else if (vector3 != null) {
-            cShape = new BU_Simplex1to4(Converter.convert(vector1), Converter.convert(vector2), Converter.convert(vector3));
+            objectId = createShape(vector1, vector2, vector3);
+//            objectId = new BU_Simplex1to4(Converter.convert(vector1), Converter.convert(vector2), Converter.convert(vector3));
         } else if (vector2 != null) {
-            cShape = new BU_Simplex1to4(Converter.convert(vector1), Converter.convert(vector2));
+            objectId = createShape(vector1, vector2);
+//            objectId = new BU_Simplex1to4(Converter.convert(vector1), Converter.convert(vector2));
         } else {
-            cShape = new BU_Simplex1to4(Converter.convert(vector1));
+            objectId = createShape(vector1);
+//            objectId = new BU_Simplex1to4(Converter.convert(vector1));
         }
-        cShape.setLocalScaling(Converter.convert(getScale()));
-        cShape.setMargin(margin);
+//        objectId.setLocalScaling(Converter.convert(getScale()));
+//        objectId.setMargin(margin);
+        setScale(scale);
+        setMargin(margin);
     }
+    
+    private native long createShape(Vector3f vector1);
+    
+    private native long createShape(Vector3f vector1, Vector3f vector2);
+    
+    private native long createShape(Vector3f vector1, Vector3f vector2, Vector3f vector3);
+
+    private native long createShape(Vector3f vector1, Vector3f vector2, Vector3f vector3, Vector3f vector4);
 }

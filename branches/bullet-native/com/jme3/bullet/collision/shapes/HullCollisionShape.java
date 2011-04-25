@@ -1,12 +1,6 @@
 package com.jme3.bullet.collision.shapes;
 
 import java.nio.FloatBuffer;
-
-import javax.vecmath.Vector3f;
-
-import com.bulletphysics.collision.shapes.ConvexHullShape;
-import com.bulletphysics.util.ObjectArrayList;
-import com.jme3.bullet.util.Converter;
 import com.jme3.export.InputCapsule;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
@@ -24,12 +18,12 @@ public class HullCollisionShape extends CollisionShape {
 
     public HullCollisionShape(Mesh mesh) {
         this.points = getPoints(mesh);
-        createShape(this.points);
+        createShape();
     }
 
     public HullCollisionShape(float[] points) {
         this.points = points;
-        createShape(this.points);
+        createShape();
     }
 
     @Override
@@ -56,15 +50,20 @@ public class HullCollisionShape extends CollisionShape {
         createShape(this.points);
     }
 
-    protected void createShape(float[] points) {
-        ObjectArrayList<Vector3f> pointList = new ObjectArrayList<Vector3f>();
-        for (int i = 0; i < points.length; i += 3) {
-            pointList.add(new Vector3f(points[i], points[i + 1], points[i + 2]));
-        }
-        cShape = new ConvexHullShape(pointList);
-        cShape.setLocalScaling(Converter.convert(getScale()));
-        cShape.setMargin(margin);
+    protected void createShape() {
+//        ObjectArrayList<Vector3f> pointList = new ObjectArrayList<Vector3f>();
+//        for (int i = 0; i < points.length; i += 3) {
+//            pointList.add(new Vector3f(points[i], points[i + 1], points[i + 2]));
+//        }
+//        objectId = new ConvexHullShape(pointList);
+//        objectId.setLocalScaling(Converter.convert(getScale()));
+//        objectId.setMargin(margin);
+        objectId = createShape(points);
+        setScale(scale);
+        setMargin(margin);
     }
+
+    private native long createShape(float[] points);
 
     protected float[] getPoints(Mesh mesh) {
         FloatBuffer vertices = mesh.getFloatBuffer(Type.Position);

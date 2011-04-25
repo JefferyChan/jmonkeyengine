@@ -7,6 +7,14 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+/*
+ * Class:     com_jme3_bullet_collision_shapes_CapsuleCollisionShape
+ * Method:    createShape
+ * Signature: (IFF)J
+ */
+JNIEXPORT jlong JNICALL Java_com_jme3_bullet_collision_shapes_CapsuleCollisionShape_createShape
+  (JNIEnv *, jobject, jint, jfloat, jfloat);
+
 #ifdef __cplusplus
 }
 #endif

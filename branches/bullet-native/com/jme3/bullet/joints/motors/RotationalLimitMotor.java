@@ -37,93 +37,133 @@ package com.jme3.bullet.joints.motors;
  */
 public class RotationalLimitMotor {
 
-    private com.bulletphysics.dynamics.constraintsolver.RotationalLimitMotor motor;
+    private long motorId;
 
-    public RotationalLimitMotor(com.bulletphysics.dynamics.constraintsolver.RotationalLimitMotor motor) {
-        this.motor = motor;
+    public RotationalLimitMotor(long motor) {
+        this.motorId = motor;
     }
 
-    public com.bulletphysics.dynamics.constraintsolver.RotationalLimitMotor getMotor() {
-        return motor;
+    public long getMotor() {
+        return motorId;
     }
 
     public float getLoLimit() {
-        return motor.loLimit;
+        return getLoLimit(motorId);
     }
+
+    private native float getLoLimit(long motorId);
 
     public void setLoLimit(float loLimit) {
-        motor.loLimit = loLimit;
+        setLoLimit(motorId, loLimit);
     }
+
+    private native void setLoLimit(long motorId, float loLimit);
 
     public float getHiLimit() {
-        return motor.hiLimit;
+        return getHiLimit(motorId);
     }
+
+    private native float getHiLimit(long motorId);
 
     public void setHiLimit(float hiLimit) {
-        motor.hiLimit = hiLimit;
+        setHiLimit(motorId, hiLimit);
     }
+
+    private native void setHiLimit(long motorId, float hiLimit);
 
     public float getTargetVelocity() {
-        return motor.targetVelocity;
+        return getTargetVelocity(motorId);
     }
+
+    private native float getTargetVelocity(long motorId);
 
     public void setTargetVelocity(float targetVelocity) {
-        motor.targetVelocity = targetVelocity;
+        setTargetVelocity(motorId, targetVelocity);
     }
+
+    private native void setTargetVelocity(long motorId, float targetVelocity);
 
     public float getMaxMotorForce() {
-        return motor.maxMotorForce;
+        return getMaxMotorForce(motorId);
     }
+
+    private native float getMaxMotorForce(long motorId);
 
     public void setMaxMotorForce(float maxMotorForce) {
-        motor.maxMotorForce = maxMotorForce;
+        setMaxMotorForce(motorId, maxMotorForce);
     }
+
+    private native void setMaxMotorForce(long motorId, float maxMotorForce);
 
     public float getMaxLimitForce() {
-        return motor.maxLimitForce;
+        return getMaxLimitForce(motorId);
     }
+
+    private native float getMaxLimitForce(long motorId);
 
     public void setMaxLimitForce(float maxLimitForce) {
-        motor.maxLimitForce = maxLimitForce;
+        setMaxLimitForce(motorId, maxLimitForce);
     }
+
+    private native void setMaxLimitForce(long motorId, float maxLimitForce);
 
     public float getDamping() {
-        return motor.damping;
+        return getDamping(motorId);
     }
+
+    private native float getDamping(long motorId);
 
     public void setDamping(float damping) {
-        motor.damping = damping;
+        setDamping(motorId, damping);
     }
+
+    private native void setDamping(long motorId, float damping);
 
     public float getLimitSoftness() {
-        return motor.limitSoftness;
+        return getLimitSoftness(motorId);
     }
+
+    private native float getLimitSoftness(long motorId);
 
     public void setLimitSoftness(float limitSoftness) {
-        motor.limitSoftness = limitSoftness;
+        setLimitSoftness(motorId, limitSoftness);
     }
+
+    private native void setLimitSoftness(long motorId, float limitSoftness);
 
     public float getERP() {
-        return motor.ERP;
+        return getERP(motorId);
     }
+
+    private native float getERP(long motorId);
 
     public void setERP(float ERP) {
-        motor.ERP = ERP;
+        setERP(motorId, ERP);
     }
+
+    private native void setERP(long motorId, float ERP);
 
     public float getBounce() {
-        return motor.bounce;
+        return getBounce(motorId);
     }
+
+    private native float getBounce(long motorId);
 
     public void setBounce(float bounce) {
-        motor.bounce = bounce;
+        setBounce(motorId, bounce);
     }
+
+    private native void setBounce(long motorId, float limitSoftness);
 
     public boolean isEnableMotor() {
-        return motor.enableMotor;
+        return isEnableMotor(motorId);
     }
 
+    private native boolean isEnableMotor(long motorId);
+
     public void setEnableMotor(boolean enableMotor) {
-        motor.enableMotor = enableMotor;
+        setEnableMotor(motorId, enableMotor);
     }
+
+    private native void setEnableMotor(long motorId, boolean enableMotor);
 }

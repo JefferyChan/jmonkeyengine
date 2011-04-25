@@ -31,10 +31,8 @@
  */
 package com.jme3.bullet.joints;
 
-import com.bulletphysics.dynamics.constraintsolver.HingeConstraint;
 import com.jme3.math.Vector3f;
 import com.jme3.bullet.objects.PhysicsRigidBody;
-import com.jme3.bullet.util.Converter;
 import com.jme3.export.InputCapsule;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
@@ -74,36 +72,68 @@ public class HingeJoint extends PhysicsJoint {
     }
 
     public void enableMotor(boolean enable, float targetVelocity, float maxMotorImpulse) {
-        ((HingeConstraint) constraint).enableAngularMotor(enable, targetVelocity, maxMotorImpulse);
+        enableMotor(objectId, enable, targetVelocity, maxMotorImpulse);
     }
 
-    public void setLimit(float low, float high) {
-        ((HingeConstraint) constraint).setLimit(low, high);
+    private native void enableMotor(long objectId, boolean enable, float targetVelocity, float maxMotorImpulse);
+
+    public boolean getEnableMotor() {
+        return getEnableAngularMotor(objectId);
     }
+
+    private native boolean getEnableAngularMotor(long objectId);
+
+    public float getMotorTargetVelocity() {
+        return getMotorTargetVelocity(objectId);
+    }
+
+    private native float getMotorTargetVelocity(long objectId);
+
+    public float getMaxMotorImpulse() {
+        return getMaxMotorImpulse(objectId);
+    }
+
+    private native float getMaxMotorImpulse(long objectId);
+
+    public void setLimit(float low, float high) {
+        setLimit(objectId, low, high);
+    }
+
+    private native void setLimit(long objectId, float low, float high);
 
     public void setLimit(float low, float high, float _softness, float _biasFactor, float _relaxationFactor) {
         biasFactor = _biasFactor;
         relaxationFactor = _relaxationFactor;
         limitSoftness = _softness;
-        ((HingeConstraint) constraint).setLimit(low, high, _softness, _biasFactor, _relaxationFactor);
+        setLimit(objectId, low, high, _softness, _biasFactor, _relaxationFactor);
     }
 
-    public float getUpperLimit(){
-        return ((HingeConstraint) constraint).getUpperLimit();
+    private native void setLimit(long objectId, float low, float high, float _softness, float _biasFactor, float _relaxationFactor);
+
+    public float getUpperLimit() {
+        return getUpperLimit(objectId);
     }
 
-    public float getLowerLimit(){
-        return ((HingeConstraint) constraint).getLowerLimit();
+    private native float getUpperLimit(long objectId);
+
+    public float getLowerLimit() {
+        return getLowerLimit(objectId);
     }
+
+    private native float getLowerLimit(long objectId);
 
     public void setAngularOnly(boolean angularOnly) {
         this.angularOnly = angularOnly;
-        ((HingeConstraint) constraint).setAngularOnly(angularOnly);
+        setAngularOnly(objectId, angularOnly);
     }
 
+    private native void setAngularOnly(long objectId, boolean angularOnly);
+
     public float getHingeAngle() {
-        return ((HingeConstraint) constraint).getHingeAngle();
+        return getHingeAngle(objectId);
     }
+
+    private native float getHingeAngle(long objectId);
 
     public void write(JmeExporter ex) throws IOException {
         super.write(ex);
@@ -113,16 +143,16 @@ public class HingeJoint extends PhysicsJoint {
 
         capsule.write(angularOnly, "angularOnly", false);
 
-        capsule.write(((HingeConstraint) constraint).getLowerLimit(), "lowerLimit", 1e30f);
-        capsule.write(((HingeConstraint) constraint).getUpperLimit(), "upperLimit", -1e30f);
+        capsule.write(getLowerLimit(), "lowerLimit", 1e30f);
+        capsule.write(getUpperLimit(), "upperLimit", -1e30f);
 
         capsule.write(biasFactor, "biasFactor", 0.3f);
         capsule.write(relaxationFactor, "relaxationFactor", 1f);
         capsule.write(limitSoftness, "limitSoftness", 0.9f);
 
-        capsule.write(((HingeConstraint) constraint).getEnableAngularMotor(), "enableAngularMotor", false);
-        capsule.write(((HingeConstraint) constraint).getMotorTargetVelosity(), "targetVelocity", 0.0f);
-        capsule.write(((HingeConstraint) constraint).getMaxMotorImpulse(), "maxMotorImpulse", 0.0f);
+        capsule.write(getEnableMotor(), "enableAngularMotor", false);
+        capsule.write(getMotorTargetVelocity(), "targetVelocity", 0.0f);
+        capsule.write(getMaxMotorImpulse(), "maxMotorImpulse", 0.0f);
     }
 
     public void read(JmeImporter im) throws IOException {
@@ -139,18 +169,18 @@ public class HingeJoint extends PhysicsJoint {
         this.relaxationFactor = capsule.readFloat("relaxationFactor", 1f);
         this.limitSoftness = capsule.readFloat("limitSoftness", 0.9f);
 
-        boolean enableAngularMotor=capsule.readBoolean("enableAngularMotor", false);
-        float targetVelocity=capsule.readFloat("targetVelocity", 0.0f);
-        float maxMotorImpulse=capsule.readFloat("maxMotorImpulse", 0.0f);
+        boolean enableAngularMotor = capsule.readBoolean("enableAngularMotor", false);
+        float targetVelocity = capsule.readFloat("targetVelocity", 0.0f);
+        float maxMotorImpulse = capsule.readFloat("maxMotorImpulse", 0.0f);
 
         createJoint();
         enableMotor(enableAngularMotor, targetVelocity, maxMotorImpulse);
-        ((HingeConstraint) constraint).setLimit(lowerLimit, upperLimit, limitSoftness, biasFactor, relaxationFactor);
+        setLimit(lowerLimit, upperLimit, limitSoftness, biasFactor, relaxationFactor);
     }
 
     protected void createJoint() {
-        constraint = new HingeConstraint(nodeA.getObjectId(), nodeB.getObjectId(),
-                Converter.convert(pivotA), Converter.convert(pivotB),
-                Converter.convert(axisA), Converter.convert(axisB));
+        objectId = createJoint(nodeA.getObjectId(), nodeB.getObjectId(), pivotA, axisA, pivotB, axisB);
     }
+
+    private native long createJoint(long objectIdA, long objectIdB, Vector3f pivotA, Vector3f axisA, Vector3f pivotB, Vector3f axisB);
 }

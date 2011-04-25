@@ -49,6 +49,22 @@ JNIEXPORT void JNICALL Java_com_jme3_bullet_PhysicsSpace_removeCollisionObject
 
 /*
  * Class:     com_jme3_bullet_PhysicsSpace
+ * Method:    addRigidBody
+ * Signature: (JJ)V
+ */
+JNIEXPORT void JNICALL Java_com_jme3_bullet_PhysicsSpace_addRigidBody
+  (JNIEnv *, jobject, jlong, jlong);
+
+/*
+ * Class:     com_jme3_bullet_PhysicsSpace
+ * Method:    removeRigidBody
+ * Signature: (JJ)V
+ */
+JNIEXPORT void JNICALL Java_com_jme3_bullet_PhysicsSpace_removeRigidBody
+  (JNIEnv *, jobject, jlong, jlong);
+
+/*
+ * Class:     com_jme3_bullet_PhysicsSpace
  * Method:    addCharacterObject
  * Signature: (JJ)V
  */
@@ -110,6 +126,22 @@ JNIEXPORT void JNICALL Java_com_jme3_bullet_PhysicsSpace_addConstraint
  */
 JNIEXPORT void JNICALL Java_com_jme3_bullet_PhysicsSpace_removeConstraint
   (JNIEnv *, jobject, jlong, jlong);
+
+/*
+ * Class:     com_jme3_bullet_PhysicsSpace
+ * Method:    setGravity
+ * Signature: (JLcom/jme3/math/Vector3f;)V
+ */
+JNIEXPORT void JNICALL Java_com_jme3_bullet_PhysicsSpace_setGravity
+  (JNIEnv *, jobject, jlong, jobject);
+
+/*
+ * Class:     com_jme3_bullet_PhysicsSpace
+ * Method:    initNativePhysics
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_com_jme3_bullet_PhysicsSpace_initNativePhysics
+  (JNIEnv *, jobject);
 
 #ifdef __cplusplus
 }

@@ -31,10 +31,6 @@
  */
 package com.jme3.bullet.collision.shapes;
 
-import com.bulletphysics.collision.shapes.CapsuleShape;
-import com.bulletphysics.collision.shapes.CapsuleShapeX;
-import com.bulletphysics.collision.shapes.CapsuleShapeZ;
-import com.jme3.bullet.util.Converter;
 import com.jme3.export.InputCapsule;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
@@ -61,8 +57,7 @@ public class CapsuleCollisionShape extends CollisionShape{
         this.radius=radius;
         this.height=height;
         this.axis=1;
-        CapsuleShape capShape=new CapsuleShape(radius,height);
-        cShape=capShape;
+        createShape();
     }
 
     /**
@@ -108,19 +103,24 @@ public class CapsuleCollisionShape extends CollisionShape{
     }
 
     protected void createShape(){
-        switch(axis){
-            case 0:
-                cShape=new CapsuleShapeX(radius,height);
-            break;
-            case 1:
-                cShape=new CapsuleShape(radius,height);
-            break;
-            case 2:
-                cShape=new CapsuleShapeZ(radius,height);
-            break;
-        }
-        cShape.setLocalScaling(Converter.convert(getScale()));
-        cShape.setMargin(margin);
+        objectId = createShape(axis, radius, height);
+        setScale(scale);
+        setMargin(margin);
+//        switch(axis){
+//            case 0:
+//                objectId=new CapsuleShapeX(radius,height);
+//            break;
+//            case 1:
+//                objectId=new CapsuleShape(radius,height);
+//            break;
+//            case 2:
+//                objectId=new CapsuleShapeZ(radius,height);
+//            break;
+//        }
+//        objectId.setLocalScaling(Converter.convert(getScale()));
+//        objectId.setMargin(margin);
     }
+    
+    private native long createShape(int axis, float radius, float height);
 
 }

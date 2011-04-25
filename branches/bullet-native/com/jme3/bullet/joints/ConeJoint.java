@@ -31,12 +31,10 @@
  */
 package com.jme3.bullet.joints;
 
-import com.bulletphysics.dynamics.constraintsolver.ConeTwistConstraint;
-import com.bulletphysics.linearmath.Transform;
+//import com.bulletphysics.linearmath.Transform;
 import com.jme3.math.Matrix3f;
 import com.jme3.math.Vector3f;
 import com.jme3.bullet.objects.PhysicsRigidBody;
-import com.jme3.bullet.util.Converter;
 import com.jme3.export.InputCapsule;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
@@ -87,13 +85,17 @@ public class ConeJoint extends PhysicsJoint {
         this.swingSpan1 = swingSpan1;
         this.swingSpan2 = swingSpan2;
         this.twistSpan = twistSpan;
-        ((ConeTwistConstraint) constraint).setLimit(swingSpan1, swingSpan2, twistSpan);
+        setLimit(objectId, swingSpan1, swingSpan2, twistSpan);
     }
+
+    private native void setLimit(long objectId, float swingSpan1, float swingSpan2, float twistSpan);
 
     public void setAngularOnly(boolean value) {
         angularOnly = value;
-        ((ConeTwistConstraint) constraint).setAngularOnly(value);
+        setAngularOnly(objectId, value);
     }
+
+    private native void setAngularOnly(long objectId, boolean value);
 
     @Override
     public void write(JmeExporter ex) throws IOException {
@@ -123,16 +125,10 @@ public class ConeJoint extends PhysicsJoint {
     }
 
     protected void createJoint() {
-        Transform transA = new Transform(Converter.convert(rotA));
-        Converter.convert(pivotA, transA.origin);
-        Converter.convert(rotA, transA.basis);
-
-        Transform transB = new Transform(Converter.convert(rotB));
-        Converter.convert(pivotB, transB.origin);
-        Converter.convert(rotB, transB.basis);
-
-        constraint = new ConeTwistConstraint(nodeA.getObjectId(), nodeB.getObjectId(), transA, transB);
-        ((ConeTwistConstraint) constraint).setLimit(swingSpan1, swingSpan2, twistSpan);
-        ((ConeTwistConstraint) constraint).setAngularOnly(angularOnly);
+        objectId = createJoint(nodeA.getObjectId(), nodeB.getObjectId(), pivotA, rotA, pivotB, rotB);
+        setLimit(objectId, swingSpan1, swingSpan2, twistSpan);
+        setAngularOnly(objectId, angularOnly);
     }
+
+    private native long createJoint(long objectIdA, long objectIdB, Vector3f pivotA, Matrix3f rotA, Vector3f pivotB, Matrix3f rotB);
 }

@@ -12,6 +12,7 @@ import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
 import com.jme3.export.OutputCapsule;
 import com.jme3.math.Plane;
+import com.jme3.math.Vector3f;
 import java.io.IOException;
 
 /**
@@ -51,9 +52,14 @@ public class PlaneCollisionShape extends CollisionShape{
     }
 
     protected void createShape() {
-        cShape = new StaticPlaneShape(Converter.convert(plane.getNormal()),plane.getConstant());
-        cShape.setLocalScaling(Converter.convert(getScale()));
-        cShape.setMargin(margin);
+        objectId = createShape(plane.getNormal(), plane.getConstant());
+//        objectId = new StaticPlaneShape(Converter.convert(plane.getNormal()),plane.getConstant());
+//        objectId.setLocalScaling(Converter.convert(getScale()));
+//        objectId.setMargin(margin);
+        setScale(scale);
+        setMargin(margin);
     }
+    
+    private native long createShape(Vector3f normal, float constant);
 
 }

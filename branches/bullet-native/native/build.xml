@@ -47,11 +47,38 @@
     <target name="create-native-headers" description="creates the native headers">
         <javah destdir="${bullet.source.dir}" classpath="${lib.importpath}" force="yes">
             <class name="com.jme3.bullet.PhysicsSpace"/>
+
+            <class name="com.jme3.bullet.collision.PhysicsCollisionObject"/>
+            <class name="com.jme3.bullet.objects.PhysicsCharacter"/>
+            <class name="com.jme3.bullet.objects.PhysicsGhostObject"/>
+            <class name="com.jme3.bullet.objects.PhysicsRigidBody"/>
+            <class name="com.jme3.bullet.objects.PhysicsVehicle"/>
+            <class name="com.jme3.bullet.objects.VehicleWheel"/>
+            
+            <class name="com.jme3.bullet.collision.shapes.CollisionShape"/>
             <class name="com.jme3.bullet.collision.shapes.BoxCollisionShape"/>
-            <class name="com.jme3.bullet.collision.shapes.SphereCollisionShape"/>
             <class name="com.jme3.bullet.collision.shapes.CapsuleCollisionShape"/>
+            <class name="com.jme3.bullet.collision.shapes.CompoundCollisionShape"/>
+            <class name="com.jme3.bullet.collision.shapes.ConeCollisionShape"/>
             <class name="com.jme3.bullet.collision.shapes.CylinderCollisionShape"/>
+            <class name="com.jme3.bullet.collision.shapes.GImpactCollisionShape"/>
+            <class name="com.jme3.bullet.collision.shapes.HeightfieldCollisionShape"/>
+            <class name="com.jme3.bullet.collision.shapes.HullCollisionShape"/>
             <class name="com.jme3.bullet.collision.shapes.MeshCollisionShape"/>
+            <class name="com.jme3.bullet.collision.shapes.PlaneCollisionShape"/>
+            <class name="com.jme3.bullet.collision.shapes.SimplexCollisionShape"/>
+            <class name="com.jme3.bullet.collision.shapes.SphereCollisionShape"/>
+
+            <class name="com.jme3.bullet.joints.PhysicsJoint"/>
+            <class name="com.jme3.bullet.joints.ConeJoint"/>
+            <class name="com.jme3.bullet.joints.HingeJoint"/>
+            <class name="com.jme3.bullet.joints.Point2PointJoint"/>
+            <class name="com.jme3.bullet.joints.SixDofJoint"/>
+            <class name="com.jme3.bullet.joints.SliderJoint"/>
+            <class name="com.jme3.bullet.joints.motors.RotationalLimitMotor"/>
+            <class name="com.jme3.bullet.joints.motors.TranslationalLimitMotor"/>
+
+            <class name="com.jme3.bullet.util.NativeMeshUtil"/>
         </javah>
     </target>
 

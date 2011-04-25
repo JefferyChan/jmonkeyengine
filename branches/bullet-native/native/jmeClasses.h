@@ -38,6 +38,7 @@
 class jmeClasses {
 public:
     static void initJavaClasses(JNIEnv* env);
+    static JNIEnv* env;
     static jclass PhysicsSpace;
 //    static jmethodID physicsSpace_test;
 
@@ -54,10 +55,11 @@ public:
     static jmethodID Quaternion_getY;
     static jmethodID Quaternion_getZ;
     static jmethodID Quaternion_getW;
-//    static jclass Matrix3f;
-//    static jmethodID Matrix3f_set;
+
+    static jclass Matrix3f;
+    static jmethodID Matrix3f_get;
+    static jmethodID Matrix3f_set;
 private:
     jmeClasses(){};
     ~jmeClasses(){};
-    static JNIEnv* env;
 };
