@@ -34,7 +34,7 @@
 /**
  * Author: Normen Hansen
  */
-void jmeBulletUtil::convert(jobject in, btVector3& out){
+void jmeBulletUtil::convert(jobject in, btVector3* out){
     float x = jmeClasses::env->CallFloatMethod(in, jmeClasses::Vector3f_getX);
     if (jmeClasses::env->ExceptionCheck()) {
         jmeClasses::env->Throw(jmeClasses::env->ExceptionOccurred());
@@ -55,7 +55,7 @@ void jmeBulletUtil::convert(jobject in, btVector3& out){
     out->setZ(z);
 }
 
-void jmeBulletUtil::convert(btVector3& in, jobject out){
+void jmeBulletUtil::convert(btVector3* in, jobject out){
     float x = in->getX();
     float y = in->getY();
     float z = in->getZ();

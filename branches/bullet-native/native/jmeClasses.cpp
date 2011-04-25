@@ -52,6 +52,10 @@ jmethodID jmeClasses::Quaternion_getY;
 jmethodID jmeClasses::Quaternion_getZ;
 jmethodID jmeClasses::Quaternion_getW;
 
+jclass jmeClasses::Matrix3f;
+jmethodID jmeClasses::Matrix3f_set;
+jmethodID jmeClasses::Matrix3f_get;
+
 //private fields
 JNIEnv* jmeClasses::env;
 
