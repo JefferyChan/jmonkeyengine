@@ -34,6 +34,7 @@
  * Author: Normen Hansen
  */
 #include "jmeBulletUtil.h"
+#include "com_jme3_bullet_collision_shapes_CompoundCollisionShape.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -60,8 +61,8 @@ extern "C" {
         btCompoundShape* shape = (btCompoundShape*) compoundId;
         btCollisionShape* child = (btCollisionShape*) childId;
         btTransform* trans = new btTransform(btMatrix3x3());
-        jmeBulletUtil::convert(childLocation, &trans->getOrigin());
-        jmeBulletUtil::convert(childRotation, &trans->getBasis());
+        jmeBulletUtil::convert(env, childLocation, &trans->getOrigin());
+        jmeBulletUtil::convert(env, childRotation, &trans->getBasis());
         shape->addChildShape(*trans, child);
     }
 

@@ -34,6 +34,7 @@
  * Author: Normen Hansen
  */
 #include "jmeBulletUtil.h"
+#include "com_jme3_bullet_objects_PhysicsRigidBody.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -78,11 +79,11 @@ extern "C" {
 //        btMatrix3x3* mtx = new btMatrix3x3();
 //        btTransform* trans = new btTransform(*mtx);
 //        trans->setBasis(body->getWorldTransform().getBasis());
-//        jmeBulletUtil::convert(value, &trans->getOrigin());
+//        jmeBulletUtil::convert(env, value, &trans->getOrigin());
 //        body->setWorldTransform(*trans);
 //        free(mtx);
 //        free(trans);
-        jmeBulletUtil::convert(value, &body->getWorldTransform().getOrigin());
+        jmeBulletUtil::convert(env, value, &body->getWorldTransform().getOrigin());
     }
 
     /*
@@ -97,11 +98,11 @@ extern "C" {
 //        btMatrix3x3* mtx = new btMatrix3x3();
 //        btTransform* trans = new btTransform(*mtx);
 //        trans->setOrigin(body->getWorldTransform().getOrigin());
-//        jmeBulletUtil::convert(value, &trans->getBasis());
+//        jmeBulletUtil::convert(env, value, &trans->getBasis());
 //        body->setWorldTransform(*trans);
 //        free(mtx);
 //        free(trans);
-        jmeBulletUtil::convert(value, &body->getWorldTransform().getBasis());
+        jmeBulletUtil::convert(env, value, &body->getWorldTransform().getBasis());
     }
 
     /*
@@ -116,11 +117,11 @@ extern "C" {
 //        btMatrix3x3* mtx = new btMatrix3x3();
 //        btTransform* trans = new btTransform(*mtx);
 //        trans->setOrigin(body->getWorldTransform().getOrigin());
-//        jmeBulletUtil::convertQuat(value, &trans->getBasis());
+//        jmeBulletUtil::convertQuat(env, value, &trans->getBasis());
 //        body->setWorldTransform(*trans);
 //        free(mtx);
 //        free(trans);
-        jmeBulletUtil::convertQuat(value, &body->getWorldTransform().getBasis());
+        jmeBulletUtil::convertQuat(env, value, &body->getWorldTransform().getBasis());
     }
 
     /*
@@ -131,7 +132,7 @@ extern "C" {
     JNIEXPORT void JNICALL Java_com_jme3_bullet_objects_PhysicsRigidBody_getPhysicsLocation
     (JNIEnv *env, jobject object, jlong bodyId, jobject value) {
         btRigidBody* body = (btRigidBody*) bodyId;
-        jmeBulletUtil::convert(&body->getWorldTransform().getOrigin(), value);
+        jmeBulletUtil::convert(env, &body->getWorldTransform().getOrigin(), value);
     }
 
     /*
@@ -142,7 +143,7 @@ extern "C" {
     JNIEXPORT void JNICALL Java_com_jme3_bullet_objects_PhysicsRigidBody_getPhysicsRotation
     (JNIEnv *env, jobject object, jlong bodyId, jobject value) {
         btRigidBody* body = (btRigidBody*) bodyId;
-        jmeBulletUtil::convertQuat(&body->getWorldTransform().getBasis(), value);
+        jmeBulletUtil::convertQuat(env, &body->getWorldTransform().getBasis(), value);
     }
 
     /*
@@ -153,7 +154,7 @@ extern "C" {
     JNIEXPORT void JNICALL Java_com_jme3_bullet_objects_PhysicsRigidBody_getPhysicsRotationMatrix
     (JNIEnv *env, jobject object, jlong bodyId, jobject value) {
         btRigidBody* body = (btRigidBody*) bodyId;
-        jmeBulletUtil::convert(&body->getWorldTransform().getBasis(), value);
+        jmeBulletUtil::convert(env, &body->getWorldTransform().getBasis(), value);
     }
 
     /*
@@ -267,7 +268,7 @@ extern "C" {
     JNIEXPORT void JNICALL Java_com_jme3_bullet_objects_PhysicsRigidBody_getGravity
     (JNIEnv *env, jobject object, jlong bodyId, jobject value) {
         btRigidBody* body = (btRigidBody*) bodyId;
-        jmeBulletUtil::convert(&body->getGravity(), value);
+        jmeBulletUtil::convert(env, &body->getGravity(), value);
     }
 
     /*
@@ -279,7 +280,7 @@ extern "C" {
     (JNIEnv *env, jobject object, jlong bodyId, jobject value) {
         btRigidBody* body = (btRigidBody*) bodyId;
         btVector3* vec = new btVector3();
-        jmeBulletUtil::convert(value, vec);
+        jmeBulletUtil::convert(env, value, vec);
         body->setGravity(*vec);
         free(vec);
     }
@@ -380,7 +381,7 @@ extern "C" {
     JNIEXPORT void JNICALL Java_com_jme3_bullet_objects_PhysicsRigidBody_getAngularVelocity
     (JNIEnv *env, jobject object, jlong bodyId, jobject value) {
         btRigidBody* body = (btRigidBody*) bodyId;
-        jmeBulletUtil::convert(&body->getAngularVelocity(), value);
+        jmeBulletUtil::convert(env, &body->getAngularVelocity(), value);
     }
 
     /*
@@ -392,7 +393,7 @@ extern "C" {
     (JNIEnv *env, jobject object, jlong bodyId, jobject value) {
         btRigidBody* body = (btRigidBody*) bodyId;
         btVector3* vec = new btVector3();
-        jmeBulletUtil::convert(value, vec);
+        jmeBulletUtil::convert(env, value, vec);
         body->setAngularVelocity(*vec);
         free(vec);
     }
@@ -405,7 +406,7 @@ extern "C" {
     JNIEXPORT void JNICALL Java_com_jme3_bullet_objects_PhysicsRigidBody_getLinearVelocity
     (JNIEnv *env, jobject object, jlong bodyId, jobject value) {
         btRigidBody* body = (btRigidBody*) bodyId;
-        jmeBulletUtil::convert(&body->getLinearVelocity(), value);
+        jmeBulletUtil::convert(env, &body->getLinearVelocity(), value);
     }
 
     /*
@@ -417,7 +418,7 @@ extern "C" {
     (JNIEnv *env, jobject object, jlong bodyId, jobject value) {
         btRigidBody* body = (btRigidBody*) bodyId;
         btVector3* vec = new btVector3();
-        jmeBulletUtil::convert(value, vec);
+        jmeBulletUtil::convert(env, value, vec);
         body->setLinearVelocity(*vec);
         free(vec);
     }
@@ -432,8 +433,8 @@ extern "C" {
         btRigidBody* body = (btRigidBody*) bodyId;
         btVector3* vec1 = new btVector3();
         btVector3* vec2 = new btVector3();
-        jmeBulletUtil::convert(force, vec1);
-        jmeBulletUtil::convert(location, vec2);
+        jmeBulletUtil::convert(env, force, vec1);
+        jmeBulletUtil::convert(env, location, vec2);
         body->applyForce(*vec1, *vec2);
         free(vec1);
         free(vec2);
@@ -448,7 +449,7 @@ extern "C" {
     (JNIEnv *env, jobject object, jlong bodyId, jobject force) {
         btRigidBody* body = (btRigidBody*) bodyId;
         btVector3* vec1 = new btVector3();
-        jmeBulletUtil::convert(force, vec1);
+        jmeBulletUtil::convert(env, force, vec1);
         body->applyCentralForce(*vec1);
         free(vec1);
     }
@@ -462,7 +463,7 @@ extern "C" {
     (JNIEnv *env, jobject object, jlong bodyId, jobject force) {
         btRigidBody* body = (btRigidBody*) bodyId;
         btVector3* vec1 = new btVector3();
-        jmeBulletUtil::convert(force, vec1);
+        jmeBulletUtil::convert(env, force, vec1);
         body->applyTorque(*vec1);
         free(vec1);
     }
@@ -477,8 +478,8 @@ extern "C" {
         btRigidBody* body = (btRigidBody*) bodyId;
         btVector3* vec1 = new btVector3();
         btVector3* vec2 = new btVector3();
-        jmeBulletUtil::convert(force, vec1);
-        jmeBulletUtil::convert(location, vec2);
+        jmeBulletUtil::convert(env, force, vec1);
+        jmeBulletUtil::convert(env, location, vec2);
         body->applyImpulse(*vec1, *vec2);
         free(vec1);
         free(vec2);
@@ -493,7 +494,7 @@ extern "C" {
     (JNIEnv *env, jobject object, jlong bodyId, jobject force) {
         btRigidBody* body = (btRigidBody*) bodyId;
         btVector3* vec1 = new btVector3();
-        jmeBulletUtil::convert(force, vec1);
+        jmeBulletUtil::convert(env, force, vec1);
         body->applyTorqueImpulse(*vec1);
         free(vec1);
     }

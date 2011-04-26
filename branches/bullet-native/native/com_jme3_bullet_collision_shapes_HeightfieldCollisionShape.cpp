@@ -35,6 +35,7 @@
  */
 #include "jmeBulletUtil.h"
 #include "BulletCollision/CollisionShapes/btHeightfieldTerrainShape.h"
+#include "com_jme3_bullet_collision_shapes_HeightfieldCollisionShape.h"
 
 #ifdef __cplusplus
 extern "C" {

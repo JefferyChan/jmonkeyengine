@@ -34,6 +34,7 @@
  * Author: Normen Hansen
  */
 #include "jmeBulletUtil.h"
+#include "com_jme3_bullet_collision_shapes_CollisionShape.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -59,7 +60,7 @@ extern "C" {
     (JNIEnv * env, jobject object, jlong shapeId, jobject scale) {
         btCollisionShape* shape = (btCollisionShape*) shapeId;
         btVector3* scl = new btVector3();
-        jmeBulletUtil::convert(scale, scl);
+        jmeBulletUtil::convert(env, scale, scl);
         shape->setLocalScaling(*scl);
         free(scl);
     }

@@ -35,6 +35,7 @@
  */
 #include "jmeBulletUtil.h"
 #include "BulletCollision/CollisionShapes/btStaticPlaneShape.h"
+#include "com_jme3_bullet_collision_shapes_PlaneCollisionShape.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -48,7 +49,7 @@ extern "C" {
     JNIEXPORT jlong JNICALL Java_com_jme3_bullet_collision_shapes_PlaneCollisionShape_createShape
     (JNIEnv * env, jobject object, jobject normal, jfloat constant) {
         btVector3* norm = new btVector3();
-        jmeBulletUtil::convert(normal, norm);
+        jmeBulletUtil::convert(env, normal, norm);
         btStaticPlaneShape* shape = new btStaticPlaneShape(*norm, constant);
         return (long)shape;
     }

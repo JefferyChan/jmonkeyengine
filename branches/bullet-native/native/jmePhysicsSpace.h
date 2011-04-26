@@ -40,7 +40,6 @@
  */
 class jmePhysicsSpace {
 private:
-        JNIEnv* jniEnv;
 	btDynamicsWorld* dynamicsWorld;
 	jobject javaPhysicsSpace;
 public:

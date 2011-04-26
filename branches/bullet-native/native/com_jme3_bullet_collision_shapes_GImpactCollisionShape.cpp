@@ -35,6 +35,7 @@
  */
 #include <BulletCollision/Gimpact/btGImpactShape.h>
 #include "jmeBulletUtil.h"
+#include "com_jme3_bullet_collision_shapes_GImpactCollisionShape.h"
 
 #ifdef __cplusplus
 extern "C" {

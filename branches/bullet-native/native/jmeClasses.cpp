@@ -57,24 +57,24 @@ jmethodID jmeClasses::Matrix3f_set;
 jmethodID jmeClasses::Matrix3f_get;
 
 //private fields
-JNIEnv* jmeClasses::env;
+//JNIEnv* jmeClasses::env;
 JavaVM* jmeClasses::vm;
 
 void jmeClasses::initJavaClasses(JNIEnv* env) {
-    if (jmeClasses::env != NULL) {
+//    if (env != NULL) {
 //        fprintf(stdout, "Check Java VM state\n");
 //        fflush(stdout);
-        int res = vm->AttachCurrentThread((void**) &jmeClasses::env, NULL);
-        if (res < 0) {
-            fprintf(stdout, "** ERROR: getting Java env!\n");
-            if (res == JNI_EVERSION) fprintf(stdout, "GetEnv Error because of different JNI Version!\n");
-            fflush(stdout);
-        }
-        return;
-    }
+//        int res = vm->AttachCurrentThread((void**) &jmeClasses::env, NULL);
+//        if (res < 0) {
+//            fprintf(stdout, "** ERROR: getting Java env!\n");
+//            if (res == JNI_EVERSION) fprintf(stdout, "GetEnv Error because of different JNI Version!\n");
+//            fflush(stdout);
+//        }
+//        return;
+//    }
     fprintf(stdout, "Bullet-Native: Initializing java classes\n");
     fflush(stdout);
-    jmeClasses::env = env;
+//    jmeClasses::env = env;
     env->GetJavaVM(&vm);
 
     PhysicsSpace = env->FindClass("com/jme3/bullet/PhysicsSpace");
@@ -168,7 +168,7 @@ void jmeClasses::initJavaClasses(JNIEnv* env) {
     }
 }
 
-void jmeClasses::throwNPE() {
+void jmeClasses::throwNPE(JNIEnv* env) {
     if (env == NULL) return;
     jclass newExc = env->FindClass("java/lang/NullPointerException");
     env->ThrowNew(newExc, "");

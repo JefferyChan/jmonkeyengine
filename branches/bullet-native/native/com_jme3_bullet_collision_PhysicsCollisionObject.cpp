@@ -34,7 +34,7 @@
  * Author: Normen Hansen
  */
 #include "jmeBulletUtil.h"
-
+#include "com_jme3_bullet_collision_PhysicsCollisionObject.h"
 #ifdef __cplusplus
 extern "C" {
 #endif

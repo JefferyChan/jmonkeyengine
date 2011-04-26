@@ -34,6 +34,7 @@
  * Author: Normen Hansen
  */
 #include "jmeBulletUtil.h"
+#include "com_jme3_bullet_joints_Point2PointJoint.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -116,9 +117,9 @@ extern "C" {
         btRigidBody* bodyB = (btRigidBody*) bodyIdB;
         //TODO: matrix not needed?
         btTransform* transA = new btTransform(btMatrix3x3());
-        jmeBulletUtil::convert(pivotA, &transA->getOrigin());
+        jmeBulletUtil::convert(env, pivotA, &transA->getOrigin());
         btTransform* transB = new btTransform(btMatrix3x3());
-        jmeBulletUtil::convert(pivotB, &transB->getOrigin());
+        jmeBulletUtil::convert(env, pivotB, &transB->getOrigin());
         btHingeConstraint* joint = new btHingeConstraint(*bodyA, *bodyB, *transA, *transB);
         return (long) joint;
     }

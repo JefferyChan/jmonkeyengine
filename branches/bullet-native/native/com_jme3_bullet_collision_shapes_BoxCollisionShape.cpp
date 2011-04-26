@@ -34,6 +34,7 @@
  * Author: Normen Hansen
  */
 #include "jmeBulletUtil.h"
+#include "com_jme3_bullet_collision_shapes_BoxCollisionShape.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -47,10 +48,10 @@ extern "C" {
     JNIEXPORT jlong JNICALL Java_com_jme3_bullet_collision_shapes_BoxCollisionShape_createShape
     (JNIEnv *env, jobject object, jobject halfExtents) {
         btVector3* extents = new btVector3();
-        jmeBulletUtil::convert(halfExtents, extents);
+        jmeBulletUtil::convert(env, halfExtents, extents);
         btBoxShape* shape = new btBoxShape(*extents);
         //TODO: free this here?
-        //    free(extents);
+        free(extents);
         return (long)shape;
     }
 

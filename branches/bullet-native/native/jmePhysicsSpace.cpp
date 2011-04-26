@@ -41,7 +41,6 @@ jmePhysicsSpace::jmePhysicsSpace(JNIEnv* env, jobject javaSpace) {
         env->Throw(env->ExceptionOccurred());
         return;
     }
-    this->jniEnv = env;
 }
 
 void jmePhysicsSpace::stepSimulation(jfloat tpf, jint maxSteps, jfloat accuracy) {

@@ -40,12 +40,12 @@
  */
 class jmeBulletUtil{
 public:
-    static void convert(jobject in, btVector3* out);
-    static void convert(const btVector3* in, jobject out);
-    static void convert(jobject in, btMatrix3x3* out);
-    static void convert(const btMatrix3x3* in, jobject out);
-    static void convertQuat(jobject in, btMatrix3x3* out);
-    static void convertQuat(const btMatrix3x3* in, jobject out);
+    static void convert(JNIEnv* env, jobject in, btVector3* out);
+    static void convert(JNIEnv* env, const btVector3* in, jobject out);
+    static void convert(JNIEnv* env, jobject in, btMatrix3x3* out);
+    static void convert(JNIEnv* env, const btMatrix3x3* in, jobject out);
+    static void convertQuat(JNIEnv* env, jobject in, btMatrix3x3* out);
+    static void convertQuat(JNIEnv* env, const btMatrix3x3* in, jobject out);
 private:
     jmeBulletUtil(){};
     ~jmeBulletUtil(){};

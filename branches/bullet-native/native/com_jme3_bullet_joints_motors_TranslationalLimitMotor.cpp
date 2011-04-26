@@ -34,6 +34,7 @@
  * Author: Normen Hansen
  */
 #include "jmeBulletUtil.h"
+#include "com_jme3_bullet_joints_motors_TranslationalLimitMotor.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -47,7 +48,7 @@ extern "C" {
     JNIEXPORT void JNICALL Java_com_jme3_bullet_joints_motors_TranslationalLimitMotor_getLowerLimit
     (JNIEnv *env, jobject object, jlong motorId, jobject vector) {
         btTranslationalLimitMotor* motor = (btTranslationalLimitMotor*) motorId;
-        jmeBulletUtil::convert(&motor->m_lowerLimit, vector);
+        jmeBulletUtil::convert(env, &motor->m_lowerLimit, vector);
     }
 
     /*
@@ -58,7 +59,7 @@ extern "C" {
     JNIEXPORT void JNICALL Java_com_jme3_bullet_joints_motors_TranslationalLimitMotor_setLowerLimit
     (JNIEnv *env, jobject object, jlong motorId, jobject vector) {
         btTranslationalLimitMotor* motor = (btTranslationalLimitMotor*) motorId;
-        jmeBulletUtil::convert(vector, &motor->m_lowerLimit);
+        jmeBulletUtil::convert(env, vector, &motor->m_lowerLimit);
     }
 
     /*
@@ -69,7 +70,7 @@ extern "C" {
     JNIEXPORT void JNICALL Java_com_jme3_bullet_joints_motors_TranslationalLimitMotor_getUpperLimit
     (JNIEnv *env, jobject object, jlong motorId, jobject vector) {
         btTranslationalLimitMotor* motor = (btTranslationalLimitMotor*) motorId;
-        jmeBulletUtil::convert(&motor->m_upperLimit, vector);
+        jmeBulletUtil::convert(env, &motor->m_upperLimit, vector);
     }
 
     /*
@@ -80,7 +81,7 @@ extern "C" {
     JNIEXPORT void JNICALL Java_com_jme3_bullet_joints_motors_TranslationalLimitMotor_setUpperLimit
     (JNIEnv *env, jobject object, jlong motorId, jobject vector) {
         btTranslationalLimitMotor* motor = (btTranslationalLimitMotor*) motorId;
-        jmeBulletUtil::convert(vector, &motor->m_upperLimit);
+        jmeBulletUtil::convert(env, vector, &motor->m_upperLimit);
     }
 
     /*
@@ -91,7 +92,7 @@ extern "C" {
     JNIEXPORT void JNICALL Java_com_jme3_bullet_joints_motors_TranslationalLimitMotor_getAccumulatedImpulse
     (JNIEnv *env, jobject object, jlong motorId, jobject vector) {
         btTranslationalLimitMotor* motor = (btTranslationalLimitMotor*) motorId;
-        jmeBulletUtil::convert(&motor->m_accumulatedImpulse, vector);
+        jmeBulletUtil::convert(env, &motor->m_accumulatedImpulse, vector);
     }
 
     /*
@@ -102,7 +103,7 @@ extern "C" {
     JNIEXPORT void JNICALL Java_com_jme3_bullet_joints_motors_TranslationalLimitMotor_setAccumulatedImpulse
     (JNIEnv *env, jobject object, jlong motorId, jobject vector) {
         btTranslationalLimitMotor* motor = (btTranslationalLimitMotor*) motorId;
-        jmeBulletUtil::convert(vector, &motor->m_accumulatedImpulse);
+        jmeBulletUtil::convert(env, vector, &motor->m_accumulatedImpulse);
     }
 
     /*

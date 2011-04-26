@@ -50,10 +50,10 @@ void jmeMotionState::setWorldTransform(const btTransform& worldTrans) {
     dirty = true;
 }
 
-bool jmeMotionState::applyTransform(jobject location, jobject rotation) {
+bool jmeMotionState::applyTransform(JNIEnv* env, jobject location, jobject rotation) {
     if (dirty) {
-        jmeBulletUtil::convert(&worldTransform.getOrigin(), location);
-        jmeBulletUtil::convert(&worldTransform.getBasis(), rotation);
+        jmeBulletUtil::convert(env, &worldTransform.getOrigin(), location);
+        jmeBulletUtil::convert(env, &worldTransform.getBasis(), rotation);
         dirty = false;
         return true;
     }

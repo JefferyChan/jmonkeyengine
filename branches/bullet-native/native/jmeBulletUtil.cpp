@@ -35,23 +35,23 @@
 /**
  * Author: Normen Hansen
  */
-void jmeBulletUtil::convert(jobject in, btVector3* out) {
+void jmeBulletUtil::convert(JNIEnv* env, jobject in, btVector3* out) {
     if (in == NULL || out == NULL) {
-        jmeClasses::throwNPE();
+        jmeClasses::throwNPE(env);
     }
-    float x = jmeClasses::env->CallFloatMethod(in, jmeClasses::Vector3f_getX);
-    if (jmeClasses::env->ExceptionCheck()) {
-        jmeClasses::env->Throw(jmeClasses::env->ExceptionOccurred());
+    float x = env->CallFloatMethod(in, jmeClasses::Vector3f_getX);
+    if (env->ExceptionCheck()) {
+        env->Throw(env->ExceptionOccurred());
         return;
     }
-    float y = jmeClasses::env->CallFloatMethod(in, jmeClasses::Vector3f_getY);
-    if (jmeClasses::env->ExceptionCheck()) {
-        jmeClasses::env->Throw(jmeClasses::env->ExceptionOccurred());
+    float y = env->CallFloatMethod(in, jmeClasses::Vector3f_getY);
+    if (env->ExceptionCheck()) {
+        env->Throw(env->ExceptionOccurred());
         return;
     }
-    float z = jmeClasses::env->CallFloatMethod(in, jmeClasses::Vector3f_getZ);
-    if (jmeClasses::env->ExceptionCheck()) {
-        jmeClasses::env->Throw(jmeClasses::env->ExceptionOccurred());
+    float z = env->CallFloatMethod(in, jmeClasses::Vector3f_getZ);
+    if (env->ExceptionCheck()) {
+        env->Throw(env->ExceptionOccurred());
         return;
     }
     out->setX(x);
@@ -59,75 +59,75 @@ void jmeBulletUtil::convert(jobject in, btVector3* out) {
     out->setZ(z);
 }
 
-void jmeBulletUtil::convert(const btVector3* in, jobject out) {
+void jmeBulletUtil::convert(JNIEnv* env, const btVector3* in, jobject out) {
     if (in == NULL || out == NULL) {
-        jmeClasses::throwNPE();
+        jmeClasses::throwNPE(env);
     }
     float x = in->getX();
     float y = in->getY();
     float z = in->getZ();
-    jmeClasses::env->CallObjectMethod(out, jmeClasses::Vector3f_set, x, y, z);
-    if (jmeClasses::env->ExceptionCheck()) {
-        jmeClasses::env->Throw(jmeClasses::env->ExceptionOccurred());
+    env->CallObjectMethod(out, jmeClasses::Vector3f_set, x, y, z);
+    if (env->ExceptionCheck()) {
+        env->Throw(env->ExceptionOccurred());
         return;
     }
 }
 
-void jmeBulletUtil::convert(jobject in, btMatrix3x3* out) {
+void jmeBulletUtil::convert(JNIEnv* env, jobject in, btMatrix3x3* out) {
     if (in == NULL || out == NULL) {
-        jmeClasses::throwNPE();
+        jmeClasses::throwNPE(env);
     }
-    float m00 = jmeClasses::env->CallFloatMethod(in, jmeClasses::Matrix3f_get, 0, 0);
-    if (jmeClasses::env->ExceptionCheck()) {
-        jmeClasses::env->Throw(jmeClasses::env->ExceptionOccurred());
+    float m00 = env->CallFloatMethod(in, jmeClasses::Matrix3f_get, 0, 0);
+    if (env->ExceptionCheck()) {
+        env->Throw(env->ExceptionOccurred());
         return;
     }
-    float m01 = jmeClasses::env->CallFloatMethod(in, jmeClasses::Matrix3f_get, 0, 1);
-    if (jmeClasses::env->ExceptionCheck()) {
-        jmeClasses::env->Throw(jmeClasses::env->ExceptionOccurred());
+    float m01 = env->CallFloatMethod(in, jmeClasses::Matrix3f_get, 0, 1);
+    if (env->ExceptionCheck()) {
+        env->Throw(env->ExceptionOccurred());
         return;
     }
-    float m02 = jmeClasses::env->CallFloatMethod(in, jmeClasses::Matrix3f_get, 0, 2);
-    if (jmeClasses::env->ExceptionCheck()) {
-        jmeClasses::env->Throw(jmeClasses::env->ExceptionOccurred());
+    float m02 = env->CallFloatMethod(in, jmeClasses::Matrix3f_get, 0, 2);
+    if (env->ExceptionCheck()) {
+        env->Throw(env->ExceptionOccurred());
         return;
     }
-    float m10 = jmeClasses::env->CallFloatMethod(in, jmeClasses::Matrix3f_get, 1, 0);
-    if (jmeClasses::env->ExceptionCheck()) {
-        jmeClasses::env->Throw(jmeClasses::env->ExceptionOccurred());
+    float m10 = env->CallFloatMethod(in, jmeClasses::Matrix3f_get, 1, 0);
+    if (env->ExceptionCheck()) {
+        env->Throw(env->ExceptionOccurred());
         return;
     }
-    float m11 = jmeClasses::env->CallFloatMethod(in, jmeClasses::Matrix3f_get, 1, 1);
-    if (jmeClasses::env->ExceptionCheck()) {
-        jmeClasses::env->Throw(jmeClasses::env->ExceptionOccurred());
+    float m11 = env->CallFloatMethod(in, jmeClasses::Matrix3f_get, 1, 1);
+    if (env->ExceptionCheck()) {
+        env->Throw(env->ExceptionOccurred());
         return;
     }
-    float m12 = jmeClasses::env->CallFloatMethod(in, jmeClasses::Matrix3f_get, 1, 2);
-    if (jmeClasses::env->ExceptionCheck()) {
-        jmeClasses::env->Throw(jmeClasses::env->ExceptionOccurred());
+    float m12 = env->CallFloatMethod(in, jmeClasses::Matrix3f_get, 1, 2);
+    if (env->ExceptionCheck()) {
+        env->Throw(env->ExceptionOccurred());
         return;
     }
-    float m20 = jmeClasses::env->CallFloatMethod(in, jmeClasses::Matrix3f_get, 2, 0);
-    if (jmeClasses::env->ExceptionCheck()) {
-        jmeClasses::env->Throw(jmeClasses::env->ExceptionOccurred());
+    float m20 = env->CallFloatMethod(in, jmeClasses::Matrix3f_get, 2, 0);
+    if (env->ExceptionCheck()) {
+        env->Throw(env->ExceptionOccurred());
         return;
     }
-    float m21 = jmeClasses::env->CallFloatMethod(in, jmeClasses::Matrix3f_get, 2, 1);
-    if (jmeClasses::env->ExceptionCheck()) {
-        jmeClasses::env->Throw(jmeClasses::env->ExceptionOccurred());
+    float m21 = env->CallFloatMethod(in, jmeClasses::Matrix3f_get, 2, 1);
+    if (env->ExceptionCheck()) {
+        env->Throw(env->ExceptionOccurred());
         return;
     }
-    float m22 = jmeClasses::env->CallFloatMethod(in, jmeClasses::Matrix3f_get, 2, 2);
-    if (jmeClasses::env->ExceptionCheck()) {
-        jmeClasses::env->Throw(jmeClasses::env->ExceptionOccurred());
+    float m22 = env->CallFloatMethod(in, jmeClasses::Matrix3f_get, 2, 2);
+    if (env->ExceptionCheck()) {
+        env->Throw(env->ExceptionOccurred());
         return;
     }
     out->setValue(m00, m01, m02, m10, m11, m12, m20, m21, m22);
 }
 
-void jmeBulletUtil::convert(const btMatrix3x3* in, jobject out) {
+void jmeBulletUtil::convert(JNIEnv* env, const btMatrix3x3* in, jobject out) {
     if (in == NULL || out == NULL) {
-        jmeClasses::throwNPE();
+        jmeClasses::throwNPE(env);
     }
     float m00 = in->getRow(0).m_floats[0];
     float m01 = in->getRow(0).m_floats[1];
@@ -138,75 +138,75 @@ void jmeBulletUtil::convert(const btMatrix3x3* in, jobject out) {
     float m20 = in->getRow(2).m_floats[0];
     float m21 = in->getRow(2).m_floats[1];
     float m22 = in->getRow(2).m_floats[2];
-    jmeClasses::env->CallObjectMethod(out, jmeClasses::Matrix3f_set, 0, 0, m00);
-    if (jmeClasses::env->ExceptionCheck()) {
-        jmeClasses::env->Throw(jmeClasses::env->ExceptionOccurred());
+    env->CallObjectMethod(out, jmeClasses::Matrix3f_set, 0, 0, m00);
+    if (env->ExceptionCheck()) {
+        env->Throw(env->ExceptionOccurred());
         return;
     }
-    jmeClasses::env->CallObjectMethod(out, jmeClasses::Matrix3f_set, 0, 1, m01);
-    if (jmeClasses::env->ExceptionCheck()) {
-        jmeClasses::env->Throw(jmeClasses::env->ExceptionOccurred());
+    env->CallObjectMethod(out, jmeClasses::Matrix3f_set, 0, 1, m01);
+    if (env->ExceptionCheck()) {
+        env->Throw(env->ExceptionOccurred());
         return;
     }
-    jmeClasses::env->CallObjectMethod(out, jmeClasses::Matrix3f_set, 0, 2, m02);
-    if (jmeClasses::env->ExceptionCheck()) {
-        jmeClasses::env->Throw(jmeClasses::env->ExceptionOccurred());
+    env->CallObjectMethod(out, jmeClasses::Matrix3f_set, 0, 2, m02);
+    if (env->ExceptionCheck()) {
+        env->Throw(env->ExceptionOccurred());
         return;
     }
-    jmeClasses::env->CallObjectMethod(out, jmeClasses::Matrix3f_set, 1, 0, m10);
-    if (jmeClasses::env->ExceptionCheck()) {
-        jmeClasses::env->Throw(jmeClasses::env->ExceptionOccurred());
+    env->CallObjectMethod(out, jmeClasses::Matrix3f_set, 1, 0, m10);
+    if (env->ExceptionCheck()) {
+        env->Throw(env->ExceptionOccurred());
         return;
     }
-    jmeClasses::env->CallObjectMethod(out, jmeClasses::Matrix3f_set, 1, 1, m11);
-    if (jmeClasses::env->ExceptionCheck()) {
-        jmeClasses::env->Throw(jmeClasses::env->ExceptionOccurred());
+    env->CallObjectMethod(out, jmeClasses::Matrix3f_set, 1, 1, m11);
+    if (env->ExceptionCheck()) {
+        env->Throw(env->ExceptionOccurred());
         return;
     }
-    jmeClasses::env->CallObjectMethod(out, jmeClasses::Matrix3f_set, 1, 2, m12);
-    if (jmeClasses::env->ExceptionCheck()) {
-        jmeClasses::env->Throw(jmeClasses::env->ExceptionOccurred());
+    env->CallObjectMethod(out, jmeClasses::Matrix3f_set, 1, 2, m12);
+    if (env->ExceptionCheck()) {
+        env->Throw(env->ExceptionOccurred());
         return;
     }
-    jmeClasses::env->CallObjectMethod(out, jmeClasses::Matrix3f_set, 2, 0, m20);
-    if (jmeClasses::env->ExceptionCheck()) {
-        jmeClasses::env->Throw(jmeClasses::env->ExceptionOccurred());
+    env->CallObjectMethod(out, jmeClasses::Matrix3f_set, 2, 0, m20);
+    if (env->ExceptionCheck()) {
+        env->Throw(env->ExceptionOccurred());
         return;
     }
-    jmeClasses::env->CallObjectMethod(out, jmeClasses::Matrix3f_set, 2, 1, m21);
-    if (jmeClasses::env->ExceptionCheck()) {
-        jmeClasses::env->Throw(jmeClasses::env->ExceptionOccurred());
+    env->CallObjectMethod(out, jmeClasses::Matrix3f_set, 2, 1, m21);
+    if (env->ExceptionCheck()) {
+        env->Throw(env->ExceptionOccurred());
         return;
     }
-    jmeClasses::env->CallObjectMethod(out, jmeClasses::Matrix3f_set, 2, 2, m22);
-    if (jmeClasses::env->ExceptionCheck()) {
-        jmeClasses::env->Throw(jmeClasses::env->ExceptionOccurred());
+    env->CallObjectMethod(out, jmeClasses::Matrix3f_set, 2, 2, m22);
+    if (env->ExceptionCheck()) {
+        env->Throw(env->ExceptionOccurred());
         return;
     }
 }
 
-void jmeBulletUtil::convertQuat(jobject in, btMatrix3x3* out) {
+void jmeBulletUtil::convertQuat(JNIEnv* env, jobject in, btMatrix3x3* out) {
     if (in == NULL || out == NULL) {
-        jmeClasses::throwNPE();
+        jmeClasses::throwNPE(env);
     }
-    float x = jmeClasses::env->CallFloatMethod(in, jmeClasses::Quaternion_getX);
-    if (jmeClasses::env->ExceptionCheck()) {
-        jmeClasses::env->Throw(jmeClasses::env->ExceptionOccurred());
+    float x = env->CallFloatMethod(in, jmeClasses::Quaternion_getX);
+    if (env->ExceptionCheck()) {
+        env->Throw(env->ExceptionOccurred());
         return;
     }
-    float y = jmeClasses::env->CallFloatMethod(in, jmeClasses::Quaternion_getY);
-    if (jmeClasses::env->ExceptionCheck()) {
-        jmeClasses::env->Throw(jmeClasses::env->ExceptionOccurred());
+    float y = env->CallFloatMethod(in, jmeClasses::Quaternion_getY);
+    if (env->ExceptionCheck()) {
+        env->Throw(env->ExceptionOccurred());
         return;
     }
-    float z = jmeClasses::env->CallFloatMethod(in, jmeClasses::Quaternion_getZ);
-    if (jmeClasses::env->ExceptionCheck()) {
-        jmeClasses::env->Throw(jmeClasses::env->ExceptionOccurred());
+    float z = env->CallFloatMethod(in, jmeClasses::Quaternion_getZ);
+    if (env->ExceptionCheck()) {
+        env->Throw(env->ExceptionOccurred());
         return;
     }
-    float w = jmeClasses::env->CallFloatMethod(in, jmeClasses::Quaternion_getW);
-    if (jmeClasses::env->ExceptionCheck()) {
-        jmeClasses::env->Throw(jmeClasses::env->ExceptionOccurred());
+    float w = env->CallFloatMethod(in, jmeClasses::Quaternion_getW);
+    if (env->ExceptionCheck()) {
+        env->Throw(env->ExceptionOccurred());
         return;
     }
 
@@ -234,9 +234,9 @@ void jmeBulletUtil::convertQuat(jobject in, btMatrix3x3* out) {
             (xz - yw), (yz + xw), 1 - (xx + yy));
 }
 
-void jmeBulletUtil::convertQuat(const btMatrix3x3* in, jobject out) {
+void jmeBulletUtil::convertQuat(JNIEnv* env, const btMatrix3x3* in, jobject out) {
     if (in == NULL || out == NULL) {
-        jmeClasses::throwNPE();
+        jmeClasses::throwNPE(env);
     }
     // the trace is the sum of the diagonal elements; see
     // http://mathworld.wolfram.com/MatrixTrace.html
@@ -273,9 +273,9 @@ void jmeBulletUtil::convertQuat(const btMatrix3x3* in, jobject out) {
         w = (in->getRow(1).m_floats[0] - in->getRow(0).m_floats[1]) * s;
     }
 
-    jmeClasses::env->CallObjectMethod(out, jmeClasses::Quaternion_set, x, y, z, w);
-    if (jmeClasses::env->ExceptionCheck()) {
-        jmeClasses::env->Throw(jmeClasses::env->ExceptionOccurred());
+    env->CallObjectMethod(out, jmeClasses::Quaternion_set, x, y, z, w);
+    if (env->ExceptionCheck()) {
+        env->Throw(env->ExceptionOccurred());
         return;
     }
 }

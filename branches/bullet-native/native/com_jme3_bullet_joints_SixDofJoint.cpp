@@ -34,6 +34,7 @@
  * Author: Normen Hansen
  */
 #include "jmeBulletUtil.h"
+#include "com_jme3_bullet_joints_SixDofJoint.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -70,7 +71,7 @@ extern "C" {
     (JNIEnv * env, jobject object, jlong jointId, jobject vector) {
         btGeneric6DofConstraint* joint = (btGeneric6DofConstraint*) jointId;
         btVector3* vec = new btVector3();
-        jmeBulletUtil::convert(vector, vec);
+        jmeBulletUtil::convert(env, vector, vec);
         joint->setLinearUpperLimit(*vec);
         free(vec);
     }
@@ -84,7 +85,7 @@ extern "C" {
     (JNIEnv * env, jobject object, jlong jointId, jobject vector) {
         btGeneric6DofConstraint* joint = (btGeneric6DofConstraint*) jointId;
         btVector3* vec = new btVector3();
-        jmeBulletUtil::convert(vector, vec);
+        jmeBulletUtil::convert(env, vector, vec);
         joint->setLinearUpperLimit(*vec);
         free(vec);
     }
@@ -98,7 +99,7 @@ extern "C" {
     (JNIEnv * env, jobject object, jlong jointId, jobject vector) {
         btGeneric6DofConstraint* joint = (btGeneric6DofConstraint*) jointId;
         btVector3* vec = new btVector3();
-        jmeBulletUtil::convert(vector, vec);
+        jmeBulletUtil::convert(env, vector, vec);
         joint->setLinearUpperLimit(*vec);
         free(vec);
     }
@@ -112,7 +113,7 @@ extern "C" {
     (JNIEnv * env, jobject object, jlong jointId, jobject vector) {
         btGeneric6DofConstraint* joint = (btGeneric6DofConstraint*) jointId;
         btVector3* vec = new btVector3();
-        jmeBulletUtil::convert(vector, vec);
+        jmeBulletUtil::convert(env, vector, vec);
         joint->setAngularLowerLimit(*vec);
         free(vec);
     }
@@ -127,11 +128,11 @@ extern "C" {
         btRigidBody* bodyA = (btRigidBody*) bodyIdA;
         btRigidBody* bodyB = (btRigidBody*) bodyIdB;
         btTransform* transA = new btTransform(btMatrix3x3());
-        jmeBulletUtil::convert(pivotA, &transA->getOrigin());
-        jmeBulletUtil::convert(rotA, &transA->getBasis());
+        jmeBulletUtil::convert(env, pivotA, &transA->getOrigin());
+        jmeBulletUtil::convert(env, rotA, &transA->getBasis());
         btTransform* transB = new btTransform(btMatrix3x3());
-        jmeBulletUtil::convert(pivotB, &transB->getOrigin());
-        jmeBulletUtil::convert(rotB, &transB->getBasis());
+        jmeBulletUtil::convert(env, pivotB, &transB->getOrigin());
+        jmeBulletUtil::convert(env, rotB, &transB->getBasis());
         btGeneric6DofConstraint* joint = new btGeneric6DofConstraint(*bodyA, *bodyB, *transA, *transB, useLinearReferenceFrameA);
         return (long) joint;
     }

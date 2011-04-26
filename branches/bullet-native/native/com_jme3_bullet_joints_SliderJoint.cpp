@@ -34,6 +34,7 @@
  * Author: Normen Hansen
  */
 #include "jmeBulletUtil.h"
+#include "com_jme3_bullet_joints_SliderJoint.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -665,11 +666,11 @@ extern "C" {
         btRigidBody* bodyA = (btRigidBody*) bodyIdA;
         btRigidBody* bodyB = (btRigidBody*) bodyIdB;
         btTransform* transA = new btTransform(btMatrix3x3());
-        jmeBulletUtil::convert(pivotA, &transA->getOrigin());
-        jmeBulletUtil::convert(rotA, &transA->getBasis());
+        jmeBulletUtil::convert(env, pivotA, &transA->getOrigin());
+        jmeBulletUtil::convert(env, rotA, &transA->getBasis());
         btTransform* transB = new btTransform(btMatrix3x3());
-        jmeBulletUtil::convert(pivotB, &transB->getOrigin());
-        jmeBulletUtil::convert(rotB, &transB->getBasis());
+        jmeBulletUtil::convert(env, pivotB, &transB->getOrigin());
+        jmeBulletUtil::convert(env, rotB, &transB->getBasis());
         btSliderConstraint* joint = new btSliderConstraint(*bodyA, *bodyB, *transA, *transB, useLinearReferenceFrameA);
         return (long) joint;
     }

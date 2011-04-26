@@ -352,7 +352,7 @@ extern "C" {
             return;
         }
         btVector3* gravity = new btVector3();
-        jmeBulletUtil::convert(vector, gravity);
+        jmeBulletUtil::convert(env, vector, gravity);
         space->getDynamicsWorld()->setGravity(*gravity);
         free(gravity);
     }

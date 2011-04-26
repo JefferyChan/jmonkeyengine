@@ -49,5 +49,5 @@ public:
 	btTransform worldTransform;
 	virtual void  getWorldTransform(btTransform& worldTrans ) const;
 	virtual void  setWorldTransform(const btTransform& worldTrans);
-        bool applyTransform(jobject location, jobject rotation);
+        bool applyTransform(JNIEnv* env, jobject location, jobject rotation);
 };
