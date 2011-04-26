@@ -363,7 +363,7 @@ extern "C" {
      * Signature: ()V
      */
     JNIEXPORT void JNICALL Java_com_jme3_bullet_PhysicsSpace_initNativePhysics
-      (JNIEnv * env, jobject object){
+      (JNIEnv * env, jclass clazz){
         jmeClasses::initJavaClasses(env);
     }
 

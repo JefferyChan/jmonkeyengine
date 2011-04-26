@@ -63,6 +63,7 @@ extern "C" {
     JNIEXPORT jboolean JNICALL Java_com_jme3_bullet_objects_PhysicsRigidBody_isInWorld
     (JNIEnv *env, jobject object, jlong bodyId) {
         btRigidBody* body = (btRigidBody*) bodyId;
+        return body->isInWorld();
     }
 
     /*
@@ -71,7 +72,18 @@ extern "C" {
      * Signature: (JLcom/jme3/math/Vector3f;)V
      */
     JNIEXPORT void JNICALL Java_com_jme3_bullet_objects_PhysicsRigidBody_setPhysicsLocation
-    (JNIEnv *env, jobject object, jlong bodyId, jobject);
+    (JNIEnv *env, jobject object, jlong bodyId, jobject value) {
+        jmeClasses::initJavaClasses(env);
+        btRigidBody* body = (btRigidBody*) bodyId;
+//        btMatrix3x3* mtx = new btMatrix3x3();
+//        btTransform* trans = new btTransform(*mtx);
+//        trans->setBasis(body->getWorldTransform().getBasis());
+//        jmeBulletUtil::convert(value, &trans->getOrigin());
+//        body->setWorldTransform(*trans);
+//        free(mtx);
+//        free(trans);
+        jmeBulletUtil::convert(value, &body->getWorldTransform().getOrigin());
+    }
 
     /*
      * Class:     com_jme3_bullet_objects_PhysicsRigidBody
@@ -79,7 +91,18 @@ extern "C" {
      * Signature: (JLcom/jme3/math/Matrix3f;)V
      */
     JNIEXPORT void JNICALL Java_com_jme3_bullet_objects_PhysicsRigidBody_setPhysicsRotation__JLcom_jme3_math_Matrix3f_2
-    (JNIEnv *env, jobject object, jlong bodyId, jobject);
+    (JNIEnv *env, jobject object, jlong bodyId, jobject value) {
+        jmeClasses::initJavaClasses(env);
+        btRigidBody* body = (btRigidBody*) bodyId;
+//        btMatrix3x3* mtx = new btMatrix3x3();
+//        btTransform* trans = new btTransform(*mtx);
+//        trans->setOrigin(body->getWorldTransform().getOrigin());
+//        jmeBulletUtil::convert(value, &trans->getBasis());
+//        body->setWorldTransform(*trans);
+//        free(mtx);
+//        free(trans);
+        jmeBulletUtil::convert(value, &body->getWorldTransform().getBasis());
+    }
 
     /*
      * Class:     com_jme3_bullet_objects_PhysicsRigidBody
@@ -87,7 +110,18 @@ extern "C" {
      * Signature: (JLcom/jme3/math/Quaternion;)V
      */
     JNIEXPORT void JNICALL Java_com_jme3_bullet_objects_PhysicsRigidBody_setPhysicsRotation__JLcom_jme3_math_Quaternion_2
-    (JNIEnv *env, jobject object, jlong bodyId, jobject);
+    (JNIEnv *env, jobject object, jlong bodyId, jobject value) {
+        jmeClasses::initJavaClasses(env);
+        btRigidBody* body = (btRigidBody*) bodyId;
+//        btMatrix3x3* mtx = new btMatrix3x3();
+//        btTransform* trans = new btTransform(*mtx);
+//        trans->setOrigin(body->getWorldTransform().getOrigin());
+//        jmeBulletUtil::convertQuat(value, &trans->getBasis());
+//        body->setWorldTransform(*trans);
+//        free(mtx);
+//        free(trans);
+        jmeBulletUtil::convertQuat(value, &body->getWorldTransform().getBasis());
+    }
 
     /*
      * Class:     com_jme3_bullet_objects_PhysicsRigidBody
@@ -95,7 +129,10 @@ extern "C" {
      * Signature: (JLcom/jme3/math/Vector3f;)V
      */
     JNIEXPORT void JNICALL Java_com_jme3_bullet_objects_PhysicsRigidBody_getPhysicsLocation
-    (JNIEnv *env, jobject object, jlong bodyId, jobject);
+    (JNIEnv *env, jobject object, jlong bodyId, jobject value) {
+        btRigidBody* body = (btRigidBody*) bodyId;
+        jmeBulletUtil::convert(&body->getWorldTransform().getOrigin(), value);
+    }
 
     /*
      * Class:     com_jme3_bullet_objects_PhysicsRigidBody
@@ -103,7 +140,10 @@ extern "C" {
      * Signature: (JLcom/jme3/math/Quaternion;)V
      */
     JNIEXPORT void JNICALL Java_com_jme3_bullet_objects_PhysicsRigidBody_getPhysicsRotation
-    (JNIEnv *env, jobject object, jlong bodyId, jobject);
+    (JNIEnv *env, jobject object, jlong bodyId, jobject value) {
+        btRigidBody* body = (btRigidBody*) bodyId;
+        jmeBulletUtil::convertQuat(&body->getWorldTransform().getBasis(), value);
+    }
 
     /*
      * Class:     com_jme3_bullet_objects_PhysicsRigidBody
@@ -111,7 +151,10 @@ extern "C" {
      * Signature: (JLcom/jme3/math/Matrix3f;)V
      */
     JNIEXPORT void JNICALL Java_com_jme3_bullet_objects_PhysicsRigidBody_getPhysicsRotationMatrix
-    (JNIEnv *env, jobject object, jlong bodyId, jobject);
+    (JNIEnv *env, jobject object, jlong bodyId, jobject value) {
+        btRigidBody* body = (btRigidBody*) bodyId;
+        jmeBulletUtil::convert(&body->getWorldTransform().getBasis(), value);
+    }
 
     /*
      * Class:     com_jme3_bullet_objects_PhysicsRigidBody
@@ -119,7 +162,16 @@ extern "C" {
      * Signature: (JZ)V
      */
     JNIEXPORT void JNICALL Java_com_jme3_bullet_objects_PhysicsRigidBody_setKinematic
-    (JNIEnv *env, jobject object, jlong bodyId, jboolean);
+    (JNIEnv *env, jobject object, jlong bodyId, jboolean value) {
+        btRigidBody* body = (btRigidBody*) bodyId;
+        if (value) {
+            body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT);
+            body->setActivationState(DISABLE_DEACTIVATION);
+        } else {
+            body->setCollisionFlags(body->getCollisionFlags() & ~btCollisionObject::CF_KINEMATIC_OBJECT);
+            body->setActivationState(ACTIVE_TAG);
+        }
+    }
 
     /*
      * Class:     com_jme3_bullet_objects_PhysicsRigidBody
@@ -127,7 +179,10 @@ extern "C" {
      * Signature: (JF)V
      */
     JNIEXPORT void JNICALL Java_com_jme3_bullet_objects_PhysicsRigidBody_setCcdSweptSphereRadius
-    (JNIEnv *env, jobject object, jlong bodyId, jfloat);
+    (JNIEnv *env, jobject object, jlong bodyId, jfloat value) {
+        btRigidBody* body = (btRigidBody*) bodyId;
+        body->setCcdSweptSphereRadius(value);
+    }
 
     /*
      * Class:     com_jme3_bullet_objects_PhysicsRigidBody
@@ -135,7 +190,10 @@ extern "C" {
      * Signature: (JF)V
      */
     JNIEXPORT void JNICALL Java_com_jme3_bullet_objects_PhysicsRigidBody_setCcdMotionThreshold
-    (JNIEnv *env, jobject object, jlong bodyId, jfloat);
+    (JNIEnv *env, jobject object, jlong bodyId, jfloat value) {
+        btRigidBody* body = (btRigidBody*) bodyId;
+        body->setCcdMotionThreshold(value);
+    }
 
     /*
      * Class:     com_jme3_bullet_objects_PhysicsRigidBody
@@ -143,7 +201,10 @@ extern "C" {
      * Signature: (J)F
      */
     JNIEXPORT jfloat JNICALL Java_com_jme3_bullet_objects_PhysicsRigidBody_getCcdSweptSphereRadius
-    (JNIEnv *env, jobject object, jlong bodyId);
+    (JNIEnv *env, jobject object, jlong bodyId) {
+        btRigidBody* body = (btRigidBody*) bodyId;
+        return body->getCcdSweptSphereRadius();
+    }
 
     /*
      * Class:     com_jme3_bullet_objects_PhysicsRigidBody
@@ -151,7 +212,10 @@ extern "C" {
      * Signature: (J)F
      */
     JNIEXPORT jfloat JNICALL Java_com_jme3_bullet_objects_PhysicsRigidBody_getCcdMotionThreshold
-    (JNIEnv *env, jobject object, jlong bodyId);
+    (JNIEnv *env, jobject object, jlong bodyId) {
+        btRigidBody* body = (btRigidBody*) bodyId;
+        return body->getCcdMotionThreshold();
+    }
 
     /*
      * Class:     com_jme3_bullet_objects_PhysicsRigidBody
@@ -159,7 +223,10 @@ extern "C" {
      * Signature: (J)F
      */
     JNIEXPORT jfloat JNICALL Java_com_jme3_bullet_objects_PhysicsRigidBody_getCcdSquareMotionThreshold
-    (JNIEnv *env, jobject object, jlong bodyId);
+    (JNIEnv *env, jobject object, jlong bodyId) {
+        btRigidBody* body = (btRigidBody*) bodyId;
+        return body->getCcdSquareMotionThreshold();
+    }
 
     /*
      * Class:     com_jme3_bullet_objects_PhysicsRigidBody
@@ -167,7 +234,14 @@ extern "C" {
      * Signature: (JZ)V
      */
     JNIEXPORT void JNICALL Java_com_jme3_bullet_objects_PhysicsRigidBody_setStatic
-    (JNIEnv *env, jobject object, jlong bodyId, jboolean);
+    (JNIEnv *env, jobject object, jlong bodyId, jboolean value) {
+        btRigidBody* body = (btRigidBody*) bodyId;
+        if (value) {
+            body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_STATIC_OBJECT);
+        } else {
+            body->setCollisionFlags(body->getCollisionFlags() & ~btCollisionObject::CF_STATIC_OBJECT);
+        }
+    }
 
     /*
      * Class:     com_jme3_bullet_objects_PhysicsRigidBody
@@ -175,7 +249,15 @@ extern "C" {
      * Signature: (JJF)J
      */
     JNIEXPORT jlong JNICALL Java_com_jme3_bullet_objects_PhysicsRigidBody_updateMassProps
-    (JNIEnv *env, jobject object, jlong bodyId, jlong, jfloat);
+    (JNIEnv *env, jobject object, jlong bodyId, jlong shapeId, jfloat mass) {
+        btRigidBody* body = (btRigidBody*) bodyId;
+        btCollisionShape* shape = (btCollisionShape*) shapeId;
+        btVector3* localInertia = new btVector3();
+        shape->calculateLocalInertia(mass, *localInertia);
+        body->setMassProps(mass, *localInertia);
+        free(localInertia);
+        return (long) body;
+    }
 
     /*
      * Class:     com_jme3_bullet_objects_PhysicsRigidBody
@@ -183,7 +265,10 @@ extern "C" {
      * Signature: (JLcom/jme3/math/Vector3f;)V
      */
     JNIEXPORT void JNICALL Java_com_jme3_bullet_objects_PhysicsRigidBody_getGravity
-    (JNIEnv *env, jobject object, jlong bodyId, jobject);
+    (JNIEnv *env, jobject object, jlong bodyId, jobject value) {
+        btRigidBody* body = (btRigidBody*) bodyId;
+        jmeBulletUtil::convert(&body->getGravity(), value);
+    }
 
     /*
      * Class:     com_jme3_bullet_objects_PhysicsRigidBody
@@ -191,7 +276,13 @@ extern "C" {
      * Signature: (JLcom/jme3/math/Vector3f;)V
      */
     JNIEXPORT void JNICALL Java_com_jme3_bullet_objects_PhysicsRigidBody_setGravity
-    (JNIEnv *env, jobject object, jlong bodyId, jobject);
+    (JNIEnv *env, jobject object, jlong bodyId, jobject value) {
+        btRigidBody* body = (btRigidBody*) bodyId;
+        btVector3* vec = new btVector3();
+        jmeBulletUtil::convert(value, vec);
+        body->setGravity(*vec);
+        free(vec);
+    }
 
     /*
      * Class:     com_jme3_bullet_objects_PhysicsRigidBody
@@ -199,7 +290,10 @@ extern "C" {
      * Signature: (J)F
      */
     JNIEXPORT jfloat JNICALL Java_com_jme3_bullet_objects_PhysicsRigidBody_getFriction
-    (JNIEnv *env, jobject object, jlong bodyId);
+    (JNIEnv *env, jobject object, jlong bodyId) {
+        btRigidBody* body = (btRigidBody*) bodyId;
+        return body->getFriction();
+    }
 
     /*
      * Class:     com_jme3_bullet_objects_PhysicsRigidBody
@@ -207,7 +301,10 @@ extern "C" {
      * Signature: (JF)V
      */
     JNIEXPORT void JNICALL Java_com_jme3_bullet_objects_PhysicsRigidBody_setFriction
-    (JNIEnv *env, jobject object, jlong bodyId, jfloat);
+    (JNIEnv *env, jobject object, jlong bodyId, jfloat value) {
+        btRigidBody* body = (btRigidBody*) bodyId;
+        body->setFriction(value);
+    }
 
     /*
      * Class:     com_jme3_bullet_objects_PhysicsRigidBody
@@ -215,7 +312,10 @@ extern "C" {
      * Signature: (JFF)V
      */
     JNIEXPORT void JNICALL Java_com_jme3_bullet_objects_PhysicsRigidBody_setDamping
-    (JNIEnv *env, jobject object, jlong bodyId, jfloat, jfloat);
+    (JNIEnv *env, jobject object, jlong bodyId, jfloat value1, jfloat value2) {
+        btRigidBody* body = (btRigidBody*) bodyId;
+        body->setDamping(value1, value2);
+    }
 
     /*
      * Class:     com_jme3_bullet_objects_PhysicsRigidBody
@@ -223,7 +323,10 @@ extern "C" {
      * Signature: (JF)V
      */
     JNIEXPORT void JNICALL Java_com_jme3_bullet_objects_PhysicsRigidBody_setAngularDamping
-    (JNIEnv *env, jobject object, jlong bodyId, jfloat);
+    (JNIEnv *env, jobject object, jlong bodyId, jfloat value) {
+        btRigidBody* body = (btRigidBody*) bodyId;
+        body->setDamping(body->getLinearDamping(), value);
+    }
 
     /*
      * Class:     com_jme3_bullet_objects_PhysicsRigidBody
@@ -231,7 +334,10 @@ extern "C" {
      * Signature: (J)F
      */
     JNIEXPORT jfloat JNICALL Java_com_jme3_bullet_objects_PhysicsRigidBody_getLinearDamping
-    (JNIEnv *env, jobject object, jlong bodyId);
+    (JNIEnv *env, jobject object, jlong bodyId) {
+        btRigidBody* body = (btRigidBody*) bodyId;
+        return body->getLinearDamping();
+    }
 
     /*
      * Class:     com_jme3_bullet_objects_PhysicsRigidBody
@@ -239,7 +345,10 @@ extern "C" {
      * Signature: (J)F
      */
     JNIEXPORT jfloat JNICALL Java_com_jme3_bullet_objects_PhysicsRigidBody_getAngularDamping
-    (JNIEnv *env, jobject object, jlong bodyId);
+    (JNIEnv *env, jobject object, jlong bodyId) {
+        btRigidBody* body = (btRigidBody*) bodyId;
+        return body->getAngularDamping();
+    }
 
     /*
      * Class:     com_jme3_bullet_objects_PhysicsRigidBody
@@ -247,7 +356,10 @@ extern "C" {
      * Signature: (J)F
      */
     JNIEXPORT jfloat JNICALL Java_com_jme3_bullet_objects_PhysicsRigidBody_getRestitution
-    (JNIEnv *env, jobject object, jlong bodyId);
+    (JNIEnv *env, jobject object, jlong bodyId) {
+        btRigidBody* body = (btRigidBody*) bodyId;
+        return body->getRestitution();
+    }
 
     /*
      * Class:     com_jme3_bullet_objects_PhysicsRigidBody
@@ -255,7 +367,10 @@ extern "C" {
      * Signature: (JF)V
      */
     JNIEXPORT void JNICALL Java_com_jme3_bullet_objects_PhysicsRigidBody_setRestitution
-    (JNIEnv *env, jobject object, jlong bodyId, jfloat);
+    (JNIEnv *env, jobject object, jlong bodyId, jfloat value) {
+        btRigidBody* body = (btRigidBody*) bodyId;
+        body->setRestitution(value);
+    }
 
     /*
      * Class:     com_jme3_bullet_objects_PhysicsRigidBody
@@ -263,7 +378,10 @@ extern "C" {
      * Signature: (JLcom/jme3/math/Vector3f;)V
      */
     JNIEXPORT void JNICALL Java_com_jme3_bullet_objects_PhysicsRigidBody_getAngularVelocity
-    (JNIEnv *env, jobject object, jlong bodyId, jobject);
+    (JNIEnv *env, jobject object, jlong bodyId, jobject value) {
+        btRigidBody* body = (btRigidBody*) bodyId;
+        jmeBulletUtil::convert(&body->getAngularVelocity(), value);
+    }
 
     /*
      * Class:     com_jme3_bullet_objects_PhysicsRigidBody
@@ -271,7 +389,13 @@ extern "C" {
      * Signature: (JLcom/jme3/math/Vector3f;)V
      */
     JNIEXPORT void JNICALL Java_com_jme3_bullet_objects_PhysicsRigidBody_setAngularVelocity
-    (JNIEnv *env, jobject object, jlong bodyId, jobject);
+    (JNIEnv *env, jobject object, jlong bodyId, jobject value) {
+        btRigidBody* body = (btRigidBody*) bodyId;
+        btVector3* vec = new btVector3();
+        jmeBulletUtil::convert(value, vec);
+        body->setAngularVelocity(*vec);
+        free(vec);
+    }
 
     /*
      * Class:     com_jme3_bullet_objects_PhysicsRigidBody
@@ -279,7 +403,10 @@ extern "C" {
      * Signature: (JLcom/jme3/math/Vector3f;)V
      */
     JNIEXPORT void JNICALL Java_com_jme3_bullet_objects_PhysicsRigidBody_getLinearVelocity
-    (JNIEnv *env, jobject object, jlong bodyId, jobject);
+    (JNIEnv *env, jobject object, jlong bodyId, jobject value) {
+        btRigidBody* body = (btRigidBody*) bodyId;
+        jmeBulletUtil::convert(&body->getLinearVelocity(), value);
+    }
 
     /*
      * Class:     com_jme3_bullet_objects_PhysicsRigidBody
@@ -287,7 +414,13 @@ extern "C" {
      * Signature: (JLcom/jme3/math/Vector3f;)V
      */
     JNIEXPORT void JNICALL Java_com_jme3_bullet_objects_PhysicsRigidBody_setLinearVelocity
-    (JNIEnv *env, jobject object, jlong bodyId, jobject);
+    (JNIEnv *env, jobject object, jlong bodyId, jobject value) {
+        btRigidBody* body = (btRigidBody*) bodyId;
+        btVector3* vec = new btVector3();
+        jmeBulletUtil::convert(value, vec);
+        body->setLinearVelocity(*vec);
+        free(vec);
+    }
 
     /*
      * Class:     com_jme3_bullet_objects_PhysicsRigidBody
@@ -295,7 +428,16 @@ extern "C" {
      * Signature: (JLcom/jme3/math/Vector3f;Lcom/jme3/math/Vector3f;)V
      */
     JNIEXPORT void JNICALL Java_com_jme3_bullet_objects_PhysicsRigidBody_applyForce
-    (JNIEnv *env, jobject object, jlong bodyId, jobject, jobject);
+    (JNIEnv *env, jobject object, jlong bodyId, jobject force, jobject location) {
+        btRigidBody* body = (btRigidBody*) bodyId;
+        btVector3* vec1 = new btVector3();
+        btVector3* vec2 = new btVector3();
+        jmeBulletUtil::convert(force, vec1);
+        jmeBulletUtil::convert(location, vec2);
+        body->applyForce(*vec1, *vec2);
+        free(vec1);
+        free(vec2);
+    }
 
     /*
      * Class:     com_jme3_bullet_objects_PhysicsRigidBody
@@ -303,7 +445,13 @@ extern "C" {
      * Signature: (JLcom/jme3/math/Vector3f;)V
      */
     JNIEXPORT void JNICALL Java_com_jme3_bullet_objects_PhysicsRigidBody_applyCentralForce
-    (JNIEnv *env, jobject object, jlong bodyId, jobject);
+    (JNIEnv *env, jobject object, jlong bodyId, jobject force) {
+        btRigidBody* body = (btRigidBody*) bodyId;
+        btVector3* vec1 = new btVector3();
+        jmeBulletUtil::convert(force, vec1);
+        body->applyCentralForce(*vec1);
+        free(vec1);
+    }
 
     /*
      * Class:     com_jme3_bullet_objects_PhysicsRigidBody
@@ -311,7 +459,13 @@ extern "C" {
      * Signature: (JLcom/jme3/math/Vector3f;)V
      */
     JNIEXPORT void JNICALL Java_com_jme3_bullet_objects_PhysicsRigidBody_applyTorque
-    (JNIEnv *env, jobject object, jlong bodyId, jobject);
+    (JNIEnv *env, jobject object, jlong bodyId, jobject force) {
+        btRigidBody* body = (btRigidBody*) bodyId;
+        btVector3* vec1 = new btVector3();
+        jmeBulletUtil::convert(force, vec1);
+        body->applyTorque(*vec1);
+        free(vec1);
+    }
 
     /*
      * Class:     com_jme3_bullet_objects_PhysicsRigidBody
@@ -319,7 +473,16 @@ extern "C" {
      * Signature: (JLcom/jme3/math/Vector3f;Lcom/jme3/math/Vector3f;)V
      */
     JNIEXPORT void JNICALL Java_com_jme3_bullet_objects_PhysicsRigidBody_applyImpulse
-    (JNIEnv *env, jobject object, jlong bodyId, jobject, jobject);
+    (JNIEnv *env, jobject object, jlong bodyId, jobject force, jobject location) {
+        btRigidBody* body = (btRigidBody*) bodyId;
+        btVector3* vec1 = new btVector3();
+        btVector3* vec2 = new btVector3();
+        jmeBulletUtil::convert(force, vec1);
+        jmeBulletUtil::convert(location, vec2);
+        body->applyImpulse(*vec1, *vec2);
+        free(vec1);
+        free(vec2);
+    }
 
     /*
      * Class:     com_jme3_bullet_objects_PhysicsRigidBody
@@ -327,7 +490,13 @@ extern "C" {
      * Signature: (JLcom/jme3/math/Vector3f;)V
      */
     JNIEXPORT void JNICALL Java_com_jme3_bullet_objects_PhysicsRigidBody_applyTorqueImpulse
-    (JNIEnv *env, jobject object, jlong bodyId, jobject);
+    (JNIEnv *env, jobject object, jlong bodyId, jobject force) {
+        btRigidBody* body = (btRigidBody*) bodyId;
+        btVector3* vec1 = new btVector3();
+        jmeBulletUtil::convert(force, vec1);
+        body->applyTorqueImpulse(*vec1);
+        free(vec1);
+    }
 
     /*
      * Class:     com_jme3_bullet_objects_PhysicsRigidBody
@@ -335,7 +504,10 @@ extern "C" {
      * Signature: (J)V
      */
     JNIEXPORT void JNICALL Java_com_jme3_bullet_objects_PhysicsRigidBody_clearForces
-    (JNIEnv *env, jobject object, jlong bodyId);
+    (JNIEnv *env, jobject object, jlong bodyId) {
+        btRigidBody* body = (btRigidBody*) bodyId;
+        body->clearForces();
+    }
 
     /*
      * Class:     com_jme3_bullet_objects_PhysicsRigidBody
@@ -343,7 +515,11 @@ extern "C" {
      * Signature: (JJ)V
      */
     JNIEXPORT void JNICALL Java_com_jme3_bullet_objects_PhysicsRigidBody_setCollisionShape
-    (JNIEnv *env, jobject object, jlong bodyId, jlong);
+    (JNIEnv *env, jobject object, jlong bodyId, jlong shapeId) {
+        btRigidBody* body = (btRigidBody*) bodyId;
+        btCollisionShape* shape = (btCollisionShape*) shapeId;
+        body->setCollisionShape(shape);
+    }
 
     /*
      * Class:     com_jme3_bullet_objects_PhysicsRigidBody
@@ -351,7 +527,10 @@ extern "C" {
      * Signature: (J)V
      */
     JNIEXPORT void JNICALL Java_com_jme3_bullet_objects_PhysicsRigidBody_activate
-    (JNIEnv *env, jobject object, jlong bodyId);
+    (JNIEnv *env, jobject object, jlong bodyId) {
+        btRigidBody* body = (btRigidBody*) bodyId;
+        body->activate(false);
+    }
 
     /*
      * Class:     com_jme3_bullet_objects_PhysicsRigidBody
@@ -359,7 +538,10 @@ extern "C" {
      * Signature: (J)Z
      */
     JNIEXPORT jboolean JNICALL Java_com_jme3_bullet_objects_PhysicsRigidBody_isActive
-    (JNIEnv *env, jobject object, jlong bodyId);
+    (JNIEnv *env, jobject object, jlong bodyId) {
+        btRigidBody* body = (btRigidBody*) bodyId;
+        return body->isActive();
+    }
 
     /*
      * Class:     com_jme3_bullet_objects_PhysicsRigidBody
@@ -367,7 +549,10 @@ extern "C" {
      * Signature: (JFF)V
      */
     JNIEXPORT void JNICALL Java_com_jme3_bullet_objects_PhysicsRigidBody_setSleepingThresholds
-    (JNIEnv *env, jobject object, jlong bodyId, jfloat, jfloat);
+    (JNIEnv *env, jobject object, jlong bodyId, jfloat linear, jfloat angular) {
+        btRigidBody* body = (btRigidBody*) bodyId;
+        body->setSleepingThresholds(linear, angular);
+    }
 
     /*
      * Class:     com_jme3_bullet_objects_PhysicsRigidBody
@@ -375,7 +560,10 @@ extern "C" {
      * Signature: (JF)V
      */
     JNIEXPORT void JNICALL Java_com_jme3_bullet_objects_PhysicsRigidBody_setLinearSleepingThreshold
-    (JNIEnv *env, jobject object, jlong bodyId, jfloat);
+    (JNIEnv *env, jobject object, jlong bodyId, jfloat value) {
+        btRigidBody* body = (btRigidBody*) bodyId;
+        body->setSleepingThresholds(value, body->getAngularSleepingThreshold());
+    }
 
     /*
      * Class:     com_jme3_bullet_objects_PhysicsRigidBody
@@ -383,7 +571,10 @@ extern "C" {
      * Signature: (JF)V
      */
     JNIEXPORT void JNICALL Java_com_jme3_bullet_objects_PhysicsRigidBody_setAngularSleepingThreshold
-    (JNIEnv *env, jobject object, jlong bodyId, jfloat);
+    (JNIEnv *env, jobject object, jlong bodyId, jfloat value) {
+        btRigidBody* body = (btRigidBody*) bodyId;
+        body->setSleepingThresholds(body->getLinearSleepingThreshold(), value);
+    }
 
     /*
      * Class:     com_jme3_bullet_objects_PhysicsRigidBody
@@ -391,7 +582,10 @@ extern "C" {
      * Signature: (J)F
      */
     JNIEXPORT jfloat JNICALL Java_com_jme3_bullet_objects_PhysicsRigidBody_getLinearSleepingThreshold
-    (JNIEnv *env, jobject object, jlong bodyId);
+    (JNIEnv *env, jobject object, jlong bodyId) {
+        btRigidBody* body = (btRigidBody*) bodyId;
+        return body->getLinearSleepingThreshold();
+    }
 
     /*
      * Class:     com_jme3_bullet_objects_PhysicsRigidBody
@@ -399,7 +593,10 @@ extern "C" {
      * Signature: (J)F
      */
     JNIEXPORT jfloat JNICALL Java_com_jme3_bullet_objects_PhysicsRigidBody_getAngularSleepingThreshold
-    (JNIEnv *env, jobject object, jlong bodyId);
+    (JNIEnv *env, jobject object, jlong bodyId) {
+        btRigidBody* body = (btRigidBody*) bodyId;
+        return body->getAngularSleepingThreshold();
+    }
 
     /*
      * Class:     com_jme3_bullet_objects_PhysicsRigidBody
@@ -407,7 +604,10 @@ extern "C" {
      * Signature: (J)F
      */
     JNIEXPORT jfloat JNICALL Java_com_jme3_bullet_objects_PhysicsRigidBody_getAngularFactor
-    (JNIEnv *env, jobject object, jlong bodyId);
+    (JNIEnv *env, jobject object, jlong bodyId) {
+        btRigidBody* body = (btRigidBody*) bodyId;
+        return body->getAngularFactor().getX();
+    }
 
     /*
      * Class:     com_jme3_bullet_objects_PhysicsRigidBody
@@ -415,7 +615,15 @@ extern "C" {
      * Signature: (JF)V
      */
     JNIEXPORT void JNICALL Java_com_jme3_bullet_objects_PhysicsRigidBody_setAngularFactor
-    (JNIEnv *env, jobject object, jlong bodyId, jfloat);
+    (JNIEnv *env, jobject object, jlong bodyId, jfloat value) {
+        btRigidBody* body = (btRigidBody*) bodyId;
+        btVector3* vec1 = new btVector3();
+        vec1->setX(value);
+        vec1->setY(value);
+        vec1->setZ(value);
+        body->setAngularFactor(*vec1);
+        free(vec1);
+    }
 
 #ifdef __cplusplus
 }

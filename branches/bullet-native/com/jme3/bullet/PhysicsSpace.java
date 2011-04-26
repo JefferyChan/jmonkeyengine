@@ -137,6 +137,11 @@ public class PhysicsSpace {
     private com.bulletphysics.linearmath.Transform sweepTrans2 = new com.bulletphysics.linearmath.Transform(new javax.vecmath.Matrix3f());
     private AssetManager debugManager;
 
+    static {
+//        System.loadLibrary("bulletjme");
+//        initNativePhysics();
+    }
+    
     /**
      * Get the current PhysicsSpace <b>running on this thread</b><br/>
      * For parallel physics, this can also be called from the OpenGL thread to receive the PhysicsSpace
@@ -167,8 +172,6 @@ public class PhysicsSpace {
     }
 
     public PhysicsSpace(Vector3f worldMin, Vector3f worldMax, BroadphaseType broadphaseType) {
-        System.loadLibrary("bulletjme");
-        initNativePhysics();
         this.worldMin.set(worldMin);
         this.worldMax.set(worldMax);
         this.broadphaseType = broadphaseType;
@@ -180,6 +183,7 @@ public class PhysicsSpace {
      */
     public void create() {
         //TODO: boroadphase!
+        initNativePhysics();
         physicsSpaceId = createPhysicsSpace(worldMin.x, worldMin.y, worldMin.z, worldMax.x, worldMax.y, worldMax.z, 3);
         pQueueTL.set(pQueue);
         physicsSpaceTL.set(this);
@@ -893,8 +897,8 @@ public class PhysicsSpace {
         return debugManager;
     }
     
-    public native void initNativePhysics();
-
+    public static native void initNativePhysics();
+    
     /**
      * interface with Broadphase types
      */

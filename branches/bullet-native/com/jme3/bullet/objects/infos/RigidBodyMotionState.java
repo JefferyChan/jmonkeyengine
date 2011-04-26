@@ -43,19 +43,10 @@ import com.jme3.scene.Spatial;
  * @author normenhansen
  */
 public class RigidBodyMotionState {
-    //stores the bullet transform
-
     long motionStateId = 0;
-//    private Transform motionStateTrans = new Transform(Converter.convert(new Matrix3f()));
     private Vector3f worldLocation = new Vector3f();
     private Matrix3f worldRotation = new Matrix3f();
     private Quaternion worldRotationQuat = new Quaternion();
-//    private Vector3f localLocation = new Vector3f();
-//    private Quaternion localRotationQuat = new Quaternion();
-//    //keep track of transform changes
-//    private boolean physicsLocationDirty = false;
-//    private boolean jmeLocationDirty = false;
-//    //temp variable for conversion
     private Quaternion tmp_inverseWorldRotation = new Quaternion();
     private PhysicsVehicle vehicle;
     private boolean applyPhysicsLocal = false;
@@ -67,59 +58,30 @@ public class RigidBodyMotionState {
 
     private native long createMotionState();
 
-//    /**
-//     * called from bullet when creating the rigidbody
-//     * @param t
-//     * @return
-//     */
-//    public synchronized Transform getWorldTransform(Transform t) {
-//        t.set(motionStateTrans);
-//        return t;
-//    }
-//
-//    /**
-//     * called from bullet when the transform of the rigidbody changes
-//     * @param worldTrans
-//     */
-//    public synchronized void setWorldTransform(Transform worldTrans) {
-//        if (jmeLocationDirty) {
-//            return;
-//        }
-//        motionStateTrans.set(worldTrans);
-//        Converter.convert(worldTrans.origin, worldLocation);
-//        Converter.convert(worldTrans.basis, worldRotation);
-//        worldRotationQuat.fromRotationMatrix(worldRotation);
-////        for (Iterator<PhysicsMotionStateListener> it = listeners.iterator(); it.hasNext();) {
-////            PhysicsMotionStateListener physicsMotionStateListener = it.next();
-////            physicsMotionStateListener.stateChanged(worldLocation, worldRotation);
-////        }
-//        physicsLocationDirty = true;
-//        if (vehicle != null) {
-//            vehicle.updateWheels();
-//        }
-//    }
     /**
      * applies the current transform to the given jme Node if the location has been updated on the physics side
      * @param spatial
      */
     public synchronized boolean applyTransform(Spatial spatial) {
-        boolean physicsLocationDirty = applyTransform(motionStateId, spatial.getLocalTranslation(), spatial.getLocalRotation());
+        Vector3f localLocation = spatial.getLocalTranslation();
+        Quaternion localRotationQuat = spatial.getLocalRotation();
+        boolean physicsLocationDirty = applyTransform(motionStateId, localLocation, localRotationQuat);
         if (!physicsLocationDirty) {
             return false;
         }
         if (!applyPhysicsLocal && spatial.getParent() != null) {
-            Vector3f localLocation=spatial.getLocalTranslation();
-            Quaternion localRotationQuat=spatial.getLocalRotation();
             localLocation.subtractLocal(spatial.getParent().getWorldTranslation());
             localLocation.divideLocal(spatial.getParent().getWorldScale());
             tmp_inverseWorldRotation.set(spatial.getParent().getWorldRotation()).inverseLocal().multLocal(localLocation);
 
 //            localRotationQuat.set(worldRotationQuat);
-            tmp_inverseWorldRotation.set(spatial.getParent().getWorldRotation()).inverseLocal().mult(localRotationQuat, localRotationQuat);
+            tmp_inverseWorldRotation.mult(localRotationQuat, localRotationQuat);
 
             spatial.setLocalTranslation(localLocation);
             spatial.setLocalRotation(localRotationQuat);
         } else {
+            spatial.setLocalTranslation(localLocation);
+            spatial.setLocalRotation(localRotationQuat);
 //            spatial.setLocalTranslation(worldLocation);
 //            spatial.setLocalRotation(worldRotationQuat);
         }
@@ -138,7 +100,7 @@ public class RigidBodyMotionState {
         getWorldLocation(motionStateId, worldLocation);
         return worldLocation;
     }
-    
+
     private native void getWorldLocation(long stateId, Vector3f vec);
 
     /**
@@ -150,7 +112,7 @@ public class RigidBodyMotionState {
     }
 
     private native void getWorldRotation(long stateId, Matrix3f vec);
-    
+
     /**
      * @return the worldRotationQuat
      */
@@ -158,9 +120,9 @@ public class RigidBodyMotionState {
         getWorldRotationQuat(motionStateId, worldRotationQuat);
         return worldRotationQuat;
     }
-    
+
     private native void getWorldRotationQuat(long stateId, Quaternion vec);
-    
+
     /**
      * @param vehicle the vehicle to set
      */
@@ -182,41 +144,5 @@ public class RigidBodyMotionState {
 //    public void removeMotionStateListener(PhysicsMotionStateListener listener){
 //        listeners.remove(listener);
 //    }
-//    public synchronized boolean applyTransform(com.jme3.math.Transform trans) {
-//        if (!physicsLocationDirty) {
-//            return false;
-//        }
-//        trans.setTranslation(worldLocation);
-//        trans.setRotation(worldRotationQuat);
-//        physicsLocationDirty = false;
-//        return true;
-//    }
-//    
-//    /**
-//     * called from jme when the location of the jme Node changes
-//     * @param location
-//     * @param rotation
-//     */
-//    public synchronized void setWorldTransform(Vector3f location, Quaternion rotation) {
-//        worldLocation.set(location);
-//        worldRotationQuat.set(rotation);
-//        worldRotation.set(rotation.toRotationMatrix());
-//        Converter.convert(worldLocation, motionStateTrans.origin);
-//        Converter.convert(worldRotation, motionStateTrans.basis);
-//        jmeLocationDirty = true;
-//    }
-//
-//    /**
-//     * applies the current transform to the given RigidBody if the value has been changed on the jme side
-//     * @param rBody
-//     */
-//    public synchronized void applyTransform(RigidBody rBody) {
-//        if (!jmeLocationDirty) {
-//            return;
-//        }
-//        assert (rBody != null);
-//        rBody.setWorldTransform(motionStateTrans);
-//        rBody.activate();
-//        jmeLocationDirty = false;
-//    }
+
 }

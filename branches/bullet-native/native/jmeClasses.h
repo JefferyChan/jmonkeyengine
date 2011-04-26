@@ -39,6 +39,7 @@ class jmeClasses {
 public:
     static void initJavaClasses(JNIEnv* env);
     static JNIEnv* env;
+    static JavaVM* vm;
     static jclass PhysicsSpace;
 //    static jmethodID physicsSpace_test;
 
@@ -59,6 +60,7 @@ public:
     static jclass Matrix3f;
     static jmethodID Matrix3f_get;
     static jmethodID Matrix3f_set;
+    static void throwNPE();
 private:
     jmeClasses(){};
     ~jmeClasses(){};

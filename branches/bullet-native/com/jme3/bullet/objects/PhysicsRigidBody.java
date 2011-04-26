@@ -43,7 +43,6 @@ import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.collision.shapes.MeshCollisionShape;
 import com.jme3.bullet.joints.PhysicsJoint;
 import com.jme3.bullet.objects.infos.RigidBodyMotionState;
-import com.jme3.bullet.util.Converter;
 import com.jme3.export.InputCapsule;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
@@ -113,7 +112,7 @@ public class PhysicsRigidBody extends PhysicsCollisionObject {
 //            rBody.destroy();
         }
         preRebuild();
-        createRigidBody(mass, motionStateId, collisionShape.getObjectId());
+        objectId = createRigidBody(mass, motionStateId, collisionShape.getObjectId());
 //        rBody = new RigidBody(constructionInfo);
         postRebuild();
         if (removed) {

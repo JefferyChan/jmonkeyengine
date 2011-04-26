@@ -41,6 +41,7 @@ import com.jme3.scene.VertexBuffer.Type;
 import com.jme3.scene.mesh.IndexBuffer;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
 /**
@@ -67,8 +68,10 @@ public class GImpactCollisionShape extends CollisionShape {
     }
 
     private void createCollisionMesh(Mesh mesh) {
-        triangleIndexBase = ByteBuffer.allocate(mesh.getTriangleCount() * 3 * 4);
-        vertexBase = ByteBuffer.allocate(mesh.getVertexCount() * 3 * 4);
+        triangleIndexBase = ByteBuffer.allocateDirect(mesh.getTriangleCount() * 3 * 4).order(ByteOrder.nativeOrder());
+        vertexBase = ByteBuffer.allocateDirect(mesh.getVertexCount() * 3 * 4).order(ByteOrder.nativeOrder());
+//        triangleIndexBase = ByteBuffer.allocate(mesh.getTriangleCount() * 3 * 4);
+//        vertexBase = ByteBuffer.allocate(mesh.getVertexCount() * 3 * 4);
         numVertices = mesh.getVertexCount();
         vertexStride = 12; //3 verts * 4 bytes per.
         numTriangles = mesh.getTriangleCount();

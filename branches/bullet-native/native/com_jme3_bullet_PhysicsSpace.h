@@ -141,7 +141,7 @@ JNIEXPORT void JNICALL Java_com_jme3_bullet_PhysicsSpace_setGravity
  * Signature: ()V
  */
 JNIEXPORT void JNICALL Java_com_jme3_bullet_PhysicsSpace_initNativePhysics
-  (JNIEnv *, jobject);
+  (JNIEnv *, jclass);
 
 #ifdef __cplusplus
 }

@@ -36,6 +36,9 @@
  * Author: Normen Hansen
  */
 void jmeBulletUtil::convert(jobject in, btVector3* out) {
+    if (in == NULL || out == NULL) {
+        jmeClasses::throwNPE();
+    }
     float x = jmeClasses::env->CallFloatMethod(in, jmeClasses::Vector3f_getX);
     if (jmeClasses::env->ExceptionCheck()) {
         jmeClasses::env->Throw(jmeClasses::env->ExceptionOccurred());
@@ -56,7 +59,10 @@ void jmeBulletUtil::convert(jobject in, btVector3* out) {
     out->setZ(z);
 }
 
-void jmeBulletUtil::convert(btVector3* in, jobject out) {
+void jmeBulletUtil::convert(const btVector3* in, jobject out) {
+    if (in == NULL || out == NULL) {
+        jmeClasses::throwNPE();
+    }
     float x = in->getX();
     float y = in->getY();
     float z = in->getZ();
@@ -68,6 +74,9 @@ void jmeBulletUtil::convert(btVector3* in, jobject out) {
 }
 
 void jmeBulletUtil::convert(jobject in, btMatrix3x3* out) {
+    if (in == NULL || out == NULL) {
+        jmeClasses::throwNPE();
+    }
     float m00 = jmeClasses::env->CallFloatMethod(in, jmeClasses::Matrix3f_get, 0, 0);
     if (jmeClasses::env->ExceptionCheck()) {
         jmeClasses::env->Throw(jmeClasses::env->ExceptionOccurred());
@@ -116,7 +125,10 @@ void jmeBulletUtil::convert(jobject in, btMatrix3x3* out) {
     out->setValue(m00, m01, m02, m10, m11, m12, m20, m21, m22);
 }
 
-void jmeBulletUtil::convert(btMatrix3x3* in, jobject out) {
+void jmeBulletUtil::convert(const btMatrix3x3* in, jobject out) {
+    if (in == NULL || out == NULL) {
+        jmeClasses::throwNPE();
+    }
     float m00 = in->getRow(0).m_floats[0];
     float m01 = in->getRow(0).m_floats[1];
     float m02 = in->getRow(0).m_floats[2];
@@ -174,6 +186,9 @@ void jmeBulletUtil::convert(btMatrix3x3* in, jobject out) {
 }
 
 void jmeBulletUtil::convertQuat(jobject in, btMatrix3x3* out) {
+    if (in == NULL || out == NULL) {
+        jmeClasses::throwNPE();
+    }
     float x = jmeClasses::env->CallFloatMethod(in, jmeClasses::Quaternion_getX);
     if (jmeClasses::env->ExceptionCheck()) {
         jmeClasses::env->Throw(jmeClasses::env->ExceptionOccurred());
@@ -215,11 +230,14 @@ void jmeBulletUtil::convertQuat(jobject in, btMatrix3x3* out) {
 
     // using s=2/norm (instead of 1/norm) saves 9 multiplications by 2 here
     out->setValue(1.0 - (yy + zz), (xy - zw), (xz + yw),
-                        (xy + zw), 1 - (xx + zz), (yz - xw),
-                        (xz - yw), (yz + xw), 1 - (xx + yy));
+            (xy + zw), 1 - (xx + zz), (yz - xw),
+            (xz - yw), (yz + xw), 1 - (xx + yy));
 }
 
-void jmeBulletUtil::convertQuat(btMatrix3x3* in, jobject out) {
+void jmeBulletUtil::convertQuat(const btMatrix3x3* in, jobject out) {
+    if (in == NULL || out == NULL) {
+        jmeClasses::throwNPE();
+    }
     // the trace is the sum of the diagonal elements; see
     // http://mathworld.wolfram.com/MatrixTrace.html
     float t = in->getRow(0).m_floats[0] + in->getRow(1).m_floats[1] + in->getRow(2).m_floats[2];
