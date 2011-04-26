@@ -30,24 +30,32 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 #include <jni.h>
-
 /**
  * Author: Normen Hansen
  */
+#include "jmeBulletUtil.h"
+#include "BulletCollision/CollisionShapes/btConvexHullShape.h"
 
-#include "btBulletDynamicsCommon.h"
-//#include "btBulletCollisionCommon.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-class jmeMotionState : public btMotionState{
-private:
-	bool dirty;
+    /*
+     * Class:     com_jme3_bullet_collision_shapes_HullCollisionShape
+     * Method:    createShape
+     * Signature: ([F)J
+     */
+    JNIEXPORT jlong JNICALL Java_com_jme3_bullet_collision_shapes_HullCollisionShape_createShape
+    (JNIEnv *env, jobject object, jobject array) {
+        float* data = (float*)env->GetDirectBufferAddress(array);
+//        int length = env->GetArrayLength(array);
+//        float* data = new float[length];
+//        //TODO: release
+//        env->GetFloatArrayRegion((jfloatArray) array, 0, length, data);
+        btConvexHullShape* shape = new btConvexHullShape(data);
+        return (long)shape;
+    }
 
-public:
-	jmeMotionState(btTransform);
-	virtual ~jmeMotionState();
-        
-	btTransform worldTransform;
-	virtual void  getWorldTransform(btTransform& worldTrans ) const;
-	virtual void  setWorldTransform(const btTransform& worldTrans);
-        bool applyTransform(jobject location, jobject rotation);
-};
+#ifdef __cplusplus
+}
+#endif

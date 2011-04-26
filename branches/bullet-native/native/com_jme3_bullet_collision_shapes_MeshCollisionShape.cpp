@@ -30,24 +30,28 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 #include <jni.h>
-
 /**
  * Author: Normen Hansen
  */
+#include "jmeBulletUtil.h"
+#include "BulletCollision/CollisionShapes/btBvhTriangleMeshShape.h"
 
-#include "btBulletDynamicsCommon.h"
-//#include "btBulletCollisionCommon.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-class jmeMotionState : public btMotionState{
-private:
-	bool dirty;
+    /*
+     * Class:     com_jme3_bullet_collision_shapes_MeshCollisionShape
+     * Method:    createShape
+     * Signature: (J)J
+     */
+    JNIEXPORT jlong JNICALL Java_com_jme3_bullet_collision_shapes_MeshCollisionShape_createShape
+    (JNIEnv * env, jobject object, jlong arrayId) {
+        btTriangleIndexVertexArray* array = (btTriangleIndexVertexArray*) arrayId;
+        btBvhTriangleMeshShape* shape = new btBvhTriangleMeshShape(array, true, true);
+        return (long) shape;
+    }
 
-public:
-	jmeMotionState(btTransform);
-	virtual ~jmeMotionState();
-        
-	btTransform worldTransform;
-	virtual void  getWorldTransform(btTransform& worldTrans ) const;
-	virtual void  setWorldTransform(const btTransform& worldTrans);
-        bool applyTransform(jobject location, jobject rotation);
-};
+#ifdef __cplusplus
+}
+#endif

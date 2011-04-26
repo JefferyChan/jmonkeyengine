@@ -30,24 +30,28 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 #include <jni.h>
-
 /**
  * Author: Normen Hansen
  */
+#include "jmeBulletUtil.h"
 
-#include "btBulletDynamicsCommon.h"
-//#include "btBulletCollisionCommon.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-class jmeMotionState : public btMotionState{
-private:
-	bool dirty;
+        /*
+     * Class:     com_jme3_bullet_util_NativeMeshUtil
+     * Method:    createTriangleIndexVertexArray
+     * Signature: (Ljava/nio/ByteBuffer;Ljava/nio/ByteBuffer;IIII)J
+     */
+    JNIEXPORT jlong JNICALL Java_com_jme3_bullet_util_NativeMeshUtil_createTriangleIndexVertexArray
+    (JNIEnv * env, jclass cls, jobject triangleIndexBase, jobject vertexIndexBase, jint numTriangles, jint numVertices, jint vertexStride, jint triangleIndexStride) {
+        int* triangles = (int*) env->GetDirectBufferAddress(triangleIndexBase);
+        float* vertices = (float*) env->GetDirectBufferAddress(vertexIndexBase);
+        btTriangleIndexVertexArray* array = new btTriangleIndexVertexArray(numTriangles, triangles, triangleIndexStride, numVertices, vertices, vertexStride);
+        return (long) array;
+    }
 
-public:
-	jmeMotionState(btTransform);
-	virtual ~jmeMotionState();
-        
-	btTransform worldTransform;
-	virtual void  getWorldTransform(btTransform& worldTrans ) const;
-	virtual void  setWorldTransform(const btTransform& worldTrans);
-        bool applyTransform(jobject location, jobject rotation);
-};
+#ifdef __cplusplus
+}
+#endif

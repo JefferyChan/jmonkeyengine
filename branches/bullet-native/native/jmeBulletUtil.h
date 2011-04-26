@@ -42,6 +42,10 @@ class jmeBulletUtil{
 public:
     static void convert(jobject in, btVector3* out);
     static void convert(btVector3* in, jobject out);
+    static void convert(jobject in, btMatrix3x3* out);
+    static void convert(btMatrix3x3* in, jobject out);
+    static void convertQuat(jobject in, btMatrix3x3* out);
+    static void convertQuat(btMatrix3x3* in, jobject out);
 private:
     jmeBulletUtil(){};
     ~jmeBulletUtil(){};

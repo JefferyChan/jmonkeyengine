@@ -12,6 +12,7 @@ import java.io.IOException;
 public class HullCollisionShape extends CollisionShape {
 
     private float[] points;
+    protected FloatBuffer fbuf;
 
     public HullCollisionShape() {
     }
@@ -47,7 +48,8 @@ public class HullCollisionShape extends CollisionShape {
             this.points = capsule.readFloatArray("points", null);
 
         }
-        createShape(this.points);
+        fbuf = FloatBuffer.wrap(points);
+        createShape(fbuf);
     }
 
     protected void createShape() {
@@ -58,12 +60,13 @@ public class HullCollisionShape extends CollisionShape {
 //        objectId = new ConvexHullShape(pointList);
 //        objectId.setLocalScaling(Converter.convert(getScale()));
 //        objectId.setMargin(margin);
-        objectId = createShape(points);
+        fbuf = FloatBuffer.wrap(points);
+        objectId = createShape(fbuf);
         setScale(scale);
         setMargin(margin);
     }
 
-    private native long createShape(float[] points);
+    private native long createShape(FloatBuffer points);
 
     protected float[] getPoints(Mesh mesh) {
         FloatBuffer vertices = mesh.getFloatBuffer(Type.Position);

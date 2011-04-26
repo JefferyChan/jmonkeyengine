@@ -30,24 +30,26 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 #include <jni.h>
-
 /**
  * Author: Normen Hansen
  */
+#include "jmeBulletUtil.h"
 
-#include "btBulletDynamicsCommon.h"
-//#include "btBulletCollisionCommon.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-class jmeMotionState : public btMotionState{
-private:
-	bool dirty;
+    /*
+     * Class:     com_jme3_bullet_joints_PhysicsJoint
+     * Method:    getAppliedImpulse
+     * Signature: (J)F
+     */
+    JNIEXPORT jfloat JNICALL Java_com_jme3_bullet_joints_PhysicsJoint_getAppliedImpulse
+    (JNIEnv * env, jobject object, jlong jointId) {
+        btTypedConstraint* joint = (btTypedConstraint*) jointId;
+        return joint->getAppliedImpulse();
+    }
 
-public:
-	jmeMotionState(btTransform);
-	virtual ~jmeMotionState();
-        
-	btTransform worldTransform;
-	virtual void  getWorldTransform(btTransform& worldTrans ) const;
-	virtual void  setWorldTransform(const btTransform& worldTrans);
-        bool applyTransform(jobject location, jobject rotation);
-};
+#ifdef __cplusplus
+}
+#endif

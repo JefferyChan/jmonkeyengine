@@ -30,24 +30,37 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 #include <jni.h>
-
 /**
  * Author: Normen Hansen
  */
+#include "jmeBulletUtil.h"
 
-#include "btBulletDynamicsCommon.h"
-//#include "btBulletCollisionCommon.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
+    
+/*
+ * Class:     com_jme3_bullet_collision_PhysicsCollisionObject
+ * Method:    attachCollisionShape
+ * Signature: (JJ)V
+ */
+JNIEXPORT void JNICALL Java_com_jme3_bullet_collision_PhysicsCollisionObject_attachCollisionShape
+  (JNIEnv * env, jobject object, jlong objectId, jlong shapeId){
+        btCollisionObject* collisionObject = (btCollisionObject*) objectId;
+        if(collisionObject == NULL){
+            jclass newExc=env->FindClass("java/lang/IllegalStateException");
+            env->ThrowNew(newExc, "The collision object does not exist.");
+            return;
+        }
+        btCollisionShape* collisionShape = (btCollisionShape*) shapeId;
+        if(collisionShape == NULL){
+            jclass newExc=env->FindClass("java/lang/IllegalStateException");
+            env->ThrowNew(newExc, "The collision shape does not exist.");
+            return;
+        }
+        collisionObject->setCollisionShape(collisionShape);
+}
 
-class jmeMotionState : public btMotionState{
-private:
-	bool dirty;
-
-public:
-	jmeMotionState(btTransform);
-	virtual ~jmeMotionState();
-        
-	btTransform worldTransform;
-	virtual void  getWorldTransform(btTransform& worldTrans ) const;
-	virtual void  setWorldTransform(const btTransform& worldTrans);
-        bool applyTransform(jobject location, jobject rotation);
-};
+#ifdef __cplusplus
+}
+#endif

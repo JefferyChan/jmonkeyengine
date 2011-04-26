@@ -10,10 +10,10 @@ extern "C" {
 /*
  * Class:     com_jme3_bullet_collision_shapes_HeightfieldCollisionShape
  * Method:    createShape
- * Signature: (II[FFFFIZ)J
+ * Signature: (IILjava/nio/FloatBuffer;FFFIZ)J
  */
 JNIEXPORT jlong JNICALL Java_com_jme3_bullet_collision_shapes_HeightfieldCollisionShape_createShape
-  (JNIEnv *, jobject, jint, jint, jfloatArray, jfloat, jfloat, jfloat, jint, jboolean);
+  (JNIEnv *, jobject, jint, jint, jobject, jfloat, jfloat, jfloat, jint, jboolean);
 
 #ifdef __cplusplus
 }

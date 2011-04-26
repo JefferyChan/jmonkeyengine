@@ -54,6 +54,7 @@
             <class name="com.jme3.bullet.objects.PhysicsRigidBody"/>
             <class name="com.jme3.bullet.objects.PhysicsVehicle"/>
             <class name="com.jme3.bullet.objects.VehicleWheel"/>
+            <class name="com.jme3.bullet.objects.infos.RigidBodyMotionState"/>
             
             <class name="com.jme3.bullet.collision.shapes.CollisionShape"/>
             <class name="com.jme3.bullet.collision.shapes.BoxCollisionShape"/>

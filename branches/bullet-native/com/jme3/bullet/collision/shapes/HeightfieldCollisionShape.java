@@ -13,6 +13,7 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Mesh;
 import java.io.IOException;
+import java.nio.FloatBuffer;
 
 /**
  * Uses Bullet Physics Heightfield terrain collision system. This is MUCH faster
@@ -35,6 +36,7 @@ public class HeightfieldCollisionShape extends CollisionShape {
     protected float maxHeight;
     protected int upAxis;
     protected boolean flipQuadEdges;
+    protected FloatBuffer fbuf;
 
     public HeightfieldCollisionShape() {
     }
@@ -89,13 +91,13 @@ public class HeightfieldCollisionShape extends CollisionShape {
     }
 
     protected void createShape() {
-
-        objectId = createShape(heightStickWidth, heightStickLength, heightfieldData, heightScale, minHeight, maxHeight, upAxis, flipQuadEdges);
+        fbuf = FloatBuffer.wrap(heightfieldData);
+        objectId = createShape(heightStickWidth, heightStickLength, fbuf, heightScale, minHeight, maxHeight, upAxis, flipQuadEdges);
         setScale(scale);
         setMargin(margin);
     }
-    
-    private native long createShape(int heightStickWidth, int heightStickLength, float[] heightfieldData, float heightScale, float minHeight, float maxHeight, int upAxis, boolean flipQuadEdges);
+
+    private native long createShape(int heightStickWidth, int heightStickLength, FloatBuffer heightfieldData, float heightScale, float minHeight, float maxHeight, int upAxis, boolean flipQuadEdges);
 
     public Mesh createJmeMesh() {
         //TODO return Converter.convert(bulletMesh);

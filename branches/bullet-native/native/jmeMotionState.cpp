@@ -30,78 +30,35 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 #include "jmeMotionState.h"
+#include "jmeBulletUtil.h"
 
 /**
  * Author: Normen Hansen
  */
 
 jmeMotionState::jmeMotionState(btTransform worldTrans) {
-    worldTransform=worldTrans;
-    dirty=true;
+    worldTransform = worldTrans;
+    dirty = true;
 }
 
-void jmeMotionState::getWorldTransform(btTransform& worldTrans ) const{
-    worldTrans=worldTransform;
+void jmeMotionState::getWorldTransform(btTransform& worldTrans) const {
+    worldTrans = worldTransform;
 }
 
-void jmeMotionState::setWorldTransform(const btTransform& worldTrans){
-    worldTransform=worldTrans;
-    dirty=true;
-//    if(env!=NULL && javaRigidBody!=NULL){
-////        jvm->AttachCurrentThread((void**)&env, NULL);
-//        env->CallVoidMethod(this->javaRigidBody,physicsNode_setWorldTranslation,
-//                worldTransform.getOrigin().m_floats[0],
-//                worldTransform.getOrigin().m_floats[1],
-//                worldTransform.getOrigin().m_floats[2]);
-//        if (env->ExceptionCheck()) env->Throw(env->ExceptionOccurred());
-//
-//        env->CallVoidMethod(this->javaRigidBody,physicsNode_setWorldRotation,
-//                worldTransform.getBasis().getRow(0).m_floats[0],
-//                worldTransform.getBasis().getRow(0).m_floats[1],
-//                worldTransform.getBasis().getRow(0).m_floats[2],
-//                worldTransform.getBasis().getRow(1).m_floats[0],
-//                worldTransform.getBasis().getRow(1).m_floats[1],
-//                worldTransform.getBasis().getRow(1).m_floats[2],
-//                worldTransform.getBasis().getRow(2).m_floats[0],
-//                worldTransform.getBasis().getRow(2).m_floats[1],
-//                worldTransform.getBasis().getRow(2).m_floats[2]);
-//        if (env->ExceptionCheck()) env->Throw(env->ExceptionOccurred());
-//    }
+void jmeMotionState::setWorldTransform(const btTransform& worldTrans) {
+    worldTransform = worldTrans;
+    dirty = true;
 }
 
-jobject jmeMotionState::getJavaRigidBody(){
-    return this->javaRigidBody;
+bool jmeMotionState::applyTransform(jobject location, jobject rotation) {
+    if (dirty) {
+        jmeBulletUtil::convert(&worldTransform.getOrigin(), location);
+        jmeBulletUtil::convert(&worldTransform.getBasis(), rotation);
+        dirty = false;
+        return true;
+    }
+    return false;
 }
-
-void jmeMotionState::setJavaRigidBody(JNIEnv* env, jobject javaRigidBody){
-//    initJavaMethodHandles(env);
-//    this->env=env;
-    this->javaRigidBody=env->NewGlobalRef(javaRigidBody);
-}
-
-//bool jmeMotionState::initJavaMethodHandles(JNIEnv* env) {
-////    env->GetJavaVM(&jvm);
-//
-//    physicsNodeClass = env->FindClass("com/jmex/bullet/nodes/PhysicsNode");
-//    if (env->ExceptionCheck()) {
-//        env->Throw(env->ExceptionOccurred());
-//        return false;
-//    }
-//
-//    physicsNode_setWorldTranslation = env->GetMethodID(physicsNodeClass, "setWorldTranslation", "(FFF)V");
-//    if (env->ExceptionCheck()) {
-//        env->Throw(env->ExceptionOccurred());
-//        return false;
-//    }
-//
-//    physicsNode_setWorldRotation = env->GetMethodID(physicsNodeClass, "setWorldRotation", "(FFFFFFFFF)V");
-//    if (env->ExceptionCheck()) {
-//        env->Throw(env->ExceptionOccurred());
-//        return false;
-//    }
-//
-//    return true;
-//}
 
 jmeMotionState::~jmeMotionState() {
     // TODO Auto-generated destructor stub

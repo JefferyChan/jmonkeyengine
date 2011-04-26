@@ -31,13 +31,10 @@
  */
 package com.jme3.bullet.objects.infos;
 
-import com.bulletphysics.linearmath.MotionState;
-import com.bulletphysics.linearmath.Transform;
 import com.jme3.bullet.objects.PhysicsVehicle;
+import com.jme3.math.Matrix3f;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
-import com.jme3.bullet.util.Converter;
-import com.jme3.math.Matrix3f;
 import com.jme3.scene.Spatial;
 
 /**
@@ -45,106 +42,125 @@ import com.jme3.scene.Spatial;
  * allow multithreaded access from the jme scenegraph and the bullet physicsspace
  * @author normenhansen
  */
-public class RigidBodyMotionState extends MotionState {
+public class RigidBodyMotionState {
     //stores the bullet transform
 
-    private Transform motionStateTrans = new Transform(Converter.convert(new Matrix3f()));
+    long motionStateId = 0;
+//    private Transform motionStateTrans = new Transform(Converter.convert(new Matrix3f()));
     private Vector3f worldLocation = new Vector3f();
     private Matrix3f worldRotation = new Matrix3f();
     private Quaternion worldRotationQuat = new Quaternion();
-    private Vector3f localLocation = new Vector3f();
-    private Quaternion localRotationQuat = new Quaternion();
-    //keep track of transform changes
-    private boolean physicsLocationDirty = false;
-    private boolean jmeLocationDirty = false;
-    //temp variable for conversion
+//    private Vector3f localLocation = new Vector3f();
+//    private Quaternion localRotationQuat = new Quaternion();
+//    //keep track of transform changes
+//    private boolean physicsLocationDirty = false;
+//    private boolean jmeLocationDirty = false;
+//    //temp variable for conversion
     private Quaternion tmp_inverseWorldRotation = new Quaternion();
     private PhysicsVehicle vehicle;
     private boolean applyPhysicsLocal = false;
 //    protected LinkedList<PhysicsMotionStateListener> listeners = new LinkedList<PhysicsMotionStateListener>();
 
     public RigidBodyMotionState() {
+        this.motionStateId = createMotionState();
     }
 
-    /**
-     * called from bullet when creating the rigidbody
-     * @param t
-     * @return
-     */
-    public synchronized Transform getWorldTransform(Transform t) {
-        t.set(motionStateTrans);
-        return t;
-    }
+    private native long createMotionState();
 
-    /**
-     * called from bullet when the transform of the rigidbody changes
-     * @param worldTrans
-     */
-    public synchronized void setWorldTransform(Transform worldTrans) {
-        if (jmeLocationDirty) {
-            return;
-        }
-        motionStateTrans.set(worldTrans);
-        Converter.convert(worldTrans.origin, worldLocation);
-        Converter.convert(worldTrans.basis, worldRotation);
-        worldRotationQuat.fromRotationMatrix(worldRotation);
-//        for (Iterator<PhysicsMotionStateListener> it = listeners.iterator(); it.hasNext();) {
-//            PhysicsMotionStateListener physicsMotionStateListener = it.next();
-//            physicsMotionStateListener.stateChanged(worldLocation, worldRotation);
+//    /**
+//     * called from bullet when creating the rigidbody
+//     * @param t
+//     * @return
+//     */
+//    public synchronized Transform getWorldTransform(Transform t) {
+//        t.set(motionStateTrans);
+//        return t;
+//    }
+//
+//    /**
+//     * called from bullet when the transform of the rigidbody changes
+//     * @param worldTrans
+//     */
+//    public synchronized void setWorldTransform(Transform worldTrans) {
+//        if (jmeLocationDirty) {
+//            return;
 //        }
-        physicsLocationDirty = true;
-        if (vehicle != null) {
-            vehicle.updateWheels();
-        }
-    }
-
+//        motionStateTrans.set(worldTrans);
+//        Converter.convert(worldTrans.origin, worldLocation);
+//        Converter.convert(worldTrans.basis, worldRotation);
+//        worldRotationQuat.fromRotationMatrix(worldRotation);
+////        for (Iterator<PhysicsMotionStateListener> it = listeners.iterator(); it.hasNext();) {
+////            PhysicsMotionStateListener physicsMotionStateListener = it.next();
+////            physicsMotionStateListener.stateChanged(worldLocation, worldRotation);
+////        }
+//        physicsLocationDirty = true;
+//        if (vehicle != null) {
+//            vehicle.updateWheels();
+//        }
+//    }
     /**
      * applies the current transform to the given jme Node if the location has been updated on the physics side
      * @param spatial
      */
     public synchronized boolean applyTransform(Spatial spatial) {
+        boolean physicsLocationDirty = applyTransform(motionStateId, spatial.getLocalTranslation(), spatial.getLocalRotation());
         if (!physicsLocationDirty) {
             return false;
         }
         if (!applyPhysicsLocal && spatial.getParent() != null) {
-            localLocation.set(worldLocation).subtractLocal(spatial.getParent().getWorldTranslation());
+            Vector3f localLocation=spatial.getLocalTranslation();
+            Quaternion localRotationQuat=spatial.getLocalRotation();
+            localLocation.subtractLocal(spatial.getParent().getWorldTranslation());
             localLocation.divideLocal(spatial.getParent().getWorldScale());
             tmp_inverseWorldRotation.set(spatial.getParent().getWorldRotation()).inverseLocal().multLocal(localLocation);
 
-            localRotationQuat.set(worldRotationQuat);
+//            localRotationQuat.set(worldRotationQuat);
             tmp_inverseWorldRotation.set(spatial.getParent().getWorldRotation()).inverseLocal().mult(localRotationQuat, localRotationQuat);
 
             spatial.setLocalTranslation(localLocation);
             spatial.setLocalRotation(localRotationQuat);
         } else {
-            spatial.setLocalTranslation(worldLocation);
-            spatial.setLocalRotation(worldRotationQuat);
+//            spatial.setLocalTranslation(worldLocation);
+//            spatial.setLocalRotation(worldRotationQuat);
         }
-        physicsLocationDirty = false;
+        if (vehicle != null) {
+            vehicle.updateWheels();
+        }
         return true;
     }
+
+    private synchronized native boolean applyTransform(long stateId, Vector3f location, Quaternion rotation);
 
     /**
      * @return the worldLocation
      */
     public Vector3f getWorldLocation() {
+        getWorldLocation(motionStateId, worldLocation);
         return worldLocation;
     }
+    
+    private native void getWorldLocation(long stateId, Vector3f vec);
 
     /**
      * @return the worldRotation
      */
     public Matrix3f getWorldRotation() {
+        getWorldRotation(motionStateId, worldRotation);
         return worldRotation;
     }
 
+    private native void getWorldRotation(long stateId, Matrix3f vec);
+    
     /**
      * @return the worldRotationQuat
      */
     public Quaternion getWorldRotationQuat() {
+        getWorldRotationQuat(motionStateId, worldRotationQuat);
         return worldRotationQuat;
     }
-
+    
+    private native void getWorldRotationQuat(long stateId, Quaternion vec);
+    
     /**
      * @param vehicle the vehicle to set
      */

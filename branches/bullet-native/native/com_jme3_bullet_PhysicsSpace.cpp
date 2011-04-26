@@ -29,11 +29,6 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#include "btBulletDynamicsCommon.h"
-#include "btBulletCollisionCommon.h"
-//#include "BulletCollision/CollisionDispatch/btCollisionObject.h"
-//#include "BulletCollision/CollisionDispatch/btGhostObject.h"
-
 #include "com_jme3_bullet_PhysicsSpace.h"
 #include "jmePhysicsSpace.h"
 #include "jmeBulletUtil.h"

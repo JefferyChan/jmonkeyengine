@@ -29,12 +29,13 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+#include <math.h>
 #include "jmeBulletUtil.h"
 
 /**
  * Author: Normen Hansen
  */
-void jmeBulletUtil::convert(jobject in, btVector3* out){
+void jmeBulletUtil::convert(jobject in, btVector3* out) {
     float x = jmeClasses::env->CallFloatMethod(in, jmeClasses::Vector3f_getX);
     if (jmeClasses::env->ExceptionCheck()) {
         jmeClasses::env->Throw(jmeClasses::env->ExceptionOccurred());
@@ -55,11 +56,206 @@ void jmeBulletUtil::convert(jobject in, btVector3* out){
     out->setZ(z);
 }
 
-void jmeBulletUtil::convert(btVector3* in, jobject out){
+void jmeBulletUtil::convert(btVector3* in, jobject out) {
     float x = in->getX();
     float y = in->getY();
     float z = in->getZ();
     jmeClasses::env->CallObjectMethod(out, jmeClasses::Vector3f_set, x, y, z);
+    if (jmeClasses::env->ExceptionCheck()) {
+        jmeClasses::env->Throw(jmeClasses::env->ExceptionOccurred());
+        return;
+    }
+}
+
+void jmeBulletUtil::convert(jobject in, btMatrix3x3* out) {
+    float m00 = jmeClasses::env->CallFloatMethod(in, jmeClasses::Matrix3f_get, 0, 0);
+    if (jmeClasses::env->ExceptionCheck()) {
+        jmeClasses::env->Throw(jmeClasses::env->ExceptionOccurred());
+        return;
+    }
+    float m01 = jmeClasses::env->CallFloatMethod(in, jmeClasses::Matrix3f_get, 0, 1);
+    if (jmeClasses::env->ExceptionCheck()) {
+        jmeClasses::env->Throw(jmeClasses::env->ExceptionOccurred());
+        return;
+    }
+    float m02 = jmeClasses::env->CallFloatMethod(in, jmeClasses::Matrix3f_get, 0, 2);
+    if (jmeClasses::env->ExceptionCheck()) {
+        jmeClasses::env->Throw(jmeClasses::env->ExceptionOccurred());
+        return;
+    }
+    float m10 = jmeClasses::env->CallFloatMethod(in, jmeClasses::Matrix3f_get, 1, 0);
+    if (jmeClasses::env->ExceptionCheck()) {
+        jmeClasses::env->Throw(jmeClasses::env->ExceptionOccurred());
+        return;
+    }
+    float m11 = jmeClasses::env->CallFloatMethod(in, jmeClasses::Matrix3f_get, 1, 1);
+    if (jmeClasses::env->ExceptionCheck()) {
+        jmeClasses::env->Throw(jmeClasses::env->ExceptionOccurred());
+        return;
+    }
+    float m12 = jmeClasses::env->CallFloatMethod(in, jmeClasses::Matrix3f_get, 1, 2);
+    if (jmeClasses::env->ExceptionCheck()) {
+        jmeClasses::env->Throw(jmeClasses::env->ExceptionOccurred());
+        return;
+    }
+    float m20 = jmeClasses::env->CallFloatMethod(in, jmeClasses::Matrix3f_get, 2, 0);
+    if (jmeClasses::env->ExceptionCheck()) {
+        jmeClasses::env->Throw(jmeClasses::env->ExceptionOccurred());
+        return;
+    }
+    float m21 = jmeClasses::env->CallFloatMethod(in, jmeClasses::Matrix3f_get, 2, 1);
+    if (jmeClasses::env->ExceptionCheck()) {
+        jmeClasses::env->Throw(jmeClasses::env->ExceptionOccurred());
+        return;
+    }
+    float m22 = jmeClasses::env->CallFloatMethod(in, jmeClasses::Matrix3f_get, 2, 2);
+    if (jmeClasses::env->ExceptionCheck()) {
+        jmeClasses::env->Throw(jmeClasses::env->ExceptionOccurred());
+        return;
+    }
+    out->setValue(m00, m01, m02, m10, m11, m12, m20, m21, m22);
+}
+
+void jmeBulletUtil::convert(btMatrix3x3* in, jobject out) {
+    float m00 = in->getRow(0).m_floats[0];
+    float m01 = in->getRow(0).m_floats[1];
+    float m02 = in->getRow(0).m_floats[2];
+    float m10 = in->getRow(1).m_floats[0];
+    float m11 = in->getRow(1).m_floats[1];
+    float m12 = in->getRow(1).m_floats[2];
+    float m20 = in->getRow(2).m_floats[0];
+    float m21 = in->getRow(2).m_floats[1];
+    float m22 = in->getRow(2).m_floats[2];
+    jmeClasses::env->CallObjectMethod(out, jmeClasses::Matrix3f_set, 0, 0, m00);
+    if (jmeClasses::env->ExceptionCheck()) {
+        jmeClasses::env->Throw(jmeClasses::env->ExceptionOccurred());
+        return;
+    }
+    jmeClasses::env->CallObjectMethod(out, jmeClasses::Matrix3f_set, 0, 1, m01);
+    if (jmeClasses::env->ExceptionCheck()) {
+        jmeClasses::env->Throw(jmeClasses::env->ExceptionOccurred());
+        return;
+    }
+    jmeClasses::env->CallObjectMethod(out, jmeClasses::Matrix3f_set, 0, 2, m02);
+    if (jmeClasses::env->ExceptionCheck()) {
+        jmeClasses::env->Throw(jmeClasses::env->ExceptionOccurred());
+        return;
+    }
+    jmeClasses::env->CallObjectMethod(out, jmeClasses::Matrix3f_set, 1, 0, m10);
+    if (jmeClasses::env->ExceptionCheck()) {
+        jmeClasses::env->Throw(jmeClasses::env->ExceptionOccurred());
+        return;
+    }
+    jmeClasses::env->CallObjectMethod(out, jmeClasses::Matrix3f_set, 1, 1, m11);
+    if (jmeClasses::env->ExceptionCheck()) {
+        jmeClasses::env->Throw(jmeClasses::env->ExceptionOccurred());
+        return;
+    }
+    jmeClasses::env->CallObjectMethod(out, jmeClasses::Matrix3f_set, 1, 2, m12);
+    if (jmeClasses::env->ExceptionCheck()) {
+        jmeClasses::env->Throw(jmeClasses::env->ExceptionOccurred());
+        return;
+    }
+    jmeClasses::env->CallObjectMethod(out, jmeClasses::Matrix3f_set, 2, 0, m20);
+    if (jmeClasses::env->ExceptionCheck()) {
+        jmeClasses::env->Throw(jmeClasses::env->ExceptionOccurred());
+        return;
+    }
+    jmeClasses::env->CallObjectMethod(out, jmeClasses::Matrix3f_set, 2, 1, m21);
+    if (jmeClasses::env->ExceptionCheck()) {
+        jmeClasses::env->Throw(jmeClasses::env->ExceptionOccurred());
+        return;
+    }
+    jmeClasses::env->CallObjectMethod(out, jmeClasses::Matrix3f_set, 2, 2, m22);
+    if (jmeClasses::env->ExceptionCheck()) {
+        jmeClasses::env->Throw(jmeClasses::env->ExceptionOccurred());
+        return;
+    }
+}
+
+void jmeBulletUtil::convertQuat(jobject in, btMatrix3x3* out) {
+    float x = jmeClasses::env->CallFloatMethod(in, jmeClasses::Quaternion_getX);
+    if (jmeClasses::env->ExceptionCheck()) {
+        jmeClasses::env->Throw(jmeClasses::env->ExceptionOccurred());
+        return;
+    }
+    float y = jmeClasses::env->CallFloatMethod(in, jmeClasses::Quaternion_getY);
+    if (jmeClasses::env->ExceptionCheck()) {
+        jmeClasses::env->Throw(jmeClasses::env->ExceptionOccurred());
+        return;
+    }
+    float z = jmeClasses::env->CallFloatMethod(in, jmeClasses::Quaternion_getZ);
+    if (jmeClasses::env->ExceptionCheck()) {
+        jmeClasses::env->Throw(jmeClasses::env->ExceptionOccurred());
+        return;
+    }
+    float w = jmeClasses::env->CallFloatMethod(in, jmeClasses::Quaternion_getW);
+    if (jmeClasses::env->ExceptionCheck()) {
+        jmeClasses::env->Throw(jmeClasses::env->ExceptionOccurred());
+        return;
+    }
+
+    float norm = w * w + x * x + y * y + z * z;
+    float s = (norm == 1.0) ? 2.0 : (norm > 0.1) ? 2.0 / norm : 0.0;
+
+    // compute xs/ys/zs first to save 6 multiplications, since xs/ys/zs
+    // will be used 2-4 times each.
+    float xs = x * s;
+    float ys = y * s;
+    float zs = z * s;
+    float xx = x * xs;
+    float xy = x * ys;
+    float xz = x * zs;
+    float xw = w * xs;
+    float yy = y * ys;
+    float yz = y * zs;
+    float yw = w * ys;
+    float zz = z * zs;
+    float zw = w * zs;
+
+    // using s=2/norm (instead of 1/norm) saves 9 multiplications by 2 here
+    out->setValue(1.0 - (yy + zz), (xy - zw), (xz + yw),
+                        (xy + zw), 1 - (xx + zz), (yz - xw),
+                        (xz - yw), (yz + xw), 1 - (xx + yy));
+}
+
+void jmeBulletUtil::convertQuat(btMatrix3x3* in, jobject out) {
+    // the trace is the sum of the diagonal elements; see
+    // http://mathworld.wolfram.com/MatrixTrace.html
+    float t = in->getRow(0).m_floats[0] + in->getRow(1).m_floats[1] + in->getRow(2).m_floats[2];
+    float w, x, y, z;
+    // we protect the division by s by ensuring that s>=1
+    if (t >= 0) { // |w| >= .5
+        float s = sqrt(t + 1); // |s|>=1 ...
+        w = 0.5f * s;
+        s = 0.5f / s; // so this division isn't bad
+        x = (in->getRow(2).m_floats[1] - in->getRow(1).m_floats[2]) * s;
+        y = (in->getRow(0).m_floats[2] - in->getRow(2).m_floats[0]) * s;
+        z = (in->getRow(1).m_floats[0] - in->getRow(0).m_floats[1]) * s;
+    } else if ((in->getRow(0).m_floats[0] > in->getRow(1).m_floats[1]) && (in->getRow(0).m_floats[0] > in->getRow(2).m_floats[2])) {
+        float s = sqrt(1.0f + in->getRow(0).m_floats[0] - in->getRow(1).m_floats[1] - in->getRow(2).m_floats[2]); // |s|>=1
+        x = s * 0.5f; // |x| >= .5
+        s = 0.5f / s;
+        y = (in->getRow(1).m_floats[0] + in->getRow(0).m_floats[1]) * s;
+        z = (in->getRow(0).m_floats[2] + in->getRow(2).m_floats[0]) * s;
+        w = (in->getRow(2).m_floats[1] - in->getRow(1).m_floats[2]) * s;
+    } else if (in->getRow(1).m_floats[1] > in->getRow(2).m_floats[2]) {
+        float s = sqrt(1.0f + in->getRow(1).m_floats[1] - in->getRow(0).m_floats[0] - in->getRow(2).m_floats[2]); // |s|>=1
+        y = s * 0.5f; // |y| >= .5
+        s = 0.5f / s;
+        x = (in->getRow(1).m_floats[0] + in->getRow(0).m_floats[1]) * s;
+        z = (in->getRow(2).m_floats[1] + in->getRow(1).m_floats[2]) * s;
+        w = (in->getRow(0).m_floats[2] - in->getRow(2).m_floats[0]) * s;
+    } else {
+        float s = sqrt(1.0f + in->getRow(2).m_floats[2] - in->getRow(0).m_floats[0] - in->getRow(1).m_floats[1]); // |s|>=1
+        z = s * 0.5f; // |z| >= .5
+        s = 0.5f / s;
+        x = (in->getRow(0).m_floats[2] + in->getRow(2).m_floats[0]) * s;
+        y = (in->getRow(2).m_floats[1] + in->getRow(1).m_floats[2]) * s;
+        w = (in->getRow(1).m_floats[0] - in->getRow(0).m_floats[1]) * s;
+    }
+
+    jmeClasses::env->CallObjectMethod(out, jmeClasses::Quaternion_set, x, y, z, w);
     if (jmeClasses::env->ExceptionCheck()) {
         jmeClasses::env->Throw(jmeClasses::env->ExceptionOccurred());
         return;

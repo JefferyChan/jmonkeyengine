@@ -30,24 +30,28 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 #include <jni.h>
-
 /**
  * Author: Normen Hansen
  */
+#include "jmeBulletUtil.h"
+#include "BulletCollision/CollisionShapes/btHeightfieldTerrainShape.h"
 
-#include "btBulletDynamicsCommon.h"
-//#include "btBulletCollisionCommon.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-class jmeMotionState : public btMotionState{
-private:
-	bool dirty;
+    /*
+     * Class:     com_jme3_bullet_collision_shapes_HeightfieldCollisionShape
+     * Method:    createShape
+     * Signature: (II[FFFFIZ)J
+     */
+    JNIEXPORT jlong JNICALL Java_com_jme3_bullet_collision_shapes_HeightfieldCollisionShape_createShape
+    (JNIEnv * env, jobject object, jint heightStickWidth, jint heightStickLength, jobject heightfieldData, jfloat heightScale, jfloat minHeight, jfloat maxHeight, jint upAxis, jboolean flipQuadEdges) {
+        void* data = env->GetDirectBufferAddress(heightfieldData);
+        btHeightfieldTerrainShape* shape=new btHeightfieldTerrainShape(heightStickWidth, heightStickLength, data, heightScale, minHeight, maxHeight, upAxis, PHY_FLOAT, flipQuadEdges);
+        return (long)shape;
+    }
 
-public:
-	jmeMotionState(btTransform);
-	virtual ~jmeMotionState();
-        
-	btTransform worldTransform;
-	virtual void  getWorldTransform(btTransform& worldTrans ) const;
-	virtual void  setWorldTransform(const btTransform& worldTrans);
-        bool applyTransform(jobject location, jobject rotation);
-};
+#ifdef __cplusplus
+}
+#endif

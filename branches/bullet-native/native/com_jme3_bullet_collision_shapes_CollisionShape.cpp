@@ -30,24 +30,51 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 #include <jni.h>
-
 /**
  * Author: Normen Hansen
  */
+#include "jmeBulletUtil.h"
 
-#include "btBulletDynamicsCommon.h"
-//#include "btBulletCollisionCommon.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-class jmeMotionState : public btMotionState{
-private:
-	bool dirty;
+    /*
+     * Class:     com_jme3_bullet_collision_shapes_CollisionShape
+     * Method:    getMargin
+     * Signature: (J)F
+     */
+    JNIEXPORT jfloat JNICALL Java_com_jme3_bullet_collision_shapes_CollisionShape_getMargin
+    (JNIEnv * env, jobject object, jlong shapeId) {
+        btCollisionShape* shape = (btCollisionShape*) shapeId;
+        return shape->getMargin();
+    }
 
-public:
-	jmeMotionState(btTransform);
-	virtual ~jmeMotionState();
-        
-	btTransform worldTransform;
-	virtual void  getWorldTransform(btTransform& worldTrans ) const;
-	virtual void  setWorldTransform(const btTransform& worldTrans);
-        bool applyTransform(jobject location, jobject rotation);
-};
+    /*
+     * Class:     com_jme3_bullet_collision_shapes_CollisionShape
+     * Method:    setLocalScaling
+     * Signature: (JLcom/jme3/math/Vector3f;)V
+     */
+    JNIEXPORT void JNICALL Java_com_jme3_bullet_collision_shapes_CollisionShape_setLocalScaling
+    (JNIEnv * env, jobject object, jlong shapeId, jobject scale) {
+        btCollisionShape* shape = (btCollisionShape*) shapeId;
+        btVector3* scl = new btVector3();
+        jmeBulletUtil::convert(scale, scl);
+        shape->setLocalScaling(*scl);
+        free(scl);
+    }
+
+    /*
+     * Class:     com_jme3_bullet_collision_shapes_CollisionShape
+     * Method:    setMargin
+     * Signature: (JF)V
+     */
+    JNIEXPORT void JNICALL Java_com_jme3_bullet_collision_shapes_CollisionShape_setMargin
+    (JNIEnv * env, jobject object, jlong shapeId, jfloat newMargin){
+        btCollisionShape* shape = (btCollisionShape*) shapeId;
+        shape->setMargin(newMargin);
+    }
+
+#ifdef __cplusplus
+}
+#endif

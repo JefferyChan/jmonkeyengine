@@ -167,14 +167,12 @@ public class PhysicsSpace {
     }
 
     public PhysicsSpace(Vector3f worldMin, Vector3f worldMax, BroadphaseType broadphaseType) {
+        System.loadLibrary("bulletjme");
+        initNativePhysics();
         this.worldMin.set(worldMin);
         this.worldMax.set(worldMax);
         this.broadphaseType = broadphaseType;
         create();
-        Quaternion qu;
-        Vector3f vec;
-        Matrix3f mtx;
-//        mtx.
     }
 
     /**
