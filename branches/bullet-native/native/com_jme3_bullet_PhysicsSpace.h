@@ -143,6 +143,14 @@ JNIEXPORT void JNICALL Java_com_jme3_bullet_PhysicsSpace_setGravity
 JNIEXPORT void JNICALL Java_com_jme3_bullet_PhysicsSpace_initNativePhysics
   (JNIEnv *, jclass);
 
+/*
+ * Class:     com_jme3_bullet_PhysicsSpace
+ * Method:    finalizeNative
+ * Signature: (J)V
+ */
+JNIEXPORT void JNICALL Java_com_jme3_bullet_PhysicsSpace_finalizeNative
+  (JNIEnv *, jobject, jlong);
+
 #ifdef __cplusplus
 }
 #endif

@@ -39,29 +39,39 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    
-/*
- * Class:     com_jme3_bullet_collision_PhysicsCollisionObject
- * Method:    attachCollisionShape
- * Signature: (JJ)V
- */
-JNIEXPORT void JNICALL Java_com_jme3_bullet_collision_PhysicsCollisionObject_attachCollisionShape
-  (JNIEnv * env, jobject object, jlong objectId, jlong shapeId){
+
+    /*
+     * Class:     com_jme3_bullet_collision_PhysicsCollisionObject
+     * Method:    attachCollisionShape
+     * Signature: (JJ)V
+     */
+    JNIEXPORT void JNICALL Java_com_jme3_bullet_collision_PhysicsCollisionObject_attachCollisionShape
+    (JNIEnv * env, jobject object, jlong objectId, jlong shapeId) {
         btCollisionObject* collisionObject = (btCollisionObject*) objectId;
-        if(collisionObject == NULL){
-            jclass newExc=env->FindClass("java/lang/IllegalStateException");
+        if (collisionObject == NULL) {
+            jclass newExc = env->FindClass("java/lang/IllegalStateException");
             env->ThrowNew(newExc, "The collision object does not exist.");
             return;
         }
         btCollisionShape* collisionShape = (btCollisionShape*) shapeId;
-        if(collisionShape == NULL){
-            jclass newExc=env->FindClass("java/lang/IllegalStateException");
+        if (collisionShape == NULL) {
+            jclass newExc = env->FindClass("java/lang/IllegalStateException");
             env->ThrowNew(newExc, "The collision shape does not exist.");
             return;
         }
         collisionObject->setCollisionShape(collisionShape);
-}
+    }
 
+    /*
+     * Class:     com_jme3_bullet_collision_PhysicsCollisionObject
+     * Method:    finalizeNative
+     * Signature: (J)V
+     */
+    JNIEXPORT void JNICALL Java_com_jme3_bullet_collision_PhysicsCollisionObject_finalizeNative
+    (JNIEnv * env, jobject object, jlong objectId) {
+        btCollisionObject* collisionObject = (btCollisionObject*) objectId;
+        delete(collisionObject);
+    }
 #ifdef __cplusplus
 }
 #endif

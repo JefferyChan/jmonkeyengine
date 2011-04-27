@@ -49,7 +49,7 @@ extern "C" {
     JNIEXPORT jlong JNICALL Java_com_jme3_bullet_objects_infos_RigidBodyMotionState_createMotionState
     (JNIEnv *env, jobject object) {
         jmeMotionState* motionState = new jmeMotionState(btTransform());
-        return (long)motionState;
+        return (long) motionState;
     }
 
     /*
@@ -58,8 +58,8 @@ extern "C" {
      * Signature: (JLcom/jme3/math/Vector3f;Lcom/jme3/math/Quaternion;)Z
      */
     JNIEXPORT jboolean JNICALL Java_com_jme3_bullet_objects_infos_RigidBodyMotionState_applyTransform
-    (JNIEnv *env, jobject object, jlong stateId, jobject location, jobject rotation){
-        jmeMotionState* motionState = (jmeMotionState*)stateId;
+    (JNIEnv *env, jobject object, jlong stateId, jobject location, jobject rotation) {
+        jmeMotionState* motionState = (jmeMotionState*) stateId;
         return motionState->applyTransform(env, location, rotation);
     }
 
@@ -69,8 +69,8 @@ extern "C" {
      * Signature: (JLcom/jme3/math/Vector3f;)V
      */
     JNIEXPORT void JNICALL Java_com_jme3_bullet_objects_infos_RigidBodyMotionState_getWorldLocation
-    (JNIEnv *env, jobject object, jlong stateId, jobject value){
-        jmeMotionState* motionState = (jmeMotionState*)stateId;
+    (JNIEnv *env, jobject object, jlong stateId, jobject value) {
+        jmeMotionState* motionState = (jmeMotionState*) stateId;
         jmeBulletUtil::convert(env, &motionState->worldTransform.getOrigin(), value);
     }
 
@@ -80,8 +80,8 @@ extern "C" {
      * Signature: (JLcom/jme3/math/Matrix3f;)V
      */
     JNIEXPORT void JNICALL Java_com_jme3_bullet_objects_infos_RigidBodyMotionState_getWorldRotation
-    (JNIEnv *env, jobject object, jlong stateId, jobject value){
-        jmeMotionState* motionState = (jmeMotionState*)stateId;
+    (JNIEnv *env, jobject object, jlong stateId, jobject value) {
+        jmeMotionState* motionState = (jmeMotionState*) stateId;
         jmeBulletUtil::convert(env, &motionState->worldTransform.getBasis(), value);
     }
 
@@ -91,9 +91,20 @@ extern "C" {
      * Signature: (JLcom/jme3/math/Quaternion;)V
      */
     JNIEXPORT void JNICALL Java_com_jme3_bullet_objects_infos_RigidBodyMotionState_getWorldRotationQuat
-    (JNIEnv *env, jobject object, jlong stateId, jobject value){
-        jmeMotionState* motionState = (jmeMotionState*)stateId;
+    (JNIEnv *env, jobject object, jlong stateId, jobject value) {
+        jmeMotionState* motionState = (jmeMotionState*) stateId;
         jmeBulletUtil::convertQuat(env, &motionState->worldTransform.getBasis(), value);
+    }
+
+    /*
+     * Class:     com_jme3_bullet_objects_infos_RigidBodyMotionState
+     * Method:    finalizeNative
+     * Signature: (J)V
+     */
+    JNIEXPORT void JNICALL Java_com_jme3_bullet_objects_infos_RigidBodyMotionState_finalizeNative
+    (JNIEnv *env, jobject object, jlong stateId){
+        jmeMotionState* motionState = (jmeMotionState*) stateId;
+        delete(motionState);
     }
 
 #ifdef __cplusplus

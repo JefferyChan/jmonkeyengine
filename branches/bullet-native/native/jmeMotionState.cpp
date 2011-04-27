@@ -84,5 +84,6 @@ bool jmeMotionState::applyTransform(JNIEnv* env, jobject location, jobject rotat
 }
 
 jmeMotionState::~jmeMotionState() {
+    //free(worldTransform);
     // TODO Auto-generated destructor stub
 }

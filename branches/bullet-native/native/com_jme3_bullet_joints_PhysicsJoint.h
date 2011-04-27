@@ -15,6 +15,14 @@ extern "C" {
 JNIEXPORT jfloat JNICALL Java_com_jme3_bullet_joints_PhysicsJoint_getAppliedImpulse
   (JNIEnv *, jobject, jlong);
 
+/*
+ * Class:     com_jme3_bullet_joints_PhysicsJoint
+ * Method:    finalizeNative
+ * Signature: (J)V
+ */
+JNIEXPORT void JNICALL Java_com_jme3_bullet_joints_PhysicsJoint_finalizeNative
+  (JNIEnv *, jobject, jlong);
+
 #ifdef __cplusplus
 }
 #endif

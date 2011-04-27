@@ -52,6 +52,17 @@ extern "C" {
         btBvhTriangleMeshShape* shape = new btBvhTriangleMeshShape(array, true, true);
         return (long) shape;
     }
+    
+    /*
+     * Class:     com_jme3_bullet_collision_shapes_MeshCollisionShape
+     * Method:    finalizeNative
+     * Signature: (J)V
+     */
+    JNIEXPORT void JNICALL Java_com_jme3_bullet_collision_shapes_MeshCollisionShape_finalizeNative
+    (JNIEnv * env, jobject object, jlong arrayId){
+        btTriangleIndexVertexArray* array = (btTriangleIndexVertexArray*) arrayId;
+        delete(array);
+    }
 
 #ifdef __cplusplus
 }

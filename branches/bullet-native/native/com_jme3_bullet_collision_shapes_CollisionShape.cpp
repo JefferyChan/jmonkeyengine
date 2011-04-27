@@ -71,11 +71,21 @@ extern "C" {
      * Signature: (JF)V
      */
     JNIEXPORT void JNICALL Java_com_jme3_bullet_collision_shapes_CollisionShape_setMargin
-    (JNIEnv * env, jobject object, jlong shapeId, jfloat newMargin){
+    (JNIEnv * env, jobject object, jlong shapeId, jfloat newMargin) {
         btCollisionShape* shape = (btCollisionShape*) shapeId;
         shape->setMargin(newMargin);
     }
 
+    /*
+     * Class:     com_jme3_bullet_collision_shapes_CollisionShape
+     * Method:    finalizeNative
+     * Signature: (J)V
+     */
+    JNIEXPORT void JNICALL Java_com_jme3_bullet_collision_shapes_CollisionShape_finalizeNative
+    (JNIEnv * env, jobject object, jlong shapeId) {
+        btCollisionShape* shape = (btCollisionShape*) shapeId;
+        delete(shape);
+    }
 #ifdef __cplusplus
 }
 #endif

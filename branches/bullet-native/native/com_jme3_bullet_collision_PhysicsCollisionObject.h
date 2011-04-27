@@ -49,6 +49,14 @@ extern "C" {
 JNIEXPORT void JNICALL Java_com_jme3_bullet_collision_PhysicsCollisionObject_attachCollisionShape
   (JNIEnv *, jobject, jlong, jlong);
 
+/*
+ * Class:     com_jme3_bullet_collision_PhysicsCollisionObject
+ * Method:    finalizeNative
+ * Signature: (J)V
+ */
+JNIEXPORT void JNICALL Java_com_jme3_bullet_collision_PhysicsCollisionObject_finalizeNative
+  (JNIEnv *, jobject, jlong);
+
 #ifdef __cplusplus
 }
 #endif

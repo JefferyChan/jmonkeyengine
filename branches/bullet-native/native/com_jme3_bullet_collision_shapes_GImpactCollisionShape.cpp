@@ -53,6 +53,17 @@ extern "C" {
         return (long) shape;
     }
 
+    /*
+     * Class:     com_jme3_bullet_collision_shapes_GImpactCollisionShape
+     * Method:    finalizeNative
+     * Signature: (J)V
+     */
+    JNIEXPORT void JNICALL Java_com_jme3_bullet_collision_shapes_GImpactCollisionShape_finalizeNative
+    (JNIEnv * env, jobject object, jlong meshId) {
+        btTriangleIndexVertexArray* array = (btTriangleIndexVertexArray*) meshId;
+        delete(array);
+    }
+    
 #ifdef __cplusplus
 }
 #endif
