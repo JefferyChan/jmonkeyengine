@@ -10,6 +10,8 @@ import com.jme3.scene.VertexBuffer.Type;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class HullCollisionShape extends CollisionShape {
 
@@ -67,6 +69,7 @@ public class HullCollisionShape extends CollisionShape {
         fbuf = ByteBuffer.allocateDirect(points.length * 4).order(ByteOrder.nativeOrder()).asFloatBuffer();
         fbuf.put(points);
         objectId = createShape(fbuf);
+        Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Created Shape {0}", Long.toHexString(objectId));
         setScale(scale);
         setMargin(margin);
     }

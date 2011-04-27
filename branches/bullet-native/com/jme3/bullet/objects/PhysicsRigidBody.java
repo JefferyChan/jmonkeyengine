@@ -56,6 +56,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * <p>PhysicsRigidBody - Basic physics object</p>
@@ -112,6 +114,7 @@ public class PhysicsRigidBody extends PhysicsCollisionObject {
         }
         preRebuild();
         objectId = createRigidBody(mass, motionState.getObjectId(), collisionShape.getObjectId());
+        Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Created RigidBody {0}", Long.toHexString(objectId));
 //        rBody = new RigidBody(constructionInfo);
         postRebuild();
         if (removed) {

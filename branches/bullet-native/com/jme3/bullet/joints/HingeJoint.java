@@ -38,6 +38,8 @@ import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
 import com.jme3.export.OutputCapsule;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * <i>From bullet manual:</i><br>
@@ -180,6 +182,7 @@ public class HingeJoint extends PhysicsJoint {
 
     protected void createJoint() {
         objectId = createJoint(nodeA.getObjectId(), nodeB.getObjectId(), pivotA, axisA, pivotB, axisB);
+        Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Created Joint {0}", Long.toHexString(objectId));
     }
 
     private native long createJoint(long objectIdA, long objectIdB, Vector3f pivotA, Vector3f axisA, Vector3f pivotB, Vector3f axisB);

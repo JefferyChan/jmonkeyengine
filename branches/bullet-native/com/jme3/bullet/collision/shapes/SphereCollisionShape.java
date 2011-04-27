@@ -31,13 +31,13 @@
  */
 package com.jme3.bullet.collision.shapes;
 
-import com.bulletphysics.collision.shapes.SphereShape;
-import com.jme3.bullet.util.Converter;
 import com.jme3.export.InputCapsule;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
 import com.jme3.export.OutputCapsule;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Basic sphere collision shape
@@ -78,6 +78,7 @@ public class SphereCollisionShape extends CollisionShape {
 
     protected void createShape() {
         objectId = createShape(radius);
+        Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Created Shape {0}", Long.toHexString(objectId));
 //        new SphereShape(radius);
 //        objectId.setLocalScaling(Converter.convert(getScale()));
 //        objectId.setMargin(margin);

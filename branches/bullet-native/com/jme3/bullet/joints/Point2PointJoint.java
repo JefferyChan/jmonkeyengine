@@ -38,6 +38,8 @@ import com.jme3.bullet.objects.PhysicsRigidBody;
 import com.jme3.export.InputCapsule;
 import com.jme3.export.OutputCapsule;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * <i>From bullet manual:</i><br>
@@ -117,6 +119,7 @@ public class Point2PointJoint extends PhysicsJoint {
 
     protected void createJoint() {
         objectId = createJoint(nodeA.getObjectId(), nodeB.getObjectId(), pivotA, pivotB);
+        Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Created Joint {0}", Long.toHexString(objectId));
     }
 
     private native long createJoint(long objectIdA, long objectIdB, Vector3f pivotA, Vector3f pivotB);

@@ -10,6 +10,8 @@ import com.jme3.export.JmeImporter;
 import com.jme3.export.OutputCapsule;
 import com.jme3.math.Vector3f;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * A simple point, line, triangle or quad collisionShape based on one to four points-
@@ -81,6 +83,7 @@ public class SimplexCollisionShape extends CollisionShape {
             objectId = createShape(vector1);
 //            objectId = new BU_Simplex1to4(Converter.convert(vector1));
         }
+        Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Created Shape {0}", Long.toHexString(objectId));
 //        objectId.setLocalScaling(Converter.convert(getScale()));
 //        objectId.setMargin(margin);
         setScale(scale);

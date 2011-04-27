@@ -38,6 +38,8 @@ import com.jme3.export.InputCapsule;
 import com.jme3.export.OutputCapsule;
 import com.jme3.export.Savable;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This Object holds information about a jbullet CollisionShape to be able to reuse
@@ -120,4 +122,13 @@ public abstract class CollisionShape implements Savable {
         this.scale = (Vector3f) capsule.readSavable("scale", new Vector3f(1, 1, 1));
         this.margin = capsule.readFloat("margin", 0.0f);
     }
+
+    @Override
+    protected void finalize() throws Throwable {
+        super.finalize();
+        Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Finalizing CollisionShape {0}", Long.toHexString(objectId));
+        finalizeNative(objectId);
+    }
+
+    private native void finalizeNative(long objectId);
 }

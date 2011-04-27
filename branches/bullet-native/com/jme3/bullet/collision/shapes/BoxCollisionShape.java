@@ -37,6 +37,8 @@ import com.jme3.math.Vector3f;
 import com.jme3.export.InputCapsule;
 import com.jme3.export.OutputCapsule;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Basic box collision shape
@@ -78,6 +80,7 @@ public class BoxCollisionShape extends CollisionShape {
 
     protected void createShape() {
         objectId = createShape(halfExtents);
+        Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Created Shape {0}", Long.toHexString(objectId));
 //        cShape = new BoxShape(Converter.convert(halfExtents));
         setScale(scale);
         setMargin(margin);

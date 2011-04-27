@@ -137,6 +137,14 @@ JNIEXPORT jfloat JNICALL Java_com_jme3_bullet_objects_PhysicsVehicle_getCurrentV
 JNIEXPORT void JNICALL Java_com_jme3_bullet_objects_PhysicsVehicle_getForwardVector
   (JNIEnv *, jobject, jlong, jobject);
 
+/*
+ * Class:     com_jme3_bullet_objects_PhysicsVehicle
+ * Method:    finalizeNative
+ * Signature: (JJ)V
+ */
+JNIEXPORT void JNICALL Java_com_jme3_bullet_objects_PhysicsVehicle_finalizeNative
+  (JNIEnv *, jobject, jlong, jlong);
+
 #ifdef __cplusplus
 }
 #endif

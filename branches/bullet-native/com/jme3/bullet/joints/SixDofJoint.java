@@ -43,6 +43,8 @@ import com.jme3.export.OutputCapsule;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * <i>From bullet manual:</i><br>
@@ -80,6 +82,7 @@ public class SixDofJoint extends PhysicsJoint {
         this.rotB = rotB;
 
         objectId = createJoint(nodeA.getObjectId(), nodeB.getObjectId(), pivotA, rotA, pivotB, rotB, useLinearReferenceFrameA);
+        Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Created Joint {0}", Long.toHexString(objectId));
         gatherMotors();
     }
 
@@ -94,6 +97,7 @@ public class SixDofJoint extends PhysicsJoint {
         rotB = new Matrix3f();
 
         objectId = createJoint(nodeA.getObjectId(), nodeB.getObjectId(), pivotA, rotA, pivotB, rotB, useLinearReferenceFrameA);
+        Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Created Joint {0}", Long.toHexString(objectId));
         gatherMotors();
     }
 
@@ -164,6 +168,7 @@ public class SixDofJoint extends PhysicsJoint {
         InputCapsule capsule = im.getCapsule(this);
 
         objectId = createJoint(nodeA.getObjectId(), nodeB.getObjectId(), pivotA, rotA, pivotB, rotB, useLinearReferenceFrameA);
+        Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Created Joint {0}", Long.toHexString(objectId));
         gatherMotors();
 
         setAngularUpperLimit((Vector3f) capsule.readSavable("angularUpperLimit", new Vector3f(Vector3f.POSITIVE_INFINITY)));

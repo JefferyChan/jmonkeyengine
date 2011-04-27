@@ -41,6 +41,8 @@ import com.jme3.export.InputCapsule;
 import com.jme3.export.JmeImporter;
 import com.jme3.export.OutputCapsule;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * <i>From bullet manual:</i><br>
@@ -538,6 +540,7 @@ public class SliderJoint extends PhysicsJoint {
         Converter.convert(rotB, transB.basis);
 
         objectId = createJoint(nodeA.getObjectId(), nodeB.getObjectId(), pivotA, rotA, pivotB, rotB, useLinearReferenceFrameA);
+        Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Created Joint {0}", Long.toHexString(objectId));
         // = new SliderConstraint(nodeA.getObjectId(), nodeB.getObjectId(), transA, transB, useLinearReferenceFrameA);
     }
 

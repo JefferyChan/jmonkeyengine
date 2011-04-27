@@ -40,6 +40,8 @@ import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
 import com.jme3.export.OutputCapsule;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * <i>From bullet manual:</i><br>
@@ -126,6 +128,7 @@ public class ConeJoint extends PhysicsJoint {
 
     protected void createJoint() {
         objectId = createJoint(nodeA.getObjectId(), nodeB.getObjectId(), pivotA, rotA, pivotB, rotB);
+        Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Created Joint {0}", Long.toHexString(objectId));
         setLimit(objectId, swingSpan1, swingSpan2, twistSpan);
         setAngularOnly(objectId, angularOnly);
     }

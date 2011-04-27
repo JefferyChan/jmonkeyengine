@@ -36,6 +36,8 @@ import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
 import com.jme3.export.OutputCapsule;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Basic capsule collision shape
@@ -104,6 +106,7 @@ public class CapsuleCollisionShape extends CollisionShape{
 
     protected void createShape(){
         objectId = createShape(axis, radius, height);
+        Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Created Shape {0}", Long.toHexString(objectId));
         setScale(scale);
         setMargin(margin);
 //        switch(axis){

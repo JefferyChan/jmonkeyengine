@@ -32,7 +32,6 @@
 package com.jme3.bullet.collision;
 
 import com.jme3.asset.AssetManager;
-import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.util.DebugShapeFactory;
 import com.jme3.export.InputCapsule;
@@ -50,6 +49,8 @@ import com.jme3.scene.debug.Arrow;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Base class for collision objects (PhysicsRigidBody, PhysicsGhostObject)
@@ -293,4 +294,13 @@ public abstract class PhysicsCollisionObject implements Savable {
         CollisionShape shape = (CollisionShape) capsule.readSavable("collisionShape", null);
         collisionShape = shape;
     }
+
+    @Override
+    protected void finalize() throws Throwable {
+        super.finalize();
+        Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Finalizing CollisionObject {0}", Long.toHexString(objectId));
+        finalizeNative(objectId);
+    }
+
+    private native void finalizeNative(long objectId);
 }

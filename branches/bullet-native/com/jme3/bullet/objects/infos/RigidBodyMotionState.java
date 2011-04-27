@@ -36,6 +36,8 @@ import com.jme3.math.Matrix3f;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * stores transform info of a PhysicsNode in a threadsafe manner to
@@ -54,6 +56,7 @@ public class RigidBodyMotionState {
 
     public RigidBodyMotionState() {
         this.motionStateId = createMotionState();
+        Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Created MotionState {0}", Long.toHexString(motionStateId));
     }
 
     private native long createMotionState();
@@ -149,4 +152,12 @@ public class RigidBodyMotionState {
 //        listeners.remove(listener);
 //    }
 
+    @Override
+    protected void finalize() throws Throwable {
+        super.finalize();
+        Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Finalizing MotionState {0}", Long.toHexString(motionStateId));
+        finalizeNative(motionStateId);
+    }
+
+    private native void finalizeNative(long objectId);
 }

@@ -43,6 +43,8 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Basic mesh collision shape
@@ -99,7 +101,6 @@ public class MeshCollisionShape extends CollisionShape {
 //    public Mesh createJmeMesh(){
 //        return Converter.convert(bulletMesh);
 //    }
-
     public void write(JmeExporter ex) throws IOException {
         super.write(ex);
         OutputCapsule capsule = ex.getCapsule(this);
@@ -139,10 +140,21 @@ public class MeshCollisionShape extends CollisionShape {
 //        objectId.setLocalScaling(Converter.convert(getScale()));
 //        objectId.setMargin(margin);
         meshId = NativeMeshUtil.createTriangleIndexVertexArray(triangleIndexBase, vertexBase, numTriangles, numVertices, vertexStride, triangleIndexStride);
+        Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Created Mesh {0}", Long.toHexString(meshId));
         objectId = createShape(meshId);
+        Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Created Shape {0}", Long.toHexString(objectId));
         setScale(scale);
         setMargin(margin);
     }
 
     private native long createShape(long meshId);
+
+    @Override
+    protected void finalize() throws Throwable {
+        super.finalize();
+        Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Finalizing Mesh {0}", Long.toHexString(meshId));
+        finalizeNative(meshId);
+    }
+
+    private native void finalizeNative(long objectId);
 }

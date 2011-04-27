@@ -36,7 +36,6 @@ import com.jme3.math.Quaternion;
 import com.jme3.scene.Spatial;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.collision.shapes.CollisionShape;
-import com.jme3.bullet.util.Converter;
 import com.jme3.export.InputCapsule;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
@@ -45,6 +44,8 @@ import com.jme3.math.Vector3f;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * <i>From Bullet manual:</i><br>
@@ -77,6 +78,7 @@ public class PhysicsGhostObject extends PhysicsCollisionObject {
         if (objectId == 0) {
 //            gObject = new PairCachingGhostObject();
             objectId = createGhostObject();
+            Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Created Ghost Object {0}", Long.toHexString(objectId));
             setGhostFlags(objectId);
         }
 //        if (gObject == null) {

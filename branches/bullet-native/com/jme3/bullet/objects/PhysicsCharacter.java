@@ -36,20 +36,17 @@ package com.jme3.bullet.objects;
 //import com.bulletphysics.collision.shapes.ConvexShape;
 //import com.bulletphysics.dynamics.character.KinematicCharacterController;
 //import com.bulletphysics.linearmath.Transform;
-import com.bulletphysics.collision.shapes.ConvexShape;
-import com.bulletphysics.dynamics.character.KinematicCharacterController;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.math.Vector3f;
 import com.jme3.bullet.collision.shapes.CollisionShape;
-import com.jme3.bullet.collision.shapes.CompoundCollisionShape;
-import com.jme3.bullet.collision.shapes.MeshCollisionShape;
-import com.jme3.bullet.util.Converter;
 import com.jme3.export.InputCapsule;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
 import com.jme3.export.OutputCapsule;
 import com.jme3.math.Quaternion;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Basic Bullet Character
@@ -92,6 +89,7 @@ public class PhysicsCharacter extends PhysicsCollisionObject {
         if (objectId == 0) {
 //            gObject = new PairCachingGhostObject();
             objectId = createGhostObject();
+            Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Creating GhostObject {0}", Long.toHexString(objectId));
         }
         setCharacterFlags(objectId);
 //        gObject.setCollisionFlags(CollisionFlags.CHARACTER_OBJECT);
@@ -101,6 +99,7 @@ public class PhysicsCharacter extends PhysicsCollisionObject {
 //        gObject.setUserPointer(this);
 //        character = new KinematicCharacterController(gObject, (ConvexShape) collisionShape.getObjectId(), stepHeight);
         characterId = createCharacterObject(objectId, collisionShape.getObjectId(), stepHeight);
+        Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Creating Character {0}", Long.toHexString(characterId));
     }
     
     private native long createGhostObject();

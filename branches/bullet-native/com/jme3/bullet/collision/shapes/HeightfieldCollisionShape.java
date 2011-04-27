@@ -16,6 +16,8 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Uses Bullet Physics Heightfield terrain collision system. This is MUCH faster
@@ -96,6 +98,7 @@ public class HeightfieldCollisionShape extends CollisionShape {
         fbuf = ByteBuffer.allocate(heightfieldData.length*4).order(ByteOrder.nativeOrder()).asFloatBuffer();//FloatBuffer.wrap(heightfieldData);
         fbuf.put(heightfieldData);
         objectId = createShape(heightStickWidth, heightStickLength, fbuf, heightScale, minHeight, maxHeight, upAxis, flipQuadEdges);
+        Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Created Shape {0}", Long.toHexString(objectId));
         setScale(scale);
         setMargin(margin);
     }

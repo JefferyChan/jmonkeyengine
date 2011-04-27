@@ -31,10 +31,7 @@
  */
 package com.jme3.bullet.objects;
 
-import com.bulletphysics.collision.dispatch.CollisionObject;
-import com.bulletphysics.dynamics.vehicle.RaycastVehicle;
 //import com.bulletphysics.dynamics.vehicle.VehicleTuning;
-import com.bulletphysics.dynamics.vehicle.WheelInfo;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
 import com.jme3.math.Vector3f;
@@ -42,7 +39,6 @@ import com.jme3.scene.Spatial;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.objects.infos.VehicleTuning;
-import com.jme3.bullet.util.Converter;
 import com.jme3.export.InputCapsule;
 import com.jme3.export.OutputCapsule;
 import com.jme3.scene.Geometry;
@@ -51,6 +47,8 @@ import com.jme3.scene.debug.Arrow;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * <p>PhysicsVehicleNode - Special PhysicsNode that implements vehicle functions</p>
@@ -98,7 +96,7 @@ public class PhysicsVehicle extends PhysicsRigidBody {
             }
         }
     }
-    
+
     private native void updateWheelTransform(long vehicleId, int wheel, boolean interpolated);
 
     /**
@@ -135,8 +133,10 @@ public class PhysicsVehicle extends PhysicsRigidBody {
         }
 //        rayCaster = new DefaultVehicleRaycaster(space.getDynamicsWorld());
         rayCasterId = createVehicleRaycaster(objectId, space.getSpaceId());
+        Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Created RayCaster {0}", Long.toHexString(objectId));
 //        vehicleId = new RaycastVehicle(tuning, rBody, rayCaster);
         vehicleId = createRaycastVehicle(objectId, rayCasterId);
+        Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Created Vehicle {0}", Long.toHexString(objectId));
         setCoordinateSystem(objectId, 0, 1, 2);
 //        vehicleId.setCoordinateSystem(0, 1, 2);
         for (VehicleWheel wheel : wheels) {
@@ -145,14 +145,14 @@ public class PhysicsVehicle extends PhysicsRigidBody {
 //                    wheel.getRestLength(), wheel.getRadius(), tuning, wheel.isFrontWheel()));
         }
     }
-    
+
     private native long createVehicleRaycaster(long objectId, long physicsSpaceId);
-    
+
     private native long createRaycastVehicle(long objectId, long rayCasterId);
-    
+
     private native void setCoordinateSystem(long objectId, int a, int b, int c);
-    
-    private native long addWheel(long objectId, Vector3f location, Vector3f direction, Vector3f axle, float restLength, float radius, VehicleTuning tuning,boolean frontWheel);
+
+    private native long addWheel(long objectId, Vector3f location, Vector3f direction, Vector3f axle, float restLength, float radius, VehicleTuning tuning, boolean frontWheel);
 
     /**
      * Add a wheel to this vehicle
@@ -188,7 +188,7 @@ public class PhysicsVehicle extends PhysicsRigidBody {
         }
         if (vehicleId != 0) {
             wheel.setWheelId(addWheel(objectId, wheel.getLocation(), wheel.getDirection(), wheel.getAxle(), wheel.getRestLength(), wheel.getRadius(), tuning, wheel.isFrontWheel()));
-            
+
 //            WheelInfo info = vehicleId.addWheel(Converter.convert(connectionPoint), Converter.convert(direction), Converter.convert(axle),
 //                    suspensionRestLength, wheelRadius, tuning, isFrontWheel);
 //            wheel.setWheelInfo(info);
@@ -395,7 +395,7 @@ public class PhysicsVehicle extends PhysicsRigidBody {
     public void setSuspensionStiffness(float suspensionStiffness) {
         tuning.suspensionStiffness = suspensionStiffness;
     }
-    
+
     private native void setSuspensionStiffness(long vehicleId, float suspensionStiffness);
 
     /**
@@ -413,7 +413,7 @@ public class PhysicsVehicle extends PhysicsRigidBody {
     public void resetSuspension() {
         resetSuspension(vehicleId);
     }
-    
+
     private native void resetSuspension(long vehicleId);
 
     /**
@@ -433,9 +433,9 @@ public class PhysicsVehicle extends PhysicsRigidBody {
      */
     public void accelerate(int wheel, float force) {
         applyEngineForce(vehicleId, wheel, force);
-        
+
     }
-    
+
     private native void applyEngineForce(long vehicleId, int wheel, float force);
 
     /**
@@ -458,7 +458,7 @@ public class PhysicsVehicle extends PhysicsRigidBody {
     public void steer(int wheel, float value) {
         steer(vehicleId, wheel, value);
     }
-    
+
     private native void steer(long vehicleId, int wheel, float value);
 
     /**
@@ -479,7 +479,7 @@ public class PhysicsVehicle extends PhysicsRigidBody {
     public void brake(int wheel, float force) {
         brake(vehicleId, wheel, force);
     }
-    
+
     private native float brake(long vehicleId, int wheel, float force);
 
     /**
@@ -489,7 +489,7 @@ public class PhysicsVehicle extends PhysicsRigidBody {
     public float getCurrentVehicleSpeedKmHour() {
         return getCurrentVehicleSpeedKmHour(vehicleId);
     }
-    
+
     private native float getCurrentVehicleSpeedKmHour(long vehicleId);
 
     /**
@@ -504,7 +504,7 @@ public class PhysicsVehicle extends PhysicsRigidBody {
         getForwardVector(vehicleId, vector);
         return vector;
     }
-    
+
     private native void getForwardVector(long objectId, Vector3f vector);
 
     /**
@@ -518,7 +518,6 @@ public class PhysicsVehicle extends PhysicsRigidBody {
 //    public void destroy() {
 //        super.destroy();
 //    }
-
     @Override
     protected Spatial getDebugShape() {
         Spatial shape = super.getDebugShape();
@@ -589,4 +588,14 @@ public class PhysicsVehicle extends PhysicsRigidBody {
         capsule.writeSavableArrayList(wheels, "wheelsList", new ArrayList<VehicleWheel>());
         super.write(ex);
     }
+
+    @Override
+    protected void finalize() throws Throwable {
+        super.finalize();
+        Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Finalizing RayCaster {0}", Long.toHexString(rayCasterId));
+        Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Finalizing Vehicle {0}", Long.toHexString(vehicleId));
+        finalizeNative(rayCasterId, vehicleId);
+    }
+
+    private native void finalizeNative(long rayCaster, long vehicle);
 }
