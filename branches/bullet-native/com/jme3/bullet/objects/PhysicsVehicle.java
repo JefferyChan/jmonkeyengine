@@ -470,7 +470,7 @@ public class PhysicsVehicle extends PhysicsRigidBody {
         brake(vehicleId, wheel, force);
     }
 
-    private native float brake(long vehicleId, int wheel, float force);
+    private native void brake(long vehicleId, int wheel, float force);
 
     /**
      * Get the current speed of the vehicle in km/h

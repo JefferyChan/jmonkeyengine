@@ -150,7 +150,7 @@ extern "C" {
      * Method:    brake
      * Signature: (JIF)F
      */
-    JNIEXPORT jfloat JNICALL Java_com_jme3_bullet_objects_PhysicsVehicle_brake
+    JNIEXPORT void JNICALL Java_com_jme3_bullet_objects_PhysicsVehicle_brake
     (JNIEnv *env, jobject object, jlong vehicleId, jint wheel, jfloat value) {
         btRaycastVehicle* vehicle = (btRaycastVehicle*) vehicleId;
         vehicle->setBrake(value, wheel);
