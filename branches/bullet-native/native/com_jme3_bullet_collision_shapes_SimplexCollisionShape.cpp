@@ -29,12 +29,12 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#include <jni.h>
+
 /**
  * Author: Normen Hansen
  */
-#include "jmeBulletUtil.h"
 #include "com_jme3_bullet_collision_shapes_SimplexCollisionShape.h"
+#include "jmeBulletUtil.h"
 
 #ifdef __cplusplus
 extern "C" {

@@ -29,13 +29,13 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#include <jni.h>
+
 /**
  * Author: Normen Hansen
  */
-#include <BulletCollision/Gimpact/btGImpactShape.h>
-#include "jmeBulletUtil.h"
 #include "com_jme3_bullet_collision_shapes_GImpactCollisionShape.h"
+#include "jmeBulletUtil.h"
+#include <BulletCollision/Gimpact/btGImpactShape.h>
 
 #ifdef __cplusplus
 extern "C" {

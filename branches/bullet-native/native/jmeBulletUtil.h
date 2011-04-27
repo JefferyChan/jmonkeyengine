@@ -29,11 +29,10 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#include <jni.h>
+#include "jmeClasses.h"
 #include "btBulletDynamicsCommon.h"
 #include "btBulletCollisionCommon.h"
 #include "LinearMath/btVector3.h"
-#include "jmeClasses.h"
 
 /**
  * Author: Normen Hansen

@@ -29,13 +29,13 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#include <jni.h>
+
 /**
  * Author: Normen Hansen
  */
+#include "com_jme3_bullet_collision_shapes_HeightfieldCollisionShape.h"
 #include "jmeBulletUtil.h"
 #include "BulletCollision/CollisionShapes/btHeightfieldTerrainShape.h"
-#include "com_jme3_bullet_collision_shapes_HeightfieldCollisionShape.h"
 
 #ifdef __cplusplus
 extern "C" {
