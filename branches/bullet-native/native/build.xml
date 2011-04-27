@@ -139,22 +139,22 @@
     </target>
 
     <target name="-nativelib-windows" if="isWindows">
-        <cc name="${bullet.windows.compiler}" warnings="severe" debug="${bullet.compile.debug}" link="shared" outfile="${bullet.output.dir}\${bullet.library.name}" objdir="${bullet.build.dir}">
+        <cc name="${bullet.windows.compiler}" warnings="severe" debug="${bullet.compile.debug}" link="shared" outfile="${bullet.output.dir}/${bullet.library.name}" objdir="${bullet.build.dir}">
             <fileset dir="${bullet.source.dir}">
                 <include name="*.cpp">
                 </include>
             </fileset>
             <includepath path="${bullet.java.include}"/>
-            <includepath path="${bullet.java.include}\win32"/>
+            <includepath path="${bullet.java.include}/win32"/>
             <includepath path="${bullet.bullet.include}"/>
            <!--compilerarg value="-m32"/-->
             <linker name="${bullet.windows.compiler}">
-                <libset dir="${bullet.folder}\src\BulletMultiThreaded" libs="BulletMultiThreaded"/>
-                <libset dir="${bullet.folder}\src\BulletDynamics" libs="BulletDynamics"/>
-                <libset dir="${bullet.folder}\src\BulletCollision" libs="BulletCollision"/>
-                <libset dir="${bullet.folder}\src\LinearMath" libs="LinearMath"/>
+                <libset dir="${bullet.folder}/src/BulletMultiThreaded" libs="BulletMultiThreaded"/>
+                <libset dir="${bullet.folder}/src/BulletDynamics" libs="BulletDynamics"/>
+                <libset dir="${bullet.folder}/src/BulletCollision" libs="BulletCollision"/>
+                <libset dir="${bullet.folder}/src/LinearMath" libs="LinearMath"/>
             </linker>
         </cc>
-        <move file="${bullet.output.dir}\${bullet.library.name}.so" tofile="${bullet.output.dir}\${bullet.library.name}.dll" failonerror="false" verbose="true"/>
+        <move file="${bullet.output.dir}/${bullet.library.name}.so" tofile="${bullet.output.dir}/${bullet.library.name}.dll" failonerror="false" verbose="true"/>
     </target>
 </project>
