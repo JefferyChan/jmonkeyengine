@@ -49,11 +49,9 @@ extern "C" {
     JNIEXPORT jlong JNICALL Java_com_jme3_bullet_collision_shapes_HullCollisionShape_createShape
     (JNIEnv *env, jobject object, jobject array) {
         float* data = (float*)env->GetDirectBufferAddress(array);
-//        int length = env->GetArrayLength(array);
-//        float* data = new float[length];
-//        //TODO: release
-//        env->GetFloatArrayRegion((jfloatArray) array, 0, length, data);
-        btConvexHullShape* shape = new btConvexHullShape(data);
+        //TODO: capacity will not always be length!
+        int length = env->GetDirectBufferCapacity(array);
+        btConvexHullShape* shape = new btConvexHullShape(data, length);
         return (long)shape;
     }
 
