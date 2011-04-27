@@ -76,14 +76,14 @@ extern "C" {
     (JNIEnv *env, jobject object, jlong bodyId, jobject value) {
         jmeClasses::initJavaClasses(env);
         btRigidBody* body = (btRigidBody*) bodyId;
-        btMatrix3x3* mtx = new btMatrix3x3();
-        btTransform* trans = new btTransform(*mtx);
-        trans->setBasis(body->getWorldTransform().getBasis());
-        jmeBulletUtil::convert(env, value, &trans->getOrigin());
-        body->setWorldTransform(*trans);
-        delete(mtx);
-        delete(trans);
-//        jmeBulletUtil::convert(env, value, &body->getWorldTransform().getOrigin());
+//        btMatrix3x3* mtx = new btMatrix3x3();
+//        btTransform* trans = new btTransform(*mtx);
+//        trans->setBasis(body->getWorldTransform().getBasis());
+//        jmeBulletUtil::convert(env, value, &trans->getOrigin());
+//        body->setWorldTransform(*trans);
+//        delete(mtx);
+//        delete(trans);
+        jmeBulletUtil::convert(env, value, &body->getWorldTransform().getOrigin());
     }
 
     /*
@@ -95,14 +95,14 @@ extern "C" {
     (JNIEnv *env, jobject object, jlong bodyId, jobject value) {
         jmeClasses::initJavaClasses(env);
         btRigidBody* body = (btRigidBody*) bodyId;
-        btMatrix3x3* mtx = new btMatrix3x3();
-        btTransform* trans = new btTransform(*mtx);
-        trans->setOrigin(body->getWorldTransform().getOrigin());
-        jmeBulletUtil::convert(env, value, &trans->getBasis());
-        body->setWorldTransform(*trans);
-        delete(mtx);
-        delete(trans);
-//        jmeBulletUtil::convert(env, value, &body->getWorldTransform().getBasis());
+//        btMatrix3x3* mtx = new btMatrix3x3();
+//        btTransform* trans = new btTransform(*mtx);
+//        trans->setOrigin(body->getWorldTransform().getOrigin());
+//        jmeBulletUtil::convert(env, value, &trans->getBasis());
+//        body->setWorldTransform(*trans);
+//        delete(mtx);
+//        delete(trans);
+        jmeBulletUtil::convert(env, value, &body->getWorldTransform().getBasis());
     }
 
     /*
@@ -114,14 +114,14 @@ extern "C" {
     (JNIEnv *env, jobject object, jlong bodyId, jobject value) {
         jmeClasses::initJavaClasses(env);
         btRigidBody* body = (btRigidBody*) bodyId;
-        btMatrix3x3* mtx = new btMatrix3x3();
-        btTransform* trans = new btTransform(*mtx);
-        trans->setOrigin(body->getWorldTransform().getOrigin());
-        jmeBulletUtil::convertQuat(env, value, &trans->getBasis());
-        body->setWorldTransform(*trans);
-        delete(mtx);
-        delete(trans);
-//        jmeBulletUtil::convertQuat(env, value, &body->getWorldTransform().getBasis());
+//        btMatrix3x3* mtx = new btMatrix3x3();
+//        btTransform* trans = new btTransform(*mtx);
+//        trans->setOrigin(body->getWorldTransform().getOrigin());
+//        jmeBulletUtil::convertQuat(env, value, &trans->getBasis());
+//        body->setWorldTransform(*trans);
+//        delete(mtx);
+//        delete(trans);
+        jmeBulletUtil::convertQuat(env, value, &body->getWorldTransform().getBasis());
     }
 
     /*
