@@ -137,6 +137,10 @@ public class RigidBodyMotionState {
     public void setApplyPhysicsLocal(boolean applyPhysicsLocal) {
         this.applyPhysicsLocal = applyPhysicsLocal;
     }
+    
+    public long getObjectId(){
+        return motionStateId;
+    }
 //    public void addMotionStateListener(PhysicsMotionStateListener listener){
 //        listeners.add(listener);
 //    }

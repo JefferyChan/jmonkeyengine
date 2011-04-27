@@ -66,7 +66,6 @@ public class PhysicsRigidBody extends PhysicsCollisionObject {
 //    protected RigidBodyConstructionInfo constructionInfo;
 //    protected RigidBody rBody;
     protected RigidBodyMotionState motionState = new RigidBodyMotionState();
-    protected long motionStateId;
     protected float mass = 1.0f;
     protected boolean kinematic = false;
 //    protected javax.vecmath.Vector3f tempVec = new javax.vecmath.Vector3f();
@@ -112,7 +111,7 @@ public class PhysicsRigidBody extends PhysicsCollisionObject {
 //            rBody.destroy();
         }
         preRebuild();
-        objectId = createRigidBody(mass, motionStateId, collisionShape.getObjectId());
+        objectId = createRigidBody(mass, motionState.getObjectId(), collisionShape.getObjectId());
 //        rBody = new RigidBody(constructionInfo);
         postRebuild();
         if (removed) {

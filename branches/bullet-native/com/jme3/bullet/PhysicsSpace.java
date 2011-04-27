@@ -176,6 +176,8 @@ public class PhysicsSpace {
         this.worldMax.set(worldMax);
         this.broadphaseType = broadphaseType;
         create();
+        System.loadLibrary("bulletjme");
+        initNativePhysics();
     }
 
     /**
@@ -183,6 +185,7 @@ public class PhysicsSpace {
      */
     public void create() {
         //TODO: boroadphase!
+        System.loadLibrary("bulletjme");
         initNativePhysics();
         physicsSpaceId = createPhysicsSpace(worldMin.x, worldMin.y, worldMin.z, worldMax.x, worldMax.y, worldMax.z, 3);
         pQueueTL.set(pQueue);

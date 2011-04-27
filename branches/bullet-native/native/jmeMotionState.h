@@ -38,16 +38,21 @@
 #include "btBulletDynamicsCommon.h"
 //#include "btBulletCollisionCommon.h"
 
-class jmeMotionState : public btMotionState{
+class jmeMotionState : public btMotionState {
 private:
-	bool dirty;
+    bool dirty;
 
 public:
-	jmeMotionState(btTransform);
-	virtual ~jmeMotionState();
-        
-	btTransform worldTransform;
-	virtual void  getWorldTransform(btTransform& worldTrans ) const;
-	virtual void  setWorldTransform(const btTransform& worldTrans);
-        bool applyTransform(JNIEnv* env, jobject location, jobject rotation);
+    jmeMotionState(btTransform);
+    virtual ~jmeMotionState();
+
+    btTransform worldTransform;
+    virtual void getWorldTransform(btTransform& worldTrans) const;
+    virtual void setWorldTransform(const btTransform& worldTrans);
+//    btTransform* getTrans();
+    void setKinematicTransform(const btTransform& worldTrans);
+    void setKinematicLocation(JNIEnv*, jobject);
+    void setKinematicRotation(JNIEnv*, jobject);
+    void setKinematicRotationQuat(JNIEnv*, jobject);
+    bool applyTransform(JNIEnv* env, jobject location, jobject rotation);
 };
