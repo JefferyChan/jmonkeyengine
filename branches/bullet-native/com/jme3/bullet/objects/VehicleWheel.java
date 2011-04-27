@@ -91,8 +91,6 @@ public class VehicleWheel implements Savable {
     }
 
     public synchronized void updatePhysicsState() {
-//        Converter.convert(wheelInfo.worldTransform.origin, wheelWorldLocation);
-//        Converter.convert(wheelInfo.worldTransform.basis, tmp_Matrix);
         getWheelLocation(wheelId, wheelWorldLocation);
         getWheelRotation(wheelId, tmp_Matrix);
         wheelWorldRotation.fromRotationMatrix(tmp_Matrix);
@@ -259,16 +257,6 @@ public class VehicleWheel implements Savable {
         if (wheelId == 0) {
             return;
         }
-//        wheelInfo.suspensionStiffness = suspensionStiffness;
-//        wheelInfo.wheelsDampingRelaxation = wheelsDampingRelaxation;
-//        wheelInfo.wheelsDampingCompression = wheelsDampingCompression;
-//        wheelInfo.frictionSlip = frictionSlip;
-//        wheelInfo.rollInfluence = rollInfluence;
-//        wheelInfo.maxSuspensionTravelCm = maxSuspensionTravelCm;
-//        wheelInfo.maxSuspensionForce = maxSuspensionForce;
-//        wheelInfo.wheelsRadius = radius;
-//        wheelInfo.bIsFrontWheel = frontWheel;
-//        wheelInfo.suspensionRestLength1 = restLength;
         applyInfo(wheelId, suspensionStiffness, wheelsDampingRelaxation, wheelsDampingCompression, frictionSlip, rollInfluence, maxSuspensionTravelCm, maxSuspensionForce, radius, frontWheel, restLength);
     }
     
@@ -321,7 +309,6 @@ public class VehicleWheel implements Savable {
      * returns the location where the wheel collides with the ground (world space)
      */
     public Vector3f getCollisionLocation(Vector3f vec) {
-//        Converter.convert(wheelInfo.raycastInfo.contactPointWS, vec);
         getCollisionLocation(wheelId, vec);
         return vec;
     }
@@ -332,7 +319,6 @@ public class VehicleWheel implements Savable {
      * returns the location where the wheel collides with the ground (world space)
      */
     public Vector3f getCollisionLocation() {
-//        return Converter.convert(wheelInfo.raycastInfo.contactPointWS);
         Vector3f vec = new Vector3f();
         getCollisionLocation(wheelId, vec);
         return vec;
@@ -342,7 +328,6 @@ public class VehicleWheel implements Savable {
      * returns the normal where the wheel collides with the ground (world space)
      */
     public Vector3f getCollisionNormal(Vector3f vec) {
-//        Converter.convert(wheelInfo.raycastInfo.contactNormalWS, vec);
         getCollisionNormal(wheelId, vec);
         return vec;
     }
@@ -353,7 +338,6 @@ public class VehicleWheel implements Savable {
      * returns the normal where the wheel collides with the ground (world space)
      */
     public Vector3f getCollisionNormal() {
-//        return Converter.convert(wheelInfo.raycastInfo.contactNormalWS);
         Vector3f vec = new Vector3f();
         getCollisionNormal(wheelId, vec);
         return vec;
@@ -364,7 +348,6 @@ public class VehicleWheel implements Savable {
      * 0.0 = wheels are sliding, 1.0 = wheels have traction.
      */
     public float getSkidInfo() {
-//        return wheelInfo.skidInfo;
         return getSkidInfo(wheelId);
     }
     

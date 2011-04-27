@@ -31,7 +31,6 @@
  */
 package com.jme3.bullet.objects;
 
-//import com.bulletphysics.dynamics.vehicle.VehicleTuning;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
 import com.jme3.math.Vector3f;
@@ -69,7 +68,6 @@ public class PhysicsVehicle extends PhysicsRigidBody {
     protected long vehicleId = 0;
     protected long rayCasterId = 0;
     protected VehicleTuning tuning;
-//    protected VehicleRaycaster rayCaster;
     protected ArrayList<VehicleWheel> wheels = new ArrayList<VehicleWheel>();
     protected PhysicsSpace physicsSpace;
 
@@ -90,7 +88,6 @@ public class PhysicsVehicle extends PhysicsRigidBody {
     public void updateWheels() {
         if (vehicleId != 0) {
             for (int i = 0; i < wheels.size(); i++) {
-//                vehicleId.updateWheelTransform(i, true);
                 updateWheelTransform(vehicleId, i, true);
                 wheels.get(i).updatePhysicsState();
             }
@@ -116,7 +113,6 @@ public class PhysicsVehicle extends PhysicsRigidBody {
         if (tuning == null) {
             tuning = new VehicleTuning();
         }
-//        rBody.setActivationState(CollisionObject.DISABLE_DEACTIVATION);
         motionState.setVehicle(this);
 //        if (physicsSpace != null) {
 //            createVehicle(physicsSpace);
@@ -131,19 +127,19 @@ public class PhysicsVehicle extends PhysicsRigidBody {
         if (space == null) {
             return;
         }
-//        rayCaster = new DefaultVehicleRaycaster(space.getDynamicsWorld());
-        if(rayCasterId!=0) finalizeNative(rayCasterId, vehicleId);
+        if (space.getSpaceId() == 0) {
+            throw new IllegalStateException("Physics space is not initialized!");
+        }
+        if (rayCasterId != 0) {
+            finalizeNative(rayCasterId, vehicleId);
+        }
         rayCasterId = createVehicleRaycaster(objectId, space.getSpaceId());
         Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Created RayCaster {0}", Long.toHexString(rayCasterId));
-//        vehicleId = new RaycastVehicle(tuning, rBody, rayCaster);
         vehicleId = createRaycastVehicle(objectId, rayCasterId);
         Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Created Vehicle {0}", Long.toHexString(vehicleId));
         setCoordinateSystem(vehicleId, 0, 1, 2);
-//        vehicleId.setCoordinateSystem(0, 1, 2);
         for (VehicleWheel wheel : wheels) {
             wheel.setWheelId(addWheel(vehicleId, wheel.getLocation(), wheel.getDirection(), wheel.getAxle(), wheel.getRestLength(), wheel.getRadius(), tuning, wheel.isFrontWheel()));
-//            wheel.setWheelInfo(vehicleId.addWheel(Converter.convert(wheel.getLocation()), Converter.convert(wheel.getDirection()), Converter.convert(wheel.getAxle()),
-//                    wheel.getRestLength(), wheel.getRadius(), tuning, wheel.isFrontWheel()));
         }
     }
 
@@ -189,10 +185,6 @@ public class PhysicsVehicle extends PhysicsRigidBody {
         }
         if (vehicleId != 0) {
             wheel.setWheelId(addWheel(vehicleId, wheel.getLocation(), wheel.getDirection(), wheel.getAxle(), wheel.getRestLength(), wheel.getRadius(), tuning, wheel.isFrontWheel()));
-
-//            WheelInfo info = vehicleId.addWheel(Converter.convert(connectionPoint), Converter.convert(direction), Converter.convert(axle),
-//                    suspensionRestLength, wheelRadius, tuning, isFrontWheel);
-//            wheel.setWheelInfo(info);
         }
         wheel.setFrictionSlip(tuning.frictionSlip);
         wheel.setMaxSuspensionTravelCm(tuning.maxSuspensionTravelCm);
@@ -202,9 +194,8 @@ public class PhysicsVehicle extends PhysicsRigidBody {
         wheel.setMaxSuspensionForce(tuning.maxSuspensionForce);
         wheels.add(wheel);
         if (debugShape != null) {
-            detachDebugShape();
+            updateDebugShape();
         }
-//        updateDebugShape();
         return wheel;
     }
 
@@ -513,10 +504,6 @@ public class PhysicsVehicle extends PhysicsRigidBody {
         return vehicleId;
     }
 
-//    @Override
-//    public void destroy() {
-//        super.destroy();
-//    }
     @Override
     protected Spatial getDebugShape() {
         Spatial shape = super.getDebugShape();

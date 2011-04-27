@@ -60,11 +60,10 @@ extern "C" {
      */
     JNIEXPORT jlong JNICALL Java_com_jme3_bullet_objects_PhysicsVehicle_createVehicleRaycaster
     (JNIEnv *env, jobject object, jlong bodyId, jlong spaceId) {
-        //        btRigidBody* body = (btRigidBody*) bodyId;
+        //btRigidBody* body = (btRigidBody*) bodyId;
         btDynamicsWorld* spsace = (btDynamicsWorld*) spaceId;
         btDefaultVehicleRaycaster* caster = new btDefaultVehicleRaycaster(spsace);
         return (long) caster;
-
     }
 
     /*
@@ -75,10 +74,10 @@ extern "C" {
     JNIEXPORT jlong JNICALL Java_com_jme3_bullet_objects_PhysicsVehicle_createRaycastVehicle
     (JNIEnv *env, jobject object, jlong objectId, jlong casterId) {
         btRigidBody* body = (btRigidBody*) objectId;
+        body->setActivationState(DISABLE_DEACTIVATION);
         btVehicleRaycaster* caster = (btDefaultVehicleRaycaster*) casterId;
-        btRaycastVehicle::btVehicleTuning* tuning = new btRaycastVehicle::btVehicleTuning;
-        btRaycastVehicle* vehicle = new btRaycastVehicle(*tuning, body, caster);
-        delete(tuning);
+        btRaycastVehicle::btVehicleTuning tuning;
+        btRaycastVehicle* vehicle = new btRaycastVehicle(tuning, body, caster);
         return (long) vehicle;
 
     }
