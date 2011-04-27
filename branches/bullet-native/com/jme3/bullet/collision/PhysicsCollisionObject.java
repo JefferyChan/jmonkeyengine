@@ -165,33 +165,32 @@ public abstract class PhysicsCollisionObject implements Savable {
      * Creates a visual debug shape of the current collision shape of this physics object<br/>
      * <b>Does not work with detached physics, please switch to PARALLEL or SEQUENTIAL for debugging</b>
      * @param manager AssetManager to load the default wireframe material for the debug shape
-     * @deprecated in favor of PhysicsSpace.enableDebug(AssetManager manager);
      */
-    @Deprecated
-    public Spatial attachDebugShape(AssetManager manager) {
+    protected Spatial attachDebugShape(AssetManager manager) {
         debugMaterialBlue = new Material(manager, "Common/MatDefs/Misc/WireColor.j3md");
         debugMaterialBlue.setColor("Color", ColorRGBA.Blue);
-   //     debugMaterialBlue.getAdditionalRenderState().setDepthTest(false);
         debugMaterialGreen = new Material(manager, "Common/MatDefs/Misc/WireColor.j3md");
         debugMaterialGreen.setColor("Color", ColorRGBA.Green);
-//        debugMaterialGreen.getAdditionalRenderState().setDepthTest(false);
         debugMaterialRed = new Material(manager, "Common/MatDefs/Misc/WireColor.j3md");
         debugMaterialRed.setColor("Color", ColorRGBA.Red);
-  //      debugMaterialRed.getAdditionalRenderState().setDepthTest(false);
         debugMaterialYellow = new Material(manager, "Common/MatDefs/Misc/WireColor.j3md");
         debugMaterialYellow.setColor("Color", ColorRGBA.Yellow);
-   //     debugMaterialYellow.getAdditionalRenderState().setDepthTest(false);
         debugArrow = new Arrow(Vector3f.UNIT_XYZ);
         debugArrowGeom = new Geometry("DebugArrow", debugArrow);
         debugArrowGeom.setMaterial(debugMaterialGreen);
         return attachDebugShape();
     }
-
+    
     /**
-     * @deprecated in favor of PhysicsSpace.enableDebug(AssetManager manager);
+     * creates a debug shape for this CollisionObject
+     * @param manager
+     * @return 
      */
-    @Deprecated
-    public Spatial attachDebugShape(Material material) {
+    public Spatial createDebugShape(AssetManager manager){
+        return attachDebugShape(manager);
+    }
+
+    protected Spatial attachDebugShape(Material material) {
         debugMaterialBlue = material;
         debugMaterialGreen = material;
         debugMaterialRed = material;
