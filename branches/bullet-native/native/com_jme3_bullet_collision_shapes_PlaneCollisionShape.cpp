@@ -51,6 +51,7 @@ extern "C" {
         btVector3* norm = new btVector3();
         jmeBulletUtil::convert(env, normal, norm);
         btStaticPlaneShape* shape = new btStaticPlaneShape(*norm, constant);
+        free(norm);
         return (long)shape;
     }
 

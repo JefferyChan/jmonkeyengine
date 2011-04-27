@@ -61,6 +61,7 @@ extern "C" {
                 shape = new btCylinderShapeZ(*extents);
                 break;
         }
+        free(extents);
         return (long) shape;
     }
 
