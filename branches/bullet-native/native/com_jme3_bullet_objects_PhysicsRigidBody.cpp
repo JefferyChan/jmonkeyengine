@@ -79,15 +79,15 @@ extern "C" {
 //        if (body->isStaticOrKinematicObject() || !body->isInWorld())
             ((jmeMotionState*)body->getMotionState())->setKinematicLocation(env, value);
 //        else{
-//            btMatrix3x3* mtx = new btMatrix3x3();
-//            btTransform* trans = new btTransform(*mtx);
-//            trans->setBasis(body->getCenterOfMassTransform().getBasis());
-//            jmeBulletUtil::convert(env, value, &trans->getOrigin());
-//            body->setCenterOfMassTransform(*trans);
-//            delete(mtx);
-//            delete(trans);
-            if (body->isStaticObject())
-            jmeBulletUtil::convert(env, value, &body->getWorldTransform().getOrigin());
+            btMatrix3x3* mtx = new btMatrix3x3();
+            btTransform* trans = new btTransform(*mtx);
+            trans->setBasis(body->getCenterOfMassTransform().getBasis());
+            jmeBulletUtil::convert(env, value, &trans->getOrigin());
+            body->setCenterOfMassTransform(*trans);
+            delete(mtx);
+            delete(trans);
+//            if (body->isStaticObject())
+//            jmeBulletUtil::convert(env, value, &body->getWorldTransform().getOrigin());
 //        }
     }
 
@@ -102,15 +102,15 @@ extern "C" {
 //        if (body->isStaticOrKinematicObject() || !body->isInWorld())
             ((jmeMotionState*)body->getMotionState())->setKinematicRotation(env, value);
 //        else{
-//            btMatrix3x3* mtx = new btMatrix3x3();
-//            btTransform* trans = new btTransform(*mtx);
-//            trans->setOrigin(body->getCenterOfMassTransform().getOrigin());
-//            jmeBulletUtil::convert(env, value, &trans->getBasis());
-//            body->setCenterOfMassTransform(*trans);
-//            delete(mtx);
-//            delete(trans);
-            if (body->isStaticObject())
-            jmeBulletUtil::convert(env, value, &body->getWorldTransform().getBasis());
+            btMatrix3x3* mtx = new btMatrix3x3();
+            btTransform* trans = new btTransform(*mtx);
+            trans->setOrigin(body->getCenterOfMassTransform().getOrigin());
+            jmeBulletUtil::convert(env, value, &trans->getBasis());
+            body->setCenterOfMassTransform(*trans);
+            delete(mtx);
+            delete(trans);
+//            if (body->isStaticObject())
+//            jmeBulletUtil::convert(env, value, &body->getWorldTransform().getBasis());
 //        }
     }
 
@@ -125,15 +125,15 @@ extern "C" {
 //        if (body->isStaticOrKinematicObject() || !body->isInWorld())
             ((jmeMotionState*)body->getMotionState())->setKinematicRotationQuat(env, value);
 //        else{
-//            btMatrix3x3* mtx = new btMatrix3x3();
-//            btTransform* trans = new btTransform(*mtx);
-//            trans->setOrigin(body->getCenterOfMassTransform().getOrigin());
-//            jmeBulletUtil::convertQuat(env, value, &trans->getBasis());
-//            body->setCenterOfMassTransform(*trans);
-//            delete(mtx);
-//            delete(trans);
-            if (body->isStaticObject())
-            jmeBulletUtil::convertQuat(env, value, &body->getWorldTransform().getBasis());
+            btMatrix3x3* mtx = new btMatrix3x3();
+            btTransform* trans = new btTransform(*mtx);
+            trans->setOrigin(body->getCenterOfMassTransform().getOrigin());
+            jmeBulletUtil::convertQuat(env, value, &trans->getBasis());
+            body->setCenterOfMassTransform(*trans);
+            delete(mtx);
+            delete(trans);
+//            if (body->isStaticObject())
+//            jmeBulletUtil::convertQuat(env, value, &body->getWorldTransform().getBasis());
 //        }
     }
 
