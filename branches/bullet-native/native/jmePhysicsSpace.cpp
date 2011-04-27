@@ -108,3 +108,7 @@ void jmePhysicsSpace::createPhysicsSpace(jfloat minX, jfloat minY, jfloat minZ, 
 btDynamicsWorld* jmePhysicsSpace::getDynamicsWorld(){
     return dynamicsWorld;
 }
+
+jmePhysicsSpace::~jmePhysicsSpace(){
+    delete(dynamicsWorld);
+}

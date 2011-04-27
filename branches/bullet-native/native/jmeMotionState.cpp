@@ -36,8 +36,9 @@
  * Author: Normen Hansen
  */
 
-jmeMotionState::jmeMotionState(btTransform worldTrans) {
-    worldTransform = worldTrans;
+jmeMotionState::jmeMotionState() {
+    trans = new btTransform();
+    worldTransform = *trans;
     dirty = true;
 }
 
@@ -60,7 +61,6 @@ void jmeMotionState::setKinematicLocation(JNIEnv* env, jobject location) {
     dirty = true;
 }
 
-
 void jmeMotionState::setKinematicRotation(JNIEnv* env, jobject rotation) {
     jmeBulletUtil::convert(env, rotation, &worldTransform.getBasis());
     dirty = true;
@@ -73,8 +73,8 @@ void jmeMotionState::setKinematicRotationQuat(JNIEnv* env, jobject rotation) {
 
 bool jmeMotionState::applyTransform(JNIEnv* env, jobject location, jobject rotation) {
     if (dirty) {
-//        fprintf(stdout, "Apply world translation\n");
-//        fflush(stdout);
+        //        fprintf(stdout, "Apply world translation\n");
+        //        fflush(stdout);
         jmeBulletUtil::convert(env, &worldTransform.getOrigin(), location);
         jmeBulletUtil::convertQuat(env, &worldTransform.getBasis(), rotation);
         dirty = false;
@@ -84,6 +84,5 @@ bool jmeMotionState::applyTransform(JNIEnv* env, jobject location, jobject rotat
 }
 
 jmeMotionState::~jmeMotionState() {
-    //free(worldTransform);
-    // TODO Auto-generated destructor stub
+    free(trans);
 }

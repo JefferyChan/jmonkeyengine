@@ -48,7 +48,7 @@ extern "C" {
      */
     JNIEXPORT jlong JNICALL Java_com_jme3_bullet_objects_infos_RigidBodyMotionState_createMotionState
     (JNIEnv *env, jobject object) {
-        jmeMotionState* motionState = new jmeMotionState(btTransform());
+        jmeMotionState* motionState = new jmeMotionState();
         return (long) motionState;
     }
 

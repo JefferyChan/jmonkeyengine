@@ -44,7 +44,7 @@ private:
 	jobject javaPhysicsSpace;
 public:
 	jmePhysicsSpace(){};
-	~jmePhysicsSpace(){};
+	~jmePhysicsSpace();
         jmePhysicsSpace(JNIEnv*, jobject);
 	void stepSimulation(jfloat, jint, jfloat);
         void createPhysicsSpace(jfloat, jfloat, jfloat, jfloat, jfloat, jfloat, jint);
