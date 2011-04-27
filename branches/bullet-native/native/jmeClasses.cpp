@@ -88,6 +88,7 @@ void jmeClasses::initJavaClasses(JNIEnv* env) {
 //        }
 //        return;
 //    }
+    if(PhysicsSpace!=NULL) return;
     fprintf(stdout, "Bullet-Native: Initializing java classes\n");
     fflush(stdout);
 //    jmeClasses::env = env;

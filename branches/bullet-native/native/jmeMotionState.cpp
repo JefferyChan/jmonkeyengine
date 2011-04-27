@@ -53,7 +53,7 @@ void jmeMotionState::setWorldTransform(const btTransform& worldTrans) {
 bool jmeMotionState::applyTransform(JNIEnv* env, jobject location, jobject rotation) {
     if (dirty) {
         jmeBulletUtil::convert(env, &worldTransform.getOrigin(), location);
-        jmeBulletUtil::convert(env, &worldTransform.getBasis(), rotation);
+        jmeBulletUtil::convertQuat(env, &worldTransform.getBasis(), rotation);
         dirty = false;
         return true;
     }
