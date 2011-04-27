@@ -36,7 +36,6 @@
  * Author: Normen Hansen
  */
 void jmeBulletUtil::convert(JNIEnv* env, jobject in, btVector3* out) {
-    env->EnsureLocalCapacity(3);
     if (in == NULL || out == NULL) {
         jmeClasses::throwNPE(env);
     }
@@ -61,7 +60,6 @@ void jmeBulletUtil::convert(JNIEnv* env, jobject in, btVector3* out) {
 }
 
 void jmeBulletUtil::convert(JNIEnv* env, const btVector3* in, jobject out) {
-    env->EnsureLocalCapacity(1);
     if (in == NULL || out == NULL) {
         jmeClasses::throwNPE(env);
     }
@@ -76,7 +74,6 @@ void jmeBulletUtil::convert(JNIEnv* env, const btVector3* in, jobject out) {
 }
 
 void jmeBulletUtil::convert(JNIEnv* env, jobject in, btMatrix3x3* out) {
-    env->EnsureLocalCapacity(9);
     if (in == NULL || out == NULL) {
         jmeClasses::throwNPE(env);
     }
@@ -129,7 +126,6 @@ void jmeBulletUtil::convert(JNIEnv* env, jobject in, btMatrix3x3* out) {
 }
 
 void jmeBulletUtil::convert(JNIEnv* env, const btMatrix3x3* in, jobject out) {
-    env->EnsureLocalCapacity(9);
     if (in == NULL || out == NULL) {
         jmeClasses::throwNPE(env);
     }
@@ -190,7 +186,6 @@ void jmeBulletUtil::convert(JNIEnv* env, const btMatrix3x3* in, jobject out) {
 }
 
 void jmeBulletUtil::convertQuat(JNIEnv* env, jobject in, btMatrix3x3* out) {
-    env->EnsureLocalCapacity(4);
     if (in == NULL || out == NULL) {
         jmeClasses::throwNPE(env);
     }
@@ -240,7 +235,6 @@ void jmeBulletUtil::convertQuat(JNIEnv* env, jobject in, btMatrix3x3* out) {
 }
 
 void jmeBulletUtil::convertQuat(JNIEnv* env, const btMatrix3x3* in, jobject out) {
-    env->EnsureLocalCapacity(1);
     if (in == NULL || out == NULL) {
         jmeClasses::throwNPE(env);
     }
