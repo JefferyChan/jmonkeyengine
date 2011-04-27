@@ -65,6 +65,7 @@ extern "C" {
         jmeBulletUtil::convert(env, childLocation, &trans->getOrigin());
         jmeBulletUtil::convert(env, childRotation, &trans->getBasis());
         shape->addChildShape(*trans, child);
+        return 0;
     }
 
     /*
@@ -77,6 +78,7 @@ extern "C" {
         btCompoundShape* shape = (btCompoundShape*) compoundId;
         btCollisionShape* child = (btCollisionShape*) childId;
         shape->removeChildShape(child);
+        return 0;
     }
 
 #ifdef __cplusplus
