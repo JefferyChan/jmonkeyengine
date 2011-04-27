@@ -156,22 +156,22 @@ extern "C" {
      * Signature: (JJLcom/jme3/math/Vector3f;Lcom/jme3/math/Vector3f;Lcom/jme3/math/Vector3f;Lcom/jme3/math/Vector3f;)J
      */
     JNIEXPORT jlong JNICALL Java_com_jme3_bullet_joints_HingeJoint_createJoint
-    (JNIEnv * env, jobject object, jlong bodyIdA, jlong bodyIdB, jobject pivotA, jobject rotA, jobject pivotB, jobject rotB) {
+    (JNIEnv * env, jobject object, jlong bodyIdA, jlong bodyIdB, jobject pivotA, jobject axisA, jobject pivotB, jobject axisB) {
         btRigidBody* bodyA = (btRigidBody*) bodyIdA;
         btRigidBody* bodyB = (btRigidBody*) bodyIdB;
-        btMatrix3x3* mtx1=new btMatrix3x3();
-        btMatrix3x3* mtx2=new btMatrix3x3();
-        btTransform* transA = new btTransform(*mtx1);
-        jmeBulletUtil::convert(env, pivotA, &transA->getOrigin());
-        jmeBulletUtil::convert(env, rotA, &transA->getBasis());
-        btTransform* transB = new btTransform(*mtx2);
-        jmeBulletUtil::convert(env, pivotB, &transB->getOrigin());
-        jmeBulletUtil::convert(env, rotB, &transB->getBasis());
-        btHingeConstraint* joint = new btHingeConstraint(*bodyA, *bodyB, *transA, *transB);
-        delete(transA);
-        delete(transB);
-        delete(mtx1);
-        delete(mtx2);
+        btVector3* vec1 = new btVector3();
+        btVector3* vec2 = new btVector3();
+        btVector3* vec3 = new btVector3();
+        btVector3* vec4 = new btVector3();
+        jmeBulletUtil::convert(env, pivotA, vec1);
+        jmeBulletUtil::convert(env, axisA, vec2);
+        jmeBulletUtil::convert(env, pivotB, vec3);
+        jmeBulletUtil::convert(env, axisB, vec4);
+        btHingeConstraint* joint = new btHingeConstraint(*bodyA, *bodyB, *vec1, *vec2, *vec3, *vec4);
+        delete(vec1);
+        delete(vec2);
+        delete(vec3);
+        delete(vec4);
         return (long) joint;
     }
 #ifdef __cplusplus
