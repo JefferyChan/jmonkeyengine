@@ -13,6 +13,8 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Mesh;
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
 /**
@@ -91,7 +93,8 @@ public class HeightfieldCollisionShape extends CollisionShape {
     }
 
     protected void createShape() {
-        fbuf = FloatBuffer.wrap(heightfieldData);
+        fbuf = ByteBuffer.allocate(heightfieldData.length*4).order(ByteOrder.nativeOrder()).asFloatBuffer();//FloatBuffer.wrap(heightfieldData);
+        fbuf.put(heightfieldData);
         objectId = createShape(heightStickWidth, heightStickLength, fbuf, heightScale, minHeight, maxHeight, upAxis, flipQuadEdges);
         setScale(scale);
         setMargin(margin);
