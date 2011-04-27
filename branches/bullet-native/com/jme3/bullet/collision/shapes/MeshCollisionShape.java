@@ -54,7 +54,7 @@ public class MeshCollisionShape extends CollisionShape {
 
     protected int numVertices, numTriangles, vertexStride, triangleIndexStride;
     protected ByteBuffer triangleIndexBase, vertexBase;
-    protected long meshId;
+    protected long meshId = 0;
 
     public MeshCollisionShape() {
     }

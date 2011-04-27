@@ -58,7 +58,7 @@ import java.util.logging.Logger;
  */
 public abstract class PhysicsCollisionObject implements Savable {
 
-    protected long objectId;
+    protected long objectId = 0;
     protected Spatial debugShape;
     protected Arrow debugArrow;
     protected Geometry debugArrowGeom;
@@ -302,5 +302,5 @@ public abstract class PhysicsCollisionObject implements Savable {
         finalizeNative(objectId);
     }
 
-    private native void finalizeNative(long objectId);
+    protected native void finalizeNative(long objectId);
 }

@@ -55,7 +55,7 @@ public class GImpactCollisionShape extends CollisionShape {
 //    protected Vector3f worldScale;
     protected int numVertices, numTriangles, vertexStride, triangleIndexStride;
     protected ByteBuffer triangleIndexBase, vertexBase;
-    protected long meshId;
+    protected long meshId = 0;
 //    protected IndexedMesh bulletMesh;
 
     public GImpactCollisionShape() {

@@ -83,14 +83,6 @@ JNIEXPORT jlong JNICALL Java_com_jme3_bullet_objects_PhysicsVehicle_addWheel
 
 /*
  * Class:     com_jme3_bullet_objects_PhysicsVehicle
- * Method:    setSuspensionStiffness
- * Signature: (JF)V
- */
-JNIEXPORT void JNICALL Java_com_jme3_bullet_objects_PhysicsVehicle_setSuspensionStiffness
-  (JNIEnv *, jobject, jlong, jfloat);
-
-/*
- * Class:     com_jme3_bullet_objects_PhysicsVehicle
  * Method:    resetSuspension
  * Signature: (J)V
  */

@@ -113,6 +113,9 @@ public class PhysicsRigidBody extends PhysicsCollisionObject {
 //            rBody.destroy();
         }
         preRebuild();
+        if (objectId != 0) {
+            finalizeNative(objectId);
+        }
         objectId = createRigidBody(mass, motionState.getObjectId(), collisionShape.getObjectId());
         Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Created RigidBody {0}", Long.toHexString(objectId));
 //        rBody = new RigidBody(constructionInfo);
@@ -152,11 +155,11 @@ public class PhysicsRigidBody extends PhysicsCollisionObject {
     public RigidBodyMotionState getMotionState() {
         return motionState;
     }
-    
-    public boolean isInWorld(){
+
+    public boolean isInWorld() {
         return isInWorld(objectId);
     }
-    
+
     private native boolean isInWorld(long objectId);
 
     /**
@@ -613,7 +616,7 @@ public class PhysicsRigidBody extends PhysicsCollisionObject {
 //            rBody.setCollisionShape(collisionShape.getObjectId());
         }
     }
-    
+
     private native void setCollisionShape(long objectId, long collisionShapeId);
 
     /**

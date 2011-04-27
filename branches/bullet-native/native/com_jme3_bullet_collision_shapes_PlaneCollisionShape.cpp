@@ -48,10 +48,9 @@ extern "C" {
      */
     JNIEXPORT jlong JNICALL Java_com_jme3_bullet_collision_shapes_PlaneCollisionShape_createShape
     (JNIEnv * env, jobject object, jobject normal, jfloat constant) {
-        btVector3* norm = new btVector3();
+        btVector3* norm = &btVector3();
         jmeBulletUtil::convert(env, normal, norm);
         btStaticPlaneShape* shape = new btStaticPlaneShape(*norm, constant);
-        delete(norm);
         return (long)shape;
     }
 

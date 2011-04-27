@@ -77,8 +77,6 @@ import com.jme3.bullet.objects.PhysicsGhostObject;
 import com.jme3.bullet.objects.PhysicsCharacter;
 import com.jme3.bullet.objects.PhysicsVehicle;
 import com.jme3.bullet.objects.PhysicsRigidBody;
-import com.jme3.math.Matrix3f;
-import com.jme3.math.Quaternion;
 import com.jme3.math.Transform;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
@@ -102,7 +100,7 @@ public class PhysicsSpace {
     public static final int AXIS_X = 0;
     public static final int AXIS_Y = 1;
     public static final int AXIS_Z = 2;
-    private long physicsSpaceId;
+    private long physicsSpaceId = 0;
     private static ThreadLocal<ConcurrentLinkedQueue<AppTask<?>>> pQueueTL =
             new ThreadLocal<ConcurrentLinkedQueue<AppTask<?>>>() {
 

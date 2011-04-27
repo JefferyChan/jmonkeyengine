@@ -88,10 +88,9 @@ extern "C" {
     JNIEXPORT void JNICALL Java_com_jme3_bullet_objects_PhysicsCharacter_warp
     (JNIEnv *env, jobject object, jlong objectId, jobject vector){
         btKinematicCharacterController* character = (btKinematicCharacterController*)objectId;
-        btVector3* vec = new btVector3();
+        btVector3* vec = &btVector3();
         jmeBulletUtil::convert(env, vector, vec);
         character->warp(*vec);
-        delete(vec);
     }
 
     /*
@@ -102,10 +101,9 @@ extern "C" {
     JNIEXPORT void JNICALL Java_com_jme3_bullet_objects_PhysicsCharacter_setWalkDirection
     (JNIEnv *env, jobject object, jlong objectId, jobject vector){
         btKinematicCharacterController* character = (btKinematicCharacterController*)objectId;
-        btVector3* vec = new btVector3();
+        btVector3* vec = &btVector3();
         jmeBulletUtil::convert(env, vector, vec);
         character->setWalkDirection(*vec);
-        delete(vec);
     }
 
     /*

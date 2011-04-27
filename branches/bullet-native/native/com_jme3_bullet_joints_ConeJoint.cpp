@@ -72,20 +72,16 @@ extern "C" {
     (JNIEnv * env, jobject object, jlong bodyIdA, jlong bodyIdB, jobject pivotA, jobject rotA, jobject pivotB, jobject rotB) {
         btRigidBody* bodyA = (btRigidBody*) bodyIdA;
         btRigidBody* bodyB = (btRigidBody*) bodyIdB;
-        btMatrix3x3* mtx1=new btMatrix3x3();
-        btMatrix3x3* mtx2=new btMatrix3x3();
-        btTransform* transA = new btTransform(*mtx1);
+        btMatrix3x3* mtx1 = &btMatrix3x3();
+        btMatrix3x3* mtx2 = &btMatrix3x3();
+        btTransform* transA = &btTransform(*mtx1);
         jmeBulletUtil::convert(env, pivotA, &transA->getOrigin());
         jmeBulletUtil::convert(env, rotA, &transA->getBasis());
-        btTransform* transB = new btTransform(*mtx2);
+        btTransform* transB = &btTransform(*mtx2);
         jmeBulletUtil::convert(env, pivotB, &transB->getOrigin());
         jmeBulletUtil::convert(env, rotB, &transB->getBasis());
         btConeTwistConstraint* joint = new btConeTwistConstraint(*bodyA, *bodyB, *transA, *transB);
-        delete(&transA->getBasis());
-        delete(&transB->getBasis());
-        delete(mtx1);
-        delete(mtx2);
-        return (long)joint;
+        return (long) joint;
     }
 
 #ifdef __cplusplus

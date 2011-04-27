@@ -67,7 +67,9 @@ public class HullCollisionShape extends CollisionShape {
 //        objectId.setLocalScaling(Converter.convert(getScale()));
 //        objectId.setMargin(margin);
         fbuf = ByteBuffer.allocateDirect(points.length * 4).order(ByteOrder.nativeOrder()).asFloatBuffer();
+        fbuf.rewind();
         fbuf.put(points);
+        fbuf.rewind();
         objectId = createShape(fbuf);
         Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Created Shape {0}", Long.toHexString(objectId));
         setScale(scale);

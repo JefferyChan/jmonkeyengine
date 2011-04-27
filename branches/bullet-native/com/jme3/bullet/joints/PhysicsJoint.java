@@ -49,7 +49,7 @@ import java.util.logging.Logger;
  */
 public abstract class PhysicsJoint implements Savable {
 
-    protected long objectId;
+    protected long objectId = 0;
     protected PhysicsRigidBody nodeA;
     protected PhysicsRigidBody nodeB;
     protected Vector3f pivotA;

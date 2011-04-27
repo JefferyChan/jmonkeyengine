@@ -49,7 +49,7 @@ import java.util.logging.Logger;
  */
 public abstract class CollisionShape implements Savable {
 
-    protected long objectId;
+    protected long objectId = 0;
     protected Vector3f scale = new Vector3f(1, 1, 1);
     protected float margin = 0.0f;
 

@@ -39,7 +39,7 @@ import com.jme3.math.Vector3f;
  */
 public class TranslationalLimitMotor {
 
-    private long motorId;
+    private long motorId = 0;
 
     public TranslationalLimitMotor(long motor) {
         this.motorId = motor;

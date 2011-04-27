@@ -37,7 +37,7 @@ package com.jme3.bullet.joints.motors;
  */
 public class RotationalLimitMotor {
 
-    private long motorId;
+    private long motorId = 0;
 
     public RotationalLimitMotor(long motor) {
         this.motorId = motor;

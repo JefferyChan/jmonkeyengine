@@ -96,7 +96,9 @@ public class HeightfieldCollisionShape extends CollisionShape {
 
     protected void createShape() {
         fbuf = ByteBuffer.allocate(heightfieldData.length*4).order(ByteOrder.nativeOrder()).asFloatBuffer();//FloatBuffer.wrap(heightfieldData);
+        fbuf.rewind();
         fbuf.put(heightfieldData);
+        fbuf.rewind();
         objectId = createShape(heightStickWidth, heightStickLength, fbuf, heightScale, minHeight, maxHeight, upAxis, flipQuadEdges);
         Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Created Shape {0}", Long.toHexString(objectId));
         setScale(scale);

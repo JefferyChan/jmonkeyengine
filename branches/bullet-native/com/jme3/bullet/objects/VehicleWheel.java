@@ -272,7 +272,8 @@ public class VehicleWheel implements Savable {
         applyInfo(wheelId, suspensionStiffness, wheelsDampingRelaxation, wheelsDampingCompression, frictionSlip, rollInfluence, maxSuspensionTravelCm, maxSuspensionForce, radius, frontWheel, restLength);
     }
     
-    private native void applyInfo(long wheelId, float suspensionStiffness,
+    private native void applyInfo(long wheelId, 
+            float suspensionStiffness,
             float wheelsDampingRelaxation,
             float wheelsDampingCompression,
             float frictionSlip,

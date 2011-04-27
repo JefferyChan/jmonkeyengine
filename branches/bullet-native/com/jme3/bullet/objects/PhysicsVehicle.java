@@ -66,8 +66,8 @@ import java.util.logging.Logger;
  */
 public class PhysicsVehicle extends PhysicsRigidBody {
 
-    protected long vehicleId;
-    protected long rayCasterId;
+    protected long vehicleId = 0;
+    protected long rayCasterId = 0;
     protected VehicleTuning tuning;
 //    protected VehicleRaycaster rayCaster;
     protected ArrayList<VehicleWheel> wheels = new ArrayList<VehicleWheel>();
@@ -118,9 +118,9 @@ public class PhysicsVehicle extends PhysicsRigidBody {
         }
 //        rBody.setActivationState(CollisionObject.DISABLE_DEACTIVATION);
         motionState.setVehicle(this);
-        if (physicsSpace != null) {
-            createVehicle(physicsSpace);
-        }
+//        if (physicsSpace != null) {
+//            createVehicle(physicsSpace);
+//        }
     }
 
     /**
@@ -132,15 +132,16 @@ public class PhysicsVehicle extends PhysicsRigidBody {
             return;
         }
 //        rayCaster = new DefaultVehicleRaycaster(space.getDynamicsWorld());
+        if(rayCasterId!=0) finalizeNative(rayCasterId, vehicleId);
         rayCasterId = createVehicleRaycaster(objectId, space.getSpaceId());
-        Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Created RayCaster {0}", Long.toHexString(objectId));
+        Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Created RayCaster {0}", Long.toHexString(rayCasterId));
 //        vehicleId = new RaycastVehicle(tuning, rBody, rayCaster);
         vehicleId = createRaycastVehicle(objectId, rayCasterId);
-        Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Created Vehicle {0}", Long.toHexString(objectId));
-        setCoordinateSystem(objectId, 0, 1, 2);
+        Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Created Vehicle {0}", Long.toHexString(vehicleId));
+        setCoordinateSystem(vehicleId, 0, 1, 2);
 //        vehicleId.setCoordinateSystem(0, 1, 2);
         for (VehicleWheel wheel : wheels) {
-            wheel.setWheelId(addWheel(objectId, wheel.getLocation(), wheel.getDirection(), wheel.getAxle(), wheel.getRestLength(), wheel.getRadius(), tuning, wheel.isFrontWheel()));
+            wheel.setWheelId(addWheel(vehicleId, wheel.getLocation(), wheel.getDirection(), wheel.getAxle(), wheel.getRestLength(), wheel.getRadius(), tuning, wheel.isFrontWheel()));
 //            wheel.setWheelInfo(vehicleId.addWheel(Converter.convert(wheel.getLocation()), Converter.convert(wheel.getDirection()), Converter.convert(wheel.getAxle()),
 //                    wheel.getRestLength(), wheel.getRadius(), tuning, wheel.isFrontWheel()));
         }
@@ -187,7 +188,7 @@ public class PhysicsVehicle extends PhysicsRigidBody {
             wheel = new VehicleWheel(spat, connectionPoint, direction, axle, suspensionRestLength, wheelRadius, isFrontWheel);
         }
         if (vehicleId != 0) {
-            wheel.setWheelId(addWheel(objectId, wheel.getLocation(), wheel.getDirection(), wheel.getAxle(), wheel.getRestLength(), wheel.getRadius(), tuning, wheel.isFrontWheel()));
+            wheel.setWheelId(addWheel(vehicleId, wheel.getLocation(), wheel.getDirection(), wheel.getAxle(), wheel.getRestLength(), wheel.getRadius(), tuning, wheel.isFrontWheel()));
 
 //            WheelInfo info = vehicleId.addWheel(Converter.convert(connectionPoint), Converter.convert(direction), Converter.convert(axle),
 //                    suspensionRestLength, wheelRadius, tuning, isFrontWheel);
@@ -395,8 +396,6 @@ public class PhysicsVehicle extends PhysicsRigidBody {
     public void setSuspensionStiffness(float suspensionStiffness) {
         tuning.suspensionStiffness = suspensionStiffness;
     }
-
-    private native void setSuspensionStiffness(long vehicleId, float suspensionStiffness);
 
     /**
      * The stiffness constant for the suspension.  10.0 - Offroad buggy, 50.0 - Sports car, 200.0 - F1 Car

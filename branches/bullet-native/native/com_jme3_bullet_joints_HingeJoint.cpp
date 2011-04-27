@@ -159,19 +159,15 @@ extern "C" {
     (JNIEnv * env, jobject object, jlong bodyIdA, jlong bodyIdB, jobject pivotA, jobject axisA, jobject pivotB, jobject axisB) {
         btRigidBody* bodyA = (btRigidBody*) bodyIdA;
         btRigidBody* bodyB = (btRigidBody*) bodyIdB;
-        btVector3* vec1 = new btVector3();
-        btVector3* vec2 = new btVector3();
-        btVector3* vec3 = new btVector3();
-        btVector3* vec4 = new btVector3();
+        btVector3* vec1 = &btVector3();
+        btVector3* vec2 = &btVector3();
+        btVector3* vec3 = &btVector3();
+        btVector3* vec4 = &btVector3();
         jmeBulletUtil::convert(env, pivotA, vec1);
         jmeBulletUtil::convert(env, axisA, vec2);
         jmeBulletUtil::convert(env, pivotB, vec3);
         jmeBulletUtil::convert(env, axisB, vec4);
         btHingeConstraint* joint = new btHingeConstraint(*bodyA, *bodyB, *vec1, *vec2, *vec3, *vec4);
-        delete(vec1);
-        delete(vec2);
-        delete(vec3);
-        delete(vec4);
         return (long) joint;
     }
 #ifdef __cplusplus
