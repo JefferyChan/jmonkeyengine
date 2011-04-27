@@ -168,10 +168,10 @@ extern "C" {
         jmeBulletUtil::convert(env, pivotB, &transB->getOrigin());
         jmeBulletUtil::convert(env, rotB, &transB->getBasis());
         btHingeConstraint* joint = new btHingeConstraint(*bodyA, *bodyB, *transA, *transB);
-        free(transA);
-        free(transB);
-        free(mtx1);
-        free(mtx2);
+        delete(transA);
+        delete(transB);
+        delete(mtx1);
+        delete(mtx2);
         return (long) joint;
     }
 #ifdef __cplusplus

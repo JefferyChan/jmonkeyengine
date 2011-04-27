@@ -123,10 +123,10 @@ extern "C" {
         btTransform* transB = new btTransform(*mtx2);
         jmeBulletUtil::convert(env, pivotB, &transB->getOrigin());
         btHingeConstraint* joint = new btHingeConstraint(*bodyA, *bodyB, *transA, *transB);
-        free(mtx1);
-        free(mtx2);
-        free(transA);
-        free(transB);
+        delete(mtx1);
+        delete(mtx2);
+        delete(transA);
+        delete(transB);
         return (long) joint;
     }
 

@@ -51,7 +51,7 @@ extern "C" {
         jmeBulletUtil::convert(env, halfExtents, extents);
         btBoxShape* shape = new btBoxShape(*extents);
         //TODO: free this here?
-        free(extents);
+        delete(extents);
         return (long)shape;
     }
 

@@ -44,6 +44,9 @@ jmethodID jmeClasses::Vector3f_toArray;
 jmethodID jmeClasses::Vector3f_getX;
 jmethodID jmeClasses::Vector3f_getY;
 jmethodID jmeClasses::Vector3f_getZ;
+jfieldID jmeClasses::Vector3f_x;
+jfieldID jmeClasses::Vector3f_y;
+jfieldID jmeClasses::Vector3f_z;
 
 jclass jmeClasses::Quaternion;
 jmethodID jmeClasses::Quaternion_set;
@@ -51,10 +54,23 @@ jmethodID jmeClasses::Quaternion_getX;
 jmethodID jmeClasses::Quaternion_getY;
 jmethodID jmeClasses::Quaternion_getZ;
 jmethodID jmeClasses::Quaternion_getW;
+jfieldID jmeClasses::Quaternion_x;
+jfieldID jmeClasses::Quaternion_y;
+jfieldID jmeClasses::Quaternion_z;
+jfieldID jmeClasses::Quaternion_w;
 
 jclass jmeClasses::Matrix3f;
 jmethodID jmeClasses::Matrix3f_set;
 jmethodID jmeClasses::Matrix3f_get;
+jfieldID jmeClasses::Matrix3f_m00;
+jfieldID jmeClasses::Matrix3f_m01;
+jfieldID jmeClasses::Matrix3f_m02;
+jfieldID jmeClasses::Matrix3f_m10;
+jfieldID jmeClasses::Matrix3f_m11;
+jfieldID jmeClasses::Matrix3f_m12;
+jfieldID jmeClasses::Matrix3f_m20;
+jfieldID jmeClasses::Matrix3f_m21;
+jfieldID jmeClasses::Matrix3f_m22;
 
 //private fields
 //JNIEnv* jmeClasses::env;
@@ -90,35 +106,18 @@ void jmeClasses::initJavaClasses(JNIEnv* env) {
     //    }
 
     Vector3f = env->FindClass("com/jme3/math/Vector3f");
-    if (env->ExceptionCheck()) {
-        env->Throw(env->ExceptionOccurred());
-        return;
-    }
     Vector3f_set = env->GetMethodID(Vector3f, "set", "(FFF)Lcom/jme3/math/Vector3f;");
-    if (env->ExceptionCheck()) {
-        env->Throw(env->ExceptionOccurred());
-        return;
-    }
     Vector3f_toArray = env->GetMethodID(Vector3f, "toArray", "([F)[F");
-    if (env->ExceptionCheck()) {
-        env->Throw(env->ExceptionOccurred());
-        return;
-    }
     Vector3f_getX = env->GetMethodID(Vector3f, "getX", "()F");
-    if (env->ExceptionCheck()) {
-        env->Throw(env->ExceptionOccurred());
-        return;
-    }
     Vector3f_getY = env->GetMethodID(Vector3f, "getY", "()F");
-    if (env->ExceptionCheck()) {
-        env->Throw(env->ExceptionOccurred());
-        return;
-    }
     Vector3f_getZ = env->GetMethodID(Vector3f, "getZ", "()F");
+    Vector3f_x = env->GetFieldID(Vector3f, "x", "F");
     if (env->ExceptionCheck()) {
         env->Throw(env->ExceptionOccurred());
         return;
     }
+    Vector3f_y = env->GetFieldID(Vector3f, "y", "F");
+    Vector3f_z = env->GetFieldID(Vector3f, "z", "F");
 
     Quaternion = env->FindClass("com/jme3/math/Quaternion");
     if (env->ExceptionCheck()) {
@@ -126,30 +125,18 @@ void jmeClasses::initJavaClasses(JNIEnv* env) {
         return;
     }
     Quaternion_set = env->GetMethodID(Quaternion, "set", "(FFFF)Lcom/jme3/math/Quaternion;");
-    if (env->ExceptionCheck()) {
-        env->Throw(env->ExceptionOccurred());
-        return;
-    }
     Quaternion_getW = env->GetMethodID(Quaternion, "getW", "()F");
-    if (env->ExceptionCheck()) {
-        env->Throw(env->ExceptionOccurred());
-        return;
-    }
     Quaternion_getX = env->GetMethodID(Quaternion, "getX", "()F");
-    if (env->ExceptionCheck()) {
-        env->Throw(env->ExceptionOccurred());
-        return;
-    }
     Quaternion_getY = env->GetMethodID(Quaternion, "getY", "()F");
-    if (env->ExceptionCheck()) {
-        env->Throw(env->ExceptionOccurred());
-        return;
-    }
     Quaternion_getZ = env->GetMethodID(Quaternion, "getZ", "()F");
+    Quaternion_x = env->GetFieldID(Quaternion, "x", "F");
     if (env->ExceptionCheck()) {
         env->Throw(env->ExceptionOccurred());
         return;
     }
+    Quaternion_y = env->GetFieldID(Quaternion, "y", "F");
+    Quaternion_z = env->GetFieldID(Quaternion, "z", "F");
+    Quaternion_w = env->GetFieldID(Quaternion, "w", "F");
 
     Matrix3f = env->FindClass("com/jme3/math/Matrix3f");
     if (env->ExceptionCheck()) {
@@ -157,11 +144,20 @@ void jmeClasses::initJavaClasses(JNIEnv* env) {
         return;
     }
     Matrix3f_set = env->GetMethodID(Matrix3f, "set", "(IIF)Lcom/jme3/math/Matrix3f;");
+    Matrix3f_get = env->GetMethodID(Matrix3f, "get", "(II)F");
+    Matrix3f_m00 = env->GetFieldID(Matrix3f, "m00", "F");
     if (env->ExceptionCheck()) {
         env->Throw(env->ExceptionOccurred());
         return;
     }
-    Matrix3f_get = env->GetMethodID(Matrix3f, "get", "(II)F");
+    Matrix3f_m01 = env->GetFieldID(Matrix3f, "m01", "F");
+    Matrix3f_m02 = env->GetFieldID(Matrix3f, "m02", "F");
+    Matrix3f_m10 = env->GetFieldID(Matrix3f, "m10", "F");
+    Matrix3f_m11 = env->GetFieldID(Matrix3f, "m11", "F");
+    Matrix3f_m12 = env->GetFieldID(Matrix3f, "m12", "F");
+    Matrix3f_m20 = env->GetFieldID(Matrix3f, "m20", "F");
+    Matrix3f_m21 = env->GetFieldID(Matrix3f, "m21", "F");
+    Matrix3f_m22 = env->GetFieldID(Matrix3f, "m22", "F");
     if (env->ExceptionCheck()) {
         env->Throw(env->ExceptionOccurred());
         return;

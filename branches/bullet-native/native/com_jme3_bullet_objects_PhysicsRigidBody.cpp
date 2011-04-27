@@ -52,7 +52,7 @@ extern "C" {
         btVector3* localInertia = new btVector3();
         shape->calculateLocalInertia(mass, *localInertia);
         btRigidBody* body = new btRigidBody(mass, motionState, shape, *localInertia);
-        free(localInertia);
+        delete(localInertia);
         return (long) body;
     }
 
@@ -76,14 +76,14 @@ extern "C" {
     (JNIEnv *env, jobject object, jlong bodyId, jobject value) {
         jmeClasses::initJavaClasses(env);
         btRigidBody* body = (btRigidBody*) bodyId;
-//        btMatrix3x3* mtx = new btMatrix3x3();
-//        btTransform* trans = new btTransform(*mtx);
-//        trans->setBasis(body->getWorldTransform().getBasis());
-//        jmeBulletUtil::convert(env, value, &trans->getOrigin());
-//        body->setWorldTransform(*trans);
-//        free(mtx);
-//        free(trans);
-        jmeBulletUtil::convert(env, value, &body->getWorldTransform().getOrigin());
+        btMatrix3x3* mtx = new btMatrix3x3();
+        btTransform* trans = new btTransform(*mtx);
+        trans->setBasis(body->getWorldTransform().getBasis());
+        jmeBulletUtil::convert(env, value, &trans->getOrigin());
+        body->setWorldTransform(*trans);
+        delete(mtx);
+        delete(trans);
+//        jmeBulletUtil::convert(env, value, &body->getWorldTransform().getOrigin());
     }
 
     /*
@@ -95,14 +95,14 @@ extern "C" {
     (JNIEnv *env, jobject object, jlong bodyId, jobject value) {
         jmeClasses::initJavaClasses(env);
         btRigidBody* body = (btRigidBody*) bodyId;
-//        btMatrix3x3* mtx = new btMatrix3x3();
-//        btTransform* trans = new btTransform(*mtx);
-//        trans->setOrigin(body->getWorldTransform().getOrigin());
-//        jmeBulletUtil::convert(env, value, &trans->getBasis());
-//        body->setWorldTransform(*trans);
-//        free(mtx);
-//        free(trans);
-        jmeBulletUtil::convert(env, value, &body->getWorldTransform().getBasis());
+        btMatrix3x3* mtx = new btMatrix3x3();
+        btTransform* trans = new btTransform(*mtx);
+        trans->setOrigin(body->getWorldTransform().getOrigin());
+        jmeBulletUtil::convert(env, value, &trans->getBasis());
+        body->setWorldTransform(*trans);
+        delete(mtx);
+        delete(trans);
+//        jmeBulletUtil::convert(env, value, &body->getWorldTransform().getBasis());
     }
 
     /*
@@ -114,14 +114,14 @@ extern "C" {
     (JNIEnv *env, jobject object, jlong bodyId, jobject value) {
         jmeClasses::initJavaClasses(env);
         btRigidBody* body = (btRigidBody*) bodyId;
-//        btMatrix3x3* mtx = new btMatrix3x3();
-//        btTransform* trans = new btTransform(*mtx);
-//        trans->setOrigin(body->getWorldTransform().getOrigin());
-//        jmeBulletUtil::convertQuat(env, value, &trans->getBasis());
-//        body->setWorldTransform(*trans);
-//        free(mtx);
-//        free(trans);
-        jmeBulletUtil::convertQuat(env, value, &body->getWorldTransform().getBasis());
+        btMatrix3x3* mtx = new btMatrix3x3();
+        btTransform* trans = new btTransform(*mtx);
+        trans->setOrigin(body->getWorldTransform().getOrigin());
+        jmeBulletUtil::convertQuat(env, value, &trans->getBasis());
+        body->setWorldTransform(*trans);
+        delete(mtx);
+        delete(trans);
+//        jmeBulletUtil::convertQuat(env, value, &body->getWorldTransform().getBasis());
     }
 
     /*
@@ -256,7 +256,7 @@ extern "C" {
         btVector3* localInertia = new btVector3();
         shape->calculateLocalInertia(mass, *localInertia);
         body->setMassProps(mass, *localInertia);
-        free(localInertia);
+        delete(localInertia);
         return (long) body;
     }
 
@@ -282,7 +282,7 @@ extern "C" {
         btVector3* vec = new btVector3();
         jmeBulletUtil::convert(env, value, vec);
         body->setGravity(*vec);
-        free(vec);
+        delete(vec);
     }
 
     /*
@@ -395,7 +395,7 @@ extern "C" {
         btVector3* vec = new btVector3();
         jmeBulletUtil::convert(env, value, vec);
         body->setAngularVelocity(*vec);
-        free(vec);
+        delete(vec);
     }
 
     /*
@@ -420,7 +420,7 @@ extern "C" {
         btVector3* vec = new btVector3();
         jmeBulletUtil::convert(env, value, vec);
         body->setLinearVelocity(*vec);
-        free(vec);
+        delete(vec);
     }
 
     /*
@@ -436,8 +436,8 @@ extern "C" {
         jmeBulletUtil::convert(env, force, vec1);
         jmeBulletUtil::convert(env, location, vec2);
         body->applyForce(*vec1, *vec2);
-        free(vec1);
-        free(vec2);
+        delete(vec1);
+        delete(vec2);
     }
 
     /*
@@ -451,7 +451,7 @@ extern "C" {
         btVector3* vec1 = new btVector3();
         jmeBulletUtil::convert(env, force, vec1);
         body->applyCentralForce(*vec1);
-        free(vec1);
+        delete(vec1);
     }
 
     /*
@@ -465,7 +465,7 @@ extern "C" {
         btVector3* vec1 = new btVector3();
         jmeBulletUtil::convert(env, force, vec1);
         body->applyTorque(*vec1);
-        free(vec1);
+        delete(vec1);
     }
 
     /*
@@ -481,8 +481,8 @@ extern "C" {
         jmeBulletUtil::convert(env, force, vec1);
         jmeBulletUtil::convert(env, location, vec2);
         body->applyImpulse(*vec1, *vec2);
-        free(vec1);
-        free(vec2);
+        delete(vec1);
+        delete(vec2);
     }
 
     /*
@@ -496,7 +496,7 @@ extern "C" {
         btVector3* vec1 = new btVector3();
         jmeBulletUtil::convert(env, force, vec1);
         body->applyTorqueImpulse(*vec1);
-        free(vec1);
+        delete(vec1);
     }
 
     /*
@@ -623,7 +623,7 @@ extern "C" {
         vec1->setY(value);
         vec1->setZ(value);
         body->setAngularFactor(*vec1);
-        free(vec1);
+        delete(vec1);
     }
 
 #ifdef __cplusplus

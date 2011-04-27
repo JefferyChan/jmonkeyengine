@@ -73,7 +73,7 @@ extern "C" {
         btVector3* vec = new btVector3();
         jmeBulletUtil::convert(env, vector, vec);
         joint->setLinearUpperLimit(*vec);
-        free(vec);
+        delete(vec);
     }
 
     /*
@@ -87,7 +87,7 @@ extern "C" {
         btVector3* vec = new btVector3();
         jmeBulletUtil::convert(env, vector, vec);
         joint->setLinearUpperLimit(*vec);
-        free(vec);
+        delete(vec);
     }
 
     /*
@@ -101,7 +101,7 @@ extern "C" {
         btVector3* vec = new btVector3();
         jmeBulletUtil::convert(env, vector, vec);
         joint->setLinearUpperLimit(*vec);
-        free(vec);
+        delete(vec);
     }
 
     /*
@@ -115,7 +115,7 @@ extern "C" {
         btVector3* vec = new btVector3();
         jmeBulletUtil::convert(env, vector, vec);
         joint->setAngularLowerLimit(*vec);
-        free(vec);
+        delete(vec);
     }
 
     /*
@@ -136,10 +136,10 @@ extern "C" {
         jmeBulletUtil::convert(env, pivotB, &transB->getOrigin());
         jmeBulletUtil::convert(env, rotB, &transB->getBasis());
         btGeneric6DofConstraint* joint = new btGeneric6DofConstraint(*bodyA, *bodyB, *transA, *transB, useLinearReferenceFrameA);
-        free(mtx1);
-        free(mtx2);
-        free(transA);
-        free(transB);
+        delete(mtx1);
+        delete(mtx2);
+        delete(transA);
+        delete(transB);
         return (long) joint;
     }
 #ifdef __cplusplus

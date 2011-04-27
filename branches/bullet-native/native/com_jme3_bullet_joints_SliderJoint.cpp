@@ -674,10 +674,10 @@ extern "C" {
         jmeBulletUtil::convert(env, pivotB, &transB->getOrigin());
         jmeBulletUtil::convert(env, rotB, &transB->getBasis());
         btSliderConstraint* joint = new btSliderConstraint(*bodyA, *bodyB, *transA, *transB, useLinearReferenceFrameA);
-        free(mtx1);
-        free(mtx2);
-        free(transA);
-        free(transB);
+        delete(mtx1);
+        delete(mtx2);
+        delete(transA);
+        delete(transB);
         return (long) joint;
     }
 

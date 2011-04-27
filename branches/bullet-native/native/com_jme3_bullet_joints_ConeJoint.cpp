@@ -81,10 +81,10 @@ extern "C" {
         jmeBulletUtil::convert(env, pivotB, &transB->getOrigin());
         jmeBulletUtil::convert(env, rotB, &transB->getBasis());
         btConeTwistConstraint* joint = new btConeTwistConstraint(*bodyA, *bodyB, *transA, *transB);
-        free(&transA->getBasis());
-        free(&transB->getBasis());
-        free(mtx1);
-        free(mtx2);
+        delete(&transA->getBasis());
+        delete(&transB->getBasis());
+        delete(mtx1);
+        delete(mtx2);
         return (long)joint;
     }
 

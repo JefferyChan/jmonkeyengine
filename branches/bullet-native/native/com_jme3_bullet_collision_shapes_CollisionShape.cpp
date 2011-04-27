@@ -62,7 +62,7 @@ extern "C" {
         btVector3* scl = new btVector3();
         jmeBulletUtil::convert(env, scale, scl);
         shape->setLocalScaling(*scl);
-        free(scl);
+        delete(scl);
     }
 
     /*
