@@ -48,7 +48,7 @@ extern "C" {
     JNIEXPORT jfloat JNICALL Java_com_jme3_bullet_joints_SliderJoint_getLowerLinLimit
     (JNIEnv * env, jobject object, jlong jointId) {
         btSliderConstraint* joint = (btSliderConstraint*) jointId;
-        return (long) joint->getLowerLinLimit();
+        return joint->getLowerLinLimit();
     }
 
     /*
@@ -70,7 +70,7 @@ extern "C" {
     JNIEXPORT jfloat JNICALL Java_com_jme3_bullet_joints_SliderJoint_getUpperLinLimit
     (JNIEnv * env, jobject object, jlong jointId) {
         btSliderConstraint* joint = (btSliderConstraint*) jointId;
-        return (long) joint->getUpperLinLimit();
+        return joint->getUpperLinLimit();
     }
 
     /*
@@ -92,7 +92,7 @@ extern "C" {
     JNIEXPORT jfloat JNICALL Java_com_jme3_bullet_joints_SliderJoint_getLowerAngLimit
     (JNIEnv * env, jobject object, jlong jointId) {
         btSliderConstraint* joint = (btSliderConstraint*) jointId;
-        return (long) joint->getLowerAngLimit();
+        return joint->getLowerAngLimit();
     }
 
     /*
@@ -114,7 +114,7 @@ extern "C" {
     JNIEXPORT jfloat JNICALL Java_com_jme3_bullet_joints_SliderJoint_getUpperAngLimit
     (JNIEnv * env, jobject object, jlong jointId) {
         btSliderConstraint* joint = (btSliderConstraint*) jointId;
-        return (long) joint->getUpperAngLimit();
+        return joint->getUpperAngLimit();
     }
 
     /*
@@ -136,7 +136,7 @@ extern "C" {
     JNIEXPORT jfloat JNICALL Java_com_jme3_bullet_joints_SliderJoint_getSoftnessDirLin
     (JNIEnv * env, jobject object, jlong jointId) {
         btSliderConstraint* joint = (btSliderConstraint*) jointId;
-        return (long) joint->getSoftnessDirLin();
+        return joint->getSoftnessDirLin();
     }
 
     /*
@@ -158,7 +158,7 @@ extern "C" {
     JNIEXPORT jfloat JNICALL Java_com_jme3_bullet_joints_SliderJoint_getRestitutionDirLin
     (JNIEnv * env, jobject object, jlong jointId) {
         btSliderConstraint* joint = (btSliderConstraint*) jointId;
-        return (long) joint->getRestitutionDirLin();
+        return joint->getRestitutionDirLin();
     }
 
     /*
@@ -180,7 +180,7 @@ extern "C" {
     JNIEXPORT jfloat JNICALL Java_com_jme3_bullet_joints_SliderJoint_getDampingDirLin
     (JNIEnv * env, jobject object, jlong jointId) {
         btSliderConstraint* joint = (btSliderConstraint*) jointId;
-        return (long) joint->getDampingDirLin();
+        return joint->getDampingDirLin();
     }
 
     /*
@@ -202,7 +202,7 @@ extern "C" {
     JNIEXPORT jfloat JNICALL Java_com_jme3_bullet_joints_SliderJoint_getSoftnessDirAng
     (JNIEnv * env, jobject object, jlong jointId) {
         btSliderConstraint* joint = (btSliderConstraint*) jointId;
-        return (long) joint->getSoftnessDirAng();
+        return joint->getSoftnessDirAng();
     }
 
     /*
@@ -224,7 +224,7 @@ extern "C" {
     JNIEXPORT jfloat JNICALL Java_com_jme3_bullet_joints_SliderJoint_getRestitutionDirAng
     (JNIEnv * env, jobject object, jlong jointId) {
         btSliderConstraint* joint = (btSliderConstraint*) jointId;
-        return (long) joint->getRestitutionDirAng();
+        return joint->getRestitutionDirAng();
     }
 
     /*
@@ -246,7 +246,7 @@ extern "C" {
     JNIEXPORT jfloat JNICALL Java_com_jme3_bullet_joints_SliderJoint_getDampingDirAng
     (JNIEnv * env, jobject object, jlong jointId) {
         btSliderConstraint* joint = (btSliderConstraint*) jointId;
-        return (long) joint->getDampingDirAng();
+        return joint->getDampingDirAng();
     }
 
     /*
@@ -268,7 +268,7 @@ extern "C" {
     JNIEXPORT jfloat JNICALL Java_com_jme3_bullet_joints_SliderJoint_getSoftnessLimLin
     (JNIEnv * env, jobject object, jlong jointId) {
         btSliderConstraint* joint = (btSliderConstraint*) jointId;
-        return (long) joint->getSoftnessLimLin();
+        return joint->getSoftnessLimLin();
     }
 
     /*
@@ -290,7 +290,7 @@ extern "C" {
     JNIEXPORT jfloat JNICALL Java_com_jme3_bullet_joints_SliderJoint_getRestitutionLimLin
     (JNIEnv * env, jobject object, jlong jointId) {
         btSliderConstraint* joint = (btSliderConstraint*) jointId;
-        return (long) joint->getRestitutionLimLin();
+        return joint->getRestitutionLimLin();
     }
 
     /*
@@ -312,7 +312,7 @@ extern "C" {
     JNIEXPORT jfloat JNICALL Java_com_jme3_bullet_joints_SliderJoint_getDampingLimLin
     (JNIEnv * env, jobject object, jlong jointId) {
         btSliderConstraint* joint = (btSliderConstraint*) jointId;
-        return (long) joint->getDampingLimLin();
+        return joint->getDampingLimLin();
     }
 
     /*
@@ -334,7 +334,7 @@ extern "C" {
     JNIEXPORT jfloat JNICALL Java_com_jme3_bullet_joints_SliderJoint_getSoftnessLimAng
     (JNIEnv * env, jobject object, jlong jointId) {
         btSliderConstraint* joint = (btSliderConstraint*) jointId;
-        return (long) joint->getSoftnessLimAng();
+        return joint->getSoftnessLimAng();
     }
 
     /*
@@ -356,7 +356,7 @@ extern "C" {
     JNIEXPORT jfloat JNICALL Java_com_jme3_bullet_joints_SliderJoint_getRestitutionLimAng
     (JNIEnv * env, jobject object, jlong jointId) {
         btSliderConstraint* joint = (btSliderConstraint*) jointId;
-        return (long) joint->getRestitutionLimAng();
+        return joint->getRestitutionLimAng();
     }
 
     /*
@@ -378,7 +378,7 @@ extern "C" {
     JNIEXPORT jfloat JNICALL Java_com_jme3_bullet_joints_SliderJoint_getDampingLimAng
     (JNIEnv * env, jobject object, jlong jointId) {
         btSliderConstraint* joint = (btSliderConstraint*) jointId;
-        return (long) joint->getDampingLimAng();
+        return joint->getDampingLimAng();
     }
 
     /*
@@ -400,7 +400,7 @@ extern "C" {
     JNIEXPORT jfloat JNICALL Java_com_jme3_bullet_joints_SliderJoint_getSoftnessOrthoLin
     (JNIEnv * env, jobject object, jlong jointId) {
         btSliderConstraint* joint = (btSliderConstraint*) jointId;
-        return (long) joint->getSoftnessOrthoLin();
+        return joint->getSoftnessOrthoLin();
     }
 
     /*
@@ -422,7 +422,7 @@ extern "C" {
     JNIEXPORT jfloat JNICALL Java_com_jme3_bullet_joints_SliderJoint_getRestitutionOrthoLin
     (JNIEnv * env, jobject object, jlong jointId) {
         btSliderConstraint* joint = (btSliderConstraint*) jointId;
-        return (long) joint->getRestitutionOrthoLin();
+        return joint->getRestitutionOrthoLin();
     }
 
     /*
@@ -444,7 +444,7 @@ extern "C" {
     JNIEXPORT jfloat JNICALL Java_com_jme3_bullet_joints_SliderJoint_getDampingOrthoLin
     (JNIEnv * env, jobject object, jlong jointId) {
         btSliderConstraint* joint = (btSliderConstraint*) jointId;
-        return (long) joint->getDampingOrthoLin();
+        return joint->getDampingOrthoLin();
     }
 
     /*
@@ -466,7 +466,7 @@ extern "C" {
     JNIEXPORT jfloat JNICALL Java_com_jme3_bullet_joints_SliderJoint_getSoftnessOrthoAng
     (JNIEnv * env, jobject object, jlong jointId) {
         btSliderConstraint* joint = (btSliderConstraint*) jointId;
-        return (long) joint->getSoftnessOrthoAng();
+        return joint->getSoftnessOrthoAng();
     }
 
     /*
@@ -488,7 +488,7 @@ extern "C" {
     JNIEXPORT jfloat JNICALL Java_com_jme3_bullet_joints_SliderJoint_getRestitutionOrthoAng
     (JNIEnv * env, jobject object, jlong jointId) {
         btSliderConstraint* joint = (btSliderConstraint*) jointId;
-        return (long) joint->getRestitutionOrthoAng();
+        return joint->getRestitutionOrthoAng();
     }
 
     /*
@@ -510,7 +510,7 @@ extern "C" {
     JNIEXPORT jfloat JNICALL Java_com_jme3_bullet_joints_SliderJoint_getDampingOrthoAng
     (JNIEnv * env, jobject object, jlong jointId) {
         btSliderConstraint* joint = (btSliderConstraint*) jointId;
-        return (long) joint->getDampingOrthoAng();
+        return joint->getDampingOrthoAng();
     }
 
     /*
@@ -532,7 +532,7 @@ extern "C" {
     JNIEXPORT jboolean JNICALL Java_com_jme3_bullet_joints_SliderJoint_isPoweredLinMotor
     (JNIEnv * env, jobject object, jlong jointId) {
         btSliderConstraint* joint = (btSliderConstraint*) jointId;
-        return (long) joint->getPoweredLinMotor();
+        return joint->getPoweredLinMotor();
     }
 
     /*
@@ -554,7 +554,7 @@ extern "C" {
     JNIEXPORT jfloat JNICALL Java_com_jme3_bullet_joints_SliderJoint_getTargetLinMotorVelocity
     (JNIEnv * env, jobject object, jlong jointId) {
         btSliderConstraint* joint = (btSliderConstraint*) jointId;
-        return (long) joint->getTargetLinMotorVelocity();
+        return joint->getTargetLinMotorVelocity();
     }
 
     /*
@@ -576,7 +576,7 @@ extern "C" {
     JNIEXPORT jfloat JNICALL Java_com_jme3_bullet_joints_SliderJoint_getMaxLinMotorForce
     (JNIEnv * env, jobject object, jlong jointId) {
         btSliderConstraint* joint = (btSliderConstraint*) jointId;
-        return (long) joint->getMaxLinMotorForce();
+        return joint->getMaxLinMotorForce();
     }
 
     /*
@@ -598,7 +598,7 @@ extern "C" {
     JNIEXPORT jboolean JNICALL Java_com_jme3_bullet_joints_SliderJoint_isPoweredAngMotor
     (JNIEnv * env, jobject object, jlong jointId) {
         btSliderConstraint* joint = (btSliderConstraint*) jointId;
-        return (long) joint->getPoweredAngMotor();
+        return joint->getPoweredAngMotor();
     }
 
     /*
@@ -620,7 +620,7 @@ extern "C" {
     JNIEXPORT jfloat JNICALL Java_com_jme3_bullet_joints_SliderJoint_getTargetAngMotorVelocity
     (JNIEnv * env, jobject object, jlong jointId) {
         btSliderConstraint* joint = (btSliderConstraint*) jointId;
-        return (long) joint->getTargetAngMotorVelocity();
+        return joint->getTargetAngMotorVelocity();
     }
 
     /*
@@ -642,7 +642,7 @@ extern "C" {
     JNIEXPORT jfloat JNICALL Java_com_jme3_bullet_joints_SliderJoint_getMaxAngMotorForce
     (JNIEnv * env, jobject object, jlong jointId) {
         btSliderConstraint* joint = (btSliderConstraint*) jointId;
-        return (long) joint->getMaxAngMotorForce();
+        return joint->getMaxAngMotorForce();
     }
 
     /*
@@ -674,7 +674,7 @@ extern "C" {
         jmeBulletUtil::convert(env, pivotB, &transB->getOrigin());
         jmeBulletUtil::convert(env, rotB, &transB->getBasis());
         btSliderConstraint* joint = new btSliderConstraint(*bodyA, *bodyB, *transA, *transB, useLinearReferenceFrameA);
-        return (long) joint;
+        return (long)joint;
     }
 
 #ifdef __cplusplus
