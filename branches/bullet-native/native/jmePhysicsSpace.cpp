@@ -134,7 +134,7 @@ void jmePhysicsSpace::createPhysicsSpace(jfloat minX, jfloat minY, jfloat minZ, 
         btThreadSupportInterface* solverThreads = createSolverThreadSupport(4);
         solver = new btParallelConstraintSolver(solverThreads);
     } else {
-        btConstraintSolver* solver = new btSequentialImpulseConstraintSolver;
+        solver = new btSequentialImpulseConstraintSolver;
     }
 
     //create dynamics world
