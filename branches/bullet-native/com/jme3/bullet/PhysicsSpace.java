@@ -185,7 +185,7 @@ public class PhysicsSpace {
         //TODO: boroadphase!
         System.loadLibrary("bulletjme");
         initNativePhysics();
-        physicsSpaceId = createPhysicsSpace(worldMin.x, worldMin.y, worldMin.z, worldMax.x, worldMax.y, worldMax.z, 3);
+        physicsSpaceId = createPhysicsSpace(worldMin.x, worldMin.y, worldMin.z, worldMax.x, worldMax.y, worldMax.z, 3, false);
         pQueueTL.set(pQueue);
         physicsSpaceTL.set(this);
 
@@ -221,7 +221,7 @@ public class PhysicsSpace {
 //        setOverlapFilterCallback();
     }
 
-    private native long createPhysicsSpace(float minX, float minY, float minZ, float maxX, float maxY, float maxZ, int broadphaseType);
+    private native long createPhysicsSpace(float minX, float minY, float minZ, float maxX, float maxY, float maxZ, int broadphaseType, boolean threading);
 
 //    private void setOverlapFilterCallback() {
 //        OverlapFilterCallback callback = new OverlapFilterCallback() {

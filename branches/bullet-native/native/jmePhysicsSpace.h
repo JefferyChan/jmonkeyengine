@@ -34,6 +34,13 @@
 #include "btBulletCollisionCommon.h"
 #include "BulletCollision/CollisionDispatch/btCollisionObject.h"
 #include "BulletCollision/CollisionDispatch/btGhostObject.h"
+#include "BulletDynamics/Character/btKinematicCharacterController.h"
+#include "BulletMultiThreaded/PosixThreadSupport.h"
+#include "BulletMultiThreaded/btParallelConstraintSolver.h"
+#include "BulletMultiThreaded/SpuGatheringCollisionDispatcher.h"
+#include "BulletMultiThreaded/SpuCollisionTaskProcess.h"
+#include "BulletMultiThreaded/SequentialThreadSupport.h"
+#include "BulletCollision/CollisionDispatch/btSimulationIslandManager.h"
 
 /**
  * Author: Normen Hansen
@@ -42,11 +49,13 @@ class jmePhysicsSpace {
 private:
 	btDynamicsWorld* dynamicsWorld;
 	jobject javaPhysicsSpace;
+        btThreadSupportInterface* createSolverThreadSupport(int);
+        btThreadSupportInterface* createDispatchThreadSupport(int);
 public:
 	jmePhysicsSpace(){};
 	~jmePhysicsSpace();
         jmePhysicsSpace(JNIEnv*, jobject);
 	void stepSimulation(jfloat, jint, jfloat);
-        void createPhysicsSpace(jfloat, jfloat, jfloat, jfloat, jfloat, jfloat, jint);
+        void createPhysicsSpace(jfloat, jfloat, jfloat, jfloat, jfloat, jfloat, jint, jboolean);
         btDynamicsWorld* getDynamicsWorld();
 };

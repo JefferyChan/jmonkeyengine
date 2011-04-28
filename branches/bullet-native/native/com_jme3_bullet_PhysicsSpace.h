@@ -18,10 +18,10 @@ extern "C" {
 /*
  * Class:     com_jme3_bullet_PhysicsSpace
  * Method:    createPhysicsSpace
- * Signature: (FFFFFFI)J
+ * Signature: (FFFFFFIZ)J
  */
 JNIEXPORT jlong JNICALL Java_com_jme3_bullet_PhysicsSpace_createPhysicsSpace
-  (JNIEnv *, jobject, jfloat, jfloat, jfloat, jfloat, jfloat, jfloat, jint);
+  (JNIEnv *, jobject, jfloat, jfloat, jfloat, jfloat, jfloat, jfloat, jint, jboolean);
 
 /*
  * Class:     com_jme3_bullet_PhysicsSpace

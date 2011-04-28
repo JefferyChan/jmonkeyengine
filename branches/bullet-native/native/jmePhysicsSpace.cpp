@@ -36,7 +36,7 @@
  */
 jmePhysicsSpace::jmePhysicsSpace(JNIEnv* env, jobject javaSpace) {
     //TODO: global ref? maybe not -> cleaning
-//    this->javaPhysicsSpace = env->NewGlobalRef(javaSpace);
+    //    this->javaPhysicsSpace = env->NewGlobalRef(javaSpace);
     if (env->ExceptionCheck()) {
         env->Throw(env->ExceptionOccurred());
         return;
@@ -47,13 +47,49 @@ void jmePhysicsSpace::stepSimulation(jfloat tpf, jint maxSteps, jfloat accuracy)
     dynamicsWorld->stepSimulation(tpf, maxSteps, accuracy);
 }
 
-void jmePhysicsSpace::createPhysicsSpace(jfloat minX, jfloat minY, jfloat minZ, jfloat maxX, jfloat maxY, jfloat maxZ, jint broadphaseId){
-    // collision configuration contains default setup for memory, collision setup
-    btCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();
-    //    m_collisionConfiguration->setConvexConvexMultipointIterations();
+btThreadSupportInterface* jmePhysicsSpace::createSolverThreadSupport(int maxNumThreads) {
+#ifdef _WIN32
+    Win32ThreadSupport::Win32ThreadConstructionInfo threadConstructionInfo("solverThreads", SolverThreadFunc, SolverlsMemoryFunc, maxNumThreads);
+    Win32ThreadSupport* threadSupport = new Win32ThreadSupport(threadConstructionInfo);
+    threadSupport->startSPU();
+#elif defined (USE_PTHREADS)
+    PosixThreadSupport::ThreadConstructionInfo constructionInfo("collision", SolverThreadFunc,
+            SolverlsMemoryFunc, maxNumThreads);
+    PosixThreadSupport* threadSupport = new PosixThreadSupport(constructionInfo);
+    threadSupport->startSPU();
+#else
+    SequentialThreadSupport::SequentialThreadConstructionInfo tci("solverThreads", SolverThreadFunc, SolverlsMemoryFunc);
+    SequentialThreadSupport* threadSupport = new SequentialThreadSupport(tci);
+    threadSupport->startSPU();
+#endif
+    return threadSupport;
+}
 
-    // use the default collision dispatcher. For parallel processing you can use a diffent dispatcher (see Extras/BulletMultiThreaded)
-    btCollisionDispatcher* dispatcher = new btCollisionDispatcher(collisionConfiguration);
+btThreadSupportInterface* jmePhysicsSpace::createDispatchThreadSupport(int maxNumThreads) {
+#ifdef _WIN32
+    Win32ThreadSupport::Win32ThreadConstructionInfo threadConstructionInfo("solverThreads", processCollisionTask, createCollisionLocalStoreMemory, maxNumThreads);
+    Win32ThreadSupport* threadSupport = new Win32ThreadSupport(threadConstructionInfo);
+    threadSupport->startSPU();
+#elif defined (USE_PTHREADS)
+    PosixThreadSupport::ThreadConstructionInfo solverConstructionInfo("solver", processCollisionTask,
+            createCollisionLocalStoreMemory, maxNumThreads);
+    PosixThreadSupport* threadSupport = new PosixThreadSupport(solverConstructionInfo);
+    threadSupport->startSPU();
+#else
+    SequentialThreadSupport::SequentialThreadConstructionInfo tci("solverThreads", processCollisionTask, createCollisionLocalStoreMemory);
+    SequentialThreadSupport* threadSupport = new SequentialThreadSupport(tci);
+    threadSupport->startSPU();
+#endif
+    return threadSupport;
+}
+
+void jmePhysicsSpace::createPhysicsSpace(jfloat minX, jfloat minY, jfloat minZ, jfloat maxX, jfloat maxY, jfloat maxZ, jint broadphaseId, jboolean threading) {
+    // collision configuration contains default setup for memory, collision setup
+    btDefaultCollisionConstructionInfo cci;
+//    if(threading){
+//        cci.m_defaultMaxPersistentManifoldPoolSize = 32768;
+//    }
+    btCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration(cci);
 
     btVector3 min = btVector3(minX, minY, minZ);
     btVector3 max = btVector3(maxX, maxY, maxZ);
@@ -75,17 +111,43 @@ void jmePhysicsSpace::createPhysicsSpace(jfloat minX, jfloat minY, jfloat minZ, 
             broadphase = new btDbvtBroadphase();
             break;
         case 4:
-//            broadphase = new btGpu3DGridBroadphase(
-//                    min, max,
-//                    20, 20, 20,
-//                    10000, 1000, 25);
+            //            broadphase = new btGpu3DGridBroadphase(
+            //                    min, max,
+            //                    20, 20, 20,
+            //                    10000, 1000, 25);
             break;
     }
 
-    // the default constraint solver. For parallel processing you can use a different solver (see Extras/BulletMultiThreaded)
-    btConstraintSolver* solver = new btSequentialImpulseConstraintSolver;
+    btCollisionDispatcher* dispatcher;
+    btConstraintSolver* solver;
+    // use the default collision dispatcher. For parallel processing you can use a diffent dispatcher (see Extras/BulletMultiThreaded)
+    if (threading) {
+        btThreadSupportInterface* dispatchThreads = createDispatchThreadSupport(4);
+        dispatcher = new SpuGatheringCollisionDispatcher(dispatchThreads, 4, collisionConfiguration);
+        dispatcher->setDispatcherFlags(btCollisionDispatcher::CD_DISABLE_CONTACTPOOL_DYNAMIC_ALLOCATION);
+    } else {
+        dispatcher = new btCollisionDispatcher(collisionConfiguration);
+    }
 
-    dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration);
+    // the default constraint solver. For parallel processing you can use a different solver (see Extras/BulletMultiThreaded)
+    if (threading) {
+        btThreadSupportInterface* solverThreads = createSolverThreadSupport(4);
+        solver = new btParallelConstraintSolver(solverThreads);
+    } else {
+        btConstraintSolver* solver = new btSequentialImpulseConstraintSolver;
+    }
+
+    //create dynamics world
+    btDiscreteDynamicsWorld* world = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration);
+    dynamicsWorld = world;
+
+    //parallel solver requires the contacts to be in a contiguous pool, so avoid dynamic allocation
+    if (threading) {
+        world->getSimulationIslandManager()->setSplitIslands(false);
+        world->getSolverInfo().m_numIterations = 4;
+        world->getSolverInfo().m_solverMode = SOLVER_SIMD + SOLVER_USE_WARMSTARTING; //+SOLVER_RANDMIZE_ORDER;
+        world->getDispatchInfo().m_enableSPU = true;
+    }
 
     struct jmeFilterCallback : public btOverlapFilterCallback {
         // return true when pairs need collision
@@ -99,16 +161,16 @@ void jmePhysicsSpace::createPhysicsSpace(jfloat minX, jfloat minY, jfloat minZ, 
         }
     };
     dynamicsWorld->getPairCache()->setOverlapFilterCallback(new jmeFilterCallback());
-    
+
     broadphase->getOverlappingPairCache()->setInternalGhostPairCallback(new btGhostPairCallback());
 
-    dynamicsWorld->setGravity(btVector3(0, -9.81f, 0));    
+    dynamicsWorld->setGravity(btVector3(0, -9.81f, 0));
 }
 
-btDynamicsWorld* jmePhysicsSpace::getDynamicsWorld(){
+btDynamicsWorld* jmePhysicsSpace::getDynamicsWorld() {
     return dynamicsWorld;
 }
 
-jmePhysicsSpace::~jmePhysicsSpace(){
+jmePhysicsSpace::~jmePhysicsSpace() {
     delete(dynamicsWorld);
 }

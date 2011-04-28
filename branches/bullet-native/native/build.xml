@@ -105,6 +105,7 @@
             <compilerarg value="-arch"/>
             <compilerarg value="x86_64"/>
             <linker name="${bullet.osx.compiler}">
+                <libset dir="${bullet.folder}/src/BulletSoftBody" libs="BulletSoftBody"/>
                 <libset dir="${bullet.folder}/src/BulletMultiThreaded" libs="BulletMultiThreaded"/>
                 <libset dir="${bullet.folder}/src/BulletDynamics" libs="BulletDynamics"/>
                 <libset dir="${bullet.folder}/src/BulletCollision" libs="BulletCollision"/>
@@ -139,7 +140,7 @@
     </target>
 
     <target name="-nativelib-windows" if="isWindows">
-        <cc name="${bullet.windows.compiler}" warnings="severe" debug="${bullet.compile.debug}" link="shared" outfile="${bullet.output.dir}/${bullet.library.name}" objdir="${bullet.build.dir}">
+        <cc multithreaded="" name="${bullet.windows.compiler}" warnings="severe" debug="${bullet.compile.debug}" link="shared" outfile="${bullet.output.dir}/${bullet.library.name}" objdir="${bullet.build.dir}">
             <fileset dir="${bullet.source.dir}">
                 <include name="*.cpp">
                 </include>
