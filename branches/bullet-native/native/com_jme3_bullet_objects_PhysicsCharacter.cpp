@@ -72,12 +72,12 @@ extern "C" {
      * Signature: (JJF)J
      */
     JNIEXPORT jlong JNICALL Java_com_jme3_bullet_objects_PhysicsCharacter_createCharacterObject
-    (JNIEnv *env, jobject object, jlong objectId, jlong shapeId, jfloat stepHeight){
+    (JNIEnv *env, jobject object, jlong objectId, jlong shapeId, jfloat stepHeight) {
         btPairCachingGhostObject* ghost = (btPairCachingGhostObject*) objectId;
         //TODO: check convexshape!
         btConvexShape* shape = (btConvexShape*) shapeId;
         btKinematicCharacterController* character = new btKinematicCharacterController(ghost, shape, stepHeight);
-        return (long)character;
+        return (long) character;
     }
 
     /*
@@ -86,8 +86,8 @@ extern "C" {
      * Signature: (JLcom/jme3/math/Vector3f;)V
      */
     JNIEXPORT void JNICALL Java_com_jme3_bullet_objects_PhysicsCharacter_warp
-    (JNIEnv *env, jobject object, jlong objectId, jobject vector){
-        btKinematicCharacterController* character = (btKinematicCharacterController*)objectId;
+    (JNIEnv *env, jobject object, jlong objectId, jobject vector) {
+        btKinematicCharacterController* character = (btKinematicCharacterController*) objectId;
         btVector3* vec = &btVector3();
         jmeBulletUtil::convert(env, vector, vec);
         character->warp(*vec);
@@ -99,8 +99,8 @@ extern "C" {
      * Signature: (JLcom/jme3/math/Vector3f;)V
      */
     JNIEXPORT void JNICALL Java_com_jme3_bullet_objects_PhysicsCharacter_setWalkDirection
-    (JNIEnv *env, jobject object, jlong objectId, jobject vector){
-        btKinematicCharacterController* character = (btKinematicCharacterController*)objectId;
+    (JNIEnv *env, jobject object, jlong objectId, jobject vector) {
+        btKinematicCharacterController* character = (btKinematicCharacterController*) objectId;
         btVector3* vec = &btVector3();
         jmeBulletUtil::convert(env, vector, vec);
         character->setWalkDirection(*vec);
@@ -112,8 +112,8 @@ extern "C" {
      * Signature: (JI)V
      */
     JNIEXPORT void JNICALL Java_com_jme3_bullet_objects_PhysicsCharacter_setUpAxis
-    (JNIEnv *env, jobject object, jlong objectId, jint value){
-        btKinematicCharacterController* character = (btKinematicCharacterController*)objectId;
+    (JNIEnv *env, jobject object, jlong objectId, jint value) {
+        btKinematicCharacterController* character = (btKinematicCharacterController*) objectId;
         character->setUpAxis(value);
     }
 
@@ -123,8 +123,8 @@ extern "C" {
      * Signature: (JF)V
      */
     JNIEXPORT void JNICALL Java_com_jme3_bullet_objects_PhysicsCharacter_setFallSpeed
-    (JNIEnv *env, jobject object, jlong objectId, jfloat value){
-        btKinematicCharacterController* character = (btKinematicCharacterController*)objectId;
+    (JNIEnv *env, jobject object, jlong objectId, jfloat value) {
+        btKinematicCharacterController* character = (btKinematicCharacterController*) objectId;
         character->setFallSpeed(value);
     }
 
@@ -134,8 +134,8 @@ extern "C" {
      * Signature: (JF)V
      */
     JNIEXPORT void JNICALL Java_com_jme3_bullet_objects_PhysicsCharacter_setJumpSpeed
-    (JNIEnv *env, jobject object, jlong objectId, jfloat value){
-        btKinematicCharacterController* character = (btKinematicCharacterController*)objectId;
+    (JNIEnv *env, jobject object, jlong objectId, jfloat value) {
+        btKinematicCharacterController* character = (btKinematicCharacterController*) objectId;
         character->setJumpSpeed(value);
     }
 
@@ -145,8 +145,8 @@ extern "C" {
      * Signature: (JF)V
      */
     JNIEXPORT void JNICALL Java_com_jme3_bullet_objects_PhysicsCharacter_setGravity
-    (JNIEnv *env, jobject object, jlong objectId, jfloat value){
-        btKinematicCharacterController* character = (btKinematicCharacterController*)objectId;
+    (JNIEnv *env, jobject object, jlong objectId, jfloat value) {
+        btKinematicCharacterController* character = (btKinematicCharacterController*) objectId;
         character->setGravity(value);
     }
 
@@ -156,8 +156,8 @@ extern "C" {
      * Signature: (J)F
      */
     JNIEXPORT jfloat JNICALL Java_com_jme3_bullet_objects_PhysicsCharacter_getGravity
-    (JNIEnv *env, jobject object, jlong objectId){
-        btKinematicCharacterController* character = (btKinematicCharacterController*)objectId;
+    (JNIEnv *env, jobject object, jlong objectId) {
+        btKinematicCharacterController* character = (btKinematicCharacterController*) objectId;
         return character->getGravity();
     }
 
@@ -167,8 +167,8 @@ extern "C" {
      * Signature: (JF)V
      */
     JNIEXPORT void JNICALL Java_com_jme3_bullet_objects_PhysicsCharacter_setMaxSlope
-    (JNIEnv *env, jobject object, jlong objectId, jfloat value){
-        btKinematicCharacterController* character = (btKinematicCharacterController*)objectId;
+    (JNIEnv *env, jobject object, jlong objectId, jfloat value) {
+        btKinematicCharacterController* character = (btKinematicCharacterController*) objectId;
         character->setMaxSlope(value);
     }
 
@@ -178,8 +178,8 @@ extern "C" {
      * Signature: (J)F
      */
     JNIEXPORT jfloat JNICALL Java_com_jme3_bullet_objects_PhysicsCharacter_getMaxSlope
-    (JNIEnv *env, jobject object, jlong objectId){
-        btKinematicCharacterController* character = (btKinematicCharacterController*)objectId;
+    (JNIEnv *env, jobject object, jlong objectId) {
+        btKinematicCharacterController* character = (btKinematicCharacterController*) objectId;
         return character->getMaxSlope();
     }
 
@@ -189,8 +189,8 @@ extern "C" {
      * Signature: (J)Z
      */
     JNIEXPORT jboolean JNICALL Java_com_jme3_bullet_objects_PhysicsCharacter_onGround
-    (JNIEnv *env, jobject object, jlong objectId){
-        btKinematicCharacterController* character = (btKinematicCharacterController*)objectId;
+    (JNIEnv *env, jobject object, jlong objectId) {
+        btKinematicCharacterController* character = (btKinematicCharacterController*) objectId;
         return character->onGround();
     }
 
@@ -200,8 +200,8 @@ extern "C" {
      * Signature: (J)V
      */
     JNIEXPORT void JNICALL Java_com_jme3_bullet_objects_PhysicsCharacter_jump
-    (JNIEnv *env, jobject object, jlong objectId){
-        btKinematicCharacterController* character = (btKinematicCharacterController*)objectId;
+    (JNIEnv *env, jobject object, jlong objectId) {
+        btKinematicCharacterController* character = (btKinematicCharacterController*) objectId;
         character->jump();
     }
 
@@ -211,8 +211,8 @@ extern "C" {
      * Signature: (JLcom/jme3/math/Vector3f;)V
      */
     JNIEXPORT void JNICALL Java_com_jme3_bullet_objects_PhysicsCharacter_getPhysicsLocation
-    (JNIEnv *env, jobject object, jlong objectId, jobject value){
-        btGhostObject* character = (btGhostObject*)objectId;
+    (JNIEnv *env, jobject object, jlong objectId, jobject value) {
+        btGhostObject* character = (btGhostObject*) objectId;
         jmeBulletUtil::convert(env, &character->getWorldTransform().getOrigin(), value);
     }
 
@@ -222,8 +222,8 @@ extern "C" {
      * Signature: (JF)V
      */
     JNIEXPORT void JNICALL Java_com_jme3_bullet_objects_PhysicsCharacter_setCcdSweptSphereRadius
-    (JNIEnv *env, jobject object, jlong objectId, jfloat value){
-        btGhostObject* character = (btGhostObject*)objectId;
+    (JNIEnv *env, jobject object, jlong objectId, jfloat value) {
+        btGhostObject* character = (btGhostObject*) objectId;
         character->setCcdSweptSphereRadius(value);
     }
 
@@ -233,8 +233,8 @@ extern "C" {
      * Signature: (JF)V
      */
     JNIEXPORT void JNICALL Java_com_jme3_bullet_objects_PhysicsCharacter_setCcdMotionThreshold
-    (JNIEnv *env, jobject object, jlong objectId, jfloat value){
-        btGhostObject* character = (btGhostObject*)objectId;
+    (JNIEnv *env, jobject object, jlong objectId, jfloat value) {
+        btGhostObject* character = (btGhostObject*) objectId;
         character->setCcdMotionThreshold(value);
     }
 
@@ -244,8 +244,8 @@ extern "C" {
      * Signature: (J)F
      */
     JNIEXPORT jfloat JNICALL Java_com_jme3_bullet_objects_PhysicsCharacter_getCcdSweptSphereRadius
-    (JNIEnv *env, jobject object, jlong objectId){
-        btGhostObject* character = (btGhostObject*)objectId;
+    (JNIEnv *env, jobject object, jlong objectId) {
+        btGhostObject* character = (btGhostObject*) objectId;
         return character->getCcdSweptSphereRadius();
     }
 
@@ -255,8 +255,8 @@ extern "C" {
      * Signature: (J)F
      */
     JNIEXPORT jfloat JNICALL Java_com_jme3_bullet_objects_PhysicsCharacter_getCcdMotionThreshold
-    (JNIEnv *env, jobject object, jlong objectId){
-        btGhostObject* character = (btGhostObject*)objectId;
+    (JNIEnv *env, jobject object, jlong objectId) {
+        btGhostObject* character = (btGhostObject*) objectId;
         return character->getCcdMotionThreshold();
     }
 
@@ -266,9 +266,20 @@ extern "C" {
      * Signature: (J)F
      */
     JNIEXPORT jfloat JNICALL Java_com_jme3_bullet_objects_PhysicsCharacter_getCcdSquareMotionThreshold
-    (JNIEnv *env, jobject object, jlong objectId){
-        btGhostObject* character = (btGhostObject*)objectId;
+    (JNIEnv *env, jobject object, jlong objectId) {
+        btGhostObject* character = (btGhostObject*) objectId;
         return character->getCcdSquareMotionThreshold();
+    }
+
+    /*
+     * Class:     com_jme3_bullet_objects_PhysicsCharacter
+     * Method:    finalizeNativeCharacter
+     * Signature: (J)V
+     */
+    JNIEXPORT void JNICALL Java_com_jme3_bullet_objects_PhysicsCharacter_finalizeNativeCharacter
+    (JNIEnv *env, jobject object, jlong objectId) {
+        btKinematicCharacterController* character = (btKinematicCharacterController*) objectId;
+        delete(character);
     }
 
 #ifdef __cplusplus

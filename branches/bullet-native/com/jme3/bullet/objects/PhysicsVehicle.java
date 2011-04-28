@@ -124,6 +124,12 @@ public class PhysicsVehicle extends PhysicsRigidBody {
      */
     public void createVehicle(PhysicsSpace space) {
         physicsSpace = space;
+//        try{
+//        if(5==5)
+//            throw new IllegalStateException("Who calls this!");
+//        }catch(Exception e){
+//            e.printStackTrace();
+//        }
         if (space == null) {
             return;
         }
@@ -131,6 +137,9 @@ public class PhysicsVehicle extends PhysicsRigidBody {
             throw new IllegalStateException("Physics space is not initialized!");
         }
         if (rayCasterId != 0) {
+            space.removeCollisionObject(this);
+            Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Clearing RayCaster {0}", Long.toHexString(rayCasterId));
+            Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Clearing Vehicle {0}", Long.toHexString(vehicleId));
             finalizeNative(rayCasterId, vehicleId);
         }
         rayCasterId = createVehicleRaycaster(objectId, space.getSpaceId());

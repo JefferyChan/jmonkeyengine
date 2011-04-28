@@ -201,6 +201,14 @@ JNIEXPORT jfloat JNICALL Java_com_jme3_bullet_objects_PhysicsCharacter_getCcdMot
 JNIEXPORT jfloat JNICALL Java_com_jme3_bullet_objects_PhysicsCharacter_getCcdSquareMotionThreshold
   (JNIEnv *, jobject, jlong);
 
+/*
+ * Class:     com_jme3_bullet_objects_PhysicsCharacter
+ * Method:    finalizeNativeCharacter
+ * Signature: (J)V
+ */
+JNIEXPORT void JNICALL Java_com_jme3_bullet_objects_PhysicsCharacter_finalizeNativeCharacter
+  (JNIEnv *, jobject, jlong);
+
 #ifdef __cplusplus
 }
 #endif

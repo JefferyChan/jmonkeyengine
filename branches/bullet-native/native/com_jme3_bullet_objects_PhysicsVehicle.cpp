@@ -61,7 +61,7 @@ extern "C" {
     JNIEXPORT jlong JNICALL Java_com_jme3_bullet_objects_PhysicsVehicle_createVehicleRaycaster
     (JNIEnv *env, jobject object, jlong bodyId, jlong spaceId) {
         //btRigidBody* body = (btRigidBody*) bodyId;
-        btDynamicsWorld* spsace = (btDynamicsWorld*) spaceId;
+        btDiscreteDynamicsWorld* spsace = (btDiscreteDynamicsWorld*) spaceId;
         btDefaultVehicleRaycaster* caster = new btDefaultVehicleRaycaster(spsace);
         return (long) caster;
     }

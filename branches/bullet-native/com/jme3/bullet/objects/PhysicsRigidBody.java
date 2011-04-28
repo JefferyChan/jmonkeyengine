@@ -31,10 +31,6 @@
  */
 package com.jme3.bullet.objects;
 
-//import com.bulletphysics.collision.dispatch.CollisionFlags;
-//import com.bulletphysics.dynamics.RigidBody;
-//import com.bulletphysics.dynamics.RigidBodyConstructionInfo;
-//import com.bulletphysics.linearmath.Transform;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
 import com.jme3.bullet.PhysicsSpace;
@@ -65,17 +61,9 @@ import java.util.logging.Logger;
  */
 public class PhysicsRigidBody extends PhysicsCollisionObject {
 
-//    protected RigidBodyConstructionInfo constructionInfo;
-//    protected RigidBody rBody;
     protected RigidBodyMotionState motionState = new RigidBodyMotionState();
     protected float mass = 1.0f;
     protected boolean kinematic = false;
-//    protected javax.vecmath.Vector3f tempVec = new javax.vecmath.Vector3f();
-//    protected javax.vecmath.Vector3f tempVec2 = new javax.vecmath.Vector3f();
-//    protected Transform tempTrans = new Transform(new javax.vecmath.Matrix3f());
-//    protected javax.vecmath.Matrix3f tempMatrix = new javax.vecmath.Matrix3f();
-    //TEMP VARIABLES
-//    protected javax.vecmath.Vector3f localInertia = new javax.vecmath.Vector3f();
     protected ArrayList<PhysicsJoint> joints = new ArrayList<PhysicsJoint>();
 
     public PhysicsRigidBody() {
@@ -110,15 +98,12 @@ public class PhysicsRigidBody extends PhysicsCollisionObject {
                 PhysicsSpace.getPhysicsSpace().remove(this);
                 removed = true;
             }
-//            rBody.destroy();
-        }
-        preRebuild();
-        if (objectId != 0) {
+            Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Clearing RigidBody {0}", Long.toHexString(objectId));
             finalizeNative(objectId);
         }
+        preRebuild();
         objectId = createRigidBody(mass, motionState.getObjectId(), collisionShape.getObjectId());
         Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Created RigidBody {0}", Long.toHexString(objectId));
-//        rBody = new RigidBody(constructionInfo);
         postRebuild();
         if (removed) {
             PhysicsSpace.getPhysicsSpace().add(this);
@@ -126,26 +111,15 @@ public class PhysicsRigidBody extends PhysicsCollisionObject {
     }
 
     protected void preRebuild() {
-//        collisionShape.calculateLocalInertia(mass, localInertia);
-//        if (constructionInfo == null) {
-//            constructionInfo = new RigidBodyConstructionInfo(mass, motionState, collisionShape.getObjectId(), localInertia);
-//        } else {
-//            constructionInfo.mass = mass;
-//            constructionInfo.collisionShape = collisionShape.getObjectId();
-//            constructionInfo.motionState = motionState;
-//        }
     }
 
     private native long createRigidBody(float mass, long motionStateId, long collisionShapeId);
 
     protected void postRebuild() {
-//        rBody.setUserPointer(this);
         if (mass == 0.0f) {
             setStatic(objectId, true);
-//            rBody.setCollisionFlags(rBody.getCollisionFlags() | CollisionFlags.STATIC_OBJECT);
         } else {
             setStatic(objectId, false);
-//            rBody.setCollisionFlags(rBody.getCollisionFlags() & ~CollisionFlags.STATIC_OBJECT);
         }
     }
 
@@ -287,13 +261,6 @@ public class PhysicsRigidBody extends PhysicsCollisionObject {
     public void setKinematic(boolean kinematic) {
         this.kinematic = kinematic;
         setKinematic(objectId, kinematic);
-//        if (kinematic) {
-//            rBody.setCollisionFlags(rBody.getCollisionFlags() | CollisionFlags.KINEMATIC_OBJECT);
-//            rBody.setActivationState(com.bulletphysics.collision.dispatch.CollisionObject.DISABLE_DEACTIVATION);
-//        } else {
-//            rBody.setCollisionFlags(rBody.getCollisionFlags() & ~CollisionFlags.KINEMATIC_OBJECT);
-//            rBody.setActivationState(com.bulletphysics.collision.dispatch.CollisionObject.ACTIVE_TAG);
-//        }
     }
 
     private native void setKinematic(long objectId, boolean kinematic);
@@ -350,20 +317,14 @@ public class PhysicsRigidBody extends PhysicsCollisionObject {
         if (collisionShape instanceof MeshCollisionShape && mass != 0) {
             throw new IllegalStateException("Dynamic rigidbody can not have mesh collision shape!");
         }
-//        if (collisionShape != null) {
-//            collisionShape.calculateLocalInertia(mass, localInertia);
-//        }
         if (objectId != 0) {
             if (collisionShape != null) {
                 updateMassProps(objectId, collisionShape.getObjectId(), mass);
             }
-//            rBody.setMassProps(mass, localInertia);
             if (mass == 0.0f) {
                 setStatic(objectId, true);
-//                rBody.setCollisionFlags(rBody.getCollisionFlags() | CollisionFlags.STATIC_OBJECT);
             } else {
                 setStatic(objectId, false);
-//                rBody.setCollisionFlags(rBody.getCollisionFlags() & ~CollisionFlags.STATIC_OBJECT);
             }
         }
     }
@@ -611,9 +572,6 @@ public class PhysicsRigidBody extends PhysicsCollisionObject {
         } else {
             setCollisionShape(objectId, collisionShape.getObjectId());
             updateMassProps(objectId, collisionShape.getObjectId(), mass);
-//            collisionShape.calculateLocalInertia(mass);
-//            constructionInfo.collisionShape = collisionShape.getObjectId();
-//            rBody.setCollisionShape(collisionShape.getObjectId());
         }
     }
 
