@@ -48,7 +48,7 @@ extern "C" {
     JNIEXPORT jlong JNICALL Java_com_jme3_bullet_joints_SixDofJoint_getRotationalLimitMotor
     (JNIEnv * env, jobject object, jlong jointId, jint index) {
         btGeneric6DofConstraint* joint = (btGeneric6DofConstraint*) jointId;
-        return joint->getRotationalLimitMotor(index);
+        return (long)joint->getRotationalLimitMotor(index);
     }
 
     /*
@@ -59,7 +59,7 @@ extern "C" {
     JNIEXPORT jlong JNICALL Java_com_jme3_bullet_joints_SixDofJoint_getTranslationalLimitMotor
     (JNIEnv * env, jobject object, jlong jointId) {
         btGeneric6DofConstraint* joint = (btGeneric6DofConstraint*) jointId;
-        return joint->getTranslationalLimitMotor();
+        return (long)joint->getTranslationalLimitMotor();
     }
 
     /*
