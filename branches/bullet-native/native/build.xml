@@ -130,6 +130,7 @@
             <includepath path="${bullet.java.include}"/>
             <includepath path="${bullet.java.include}/linux"/>
             <includepath path="${bullet.bullet.include}"/>
+            <!--compilerarg value="-m32"/-->
             <linker name="${bullet.linux.compiler}">
                 <libset dir="${bullet.folder}/src/BulletMultiThreaded" libs="BulletMultiThreaded"/>
                 <libset dir="${bullet.folder}/src/BulletDynamics" libs="BulletDynamics"/>
@@ -148,7 +149,7 @@
             <includepath path="${bullet.java.include}"/>
             <includepath path="${bullet.java.include}/win32"/>
             <includepath path="${bullet.bullet.include}"/>
-           <!--compilerarg value="-m32"/-->
+            <!--compilerarg value="-m32"/-->
             <linker name="${bullet.windows.compiler}">
                 <libset dir="${bullet.folder}/src/BulletMultiThreaded" libs="BulletMultiThreaded"/>
                 <libset dir="${bullet.folder}/src/BulletDynamics" libs="BulletDynamics"/>
