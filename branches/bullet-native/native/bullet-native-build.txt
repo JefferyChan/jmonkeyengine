@@ -79,7 +79,7 @@ to compile correctly:
 
 Commands:
 > cd bullet-2.77
-> cmake -DBUILD_SHARED_LIBS=OFF -DBUILD_STATIC_LIBS=ON \
+> cmake -DBUILD_SHARED_LIBS=OFF -DBUILD_STATIC_LIBS=ON -DCMAKE_C_FLAGS="-fPIC" -DCMAKE_CXX_FLAGS="-fPIC"\
               -DBUILD_EXTRAS=off -DBUILD_DEMOS=off -DCMAKE_BUILD_TYPE=Release
 > make
 
