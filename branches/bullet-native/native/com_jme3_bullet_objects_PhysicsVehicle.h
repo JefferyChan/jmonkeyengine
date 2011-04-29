@@ -108,9 +108,9 @@ JNIEXPORT void JNICALL Java_com_jme3_bullet_objects_PhysicsVehicle_steer
 /*
  * Class:     com_jme3_bullet_objects_PhysicsVehicle
  * Method:    brake
- * Signature: (JIF)V
+ * Signature: (JIF)F
  */
-JNIEXPORT void JNICALL Java_com_jme3_bullet_objects_PhysicsVehicle_brake
+JNIEXPORT jfloat JNICALL Java_com_jme3_bullet_objects_PhysicsVehicle_brake
   (JNIEnv *, jobject, jlong, jint, jfloat);
 
 /*
