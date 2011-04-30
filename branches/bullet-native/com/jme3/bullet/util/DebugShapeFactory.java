@@ -31,11 +31,6 @@
  */
 package com.jme3.bullet.util;
 
-import com.bulletphysics.collision.shapes.ConcaveShape;
-import com.bulletphysics.collision.shapes.ConvexShape;
-import com.bulletphysics.collision.shapes.ShapeHull;
-import com.bulletphysics.collision.shapes.TriangleCallback;
-import com.bulletphysics.util.IntArrayList;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.collision.shapes.CompoundCollisionShape;
 import com.jme3.bullet.collision.shapes.infos.ChildCollisionShape;
@@ -46,13 +41,8 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.VertexBuffer.Type;
 import com.jme3.util.TempVars;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.FloatBuffer;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import javax.vecmath.Vector3f;
 
 /**
  *
@@ -61,9 +51,9 @@ import javax.vecmath.Vector3f;
 public class DebugShapeFactory {
 
     /** The maximum corner for the aabb used for triangles to include in ConcaveShape processing.*/
-    private static final Vector3f aabbMax = new Vector3f(1e30f, 1e30f, 1e30f);
+//    private static final Vector3f aabbMax = new Vector3f(1e30f, 1e30f, 1e30f);
     /** The minimum corner for the aabb used for triangles to include in ConcaveShape processing.*/
-    private static final Vector3f aabbMin = new Vector3f(-1e30f, -1e30f, -1e30f);
+//    private static final Vector3f aabbMin = new Vector3f(-1e30f, -1e30f, -1e30f);
 
     /**
      * Creates a debug shape from the given collision shape. This is mostly used internally.<br>
@@ -120,135 +110,15 @@ public class DebugShapeFactory {
         return geom;
     }
 
-    public static Mesh getDebugMesh(CollisionShape shape){
-        Mesh mesh=new Mesh();
-//        if(shape.getObjectId() instanceof ConvexShape){
-//            mesh=new Mesh();
-//            mesh.setBuffer(Type.Position, 3, getVertices((ConvexShape)shape.getObjectId()));
-//            mesh.getFloatBuffer(Type.Position).clear();
-//        }
-//        else if(shape.getObjectId() instanceof ConcaveShape)
-//        {
-//            mesh=new Mesh();
-//            mesh.setBuffer(Type.Position, 3, getVertices((ConcaveShape)shape.getObjectId()));
-//            mesh.getFloatBuffer(Type.Position).clear();
-//        }
+    public static Mesh getDebugMesh(CollisionShape shape) {
+        Mesh mesh = new Mesh();
+        mesh = new Mesh();
+        DebugMeshCallback callback = new DebugMeshCallback();
+        getVertices(shape.getObjectId(), callback);
+        mesh.setBuffer(Type.Position, 3, callback.getVertices());
+        mesh.getFloatBuffer(Type.Position).clear();
         return mesh;
     }
 
-    /**
-     *  Constructs the buffer for the vertices of the concave shape.
-     *
-     * @param concaveShape the shape to get the vertices for / from.
-     * @return the shape as stored by the given broadphase rigid body.
-     */
-    private static FloatBuffer getVertices(ConcaveShape concaveShape) {
-        // Create the call back that'll create the vertex buffer
-        BufferedTriangleCallback triangleProcessor = new BufferedTriangleCallback();
-        concaveShape.processAllTriangles(triangleProcessor, aabbMin, aabbMax);
-
-        // Retrieve the vextex and index buffers
-        return triangleProcessor.getVertices();
-    }
-
-    /**
-     *  Processes the given convex shape to retrieve a correctly ordered FloatBuffer to
-     *  construct the shape from with a TriMesh.
-     *
-     * @param convexShape the shape to retreieve the vertices from.
-     * @return the vertices as a FloatBuffer, ordered as Triangles.
-     */
-    private static FloatBuffer getVertices(ConvexShape convexShape) {
-        // Check there is a hull shape to render
-        if (convexShape.getUserPointer() == null) {
-            // create a hull approximation
-            ShapeHull hull = new ShapeHull(convexShape);
-            float margin = convexShape.getMargin();
-            hull.buildHull(margin);
-            convexShape.setUserPointer(hull);
-        }
-
-        // Assert state - should have a pointer to a hull (shape) that'll be drawn
-        assert convexShape.getUserPointer() != null : "Should have a shape for the userPointer, instead got null";
-        ShapeHull hull = (ShapeHull) convexShape.getUserPointer();
-
-        // Assert we actually have a shape to render
-        assert hull.numTriangles() > 0 : "Expecting the Hull shape to have triangles";
-        int numberOfTriangles = hull.numTriangles();
-
-        // The number of bytes needed is: (floats in a vertex) * (vertices in a triangle) * (# of triangles) * (size of float in bytes)
-        final int numberOfFloats = 3 * 3 * numberOfTriangles;
-        final int byteBufferSize = numberOfFloats * Float.SIZE;
-        FloatBuffer vertices = ByteBuffer.allocateDirect(byteBufferSize).order(ByteOrder.nativeOrder()).asFloatBuffer();
-
-        // Force the limit, set the cap - most number of floats we will use the buffer for
-        vertices.limit(numberOfFloats);
-
-        // Loop variables
-        final IntArrayList hullIndicies = hull.getIndexPointer();
-        final List<Vector3f> hullVertices = hull.getVertexPointer();
-        Vector3f vertexA, vertexB, vertexC;
-        int index = 0;
-
-        for (int i = 0; i < numberOfTriangles; i++) {
-            // Grab the data for this triangle from the hull
-            vertexA = hullVertices.get(hullIndicies.get(index++));
-            vertexB = hullVertices.get(hullIndicies.get(index++));
-            vertexC = hullVertices.get(hullIndicies.get(index++));
-
-            // Put the verticies into the vertex buffer
-            vertices.put(vertexA.x).put(vertexA.y).put(vertexA.z);
-            vertices.put(vertexB.x).put(vertexB.y).put(vertexB.z);
-            vertices.put(vertexC.x).put(vertexC.y).put(vertexC.z);
-        }
-
-        vertices.clear();
-        return vertices;
-    }
-}
-
-/**
- *  A callback is used to process the triangles of the shape as there is no direct access to a concave shapes, shape.
- *  <p/>
- *  The triangles are simply put into a list (which in extreme condition will cause memory problems) then put into a direct buffer.
- *
- * @author CJ Hare
- */
-class BufferedTriangleCallback extends TriangleCallback {
-
-    private ArrayList<Vector3f> vertices;
-
-    public BufferedTriangleCallback() {
-        vertices = new ArrayList<Vector3f>();
-    }
-
-    @Override
-    public void processTriangle(Vector3f[] triangle, int partId, int triangleIndex) {
-        // Three sets of individual lines
-        // The new Vector is needed as the given triangle reference is from a pool
-        vertices.add(new Vector3f(triangle[0]));
-        vertices.add(new Vector3f(triangle[1]));
-        vertices.add(new Vector3f(triangle[2]));
-    }
-
-    /**
-     *  Retrieves the vertices from the Triangle buffer.
-     */
-    public FloatBuffer getVertices() {
-        // There are 3 floats needed for each vertex (x,y,z)
-        final int numberOfFloats = vertices.size() * 3;
-        final int byteBufferSize = numberOfFloats * Float.SIZE;
-        FloatBuffer verticesBuffer = ByteBuffer.allocateDirect(byteBufferSize).order(ByteOrder.nativeOrder()).asFloatBuffer();
-
-        // Force the limit, set the cap - most number of floats we will use the buffer for
-        verticesBuffer.limit(numberOfFloats);
-
-        // Copy the values from the list to the direct float buffer
-        for (Vector3f v : vertices) {
-            verticesBuffer.put(v.x).put(v.y).put(v.z);
-        }
-
-        vertices.clear();
-        return verticesBuffer;
-    }
+    private static native void getVertices(long shapeId, DebugMeshCallback buffer);
 }

@@ -29,32 +29,33 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package com.jme3.bullet.util;
+
+import com.jme3.math.Vector3f;
+import com.jme3.util.BufferUtils;
+import java.nio.FloatBuffer;
+import java.util.ArrayList;
 
 /**
- * Author: Normen Hansen
+ *
+ * @author normenhansen
  */
-#include "com_jme3_bullet_collision_shapes_HullCollisionShape.h"
-#include "jmeBulletUtil.h"
-#include "BulletCollision/CollisionShapes/btConvexHullShape.h"
+public class DebugMeshCallback {
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+    private ArrayList<Vector3f> list = new ArrayList<Vector3f>();
 
-    /*
-     * Class:     com_jme3_bullet_collision_shapes_HullCollisionShape
-     * Method:    createShape
-     * Signature: ([F)J
-     */
-    JNIEXPORT jlong JNICALL Java_com_jme3_bullet_collision_shapes_HullCollisionShape_createShape
-    (JNIEnv *env, jobject object, jobject array) {
-        float* data = (float*)env->GetDirectBufferAddress(array);
-        //TODO: capacity will not always be length!
-        int length = env->GetDirectBufferCapacity(array);
-        btConvexHullShape* shape = new btConvexHullShape(data, length * 4);
-        return (long)shape;
+    public void addVector(float x, float y, float z, int part, int index) {
+        list.add(new Vector3f(x, y, z));
     }
 
-#ifdef __cplusplus
+    public FloatBuffer getVertices() {
+        FloatBuffer buf = BufferUtils.createFloatBuffer(list.size() * 3);
+        for (int i = 0; i < list.size(); i++) {
+            Vector3f vector3f = list.get(i);
+            buf.put(vector3f.x);
+            buf.put(vector3f.y);
+            buf.put(vector3f.z);
+        }
+        return buf;
+    }
 }
-#endif

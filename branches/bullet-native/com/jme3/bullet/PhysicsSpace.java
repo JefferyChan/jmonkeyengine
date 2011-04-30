@@ -596,10 +596,22 @@ public class PhysicsSpace {
     }
 
     private void addRigidBody(PhysicsRigidBody node) {
-//        physicsNodes.put(node.getObjectId(), node);
-//        dynamicsWorld.addRigidBody(node.getObjectId());
+        physicsNodes.put(node.getObjectId(), node);
+
+        //Workaround
+        //It seems that adding a Kinematic RigidBody to the dynamicWorld prevent it from being non kinematic again afterward.
+        //so we add it non kinematic, then set it kinematic again.
+        boolean kinematic = false;
+        if (node.isKinematic()) {
+            kinematic = true;
+            node.setKinematic(false);
+        }
         addRigidBody(physicsSpaceId, node.getObjectId());
-        Logger.getLogger(PhysicsSpace.class.getName()).log(Level.INFO, "Adding RigidBody {0} to physics space.", Long.toHexString(node.getObjectId()));
+        if (kinematic) {
+            node.setKinematic(true);
+        }
+
+        Logger.getLogger(PhysicsSpace.class.getName()).log(Level.INFO, "Adding RigidBody {0} to physics space.", node.getObjectId());
         if (node instanceof PhysicsVehicle) {
             Logger.getLogger(PhysicsSpace.class.getName()).log(Level.INFO, "Adding vehicle constraint {0} to physics space.", Long.toHexString(((PhysicsVehicle) node).getVehicleId()));
             ((PhysicsVehicle) node).createVehicle(this);

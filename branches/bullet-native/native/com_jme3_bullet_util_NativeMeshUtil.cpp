@@ -40,7 +40,7 @@
 extern "C" {
 #endif
 
-        /*
+    /*
      * Class:     com_jme3_bullet_util_NativeMeshUtil
      * Method:    createTriangleIndexVertexArray
      * Signature: (Ljava/nio/ByteBuffer;Ljava/nio/ByteBuffer;IIII)J

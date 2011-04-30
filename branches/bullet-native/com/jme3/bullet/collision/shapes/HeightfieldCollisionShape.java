@@ -40,7 +40,7 @@ public class HeightfieldCollisionShape extends CollisionShape {
     protected float maxHeight;
     protected int upAxis;
     protected boolean flipQuadEdges;
-    protected FloatBuffer fbuf;
+//    protected FloatBuffer fbuf;
 
     public HeightfieldCollisionShape() {
     }
@@ -84,7 +84,7 @@ public class HeightfieldCollisionShape extends CollisionShape {
         this.minHeight = min;
         this.maxHeight = max;
 
-        this.upAxis = HeightfieldTerrainShape.YAXIS;
+        this.upAxis = 1;
         this.flipQuadEdges = false;
 
         heightStickWidth = (int) FastMath.sqrt(heightfieldData.length);
@@ -95,17 +95,22 @@ public class HeightfieldCollisionShape extends CollisionShape {
     }
 
     protected void createShape() {
-        fbuf = ByteBuffer.allocate(heightfieldData.length*4).order(ByteOrder.nativeOrder()).asFloatBuffer();//FloatBuffer.wrap(heightfieldData);
-        fbuf.rewind();
-        fbuf.put(heightfieldData);
-        fbuf.rewind();
-        objectId = createShape(heightStickWidth, heightStickLength, fbuf, heightScale, minHeight, maxHeight, upAxis, flipQuadEdges);
+        ByteBuffer bbuf = ByteBuffer.allocateDirect(heightfieldData.length * 4).order(ByteOrder.nativeOrder());
+//        fbuf = bbuf.asFloatBuffer();//FloatBuffer.wrap(heightfieldData);
+//        fbuf.rewind();
+//        fbuf.put(heightfieldData);
+        for (int i = 0; i < heightfieldData.length; i++) {
+            float f = heightfieldData[i];
+            bbuf.putFloat(f);
+        }
+//        fbuf.rewind();
+        objectId = createShape(heightStickWidth, heightStickLength, bbuf, heightScale, minHeight, maxHeight, upAxis, flipQuadEdges);
         Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Created Shape {0}", Long.toHexString(objectId));
         setScale(scale);
         setMargin(margin);
     }
 
-    private native long createShape(int heightStickWidth, int heightStickLength, FloatBuffer heightfieldData, float heightScale, float minHeight, float maxHeight, int upAxis, boolean flipQuadEdges);
+    private native long createShape(int heightStickWidth, int heightStickLength, ByteBuffer heightfieldData, float heightScale, float minHeight, float maxHeight, int upAxis, boolean flipQuadEdges);
 
     public Mesh createJmeMesh() {
         //TODO return Converter.convert(bulletMesh);

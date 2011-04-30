@@ -10,7 +10,7 @@ extern "C" {
 /*
  * Class:     com_jme3_bullet_collision_shapes_HullCollisionShape
  * Method:    createShape
- * Signature: (Ljava/nio/FloatBuffer;)J
+ * Signature: (Ljava/nio/ByteBuffer;)J
  */
 JNIEXPORT jlong JNICALL Java_com_jme3_bullet_collision_shapes_HullCollisionShape_createShape
   (JNIEnv *, jobject, jobject);

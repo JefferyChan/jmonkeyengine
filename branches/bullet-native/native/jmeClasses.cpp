@@ -72,6 +72,9 @@ jfieldID jmeClasses::Matrix3f_m20;
 jfieldID jmeClasses::Matrix3f_m21;
 jfieldID jmeClasses::Matrix3f_m22;
 
+jclass jmeClasses::DebugMeshCallback;
+jmethodID jmeClasses::DebugMeshCallback_addVector;
+
 //private fields
 //JNIEnv* jmeClasses::env;
 JavaVM* jmeClasses::vm;
@@ -159,6 +162,18 @@ void jmeClasses::initJavaClasses(JNIEnv* env) {
     Matrix3f_m20 = env->GetFieldID(Matrix3f, "m20", "F");
     Matrix3f_m21 = env->GetFieldID(Matrix3f, "m21", "F");
     Matrix3f_m22 = env->GetFieldID(Matrix3f, "m22", "F");
+    if (env->ExceptionCheck()) {
+        env->Throw(env->ExceptionOccurred());
+        return;
+    }
+
+    DebugMeshCallback = env->FindClass("com/jme3/bullet/util/DebugMeshCallback");
+    if (env->ExceptionCheck()) {
+        env->Throw(env->ExceptionOccurred());
+        return;
+    }
+    
+    DebugMeshCallback_addVector = env->GetMethodID(DebugMeshCallback, "addVector", "(FFFII)V");
     if (env->ExceptionCheck()) {
         env->Throw(env->ExceptionOccurred());
         return;

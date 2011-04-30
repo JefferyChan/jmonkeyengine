@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 public class HullCollisionShape extends CollisionShape {
 
     private float[] points;
-    protected FloatBuffer fbuf;
+//    protected FloatBuffer fbuf;
 
     public HullCollisionShape() {
     }
@@ -66,17 +66,22 @@ public class HullCollisionShape extends CollisionShape {
 //        objectId = new ConvexHullShape(pointList);
 //        objectId.setLocalScaling(Converter.convert(getScale()));
 //        objectId.setMargin(margin);
-        fbuf = ByteBuffer.allocateDirect(points.length * 4).order(ByteOrder.nativeOrder()).asFloatBuffer();
-        fbuf.rewind();
-        fbuf.put(points);
-        fbuf.rewind();
-        objectId = createShape(fbuf);
+        ByteBuffer bbuf=ByteBuffer.allocateDirect(points.length * 4).order(ByteOrder.nativeOrder());
+//        fbuf = bbuf.asFloatBuffer();
+//        fbuf.rewind();
+//        fbuf.put(points);
+        for (int i = 0; i < points.length; i++) {
+            float f = points[i];
+            bbuf.putFloat(f);
+        }
+        bbuf.rewind();
+        objectId = createShape(bbuf);
         Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Created Shape {0}", Long.toHexString(objectId));
         setScale(scale);
         setMargin(margin);
     }
 
-    private native long createShape(FloatBuffer points);
+    private native long createShape(ByteBuffer points);
 
     protected float[] getPoints(Mesh mesh) {
         FloatBuffer vertices = mesh.getFloatBuffer(Type.Position);

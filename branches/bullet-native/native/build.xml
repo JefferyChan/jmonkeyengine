@@ -80,6 +80,7 @@
             <class name="com.jme3.bullet.joints.motors.TranslationalLimitMotor"/>
 
             <class name="com.jme3.bullet.util.NativeMeshUtil"/>
+            <class name="com.jme3.bullet.util.DebugShapeFactory"/>
         </javah>
     </target>
 

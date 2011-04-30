@@ -75,6 +75,10 @@ public:
     static jfieldID Matrix3f_m20;
     static jfieldID Matrix3f_m21;
     static jfieldID Matrix3f_m22;
+
+    static jclass DebugMeshCallback;
+    static jmethodID DebugMeshCallback_addVector;
+
     static void throwNPE(JNIEnv* env);
 private:
     jmeClasses(){};
