@@ -21,9 +21,11 @@ public class Main extends SimpleApplication {
 
         Material mat = new Material(assetManager, 
                 "Common/MatDefs/Misc/Unshaded.j3md"); // create a simple material
-        mat.setColor("m_Color", ColorRGBA.Blue);      // color the material blue
+        mat.setColor("Color", ColorRGBA.Blue);      // color the material blue
         geom.setMaterial(mat);                        // give object the blue material
         rootNode.attachChild(geom);                   // make object appear in scene
+        
+        
     }
 
     @Override
@@ -38,5 +40,6 @@ public class Main extends SimpleApplication {
     public static void main(String[] args) {
         Main app = new Main();
         app.start();
+        
     }
 }

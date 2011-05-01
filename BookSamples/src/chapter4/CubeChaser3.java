@@ -10,10 +10,11 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Box;
 
 /**
- * This demo uses the a Control to change the location 
- * of certain cubes that the player looks at. The control is attached
- * to two white cubes. Only they are affected. Note that the simpleUpdate()
- * method is empty -- the updates happen in the Control.
+ * This demo uses the a) a Control, and b) an AppState to change the locations 
+ * of cubes that the player looks at. 
+ * The control is only attached to two white cubes, only they are affected. 
+ * The AppState demo affects all cubes.
+ * Note that the simpleUpdate() method is empty -- all updates happen in the Control/AppState.
  */
 public class CubeChaser3 extends SimpleApplication {
 
@@ -39,10 +40,15 @@ public class CubeChaser3 extends SimpleApplication {
     cubeB.setLocalTranslation(1,1,1);
     rootNode.attachChild(cubeB);
     
-    // Add the CubeChaseControl to these two white cubes
-    cubeA.addControl(new CubeChaserControl(cam, rootNode));
-    cubeB.addControl(new CubeChaserControl(cam, rootNode));
+    /** Demo 1: Add the CubeChaseControl to two white cubes */
+    CubeChaserControl c = new CubeChaserControl(cam, rootNode);
+    cubeA.addControl(c);
+    cubeB.addControl(c);
     
+    /** Demo 2: Activate a Chaser AppState on all cubes. */
+    //MyAppState state = new MyAppState(cam,rootNode);
+    //stateManager.attach(state);
+
   }
 
   private void makeCubes(int max) {

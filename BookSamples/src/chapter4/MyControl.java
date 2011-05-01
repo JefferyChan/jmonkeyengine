@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package chapter4;
 
 import com.jme3.renderer.RenderManager;
@@ -11,8 +7,8 @@ import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.control.Control;
 
 /**
- *
- * @author ruth
+ * A template for creating Controls for spatials. This control rotates 
+ * the spatials it is added to, e.g. cube.addControl( new MyControl() );
  */
 public class MyControl extends AbstractControl {
  Object o;
