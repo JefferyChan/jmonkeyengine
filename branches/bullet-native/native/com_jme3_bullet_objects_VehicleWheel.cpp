@@ -117,6 +117,11 @@ extern "C" {
         return wheel->m_skidInfo;
     }
 
+    JNIEXPORT void JNICALL Java_com_jme3_bullet_objects_VehicleWheel_finalizeNative
+      (JNIEnv *env, jobject object, jlong wheelId){
+        btWheelInfo* wheel = (btWheelInfo*) wheelId;
+        delete(weel);
+    }
 #ifdef __cplusplus
 }
 #endif
