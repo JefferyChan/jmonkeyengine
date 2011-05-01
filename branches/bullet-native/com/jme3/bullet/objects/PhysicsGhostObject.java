@@ -227,7 +227,7 @@ public class PhysicsGhostObject extends PhysicsCollisionObject {
      * @return With how many other CollisionObjects this GhostNode is currently overlapping.
      */
     public int getOverlappingCount() {
-        return getOverlappingCount();
+        return getOverlappingCount(objectId);
     }
     
     private native int getOverlappingCount(long objectId);
