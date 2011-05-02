@@ -31,7 +31,6 @@
  */
 package com.jme3.bullet.joints;
 
-import com.bulletphysics.linearmath.Transform;
 import com.jme3.export.JmeExporter;
 import com.jme3.math.Matrix3f;
 import com.jme3.math.Vector3f;
@@ -531,14 +530,6 @@ public class SliderJoint extends PhysicsJoint {
     }
 
     protected void createJoint() {
-        Transform transA = new Transform(Converter.convert(rotA));
-        Converter.convert(pivotA, transA.origin);
-        Converter.convert(rotA, transA.basis);
-
-        Transform transB = new Transform(Converter.convert(rotB));
-        Converter.convert(pivotB, transB.origin);
-        Converter.convert(rotB, transB.basis);
-
         objectId = createJoint(nodeA.getObjectId(), nodeB.getObjectId(), pivotA, rotA, pivotB, rotB, useLinearReferenceFrameA);
         Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Created Joint {0}", Long.toHexString(objectId));
         // = new SliderConstraint(nodeA.getObjectId(), nodeB.getObjectId(), transA, transB, useLinearReferenceFrameA);

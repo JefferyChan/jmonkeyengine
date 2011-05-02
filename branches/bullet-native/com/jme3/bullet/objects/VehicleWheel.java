@@ -51,7 +51,6 @@ import java.util.logging.Logger;
  */
 public class VehicleWheel implements Savable {
 
-//    protected com.bulletphysics.dynamics.vehicle.WheelInfo wheelInfo;
     protected long wheelId = 0;
     protected boolean frontWheel;
     protected Vector3f location = new Vector3f();

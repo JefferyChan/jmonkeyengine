@@ -4,7 +4,6 @@
  */
 package com.jme3.bullet.collision.shapes;
 
-import com.bulletphysics.dom.HeightfieldTerrainShape;
 import com.jme3.export.InputCapsule;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
@@ -15,7 +14,6 @@ import com.jme3.scene.Mesh;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.nio.FloatBuffer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

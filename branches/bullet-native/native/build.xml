@@ -3,7 +3,7 @@
     <!-- load cpp compiler ant task -->
     <taskdef resource="cpptasks.tasks" classpath="lib/antlibs/cpptasks.jar"/>
     <!-- load properties -->
-    <property file="src/jbullet/native/bullet.properties"/>
+    <property file="src/bullet/native/bullet.properties"/>
     <!-- condition for mac platform check -->
     <condition property="isMac">
         <and>
@@ -42,6 +42,7 @@
     </pathconvert>
 
     <target name="build-bullet-natives" description="builds the native bullet library for the platform being run on" depends="-create-folders, create-native-headers, -nativelib-osx, -nativelib-windows, -nativelib-linux">
+        <zip basedir="${bullet.output.base}/jarcontent" file="${bullet.output.base}/jme-bullet-natives.jar" compress="true"/>
     </target>
     
     <target name="create-native-headers" description="creates the native headers">
@@ -91,7 +92,8 @@
     </target>
     
     <target name="-nativelib-osx" if="isMac">
-        <cc name="${bullet.osx.compiler}" warnings="none" debug="${bullet.compile.debug}" link="shared" outfile="${bullet.output.dir}/${bullet.library.name}" objdir="${bullet.build.dir}">
+        <mkdir dir="${bullet.output.dir}/macosx"/>
+        <cc name="${bullet.osx.compiler}" warnings="none" debug="${bullet.compile.debug}" link="shared" outfile="${bullet.output.dir}/macosx/${bullet.library.name}" objdir="${bullet.build.dir}">
             <fileset dir="${bullet.source.dir}">
                 <include name="*.cpp">
                 </include>
@@ -119,11 +121,13 @@
                 <linkerarg value="x86_64"/>
             </linker>
         </cc>
-        <move file="${bullet.output.dir}/lib${bullet.library.name}.dylib" tofile="${bullet.output.dir}/lib${bullet.library.name}.jnilib" failonerror="true" verbose="true"/>
+        <move file="${bullet.output.dir}/macosx/lib${bullet.library.name}.dylib" tofile="${bullet.output.dir}/macosx/lib${bullet.library.name}.jnilib" failonerror="true" verbose="true"/>
+        <delete file="${bullet.output.dir}/macosx/history.xml"/>
     </target>
     
     <target name="-nativelib-linux" if="isLinux">
-        <cc name="${bullet.linux.compiler}" warnings="severe" debug="${bullet.compile.debug}" link="shared" outfile="${bullet.output.dir}/${bullet.library.name}" objdir="${bullet.build.dir}">
+        <mkdir dir="${bullet.output.dir}/linux"/>
+        <cc name="${bullet.linux.compiler}" warnings="severe" debug="${bullet.compile.debug}" link="shared" outfile="${bullet.output.dir}/linux/${bullet.library.name}" objdir="${bullet.build.dir}">
             <fileset dir="${bullet.source.dir}">
                 <include name="*.cpp">
                 </include>
@@ -139,10 +143,12 @@
                 <libset dir="${bullet.folder}/src/LinearMath" libs="LinearMath"/>
             </linker>
         </cc>
+        <delete file="${bullet.output.dir}/linux/history.xml"/>
     </target>
 
     <target name="-nativelib-windows" if="isWindows">
-        <cc multithreaded="" name="${bullet.windows.compiler}" warnings="none" debug="${bullet.compile.debug}" outtype="shared" outfile="${bullet.output.dir}/${bullet.library.name}" objdir="${bullet.build.dir}">
+        <mkdir dir="${bullet.output.dir}/windows"/>
+        <cc multithreaded="" name="${bullet.windows.compiler}" warnings="none" debug="${bullet.compile.debug}" outtype="shared" outfile="${bullet.output.dir}/windows/${bullet.library.name}" objdir="${bullet.build.dir}">
             <fileset dir="${bullet.source.dir}">
                 <include name="*.cpp">
                 </include>
@@ -157,5 +163,6 @@
                 <libset dir="${bullet.folder}/lib" libs="BulletMultiThreaded,BulletDynamics,BulletCollision,LinearMath"/> 
             </linker>
         </cc>
+        <delete file="${bullet.output.dir}/windows/history.xml"/>
     </target>
 </project>

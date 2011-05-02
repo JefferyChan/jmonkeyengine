@@ -119,7 +119,7 @@ disk
     |
     +-bullet-trunk
 
-- You can alter options in the "src/jbullet/native/bullet.properties" file, such as the used bullet
+- You can alter options in the "src/bullet/native/bullet.properties" file, such as the used bullet
   version, native compilation options etc. (see below)
 
 -----------------------------------
@@ -128,7 +128,6 @@ Building bulletjme native
 Commands:
 > cd engine
 > ant jar
-> cd src/jbullet/native
 > ant build-bullet-natives
 
 Thats all. ANT takes care building native binaries and copies them to th elib directory.

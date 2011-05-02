@@ -31,34 +31,6 @@
  */
 package com.jme3.bullet;
 
-//import com.bulletphysics.BulletGlobals;
-//import com.bulletphysics.ContactAddedCallback;
-//import com.bulletphysics.ContactDestroyedCallback;
-//import com.bulletphysics.ContactProcessedCallback;
-//import com.bulletphysics.collision.broadphase.AxisSweep3;
-//import com.bulletphysics.collision.broadphase.AxisSweep3_32;
-//import com.bulletphysics.collision.broadphase.BroadphaseInterface;
-//import com.bulletphysics.collision.broadphase.BroadphaseProxy;
-//import com.bulletphysics.collision.broadphase.CollisionFilterGroups;
-//import com.bulletphysics.collision.broadphase.DbvtBroadphase;
-//import com.bulletphysics.collision.broadphase.OverlapFilterCallback;
-//import com.bulletphysics.collision.broadphase.SimpleBroadphase;
-//import com.bulletphysics.collision.dispatch.CollisionDispatcher;
-//import com.bulletphysics.collision.dispatch.CollisionObject;
-//import com.bulletphysics.collision.dispatch.CollisionWorld;
-//import com.bulletphysics.collision.dispatch.CollisionWorld.LocalConvexResult;
-//import com.bulletphysics.collision.dispatch.CollisionWorld.LocalRayResult;
-//import com.bulletphysics.collision.dispatch.DefaultCollisionConfiguration;
-//import com.bulletphysics.collision.dispatch.GhostPairCallback;
-//import com.bulletphysics.collision.narrowphase.ManifoldPoint;
-//import com.bulletphysics.collision.shapes.ConvexShape;
-//import com.bulletphysics.dynamics.DiscreteDynamicsWorld;
-//import com.bulletphysics.dynamics.DynamicsWorld;
-//import com.bulletphysics.dynamics.InternalTickCallback;
-//import com.bulletphysics.dynamics.RigidBody;
-//import com.bulletphysics.dynamics.constraintsolver.ConstraintSolver;
-//import com.bulletphysics.dynamics.constraintsolver.SequentialImpulseConstraintSolver;
-//import com.bulletphysics.extras.gimpact.GImpactCollisionAlgorithm;
 import com.jme3.app.AppTask;
 import com.jme3.asset.AssetManager;
 import com.jme3.math.Vector3f;
@@ -129,10 +101,6 @@ public class PhysicsSpace {
     private Vector3f worldMax = new Vector3f(10000f, 10000f, 10000f);
     private float accuracy = 1f / 60f;
     private int maxSubSteps = 4;
-    private javax.vecmath.Vector3f rayVec1 = new javax.vecmath.Vector3f();
-    private javax.vecmath.Vector3f rayVec2 = new javax.vecmath.Vector3f();
-    private com.bulletphysics.linearmath.Transform sweepTrans1 = new com.bulletphysics.linearmath.Transform(new javax.vecmath.Matrix3f());
-    private com.bulletphysics.linearmath.Transform sweepTrans2 = new com.bulletphysics.linearmath.Transform(new javax.vecmath.Matrix3f());
     private AssetManager debugManager;
 
     static {
