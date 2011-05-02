@@ -31,7 +31,7 @@
  */
 
 /**
- * Author: Normen Hansen
+ * Author: Normen Hansen, CJ Hare
  */
 #include "com_jme3_bullet_util_DebugShapeFactory.h"
 #include "jmeBulletUtil.h"
