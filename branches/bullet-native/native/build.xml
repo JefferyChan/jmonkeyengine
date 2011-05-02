@@ -96,7 +96,7 @@
                 <include name="*.cpp">
                 </include>
             </fileset>
-            <includepath path="${bullet.java.include}"/>
+            <includepath path="${bullet.osx.java.include}"/>
             <includepath path="${bullet.bullet.include}"/>
             <compilerarg value="-syslibroot ${bullet.osx.syslibroot}"/>
             <compilerarg value="-arch"/>
@@ -142,7 +142,7 @@
     </target>
 
     <target name="-nativelib-windows" if="isWindows">
-        <cc multithreaded="" name="${bullet.windows.compiler}" warnings="severe" debug="${bullet.compile.debug}" link="shared" outfile="${bullet.output.dir}/${bullet.library.name}" objdir="${bullet.build.dir}">
+        <cc multithreaded="" name="${bullet.windows.compiler}" warnings="none" debug="${bullet.compile.debug}" outtype="shared" outfile="${bullet.output.dir}/${bullet.library.name}" objdir="${bullet.build.dir}">
             <fileset dir="${bullet.source.dir}">
                 <include name="*.cpp">
                 </include>
@@ -151,13 +151,11 @@
             <includepath path="${bullet.java.include}/win32"/>
             <includepath path="${bullet.bullet.include}"/>
             <!--compilerarg value="-m32"/-->
-            <linker name="${bullet.windows.compiler}">
-                <libset dir="${bullet.folder}/src/BulletMultiThreaded" libs="BulletMultiThreaded"/>
-                <libset dir="${bullet.folder}/src/BulletDynamics" libs="BulletDynamics"/>
-                <libset dir="${bullet.folder}/src/BulletCollision" libs="BulletCollision"/>
-                <libset dir="${bullet.folder}/src/LinearMath" libs="LinearMath"/>
+            <linker name="${bullet.windows.compiler}" debug="${bullet.compile.debug}" >
+                <linkerarg value="-o${bullet.library.name}.dll" />
+                <linkerarg value="--kill-at" />
+                <libset dir="${bullet.folder}/lib" libs="BulletMultiThreaded,BulletDynamics,BulletCollision,LinearMath"/> 
             </linker>
         </cc>
-        <move file="${bullet.output.dir}/${bullet.library.name}.so" tofile="${bullet.output.dir}/${bullet.library.name}.dll" failonerror="false" verbose="true"/>
     </target>
 </project>

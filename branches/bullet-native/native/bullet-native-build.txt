@@ -35,14 +35,27 @@ Requirements:
 - CMake: http://www.cmake.org/ (or via http://www.macports.org)
 
 Commands:
-> cd bullet-2.77
+> cd bullet-trunk
 > cmake -DBUILD_SHARED_LIBS=OFF -DBUILD_STATIC_LIBS=ON \
               -DCMAKE_OSX_ARCHITECTURES='ppc;i386;x86_64' \
               -DBUILD_EXTRAS=off -DBUILD_DEMOS=off -DCMAKE_BUILD_TYPE=Release
 > make
 
 -----------------------------------
-Building on WINDOWS (VisualStudio)
+Building on WINDOWS (MinGW/GCC, Recommended)
+-----------------------------------
+Requirements:
+- GNU C++ Compiler: http://www.mingw.org/
+                    http://mingw-w64.sourceforge.net/
+- CMake: http://www.cmake.org/
+
+Commands:
+> cd bullet-trunk
+> cmake . -DBUILD_SHARED_LIBS=OFF -DBUILD_DEMOS:BOOL=OFF -DBUILD_EXTRAS:BOOL=OFF -DCMAKE_BUILD_TYPE=Release . -G "MinGW Makefiles"
+> mingw32-make
+
+-----------------------------------
+Building on WINDOWS (VisualStudio, untested)
 -----------------------------------
 Requirements:
 - Microsoft Visual Studio http://msdn.microsoft.com/
@@ -52,18 +65,6 @@ The main Workspace/Solution is located in Bullet/msvc/8/wksbullet.sln (replace 8
 
 Build the project to create static libraries.
 
------------------------------------
-Building on WINDOWS (MinGW/GCC)
------------------------------------
-Requirements:
-- GNU C++ Compiler: http://www.mingw.org/
-- CMake: http://www.cmake.org/
-
-Commands:
-> cd bullet-2.77
-> cmake -DBUILD_SHARED_LIBS=OFF -DBUILD_STATIC_LIBS=ON \
-              -DBUILD_EXTRAS=off -DBUILD_DEMOS=off -DCMAKE_BUILD_TYPE=Release
-> make
 
 -----------------------------------
 Building bullet on LINUX
@@ -78,7 +79,7 @@ to compile correctly:
     SpuNarrowPhaseCollisionTask/SpuMinkowskiPenetrationDepthSolver.h
 
 Commands:
-> cd bullet-2.77
+> cd bullet-trunk
 > cmake -DBUILD_SHARED_LIBS=OFF -DBUILD_STATIC_LIBS=ON -DCMAKE_C_FLAGS="-fPIC" -DCMAKE_CXX_FLAGS="-fPIC"\
               -DBUILD_EXTRAS=off -DBUILD_DEMOS=off -DCMAKE_BUILD_TYPE=Release
 > make
@@ -106,7 +107,7 @@ Requirements
 -----------------------------------
 Preparation
 -----------------------------------
-- copy/link bullet-2.77 folder into the same folder where the bullet-jme folder is:
+- copy/link bullet-trunk folder into the same folder where the bullet-jme folder is:
 
 disk
  |
@@ -116,7 +117,7 @@ disk
     |
     +-sdk
     |
-    +-bullet-2.77
+    +-bullet-trunk
 
 - You can alter options in the "src/jbullet/native/bullet.properties" file, such as the used bullet
   version, native compilation options etc. (see below)
