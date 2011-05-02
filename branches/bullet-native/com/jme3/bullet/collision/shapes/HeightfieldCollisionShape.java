@@ -40,6 +40,7 @@ public class HeightfieldCollisionShape extends CollisionShape {
     protected float maxHeight;
     protected int upAxis;
     protected boolean flipQuadEdges;
+    protected ByteBuffer bbuf;
 //    protected FloatBuffer fbuf;
 
     public HeightfieldCollisionShape() {
@@ -95,7 +96,7 @@ public class HeightfieldCollisionShape extends CollisionShape {
     }
 
     protected void createShape() {
-        ByteBuffer bbuf = ByteBuffer.allocateDirect(heightfieldData.length * 4).order(ByteOrder.nativeOrder());
+        bbuf = ByteBuffer.allocateDirect(heightfieldData.length * 4).order(ByteOrder.nativeOrder());
 //        fbuf = bbuf.asFloatBuffer();//FloatBuffer.wrap(heightfieldData);
 //        fbuf.rewind();
 //        fbuf.put(heightfieldData);
