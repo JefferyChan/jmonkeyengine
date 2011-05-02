@@ -50,6 +50,11 @@ void jmePhysicsSpace::attachThread() {
     vm->AttachCurrentThread((void **) &env, NULL);
 }
 
+JNIEnv* jmePhysicsSpace::getEnv() {
+    attachThread();
+    return this->env;
+}
+
 void jmePhysicsSpace::stepSimulation(jfloat tpf, jint maxSteps, jfloat accuracy) {
     dynamicsWorld->stepSimulation(tpf, maxSteps, accuracy);
 }
@@ -179,20 +184,20 @@ void jmePhysicsSpace::createPhysicsSpace(jfloat minX, jfloat minY, jfloat minZ, 
 
 void jmePhysicsSpace::preTickCallback(btDynamicsWorld *world, btScalar timeStep) {
     jmePhysicsSpace* dynamicsWorld = (jmePhysicsSpace*) world->getWorldUserInfo();
-    dynamicsWorld->attachThread();
-    dynamicsWorld->env->CallVoidMethod(dynamicsWorld->getJavaPhysicsSpace(), jmeClasses::PhysicsSpace_preTick, timeStep);
-    if (dynamicsWorld->env->ExceptionCheck()) {
-        dynamicsWorld->env->Throw(dynamicsWorld->env->ExceptionOccurred());
+    JNIEnv* env = dynamicsWorld->getEnv();
+    env->CallVoidMethod(dynamicsWorld->getJavaPhysicsSpace(), jmeClasses::PhysicsSpace_preTick, timeStep);
+    if (env->ExceptionCheck()) {
+        env->Throw(env->ExceptionOccurred());
         return;
     }
 }
 
 void jmePhysicsSpace::postTickCallback(btDynamicsWorld *world, btScalar timeStep) {
     jmePhysicsSpace* dynamicsWorld = (jmePhysicsSpace*) world->getWorldUserInfo();
-    dynamicsWorld->attachThread();
-    dynamicsWorld->env->CallVoidMethod(dynamicsWorld->getJavaPhysicsSpace(), jmeClasses::PhysicsSpace_postTick, timeStep);
-    if (dynamicsWorld->env->ExceptionCheck()) {
-        dynamicsWorld->env->Throw(dynamicsWorld->env->ExceptionOccurred());
+    JNIEnv* env = dynamicsWorld->getEnv();
+    env->CallVoidMethod(dynamicsWorld->getJavaPhysicsSpace(), jmeClasses::PhysicsSpace_postTick, timeStep);
+    if (env->ExceptionCheck()) {
+        env->Throw(env->ExceptionOccurred());
         return;
     }
 }
