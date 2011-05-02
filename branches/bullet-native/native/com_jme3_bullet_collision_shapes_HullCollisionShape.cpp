@@ -50,7 +50,7 @@ extern "C" {
     (JNIEnv *env, jobject object, jobject array) {
         float* data = (float*) env->GetDirectBufferAddress(array);
         //TODO: capacity will not always be length!
-        int length = env->GetDirectBufferCapacity(array);
+        int length = env->GetDirectBufferCapacity(array)/4;
         btConvexHullShape* shape = new btConvexHullShape();
         for (int i = 0; i < length; i+=3) {
             btVector3 vect = btVector3(data[i],
