@@ -31,9 +31,7 @@
  */
 package com.jme3.bullet.collision;
 
-import com.bulletphysics.collision.narrowphase.ManifoldPoint;
 import com.jme3.math.Vector3f;
-import com.jme3.bullet.util.Converter;
 import com.jme3.scene.Spatial;
 import java.util.EventObject;
 
@@ -51,14 +49,56 @@ public class PhysicsCollisionEvent extends EventObject {
     private int type;
     private PhysicsCollisionObject nodeA;
     private PhysicsCollisionObject nodeB;
-    private ManifoldPoint cp;
+    public final Vector3f localPointA;
+    public final Vector3f localPointB;
+    public final Vector3f positionWorldOnB;
+    public final Vector3f positionWorldOnA;
+    public final Vector3f normalWorldOnB;
+    public float distance1;
+    public float combinedFriction;
+    public float combinedRestitution;
+    public int partId0;
+    public int partId1;
+    public int index0;
+    public int index1;
+    public Object userPersistentData;
+    public float appliedImpulse;
+    public boolean lateralFrictionInitialized;
+    public float appliedImpulseLateral1;
+    public float appliedImpulseLateral2;
+    public int lifeTime;
+    public final Vector3f lateralFrictionDir1;
+    public final Vector3f lateralFrictionDir2;
 
-    public PhysicsCollisionEvent(int type, PhysicsCollisionObject source, PhysicsCollisionObject nodeB, ManifoldPoint cp) {
-        super(source);
+    public PhysicsCollisionEvent(int type, PhysicsCollisionObject nodeA, PhysicsCollisionObject nodeB) {
+        this(type, nodeA, nodeB, new Vector3f(), new Vector3f(), new Vector3f(), new Vector3f(), new Vector3f(), 0, 0, 0, 0, 0, 0, 0, null, 0, false, 0, 0, 0, new Vector3f(), new Vector3f());
+    }
+    
+    public PhysicsCollisionEvent(int type, PhysicsCollisionObject nodeA, PhysicsCollisionObject nodeB, Vector3f localPointA, Vector3f localPointB, Vector3f positionWorldOnB, Vector3f positionWorldOnA, Vector3f normalWorldOnB, float distance1, float combinedFriction, float combinedRestitution, int partId0, int partId1, int index0, int index1, Object userPersistentData, float appliedImpulse, boolean lateralFrictionInitialized, float appliedImpulseLateral1, float appliedImpulseLateral2, int lifeTime, Vector3f lateralFrictionDir1, Vector3f lateralFrictionDir2) {
+        super(nodeA);
         this.type = type;
-        this.nodeA = source;
+        this.nodeA = nodeA;
         this.nodeB = nodeB;
-        this.cp = cp;
+        this.localPointA = localPointA;
+        this.localPointB = localPointB;
+        this.positionWorldOnB = positionWorldOnB;
+        this.positionWorldOnA = positionWorldOnA;
+        this.normalWorldOnB = normalWorldOnB;
+        this.distance1 = distance1;
+        this.combinedFriction = combinedFriction;
+        this.combinedRestitution = combinedRestitution;
+        this.partId0 = partId0;
+        this.partId1 = partId1;
+        this.index0 = index0;
+        this.index1 = index1;
+        this.userPersistentData = userPersistentData;
+        this.appliedImpulse = appliedImpulse;
+        this.lateralFrictionInitialized = lateralFrictionInitialized;
+        this.appliedImpulseLateral1 = appliedImpulseLateral1;
+        this.appliedImpulseLateral2 = appliedImpulseLateral2;
+        this.lifeTime = lifeTime;
+        this.lateralFrictionDir1 = lateralFrictionDir1;
+        this.lateralFrictionDir2 = lateralFrictionDir2;
     }
 
     /**
@@ -66,21 +106,59 @@ public class PhysicsCollisionEvent extends EventObject {
      */
     public void clean() {
         source = null;
-        type = 0;
-        nodeA = null;
-        nodeB = null;
-        cp = null;
+        this.type = 0;
+        this.nodeA = null;
+        this.nodeB = null;
+//        this.localPointA = null;
+//        this.localPointB = null;
+//        this.positionWorldOnB = null;
+//        this.positionWorldOnA = null;
+//        this.normalWorldOnB = null;
+//        this.distance1 = null
+//        this.combinedFriction = null;
+//        this.combinedRestitution = null;
+//        this.partId0 = null;
+//        this.partId1 = null;
+//        this.index0 = null;
+//        this.index1 = null;
+        this.userPersistentData = null;
+//        this.appliedImpulse = null;
+//        this.lateralFrictionInitialized = null;
+//        this.appliedImpulseLateral1 = null;
+//        this.appliedImpulseLateral2 = null;
+//        this.lifeTime = null;
+//        this.lateralFrictionDir1 = null;
+//        this.lateralFrictionDir2 = null;
     }
 
     /**
      * used by event factory, called when event reused
      */
-    public void refactor(int type, PhysicsCollisionObject source, PhysicsCollisionObject nodeB, ManifoldPoint cp) {
+    public void refactor(int type, PhysicsCollisionObject source, PhysicsCollisionObject nodeB, Vector3f localPointA, Vector3f localPointB, Vector3f positionWorldOnB, Vector3f positionWorldOnA, Vector3f normalWorldOnB, float distance1, float combinedFriction, float combinedRestitution, int partId0, int partId1, int index0, int index1, Object userPersistentData, float appliedImpulse, boolean lateralFrictionInitialized, float appliedImpulseLateral1, float appliedImpulseLateral2, int lifeTime, Vector3f lateralFrictionDir1, Vector3f lateralFrictionDir2) {
         this.source = source;
         this.type = type;
         this.nodeA = source;
         this.nodeB = nodeB;
-        this.cp = cp;
+        this.localPointA.set(localPointA);
+        this.localPointB.set(localPointB);
+        this.positionWorldOnB.set(positionWorldOnB);
+        this.positionWorldOnA.set(positionWorldOnA);
+        this.normalWorldOnB.set(normalWorldOnB);
+        this.distance1 = distance1;
+        this.combinedFriction = combinedFriction;
+        this.combinedRestitution = combinedRestitution;
+        this.partId0 = partId0;
+        this.partId1 = partId1;
+        this.index0 = index0;
+        this.index1 = index1;
+        this.userPersistentData = userPersistentData;
+        this.appliedImpulse = appliedImpulse;
+        this.lateralFrictionInitialized = lateralFrictionInitialized;
+        this.appliedImpulseLateral1 = appliedImpulseLateral1;
+        this.appliedImpulseLateral2 = appliedImpulseLateral2;
+        this.lifeTime = lifeTime;
+        this.lateralFrictionDir1.set(lateralFrictionDir1);
+        this.lateralFrictionDir2.set(lateralFrictionDir2);
     }
 
     public int getType() {
@@ -116,82 +194,82 @@ public class PhysicsCollisionEvent extends EventObject {
     }
 
     public float getAppliedImpulse() {
-        return cp.appliedImpulse;
+        return appliedImpulse;
     }
 
     public float getAppliedImpulseLateral1() {
-        return cp.appliedImpulseLateral1;
+        return appliedImpulseLateral1;
     }
 
     public float getAppliedImpulseLateral2() {
-        return cp.appliedImpulseLateral2;
+        return appliedImpulseLateral2;
     }
 
     public float getCombinedFriction() {
-        return cp.combinedFriction;
+        return combinedFriction;
     }
 
     public float getCombinedRestitution() {
-        return cp.combinedRestitution;
+        return combinedRestitution;
     }
 
     public float getDistance1() {
-        return cp.distance1;
+        return distance1;
     }
 
     public int getIndex0() {
-        return cp.index0;
+        return index0;
     }
 
     public int getIndex1() {
-        return cp.index1;
+        return index1;
     }
 
     public Vector3f getLateralFrictionDir1() {
-        return Converter.convert(cp.lateralFrictionDir1);
+        return lateralFrictionDir1;
     }
 
     public Vector3f getLateralFrictionDir2() {
-        return Converter.convert(cp.lateralFrictionDir2);
+        return lateralFrictionDir2;
     }
 
     public boolean isLateralFrictionInitialized() {
-        return cp.lateralFrictionInitialized;
+        return lateralFrictionInitialized;
     }
 
     public int getLifeTime() {
-        return cp.lifeTime;
+        return lifeTime;
     }
 
     public Vector3f getLocalPointA() {
-        return Converter.convert(cp.localPointA);
+        return localPointA;
     }
 
     public Vector3f getLocalPointB() {
-        return Converter.convert(cp.localPointB);
+        return localPointB;
     }
 
     public Vector3f getNormalWorldOnB() {
-        return Converter.convert(cp.normalWorldOnB);
+        return normalWorldOnB;
     }
 
     public int getPartId0() {
-        return cp.partId0;
+        return partId0;
     }
 
     public int getPartId1() {
-        return cp.partId1;
+        return partId1;
     }
 
     public Vector3f getPositionWorldOnA() {
-        return Converter.convert(cp.positionWorldOnA);
+        return positionWorldOnA;
     }
 
     public Vector3f getPositionWorldOnB() {
-        return Converter.convert(cp.positionWorldOnB);
+        return positionWorldOnB;
     }
 
     public Object getUserPersistentData() {
-        return cp.userPersistentData;
+        return userPersistentData;
     }
 }

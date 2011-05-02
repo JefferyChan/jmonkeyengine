@@ -41,6 +41,8 @@ public:
 //    static JNIEnv* env;
     static JavaVM* vm;
     static jclass PhysicsSpace;
+    static jmethodID PhysicsSpace_preTick;
+    static jmethodID PhysicsSpace_postTick;
 
     static jclass Vector3f;
     static jmethodID Vector3f_set;

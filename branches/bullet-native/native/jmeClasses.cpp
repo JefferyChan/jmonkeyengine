@@ -36,7 +36,8 @@
  */
 //public fields
 jclass jmeClasses::PhysicsSpace;
-//    static jmethodID physicsSpace_test;
+jmethodID jmeClasses::PhysicsSpace_preTick;
+jmethodID jmeClasses::PhysicsSpace_postTick;
 
 jclass jmeClasses::Vector3f;
 jmethodID jmeClasses::Vector3f_set;
@@ -103,11 +104,12 @@ void jmeClasses::initJavaClasses(JNIEnv* env) {
         return;
     }
 
-    //    physicsSpace_test = env->GetMethodID(physicsSpace, "test", "()V");
-    //    if (env->ExceptionCheck()) {
-    //        env->Throw(env->ExceptionOccurred());
-    //        return false;
-    //    }
+    PhysicsSpace_preTick = env->GetMethodID(PhysicsSpace, "preTick_native", "(F)V");
+    PhysicsSpace_postTick = env->GetMethodID(PhysicsSpace, "postTick_native", "(F)V");
+    if (env->ExceptionCheck()) {
+        env->Throw(env->ExceptionOccurred());
+        return;
+    }
 
     Vector3f = env->FindClass("com/jme3/math/Vector3f");
     Vector3f_set = env->GetMethodID(Vector3f, "set", "(FFF)Lcom/jme3/math/Vector3f;");
@@ -116,10 +118,6 @@ void jmeClasses::initJavaClasses(JNIEnv* env) {
     Vector3f_getY = env->GetMethodID(Vector3f, "getY", "()F");
     Vector3f_getZ = env->GetMethodID(Vector3f, "getZ", "()F");
     Vector3f_x = env->GetFieldID(Vector3f, "x", "F");
-    if (env->ExceptionCheck()) {
-        env->Throw(env->ExceptionOccurred());
-        return;
-    }
     Vector3f_y = env->GetFieldID(Vector3f, "y", "F");
     Vector3f_z = env->GetFieldID(Vector3f, "z", "F");
 
@@ -134,10 +132,6 @@ void jmeClasses::initJavaClasses(JNIEnv* env) {
     Quaternion_getY = env->GetMethodID(Quaternion, "getY", "()F");
     Quaternion_getZ = env->GetMethodID(Quaternion, "getZ", "()F");
     Quaternion_x = env->GetFieldID(Quaternion, "x", "F");
-    if (env->ExceptionCheck()) {
-        env->Throw(env->ExceptionOccurred());
-        return;
-    }
     Quaternion_y = env->GetFieldID(Quaternion, "y", "F");
     Quaternion_z = env->GetFieldID(Quaternion, "z", "F");
     Quaternion_w = env->GetFieldID(Quaternion, "w", "F");
@@ -162,10 +156,6 @@ void jmeClasses::initJavaClasses(JNIEnv* env) {
     Matrix3f_m20 = env->GetFieldID(Matrix3f, "m20", "F");
     Matrix3f_m21 = env->GetFieldID(Matrix3f, "m21", "F");
     Matrix3f_m22 = env->GetFieldID(Matrix3f, "m22", "F");
-    if (env->ExceptionCheck()) {
-        env->Throw(env->ExceptionOccurred());
-        return;
-    }
 
     DebugMeshCallback = env->FindClass("com/jme3/bullet/util/DebugMeshCallback");
     if (env->ExceptionCheck()) {

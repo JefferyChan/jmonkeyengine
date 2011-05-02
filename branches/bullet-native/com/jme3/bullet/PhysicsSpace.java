@@ -191,6 +191,41 @@ public class PhysicsSpace {
 
     private native long createPhysicsSpace(float minX, float minY, float minZ, float maxX, float maxY, float maxZ, int broadphaseType, boolean threading);
 
+    private void preTick_native(float f) {
+        AppTask task = pQueue.poll();
+        task = pQueue.poll();
+        while (task != null) {
+            while (task.isCancelled()) {
+                task = pQueue.poll();
+            }
+            try {
+                task.invoke();
+            } catch (Exception ex) {
+                Logger.getLogger(PhysicsSpace.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            task = pQueue.poll();
+        }
+        for (Iterator<PhysicsTickListener> it = tickListeners.iterator(); it.hasNext();) {
+            PhysicsTickListener physicsTickCallback = it.next();
+            physicsTickCallback.prePhysicsTick(this, f);
+        }
+    }
+
+    private void postTick_native(float f) {
+        for (Iterator<PhysicsTickListener> it = tickListeners.iterator(); it.hasNext();) {
+            PhysicsTickListener physicsTickCallback = it.next();
+            physicsTickCallback.physicsTick(this, f);
+        }
+    }
+    
+    private void addCollision_native(){
+        
+    }
+
+    private boolean needCollision_native(PhysicsCollisionObject objectA, PhysicsCollisionObject objectB){
+        return false;
+    }
+    
 //    private void setOverlapFilterCallback() {
 //        OverlapFilterCallback callback = new OverlapFilterCallback() {
 //

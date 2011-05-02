@@ -30,17 +30,24 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 #include "jmePhysicsSpace.h"
+#include "jmeBulletUtil.h"
 
 /**
  * Author: Normen Hansen
  */
 jmePhysicsSpace::jmePhysicsSpace(JNIEnv* env, jobject javaSpace) {
-    //TODO: global ref? maybe not -> cleaning
-    //    this->javaPhysicsSpace = env->NewGlobalRef(javaSpace);
+    //TODO: global ref? maybe not -> cleaning, rather callback class?
+    this->javaPhysicsSpace = env->NewWeakGlobalRef(javaSpace);
+    this->env = env;
+    env->GetJavaVM(&vm);
     if (env->ExceptionCheck()) {
         env->Throw(env->ExceptionOccurred());
         return;
     }
+}
+
+void jmePhysicsSpace::attachThread() {
+    vm->AttachCurrentThread((void **) &env, NULL);
 }
 
 void jmePhysicsSpace::stepSimulation(jfloat tpf, jint maxSteps, jfloat accuracy) {
@@ -86,9 +93,9 @@ btThreadSupportInterface* jmePhysicsSpace::createDispatchThreadSupport(int maxNu
 void jmePhysicsSpace::createPhysicsSpace(jfloat minX, jfloat minY, jfloat minZ, jfloat maxX, jfloat maxY, jfloat maxZ, jint broadphaseId, jboolean threading) {
     // collision configuration contains default setup for memory, collision setup
     btDefaultCollisionConstructionInfo cci;
-//    if(threading){
-//        cci.m_defaultMaxPersistentManifoldPoolSize = 32768;
-//    }
+    //    if(threading){
+    //        cci.m_defaultMaxPersistentManifoldPoolSize = 32768;
+    //    }
     btCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration(cci);
 
     btVector3 min = btVector3(minX, minY, minZ);
@@ -140,6 +147,7 @@ void jmePhysicsSpace::createPhysicsSpace(jfloat minX, jfloat minY, jfloat minZ, 
     //create dynamics world
     btDiscreteDynamicsWorld* world = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration);
     dynamicsWorld = world;
+    dynamicsWorld->setWorldUserInfo(this);
 
     //parallel solver requires the contacts to be in a contiguous pool, so avoid dynamic allocation
     if (threading) {
@@ -148,6 +156,10 @@ void jmePhysicsSpace::createPhysicsSpace(jfloat minX, jfloat minY, jfloat minZ, 
         world->getSolverInfo().m_solverMode = SOLVER_SIMD + SOLVER_USE_WARMSTARTING; //+SOLVER_RANDMIZE_ORDER;
         world->getDispatchInfo().m_enableSPU = true;
     }
+
+    broadphase->getOverlappingPairCache()->setInternalGhostPairCallback(new btGhostPairCallback());
+
+    dynamicsWorld->setGravity(btVector3(0, -9.81f, 0));
 
     struct jmeFilterCallback : public btOverlapFilterCallback {
         // return true when pairs need collision
@@ -161,14 +173,36 @@ void jmePhysicsSpace::createPhysicsSpace(jfloat minX, jfloat minY, jfloat minZ, 
         }
     };
     dynamicsWorld->getPairCache()->setOverlapFilterCallback(new jmeFilterCallback());
+    dynamicsWorld->setInternalTickCallback(&jmePhysicsSpace::preTickCallback, static_cast<void *> (this), true);
+    dynamicsWorld->setInternalTickCallback(&jmePhysicsSpace::postTickCallback, static_cast<void *> (this));
+}
 
-    broadphase->getOverlappingPairCache()->setInternalGhostPairCallback(new btGhostPairCallback());
+void jmePhysicsSpace::preTickCallback(btDynamicsWorld *world, btScalar timeStep) {
+    jmePhysicsSpace* dynamicsWorld = (jmePhysicsSpace*) world->getWorldUserInfo();
+    dynamicsWorld->attachThread();
+    dynamicsWorld->env->CallVoidMethod(dynamicsWorld->getJavaPhysicsSpace(), jmeClasses::PhysicsSpace_preTick, timeStep);
+    if (dynamicsWorld->env->ExceptionCheck()) {
+        dynamicsWorld->env->Throw(dynamicsWorld->env->ExceptionOccurred());
+        return;
+    }
+}
 
-    dynamicsWorld->setGravity(btVector3(0, -9.81f, 0));
+void jmePhysicsSpace::postTickCallback(btDynamicsWorld *world, btScalar timeStep) {
+    jmePhysicsSpace* dynamicsWorld = (jmePhysicsSpace*) world->getWorldUserInfo();
+    dynamicsWorld->attachThread();
+    dynamicsWorld->env->CallVoidMethod(dynamicsWorld->getJavaPhysicsSpace(), jmeClasses::PhysicsSpace_postTick, timeStep);
+    if (dynamicsWorld->env->ExceptionCheck()) {
+        dynamicsWorld->env->Throw(dynamicsWorld->env->ExceptionOccurred());
+        return;
+    }
 }
 
 btDynamicsWorld* jmePhysicsSpace::getDynamicsWorld() {
     return dynamicsWorld;
+}
+
+jobject jmePhysicsSpace::getJavaPhysicsSpace() {
+    return javaPhysicsSpace;
 }
 
 jmePhysicsSpace::~jmePhysicsSpace() {

@@ -52,15 +52,21 @@
  */
 class jmePhysicsSpace {
 private:
+	JavaVM* vm;
 	btDynamicsWorld* dynamicsWorld;
 	jobject javaPhysicsSpace;
         btThreadSupportInterface* createSolverThreadSupport(int);
         btThreadSupportInterface* createDispatchThreadSupport(int);
 public:
+	JNIEnv* env;
 	jmePhysicsSpace(){};
 	~jmePhysicsSpace();
         jmePhysicsSpace(JNIEnv*, jobject);
+        void attachThread();
 	void stepSimulation(jfloat, jint, jfloat);
         void createPhysicsSpace(jfloat, jfloat, jfloat, jfloat, jfloat, jfloat, jint, jboolean);
         btDynamicsWorld* getDynamicsWorld();
+        jobject getJavaPhysicsSpace();
+        static void preTickCallback(btDynamicsWorld*, btScalar);
+        static void postTickCallback(btDynamicsWorld*, btScalar);
 };

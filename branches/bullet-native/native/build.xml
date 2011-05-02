@@ -43,6 +43,7 @@
 
     <target name="build-bullet-natives" description="builds the native bullet library for the platform being run on" depends="-create-folders, create-native-headers, -nativelib-osx, -nativelib-windows, -nativelib-linux">
         <zip basedir="${bullet.output.base}/jarcontent" file="${bullet.output.base}/jme-bullet-natives.jar" compress="true"/>
+        <copy file="${bullet.output.base}/jme-bullet-natives.jar" todir="dist/lib"/>
     </target>
     
     <target name="create-native-headers" description="creates the native headers">
