@@ -39,13 +39,8 @@ public class CubeChaserState extends AbstractAppState {
       // if camera closer than 10...
       if (cam.getLocation().distance(target.getLocalTranslation()) < 10) {
         // ... move the cube in the direction that camera is facing
-        g = target.getLocalTranslation();
-        v = cam.getDirection(v);
-        target.setLocalTranslation(
-                g.getX() + v.getZ() * tpf,
-                g.getY() + v.getY() * tpf,
-                g.getZ() + v.getZ() * tpf);
-        // we multiply with tpf to adjust the speed to the framerate
+        target.setLocalTranslation(target.getLocalTranslation().addLocal(cam.getDirection()));
+
       }
     }
 

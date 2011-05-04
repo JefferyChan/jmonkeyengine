@@ -54,15 +54,16 @@ public class TargetPickCenter extends SimpleApplication {
 
     public void onAnalog(String name, float intensity, float tpf) {
         if (name.equals("Rotate")) {
-         // 1. Reset results list.
+         // Reset results list.
          CollisionResults results = new CollisionResults();
-         // 2. Aim the ray from camera location in camera direction.
+         // Aim the ray from camera location in camera direction 
+         // (assuming crosshairs in center of screen).
          Ray ray = new Ray(cam.getLocation(), cam.getDirection());
-         // 3. Collect intersections between ray and all nodes in results list.
+         // Collect intersections between ray and all nodes in results list.
          rootNode.collideWith(ray, results);
-         // 4. Print the results so we see what is going on
+         // (Print the results so we see what is going on)
          for (int i = 0; i < results.size(); i++) {
-           // For each “hit”, we know distance, impact point, geometry.
+           // (For each “hit”, we know distance, impact point, geometry.)
            float dist = results.getCollision(i).getDistance();
            Vector3f pt = results.getCollision(i).getContactPoint();
            String target = results.getCollision(i).getGeometry().getName();
@@ -78,9 +79,7 @@ public class TargetPickCenter extends SimpleApplication {
            else if(target.getName().equals("Blue Box"))
              target.rotate(0, intensity, 0);
          }
-
-        } // else if ...
-      
+        } // else if ...  
     }
   };
 

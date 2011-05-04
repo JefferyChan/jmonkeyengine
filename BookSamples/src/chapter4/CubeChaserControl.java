@@ -2,7 +2,6 @@ package chapter4;
 
 import com.jme3.collision.CollisionResults;
 import com.jme3.math.Ray;
-import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
@@ -18,8 +17,6 @@ import com.jme3.scene.control.Control;
  */
 public class CubeChaserControl extends AbstractControl {
 
-  private Vector3f g = new Vector3f(0, 0, 0);
-  private Vector3f v = new Vector3f(0, 0, 0);
   private Ray ray = new Ray();
   private final Camera cam;
   private final Node rootNode;
@@ -47,13 +44,7 @@ public class CubeChaserControl extends AbstractControl {
         // if camera closer than 10...
         if (cam.getLocation().distance(target.getLocalTranslation()) < 10) {
           // ... move the cube in the direction that camera is facing
-          g = target.getLocalTranslation();
-          v = cam.getDirection(v);
-          target.setLocalTranslation(
-                  g.getX() + v.getZ() * tpf,
-                  g.getY() + v.getY() * tpf,
-                  g.getZ() + v.getZ() * tpf);
-          // we multiply with tpf to adjust the speed to the framerate
+          spatial.setLocalTranslation(spatial.getLocalTranslation().addLocal(cam.getDirection()));
         }
       }
     }

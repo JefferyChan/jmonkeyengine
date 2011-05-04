@@ -56,13 +56,7 @@ public class CubeChaser1 extends SimpleApplication {
     // if camera closer than 10...
     if (cam.getLocation().distance(cube.getLocalTranslation()) < 10) {
       // ... move the cube in the direction that camera is facing
-      g = cube.getLocalTranslation();
-      v = cam.getDirection(v);
-      cube.setLocalTranslation(
-              g.getX() + v.getZ() * tpf,
-              g.getY() + v.getY() * tpf,
-              g.getZ() + v.getZ() * tpf);
-      // we multiply with tpf to adjust the speed to the framerate
+      cube.setLocalTranslation(cube.getLocalTranslation().addLocal(cam.getDirection()));
     }
   }
 

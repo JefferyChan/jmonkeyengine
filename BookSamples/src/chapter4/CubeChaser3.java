@@ -41,12 +41,12 @@ public class CubeChaser3 extends SimpleApplication {
     rootNode.attachChild(cubeB);
     
     /** Demo 1: Add the CubeChaseControl to two white cubes */
-    cubeA.addControl(new CubeChaserControl(cam, rootNode));
-    cubeB.addControl(new CubeChaserControl(cam, rootNode));
+    //cubeA.addControl(new CubeChaserControl(cam, rootNode));
+    //cubeB.addControl(new CubeChaserControl(cam, rootNode));
     
     /** Demo 2: Activate a Chaser AppState on all cubes. */
-    //MyAppState state = new MyAppState(cam,rootNode);
-    //stateManager.attach(state);
+    CubeChaserState state = new CubeChaserState(cam, rootNode);
+    stateManager.attach(state);
 
   }
 

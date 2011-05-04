@@ -26,8 +26,4 @@ public class MyControl extends AbstractControl {
     throw new UnsupportedOperationException("Not supported yet.");
   }
 
-  @Override
-  public void update(float tpf) {
-    /** unused */
-  }
 }
