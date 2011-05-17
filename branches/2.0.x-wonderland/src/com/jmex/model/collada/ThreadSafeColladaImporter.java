@@ -2771,8 +2771,6 @@ public class ThreadSafeColladaImporter {
             // http://www.openscenegraph.org/projects/osg/browser/OpenSceneGraph/trunk/src/osgPlugins/dae/daeRMaterials.cpp
 
             ColorRGBA transparentColor = new ColorRGBA(transparency, transparency, transparency, transparency);
-            boolean nonZeroTransparentColor = false;
-
             if (pt.gettransparent().hascolor()) {
                 transparentColor.set(getColor(pt.gettransparent().getcolor()));
 
@@ -2786,21 +2784,16 @@ public class ThreadSafeColladaImporter {
                             1.0f - (transparentColor.r * 0.212671f +
                                     transparentColor.g * 0.715160f +
                                     transparentColor.b * 0.072169f) * transparency);
-                    
-                    // make sure it is not all zeros
-                    nonZeroTransparentColor = !transparentColor.equals(ColorRGBA.black);
-
                 } else {
                     float a = transparentColor.a * transparency;
                     transparentColor.set(a, a, a, a);
-
-                    // make sure it is not all ones
-                    nonZeroTransparentColor = !transparentColor.equals(ColorRGBA.white);
                 }
             }
 
+            // we only process transparency if a transparent color or texture
+            // is specified, or if there is an alpha texture
             boolean transparent = pt.gettransparent().hastexture() ||
-                                  nonZeroTransparentColor ||
+                                  !transparentColor.equals(ColorRGBA.white) ||
                                   alphaTexture;
             if (transparent) {
                 if (pt.gettransparent().hastexture()) {
@@ -3636,7 +3629,7 @@ public class ThreadSafeColladaImporter {
                             }
                         }
                     }
-                    triMesh.setColorBuffer(colorBuffer);
+                    triMesh.setTangentBuffer(colorBuffer);
                 }  else if ("BINORMAL".equals(tri.getinputAt(i).getsemantic()
                         .toString())) {
                     // build the tangent buffer
@@ -4495,6 +4488,11 @@ public class ThreadSafeColladaImporter {
             rm.m12 = tm.m12 / scaleZ;
             rm.m22 = tm.m22 / scaleZ;
             Quaternion q = new Quaternion().fromRotationMatrix(rm);
+            
+            // OWL issue #187 make sure to normalize rotation to generate
+            // a valid child rotation
+            q.normalize();
+            
             //Quaternion q = tm.toRotationQuat();
             //float scale = FastMath.sqrt(q.norm());
             //System.out.println(scale);
