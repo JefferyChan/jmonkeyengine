@@ -1357,8 +1357,9 @@ public class JOGLRenderer extends Renderer {
      * @return boolean true if OpenGL 2.0 supported
      */
     public boolean supportsOpenGL20() {
-        return (capabilities.GL_VERSION_2_0 || capabilities.GL_VERSION_2_1 ||
-                capabilities.GL_VERSION_3_0);
+        // better check for open GL 2.0 -- shader language must be specified
+        return (capabilities.GL_ARB_shading_language_100 &&
+                !capabilities.GL_SHADING_LANGUAGE_VERSION_ARB.isEmpty());
     }
 
     /**
