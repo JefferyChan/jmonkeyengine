@@ -1,10 +1,8 @@
-package solutions.chapter4;
+package chapter4;
 
 import com.jme3.app.Application;
 import com.jme3.app.state.AppState;
 import com.jme3.app.state.AppStateManager;
-import com.jme3.math.ColorRGBA;
-import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
 
 /** A template how to create an Application State.
@@ -13,8 +11,6 @@ import com.jme3.renderer.RenderManager;
 public class MyAppState1 implements AppState {
 
   private Application app;
-
- 
 
   @Override
   public void initialize(AppStateManager stateManager, Application app) {
@@ -57,6 +53,11 @@ public class MyAppState1 implements AppState {
     throw new UnsupportedOperationException("Not supported yet.");
   }
 
- 
-  
+  public void setActive(boolean active) {
+    throw new UnsupportedOperationException("Not supported yet.");
+  }
+
+  public boolean isActive() {
+    throw new UnsupportedOperationException("Not supported yet.");
+  }
 }

@@ -1,4 +1,4 @@
-package solutions.chapter4;
+package chapter4;
 
 import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
@@ -23,11 +23,6 @@ public class MyAppState extends AbstractAppState {
   public void initialize(AppStateManager stateManager, Application app) {
     super.initialize(stateManager, app);
     this.app = app;
-  }
-
-  @Override
-  public void setEnabled(boolean enabled) {
-    super.setEnabled(enabled);
   }
 
   @Override
