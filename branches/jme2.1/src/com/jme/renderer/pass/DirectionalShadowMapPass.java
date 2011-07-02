@@ -115,7 +115,7 @@ public class DirectionalShadowMapPass extends Pass {
     private LightState noLights;
 
     /**
-     * The blending to both discard the fragements that have been determined to
+     * The blending to both discard the fragments that have been determined to
      * be free of shadows and to blend into the background scene
      */
     private BlendState discardShadowFragments;
@@ -136,11 +136,11 @@ public class DirectionalShadowMapPass extends Pass {
     private int shadowMapSize;
     /**
      * The scaling applied to the shadow map when rendered to - lower number
-     * means higher res but less ara covered by the shadow map
+     * means higher res but less area covered by the shadow map
      */
     protected float shadowMapScale = 0.4f;
     /**
-     * The distance we're modelling the direction light source as being away
+     * The distance we're modeling the direction light source as being away
      * from the focal point, again the higher the number the more of the scene
      * is covered but at lower resolution
      */
@@ -232,7 +232,7 @@ public class DirectionalShadowMapPass extends Pass {
      * Set the scale factor thats used to stretch the shadow map texture across
      * the scene.
      * 
-     * Higher the number the more of the scene will be convered but at a lower
+     * Higher the number the more of the scene will be covered but at a lower
      * resolution.
      * 
      * @param scale
@@ -340,7 +340,7 @@ public class DirectionalShadowMapPass extends Pass {
         noClip = r.createClipState();
         noClip.setEnabled(false);
 
-        // render states to use when rendering into the shadmop, no textures or
+        // render states to use when rendering into the shadow map, no textures or
         // colours
         // are required since we're only interested in recording depth
         // Also only need back faces when rendering the shadow maps
@@ -369,7 +369,7 @@ public class DirectionalShadowMapPass extends Pass {
                 .setDestinationFunction(BlendState.DestinationFunction.OneMinusSourceAlpha);
 
         // light used to uniformly light the scene when rendering the shadows
-        // themselfs
+        // themselves
         // this is so the geometry colour can be used as the source for blending
         // - i.e.
         // transparent shadows rather than matte black
