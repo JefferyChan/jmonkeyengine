@@ -1,4 +1,4 @@
-package solutions.chapter4;
+package chapter4;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.input.KeyInput;

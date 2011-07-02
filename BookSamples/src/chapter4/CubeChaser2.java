@@ -1,4 +1,4 @@
-package solutions.chapter4;
+package chapter4;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.collision.CollisionResults;
@@ -18,8 +18,6 @@ import com.jme3.scene.shape.Box;
 public class CubeChaser2 extends SimpleApplication {
 
   private Geometry cube;
-  private Vector3f g = new Vector3f(0, 0, 0);
-  private Vector3f v = new Vector3f(0, 0, 0);
   private Ray ray = new Ray();
     
   @Override

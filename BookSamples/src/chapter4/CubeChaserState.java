@@ -1,4 +1,4 @@
-package solutions.chapter4;
+package chapter4;
 
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.collision.CollisionResults;

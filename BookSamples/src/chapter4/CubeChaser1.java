@@ -1,4 +1,4 @@
-package solutions.chapter4;
+package chapter4;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.material.Material;
@@ -16,9 +16,7 @@ import com.jme3.scene.shape.Box;
 public class CubeChaser1 extends SimpleApplication {
 
   private Geometry cube;
-  private Vector3f g = new Vector3f(0, 0, 0);
-  private Vector3f v = new Vector3f(0, 0, 0);
-
+  
   @Override
   /** initialize the scene here */
   public void simpleInitApp() {

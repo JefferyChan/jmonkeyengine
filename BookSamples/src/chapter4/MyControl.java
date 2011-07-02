@@ -1,4 +1,4 @@
-package solutions.chapter4;
+package chapter4;
 
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;

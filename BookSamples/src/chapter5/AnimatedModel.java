@@ -1,4 +1,4 @@
-package solutions.chapter5;
+package chapter5;
 
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;

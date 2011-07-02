@@ -1,4 +1,4 @@
-package solutions.chapter3;
+package chapter3;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.material.Material;
