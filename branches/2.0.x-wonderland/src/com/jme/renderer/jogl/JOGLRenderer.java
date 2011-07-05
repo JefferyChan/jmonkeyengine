@@ -52,6 +52,7 @@ import com.jme.curve.Curve;
 import com.jme.image.Image;
 import com.jme.image.Texture;
 import com.jme.math.FastMath;
+import com.jme.math.Matrix4f;
 import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
 import com.jme.renderer.Camera;
@@ -61,6 +62,7 @@ import com.jme.renderer.RenderQueue;
 import com.jme.renderer.Renderer;
 import com.jme.scene.Geometry;
 import com.jme.scene.Line;
+import com.jme.scene.MatrixGeometry;
 import com.jme.scene.Point;
 import com.jme.scene.QuadMesh;
 import com.jme.scene.Spatial;
@@ -1729,6 +1731,21 @@ public class JOGLRenderer extends Renderer {
         // set world matrix
         if (!generatingDisplayList
                 || (t.getLocks() & Spatial.LOCKED_TRANSFORMS) != 0) {
+            
+            // check for a spatial that handles its own matrix calculation
+            if (t instanceof MatrixGeometry) {
+                RendererRecord matRecord = (RendererRecord) display.getCurrentContext().getRendererRecord();
+                matRecord.switchMode(GL.GL_MODELVIEW);
+                gl.glPushMatrix();
+                
+                float[] floats = new float[16];
+                Matrix4f mat = ((MatrixGeometry) t).getWorldTransform();
+                mat.fillFloatBuffer(FloatBuffer.wrap(floats), true);
+                gl.glMultMatrixf(floats, 0);
+                
+                return true;
+            }
+            
             boolean doT = false, doR = false, doS = false;
 
             Vector3f translation = t.getWorldTranslation();

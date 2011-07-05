@@ -334,6 +334,29 @@ public class RenderQueue {
 
         return spat.queueDistance;
     }
+    
+    /**
+     * Calculates the distance from the closest edge of a spatial's bounds to 
+     * the camera. 
+     * @param spat
+     *            Spatial to distancize.
+     * @return Distance from the closest edge of the spatial's world bounds 
+     * to camera.
+     */
+    private float edgeDistanceToCam(Spatial spat) {
+        if (spat.queueDistance != Float.NEGATIVE_INFINITY)
+                return spat.queueDistance;
+        Camera cam = renderer.getCamera();
+        spat.queueDistance = 0;
+
+        Vector3f camPosition = cam.getLocation();
+        BoundingVolume bounds = spat.getWorldBound();
+        if (Vector3f.isValidVector(camPosition) && bounds != null) {
+            spat.queueDistance = bounds.distanceToEdge(camPosition);
+        }
+            
+        return spat.queueDistance;
+    }
 
     /**
      * clears all of the buckets.
@@ -757,6 +780,7 @@ public class RenderQueue {
     private class TransparentComp implements Comparator<Spatial> {
 
         public int compare(Spatial o1, Spatial o2) {
+            // sort by distance to the edge of the object's bounds
             float d1 = distanceToCam(o1);
             float d2 = distanceToCam(o2);
             if (d1 == d2)

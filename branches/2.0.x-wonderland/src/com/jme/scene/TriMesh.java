@@ -329,8 +329,7 @@ public class TriMesh extends Geometry implements Serializable {
                 || !toCheck.isCollidable()) {
             return false;
         }
-        thisCT.getBounds().transform(worldRotation, worldTranslation,
-                worldScale, thisCT.getWorldBounds());
+        thisCT.getBounds().transform(this, thisCT.getWorldBounds());
         return thisCT.intersect(checkCT);
     }
 
@@ -359,8 +358,7 @@ public class TriMesh extends Geometry implements Serializable {
         }
 
 //        System.err.println("Checking mesh "+toCheck+" "+otherTree);
-        myTree.getBounds().transform(worldRotation, worldTranslation,
-                worldScale, myTree.getWorldBounds());
+        myTree.getBounds().transform(this, myTree.getWorldBounds());
         myTree.intersect(otherTree, thisIndex, otherIndex);
     }
 
@@ -427,9 +425,7 @@ public class TriMesh extends Geometry implements Serializable {
             CollisionTree ct = CollisionTreeManager.getInstance()
                     .getCollisionTree(this);
             if (ct != null) {
-                ct.getBounds().transform(getWorldRotation(),
-                        getWorldTranslation(), getWorldScale(),
-                        ct.getWorldBounds());
+                ct.getBounds().transform(this, ct.getWorldBounds());
                 ct.intersect(toTest, results);
             }
         }

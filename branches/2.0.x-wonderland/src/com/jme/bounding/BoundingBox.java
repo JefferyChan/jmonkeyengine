@@ -32,6 +32,7 @@
 
 package com.jme.bounding;
 
+import com.jme.math.Matrix4f;
 import java.io.IOException;
 import java.nio.FloatBuffer;
 
@@ -283,6 +284,71 @@ public class BoundingBox extends BoundingVolume {
 
         return box;
     }
+
+    @Override
+    public BoundingVolume transform(Matrix4f matrix, BoundingVolume store) {
+        BoundingBox box;
+        if (store == null || store.getType() != Type.AABB) {
+            box = new BoundingBox();
+        } else {
+            box = (BoundingBox) store;
+        }
+        
+        // transform the center
+        matrix.mult(center, box.center);
+        
+        // reset lengths
+        box.xExtent = 0;
+        box.yExtent = 0;
+        box.zExtent = 0;
+        
+        // transform each corner to find the maximum value.
+        Vector3f[] corners = new Vector3f[8];
+        corners[0] = matrix.mult(new Vector3f(center.x - xExtent, 
+                                              center.y - yExtent, 
+                                              center.z + zExtent));
+        corners[1] = matrix.mult(new Vector3f(center.x + xExtent, 
+                                              center.y - yExtent, 
+                                              center.z + zExtent));
+        corners[2] = matrix.mult(new Vector3f(center.x - xExtent, 
+                                              center.y + yExtent, 
+                                              center.z + zExtent));
+        corners[3] = matrix.mult(new Vector3f(center.x + xExtent, 
+                                              center.y + yExtent, 
+                                              center.z + zExtent));
+        corners[4] = matrix.mult(new Vector3f(center.x - xExtent,
+                                              center.y - yExtent, 
+                                              center.z - zExtent));
+        corners[5] = matrix.mult(new Vector3f(center.x + xExtent,
+                                              center.y - yExtent,
+                                              center.z - zExtent));
+        corners[6] = matrix.mult(new Vector3f(center.x - xExtent, 
+                                              center.y + yExtent,
+                                              center.z - zExtent));
+        corners[7] = matrix.mult(new Vector3f(center.x + xExtent, 
+                                              center.y + yExtent,
+                                              center.z - zExtent));
+        
+        for (int i = 0; i < corners.length; i++) {
+            corners[i].subtractLocal(box.center);
+            
+            if (Math.abs(corners[i].x) > box.xExtent) {
+                box.xExtent = Math.abs(corners[i].x);
+            }
+            
+            if (Math.abs(corners[i].y) > box.yExtent) {
+                box.yExtent = Math.abs(corners[i].y);
+            }
+            
+            if (Math.abs(corners[i].z) > box.zExtent) {
+                box.zExtent = Math.abs(corners[i].z);
+            }
+        }
+        
+        return box;
+    }
+    
+    
 
     /**
      * <code>whichSide</code> takes a plane (typically provided by a view

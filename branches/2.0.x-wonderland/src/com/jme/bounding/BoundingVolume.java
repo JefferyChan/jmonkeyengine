@@ -37,12 +37,15 @@ import java.io.Serializable;
 import java.nio.FloatBuffer;
 
 import com.jme.intersection.IntersectionRecord;
+import com.jme.math.Matrix4f;
 import com.jme.math.Plane;
 import com.jme.math.Quaternion;
 import com.jme.math.Ray;
 import com.jme.math.Triangle;
 import com.jme.math.Vector3f;
 import com.jme.math.Plane.Side;
+import com.jme.scene.MatrixGeometry;
+import com.jme.scene.Spatial;
 import com.jme.scene.TriMesh;
 import com.jme.util.export.JMEExporter;
 import com.jme.util.export.JMEImporter;
@@ -133,6 +136,58 @@ public abstract class BoundingVolume implements Serializable, Savable {
 	 */
 	public abstract BoundingVolume transform(Quaternion rotate, Vector3f translate, Vector3f scale, BoundingVolume store);
 
+        /**
+	 * 
+	 * <code>transform</code> alters the location of the bounding volume by a
+	 * given matrix.
+	 * 
+	 * @param matrix
+	 *            the matrix to affect the bound.
+	 * @return the new bounding volume.
+	 */
+        public BoundingVolume transform(Matrix4f matrix) {
+            return transform(matrix, null);
+        }
+        
+        /**
+	 * 
+	 * <code>transform</code> alters the location of the bounding volume by a
+	 * given matrix.
+	 * 
+	 * @param matrix
+	 *            the matrix to affect the bound.
+	 * @param store
+	 *            volume to store result in
+	 * @return the new bounding volume.
+	 */
+        public abstract BoundingVolume transform(Matrix4f matrix, BoundingVolume store);
+        
+        /**
+         * <code>transform</code> is a convenience method to transform the given
+         * volume based on the world transforms of the given spatial object.
+         * <p>
+         * This is equivalent to calling transform() with a matrix if the given
+         * spatial is an instance of MatrixGeometry, or with the spatial's
+         * world rotation, world translation, and world scale if not.
+         * 
+         * @param spatial
+         *            the spatial to affect the bound
+         * @param store
+         *            the volume to store the result in
+         * @return bounding volume where the data was stored
+         */
+        public BoundingVolume transform(Spatial spatial, BoundingVolume store) {
+            if (spatial instanceof MatrixGeometry) {
+                MatrixGeometry m = (MatrixGeometry) spatial;
+                return transform(m.getWorldTransform(), store);
+            } else {
+                return transform(spatial.getWorldRotation(),
+                                 spatial.getWorldTranslation(),
+                                 spatial.getWorldScale(),
+                                 store);
+            }
+        }
+        
 	/**
 	 * 
 	 * <code>whichSide</code> returns the side on which the bounding volume

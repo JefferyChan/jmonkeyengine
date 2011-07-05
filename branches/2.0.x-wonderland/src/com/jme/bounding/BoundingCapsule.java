@@ -37,12 +37,14 @@ import com.jme.intersection.IntersectionRecord;
 import com.jme.math.FastMath;
 import com.jme.math.Line;
 import com.jme.math.LineSegment;
+import com.jme.math.Matrix4f;
 import com.jme.math.Plane;
 import com.jme.math.Quaternion;
 import com.jme.math.Ray;
 import com.jme.math.Triangle;
 import com.jme.math.Vector3f;
 import com.jme.math.Plane.Side;
+import com.jme.scene.MatrixHelper;
 import com.jme.scene.TriMesh;
 import com.jme.util.geom.BufferUtils;
 
@@ -596,6 +598,37 @@ public class BoundingCapsule extends BoundingVolume {
         rotate.mult(capsule.getLineSegment().getDirection(), capsule
                 .getLineSegment().getDirection());
 
+        ls.getDirection().mult(scale, compVec1).multLocal(ls.getExtent());
+        capsule.getLineSegment().setExtent(compVec1.length());
+
+        capsule.setRadius(FastMath.abs(getMaxAxis(scale) * radius));
+
+        return capsule;
+    }
+    
+      public BoundingVolume transform(Matrix4f matrix, BoundingVolume store) {
+        BoundingCapsule capsule;
+        if (store == null || store.getType() != Type.Capsule) {
+            capsule = new BoundingCapsule();
+            capsule.setLineSegment(new LineSegment());
+        } else {
+            capsule = (BoundingCapsule) store;
+        }
+
+        // transform the center
+        matrix.mult(center, capsule.getCenter());
+        
+        // update the line segment origin
+        matrix.mult(ls.getOrigin(), capsule.getLineSegment().getOrigin());
+        
+        // update the line segment direction
+        matrix.mult(ls.getDirection(), capsule.getLineSegment().getDirection());
+        capsule.getLineSegment().getDirection().normalizeLocal();
+        
+        // find the scale
+        Vector3f scale = MatrixHelper.getScale(matrix);
+        
+        // update the direction and radius
         ls.getDirection().mult(scale, compVec1).multLocal(ls.getExtent());
         capsule.getLineSegment().setExtent(compVec1.length());
 

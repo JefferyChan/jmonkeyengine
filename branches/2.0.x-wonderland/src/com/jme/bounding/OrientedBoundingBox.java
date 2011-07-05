@@ -38,12 +38,14 @@ import java.nio.FloatBuffer;
 import com.jme.intersection.IntersectionRecord;
 import com.jme.math.FastMath;
 import com.jme.math.Matrix3f;
+import com.jme.math.Matrix4f;
 import com.jme.math.Plane;
 import com.jme.math.Quaternion;
 import com.jme.math.Ray;
 import com.jme.math.Triangle;
 import com.jme.math.Vector3f;
 import com.jme.math.Plane.Side;
+import com.jme.scene.MatrixHelper;
 import com.jme.scene.TriMesh;
 import com.jme.util.export.InputCapsule;
 import com.jme.util.export.JMEExporter;
@@ -161,6 +163,36 @@ public class OrientedBoundingBox extends BoundingVolume {
         center.mult(scale, toReturn.center);
         rotate.mult(toReturn.center, toReturn.center);
         toReturn.center.addLocal(translate);
+        toReturn.correctCorners = false;
+        return toReturn;
+    }
+    
+    public BoundingVolume transform(Matrix4f matrix, BoundingVolume store) {
+        if (store == null || store.getType() != Type.OBB) {
+            store = new OrientedBoundingBox();
+        }
+        OrientedBoundingBox toReturn = (OrientedBoundingBox) store;
+        
+        // find the scale
+        Vector3f scale = MatrixHelper.getScale(matrix);
+        
+        // scale the extents
+        toReturn.extent.set(FastMath.abs(extent.x * scale.x), 
+                FastMath.abs(extent.y * scale.y), 
+                FastMath.abs(extent.z * scale.z));
+        
+        // transform the axes
+        matrix.mult(xAxis, toReturn.xAxis);
+        matrix.mult(yAxis, toReturn.yAxis);
+        matrix.mult(zAxis, toReturn.zAxis);
+        
+        // re-normalize the axes
+        toReturn.xAxis.normalizeLocal();
+        toReturn.yAxis.normalizeLocal();
+        toReturn.zAxis.normalizeLocal();
+        
+        // move the center
+        matrix.mult(center, toReturn.center);
         toReturn.correctCorners = false;
         return toReturn;
     }

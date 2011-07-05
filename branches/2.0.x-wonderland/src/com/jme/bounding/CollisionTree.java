@@ -38,6 +38,7 @@ import com.jme.intersection.Intersection;
 import com.jme.math.Quaternion;
 import com.jme.math.Ray;
 import com.jme.math.Vector3f;
+import com.jme.scene.MatrixGeometry;
 import com.jme.scene.Node;
 import com.jme.scene.Spatial;
 import com.jme.scene.TriMesh;
@@ -270,10 +271,9 @@ public class CollisionTree implements Serializable {
             return false;
         }
 
-        collisionTree.bounds.transform(collisionTree.mesh.getWorldRotation(),
-                collisionTree.mesh.getWorldTranslation(), collisionTree.mesh
-                        .getWorldScale(), collisionTree.worldBounds);
-
+        collisionTree.bounds.transform(collisionTree.mesh, 
+                                       collisionTree.worldBounds);
+        
         // our two collision bounds do not intersect, therefore, our triangles
         // must
         // not intersect. Return false.
@@ -304,27 +304,21 @@ public class CollisionTree implements Serializable {
         }
 
         // both are leaves
-        Quaternion roti = mesh.getWorldRotation();
-        Vector3f scalei = mesh.getWorldScale();
-        Vector3f transi = mesh.getWorldTranslation();
-
-        Quaternion rotj = collisionTree.mesh.getWorldRotation();
-        Vector3f scalej = collisionTree.mesh.getWorldScale();
-        Vector3f transj = collisionTree.mesh.getWorldTranslation();
-
         // for every triangle to compare, put them into world space and check
         // for intersections
         for (int i = start; i < end; i++) {
             mesh.getTriangle(triIndex[i], verts);
-            roti.mult(tempVa.set(verts[0]).multLocal(scalei), tempVa).addLocal(transi);
-            roti.mult(tempVb.set(verts[1]).multLocal(scalei), tempVb).addLocal(transi);
-            roti.mult(tempVc.set(verts[2]).multLocal(scalei), tempVc).addLocal(transi);
+            mesh.localToWorld(verts[0], tempVa);
+            mesh.localToWorld(verts[1], tempVb);
+            mesh.localToWorld(verts[2], tempVc);
+            
             for (int j = collisionTree.start; j < collisionTree.end; j++) {
                 collisionTree.mesh.getTriangle(collisionTree.triIndex[j],
                         target);
-                rotj.mult(tempVd.set(target[0]).multLocal(scalej), tempVd).addLocal(transj);
-                rotj.mult(tempVe.set(target[1]).multLocal(scalej), tempVe).addLocal(transj);
-                rotj.mult(tempVf.set(target[2]).multLocal(scalej), tempVf).addLocal(transj);
+                collisionTree.mesh.localToWorld(target[0], tempVd);
+                collisionTree.mesh.localToWorld(target[1], tempVe);
+                collisionTree.mesh.localToWorld(target[2], tempVf);
+                
                 if (Intersection.intersection(tempVa, tempVb, tempVc, tempVd,
                         tempVe, tempVf))
                     return true;
@@ -363,10 +357,9 @@ public class CollisionTree implements Serializable {
         // our two collision bounds do not intersect, therefore, our triangles
         // must
         // not intersect. Return false.
-        collisionTree.bounds.transform(collisionTree.mesh.getWorldRotation(),
-                collisionTree.mesh.getWorldTranslation(), collisionTree.mesh
-                        .getWorldScale(), collisionTree.worldBounds);
-
+        collisionTree.bounds.transform(collisionTree.mesh, 
+                                       collisionTree.worldBounds);
+        
         if (!intersectsBounding(collisionTree.worldBounds)) {
             return false;
         }
@@ -390,27 +383,21 @@ public class CollisionTree implements Serializable {
         // both this node and the testing node are leaves. Therefore, we can
         // switch to checking the contained triangles with each other. Any
         // that are found to intersect are placed in the appropriate list.
-        Quaternion roti = mesh.getWorldRotation();
-        Vector3f scalei = mesh.getWorldScale();
-        Vector3f transi = mesh.getWorldTranslation();
-
-        Quaternion rotj = collisionTree.mesh.getWorldRotation();
-        Vector3f scalej = collisionTree.mesh.getWorldScale();
-        Vector3f transj = collisionTree.mesh.getWorldTranslation();
-
         boolean test = false;
 
         for (int i = start; i < end; i++) {
             mesh.getTriangle(triIndex[i], verts);
-            roti.mult(tempVa.set(verts[0]).multLocal(scalei), tempVa).addLocal(transi);
-            roti.mult(tempVb.set(verts[1]).multLocal(scalei), tempVb).addLocal(transi);
-            roti.mult(tempVc.set(verts[2]).multLocal(scalei), tempVc).addLocal(transi);
+            mesh.localToWorld(verts[0], tempVa);
+            mesh.localToWorld(verts[1], tempVb);
+            mesh.localToWorld(verts[2], tempVc);
+            
             for (int j = collisionTree.start; j < collisionTree.end; j++) {
                 collisionTree.mesh.getTriangle(collisionTree.triIndex[j],
                         target);
-                rotj.mult(tempVd.set(target[0]).multLocal(scalej), tempVd).addLocal(transj);
-                rotj.mult(tempVe.set(target[1]).multLocal(scalej), tempVe).addLocal(transj);
-                rotj.mult(tempVf.set(target[2]).multLocal(scalej), tempVf).addLocal(transj);
+                collisionTree.mesh.localToWorld(target[0], tempVd);
+                collisionTree.mesh.localToWorld(target[1], tempVe);
+                collisionTree.mesh.localToWorld(target[2], tempVf);
+              
                 if (Intersection.intersection(tempVa, tempVb, tempVc, tempVd,
                         tempVe, tempVf)) {
                     test = true;
@@ -443,16 +430,12 @@ public class CollisionTree implements Serializable {
         // This is not a leaf node, therefore, check each child (left/right) for
         // intersection with the ray.
         if (left != null) {
-            left.bounds.transform(mesh.getWorldRotation(), mesh
-                    .getWorldTranslation(), mesh.getWorldScale(),
-                    left.worldBounds);
+            left.bounds.transform(mesh, left.worldBounds);
             left.intersect(ray, triList);
         }
 
         if (right != null) {
-            right.bounds.transform(mesh.getWorldRotation(), mesh
-                    .getWorldTranslation(), mesh.getWorldScale(),
-                    right.worldBounds);
+            right.bounds.transform(mesh, right.worldBounds);
             right.intersect(ray, triList);
         } else if (left == null) {
             // This is a leaf node. We can therfore, check each triangle this
@@ -470,7 +453,7 @@ public class CollisionTree implements Serializable {
             }
         }
     }
-
+    
     /**
      * Returns the bounding volume for this tree node in local space.
      * 

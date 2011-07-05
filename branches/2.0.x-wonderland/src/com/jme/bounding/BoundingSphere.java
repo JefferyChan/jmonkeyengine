@@ -39,12 +39,14 @@ import java.util.logging.Logger;
 
 import com.jme.intersection.IntersectionRecord;
 import com.jme.math.FastMath;
+import com.jme.math.Matrix4f;
 import com.jme.math.Plane;
 import com.jme.math.Quaternion;
 import com.jme.math.Ray;
 import com.jme.math.Triangle;
 import com.jme.math.Vector3f;
 import com.jme.math.Plane.Side;
+import com.jme.scene.MatrixHelper;
 import com.jme.scene.TriMesh;
 import com.jme.util.export.JMEExporter;
 import com.jme.util.export.JMEImporter;
@@ -442,6 +444,41 @@ public class BoundingSphere extends BoundingVolume {
         rotate.mult(sphere.center, sphere.center);
         sphere.center.addLocal(translate);
         sphere.radius = FastMath.abs(getMaxAxis(scale) * radius) + radiusEpsilon - 1f;
+        return sphere;
+    }
+    
+    public BoundingVolume transform(Matrix4f matrix, BoundingVolume store) {
+        BoundingSphere sphere;
+        if (store == null || store.getType() != BoundingVolume.Type.Sphere) {
+            sphere = new BoundingSphere(1, new Vector3f(0, 0, 0));
+        } else {
+            sphere = (BoundingSphere) store;
+        }
+        
+        // transform the center
+        matrix.mult(center, sphere.center);
+
+        // reset the radius
+        sphere.radius = 0;
+        
+        // transform +x, +y and +z by the given matrix, and take the largest
+        // value we find. This may not be correct for skew matrices.
+        Vector3f[] maximums = new Vector3f[3];
+        maximums[0] = matrix.mult(new Vector3f(center.x + radius, center.y, center.z));
+        maximums[1] = matrix.mult(new Vector3f(center.x, center.y + radius, center.z));
+        maximums[2] = matrix.mult(new Vector3f(center.x, center.y, center.z + radius));
+        
+        for (int i = 0; i < maximums.length; i++) {
+            // subtract the new center to get the offset from zero
+            maximums[i].subtractLocal(sphere.center);
+            
+            // get the length
+            float len = Math.abs(maximums[i].length());
+            if (len > sphere.radius) {
+                sphere.radius = len;
+            }
+        }
+        
         return sphere;
     }
 
