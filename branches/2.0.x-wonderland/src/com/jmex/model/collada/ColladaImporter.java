@@ -35,9 +35,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
-import com.jme.animation.Bone;
-import com.jme.animation.BoneAnimation;
-import com.jme.animation.SkinNode;
 import com.jme.animation.TextureKeyframeController;
 import com.jme.light.LightNode;
 import com.jme.scene.CameraNode;
@@ -98,20 +95,6 @@ public class ColladaImporter {
         instance.load(source);
     }
 
-
-
-    /**
-     * returns the names of the controllers that affect this imported model.
-     *
-     * @return the list of string values for each controller name.
-     */
-    public static ArrayList<String> getControllerNames() {
-        if (instance == null) {
-            return null;
-        }
-        return instance.getControllerNames();
-    }
-
     /**
      * @return
      */
@@ -124,19 +107,6 @@ public class ColladaImporter {
 
     public static void addUVControllerName(String name) {
         instance.addUVControllerName(name);
-    }
-
-    /**
-     * returns the names of the skin nodes that are associated with this
-     * imported model.
-     *
-     * @return the names of the skin nodes associated with this model.
-     */
-    public static ArrayList<String> getSkinNodeNames() {
-        if (instance == null) {
-            return null;
-        }
-        return instance.getSkinNodeNames();
     }
 
     /**
@@ -158,13 +128,6 @@ public class ColladaImporter {
         return instance.getLightNodeNames();
     }
 
-    public static ArrayList<String> getSkeletonNames() {
-        if (instance == null) {
-            return null;
-        }
-        return instance.getSkeletonNames();
-    }
-
     public static ArrayList<String> getGeometryNames() {
         if (instance == null) {
             return null;
@@ -177,13 +140,6 @@ public class ColladaImporter {
             return null;
         }
         return instance.getModel();
-    }
-
-    public static SkinNode getSkinNode(String id) {
-        if (instance == null) {
-            return null;
-        }
-        return (SkinNode) instance.getSkinNode(id);
     }
 
     public static CameraNode getCameraNode(String id) {
@@ -219,25 +175,11 @@ public class ColladaImporter {
         instance.put(key, value);
     }
 
-    public static BoneAnimation getAnimationController(String id) {
-        if (instance == null) {
-            return null;
-        }
-        return (BoneAnimation) instance.getAnimationController(id);
-    }
-
     public static TextureKeyframeController getUVAnimationController(String id) {
         if (instance == null) {
             return null;
         }
         return (TextureKeyframeController) instance.getUVAnimationController(id);
-    }
-
-    public static Bone getSkeleton(String id) {
-        if (instance == null) {
-            return null;
-        }
-        return (Bone) instance.getSkeleton(id);
     }
 
     public static Geometry getGeometry(String id) {
@@ -249,7 +191,7 @@ public class ColladaImporter {
 
     public static void cleanUp() {
         if (instance != null) {
-            instance.shutdown();
+            instance.cleanUp();
         }
     }
 

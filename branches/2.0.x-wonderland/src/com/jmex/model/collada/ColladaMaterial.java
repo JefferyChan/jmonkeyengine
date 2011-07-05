@@ -41,6 +41,8 @@ import com.jme.image.Texture.MinificationFilter;
 import com.jme.image.Texture.WrapMode;
 import com.jme.scene.Controller;
 import com.jme.scene.state.RenderState;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * ColladaMaterial is designed to hold all the material attributes of a Collada
@@ -49,33 +51,22 @@ import com.jme.scene.state.RenderState;
  * 
  * @author Mark Powell
  */
-public class ColladaMaterial {
-    public String minFilter;
-    public String magFilter;
-    public String wrapS;
-    public String wrapT;
+public class ColladaMaterial implements Cloneable {
+    private MinificationFilter minFilter = MinificationFilter.Trilinear;
+    private MagnificationFilter magFilter = MagnificationFilter.Bilinear;
+    private WrapMode wrapS = WrapMode.Repeat;
+    private WrapMode wrapT = WrapMode.Repeat;
     
-    RenderState[] stateList;
-    ArrayList<Controller> controllerList;
-    String shaderFlag = null;
-
-    public HashMap<String, String> glslCode = new HashMap<String, String>();
-    public HashMap<String, Object> glslParams = new HashMap<String, Object>();
+    private final RenderState[] stateList;
+    
+    private final Map<String, String> glslCode = new LinkedHashMap<String, String>();
+    private final Map<String, Object> glslParams = new LinkedHashMap<String, Object>();
+  
+    // map from texture coordinates name to texture unit number
+    private final Map<String, Integer> textureUnitMap = new LinkedHashMap<String, Integer>();
     
     public ColladaMaterial() {
         stateList = new RenderState[RenderState.StateType.values().length];
-    }
-    
-    public void addController(Controller c) {
-    	if(controllerList == null) {
-    		controllerList = new ArrayList<Controller>();
-    	}
-    	
-    	controllerList.add(c);
-    }
-    
-    public ArrayList<Controller> getControllerList() {
-    	return controllerList;
     }
 
     public void setState(RenderState ss) {
@@ -94,91 +85,126 @@ public class ColladaMaterial {
         return stateList[type.ordinal()];
     }
     
-    public void setShaderFlag(String flag) {
-        shaderFlag = flag;
-    }
-    
-    public String getShaderFlag() {
-        return (shaderFlag);
-    }
-    
     public MagnificationFilter getMagFilterConstant() {
-        if(magFilter == null) {
-            return Texture.MagnificationFilter.Bilinear;
+        return magFilter;
+    }
+    
+    public void setMagFilterConstant(String magFilterStr) {
+        magFilter = getMagFilter(magFilterStr);
+    }
+    
+    public void setMagFilterConstant(MagnificationFilter filter) {
+        magFilter = filter;
+    }
+    
+    public static MagnificationFilter getMagFilter(String magFilterStr) {
+        if (magFilterStr.equals("NEAREST")) {
+            return MagnificationFilter.NearestNeighbor;
+        } else if(magFilterStr.equals("LINEAR")) {
+            return MagnificationFilter.Bilinear;
+        } else {
+            return MagnificationFilter.Bilinear;
         }
-        
-        if(magFilter.equals("NEAREST")) {
-            return Texture.MagnificationFilter.NearestNeighbor;
-        }
-        
-        if(magFilter.equals("LINEAR")) {
-            return Texture.MagnificationFilter.Bilinear;
-        }
-        
-        return Texture.MagnificationFilter.Bilinear;
     }
     
     public MinificationFilter getMinFilterConstant() {
-        if(minFilter == null) {
-            return Texture.MinificationFilter.Trilinear;
-        }
-        
-        if(minFilter.equals("NEAREST")) {
-            return Texture.MinificationFilter.NearestNeighborNoMipMaps;
-        }
-        
-        if(minFilter.equals("LINEAR")) {
-            return Texture.MinificationFilter.BilinearNoMipMaps;
-        }
-        
-        if(minFilter.equals("NEAREST_MIPMAP_NEAREST")) {
-            return Texture.MinificationFilter.NearestNeighborNearestMipMap;
-        }
-        
-        if(minFilter.equals("NEAREST_MIPMAP_LINEAR")) {
-            return Texture.MinificationFilter.NearestNeighborLinearMipMap;
-        }
-        
-        if(minFilter.equals("LINEAR_MIPMAP_NEAREST")) {
-            return Texture.MinificationFilter.BilinearNearestMipMap;
-        }
-        
-        if(minFilter.equals("LINEAR_MIPMAP_LINEAR")) {
-            return Texture.MinificationFilter.Trilinear;
-        }
-        
-        return Texture.MinificationFilter.Trilinear;
+        return minFilter;
+    }
+    
+    public void setMinFilterConstant(String minFilterStr) {
+        minFilter = getMinFilter(minFilterStr);
     }
 
+    public void setMinFilterConstant(MinificationFilter filter) {
+        minFilter = filter;
+    }
+    
+    public static MinificationFilter getMinFilter(String minFilterStr) {
+        if (minFilterStr.equals("NEAREST")) {
+            return MinificationFilter.NearestNeighborNoMipMaps;
+        } else if (minFilterStr.equals("LINEAR")) {
+            return MinificationFilter.BilinearNoMipMaps;
+        } else if (minFilterStr.equals("NEAREST_MIPMAP_NEAREST")) {
+            return MinificationFilter.NearestNeighborNearestMipMap;
+        } else if (minFilterStr.equals("NEAREST_MIPMAP_LINEAR")) {
+            return MinificationFilter.NearestNeighborLinearMipMap;
+        } else if (minFilterStr.equals("LINEAR_MIPMAP_NEAREST")) {
+            return MinificationFilter.BilinearNearestMipMap;
+        } else if (minFilterStr.equals("LINEAR_MIPMAP_LINEAR")) {
+            return MinificationFilter.Trilinear;
+        } else {
+            return MinificationFilter.Trilinear;
+        }
+    }
+    
     public WrapMode getWrapSConstant() {
-        if(wrapS == null) {
-            return Texture.WrapMode.Repeat;
-        }
-        
-        if(wrapS.equals("WRAP")) {
-            return Texture.WrapMode.Repeat;
-        }
-        
-        if(wrapS.equals("NONE")) {
-            return Texture.WrapMode.Clamp;
-        }
-        
-        return Texture.WrapMode.Repeat;
+        return wrapS;
+    }
+    
+    public void setWrapSConstant(String wrapSStr) {
+        wrapS = getWrapMode(wrapSStr);
     }    
+    
+    public void setWrapSConstant(WrapMode wrap) {
+        wrapS = wrap;
+    }
 
     public WrapMode getWrapTConstant() {
-        if(wrapT == null) {
-            return Texture.WrapMode.Repeat;
-        }
-        
-        if(wrapT.equals("WRAP")) {
-            return Texture.WrapMode.Repeat;
-        }
-        
-        if(wrapT.equals("NONE")) {
-            return Texture.WrapMode.Clamp;
-        }
-        
-        return Texture.WrapMode.Repeat;
+        return wrapT;
+    }
+    
+    public void setWrapTConstant(String wrapTStr) {
+        wrapT = getWrapMode(wrapTStr);
     }    
+    
+    public void setWrapTConstant(WrapMode wrap) {
+        wrapT = wrap;
+    }
+    
+    public static WrapMode getWrapMode(String wrapStr) {
+        if (wrapStr.equals("WRAP")) {
+            return WrapMode.Repeat;
+        } else if (wrapStr.equals("NONE")) {
+            return WrapMode.Clamp;
+        } else {
+            return WrapMode.Repeat;
+        }
+    }
+    
+    public void putGLSLCode(String key, String code) {
+        glslCode.put(key, code);
+    }
+    
+    public String getGLSLCode(String key) {
+        return glslCode.get(key);
+    }
+    
+    public Map<String, String> getGLSLCode() {
+        return glslCode;
+    }
+    
+    public void putGLSLParam(String key, Object param) {
+        glslParams.put(key, param);
+    }
+    
+    public Object getGLSLParam(String key) {
+        return glslParams.get(key);
+    }
+    
+    public Map<String, Object> getGLSLParams() {
+        return glslParams;
+    }
+    
+    public void addTextureRef(String name, int textureUnit) {
+        textureUnitMap.put(name, textureUnit);
+    }
+    
+    public int getTextureRef(String name) {
+        Integer res = textureUnitMap.get(name); 
+        if (res == null) {
+            return 0;
+        }
+        
+        return res.intValue();
+    }
 }

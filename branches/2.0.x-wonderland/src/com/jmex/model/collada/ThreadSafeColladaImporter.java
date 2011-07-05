@@ -31,7 +31,6 @@
  */
 package com.jmex.model.collada;
 
-import com.jme.animation.AnimationController;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -46,21 +45,19 @@ import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.jme.animation.Bone;
-import com.jme.animation.BoneAnimation;
-import com.jme.animation.BoneTransform;
-import com.jme.animation.SkinNode;
 import com.jme.animation.TextureKeyframeController;
 import com.jme.bounding.BoundingBox;
 import com.jme.image.Image;
 import com.jme.image.Texture;
+import com.jme.image.Texture.MagnificationFilter;
+import com.jme.image.Texture.MinificationFilter;
 import com.jme.image.Texture.WrapAxis;
+import com.jme.image.Texture.WrapMode;
 import com.jme.light.DirectionalLight;
 import com.jme.light.Light;
 import com.jme.light.LightNode;
 import com.jme.light.PointLight;
 import com.jme.light.SpotLight;
-import com.jme.math.FastMath;
 import com.jme.math.Matrix3f;
 import com.jme.math.Matrix4f;
 import com.jme.math.Quaternion;
@@ -70,11 +67,11 @@ import com.jme.renderer.Camera;
 import com.jme.renderer.ColorRGBA;
 import com.jme.renderer.Renderer;
 import com.jme.scene.CameraNode;
-import com.jme.scene.Controller;
 import com.jme.scene.Geometry;
+import com.jme.scene.Line;
+import com.jme.scene.MatrixTriMesh;
 import com.jme.scene.Node;
 import com.jme.scene.SharedMesh;
-import com.jme.scene.SharedNode;
 import com.jme.scene.Spatial;
 import com.jme.scene.TexCoords;
 import com.jme.scene.TriMesh;
@@ -98,12 +95,13 @@ import com.jme.util.geom.BufferUtils;
 import com.jme.util.geom.GeometryTool;
 import com.jme.util.geom.VertMap;
 import com.jme.util.resource.ResourceLocatorTool;
+import com.jmex.model.collada.ColladaAnimationGroup.NodeFinder;
+import com.jmex.model.collada.ColladaControllerNode.JointFinder;
 import com.jmex.model.collada.schema.COLLADAType;
-import com.jmex.model.collada.schema.IDREF_arrayType;
+import com.jmex.model.collada.schema.InputLocal;
+import com.jmex.model.collada.schema.InputLocalOffset;
 import com.jmex.model.collada.schema.InstanceWithExtra;
-import com.jmex.model.collada.schema.Name_arrayType;
 import com.jmex.model.collada.schema.TargetableFloat3;
-import com.jmex.model.collada.schema.accessorType;
 import com.jmex.model.collada.schema.animationType;
 import com.jmex.model.collada.schema.assetType;
 import com.jmex.model.collada.schema.bind_materialType;
@@ -117,8 +115,6 @@ import com.jmex.model.collada.schema.common_newparam_type;
 import com.jmex.model.collada.schema.common_transparent_type;
 import com.jmex.model.collada.schema.controllerType;
 import com.jmex.model.collada.schema.effectType;
-import com.jmex.model.collada.schema.float4x4;
-import com.jmex.model.collada.schema.float_arrayType;
 import com.jmex.model.collada.schema.fx_sampler2D_common;
 import com.jmex.model.collada.schema.fx_surface_common;
 import com.jmex.model.collada.schema.geometryType;
@@ -146,13 +142,11 @@ import com.jmex.model.collada.schema.meshType;
 import com.jmex.model.collada.schema.nodeType2;
 import com.jmex.model.collada.schema.opticsType;
 import com.jmex.model.collada.schema.orthographicType;
-import com.jmex.model.collada.schema.paramType3;
 import com.jmex.model.collada.schema.passType3;
 import com.jmex.model.collada.schema.perspectiveType;
 import com.jmex.model.collada.schema.phongType;
 import com.jmex.model.collada.schema.physics_modelType;
 import com.jmex.model.collada.schema.physics_sceneType;
-import com.jmex.model.collada.schema.polygonsType;
 import com.jmex.model.collada.schema.rigid_bodyType;
 import com.jmex.model.collada.schema.sceneType;
 import com.jmex.model.collada.schema.shapeType2;
@@ -168,6 +162,18 @@ import com.jmex.model.collada.schema.trianglesType;
 import com.jmex.model.collada.schema.vertex_weightsType;
 import com.jmex.model.collada.schema.visual_sceneType;
 import com.jmex.model.collada.schema.glsl_newparam;
+import com.jmex.model.collada.schema.linesType;
+import com.jmex.model.collada.schema.matrixType;
+import com.jmex.model.collada.schema.polylistType;
+import com.jmex.model.collada.schema.rotateType;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 /**
  * <code>ColladaNode</code> provides a mechanism to parse and load a COLLADA
@@ -182,7 +188,9 @@ import com.jmex.model.collada.schema.glsl_newparam;
 public class ThreadSafeColladaImporter {
     private static final Logger globalLogger = Logger.getLogger(ThreadSafeColladaImporter.class
             .getName());
-    private InstanceLogger logger = new InstanceLogger();
+    private static final InstanceLogger logger = new InstanceLogger();
+    
+    private static final Pattern NOT_SPACE = Pattern.compile("[^\\s]+");
     
     // asset information
     private String modelAuthor;
@@ -191,9 +199,7 @@ public class ThreadSafeColladaImporter {
     private String unitName;
     private float unitMeter;
     private String upAxis;
-    private ThreadSafeColladaImporter instance;
     private String name;
-    private String[] boneIds;
     private boolean squelch;
     private int textureIndex = 0;
 
@@ -204,16 +210,15 @@ public class ThreadSafeColladaImporter {
     public OptimizeCallback optimizeCallBack = null;
 
     private Map<String, Object> resourceLibrary;
-    private ArrayList<String> controllerNames;
     private ArrayList<String> uvControllerNames;
-    private ArrayList<String> skinNodeNames;
     private ArrayList<String> cameraNodeNames;
     private ArrayList<String> lightNodeNames;
     private ArrayList<String> geometryNames;
-    private ArrayList<String> skeletonNames;
     private Map<String, Object> userInformation;
-    private Map<TriMesh, String> subMaterialLibrary;
-    private Node model;
+    private Map<Geometry, String> subMaterialLibrary;
+    private Map<Geometry, int[]> meshVertices;
+    private Map<String, ColladaJointNode> skeletons;
+    private ColladaRootNode model;
 
     /**
      * Unique Serial ID for ColladaNode
@@ -223,12 +228,14 @@ public class ThreadSafeColladaImporter {
     // Flags so we only log unsuported feature errors once
     private boolean reportedAnimationClips=false;
     private boolean reportedForceFields=false;
-    private boolean reportedAnimationTransforms=false;
     private boolean reportedRawDataImages=false;
     private boolean reportedSplines=false;
-    private boolean reportedSkinType=false;
-    private boolean reportedLines=false;
 
+    private enum Semantic {
+        BINORMAL, COLOR, NORMAL, POSITION, TANGENT, TEXBINORMAL, TEXCOORD,
+        TEXTANGENT, UV, VERTEX
+    }
+    
     /**
      * Default constructor instantiates a ColladaImporter object. A basic Node
      * structure is built and no data is loaded until the <code>load</code>
@@ -239,29 +246,28 @@ public class ThreadSafeColladaImporter {
      */
     public ThreadSafeColladaImporter(String name) {
         this.name = name;
-        instance = this;
     }
 
     public boolean hasUserInformation(String key) {
-        if (instance.userInformation == null) {
+        if (userInformation == null) {
             return false;
         } else {
-            return instance.userInformation.containsKey(key);
+            return userInformation.containsKey(key);
         }
     }
 
     public void addUserInformation(String key, Object value) {
-        if (instance.userInformation == null) {
-            instance.userInformation = new HashMap<String, Object>();
+        if (userInformation == null) {
+            userInformation = new HashMap<String, Object>();
         }
-        instance.userInformation.put(key, value);
+        userInformation.put(key, value);
     }
 
     public Object getUserInformation(String key) {
-        if (instance.userInformation == null) {
+        if (userInformation == null) {
             return null;
         } else {
-            return instance.userInformation.get(key);
+            return userInformation.get(key);
         }
     }
 
@@ -275,9 +281,12 @@ public class ThreadSafeColladaImporter {
      *            the location of the textures.
      */
     public void load(InputStream source) {
-        model = new Node(name);
+        model = new ColladaRootNode(name);
         resourceLibrary = new HashMap<String, Object>();
-        subMaterialLibrary = new HashMap<TriMesh, String>();
+        subMaterialLibrary = new HashMap<Geometry, String>();
+        meshVertices = new HashMap<Geometry, int[]>();
+        skeletons = new HashMap<String, ColladaJointNode>();
+        
         long startTime = System.nanoTime();
         collada_schema_1_4_1Doc doc = new collada_schema_1_4_1Doc(); 
         globalLogger.info("Doc creation took "+(System.nanoTime()-startTime)/1000000);
@@ -306,45 +315,17 @@ public class ThreadSafeColladaImporter {
     }
 
     /**
-     * returns the names of the controllers that affect this imported model.
-     *
-     * @return the list of string values for each controller name.
-     */
-    public ArrayList<String> getControllerNames() {
-        if (instance == null) {
-            return null;
-        }
-        return instance.controllerNames;
-    }
-
-    /**
      * @return
      */
     public ArrayList<String> getUVControllerNames() {
-        if (instance == null) {
-            return null;
-        }
-        return instance.uvControllerNames;
+        return uvControllerNames;
     }
 
     public void addUVControllerName(String name) {
-        if (instance.uvControllerNames == null) {
-            instance.uvControllerNames = new ArrayList<String>();
+        if (uvControllerNames == null) {
+            uvControllerNames = new ArrayList<String>();
         }
-        instance.uvControllerNames.add(name);
-    }
-
-    /**
-     * returns the names of the skin nodes that are associated with this
-     * imported model.
-     *
-     * @return the names of the skin nodes associated with this model.
-     */
-    public ArrayList<String> getSkinNodeNames() {
-        if (instance == null) {
-            return null;
-        }
-        return instance.skinNodeNames;
+        uvControllerNames.add(name);
     }
 
     /**
@@ -353,63 +334,35 @@ public class ThreadSafeColladaImporter {
      * @return the list of camera names that are referenced in this file.
      */
     public ArrayList<String> getCameraNodeNames() {
-        if (instance == null) {
-            return null;
-        }
-        return instance.cameraNodeNames;
+        return cameraNodeNames;
     }
 
     public ArrayList<String> getLightNodeNames() {
-        if (instance == null) {
-            return null;
-        }
-        return instance.lightNodeNames;
-    }
-
-    public ArrayList<String> getSkeletonNames() {
-        if (instance == null) {
-            return null;
-        }
-        return instance.skeletonNames;
+        return lightNodeNames;
     }
 
     public ArrayList<String> getGeometryNames() {
-        if (instance == null) {
-            return null;
-        }
-        return instance.geometryNames;
+        return geometryNames;
     }
 
     public Node getModel() {
-        if (instance == null) {
-            return null;
-        }
-        return instance.model;
+        return model;
     }
-
-    public SkinNode getSkinNode(String id) {
-        if (instance == null) {
-            return null;
-        }
-        return (SkinNode) instance.resourceLibrary.get(id);
+    
+    public ColladaRootNode getColladaRootNode() {
+        return model;
     }
 
     public CameraNode getCameraNode(String id) {
-        if (instance == null) {
-            return null;
-        }
-        return (CameraNode) instance.resourceLibrary.get(id);
+        return (CameraNode) resourceLibrary.get(id);
     }
 
     public LightNode getLightNode(String id) {
-        if (instance == null) {
-            return null;
-        }
-        return (LightNode) instance.resourceLibrary.get(id);
+        return (LightNode) resourceLibrary.get(id);
     }
 
     public Object get(Object id) {
-        return instance.resourceLibrary.get(id);
+        return resourceLibrary.get(id);
     }
 
     /**
@@ -424,7 +377,7 @@ public class ThreadSafeColladaImporter {
      *            the object to store in the library.
      */
     public void put(String key, Object value) {
-        Object data = instance.resourceLibrary.get(key);
+        Object data = resourceLibrary.get(key);
         if (data != value) {
             if (data != null) {
                 if (!squelch) {
@@ -435,46 +388,19 @@ public class ThreadSafeColladaImporter {
                                     + " desired.");
                 }
             }
-            instance.resourceLibrary.put(key, value);
+            resourceLibrary.put(key, value);
         }
-    }
-
-    public BoneAnimation getAnimationController(String id) {
-        if (instance == null) {
-            return null;
-        }
-        return (BoneAnimation) instance.resourceLibrary.get(id);
     }
 
     public TextureKeyframeController getUVAnimationController(String id) {
-        if (instance == null) {
-            return null;
-        }
-        return (TextureKeyframeController) instance.resourceLibrary.get(id);
-    }
-
-    public Bone getSkeleton(String id) {
-        if (instance == null) {
-            return null;
-        }
-        return (Bone) instance.resourceLibrary.get(id);
+        return (TextureKeyframeController) resourceLibrary.get(id);
     }
 
     public Geometry getGeometry(String id) {
-        if (instance == null) {
-            return null;
-        }
-        return (Geometry) instance.resourceLibrary.get(id);
+        return (Geometry) resourceLibrary.get(id);
     }
 
     public void cleanUp() {
-        if (instance != null) {
-            instance.shutdown();
-        }
-    }
-
-    public void shutdown() {
-        instance = null;
     }
 
     /**
@@ -758,6 +684,15 @@ public class ThreadSafeColladaImporter {
                 }
             }
         }
+        
+        // now that all nodes are defined, hook up all animations
+        for (ColladaAnimationGroup anim : model.getAnimationGroups()) {
+            attachAnimation(anim);
+        }
+        
+        // now hook up any controllers
+        attachControllers(model);
+        
         try {
             optimizeGeometry();
         } catch (Exception e) {
@@ -765,8 +700,90 @@ public class ThreadSafeColladaImporter {
                 logger.log(Level.WARNING, "Error optimizing geometry", e);
             }
         }
+        
+        // make sure all world data is updated
+        model.updateGeometricState(0, true);
     }
 
+    private void attachAnimation(ColladaAnimationGroup anim) {
+        anim.attach(new NodeFinder() {
+            public ColladaNode findNode(String name) {
+                return findNode(model, name);
+            }
+
+            public ColladaNode findNode(Node node, String name) {
+                if (node instanceof ColladaNode && name.equals(node.getName())) {
+                    return (ColladaNode) node;
+                }
+
+                if (node.getChildren() != null) {
+                    for (Spatial child : node.getChildren()) {
+                        if (child instanceof Node) {
+                            ColladaNode res = findNode((Node) child, name);
+                            if (res != null) {
+                                return res;
+                            }
+                        }
+                    }
+                }
+
+                return null;
+            }
+        });
+    }
+    
+    private void attachControllers(Node node) {
+        if (node instanceof ColladaControllerNode) {
+            attachController((ColladaControllerNode) node);
+        }
+        
+        if (node.getChildren() != null) {
+            for (Spatial child : node.getChildren()) {
+                if (child instanceof Node) {
+                    attachControllers((Node) child);
+                }
+            }
+        }
+    }
+    
+    private void attachController(final ColladaControllerNode controller) {
+        controller.attach(new JointFinder() {
+
+            public ColladaJointNode findJoint(String sid) {
+                for (String skeletonName : controller.getSkeletonNames()) {
+                    ColladaJointNode skel = skeletons.get(skeletonName);
+                    ColladaJointNode node = findJoint(skel, sid);
+                    if (node != null) {
+                        return node;
+                    }
+                }
+                
+                return null;
+            }
+            
+            public ColladaJointNode findJoint(ColladaJointNode node, String sid) {
+                if (sid.equals(node.getSid())) {
+                    return node;
+                }
+                
+                if (node.getChildren() != null) {
+                    for (Spatial child : node.getChildren()) {
+                        if (child instanceof ColladaJointNode) {
+                            ColladaJointNode res = findJoint((ColladaJointNode) child, sid);
+                            if (res != null) {
+                                return res;
+                            }
+                        }
+                    }
+                }
+                
+                return null;
+            }
+            
+        });
+    }
+    
+    
     /**
      * optimizeGeometry
      */
@@ -779,48 +796,10 @@ public class ThreadSafeColladaImporter {
                 int options = GeometryTool.MV_SAME_COLORS
                         | GeometryTool.MV_SAME_NORMALS
                         | GeometryTool.MV_SAME_TEXS;
-                if (spatial.getParent() instanceof SkinNode) {
-                    SkinNode pNode = ((SkinNode) spatial.getParent());
-                    pNode.assignSkeletonBoneInfluences();
-
-                    if (spatial instanceof Node) {
-                        Node skins = (Node) spatial;
-                        for (int i = 0; i < skins.getQuantity(); i++) {
-                            TriMesh mesh = (TriMesh) skins.getChild(i);
-
-                            if (OPTIMIZE_GEOMETRY) {
-                                VertMap map = GeometryTool.minimizeVerts(mesh,
-                                        options);
-                                if (optimizeCallBack != null) {
-                                    optimizeCallBack.remapInfluences(mesh, map);
-                                }
-
-                                int geomIndex = pNode.getSkins().getChildIndex(
-                                        mesh);
-                                pNode.remapInfluences(map, geomIndex);
-                            }
-                        }
-                    } else if (spatial instanceof TriMesh) {
-                        TriMesh mesh = (TriMesh) spatial;
-                        if (OPTIMIZE_GEOMETRY) {
-                            VertMap map = GeometryTool.minimizeVerts(mesh,
-                                    options);
-                            if (optimizeCallBack != null) {
-                                optimizeCallBack.remapInfluences(mesh, map);
-                            }
-
-                            int geomIndex = pNode.getSkins()
-                                    .getChildIndex(mesh);
-                            pNode.remapInfluences(map, geomIndex);
-                        }
-                    }
-
-                    if (OPTIMIZE_GEOMETRY) {
-                        pNode.regenInfluenceOffsets();
-                    }
-
-                    pNode.revertToBind();
-                } else if (spatial instanceof TriMesh) {
+                
+                if (spatial instanceof TriMesh && 
+                        !(spatial instanceof ColladaSkinnedMesh)) 
+                {
                     TriMesh mesh = (TriMesh) spatial;
                     if (OPTIMIZE_GEOMETRY) {
                         VertMap map = GeometryTool.minimizeVerts(mesh, options);
@@ -1013,197 +992,6 @@ public class ThreadSafeColladaImporter {
     }
 
     /**
-     * processSource builds resource objects TIME, TRANSFORM and Name array for
-     * the interpolation type.
-     *
-     * @param source
-     *            the source to process
-     * @throws Exception
-     *             exception thrown if there is a problem with
-     */
-    private void processSource(sourceType source) throws Exception {
-        if (source.hasfloat_array()) {
-            if (source.hastechnique_common()) {
-                float[] floatArray = processFloatArray(source.getfloat_array());
-                paramType3 p = source.gettechnique_common().getaccessor()
-                        .getparam();
-                if ("TIME".equals(p.getname().toString())) {
-                    put(source.getid().toString(), floatArray);
-                } else if ("float4x4".equals(p.gettype().toString())) {
-                    Matrix4f[] transforms = new Matrix4f[floatArray.length / 16];
-                    for (int i = 0; i < transforms.length; i++) {
-                        transforms[i] = new Matrix4f();
-                        float[] data = new float[16];
-                        for (int x = 0; x < 16; x++) {
-                            data[x] = floatArray[(16 * i) + x];
-                        }
-                        transforms[i].set(data, true); // collada matrices are
-                        // in row order.
-                    }
-                    put(source.getid().toString(), transforms);
-                } else if ("ROTX.ANGLE".equals(p.getname().toString())) {
-                    if ("float".equals(p.gettype().toString())) {
-                        float[] xRot = new float[floatArray.length];
-                        System.arraycopy(floatArray, 0, xRot, 0, xRot.length);
-                        put(source.getid().toString(), xRot);
-                    } else {
-                        if (!squelch && !reportedAnimationTransforms) {
-                            logger.warning(p.gettype() + " not yet supported "
-                                    + "for animation transforms.");
-                            reportedAnimationTransforms = true;
-                        }
-                    }
-                } else if ("ROTY.ANGLE".equals(p.getname().toString())) {
-                    if ("float".equals(p.gettype().toString())) {
-                        float[] yRot = new float[floatArray.length];
-                        System.arraycopy(floatArray, 0, yRot, 0, yRot.length);
-                        put(source.getid().toString(), yRot);
-                    } else {
-                        if (!squelch && !reportedAnimationTransforms) {
-                            logger.warning(p.gettype() + " not yet supported "
-                                    + "for animation transforms.");
-                            reportedAnimationTransforms = true;
-                        }
-                    }
-                } else if ("ROTZ.ANGLE".equals(p.getname().toString())) {
-                    if ("float".equals(p.gettype().toString())) {
-                        float[] zRot = new float[floatArray.length];
-                        System.arraycopy(floatArray, 0, zRot, 0, zRot.length);
-                        put(source.getid().toString(), zRot);
-                    } else {
-                        if (!squelch && !reportedAnimationTransforms) {
-                            logger.warning(p.gettype() + " not yet supported "
-                                    + "for animation transforms.");
-                            reportedAnimationTransforms = true;
-                        }
-                    }
-                } else if ("TRANS.X".equals(p.getname().toString())) {
-                    if ("float".equals(p.gettype().toString())) {
-                        float[] xTrans = new float[floatArray.length];
-                        System.arraycopy(floatArray, 0, xTrans, 0,
-                                xTrans.length);
-                        put(source.getid().toString(), xTrans);
-                    } else {
-                        if (!squelch && !reportedAnimationTransforms) {
-                            logger.warning(p.gettype() + " not yet supported "
-                                    + "for animation transforms.");
-                            reportedAnimationTransforms = true;
-                        }
-                    }
-                } else if ("TRANS.Y".equals(p.getname().toString())) {
-                    if ("float".equals(p.gettype().toString())) {
-                        float[] yTrans = new float[floatArray.length];
-                        System.arraycopy(floatArray, 0, yTrans, 0,
-                                yTrans.length);
-                        put(source.getid().toString(), yTrans);
-                    } else {
-                        if (!squelch && !reportedAnimationTransforms) {
-                            logger.warning(p.gettype() + " not yet supported "
-                                    + "for animation transforms.");
-                            reportedAnimationTransforms = true;
-                        }
-                    }
-                } else if ("TRANS.Z".equals(p.getname().toString())) {
-                    if ("float".equals(p.gettype().toString())) {
-                        float[] zTrans = new float[floatArray.length];
-                        System.arraycopy(floatArray, 0, zTrans, 0,
-                                zTrans.length);
-                        put(source.getid().toString(), zTrans);
-                    } else {
-                        if (!squelch && !reportedAnimationTransforms) {
-                            logger.warning(p.gettype() + " not yet supported "
-                                    + "for animation transforms.");
-                            reportedAnimationTransforms = true;
-                        }
-                    }
-                } else if ("ANGLE".equals(p.getname().toString())) {
-                    if ("float".equals(p.gettype().toString())) {
-                        float[] angle = new float[floatArray.length];
-                        System.arraycopy(floatArray, 0, angle, 0,
-                                angle.length);
-                        put(source.getid().toString(), angle);
-                    } else {
-                        if (!squelch && !reportedAnimationTransforms) {
-                            logger.warning(p.gettype() + " not yet supported "
-                                    + "for animation transforms.");
-                            reportedAnimationTransforms = true;
-                        }
-                    }
-                } else if ("X".equals(p.getname().toString())) {
-                    if ("float".equals(p.gettype().toString())) {
-                        float[] trans = new float[floatArray.length];
-                        System.arraycopy(floatArray, 0, trans, 0,
-                                trans.length);
-                        put(source.getid().toString(), trans);
-
-                    } else {
-                        if (!squelch && !reportedAnimationTransforms) {
-                            logger.warning(p.gettype() + " not yet supported "
-                                    + "for animation transforms.");
-                            reportedAnimationTransforms = true;
-                        }
-                    }
-                } else {
-                    if (!squelch && !reportedAnimationTransforms) {
-                        logger.warning(p.getname() + " not yet supported "
-                                + "for animation source.");
-                            reportedAnimationTransforms = true;
-                    }
-                }
-            }
-        } else if (source.hasName_array()) {
-            int[] interpolation = processInterpolationArray(source
-                    .getName_array());
-            put(source.getid().toString(), interpolation);
-        }
-    }
-
-    /**
-     * processInterpolationArray builds a int array that corresponds to the
-     * interpolation types defined in BoneAnimationController.
-     *
-     * @param array
-     *            the array to process.
-     * @return the int array.
-     * @throws Exception
-     *             thrown if there is a problem processing this xml document.
-     */
-    private int[] processInterpolationArray(Name_arrayType array)
-            throws Exception {
-        StringTokenizer st = new StringTokenizer(array.getValue().toString());
-        int[] out = new int[array.getcount().intValue()];
-        String token = null;
-        for (int i = 0; i < out.length; i++) {
-            token = st.nextToken();
-            if ("LINEAR".equals(token)) {
-                out[i] = BoneAnimation.LINEAR;
-            } else if ("BEZIER".equals(token)) {
-                out[i] = BoneAnimation.BEZIER;
-            }
-        }
-        return out;
-    }
-
-    /**
-     * processes a float array object. The floats are represented as a String
-     * with the values delimited by a space.
-     *
-     * @param array
-     *            the array to parse.
-     * @return the float array to return.
-     * @throws Exception
-     *             thrown if there is a problem processing the XML.
-     */
-    private float[] processFloatArray(float_arrayType array) throws Exception {
-        StringTokenizer st = new StringTokenizer(array.getValue().toString());
-        float[] out = new float[array.getcount().intValue()];
-        for (int i = 0; i < out.length; i++) {
-            out[i] = Float.parseFloat(st.nextToken());
-        }
-        return out;
-    }
-
-    /**
      * processAssetInformation will store the information about the collada file
      * for future reference. This will include the author, the tool used, the
      * revision, the unit information, and the defined up axis.
@@ -1243,28 +1031,20 @@ public class ThreadSafeColladaImporter {
      *            the library of animations to parse.
      */
     private void processAnimationLibrary(library_animationsType animLib)
-            throws Exception {
+            throws Exception 
+    {
         if (animLib.hasanimation()) {
-            if (controllerNames == null) {
-                controllerNames = new ArrayList<String>();
-            }
+            // create an animation group
+            ColladaAnimationGroup animGroup = new ColladaAnimationGroup(name);
+            
+            // add all animations to the group
             for (int i = 0; i < animLib.getanimationCount(); i++) {
-                BoneAnimation bac = processAnimation(animLib.getanimationAt(i));
-                float keyCount[] = bac.getKeyFrameTimes();
-
-                bac.setInterpolate(false);
-                bac.optimize(true);
-                put(bac.getName(), bac);
-                controllerNames.add(bac.getName());
-                if (animLib.getanimationAt(i).hasextra()) {
-                    for (int j = 0; j < animLib.getanimationAt(i)
-                            .getextraCount(); j++) {
-                        globalLogger.info("Processing extra in animation library.");
-                        ExtraPluginManager.processExtra(bac, animLib
-                                .getanimationAt(i).getextraAt(j));
-                    }
-                }
+                animationType anim = animLib.getanimationAt(i);
+                animGroup.addAnimation(processAnimation(anim));
             }
+            
+            // add the group to the root node
+            model.addAnimationGroup(animGroup);
         }
     }
 
@@ -1276,267 +1056,101 @@ public class ThreadSafeColladaImporter {
      *
      * @param animation
      *            the animation to parse.
+     * @return a ColladaAnimation object
      * @throws Exception
      *             thrown if there is a problem processing the xml.
      */
-    private BoneAnimation processAnimation(animationType animation)
-            throws Exception {
-        BoneAnimation out = new BoneAnimation(animation.getid().toString());
-        BoneTransform bt = new BoneTransform();
-        out.setInterpolate(true);
+    private ColladaAnimation processAnimation(animationType animation)
+            throws Exception 
+    {
+        // process sources
+        Map<String, Source<?>> sources = new LinkedHashMap<String, Source<?>>();
         if (animation.hassource()) {
             for (int i = 0; i < animation.getsourceCount(); i++) {
-                processSource(animation.getsourceAt(i));
+                Source<?> source = getSource(animation.getsourceAt(i));
+                sources.put(source.getId(), source);
             }
         }
-        float[] rotx = null;
-        float[] roty = null;
-        float[] rotz = null;
-        float[] transx = null;
-        float[] transy = null;
-        float[] transz = null;
-        boolean transformsSet = false;
-        if (animation.hassampler()) {
-            for (int j = 0; j < animation.getsamplerCount(); j++) {
-                for (int i = 0; i < animation.getsamplerAt(j).getinputCount(); i++) {
-                    if ("INPUT".equals(animation.getsamplerAt(j).getinputAt(i)
-                            .getsemantic().toString())) {
-                        String key = animation.getsamplerAt(j).getinputAt(i)
-                                .getsource().toString().substring(1);
-                        float[] times = (float[]) resourceLibrary.get(key);
-                        if (times == null) {
-                            logger.warning("Animation source invalid: " + key);
-                            continue;
-                        }
-                        out.setTimes(times);
-                        out.setStartFrame(0);
-                        out.setEndFrame(times.length - 1);
-                    } else if ("OUTPUT".equals(animation.getsamplerAt(j)
-                            .getinputAt(i).getsemantic().toString())) {
-                        String key = animation.getsamplerAt(j).getinputAt(i)
-                                .getsource().toString().substring(1);
-                        Object object = resourceLibrary.get(key);
-                        if (object == null) {
-                            logger.warning("Animation source invalid: " + key);
-                            continue;
-                        }
-                        if (object instanceof Matrix4f[]) {
-                            Matrix4f[] transforms = (Matrix4f[]) object;
-                            bt.setTransforms(transforms);
-                            transformsSet = true;
-                        } else if (object instanceof float[]) {
-                            // Another bit of a hack that should be improved:
-                            // to put the float arrays into the BoneTransform,
-                            // we need to know what angle it is changing,
-                            // I see know way to determine other than looking
-                            // at the source name.
-                            if (animation.getsamplerAt(j).getinputAt(i)
-                                    .getsource().toString().contains(
-                                            "Rotate-X-")) {
-                                rotx = (float[]) object;
-                            } else if (animation.getsamplerAt(j).getinputAt(i)
-                                    .getsource().toString().contains(
-                                            "Rotate-Y-")) {
-                                roty = (float[]) object;
-                            } else if (animation.getsamplerAt(j).getinputAt(i)
-                                    .getsource().toString().contains(
-                                            "Rotate-Z-")) {
-                                rotz = (float[]) object;
-                            } else if (animation.getsamplerAt(j).getinputAt(i)
-                                    .getsource().toString().contains(
-                                            "Translate-X-")) {
-                                transx = (float[]) object;
-                            } else if (animation.getsamplerAt(j).getinputAt(i)
-                                    .getsource().toString().contains(
-                                            "Translate-Y-")) {
-                                transy = (float[]) object;
-                            } else if (animation.getsamplerAt(j).getinputAt(i)
-                                    .getsource().toString().contains(
-                                            "Translate-Z-")) {
-                                transz = (float[]) object;
- 
- // Morris Ford - 2010-03-22 - Rotate-X-, etc. does not appear
- // This is with ColladaMaya 3.05B - may change otherwise
-                            } else if (animation.getsamplerAt(j).getinputAt(i)
-                                    .getsource().toString().contains(
-                                            "rotateX")) {
-                                rotx = (float[]) object;
-                            } else if (animation.getsamplerAt(j).getinputAt(i)
-                                    .getsource().toString().contains(
-                                            "rotateY")) {
-                                roty = (float[]) object;
-                            } else if (animation.getsamplerAt(j).getinputAt(i)
-                                    .getsource().toString().contains(
-                                            "rotateZ")) {
-                                rotz = (float[]) object;
-                            } else if (animation.getsamplerAt(j).getinputAt(i)
-                                    .getsource().toString().contains(
-                                            "translateX")) {
-                                transx = (float[]) object;
-                            } else if (animation.getsamplerAt(j).getinputAt(i)
-                                    .getsource().toString().contains(
-                                            "translateY")) {
-                                transy = (float[]) object;
-                            } else if (animation.getsamplerAt(j).getinputAt(i)
-                                    .getsource().toString().contains(
-                                            "translateZ")) {
-                                transz = (float[]) object;
-// Morris Ford - ColladaMaya reports translate info in one clump
-                            } else if (animation.getsamplerAt(j).getinputAt(i)
-                                    .getsource().toString().contains(
-                                            "translate_")) {
-                                float[] floatArray = (float[]) object;
-                                float[] transX = new float[floatArray.length / 3];
-                                float[] transY = new float[floatArray.length / 3];
-                                float[] transZ = new float[floatArray.length / 3];
-                                for(int k = 0; k < floatArray.length / 3; k++)
-                                    {
-                                    transX[k] = floatArray[0 + (3 * k)];
-                                    transY[k] = floatArray[1 + (3 * k)];
-                                    transZ[k] = floatArray[2 + (3 * k)];
-                                    }
-                                transx = transX;
-                                transy = transY;
-                                transz = transZ;
-   // Morris Ford - Blender exporter  reports translate info in one clump - without the underscore but with -output
-                            } else if (animation.getsamplerAt(j).getinputAt(i)
-                                    .getsource().toString().contains(
-                                            "translate-output")) {
-                                float[] floatArray = (float[]) object;
-                                float[] transX = new float[floatArray.length / 3];
-                                float[] transY = new float[floatArray.length / 3];
-                                float[] transZ = new float[floatArray.length / 3];
-                                for(int k = 0; k < floatArray.length / 3; k++)
-                                    {
-                                    transX[k] = floatArray[0 + (3 * k)];
-                                    transY[k] = floatArray[1 + (3 * k)];
-                                    transZ[k] = floatArray[2 + (3 * k)];
-                                    }
-                                transx = transX;
-                                transy = transY;
-                                transz = transZ;
-                         } else {
-                                if (!squelch) {
-                                    logger
-                                            .warning("Not sure what this sampler is.");
-                                }
-                            }
-                        }
-                    } else if ("INTERPOLATION".equals(animation.getsamplerAt(j)
-                            .getinputAt(i).getsemantic().toString())) {
-                        String key = animation.getsamplerAt(j).getinputAt(i)
-                                .getsource().toString().substring(1);
-                        int[] interpolation = (int[]) resourceLibrary.get(key);
-                        if (interpolation == null) {
-                            logger.warning("Animation source invalid: " + key);
-                            continue;
-                        }
-                        out.setInterpolationTypes(interpolation);
+        
+        String targetNode = null;
+        String targetSid = null;
+        String targetProperty = null;
+        
+        // parse the channel identifier to find the target for this animation
+        if (animation.haschannel()) {
+            String target = animation.getchannel().gettarget().toString();
+            targetNode = target;
+            
+            int slashIdx = target.indexOf("/");
+            if (slashIdx != -1) {
+                targetNode = target.substring(0, slashIdx);
+                targetSid = target.substring(slashIdx + 1);
+                
+                int dotIdx = targetSid.indexOf(".");
+                if (dotIdx != -1) {
+                    targetProperty = targetSid.substring(dotIdx + 1);
+                    targetSid = targetSid.substring(0, dotIdx);
+                }
+            }
+        }
+        
+        // create the animation object
+        ColladaAnimation anim = new ColladaAnimation(targetNode, targetSid,
+                                                     targetProperty);
+        
+        // handle keyframes
+        if (animation.hassampler() && animation.getsampler().hasinput()) {
+            // find the input and output sources
+            Source<Float> input = null;
+            Source<Float> output = null;
+           
+            for (int i = 0; i < animation.getsampler().getinputCount(); i++) {
+                InputLocal il = animation.getsampler().getinputAt(i);
+                String sourceId = il.getsource().getValue();
+                if (sourceId.startsWith("#")) {
+                    sourceId = sourceId.substring(1);
+                }
+                
+                if (il.getsemantic().getValue().equals("INPUT")) {
+                    input = (Source<Float>) sources.get(sourceId);
+                    if (input == null) {
+                        logger.warning("Unable to find input " + name);
+                    }
+                    if (input.getStride() != 1) {
+                        logger.warning("Input stride must be 1");
+                        input = null;
+                    }
+                } else if (il.getsemantic().getValue().equals("OUTPUT")) {
+                    output = (Source<Float>) sources.get(sourceId);
+                    if (output == null) {
+                        logger.warning("Unable to find output " + name);
                     }
                 }
             }
-            if (!transformsSet) {
-                Matrix4f[] transforms = generateTransforms(rotx, roty, rotz,
-                        transx, transy, transz);
-                if (transforms != null) {
-                    bt.setTransforms(transforms);
+            
+            // now turn input and output into keyframes
+            if (input != null && output != null) {
+                for (int i = 0; i < input.getCount(); i++) {
+                    float in = input.get(i, 0);
+                    
+                    float[] out = new float[output.getStride()];
+                    for (int j = 0; j < output.getStride(); j++) {
+                        out[j] = output.get(i, j);
+                    }
+                    
+                    anim.addKeyframe(in, out);
                 }
             }
         }
-        if (animation.haschannel()) {
-            String target = animation.getchannel().gettarget().toString();
-            if (target.contains("/")) {
-                String key = target.substring(0, animation.getchannel()
-                        .gettarget().toString().indexOf('/'));
-                bt.setBoneId(key);
-                Bone b = (Bone) resourceLibrary.get(key);
-                if (b != null) {
-                    bt.setBone(b);
-                }
-                out.addBoneTransforms(bt);
-            }
-        }
+            
         // if the animation has children attach them
         if (animation.hasanimation()) {
             for (int i = 0; i < animation.getanimationCount(); i++) {
-                out.addBoneAnimation(processAnimation(animation
-                        .getanimationAt(i)));
+                anim.addChild(processAnimation(animation.getanimationAt(i)));
             }
         }
-        return out;
-    }
-
-    private Matrix4f[] generateTransforms(float[] rotx, float[] roty,
-            float[] rotz, float[] transx, float[] transy, float[] transz) {
-        Quaternion rot = new Quaternion();
-        int index = 0;
-// Morris Ford - 20100323 - Changed this to take all three rots and translates into account
-        if(rotx != null || roty != null || rotz != null)
-            {
-            if (rotx != null)
-                {
-                index = rotx.length;
-                }
-            else if(roty != null)
-                {
-                index = roty.length;
-                }
-            else if(rotz != null)
-                {
-                index = rotz.length;
-                }
-            }
-        else if(transx != null || transy != null || transz != null)
-            {
-            if (transx != null)
-                {
-                index = transx.length;
-                }
-            else if (transy != null)
-                {
-                index = transy.length;
-                }
-            else if (transz != null)
-                {
-                index = transz.length;
-                }
-            }
-
-/*
-        if (rotx != null) {
-            index = rotx.length;
-        } else if (transx != null) {
-            index = transx.length;
-        }
-*/
-
-// Added radians conversion - 20100325
-        Matrix4f[] transforms = new Matrix4f[index];
-        float[] angles = new float[3];
-        for (int i = 0; i < transforms.length; i++) {
-            angles[0] = angles[1] = angles[2] = 0;
-            if (rotx != null) {
-                angles[0] = (float)Math.toRadians(rotx[i]);
-            }
-            if (roty != null) {
-                angles[1] = (float)Math.toRadians(roty[i]);
-            }
-            if (rotz != null) {
-                angles[2] = (float)Math.toRadians(rotz[i]);
-            }
-            rot.fromAngles(angles);
-            transforms[i] = rot.toRotationMatrix(new Matrix4f());
-            if (transx != null) {
-                transforms[i].m03 = transx[i];
-            }
-            if (transy != null) {
-                transforms[i].m13 = transy[i];
-            }
-            if (transz != null) {
-                transforms[i].m23 = transz[i];
-            }
-        }
-        return transforms;
+        
+        return anim;
     }
 
     private void processCameraLibrary(library_camerasType libraryCam)
@@ -1802,7 +1416,7 @@ public class ThreadSafeColladaImporter {
                 String code = effect.getprofile_GLSL().getcodeAt(i).getValue().getValue();
                 //System.out.println("Shader: " + shader);
                 //System.out.println("Code: " + code);
-                mat.glslCode.put(shader, code);
+                mat.putGLSLCode(shader, code);
             }
 
             for (int i=0; i<effect.getprofile_GLSL().getnewparamCount(); i++) {
@@ -1848,8 +1462,8 @@ public class ThreadSafeColladaImporter {
 
     class SamplerVals {
         String surface = null;
-        String minFilter = null;
-        String magFilter = null;
+        MinificationFilter minFilter = null;
+        MagnificationFilter magFilter = null;
     }
 
     void processGLSLnewparam(glsl_newparam param, ColladaMaterial mat) {
@@ -1861,13 +1475,13 @@ public class ThreadSafeColladaImporter {
                 BoolVals vals = new BoolVals();
                 vals.numVals = 1;
                 vals.val1 = param.getbool().booleanValue();
-                mat.glslParams.put(param.getsid().getValue(), vals);
+                mat.putGLSLParam(param.getsid().getValue(), vals);
             } else if (param.hasfloat2()) {
                 //System.out.println("Float2: " + param.getfloat2());
                 FloatVals vals = new FloatVals();
                 vals.numVals = 1;
                 vals.val1 = param.getfloat2().floatValue();
-                mat.glslParams.put(param.getsid().getValue(), vals);
+                mat.putGLSLParam(param.getsid().getValue(), vals);
             } else if (param.hasfloat22()) {
                 //System.out.println("Float22: " + param.getfloat22());
                 FloatVals vals = new FloatVals();
@@ -1875,7 +1489,7 @@ public class ThreadSafeColladaImporter {
                 String[] strs = param.getfloat22().toString().split("\\ ");
                 vals.val1 = Float.parseFloat(strs[0]);
                 vals.val2 = Float.parseFloat(strs[1]);
-                mat.glslParams.put(param.getsid().getValue(), vals);
+                mat.putGLSLParam(param.getsid().getValue(), vals);
             } else if (param.hasfloat2x2()) {
                 //System.out.println("Float2x2: " + param.getfloat2x2());
             } else if (param.hasfloat3()) {
@@ -1885,7 +1499,7 @@ public class ThreadSafeColladaImporter {
                 vals.val1 = Float.parseFloat(strs[0]);
                 vals.val2 = Float.parseFloat(strs[1]);
                 vals.val3 = Float.parseFloat(strs[2]);
-                mat.glslParams.put(param.getsid().getValue(), vals);
+                mat.putGLSLParam(param.getsid().getValue(), vals);
                 //System.out.println("Float3: " + vals.val1 + ", " + vals.val2 + ", " + vals.val3);
             } else if (param.hasfloat3x3()) {
                 //System.out.println("Float3x3: " + param.getfloat3x3());
@@ -1897,7 +1511,7 @@ public class ThreadSafeColladaImporter {
                 vals.val2 = Float.parseFloat(strs[1]);
                 vals.val3 = Float.parseFloat(strs[2]);
                 vals.val4 = Float.parseFloat(strs[3]);
-                mat.glslParams.put(param.getsid().getValue(), vals);
+                mat.putGLSLParam(param.getsid().getValue(), vals);
                 //System.out.println("Float4: " + vals.val1 + ", " + vals.val2 + ", " + vals.val3 + ", " + vals.val4);
             } else if (param.hasfloat4x4()) {
                 //System.out.println("Float4x4: " + param.getfloat4x4());
@@ -1916,9 +1530,9 @@ public class ThreadSafeColladaImporter {
                     mat);
                 SamplerVals sv = new SamplerVals();
                 sv.surface = param.getsampler2D().getsource().toString();
-                sv.minFilter = mat.minFilter;
-                sv.magFilter = mat.magFilter;
-                mat.glslParams.put(param.getsid().getValue(), sv);
+                sv.minFilter = mat.getMinFilterConstant();
+                sv.magFilter = mat.getMagFilterConstant();
+                mat.putGLSLParam(param.getsid().getValue(), sv);
             } else if (param.hassampler3D()) {
             } else if (param.hassamplerCUBE()) {
             } else if (param.hassamplerDEPTH()) {
@@ -1969,13 +1583,14 @@ public class ThreadSafeColladaImporter {
     private void processSampler2D(String id, fx_sampler2D_common sampler,
             ColladaMaterial mat) throws Exception {
         if (sampler.hasmagfilter()) {
-            mat.magFilter = sampler.getmagfilter().getValue();
+            mat.setMagFilterConstant(sampler.getmagfilter().getValue());
         }
         if (sampler.hasminfilter()) {
-            mat.minFilter = sampler.getminfilter().getValue();
+            mat.setMinFilterConstant(sampler.getminfilter().getValue());
         }
-        mat.wrapS = "WRAP";
-        mat.wrapT = "WRAP";
+        
+        mat.setWrapSConstant(WrapMode.Repeat);
+        mat.setWrapTConstant(WrapMode.Repeat);
 
         put(id, sampler.getsource().getValue());
     }
@@ -2006,7 +1621,7 @@ public class ThreadSafeColladaImporter {
         GLSLShaderObjectsState shader = (GLSLShaderObjectsState) mat.getState(RenderState.StateType.GLSLShaderObjects);
         TextureState textureState = (TextureState)mat.getState(RenderState.StateType.Texture);
 
-        Object vals = mat.glslParams.get(key);
+        Object vals = mat.getGLSLParam(key);
 
         if (vals instanceof FloatVals) {
             FloatVals fv = (FloatVals)vals;
@@ -2033,10 +1648,10 @@ public class ThreadSafeColladaImporter {
                 textureState.setEnabled(true);
                 mat.setState(textureState);
             }
-            mat.wrapS = "WRAP";
-            mat.wrapT = "WRAP";
-            mat.minFilter = sv.minFilter;
-            mat.magFilter = sv.magFilter;
+            mat.setWrapSConstant(WrapMode.Repeat);
+            mat.setWrapTConstant(WrapMode.Repeat);
+            mat.setMinFilterConstant(sv.minFilter);
+            mat.setMagFilterConstant(sv.magFilter);
             String imageName = (String) resourceLibrary.get(sv.surface);
             String filename = (String) resourceLibrary.get(imageName);
             //System.out.println("Texture " + textureIndex + ": " + uniform);
@@ -2075,7 +1690,7 @@ public class ThreadSafeColladaImporter {
                 }
             }
             //System.out.println("VERTEX SHADER SOURCE: " + mat.glslCode.get(vertSource));
-            shader.load(mat.glslCode.get(vertSource), mat.glslCode.get(fragSource));
+            shader.load(mat.getGLSLCode(vertSource), mat.getGLSLCode(fragSource));
             shader.setEnabled(true);
         }
 
@@ -2695,7 +2310,7 @@ public class ThreadSafeColladaImporter {
                 .createMaterialState();
         boolean alphaTexture = false;
         // set the ambient color value of the material
-        if (pt.hasambient()) {
+        if (pt.hasambient() && pt.getambient().hascolor()) {
             ms.setAmbient(getColor(pt.getambient().getcolor()));
         }
         // set the diffuse color value of the material
@@ -2707,7 +2322,6 @@ public class ThreadSafeColladaImporter {
                 // create a texturestate, and we will need to make use of
                 // texcoord to put this texture in the correct "unit"
                 for (int i = 0; i < pt.getdiffuse().gettextureCount(); i++) {
-
                     mat.setState(processTexture(
                             pt.getdiffuse().gettextureAt(i), mat));
                 }
@@ -2738,13 +2352,13 @@ public class ThreadSafeColladaImporter {
             }
         }
         // set the emmission color value of the material
-        if (pt.hasemission()) {
+        if (pt.hasemission() && pt.getemission().hascolor()) {
             ms.setEmissive(getColor(pt.getemission().getcolor()));
         }
 
         // set the specular color value of the material
-        if (pt.hasspecular()) {
-          ms.setSpecular(getColor(pt.getspecular().getcolor()));
+        if (pt.hasspecular() && pt.getspecular().hascolor()) {
+            ms.setSpecular(getColor(pt.getspecular().getcolor()));
         }
 
         // set the shininess value of the material
@@ -2761,7 +2375,7 @@ public class ThreadSafeColladaImporter {
 
         float transparency = 1.0f;
         BlendState as = DisplaySystem.getDisplaySystem().getRenderer().createBlendState();
-
+        
         if (pt.hastransparency()) {
             transparency = pt.gettransparency().getfloat2().getValue().floatValue();
         }
@@ -2808,8 +2422,16 @@ public class ThreadSafeColladaImporter {
                     as.setSourceFunction(BlendState.SourceFunction.ConstantAlpha);
                     as.setDestinationFunction(BlendState.DestinationFunction.OneMinusConstantAlpha);
                 }
-
+                
                 mat.setState(as);
+                
+                // add a no-write ZBuffer state
+//                ZBufferState zs = 
+//                        DisplaySystem.getDisplaySystem().getRenderer().createZBufferState();
+//                zs.setEnabled(true);
+//                zs.setWritable(false);
+//                zs.setFunction(ZBufferState.TestFunction.LessThanOrEqualTo);
+//                mat.setState(zs);
             }
         }
 
@@ -2827,29 +2449,20 @@ public class ThreadSafeColladaImporter {
      * @throws Exception
      *             thrown if there is a problem processing the xml.
      */
-    public TextureState processTexture(textureType texture,
-            ColladaMaterial mat) throws Exception {
-        String key = texture.gettexture().toString();
-        String channel = texture.gettexcoord().toString();
-        if(channel.contains("CHANNEL")) {
-        	channel = channel.substring(channel.indexOf("CHANNEL")+7);
-        }
-        int index = 0;
-        try {
-        	index = Integer.parseInt(channel) - 1;
-        } catch (NumberFormatException e) {
-
-        }
-        return processTexture(key, mat, index);
-    }
-
-    public TextureState processTexture(String key, ColladaMaterial mat,
-            int index) throws Exception {
+    public TextureState processTexture(textureType texture, ColladaMaterial mat)
+            throws Exception 
+    {
         TextureState ts = (TextureState) mat.getState(RenderState.StateType.Texture);
         if (ts == null) {
             ts = DisplaySystem.getDisplaySystem().getRenderer()
                     .createTextureState();
         }
+        
+        String key = texture.gettexture().toString();
+        String texCoords = texture.gettexcoord().toString();
+       
+        int index = ts.getNumberOfSetTextures();
+        
         String surfaceName = (String) resourceLibrary.get(key);
         if (surfaceName == null) {
             return null;
@@ -2860,6 +2473,10 @@ public class ThreadSafeColladaImporter {
         }
         String filename = (String) resourceLibrary.get(imageName);
         loadTexture(ts, filename, mat, index);
+        
+        // update the map from materials to textures
+        mat.addTextureRef(texCoords, index);
+        
         return ts;
     }
 
@@ -2969,253 +2586,162 @@ public class ThreadSafeColladaImporter {
      *             thrown if there is a problem parsing the skin.
      */
     private void processSkin(String id, skinType skin) throws Exception {
-        // Add this skin's associated mesh to the resource library
-        // put(id, skin.getsource().toString());
-        SkinNode skinNode = new SkinNode(id + "_node");
-        if (skinNodeNames == null) {
-            skinNodeNames = new ArrayList<String>();
+        // find the source mesh
+        String meshName = skin.getsource().getValue();
+        if (meshName.startsWith("#")) {
+            meshName = meshName.substring(1);
         }
-        skinNodeNames.add(id);
-        put(id, skinNode);
-        // create a new SkinnedMesh object that will act on a given geometry.
-        // SkinnedMesh skinnedMesh = new
-        // SkinnedMesh(source.getName()+"skinned",source);
-        // the bind shape matrix defines the overall orientation of the mesh
-        // before any skinning occurs.
-        if (skin.hasbind_shape_matrix()) {
-            String key = skin.getsource().toString();
-            if (key.startsWith("#")) {
-                key = key.substring(1);
-            }
-            Spatial mesh = (Spatial) resourceLibrary.get(key);
-            if (mesh == null) {
-                if (!squelch) {
-                    logger.warning(key
-                            + " mesh does NOT exist in COLLADA file.");
-                }
-                return;
-            }
-
-            Node skins = null;
-            if (mesh instanceof TriMesh) {
-                skins = new Node(mesh.getName());
-                skins.attachChild(mesh);
-                resourceLibrary.put(key, skins);
-            } else if (mesh instanceof Node) {
-                skins = (Node) mesh;
-            } else {
-                if (!squelch && !reportedSkinType) {
-                    logger.warning(key + " mesh is of unsupported skin type: "
-                            + mesh);
-                    reportedSkinType = true;
-                }
-                return;
-            }
-
-            processBindShapeMatrix(skinNode, skin.getbind_shape_matrix());
-
-            skinNode.setSkins(skins);
-        }
-        // There are a couple types of sources, those setting the joints,
-        // the binding table, and the weights. The Collada exporter
-        // automatically
-        // names them something like skin-joint-*, skin-binding-table-*, etc.
-        // we are going to check for the string to determine what it is.
-        if (skin.hassource2()) {
-            for (int i = 0; i < skin.getsource2Count(); i++) {
-                processControllerSource(skin.getsource2At(i));
-            }
-        }
-        // the vertex weights will be assigned to the appropriate bones
-        if (skin.hasvertex_weights()) {
-            processVertexWeights(skin.getvertex_weights(), skinNode);
-        }
-        if (skin.hasjoints()) {
-            String[] boneIds = null;
-            Matrix4f[] bindMatrices = null;
-            // define the inverse bind matrix to the joint
-            if (skin.getjoints().hasinput()) {
-                for (int i = 0; i < skin.getjoints().getinputCount(); i++) {
-                    if ("JOINT".equals(skin.getjoints().getinputAt(i)
-                            .getsemantic().toString())) {
-                        boneIds = (String[]) resourceLibrary.get(skin
-                                .getjoints().getinputAt(i).getsource()
-                                .toString().substring(1));
-                    } else if ("INV_BIND_MATRIX".equals(skin.getjoints()
-                            .getinputAt(i).getsemantic().toString())) {
-                        bindMatrices = (Matrix4f[]) resourceLibrary.get(skin
-                                .getjoints().getinputAt(i).getsource()
-                                .toString().substring(1));
-                    }
-                }
-            }
-            if (boneIds != null) {
-                for (int i = 0; i < boneIds.length; i++) {
-                    Bone b = (Bone) resourceLibrary.get(boneIds[i]);
-                    b.setBindMatrix(bindMatrices[i].invert());
-                }
-            }
-        }
-    }
-
-    /**
-     * processVertexWeights defines a list of vertices and weights for a given
-     * bone. These bones are defined by <v> as the first element to a group. The
-     * bones were prebuilt in the priocessControllerSource method.
-     *
-     * @param weights
-     * @throws Exception
-     */
-    @SuppressWarnings("unchecked")
-    private void processVertexWeights(vertex_weightsType weights,
-            SkinNode skinNode) throws Exception {
-        int[] boneCount = new int[weights.getcount().intValue()];
-        StringTokenizer st = new StringTokenizer(weights.getvcount().getValue());
-        for (int i = 0; i < boneCount.length; i++) {
-            boneCount[i] = Integer.parseInt(st.nextToken());
-        }
-        st = new StringTokenizer(weights.getv().getValue());
-        int count = 0;
-        String[] boneIdArray = null;
-        float[] weightArray = null;
-        for (int i = 0; i < weights.getinputCount(); i++) {
-            if ("JOINT".equals(weights.getinputAt(i).getsemantic().toString())) {
-                String key = weights.getinputAt(i).getsource().toString();
-                key = key.substring(1);
-                boneIdArray = (String[]) resourceLibrary.get(key);
-            } else if ("WEIGHT".equals(weights.getinputAt(i).getsemantic()
-                    .toString())) {
-                String key = weights.getinputAt(i).getsource().toString();
-                key = key.substring(1);
-                weightArray = (float[]) resourceLibrary.get(key);
-            }
-        }
-        if (boneIdArray == null || weightArray == null) {
-            if (!squelch) {
-                logger.warning("Missing resource values for either bone "
-                        + "weights or bone vertex ids.");
-            }
+        ColladaNode meshParent = (ColladaNode) resourceLibrary.get(meshName);
+        if (meshParent == null) {
+            logger.warning("Cannot find mesh " + meshName);
             return;
         }
-
-        Map<Integer, ArrayList<MeshVertPair>> vertMap = (Map) resourceLibrary
-                .get(skinNode.getSkins().getName() + "VertMap");
-
-        while (st.hasMoreTokens()) {
-            // Get bone index
-            for (int i = 0; i < boneCount[count]; i++) {
-                int idIndex = Integer.parseInt(st.nextToken());
-                int key = Integer.parseInt(st.nextToken());
-                float weight = weightArray[key];
-                ArrayList<MeshVertPair> target = vertMap.get(count);
-                if (target != null) {
-                    for (int j = 0, max = target.size(); j < max; j++) {
-                        MeshVertPair bvp = target.get(j);
-                        // Bone b =
-                        // (Bone)resourceLibrary.get(boneIds[idIndex]);
-                        skinNode.addBoneInfluence(bvp.mesh, bvp.index,
-                                boneIds[idIndex], weight);
+        
+        // read the bind shape matrix
+        Matrix4f bindMatrix = new Matrix4f();
+        if (skin.hasbind_shape_matrix()) {
+            float[] bFloats = getFloats(16, skin.getbind_shape_matrix().getValue());
+            bindMatrix.set(bFloats, true);
+        }
+        
+        // create the controller node
+        ColladaControllerNode controller = new ColladaControllerNode(id, bindMatrix);
+        
+        // read sources -- note the variable is called "source2" because there
+        // is also the source attribute
+        Map<String, Source<?>> sources = new LinkedHashMap<String, Source<?>>();
+        if (skin.hassource2()) {
+            for (int i = 0; i < skin.getsource2Count(); i++) {
+                Source<?> source = getSource(skin.getsource2At(i));
+                sources.put(source.getId(), source);
+            }
+        }
+        
+        // process joints
+        if (skin.hasjoints() && skin.getjoints().hasinput()) {
+            Source<String> jointSids = null;
+            Source<Float> invBindMatrices = null;
+            
+            for (int i = 0; i < skin.getjoints().getinputCount(); i++) {
+                InputLocal il = skin.getjoints().getinputAt(i);
+                String semantic = il.getsemantic().getValue();
+                String sourceId = il.getsource().getValue();
+                if (sourceId.startsWith("#")) {
+                    sourceId = sourceId.substring(1);
+                }
+                
+                if (semantic.equals("JOINT")) {
+                    jointSids = (Source<String>) sources.get(sourceId);
+                    if (jointSids == null) {
+                        logger.warning("Unable to find source " + sourceId);
+                    }
+                } else if (semantic.equals("INV_BIND_MATRIX")) {
+                    invBindMatrices = (Source<Float>) sources.get(sourceId);
+                    if (invBindMatrices == null) {
+                        logger.warning("Unable to find source " + sourceId);
                     }
                 }
             }
-            count++;
-        }
-    }
-
-    /**
-     * processControllerSource will process the source types that define how a
-     * controller is built. This includes support for skin joints, bindings and
-     * weights.
-     *
-     * @param source
-     *            the source to process.
-     * @throws Exception
-     *             thrown if there is a problem processing the XML.
-     */
-    private void processControllerSource(sourceType source) throws Exception {
-        // check for the joint id list
-        String key = source.gettechnique_common().getaccessor().getparam()
-                .gettype().getValue();
-        if (key.equalsIgnoreCase("IDREF")) {
-            if (source.hasIDREF_array()) {
-                IDREF_arrayType idrefs = source.getIDREF_array();
-                Bone[] bones = new Bone[idrefs.getcount().intValue()];
-                boneIds = new String[bones.length];
-                StringTokenizer st = new StringTokenizer(idrefs.getValue()
-                        .toString());
-                for (int i = 0; i < bones.length; i++) {
-                    // this skin has a number of bones assigned to it.
-                    // Create a Bone for each entry.
-                    bones[i] = new Bone(st.nextToken());
-                    boneIds[i] = bones[i].getName();
-                    put(boneIds[i], bones[i]);
+            
+            Matrix4f invBindMatrix = new Matrix4f();
+            for (int i = 0; i < jointSids.getCount(); i++) {
+                if (invBindMatrices != null) {
+                    invBindMatrix = getMatrixAt(invBindMatrices, i);
                 }
-                put(source.getid().toString(), boneIds);
+                
+                controller.addJoint(jointSids.get(i, 0), invBindMatrix);
             }
-        } else if (key.equalsIgnoreCase("Name")) {
-            if (source.hasName_array()) {
-                Name_arrayType names = source.getName_array();
-                Bone[] bones = new Bone[names.getcount().intValue()];
-                boneIds = new String[bones.length];
-                StringTokenizer st = new StringTokenizer(names.getValue()
-                        .toString());
-                for (int i = 0; i < bones.length; i++) {
-                    // this skin has a number of bones assigned to it.
-                    // Create a Bone for each entry.
-                    bones[i] = new Bone(st.nextToken());
-                    boneIds[i] = bones[i].getName();
-                    put(boneIds[i], bones[i]);
-                    put(source.getid().toString(), boneIds);
+        }
+        
+        // process vertex weights
+        if (skin.hasvertex_weights()) {
+            vertex_weightsType vw = skin.getvertex_weights();
+            
+            int maxOffset = 0;
+            int jointOffset = 0;            
+            int weightOffset = 0;
+            Source<Float> weights = null;
+            
+            if (vw.hasinput()) {
+                for (int i = 0; i < vw.getinputCount(); i++) {
+                    InputLocalOffset ilo = vw.getinputAt(i);
+                    
+                    String semantic = ilo.getsemantic().getValue();
+                    String sourceId = ilo.getsource().getValue();
+                    if (sourceId.startsWith("#")) {
+                        sourceId = sourceId.substring(1);
+                    }
+                    
+                    int offset = ilo.getoffset().intValue();
+                    if (offset + 1 > maxOffset) {
+                        maxOffset = offset + 1;
+                    }
+                    
+                    if (semantic.equals("JOINT")) {
+                        jointOffset = offset;
+                    } else if (semantic.equals("WEIGHT")) {
+                        weightOffset = offset;
+                        weights = (Source<Float>) sources.get(sourceId);
+                        if (weights == null) {
+                            logger.warning("Unable to find source " + sourceId);
+                        }
+                    }
                 }
             }
-        } else if (key.equalsIgnoreCase("float4x4")) {
-            StringTokenizer st = new StringTokenizer(source.getfloat_array()
-                    .getValue().toString());
-            int numOfTransforms = st.countTokens() / 16;
-            // this creates a 4x4 matrix
-            Matrix4f[] tm = new Matrix4f[numOfTransforms];
-            for (int i = 0; i < tm.length; i++) {
-                tm[i] = new Matrix4f();
-                float[] data = new float[16];
-                for (int x = 0; x < 16; x++) {
-                    data[x] = Float.parseFloat(st.nextToken());
+            
+            int[] vcount = getInts(vw.getcount().intValue(),
+                                   vw.getvcount().getValue());
+            int[] v = getInts(vw.getv().getValue());
+        
+            int vIdx = 0;
+            for (int i = 0; i < vcount.length; i++) {
+                int count = vcount[i];
+                int[] jointIndices = new int[count];
+                float[] jointWeights = new float[count];
+                
+                for (int j = 0; j < count; j++) {
+                    for (int k = 0; k < maxOffset; k++) {
+                        if (k == jointOffset) {
+                            jointIndices[j] = v[vIdx];
+                        }
+                        
+                        if (k == weightOffset) {
+                            jointWeights[j] = weights.get(v[vIdx], 0);
+                        }
+                        
+                        vIdx++;
+                    }
                 }
-                tm[i].set(data, true); // collada matrices are in row order.
+                
+                controller.addVertex(jointIndices, jointWeights);
             }
-            put(source.getid().toString(), tm);
-        } else if (key.equalsIgnoreCase("float")) {
-            float_arrayType floats = source.getfloat_array();
-            float[] weights = new float[floats.getcount().intValue()];
-            StringTokenizer st = new StringTokenizer(floats.getValue()
-                    .toString());
-            for (int i = 0; i < weights.length; i++) {
-                weights[i] = Float.parseFloat(st.nextToken());
+        }
+        
+        // attach children
+        for (Spatial child : meshParent.getChildren()) {
+            if (!(child instanceof TriMesh)) {
+                logger.warning("Unexpected child type for " + child + ": " +
+                               child.getClass());
+                continue;
             }
-            put(source.getid().toString(), weights);
+            
+            // find the mesh vertices mapping for this child
+            int[] meshVerts = meshVertices.get((Geometry) child);
+            if (meshVerts == null) {
+                logger.warning("Unable to find mesh vertices for " + child);
+                continue;
+            }
+            
+            // create the skinned mesh and attach it
+            ColladaSkinnedMesh mesh = new ColladaSkinnedMesh(
+                    child.getName(), (TriMesh) child, meshVerts);
+            controller.attachChild(mesh);
         }
+        
+        // add the controller to the resource library
+        resourceLibrary.put(id, controller);
     }
-
-    /**
-     * processBindShapeMatrix sets the initial transform of the skinned mesh.
-     * The 4x4 matrix is converted to a 3x3 matrix and a vector, then passed to
-     * the skinned mesh for use.
-     *
-     * @param skin
-     *            the skin to apply the bind to.
-     * @param matrix
-     *            the matrix to parse.
-     */
-    private void processBindShapeMatrix(SkinNode skin, float4x4 matrix) {
-        Matrix4f mat = new Matrix4f();
-        StringTokenizer st = new StringTokenizer(matrix.getValue());
-        float[] data = new float[16];
-        for (int x = 0; x < 16; x++) {
-            data[x] = Float.parseFloat(st.nextToken());
-        }
-        mat.set(data, true); // collada matrices are in row order.
-        skin.setBindMatrix(mat);
-    }
-
+    
     /**
      * processBindMaterial
      *
@@ -3247,1001 +2773,265 @@ public class ThreadSafeColladaImporter {
      *             thrown if there is a problem processing the xml.
      */
     private Spatial processMesh(meshType mesh, geometryType geom)
-            throws Exception {
-        Vector3f[] normalBuffer = null;
-        ArrayList<Vector3f[]> texCoordBuffers = null;
-
+            throws Exception 
+    {    
+        Map<String, Source<?>> sources = new LinkedHashMap<String, Source<?>>();
+        Vertices vertices = null;
+        
+        Node parentNode = new ColladaNode(geom.getid().toString());
+        
         // we need to build all the source data objects.
         for (int i = 0; i < mesh.getsourceCount(); i++) {
-            sourceType source = mesh.getsourceAt(i);
-            if (source.hasfloat_array()) {
-                float_arrayType floatArray = source.getfloat_array();
-                StringTokenizer st = new StringTokenizer(floatArray.getValue()
-                        .toString());
-                // build an array of data to use for the final vector list.
-                float[] floats = new float[floatArray.getcount().intValue()];
-                for (int j = 0; j < floats.length; j++) {
-                    floats[j] = Float.parseFloat(st.nextToken());
-                }
-                // technique_common should have the accessor type
-                if (source.hastechnique_common()) {
-                    accessorType accessor = source.gettechnique_common()
-                            .getaccessor();
-                    // create an array of Vector3fs, using zero for the last
-                    // element
-                    // if the stride is 2 (the UV map case)
-                    Vector3f[] vecs = new Vector3f[accessor.getcount()
-                            .intValue()];
-                    int stride = accessor.getstride().intValue();
-                    if (2 == stride) {
-                        for (int k = 0; k < vecs.length; k++) {
-                            vecs[k] = new Vector3f(floats[(k * stride)],
-                                    floats[(k * stride) + 1], 0.0f);
-                        }
-                    } else if (3==stride) {
-                        for (int k = 0; k < vecs.length; k++) {
-                            vecs[k] = new Vector3f(floats[(k * stride)],
-                                    floats[(k * stride) + 1],
-                                    floats[(k * stride) + 2]);
-                        }
-                    } else if (4 == stride) {
-                         for (int k = 0; k < vecs.length; k++) {
-                             vecs[k] = new Vector3f(floats[(k * stride)],
-                                     floats[(k * stride) + 1],
-                                     floats[(k * stride) + 2]);
-                         }
-                         logger.severe("4 Stride Mesh, Alpha is being ignored :-(");
-                         // TODO This should be color not Vector3f
-                     } else {
-                         logger.severe("Unsupported stride size for mesh "+stride);
-                         continue;
-                     }
-                     put(source.getid().toString(), vecs);
-                }
-            }
+            Source<?> source = getSource(mesh.getsourceAt(i));
+            sources.put(source.getId(), source);
         }
+        
         // next we have to define what source defines the vertices positional
         // information
-        if (mesh.hasvertices()) {
-            if (mesh.getvertices().hasinput()) {
-                //System.out.println("Vert Input Count: " + mesh.getvertices().getinputCount());
-                texCoordBuffers = new ArrayList<Vector3f[]>();
-                for (int i=0; i<mesh.getvertices().getinputCount(); i++) {
-                    String semantic = mesh.getvertices().getinputAt(i).getsemantic().toString();
-                    if (semantic.equals("POSITION")) {
-                        put(mesh.getvertices().getid().toString(), mesh.getvertices().getinputAt(i).getsource().toString());
-                    } else if (semantic.equals("TEXCOORD")) {
-                        Vector3f[] tc = getTCBuffer(mesh.getvertices().getinputAt(i).getsource().toString());
-                        texCoordBuffers.add(tc);
-                    } else if (semantic.equals("NORMAL")) {
-                        normalBuffer = getNormalBuffer(mesh.getvertices().getinputAt(i).getsource().toString());
-                    }
+        if (mesh.hasvertices() && mesh.getvertices().hasinput()) {
+            vertices = new Vertices(mesh.getvertices().getid().toString());
+            
+            for (int i = 0; i < mesh.getvertices().getinputCount(); i++) {
+                InputLocal input = mesh.getvertices().getinputAt(i);
+                
+                Semantic semantic = Semantic.valueOf(input.getsemantic().toString());
+                String sourceId = input.getsource().toString();
+                if (sourceId.startsWith("#")) {
+                    sourceId = sourceId.substring(1);
                 }
-                put(mesh.getvertices().getid().toString(), mesh.getvertices()
-                        .getinput().getsource().toString());
+                
+                Source<Float> source = (Source<Float>) sources.get(sourceId);
+                if (source == null) {
+                    throw new IllegalArgumentException("Unable to find source " +
+                            sourceId);
+                }
+                
+                vertices.addInput(new VerticesInput(semantic, source));
             }
         }
-        // determine what type of geometry this is, and use the
-        // lists to build the object.
-        if (mesh.hastriangles()) {
-            return processTriMesh(mesh, geom, texCoordBuffers, normalBuffer);
-        } else if (mesh.haspolygons()) {
-            return processPolygonMesh(mesh, geom);
-        } else if (mesh.haslines()) {
-            return processLines(mesh, geom);
+        
+        // collect all the meshes of each type
+        List<MeshTypeWrapper> meshes = new LinkedList<MeshTypeWrapper>();
+        
+        for (int i = 0; i < mesh.gettrianglesCount(); i++) {
+            meshes.add(new TrianglesMeshType(mesh.gettrianglesAt(i)));
+        }
+        
+        for (int i = 0; i < mesh.getlinesCount(); i++) {
+            meshes.add(new LinesMeshType(mesh.getlinesAt(i)));
+        }
+        
+        for (int i = 0; i < mesh.getpolylistCount(); i++) {
+            meshes.add(new PolylistMeshType(mesh.getpolylistAt(i)));
+        }
+        
+        // now hook up the inputs and process each mesh
+        for (MeshTypeWrapper wrapper : meshes) {
+            Geometry spatial = wrapper.createGeometry();
+            
+            if (wrapper.getMaterial() != null) {
+                // do not set up materials here -- this has to wait until the
+                // binding has happened in processInstanceMaterials()
+                spatial.setName(geom.getid().toString() + "-" + wrapper.getMaterial());
+                
+                if (spatial instanceof SharedMesh) {
+                    subMaterialLibrary.put(((SharedMesh) spatial).getTarget(),
+                                           wrapper.getMaterial());
+                } else {
+                    subMaterialLibrary.put(spatial, wrapper.getMaterial());
+                }
+            } else {
+                spatial.setName(geom.getid().toString());
+            }
+            
+            // create the processor
+            MeshProcessor processor = wrapper.createProcessor();
+            
+            // create an index buffer writer
+            int vertexCount = processor.getShapeSize() * processor.getShapeCount();
+            IntBuffer indexBuffer = createIndexBuffer(spatial, vertexCount);
+            if (indexBuffer != null) {
+                processor.addInput(new IndexBufferWriter(indexBuffer));
+            }
+            
+            // create the vertex indices array
+            int[] vertexIndices = new int[vertexCount];
+            meshVertices.put(spatial, vertexIndices);
+            
+            // parse each input and add it to the processor
+            for (int i = 0; i < wrapper.getInputCount(); i++) {
+                InputLocalOffset input = wrapper.getInputAt(i);
+                
+                Semantic semantic = Semantic.valueOf(input.getsemantic().getValue());
+                String sourceId = input.getsource().getValue();
+                if (sourceId.startsWith("#")) {
+                    sourceId = sourceId.substring(1);
+                }
+                
+                int offset = 0;
+                if (input.hasoffset()) {
+                    offset = input.getoffset().intValue();
+                }
+                
+                int set = 0;
+                if (input.hasset()) {
+                    offset = input.getoffset().intValue();
+                }
+                
+                // create the correct buffer
+                FloatBuffer buffer = null;
+                Source<Float> source = null;
+                if (semantic == Semantic.VERTEX && vertices != null && 
+                    sourceId.equals(vertices.getId())) 
+                {
+                    // add a vertex index writer
+                    processor.addInput(new VertexIndexWriter(offset, set, vertexIndices));
+                    
+                    // create processors for all the vertices entries
+                    for (VerticesInput vi : vertices.getInputs()) {
+                        buffer = createBuffer(vi.getSemantic(), vi.getSource(),
+                                              spatial, vertexCount);
+                        source = vi.getSource();
+       
+                        // create a writer from the buffer
+                        processor.addInput(
+                                createVertexWriter(vi.getSemantic(), offset, set,
+                                                   source, buffer));
+                    }
+                } else {
+                    source = (Source<Float>) sources.get(sourceId);                    
+                    buffer = createBuffer(semantic, source, spatial, vertexCount);
+                    
+                    processor.addInput(
+                            createVertexWriter(semantic, offset, set, 
+                                               source, buffer));
+                }
+            }
+            
+            // everything is set up, go ahead an process the inputs
+            processor.process();
+            
+            // setup bounds and attach
+            spatial.setModelBound(new BoundingBox());
+            parentNode.attachChild(spatial);
+        }
+        
+        // update the parent node to handle all the newly added children
+        parentNode.updateModelBound();
+        return parentNode;
+    }
+    
+    /**
+     * Create an index buffer
+     * @param geom the geometry to create an index buffer for
+     * @param vertexCount the number of vertices
+     * @return an index buffer
+     */
+    private IntBuffer createIndexBuffer(Geometry geom, int vertexCount) {
+        IntBuffer out = BufferUtils.createIntBuffer(vertexCount);
+        
+        if (geom instanceof SharedMesh) {
+            ((SharedMesh) geom).getTarget().setIndexBuffer(out);
+        } else if (geom instanceof TriMesh) {
+            ((TriMesh) geom).setIndexBuffer(out);
+        } else if (geom instanceof Line) {
+            ((Line) geom).setIndexBuffer(out);
         } else {
+            // unknown type
             return null;
         }
+        
+        return out;
     }
-
-    private Vector3f[] getTCBuffer(String key) {
-        // build the texture buffer
-        if (key.startsWith("#")) {
-            key = key.substring(1);
-        }
-        Object data = resourceLibrary.get(key);
-        while (data instanceof String) {
-            key = (String) data;
-            if (key.startsWith("#")) {
-                key = key.substring(1);
-            }
-            data = resourceLibrary.get(key);
-        }
-        if (data == null) {
-            logger.warning("Invalid source: " + key);
-            return (null);
-        }
-
-        return ((Vector3f[]) data);
-    }
-
-    private Vector3f[] getNormalBuffer(String key) {
-        if (key.startsWith("#")) {
-            key = key.substring(1);
-        }
-        Object data = resourceLibrary.get(key);
-        while (data instanceof String) {
-            key = (String) data;
-            if (key.startsWith("#")) {
-                key = key.substring(1);
-            }
-            data = resourceLibrary.get(key);
-        }
-        if (data == null) {
-            logger.warning("Invalid source: " + key);
-        }
-
-        return ((Vector3f[])data);
-    }
+    
     /**
-     * processTriMesh will process the triangles tag from the mesh section of
-     * the COLLADA file. A jME TriMesh is returned that defines the vertices,
-     * indices, normals, texture coordinates and colors.
-     *
-     * @param mesh
-     *            the meshType to process for the trimesh.
-     * @param geom
-     *            the geometryType of the TriMesh to build.
-     * @return the jME tri mesh representing the COLLADA mesh.
-     * @throws Exception
-     *             thrown if there is a problem processing the xml.
+     * Create an appropriate buffer for the given semantic
+     * @param semantic the semantic to create a buffer for
+     * @param source the source of the buffer information
+     * @param geom the geometry to create the buffer for
+     * @param vertexCount the number of vertices
+     * @return the created buffer
      */
-    private Spatial processTriMesh(meshType mesh, geometryType geom, ArrayList<Vector3f[]> tcBuffers, Vector3f[] nBuffer)
-            throws Exception {
-
-        HashMap<Integer, ArrayList<MeshVertPair>> vertMap = new HashMap<Integer, ArrayList<MeshVertPair>>();
-        put(geom.getid().toString() + "VertMap", vertMap);
-
-        Node parentNode = new Node(geom.getid().toString());
-
-        for (int triangleIndex = 0; triangleIndex < mesh.gettrianglesCount(); triangleIndex++) {
-            trianglesType tri = mesh.gettrianglesAt(triangleIndex);
-
-            TriMesh triMesh = new TriMesh(geom.getid().toString());
-	    int tcUnit = 0;
-
-            if (tri.hasmaterial()) {
-                // do not set up materials here -- this has to wait until the
-                // binding has happened in processInstanceMaterials()
-                triMesh.setName(triMesh.getName()+"-"+tri.getmaterial().toString());
-
-                // jonathankap: should extras be processed per mesh or per instance?
-                if (mesh.hasextra()) {
-                    for (int i = 0; i < mesh.getextraCount(); i++) {
-                        try {
-                            ExtraPluginManager.processExtra(triMesh, mesh.getextraAt(i));
-                        } catch (Exception e) {
-                            if (!squelch) {
-                                logger.log(
-                                        Level.INFO,
-                                        "Error processing extra information for mesh",
-                                        e);
-                            }
-                        }
-                    }
-                }
-             
-                subMaterialLibrary.put(triMesh, tri.getmaterial().toString());
-            }
-            // build the index buffer, this is going to be easy as it's only
-            // 0...N where N is the number of vertices in the model.
-            IntBuffer indexBuffer = BufferUtils.createIntBuffer(tri.getcount()
-                    .intValue() * 3);
-            for (int i = 0; i < indexBuffer.capacity(); i++) {
-                indexBuffer.put(i);
-            }
-            triMesh.setIndexBuffer(indexBuffer);          
-            // find the maximum offset to understand the stride
-            int maxOffset = -1;
-            for (int i = 0; i < tri.getinputCount(); i++) {
-                int temp = tri.getinputAt(i).getoffset().intValue();
-                if (maxOffset < temp) {
-                    maxOffset = temp;
-                }
-            }
-
-            if (nBuffer != null) {
-                Vector3f[] v = (Vector3f[]) nBuffer;
-                StringTokenizer st = new StringTokenizer(tri.getp().getValue());
-                int normCount = tri.getcount().intValue() * 3;
-                FloatBuffer normBuffer = BufferUtils.createVector3Buffer(normCount);
-                for (int j = 0; j < normCount; j++) {
-                    int index = Integer.parseInt(st.nextToken());
-                    if (index < v.length) {
-                        BufferUtils.setInBuffer(v[index], normBuffer, j);
-                    }
-                    for (int k = 0; k < maxOffset; k++) {
-                        if (st.hasMoreTokens()) {
-                            st.nextToken();
-                        }
-                    }
-                }
-                triMesh.setNormalBuffer(normBuffer);
-            }
-
-            if (tcBuffers != null) {
-                for (int i = 0; i < tcBuffers.size(); i++) {
-                    Vector3f[] v = tcBuffers.get(i);
-                    StringTokenizer st = new StringTokenizer(tri.getp().getValue());
-                    int texCount = tri.getcount().intValue() * 3;
-                    FloatBuffer texBuffer = BufferUtils.createVector2Buffer(texCount);
-
-                    // Keep a max to set the wrap mode (if it's 1, clamp, if
-                    // it's > 1 || < 0 wrap it)
-                    float maxX = -10;
-                    float maxY = -10;
-                    float minX = 10;
-                    float minY = 10;
-                    Vector2f tempTexCoord = new Vector2f();
-                    for (int j = 0; j < texCount; j++) {
-                        int index = Integer.parseInt(st.nextToken());
-                        Vector3f value = v[index];
-                        if (value.x > maxX) {
-                            maxX = value.x;
-                        }
-                        if (value.x < minX) {
-                            minX = value.x;
-                        }
-                        if (value.y > maxY) {
-                            maxY = value.y;
-                        }
-                        if (value.y < minY) {
-                            minY = value.y;
-                        }
-                        tempTexCoord.set(value.x, value.y);
-                        BufferUtils.setInBuffer(tempTexCoord, texBuffer, j);
-                        for (int k = 0; k < maxOffset; k++) {
-                            if (st.hasMoreTokens()) {
-                                st.nextToken();
-                            }
-                        }
-                    }
-                    triMesh.setTextureCoords(new TexCoords(texBuffer, 2), i);
-                }
-            }
-
-            // next build the other buffers, based on the input semantic
-            for (int i = 0; i < tri.getinputCount(); i++) {
-                if ("VERTEX".equals(tri.getinputAt(i).getsemantic().toString())) {
-                    // build the vertex buffer
-                    String key = tri.getinputAt(i).getsource().getValue();
-                    if (key.startsWith("#")) {
-                        key = key.substring(1);
-                    }
-                    Object data = resourceLibrary.get(key);
-                    while (data instanceof String) {
-                        key = (String) data;
-                        if (key.startsWith("#")) {
-                            key = key.substring(1);
-                        }
-                        data = resourceLibrary.get(key);
-                    }
-                    if (data == null) {
-                        logger.warning("Invalid source: " + key);
-                        continue;
-                    }
-                    Vector3f[] v = (Vector3f[]) data;
-                    StringTokenizer st = new StringTokenizer(tri.getp()
-                            .getValue());
-                    int vertCount = tri.getcount().intValue() * 3;
-                    FloatBuffer vertBuffer = BufferUtils
-                            .createVector3Buffer(vertCount);
-                    triMesh.setVertexCount(vertCount);
-                    for (int j = 0; j < vertCount; j++) {
-                        // need to store the index in p to what j is for later
-                        // processing the index to the vert for bones
-                        int vertKey = Integer.parseInt(st.nextToken());
-                        ArrayList<MeshVertPair> storage = vertMap.get(Integer
-                                .valueOf(vertKey));
-                        if (storage == null) {
-                            storage = new ArrayList<MeshVertPair>();
-                            storage.add(new MeshVertPair(triangleIndex, j));
-                            vertMap.put(Integer.valueOf(vertKey), storage);
-                        } else {
-                            storage.add(new MeshVertPair(triangleIndex, j));
-                        }
-                        BufferUtils.setInBuffer(v[vertKey], vertBuffer, j);
-                        for (int k = 0; k < maxOffset; k++) {
-                            st.nextToken();
-                        }
-                    }
-                    triMesh.setVertexBuffer(vertBuffer);
-                } else if ("NORMAL".equals(tri.getinputAt(i).getsemantic()
-                        .toString())) {
-                    // build the normal buffer
-                    String key = tri.getinputAt(i).getsource().getValue();
-                    if (key.startsWith("#")) {
-                        key = key.substring(1);
-                    }
-                    Object data = resourceLibrary.get(key);
-                    while (data instanceof String) {
-                        key = (String) data;
-                        if (key.startsWith("#")) {
-                            key = key.substring(1);
-                        }
-                        data = resourceLibrary.get(key);
-                    }
-                    if (data == null) {
-                        logger.warning("Invalid source: " + key);
-                        continue;
-                    }
-                    Vector3f[] v = (Vector3f[]) data;
-                    StringTokenizer st = new StringTokenizer(tri.getp()
-                            .getValue());
-                    int normCount = tri.getcount().intValue() * 3;
-                    FloatBuffer normBuffer = BufferUtils
-                            .createVector3Buffer(normCount);
-                    int offset = tri.getinputAt(i).getoffset().intValue();
-                    for (int j = 0; j < offset; j++) {
-                        st.nextToken();
-                    }
-                    for (int j = 0; j < normCount; j++) {
-                        int index = Integer.parseInt(st.nextToken());
-                        if (index < v.length)
-                            BufferUtils.setInBuffer(v[index], normBuffer, j);
-                        for (int k = 0; k < maxOffset; k++) {
-                            if (st.hasMoreTokens()) {
-                                st.nextToken();
-                            }
-                        }
-                    }
-                    triMesh.setNormalBuffer(normBuffer);
-                } else if ("TANGENT".equals(tri.getinputAt(i).getsemantic()
-                        .toString())) {
-                    // build the tangent buffer
-                    String key = tri.getinputAt(i).getsource().getValue();
-                    if (key.startsWith("#")) {
-                        key = key.substring(1);
-                    }
-                    Object data = resourceLibrary.get(key);
-                    while (data instanceof String) {
-                        key = (String) data;
-                        if (key.startsWith("#")) {
-                            key = key.substring(1);
-                        }
-                        data = resourceLibrary.get(key);
-                    }
-                    if (data == null) {
-                        logger.warning("Invalid source: " + key);
-                        continue;
-                    }
-                    Vector3f[] v = (Vector3f[]) data;
-                    StringTokenizer st = new StringTokenizer(tri.getp()
-                            .getValue());
-                    int normCount = tri.getcount().intValue() * 3;
-                    FloatBuffer colorBuffer = BufferUtils
-                            .createColorBuffer(normCount);
-                    int offset = tri.getinputAt(i).getoffset().intValue();
-                    for (int j = 0; j < offset; j++) {
-                        st.nextToken();
-                    }
-                    for (int j = 0; j < normCount; j++) {
-                        int index = Integer.parseInt(st.nextToken());
-                        if (index < v.length) {
-                            colorBuffer.put((v[index].x) / 2.0f + 0.5f);
-                            colorBuffer.put((v[index].y) / 2.0f + 0.5f);
-                            colorBuffer.put((v[index].z) / 2.0f + 0.5f);
-                            //colorBuffer.put(0.0f);
-                        }
-                        for (int k = 0; k < maxOffset; k++) {
-                            if (st.hasMoreTokens()) {
-                                st.nextToken();
-                            }
-                        }
-                    }
-                    triMesh.setTangentBuffer(colorBuffer);
-                }  else if ("BINORMAL".equals(tri.getinputAt(i).getsemantic()
-                        .toString())) {
-                    // build the tangent buffer
-                    String key = tri.getinputAt(i).getsource().getValue();
-                    if (key.startsWith("#")) {
-                        key = key.substring(1);
-                    }
-                    Object data = resourceLibrary.get(key);
-                    while (data instanceof String) {
-                        key = (String) data;
-                        if (key.startsWith("#")) {
-                            key = key.substring(1);
-                        }
-                        data = resourceLibrary.get(key);
-                    }
-                    if (data == null) {
-                        logger.warning("Invalid source: " + key);
-                        continue;
-                    }
-                    Vector3f[] v = (Vector3f[]) data;
-                    StringTokenizer st = new StringTokenizer(tri.getp()
-                            .getValue());
-                    int normCount = tri.getcount().intValue() * 3;
-                    FloatBuffer colorBuffer = BufferUtils
-                            .createColorBuffer(normCount);
-                    int offset = tri.getinputAt(i).getoffset().intValue();
-                    for (int j = 0; j < offset; j++) {
-                        st.nextToken();
-                    }
-                    for (int j = 0; j < normCount; j++) {
-                        int index = Integer.parseInt(st.nextToken());
-                        if (index < v.length) {
-                            colorBuffer.put((v[index].x) / 2.0f + 0.5f);
-                            colorBuffer.put((v[index].y) / 2.0f + 0.5f);
-                            colorBuffer.put((v[index].z) / 2.0f + 0.5f);
-                            //colorBuffer.put(0.0f);
-                        }
-                        for (int k = 0; k < maxOffset; k++) {
-                            if (st.hasMoreTokens()) {
-                                st.nextToken();
-                            }
-                        }
-                    }
-                    triMesh.setBinormalBuffer(colorBuffer);
-                } else if ("TEXCOORD".equals(tri.getinputAt(i).getsemantic()
-                        .toString())) {
-                    // build the texture buffer
-                    String key = tri.getinputAt(i).getsource().getValue();
-                    if (key.startsWith("#")) {
-                        key = key.substring(1);
-                    }
-                    Object data = resourceLibrary.get(key);
-                    while (data instanceof String) {
-                        key = (String) data;
-                        if (key.startsWith("#")) {
-                            key = key.substring(1);
-                        }
-                        data = resourceLibrary.get(key);
-                    }
-                    if (data == null) {
-                        logger.warning("Invalid source: " + key);
-                        continue;
-                    }
-                    Vector3f[] v = (Vector3f[]) data;
-                    StringTokenizer st = new StringTokenizer(tri.getp()
-                            .getValue());
-                    int texCount = tri.getcount().intValue() * 3;
-                    FloatBuffer texBuffer = BufferUtils
-                            .createVector2Buffer(texCount);
-                    int offset = tri.getinputAt(i).getoffset().intValue();
-                    int set = tri.getinputAt(i).getset().intValue();
-                    for (int j = 0; j < offset; j++) {
-                        st.nextToken();
-                    }
-                    // Keep a max to set the wrap mode (if it's 1, clamp, if
-                    // it's > 1 || < 0 wrap it)
-                    float maxX = -10;
-                    float maxY = -10;
-                    float minX = 10;
-                    float minY = 10;
-                    Vector2f tempTexCoord = new Vector2f();
-                    for (int j = 0; j < texCount; j++) {
-                        int index = Integer.parseInt(st.nextToken());
-                        Vector3f value = v[index];
-                        if (value.x > maxX) {
-                            maxX = value.x;
-                        }
-                        if (value.x < minX) {
-                            minX = value.x;
-                        }
-                        if (value.y > maxY) {
-                            maxY = value.y;
-                        }
-                        if (value.y < minY) {
-                            minY = value.y;
-                        }
-                        tempTexCoord.set(value.x, value.y);
-                        BufferUtils.setInBuffer(tempTexCoord, texBuffer, j);
-                        for (int k = 0; k < maxOffset; k++) {
-                            if (st.hasMoreTokens()) {
-                                st.nextToken();
-                            }
-                        }
-                    }
-                    int unit;
-                    if (set == 0) {
-                        unit = 0;
-                    } else {
-                        unit = set - 1;
-                    }
-                    triMesh.setTextureCoords(new TexCoords(texBuffer,2), tcUnit++);
-                    // Set the wrap mode, check if the mesh has a texture
-                    // first, if not check the geometry.
-                    // Then, based on the texture coordinates, we may need to
-                    // change it from the default.
-
-                    //XXX: not a good way of doing it
-//                    TextureState ts = (TextureState) triMesh
-//                            .getRenderState(RenderState.RS_TEXTURE);
-//                    if (ts == null) {
-//                        ts = (TextureState) triMesh
-//                                .getRenderState(RenderState.RS_TEXTURE);
-//                    }
-//                    if (ts != null) {
-//                        Texture t = ts.getTexture(unit);
-//                        if (t != null) {
-//                            if (maxX > 1 || minX < 0) {
-//                                t.setWrap(Texture.WrapAxis.S, Texture.WrapMode.Repeat);
-//                            } else {
-//                                t.setWrap(Texture.WrapAxis.S, Texture.WrapMode.Clamp);
-//                            }
-//
-//                            if (maxY > 1 || minY < 0) {
-//                                t.setWrap(Texture.WrapAxis.T, Texture.WrapMode.Repeat);
-//                            } else {
-//                                t.setWrap(Texture.WrapAxis.T, Texture.WrapMode.Clamp);
-//                            }
-//                        }
-//                    }
-                } else if ("COLOR".equals(tri.getinputAt(i).getsemantic()
-                        .toString())) {
-                    // build the texture buffer
-                    String key = tri.getinputAt(i).getsource().getValue();
-                    if (key.startsWith("#")) {
-                        key = key.substring(1);
-                    }
-                    Object data = resourceLibrary.get(key);
-                    while (data instanceof String) {
-                        key = (String) data;
-                        if (key.startsWith("#")) {
-                            key = key.substring(1);
-                        }
-                        data = resourceLibrary.get(key);
-                    }
-                    Vector3f[] v = (Vector3f[]) data;
-                    StringTokenizer st = new StringTokenizer(tri.getp()
-                            .getValue());
-                    int colorCount = tri.getcount().intValue() * 3;
-                    FloatBuffer colorBuffer = BufferUtils
-                            .createColorBuffer(colorCount);
-                    int offset = tri.getinputAt(i).getoffset().intValue();
-                    for (int j = 0; j < offset; j++) {
-                        st.nextToken();
-                    }
-                    ColorRGBA tempColor = new ColorRGBA();
-                    for (int j = 0; j < colorCount; j++) {
-                        int index = Integer.parseInt(st.nextToken());
-                        Vector3f value = v[index];
-                        tempColor.set(value.x, value.y, value.z, 1);
-                        BufferUtils.setInBuffer(tempColor, colorBuffer, j);
-                        for (int k = 0; k < maxOffset; k++) {
-                            if (st.hasMoreTokens()) {
-                                st.nextToken();
-                            }
-                        }
-                    }
-                    triMesh.setColorBuffer(colorBuffer);
-                }
-            }
-
-            triMesh.setModelBound(new BoundingBox());
-            triMesh.updateModelBound();
-
-//XXX: not parenting under a node when only one mesh needs to be fixed!! /rherlitz
-//            if (mesh.gettrianglesCount() == 1) {
-//                return triMesh;
-//            }
-
-            parentNode.attachChild(triMesh);
+    private FloatBuffer createBuffer(Semantic semantic, Source<Float> source,
+                                     Geometry geom, int vertexCount) 
+    {
+        // create buffers in the target of a shared mesh
+        if (geom instanceof SharedMesh) {
+            geom = ((SharedMesh) geom).getTarget();
         }
-
-        return parentNode;
+        
+        int vertexSize = 3;
+        switch (semantic) {
+            case COLOR:
+                vertexSize = 4;
+                break;
+            case TEXCOORD:
+                vertexSize = source.getStride();
+                break;
+            case TEXBINORMAL:
+                // not handled
+                return null;
+            case TEXTANGENT:
+                // not handled
+                return null;
+        }
+        
+        int size = vertexCount * vertexSize;
+        FloatBuffer buffer = BufferUtils.createFloatBuffer(size);
+        
+        switch (semantic) {
+            case BINORMAL:
+                geom.setBinormalBuffer(buffer);
+                break;
+            case COLOR:
+                geom.setColorBuffer(buffer);
+                break;
+            case NORMAL:
+                geom.setNormalBuffer(buffer);
+                break;
+            case POSITION:
+                geom.setVertexBuffer(buffer);
+                break;
+            case TANGENT:
+                geom.setTangentBuffer(buffer);
+                break;
+            case TEXCOORD:
+                // find the first empty texture unit (should use set instead?)
+                int i = 0;
+                while (geom.getTextureCoords(i) != null) {
+                    i++;
+                }
+                geom.setTextureCoords(new TexCoords(buffer, source.getStride()), i);
+                break;
+        }
+        
+        return buffer;
     }
-
+    
     /**
-     * TODO: this implementation is a quick hack to import triangles supplied in
-     * polygon form... processPolygonMesh will process the polygons tag from the
-     * mesh section of the COLLADA file. A jME TriMesh is returned that defines
-     * the vertices, indices, normals, texture coordinates and colors.
-     *
-     * @param mesh
-     *            the meshType to process for the trimesh.
-     * @param geom
-     *            the geometryType of the TriMesh to build.
-     * @return the jME tri mesh representing the COLLADA mesh.
-     * @throws Exception
-     *             thrown if there is a problem processing the xml.
+     * Create a vertex writer for the given buffer and source
+     * @param semantic the semantic of the source
+     * @param offset the offset to write to
+     * @param set the set to write to
+     * @param source the source itself
+     * @param buffer the buffer to write to (may be null)
+     * @return a vertex writer to write to the given buffer
      */
-    private Spatial processPolygonMesh(meshType mesh, geometryType geom)
-            throws Exception {
-        HashMap<Integer, ArrayList<MeshVertPair>> vertMap = new HashMap<Integer, ArrayList<MeshVertPair>>();
-        put(geom.getid().toString() + "VertMap", vertMap);
-
-        Node parentNode = new Node(geom.getid().toString());
-
-        for (int triangleIndex = 0; triangleIndex < mesh.getpolygonsCount(); triangleIndex++) {
-            polygonsType poly = mesh.getpolygonsAt(triangleIndex);
-
-            TriMesh triMesh = new TriMesh(geom.getid().toString());
-
-            if (poly.hasmaterial()) {
-                // do not set up materials here -- this has to wait until the
-                // binding has happened in processInstanceMaterials()
-
-                // jonathankap: should extras be processed per mesh or per instance?
-                if (mesh.hasextra()) {
-                    for (int i = 0; i < mesh.getextraCount(); i++) {
-                        try {
-                            ExtraPluginManager.processExtra(triMesh, mesh.getextraAt(i));
-                        } catch (Exception e) {
-                            if (!squelch) {
-                                logger.log(
-                                        Level.INFO,
-                                        "Error processing extra information for mesh",
-                                        e);
-                            }
-                        }
-                    }
-                }
-
-                subMaterialLibrary.put(triMesh, poly.getmaterial().toString());
-            }
-
-            // build the index buffer, this is going to be easy as it's only
-            // 0...N where N is the number of vertices in the model.
-            IntBuffer indexBuffer = BufferUtils.createIntBuffer(poly.getcount()
-                    .intValue() * 3);
-            for (int i = 0; i < indexBuffer.capacity(); i++) {
-                indexBuffer.put(i);
-            }
-            triMesh.setIndexBuffer(indexBuffer);
-            // find the maximum offset to understand the stride
-            int maxOffset = -1;
-            for (int i = 0; i < poly.getinputCount(); i++) {
-                int temp = poly.getinputAt(i).getoffset().intValue();
-                if (maxOffset < temp) {
-                    maxOffset = temp;
-                }
-            }
-            int stride = maxOffset + 1;
-            // next build the other buffers, based on the input semantic
-            for (int i = 0; i < poly.getinputCount(); i++) {
-                if ("VERTEX"
-                        .equals(poly.getinputAt(i).getsemantic().toString())) {
-                    // build the vertex buffer
-                    String key = poly.getinputAt(i).getsource().getValue();
-                    if (key.startsWith("#")) {
-                        key = key.substring(1);
-                    }
-                    Object data = resourceLibrary.get(key);
-                    while (data instanceof String) {
-                        key = (String) data;
-                        if (key.startsWith("#")) {
-                            key = key.substring(1);
-                        }
-                        data = resourceLibrary.get(key);
-                    }
-                    if (data == null) {
-                        logger.warning("Invalid source: " + key);
-                        continue;
-                    }
-                    Vector3f[] v = (Vector3f[]) data;
-                    StringTokenizer st = null;
-                    int vertCount = poly.getcount().intValue() * stride;
-                    FloatBuffer vertBuffer = BufferUtils
-                            .createVector3Buffer(vertCount);
-                    triMesh.setVertexCount(vertCount);
-                    for (int j = 0; j < vertCount; j++) {
-                        if (j % stride == 0) {
-                            st = new StringTokenizer(poly.getpAt(j / stride)
-                                    .getValue());
-                        }
-                        // need to store the index in p to what j is for later
-                        // processing the index to the vert for bones
-                        int vertKey = Integer.parseInt(st.nextToken());
-                        ArrayList<MeshVertPair> storage = vertMap.get(Integer
-                                .valueOf(vertKey));
-                        if (storage == null) {
-                            storage = new ArrayList<MeshVertPair>();
-                            storage.add(new MeshVertPair(triangleIndex, j));
-                            vertMap.put(Integer.valueOf(vertKey), storage);
-                        } else {
-                            storage.add(new MeshVertPair(triangleIndex, j));
-                        }
-                        BufferUtils.setInBuffer(v[vertKey], vertBuffer, j);
-                        for (int k = 0; k < maxOffset; k++) {
-                            st.nextToken();
-                        }
-                    }
-                    triMesh.setVertexBuffer(vertBuffer);
-                } else if ("NORMAL".equals(poly.getinputAt(i).getsemantic()
-                        .toString())) {
-                    // build the normal buffer
-                    String key = poly.getinputAt(i).getsource().getValue();
-                    if (key.startsWith("#")) {
-                        key = key.substring(1);
-                    }
-                    Object data = resourceLibrary.get(key);
-                    while (data instanceof String) {
-                        key = (String) data;
-                        if (key.startsWith("#")) {
-                            key = key.substring(1);
-                        }
-                        data = resourceLibrary.get(key);
-                    }
-                    if (data == null) {
-                        logger.warning("Invalid source: " + key);
-                        continue;
-                    }
-                    Vector3f[] v = (Vector3f[]) data;
-                    StringTokenizer st = null;
-                    int normCount = poly.getcount().intValue() * stride;
-                    FloatBuffer normBuffer = BufferUtils
-                            .createVector3Buffer(normCount);
-                    int offset = poly.getinputAt(i).getoffset().intValue();
-                    for (int j = 0; j < offset; j++) {
-                        if (j % stride == 0) {
-                            st = new StringTokenizer(poly.getpAt(j / stride)
-                                    .getValue());
-                        }
-                        st.nextToken();
-                    }
-                    for (int j = 0; j < normCount; j++) {
-                        if (j % stride == 0) {
-                            st = new StringTokenizer(poly.getpAt(j / stride)
-                                    .getValue());
-                        }
-                        int index = Integer.parseInt(st.nextToken());
-                        if (index < v.length)
-                            BufferUtils.setInBuffer(v[index], normBuffer, j);
-                        for (int k = 0; k < maxOffset; k++) {
-                            if (st.hasMoreTokens()) {
-                                st.nextToken();
-                            }
-                        }
-                    }
-                    triMesh.setNormalBuffer(normBuffer);
-                } else if ("TANGENT".equals(poly.getinputAt(i).getsemantic()
-                        .toString())) {
-                    // build the tangent buffer
-                    String key = poly.getinputAt(i).getsource().getValue();
-                    if (key.startsWith("#")) {
-                        key = key.substring(1);
-                    }
-                    Object data = resourceLibrary.get(key);
-                    while (data instanceof String) {
-                        key = (String) data;
-                        if (key.startsWith("#")) {
-                            key = key.substring(1);
-                        }
-                        data = resourceLibrary.get(key);
-                    }
-                    if (data == null) {
-                        logger.warning("Invalid source: " + key);
-                        continue;
-                    }
-                    Vector3f[] v = (Vector3f[]) data;
-                    StringTokenizer st = new StringTokenizer(poly.getp()
-                            .getValue());
-                    int normCount = poly.getcount().intValue() * 3;
-                    FloatBuffer normBuffer = BufferUtils
-                            .createVector3Buffer(normCount);
-                    int offset = poly.getinputAt(i).getoffset().intValue();
-                    for (int j = 0; j < offset; j++) {
-                        st.nextToken();
-                    }
-                    for (int j = 0; j < normCount; j++) {
-                        int index = Integer.parseInt(st.nextToken());
-                        if (index < v.length)
-                            BufferUtils.setInBuffer(v[index], normBuffer, j);
-                        for (int k = 0; k < maxOffset; k++) {
-                            if (st.hasMoreTokens()) {
-                                st.nextToken();
-                            }
-                        }
-                    }
-                    triMesh.setTangentBuffer(normBuffer);
-                    globalLogger.info("setting tangent buffer: " + normBuffer);
-                } else if ("BINORMAL".equals(poly.getinputAt(i).getsemantic()
-                        .toString())) {
-                    // build the tangent buffer
-                    String key = poly.getinputAt(i).getsource().getValue();
-                    if (key.startsWith("#")) {
-                        key = key.substring(1);
-                    }
-                    Object data = resourceLibrary.get(key);
-                    while (data instanceof String) {
-                        key = (String) data;
-                        if (key.startsWith("#")) {
-                            key = key.substring(1);
-                        }
-                        data = resourceLibrary.get(key);
-                    }
-                    if (data == null) {
-                        logger.warning("Invalid source: " + key);
-                        continue;
-                    }
-                    Vector3f[] v = (Vector3f[]) data;
-                    StringTokenizer st = new StringTokenizer(poly.getp()
-                            .getValue());
-                    int normCount = poly.getcount().intValue() * 3;
-                    FloatBuffer normBuffer = BufferUtils
-                            .createVector3Buffer(normCount);
-                    int offset = poly.getinputAt(i).getoffset().intValue();
-                    for (int j = 0; j < offset; j++) {
-                        st.nextToken();
-                    }
-                    for (int j = 0; j < normCount; j++) {
-                        int index = Integer.parseInt(st.nextToken());
-                        if (index < v.length)
-                            BufferUtils.setInBuffer(v[index], normBuffer, j);
-                        for (int k = 0; k < maxOffset; k++) {
-                            if (st.hasMoreTokens()) {
-                                st.nextToken();
-                            }
-                        }
-                    }
-                    triMesh.setBinormalBuffer(normBuffer);
-                } else if ("TEXCOORD".equals(poly.getinputAt(i).getsemantic()
-                        .toString())) {
-                    // build the texture buffer
-                    String key = poly.getinputAt(i).getsource().getValue();
-                    if (key.startsWith("#")) {
-                        key = key.substring(1);
-                    }
-                    Object data = resourceLibrary.get(key);
-                    while (data instanceof String) {
-                        key = (String) data;
-                        if (key.startsWith("#")) {
-                            key = key.substring(1);
-                        }
-                        data = resourceLibrary.get(key);
-                    }
-                    if (data == null) {
-                        logger.warning("Invalid source: " + key);
-                        continue;
-                    }
-                    Vector3f[] v = (Vector3f[]) data;
-                    StringTokenizer st = new StringTokenizer(poly.getp()
-                            .getValue());
-                    int texCount = poly.getcount().intValue() * stride;
-                    FloatBuffer texBuffer = BufferUtils
-                            .createVector2Buffer(texCount);
-                    int offset = poly.getinputAt(i).getoffset().intValue();
-                    int set = poly.getinputAt(i).getset().intValue();
-                    for (int j = 0; j < offset; j++) {
-                        if (j % stride == 0) {
-                            st = new StringTokenizer(poly.getpAt(j / stride)
-                                    .getValue());
-                        }
-                        st.nextToken();
-                    }
-                    // Keep a max to set the wrap mode (if it's 1, clamp, if
-                    // it's > 1 wrap it)
-                    float maxX = -1, maxY = -1;
-                    float minX = 1, minY = 1;
-                    Vector2f tempTexCoord = new Vector2f();
-                    for (int j = 0; j < texCount; j++) {
-                        if (j % stride == 0) {
-                            st = new StringTokenizer(poly.getpAt(j / stride)
-                                    .getValue());
-                        }
-                        int index = Integer.parseInt(st.nextToken());
-                        Vector3f value = v[index];
-                        if (value.x > maxX) {
-                            maxX = value.x;
-                        }
-                        if (value.x < minX) {
-                            minX = value.x;
-                        }
-                        if (value.y > maxY) {
-                            maxY = value.y;
-                        }
-                        if (value.y < minY) {
-                            minY = value.y;
-                        }
-                        tempTexCoord.set(value.x, value.y);
-                        BufferUtils.setInBuffer(tempTexCoord, texBuffer, j);
-                        for (int k = 0; k < maxOffset; k++) {
-                            if (st.hasMoreTokens()) {
-                                st.nextToken();
-                            }
-                        }
-                    }
-                    int unit;
-                    if (set == 0) {
-                        unit = 0;
-                    } else {
-                        unit = set - 1;
-                    }
-                    triMesh.setTextureCoords(new TexCoords(texBuffer,2), unit);
-                    // Set the wrap mode, check if the mesh has a texture
-                    // first, if not
-                    // check the geometry.
-                    // Then, based on the texture coordinates, we may need to
-                    // change it from the
-                    // default.
-
-                    //XXX: not a good way of doing it
-//                    TextureState ts = (TextureState) triMesh
-//                            .getRenderState(RenderState.RS_TEXTURE);
-//                    if (ts == null) {
-//                        ts = (TextureState) triMesh
-//                                .getRenderState(RenderState.RS_TEXTURE);
-//                    }
-//                    if (ts != null) {
-//                        Texture t = ts.getTexture(unit);
-//                        if (t != null) {
-//                            if (maxX > 1 || minX < 0) {
-//                                t.setWrap(Texture.WrapAxis.S, Texture.WrapMode.Repeat);
-//                            } else {
-//                                t.setWrap(Texture.WrapAxis.S, Texture.WrapMode.Clamp);
-//                            }
-//
-//                            if (maxY > 1 || minY < 0) {
-//                                t.setWrap(Texture.WrapAxis.T, Texture.WrapMode.Repeat);
-//                            } else {
-//                                t.setWrap(Texture.WrapAxis.T, Texture.WrapMode.Clamp);
-//                            }
-//                        }
-//                    }
-                } else if ("COLOR".equals(poly.getinputAt(i).getsemantic()
-                        .toString())) {
-                    // build the texture buffer
-                    String key = poly.getinputAt(i).getsource().getValue();
-                    if (key.startsWith("#")) {
-                        key = key.substring(1);
-                    }
-                    Object data = resourceLibrary.get(key);
-                    while (data instanceof String) {
-                        key = (String) data;
-                        if (key.startsWith("#")) {
-                            key = key.substring(1);
-                        }
-                        data = resourceLibrary.get(key);
-                    }
-                    Vector3f[] v = (Vector3f[]) data;
-                    StringTokenizer st = new StringTokenizer(poly.getp()
-                            .getValue());
-                    int colorCount = poly.getcount().intValue() * 3;
-                    FloatBuffer colorBuffer = BufferUtils
-                            .createColorBuffer(colorCount);
-                    int offset = poly.getinputAt(i).getoffset().intValue();
-                    for (int j = 0; j < offset; j++) {
-                        st.nextToken();
-                    }
-                    ColorRGBA tempColor = new ColorRGBA();
-                    for (int j = 0; j < colorCount; j++) {
-                        int index = Integer.parseInt(st.nextToken());
-                        Vector3f value = v[index];
-                        tempColor.set(value.x, value.y, value.z, 1);
-                        BufferUtils.setInBuffer(tempColor, colorBuffer, j);
-                        for (int k = 0; k < maxOffset; k++) {
-                            if (st.hasMoreTokens()) {
-                                st.nextToken();
-                            }
-                        }
-                    }
-                    triMesh.setColorBuffer(colorBuffer);
-                }
-            }
-
-            triMesh.setModelBound(new BoundingBox());
-            triMesh.updateModelBound();
-
-            if (mesh.gettrianglesCount() == 1) {
-                return triMesh;
-            }
-
-            parentNode.attachChild(triMesh);
+    private VertexWriter createVertexWriter(Semantic semantic, int offset,
+            int set, Source<Float> source, FloatBuffer buffer)
+    {
+        // handle the null case with a placeholder
+        if (buffer == null) {
+            return new NullVertexWriter(offset, set);
         }
-
-        return parentNode;
-    }
-
-    /**
-     * processLines will process the lines tag from the mesh section of the
-     * COLLADA file. A jME Line is returned that defines the vertices, normals,
-     * texture coordinates and colors.
-     *
-     * @param mesh
-     *            the meshType to process for the lines.
-     * @param geom
-     *            the geomType for the lines
-     * @return the jME tri mesh representing the COLLADA mesh.
-     */
-    private Spatial processLines(meshType mesh, geometryType geom) {
-        if (!squelch && !reportedLines) {
-            logger.warning("Line are not supported.");
-            reportedLines = true;
+        
+        // handle particular types
+        switch (semantic) {
+            case COLOR:
+                return new ColorBufferWriter(offset, set, source, buffer);
+            default:
+                return new FloatBufferWriter(offset, set, source, buffer);
         }
-        return null;
     }
 
     /**
@@ -4274,7 +3064,7 @@ public class ThreadSafeColladaImporter {
     private void processVisualSceneLibrary(library_visual_scenesType libScene)
             throws Exception {
         for (int i = 0; i < libScene.getvisual_sceneCount(); i++) {
-            Node scene = new Node(libScene.getvisual_sceneAt(i).getid()
+            ColladaNode scene = new ColladaNode(libScene.getvisual_sceneAt(i).getid()
                     .toString());
             put(scene.getName(), scene);
             processVisualScene(libScene.getvisual_sceneAt(i), scene);
@@ -4296,14 +3086,6 @@ public class ThreadSafeColladaImporter {
             throws Exception {
         for (int i = 0; i < scene.getnodeCount(); i++) {
             processNode(scene.getnodeAt(i), node);
-        }
-        for (int i = 0; i < node.getQuantity(); i++) {
-            Spatial s = node.getChild(i);
-            if (s instanceof Bone) {
-                s.updateGeometricState(0, true);
-                s.removeFromParent();
-                node.attachChild(s);
-            }
         }
     }
 
@@ -4327,68 +3109,89 @@ public class ThreadSafeColladaImporter {
             childName = xmlNode.getname().toString();
         }
 
-        Node child = null;
+        ColladaNode child = null;
         if (xmlNode.hastype() && "JOINT".equals(xmlNode.gettype().toString())
-                && (xmlNode.hassid() || xmlNode.hasid())) {
-            String key = (xmlNode.hassid() ? xmlNode.getsid() : xmlNode.getid())
-                    .toString();
-            child = (Bone) resourceLibrary.get(key);
-            if (child == null) {
-                child = new Bone(key);
-                put(key, child);
-                if (!squelch) {
-                    logger.warning("Bone " + key
-                            + " is not attached to any vertices.");
-                    }
-                }
-            if (!(parent instanceof Bone)) {
-                if (skeletonNames == null) {
-                    skeletonNames = new ArrayList<String>();
-                    }
-                skeletonNames.add(key);
-                }
+                && (xmlNode.hassid() || xmlNode.hasid())) 
+        {
+            String id = xmlNode.getid().getValue();
+            String sid = xmlNode.getsid().getValue();
+            
+            if (id == null) {
+                id = sid;
             }
+            
+            child = new ColladaJointNode(id, sid);
+            
+            // if the parent is not a joint, then this node is the root of
+            // a skeleton
+            if (!(parent instanceof ColladaJointNode) && xmlNode.hasid()) {
+                skeletons.put(id, (ColladaJointNode) child);
+            }
+        }
+        
         if (xmlNode.hasextra()) {
             for (int i = 0; i < xmlNode.getextraCount(); i++) {
                 try {
                     Object o = ExtraPluginManager.processExtra(childName,
                             xmlNode.getextraAt(i));
-                    if (o instanceof Node) {
-                        child = (Node) o;
-                        }
-                    } catch (Exception e) {
+                    if (o instanceof ColladaNode) {
+                        child = (ColladaNode) o;
+                    }
+                } catch (Exception e) {
                     if (!squelch) {
-                        logger.log(Level.WARNING,
-                                "Error processing extra information", e);
-                        }
+                        logger.log(Level.WARNING, "Error processing extra information", e);
                     }
                 }
             }
+        }
+        
         if (child == null) {
-            child = new Node(childName);
+            child = new ColladaNode(childName);
+        }
+        
+        // first parse all translations. We have to do this by dom node since
+        // it is critical that they be parsed in order
+        Element elem = (Element) xmlNode.getDomNode();
+        NodeList elemChildren = elem.getChildNodes();
+        for (int i = 0; i < elemChildren.getLength(); i++) {
+            org.w3c.dom.Node elemChild = elemChildren.item(i);
+            if (!(elemChild instanceof Element)) {
+                continue;
             }
-
-// Morris Ford - 20100324 - trying to get the animation controllers into the model
-// This code looks for animation controllers and tries to match them to the node being processed
-
-        ArrayList animations = getControllerNames();
-        if(animations != null)
-            {
-            AnimationController ac = new AnimationController();
-            for(int i = 0; i < animations.size(); i++)
-                {
-                System.out.println(" -->>-->> animation " + animations.get(i).toString());
-                String theBoneAniName = (String)animations.get(i);
-
-                if(theBoneAniName.contains(childName))
-                    {
-                    BoneAnimation theBoneAni = getAnimationController(theBoneAniName);
-                    ac.addAnimation(theBoneAni);
-                    }
-                }
-            child.addController(ac);
+            
+            if (elemChild.getNodeName().equals("translate")) {
+                TargetableFloat3 trans = xmlNode.gettranslateValueAtCursor(elemChild);
+                float[] floats = getFloats(3, trans.getValue().toString());
+                 
+                child.addTransform(new TranslateTransform(trans.getsid().getValue(), 
+                                      new Vector3f(floats[0], floats[1], floats[2])));
+                 
+            } else if (elemChild.getNodeName().equals("rotate")) {
+                rotateType rot = xmlNode.getrotateValueAtCursor(elemChild);
+                float[] floats = getFloats(4, rot.getValue().toString());
+                
+                child.addTransform(new RotateTransform(rot.getsid().toString(), 
+                        new Vector3f(floats[0], floats[1], floats[2]), floats[3]));
+                
+            } else if (elemChild.getNodeName().equals("scale")) {
+                TargetableFloat3 scale = xmlNode.getscaleValueAtCursor(elemChild);
+                float[] floats = getFloats(3, scale.getValue().toString());
+                 
+                child.addTransform(new ScaleTransform(scale.getsid().getValue(), 
+                                      new Vector3f(floats[0], floats[1], floats[2])));
+                
+            } else if (elemChild.getNodeName().equals("matrix")) {
+                matrixType mat = xmlNode.getmatrixValueAtCursor(elemChild);
+                float[] floats = getFloats(16, mat.getValue().toString());
+                
+                // matrix from Collada is in row-major order
+                Matrix4f tmat = new Matrix4f();
+                tmat.set(floats, true);
+                child.addTransform(new MatrixTransform(mat.getsid().toString(), tmat));
             }
-
+            
+        }
+        
         parent.attachChild(child);
         
         // only add the node if it has a global identifier, otherwise we could
@@ -4424,90 +3227,7 @@ public class ThreadSafeColladaImporter {
                 processInstanceLight(xmlNode.getinstance_lightAt(i), child);
             }
         }
-        // parse translation
-        if (xmlNode.hastranslate()) {
-            Vector3f translate = new Vector3f();
-            StringTokenizer st = new StringTokenizer(xmlNode.gettranslate()
-                    .getValue().toString());
-            translate.x = Float.parseFloat(st.nextToken());
-            translate.y = Float.parseFloat(st.nextToken());
-            translate.z = Float.parseFloat(st.nextToken());
-            child.setLocalTranslation(translate);
-        }
-        if (xmlNode.hasrotate()) {
-            Quaternion rotation = null;
-            for (int i = 0; i < xmlNode.getrotateCount(); i++) {
-                Quaternion temp = new Quaternion();
-                Vector3f axis = new Vector3f();
-                StringTokenizer st = new StringTokenizer(xmlNode.getrotateAt(i)
-                        .getValue().toString());
-                axis.x = Float.parseFloat(st.nextToken());
-                axis.y = Float.parseFloat(st.nextToken());
-                axis.z = Float.parseFloat(st.nextToken());
-                axis.normalizeLocal();
-                float angle = Float.parseFloat(st.nextToken());
-                angle *= FastMath.DEG_TO_RAD;
-                temp.fromAngleNormalAxis(angle, axis);
-                if (rotation == null) {
-                    rotation = new Quaternion();
-                    rotation.set(temp);
-                } else {
-                    rotation.multLocal(temp);
-                }
-            }
-            child.setLocalRotation(rotation);
-        }
-        if (xmlNode.hasmatrix()) {
-            Matrix4f tm = new Matrix4f();
-            StringTokenizer st = new StringTokenizer(xmlNode.getmatrix()
-                    .getValue().toString());
-            float[] data = new float[16];
-            for (int x = 0; x < 16; x++) {
-                data[x] = Float.parseFloat(st.nextToken());
-            }
-            tm.set(data, true); // collada matrices are in row order.
-            child.setLocalTranslation(tm.toTranslationVector());
-            // find scale
-            Vector3f vCol1 = new Vector3f(tm.m00, tm.m10, tm.m20);
-            Vector3f vCol2 = new Vector3f(tm.m01, tm.m11, tm.m21);
-            Vector3f vCol3 = new Vector3f(tm.m02, tm.m12, tm.m22);
-            float scaleX = vCol1.length();
-            float scaleY = vCol2.length();
-            float scaleZ = vCol3.length();
-            child.setLocalScale(new Vector3f(scaleX, scaleY, scaleZ));
-            Matrix3f rm = new Matrix3f();
-            rm.m00 = tm.m00 / scaleX;
-            rm.m10 = tm.m10 / scaleX;
-            rm.m20 = tm.m20 / scaleX;
-
-            rm.m01 = tm.m01 / scaleY;
-            rm.m11 = tm.m11 / scaleY;
-            rm.m21 = tm.m21 / scaleY;
-
-            rm.m02 = tm.m02 / scaleZ;
-            rm.m12 = tm.m12 / scaleZ;
-            rm.m22 = tm.m22 / scaleZ;
-            Quaternion q = new Quaternion().fromRotationMatrix(rm);
-            
-            // OWL issue #187 make sure to normalize rotation to generate
-            // a valid child rotation
-            q.normalize();
-            
-            //Quaternion q = tm.toRotationQuat();
-            //float scale = FastMath.sqrt(q.norm());
-            //System.out.println(scale);
-            //q.normalize();
-            child.setLocalRotation(q);
-        }
-        if (xmlNode.hasscale()) {
-            Vector3f scale = new Vector3f();
-            StringTokenizer st = new StringTokenizer(xmlNode.getscale()
-                    .getValue().toString());
-            scale.x = Float.parseFloat(st.nextToken());
-            scale.y = Float.parseFloat(st.nextToken());
-            scale.z = Float.parseFloat(st.nextToken());
-            child.setLocalScale(scale);
-        }
+        
         // parse subnodes
         if (xmlNode.hasnode()) {
             for (int i = 0; i < xmlNode.getnodeCount(); i++) {
@@ -4548,10 +3268,11 @@ public class ThreadSafeColladaImporter {
         if (key.startsWith("#")) {
             key = key.substring(1);
         }
-        LightNode ln = (LightNode) resourceLibrary.get(key);
-        if (ln != null) {
-            node.attachChild(ln);
-        }
+//        LightNode ln = (LightNode) resourceLibrary.get(key);
+//        if (ln != null) {
+//            node.attachChild(ln);
+//        }
+        logger.warning("Lights not supported");
     }
 
     /**
@@ -4562,38 +3283,33 @@ public class ThreadSafeColladaImporter {
      * @throws Exception
      */
     private void processInstanceController(instance_controllerType controller,
-            Node node) throws Exception {
+            Node node) throws Exception 
+    {
         String key = controller.geturl().toString();
         if (key.startsWith("#")) {
             key = key.substring(1);
         }
-        SkinNode sNode = (SkinNode) resourceLibrary.get(key);
-        if (sNode != null) {
-            node.attachChild(sNode);
-        } else {
-            if (!squelch) {
-                logger.warning("Instance "
-                        + controller.geturl().toString().substring(1)
-                        + " does not exist.");
+        
+        ColladaControllerNode inst = (ColladaControllerNode) resourceLibrary.get(key);
+        if (inst != null) {
+            // make a copy
+            inst = (ColladaControllerNode) inst.cloneTree();
+            node.attachChild(inst);
+            
+            if (controller.hasbind_material()) {
+                processBindMaterial(controller.getbind_material(), inst);
             }
-        }
-        if (controller.hasskeleton()) {
-            if (controller.getskeletonCount() > 1) {
-                if (!squelch) {
-                    logger.warning("Controller has more than one skeleton.");
+            
+            if (controller.hasskeleton()) {
+                for (int i = 0; i < controller.getskeletonCount(); i++) {
+                    String skelName = controller.getskeletonAt(i).getValue();
+                    if (skelName.startsWith("#")) {
+                        skelName = skelName.substring(1);
+                    }
+                    
+                    inst.addSkeletonName(skelName);
                 }
             }
-            String url = controller.getskeleton().getValue();
-            if (url.startsWith("#")) {
-                url = url.substring(1);
-            }
-            Bone b = (Bone) resourceLibrary.get(url);
-            if (b != null) {
-                sNode.setSkeleton(b);
-            }
-        }
-        if (controller.hasbind_material()) {
-            processBindMaterial(controller.getbind_material(), sNode.getSkins());
         }
     }
 
@@ -4610,15 +3326,12 @@ public class ThreadSafeColladaImporter {
         if (key.startsWith("#")) {
             key = key.substring(1);
         }
-        Spatial spatial = (Spatial) resourceLibrary.get(key);
-        if (spatial != null) {
-
-            if (spatial instanceof Node) {
-                spatial = new SharedNode(key, (Node) spatial);
-            }
-
-
-            parent.attachChild(spatial);
+        
+        ColladaNode inst = (ColladaNode) resourceLibrary.get(key);
+        if (inst != null) {
+            // make a copy
+            inst = inst.cloneTree();
+            parent.attachChild(inst);
         }
     }
 
@@ -4635,19 +3348,15 @@ public class ThreadSafeColladaImporter {
         if (key.startsWith("#")) {
             key = key.substring(1);
         }
-        Spatial spatial = (Spatial) resourceLibrary.get(key);
-        if (spatial != null) {
-
-            if (spatial instanceof TriMesh) {
-                spatial = new SharedMesh(key, (TriMesh) spatial);
-            } else if (spatial instanceof Node) {
-                spatial = new SharedNode(key, (Node) spatial);
-            }
-
+        
+        ColladaNode inst = (ColladaNode) resourceLibrary.get(key);
+        if (inst != null) {
+            // make a copy of the node
+            inst = inst.cloneTree();
+            node.attachChild(inst);
             
-            node.attachChild(spatial);
             if (geometry.hasbind_material()) {
-                processBindMaterial(geometry.getbind_material(), spatial);
+                processBindMaterial(geometry.getbind_material(), inst);
             }
         }
     }
@@ -4667,7 +3376,13 @@ public class ThreadSafeColladaImporter {
         }
         ColladaMaterial cm = (ColladaMaterial) resourceLibrary
                 .get(resourceLibrary.get(key));
-
+        if (cm == null) {
+            // no material found!
+            logger.warning("Could not find material for " + key);
+            return;
+        }
+        
+        
         Spatial target = geomBindTo;
 
         String symbol = material.getsymbol().toString();
@@ -4688,93 +3403,281 @@ public class ThreadSafeColladaImporter {
                 }
             }
         }
+        
+        // copy render states into target object
+        for (RenderState.StateType type : RenderState.StateType.values()) {
+            if (cm.getState(type) != null) {
+                if (type == RenderState.StateType.Blend) {
+                    target.setRenderQueueMode(Renderer.QUEUE_TRANSPARENT);
+                }
+                // clone the state as different mesh's may have
+                // different attributes
+                try {
+                    ByteArrayOutputStream out = new ByteArrayOutputStream();
+                    BinaryExporter.getInstance().save(cm.getState(type), out);
+                    ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
+                    RenderState rs = (RenderState) BinaryImporter.getInstance().load(in);
+                    if (rs instanceof GLSLShaderObjectsState) {
+                        GLSLShaderObjectsState oshader = (GLSLShaderObjectsState) cm.getState(type);
+                        GLSLShaderObjectsState shader = (GLSLShaderObjectsState) rs;
+                        shader.load(oshader.getVertexShader(), oshader.getFragmentShader());
+                    }
+                    target.setRenderState(rs);
+                } catch (IOException e) {
+                    logger.log(Level.WARNING, "Error cloning state", e);
+                }
+            }
+        }
+        
+        // update target render states based on bindings
+        if (target instanceof Geometry) {
+            //System.out.println("Assigning " + cm + " to " + target);
+            Geometry geo = (Geometry) target;
+            for (int i = 0; i < material.getbind_vertex_inputCount(); i++) {
+                String attribute = material.getbind_vertex_inputAt(i).getsemantic().toString();
+                String bufferName = material.getbind_vertex_inputAt(i).getinput_semantic().toString();
+                boolean applyToShader = false;
 
-        if (cm != null) {     
-            if (target instanceof Geometry) {
-                //System.out.println("Assigning " + cm + " to " + target);
-                Geometry geo = (Geometry)target;
-                for (int i = 0; i < material.getbind_vertex_inputCount(); i++) {
-                    String attribute = material.getbind_vertex_inputAt(i).getsemantic().toString();
-                    String bufferName = material.getbind_vertex_inputAt(i).getinput_semantic().toString();
-                    //System.out.println("Setting Attribute: " + attribute + " to " + bufferName);
-                    FloatBuffer fb = null;
-                    if (bufferName.equals("TANGENT")) {
-                        fb = geo.getColorBuffer();
-                        if (geo instanceof SharedMesh) {
-                            ((SharedMesh)geo).getTarget().setColorBuffer(null);
-                        } else {
-                            geo.setColorBuffer(null);
-                        }
-                    } else if (bufferName.equals("BINORMAL")) {
-                        fb = geo.getBinormalBuffer();
-                        if (geo instanceof SharedMesh) {
-                            ((SharedMesh)geo).getTarget().setBinormalBuffer(null);
-                        } else {
-                            geo.setBinormalBuffer(null);
-                        }
-                    } else if (bufferName.equals("TEXCOORD")) {
-                        //System.out.println("Currect TC: " + geo.getTextureCoords().get(0).coords);
+                //System.out.println("Setting Attribute: " + attribute + " to " + bufferName);
+                FloatBuffer fb = null;
+                if (bufferName.equals("TANGENT")) {
+                    fb = geo.getTangentBuffer();
+                    if (geo instanceof SharedMesh) {
+                        ((SharedMesh) geo).getTarget().setTangentBuffer(null);
+                    } else {
+                        geo.setTangentBuffer(null);
+                    }
+                    applyToShader = true;
+                } else if (bufferName.equals("BINORMAL")) {
+                    fb = geo.getBinormalBuffer();
+                    if (geo instanceof SharedMesh) {
+                        ((SharedMesh) geo).getTarget().setBinormalBuffer(null);
+                    } else {
+                        geo.setBinormalBuffer(null);
+                    }
+                    applyToShader = true;
+                } else if (bufferName.equals("TEXCOORD")) {
+                    //System.out.println("Currect TC: " + geo.getTextureCoords().get(0).coords);
+                    
+                    // what texture unit are the texture coordinates in?
+                    int coordsUnit = 0;
+                    if (material.getbind_vertex_inputAt(i).hasinput_set()) {
+                        coordsUnit = material.getbind_vertex_inputAt(i).getinput_set().intValue();
                     }
 
-                    GLSLShaderObjectsState shader = (GLSLShaderObjectsState)cm.getState(RenderState.StateType.GLSLShaderObjects);
+                    // what texture unit is the texture image in?
+                    int imageUnit = cm.getTextureRef(attribute);
+                    
+                    // if they are different, we need to do something. We choose
+                    // to move the image into the unit corresponding to the
+                    // coordinates
+                    if (coordsUnit != imageUnit) {
+                        TextureState ts = (TextureState) 
+                                geo.getRenderState(RenderState.StateType.Texture);
+                        
+                        // get a reference to each texture
+                        Texture it = ts.getTexture(imageUnit);
+                        Texture ct = ts.getTexture(coordsUnit);
+                        
+                        // swap the textures
+                        ts.setTexture(it, coordsUnit);
+                        ts.setTexture(ct, imageUnit);
+                    }
+                }
+
+                if (applyToShader) {
+                    GLSLShaderObjectsState shader = (GLSLShaderObjectsState) 
+                            geo.getRenderState(RenderState.StateType.GLSLShaderObjects);
                     if (shader != null && fb != null) {
                         shader.setAttributePointer(attribute, 3, false, 0, fb);
                     }
                 }
-
-                MaterialState ms = (MaterialState)cm.getState(RenderState.StateType.Material);
-                if (ms != null) {
-                    ColorRGBA diffuse = ms.getDiffuse();
-                    ColorRGBA c = new ColorRGBA(diffuse.r, diffuse.g, diffuse.b, diffuse.a);
-                    geo.setDefaultColor(c);
-                }
             }
 
-            for (RenderState.StateType type : RenderState.StateType.values()) {
-                if (cm.getState(type) != null) {
-                    if (type == RenderState.StateType.Blend) {
-                        target.setRenderQueueMode(Renderer.QUEUE_TRANSPARENT);
-                    }
-                    // clone the state as different mesh's may have
-                    // different
-                    // attributes
-                    try {
-                        ByteArrayOutputStream out = new ByteArrayOutputStream();
-                        BinaryExporter.getInstance().save(cm.getState(type), out);
-                        ByteArrayInputStream in = new ByteArrayInputStream(out
-                                .toByteArray());
-                        RenderState rs = (RenderState) BinaryImporter
-                                .getInstance().load(in);
-                        if (rs instanceof GLSLShaderObjectsState) {
-                            GLSLShaderObjectsState oshader = (GLSLShaderObjectsState) cm.getState(type);
-                            GLSLShaderObjectsState shader = (GLSLShaderObjectsState)rs;
-                            shader.load(oshader.getVertexShader(), oshader.getFragmentShader());
-                        }
-                        target.setRenderState(rs);
-                    } catch (IOException e) {
-                        logger.log(Level.WARNING, "Error cloning state", e);
-                    }
-                }
+            MaterialState ms = (MaterialState) cm.getState(RenderState.StateType.Material);
+            if (ms != null) {
+                ColorRGBA diffuse = ms.getDiffuse();
+                ColorRGBA c = new ColorRGBA(diffuse.r, diffuse.g, diffuse.b, diffuse.a);
+                geo.setDefaultColor(c);
             }
-
-            ArrayList<Controller> cList = cm.getControllerList();
-            if (cList != null) {
-                for (int c = 0; c < cList.size(); c++) {
-                    if (cList.get(c) instanceof TextureKeyframeController) {
-                        TextureState ts = (TextureState) target.getRenderState(RenderState.StateType.Texture);
-                        if (ts != null) {
-                            // allow wrapping, as animated textures will
-                            // almost always need it.
-                            ts.getTexture().setWrap(Texture.WrapAxis.S, Texture.WrapMode.Repeat);
-                            ts.getTexture().setWrap(Texture.WrapAxis.T, Texture.WrapMode.Repeat);
-                            ((TextureKeyframeController) cList.get(c)).setTexture(ts.getTexture());
-                        }
-                    }
-                }
-            }
-        }
+        }        
     }
-
+    
+    /**
+     * getFloats splits a string into an array of floats
+     *
+     * @param count
+     *            the number of floats to process
+     * @param floatList
+     *            the string to parse
+     * @return an array of floats found by splitting the string on spaces
+     *            and parsing the result with Float.parseFloat()
+     */
+    private static float[] getFloats(int count, String floatList) {
+        float[] out = new float[count];
+        
+        Matcher m = NOT_SPACE.matcher(floatList);
+        int i = 0;
+        while (m.find() && i < count) {
+            out[i++] = Float.parseFloat(m.group());
+        }
+        
+        return out;
+    }
+    
+    /**
+     * getInts splits a string into an array of ints
+     *
+     * @param count
+     *            the number of ints to process
+     * @param intList
+     *            the string to parse
+     * @return an array of ints found by splitting the string on spaces
+     *            and parsing the result with Integer.parseInt()
+     */
+    private static int[] getInts(int count, String intList) {
+        int[] out = new int[count];
+        
+        Matcher m = NOT_SPACE.matcher(intList);
+        int i = 0;
+        while (m.find() && i < count) {
+            out[i++] = Integer.parseInt(m.group());
+        }
+        
+        return out;
+    }
+    
+    /**
+     * getInts splits a string into an array of ints
+     *
+     * @param intList
+     *            the string to parse
+     * @return an array of ints found by splitting the string on spaces
+     *            and parsing the result with Integer.parseInt()
+     */
+    private static int[] getInts(String intList) {
+        List<Integer> l = new ArrayList<Integer>();
+        
+        Matcher m = NOT_SPACE.matcher(intList);
+        while (m.find()) {
+            l.add(Integer.valueOf(m.group()));
+        }
+        
+        int[] out = new int[l.size()];
+        for (int i = 0; i < l.size(); i++) {
+            out[i] = l.get(i);
+        }
+        return out;
+    }
+    
+    /**
+     * getStrings splits a string into an array of strings
+     * 
+     * @param count
+     *            the number of strings to process
+     * @param stringList
+     *             the string to parse
+     * @return an array of strings found by splitting the string on spaces
+     */
+    private static String[] getStrings(int count, String strList) {
+        String[] out = new String[count];
+        
+        // we can't use split() here because split will return an empty list
+        // if there are no spaces in a one element list
+        Matcher m = NOT_SPACE.matcher(strList);
+        int i = 0;
+        while (m.find() && i < count) {
+            out[i++] = m.group();
+        }
+        
+        return out;
+    }
+    
+     /**
+     * getBooleans splits a string into an array of booleans
+     *
+     * @param count
+     *            the number of booleans to process
+     * @param boolList
+     *            the string to parse
+     * @return an array of booleans found by splitting the string on spaces
+     *            and parsing the result with Boolean.parseBoolean()
+     */
+    private static boolean[] getBooleans(int count, String boolList) {
+        boolean[] out = new boolean[count];
+        
+        Matcher m = NOT_SPACE.matcher(boolList);
+        int i = 0;
+        while (m.find() && i < count) {
+            out[i++] = Boolean.parseBoolean(m.group());
+        }
+        
+        return out;
+    }
+    
+    /**
+     * Get a UV from a float source (with stride 2)
+     * @param index
+     *          the index of the UV to get
+     * @return a Vector2f constructed from the data
+     */
+    private static Vector2f getUVAt(Source<Float> source, int index) {
+        Vector2f out = new Vector2f();
+        out.x = source.get(index, 0);
+        out.y = source.get(index, 1);
+        
+        return out;
+    }
+    
+    /**
+     * Get a vertex from a float source (with stride 3)
+     * @param index
+     *          the index of the vertex to get
+     * @return a Vector3f constructed from the data
+     */
+    private static Vector3f getVertexAt(Source<Float> source, int index) {
+        Vector3f out = new Vector3f();
+        out.x = source.get(index, 0);
+        out.y = source.get(index, 1);
+        out.z = source.get(index, 2);
+        
+        return out;
+    }
+    
+    /**
+     * Get a color from a float source (with stride 4)
+     * @param index
+     *          the index of the color to get
+     * @return a color constructed from the data
+     */
+    private static ColorRGBA getColorAt(Source<Float> source, int index) {
+        ColorRGBA out = new ColorRGBA();
+        out.r = source.get(index, 0);
+        out.g = source.get(index, 1);
+        out.b = source.get(index, 2);
+        out.a = source.get(index, 3);
+        
+        return out;
+    }
+    
+    /**
+     * Get a matrix from a float source (with stride 16)
+     * @param index
+     *          the index of the matrix to get
+     * @return a matrix constructed from the data
+     */
+    private static Matrix4f getMatrixAt(Source<Float> source, int index) {
+        Matrix4f out = new Matrix4f();
+        float[] floats = new float[16];
+        for (int i = 0; i < 16; i++) {
+            floats[i] = source.get(index, i);
+        }
+        
+        // data is stored in row-major order
+        out.set(floats, true);
+        return out;
+    }
+    
     /**
      * getColor uses a string tokenizer to parse the value of a colorType into a
      * ColorRGBA type used internally by jME.
@@ -4783,7 +3686,7 @@ public class ThreadSafeColladaImporter {
      *            the colorType to parse (RGBA format).
      * @return the ColorRGBA object to be used by jME.
      */
-    private ColorRGBA getColor(colorType color) {
+    private static ColorRGBA getColor(colorType color) {
         ColorRGBA out = new ColorRGBA();
         StringTokenizer st = new StringTokenizer(color.getValue().toString());
         out.r = Float.parseFloat(st.nextToken());
@@ -4792,25 +3695,50 @@ public class ThreadSafeColladaImporter {
         out.a = Float.parseFloat(st.nextToken());
         return out;
     }
-
+    
     /**
-     * MeshVertPair simply contain a mesh index and a vertex index. This defines
-     * where a specific vertex may be found.
+     * Parse a source
      */
-    private class MeshVertPair {
-        public int mesh;
-        public int index;
-
-        /**
-         * MeshVertPair
-         *
-         * @param mesh
-         * @param index
-         */
-        public MeshVertPair(int mesh, int index) {
-            this.mesh = mesh;
-            this.index = index;
+    private static <T> Source<T> getSource(sourceType source) 
+            throws Exception
+    {
+        T[] data = null;
+        int count = source.gettechnique_common().getaccessor().getcount().intValue();
+        int stride = source.gettechnique_common().getaccessor().getstride().intValue();
+        
+        if (source.hasfloat_array()) {
+            data = (T[]) new Float[count * stride];
+            float[] floats = getFloats(count * stride, 
+                                       source.getfloat_array().getValue().toString());
+            for (int i = 0; i < count * stride; i++) {
+                data[i] = (T) Float.valueOf(floats[i]);
+            }
+        } else if (source.hasint_array()) {
+            data = (T[]) new Integer[count * stride];
+            int[] ints = getInts(count * stride, 
+                                 source.getint_array().getValue().toString());
+            for (int i = 0; i < count * stride; i++) {
+                data[i] = (T) Integer.valueOf(ints[i]);
+            }
+        } else if (source.hasbool_array()) {
+            data = (T[]) new Boolean[count * stride];
+            boolean[] bools = getBooleans(count * stride, 
+                                          source.getbool_array().getValue().toString());
+            for (int i = 0; i < count * stride; i++) {
+                data[i] = (T) Boolean.valueOf(bools[i]);
+            }
+        } else if (source.hasName_array()) {
+            data = (T[]) getStrings(count * stride,
+                                    source.getName_array().getValue().toString());
+        } else if (source.hasIDREF_array()) {
+            data = (T[]) getStrings(count * stride,
+                                    source.getIDREF_array().getValue().toString());
+        } else {
+            throw new IllegalArgumentException("Unsupportd source type for " +
+                                               source.getid().toString());
         }
+        
+        return new Source<T>(source.getid().toString(), count, stride, data);
     }
 
     /**
@@ -4823,14 +3751,14 @@ public class ThreadSafeColladaImporter {
     }
 
     public ThreadSafeColladaImporter getInstance() {
-        return instance;
+        return this;
     }
 
     /**
      * A logger that logs errors per instance of this class and also passes
      * the log messages to the global logger for this class
      */
-    class InstanceLogger {
+    static class InstanceLogger {
 
         private LoaderErrorListener listener = null;
 
@@ -4869,6 +3797,553 @@ public class ThreadSafeColladaImporter {
         public void error(Level level, String msg, Throwable throwable);
     }
 
+    private static class Source<T> {
+        private final String id;
+        private final int count;
+        private final int stride;
+        private final T[] data;
+        
+        public Source(String id, int count, int stride, T[] data) {
+            this.id = id;
+            this.count = count;
+            this.stride = stride;
+            this.data = data;
+        }
+        
+        public String getId() {
+            return id;
+        }
+        
+        public int getCount() {
+            return count;
+        }
+        
+        public int getStride() {
+            return stride;
+        }
+        
+        // get stride elements at index
+        public T get(int count, int index) {
+            int idx = (count * getStride()) + index;
+            return data[idx];
+        }
+        
+        // fetch all data into an array of size stride
+        public void get(int count, T[] dest) {
+            int idx = (count * getStride());
+            System.arraycopy(data, idx, dest, 0, count);
+        }
+    }
+
+    private static class Vertices {
+        private final String id;
+        private final List<VerticesInput> inputs = new LinkedList<VerticesInput>();
+        
+        public Vertices(String id) {
+            this.id = id;
+        }
+        
+        public String getId() {
+            return id;
+        }
+        
+        public void addInput(VerticesInput input) {
+            inputs.add(input);
+        }
+        
+        public List<VerticesInput> getInputs() {
+            return inputs;
+        }
+    }
+    
+    private static class VerticesInput {
+        private final Semantic semantic;
+        private final Source<Float> source;
+    
+        public VerticesInput(Semantic semantic, Source<Float> source) {
+            this.semantic = semantic;
+            this.source = source;
+        }
+        
+        public Semantic getSemantic() {
+            return semantic;
+        }
+        
+        public Source<Float> getSource() {
+            return source;
+        }
+    }
+    
+    private static abstract class VertexWriter {
+        private final int offset;
+        private final int set;
+        
+        public VertexWriter(int offset, int set) {
+            this.offset = offset;
+            this.set = set;
+        }
+        
+        public int getOffset() {
+            return offset;
+        }
+        
+        public int getSet() {
+            return set;
+        }
+        
+        /**
+         * Write a vertex from the given indices
+         * @param indices the indices
+         */
+        public abstract void writeVertices(int[] indices);
+    }
+    
+    private static class FloatBufferWriter extends VertexWriter {
+        private final Source<Float> source;
+        private final FloatBuffer buffer;
+        
+        public FloatBufferWriter(int offset, int set, Source<Float> source, 
+                                 FloatBuffer buffer) 
+        {
+            super (offset, set);
+            
+            this.source = source;
+            this.buffer = buffer;
+        }
+
+        protected Source<Float> getSource() {
+            return source;
+        }
+        
+        protected FloatBuffer getBuffer() {
+            return buffer;
+        }
+        
+        public void writeVertices(int[] indices) {
+            for (int i = 0; i < indices.length; i++) {
+                for (int j = 0; j < source.getStride(); j++) {
+                    buffer.put(source.get(indices[i], j));
+                }
+            }
+        }
+    }
+    
+    private static class ColorBufferWriter extends FloatBufferWriter {
+        public ColorBufferWriter(int offset, int set, Source<Float> source,
+                                 FloatBuffer buffer)
+        {
+            super (offset, set, source, buffer);
+        }
+        
+        @Override
+        public void writeVertices(int[] indices) {
+            Source<Float> source = getSource();
+            FloatBuffer buffer = getBuffer();
+            
+            // if the source only provides three values, we need to add an
+            // alpha value
+            boolean addAlpha = (source.getStride() == 3);
+            
+            for (int i = 0; i < indices.length; i++) {
+                for (int j = 0; j < source.getStride(); j++) {
+                    buffer.put(source.get(indices[i], j));
+                }
+                
+                if (addAlpha) {
+                    buffer.put(1.0f);
+                }
+            }
+        }
+    }
+    
+    private static class IndexBufferWriter extends VertexWriter {
+        private final IntBuffer buffer;
+        private int count;
+        
+        public IndexBufferWriter(IntBuffer buffer) {
+            super (0, 0);
+            
+            this.buffer = buffer;
+        }
+        
+        public void writeVertices(int[] indices) {
+            for (int i = 0; i < indices.length; i++) {
+                buffer.put(count);
+                count++;
+            }
+        }
+    }
+    
+    private static class VertexIndexWriter extends VertexWriter {
+        private final int[] vertices;
+        int count;
+        
+        public VertexIndexWriter(int offset, int set, int[] vertices) {
+            super (offset, set);
+            
+            this.vertices = vertices;
+        }
+
+        @Override
+        public void writeVertices(int[] indices) {
+            for (int i = 0; i < indices.length; i++) {
+                vertices[count] = indices[i];
+                count++;
+            }
+        }        
+    }
+    
+    private static class NullVertexWriter extends VertexWriter {
+        public NullVertexWriter(int offset, int set) {
+            super (offset, set);
+        }
+        
+        public void writeVertices(int[] indices) {
+            // do nothing
+        }
+    }
+    
+    private static abstract class MeshProcessor {
+        private final String material;
+        private final List<VertexWriter> inputs = new LinkedList<VertexWriter>();
+        
+        private int stride = 0;
+        
+        public MeshProcessor(String material) {
+            this.material = material;
+        }
+        
+        public String getMaterial() {
+            return material;
+        }
+        
+        public void addInput(VertexWriter writer) {
+            inputs.add(writer);
+            
+            // figure out what the maximum offset value is, and set
+            // the stride to that
+            if (writer.getOffset() + 1 > stride) {
+                stride = writer.getOffset() + 1;
+            }
+        }
+        
+        public void process() {
+            while (hasMoreShapes()) {
+                // get all vertices for the current shapes
+                int[] shapes = nextShapes();
+                int totalShapeSize = getShapeSize() * getStride();
+                
+                // for each individual shape
+                for (int s = 0; s < shapes.length; s += totalShapeSize) {
+                
+                    // create an array for each offset value
+                    for (int i = 0; i < getStride(); i++) { 
+                        
+                        // get data for a single shape
+                        int[] indices = new int[getShapeSize()];
+                        for (int j = 0; j < getShapeSize(); j++) {
+                    
+                            int index = s + (j * getStride()) + i;
+                            indices[j] = shapes[index];
+                        }
+                    
+                        // now pass the veritices into any writer at the
+                        // given offset
+                        for (VertexWriter writer : inputs) {
+                            if (writer.getOffset() == i) {
+                                writer.writeVertices(indices);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        protected int getStride() {
+            return stride;
+        }
+        
+        // get the number of shapes that will be written
+        public abstract int getShapeCount();
+        
+        // get the number of vertices per shape (ie 3 for a triangle or
+        // 2 for a line)
+        public abstract int getShapeSize();
+        
+        // return true if there are more shapes to be processed
+        public abstract boolean hasMoreShapes();
+        
+        // get the data for the next set of shapes. The array may contain
+        // data for multiple shapes, for example if a polygon is turned into
+        // triangles
+        public abstract int[] nextShapes();
+    }
+    
+    private static class LinesProcessor extends MeshProcessor {
+        private final int count;
+        private final int[] p;
+        
+        private int cursor = 0;
+        
+        public LinesProcessor(String material, int count, int[] p) {
+            super (material);
+            
+            this.count = count;
+            this.p = p;
+        }
+        
+        public int getShapeCount() {
+            return count;
+        }
+        
+        public int getShapeSize() {
+            return 2;
+        }
+        
+        public boolean hasMoreShapes() {
+            return cursor < count;
+        }
+        
+        public int[] nextShapes() {
+            // three entries for every output
+            int[] out = new int[2 * getStride()];
+        
+            int pIndex = cursor * 2 * getStride();
+            System.arraycopy(p, pIndex, out, 0, 2 * getStride());
+            
+            cursor++;
+            return out;
+        }
+    }
+    
+    private static class TrianglesProcessor extends MeshProcessor {
+        private final int count;
+        private final int[] p;
+        
+        private int cursor = 0;
+        
+        public TrianglesProcessor(String material, int count, int[] p) {
+            super (material);
+            
+            this.count = count;
+            this.p = p;
+        }
+        
+        public int getShapeCount() {
+            return count;
+        }
+        
+        public int getShapeSize() {
+            return 3;
+        }
+        
+        public boolean hasMoreShapes() {
+            return cursor < count;
+        }
+        
+        public int[] nextShapes() {
+            // three entries for every output
+            int[] out = new int[3 * getStride()];
+        
+            int pIndex = cursor * 3 * getStride();
+            System.arraycopy(p, pIndex, out, 0, 3 * getStride());
+            
+            cursor++;
+            return out;
+        }
+    }
+    
+    private static class PolylistProcessor extends MeshProcessor {
+        private final int count;
+        private final int[] vcount;
+        private final int[] p;
+        private final int triangleCount;
+        
+        private int cursor = 0;
+        private int pCursor = 0;
+        
+        public PolylistProcessor(String material, int count, int[] vcount, int[] p) {
+            super (material);
+            
+            this.count = count;
+            this.vcount = vcount;
+            this.p = p;
+            
+            // calculate the number of triangles. For a given polygon, the
+            // number of triangles is the number of vertices minux two
+            int tris = 0;
+            for (int i = 0; i < vcount.length; i++) {
+                tris += vcount[i] - 2;
+            }
+            this.triangleCount = tris;
+        }
+        
+        public int getShapeCount() {
+            return triangleCount;
+        }
+        
+        public int getShapeSize() {
+            return 3;
+        }
+        
+        public boolean hasMoreShapes() {
+            return cursor < count;
+        }
+        
+        public int[] nextShapes() {
+            // we need to triangulate the polygon, so the total number of
+            // entries will be 3 * trianglesPerPolygon * stride
+            int verts = vcount[cursor];
+            int tris = verts - 2;
+            int dataSize = 3 * tris * getStride();
+            int[] out = new int[dataSize];
+        
+            // generate each triangle
+            for (int i = 0; i < tris; i++) {
+                if (i == 0) {
+                    // first triangle is vertices 0, 1, 2
+                    System.arraycopy(p, pCursor, out, 0, 3 * getStride());
+                } else {
+                    // anything after the first is i+1, i+2, 0
+                    int pIndex = pCursor + ((i + 1) * getStride());
+                    int oIndex = i * 3 * getStride();
+                    System.arraycopy(p, pIndex, out, oIndex, 2 * getStride());
+                    System.arraycopy(p, pCursor, out, oIndex + (2 * getStride()), getStride());
+                }
+            }
+            
+            cursor++;
+            pCursor += verts * getStride();
+            return out;
+        }
+    }
+    
+    private interface MeshTypeWrapper {
+        public int getCount() throws Exception;
+        public String getMaterial() throws Exception;
+        public int getInputCount() throws Exception;
+        public InputLocalOffset getInputAt(int index) throws Exception;
+        public MeshProcessor createProcessor() throws Exception;
+        public Geometry createGeometry();
+    }
+    
+    private static class TrianglesMeshType implements MeshTypeWrapper {
+        private final trianglesType tris;
+        
+        public TrianglesMeshType(trianglesType tris) {
+            this.tris = tris;
+        }
+
+        public int getCount() throws Exception {
+            return tris.getcount().intValue();
+        }
+
+        public String getMaterial() throws Exception {
+            if (!tris.hasmaterial()) {
+                return null;
+            }
+            
+            return tris.getmaterial().getValue();
+        }
+
+        public int getInputCount() throws Exception {
+            return tris.getinputCount();
+        }
+
+        public InputLocalOffset getInputAt(int index) throws Exception {
+            return tris.getinputAt(index);
+        }
+
+        public MeshProcessor createProcessor() throws Exception {
+            int[] p = getInts(tris.getp().getValue());
+            return new TrianglesProcessor(getMaterial(), getCount(), p);
+        }
+        
+        public Geometry createGeometry() {
+            ColladaTriMesh out = new ColladaTriMesh();
+            out.setTarget(new MatrixTriMesh());
+            return out;
+        }
+    }
+    
+    private static class LinesMeshType implements MeshTypeWrapper {
+        private final linesType lines;
+        
+        public LinesMeshType(linesType lines) {
+            this.lines = lines;
+        }
+
+        public int getCount() throws Exception {
+            return lines.getcount().intValue();
+        }
+
+        public String getMaterial() throws Exception {
+            if (!lines.hasmaterial()) {
+                return null;
+            }
+            
+            return lines.getmaterial().getValue();
+        }
+
+        public int getInputCount() throws Exception {
+            return lines.getinputCount();
+        }
+
+        public InputLocalOffset getInputAt(int index) throws Exception {
+            return lines.getinputAt(index);
+        }
+
+        public MeshProcessor createProcessor() throws Exception {
+            int[] p = getInts(lines.getp().getValue());
+            return new LinesProcessor(getMaterial(), getCount(), p);
+        }
+        
+        public Geometry createGeometry() {
+            return new ColladaLine();
+        }
+    }
+    
+    private static class PolylistMeshType implements MeshTypeWrapper {
+        private final polylistType polys;
+        
+        public PolylistMeshType(polylistType polys) {
+            this.polys = polys;
+        }
+
+        public int getCount() throws Exception {
+            return polys.getcount().intValue();
+        }
+
+        public String getMaterial() throws Exception {
+            if (!polys.hasmaterial()) {
+                return null;
+            }
+            
+            return polys.getmaterial().getValue();
+        }
+
+        public int getInputCount() throws Exception {
+            return polys.getinputCount();
+        }
+
+        public InputLocalOffset getInputAt(int index) throws Exception {
+            return polys.getinputAt(index);
+        }
+
+        public MeshProcessor createProcessor() throws Exception {
+            int[] vcount = getInts(getCount(), polys.getvcount().getValue());
+            int[] p = getInts(polys.getp().getValue());
+            
+            return new PolylistProcessor(getMaterial(), getCount(), vcount, p);
+        }
+        
+        public Geometry createGeometry() {
+            ColladaTriMesh out = new ColladaTriMesh();
+            out.setTarget(new MatrixTriMesh());
+            return out;
+        }
+    }
+    
     private interface techniqueCOMMONMaterialType {
         com.jmex.xml.xml.Node getOriginal();
 
