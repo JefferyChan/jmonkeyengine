@@ -3474,14 +3474,15 @@ public class ThreadSafeColladaImporter {
                     if (coordsUnit != imageUnit) {
                         TextureState ts = (TextureState) 
                                 geo.getRenderState(RenderState.StateType.Texture);
+                        if (ts != null) {
+                            // get a reference to each texture
+                            Texture it = ts.getTexture(imageUnit);
+                            Texture ct = ts.getTexture(coordsUnit);
                         
-                        // get a reference to each texture
-                        Texture it = ts.getTexture(imageUnit);
-                        Texture ct = ts.getTexture(coordsUnit);
-                        
-                        // swap the textures
-                        ts.setTexture(it, coordsUnit);
-                        ts.setTexture(ct, imageUnit);
+                            // swap the textures
+                            ts.setTexture(it, coordsUnit);
+                            ts.setTexture(ct, imageUnit);
+                        }
                     }
                 }
 
