@@ -61,8 +61,11 @@ public class ColladaLine extends MatrixLine implements ColladaCloneable {
         this.setTextureCoords(copy.getTextureCoords());
         
         this.setDefaultColor(copy.getDefaultColor());
-        copy.getModelBound().clone(this.bound);
         this.setLocalTransform(copy.getLocalTransform().clone());
+        
+        if (copy.getModelBound() != null) {
+            copy.getModelBound().clone(this.bound);
+        }
         
         // copy other line data
         this.setLineWidth(copy.getLineWidth());
