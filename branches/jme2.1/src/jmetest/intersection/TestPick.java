@@ -124,7 +124,7 @@ public class TestPick extends SimpleGame {
 		try {
 			converter.convert(MSFile.openStream(), BO);
 		} catch (IOException e) {
-			logger.info("IO problem writting the file!!!");
+			logger.info("IO problem writing the file!!!");
 			logger.info(e.getMessage());
 			System.exit(0);
 		}
