@@ -22,7 +22,6 @@ public class Fog extends SimpleApplication {
   private boolean enabled = true;
   private FogFilter fog;
 
-  // set default for applets
   public static void main(String[] args) {
     Fog app = new Fog();
     app.start();
@@ -54,7 +53,7 @@ public class Fog extends SimpleApplication {
     /**
      * Add some objects to the scene: A town
      */
-    assetManager.registerLocator("assets/Scenes/town.zip", ZipLocator.class.getName());
+    assetManager.registerLocator("town.zip", ZipLocator.class.getName());
     Spatial scene_geo = assetManager.loadModel("main.scene");
     scene_geo.setLocalScale(2f);
     scene_geo.setLocalTranslation(0, -1, 0);

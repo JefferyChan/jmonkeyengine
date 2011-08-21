@@ -9,15 +9,11 @@ import com.jme3.input.controls.AnalogListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.light.DirectionalLight;
 import com.jme3.math.ColorRGBA;
-import com.jme3.math.FastMath;
-import com.jme3.math.Quaternion;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.post.FilterPostProcessor;
 import com.jme3.post.filters.DepthOfFieldFilter;
-import com.jme3.renderer.queue.RenderQueue.ShadowMode;
-import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 
 /**
@@ -39,7 +35,7 @@ public class DepthOfFieldBlur extends SimpleApplication {
   @Override
   public void simpleInitApp() {
 
-    assetManager.registerLocator("assets/Scenes/town.zip", ZipLocator.class.getName());
+    assetManager.registerLocator("town.zip", ZipLocator.class.getName());
     scene_geo = assetManager.loadModel("main.scene");
     scene_geo.setLocalScale(2f);
     scene_geo.setLocalTranslation(0, -1, 0);
