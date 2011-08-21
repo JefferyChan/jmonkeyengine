@@ -32,7 +32,7 @@ public class PhysicsTestHelper {
         rootNode.addLight(light);
 
 
-        Box floorBox = new Box(240, 0.5f, 240);
+        Box floorBox = new Box(240, 3f, 240);
         floorBox.scaleTextureCoordinates(new Vector2f(50,50));
         Geometry floorGeometry = new Geometry("Floor", floorBox);
         
