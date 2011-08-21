@@ -4,7 +4,6 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.CompoundCollisionShape;
-import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.control.VehicleControl;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
@@ -46,23 +45,21 @@ public class PhysicsVehicle extends SimpleApplication implements ActionListener 
     bulletAppState = new BulletAppState();
     stateManager.attach(bulletAppState);
     viewPort.setBackgroundColor(ColorRGBA.Cyan);
-    //bulletAppState.getPhysicsSpace().enableDebug(assetManager);
     PhysicsTestHelper.createPhysicsTestWorld(rootNode, assetManager, bulletAppState.getPhysicsSpace());
 
     buildPlayer();
 
-    //creating the camera Node
+    //create the camera Node
     camNode = new CameraNode("CamNode", cam);
-    //Setting the direction to Spatial to camera, this means the camera will copy the movements of the Node
+    //Set the direction to Spatial to Camera, i.e. the node controls the movement of the camera 
     camNode.setControlDir(ControlDirection.SpatialToCamera);
-    //attaching the camNode to the teaNode
+    //attach the camNode to the vehicle
     vehicleNode.attachChild(camNode);
-    //setting the local translation of the cam node to move it away from the teanNode a bit
+    //set the local translation of the cam node to move it away from the vehicle
     camNode.setLocalTranslation(new Vector3f(0, 2, -5));
-    //setting the camNode to look at the teaNode
+    //set the camNode to look at the vehicle
     camNode.lookAt(vehicleNode.getLocalTranslation(), Vector3f.UNIT_Y);
-
-    //disabling the flyCam (don't forget that!!)
+    //disable the default flyCam (don't forget that!)
     flyCam.setEnabled(false);
 
     setupKeys();
@@ -77,11 +74,17 @@ public class PhysicsVehicle extends SimpleApplication implements ActionListener 
   }
 
   private void setupKeys() {
-    inputManager.addMapping("Left", new KeyTrigger(KeyInput.KEY_H));
-    inputManager.addMapping("Right", new KeyTrigger(KeyInput.KEY_K));
-    inputManager.addMapping("Accelerate", new KeyTrigger(KeyInput.KEY_U));
-    inputManager.addMapping("Brake", new KeyTrigger(KeyInput.KEY_J));
-    inputManager.addMapping("Reverse", new KeyTrigger(KeyInput.KEY_I));
+    inputManager.clearMappings();
+    inputManager.addMapping("Left", new KeyTrigger(KeyInput.KEY_A),
+            new KeyTrigger(KeyInput.KEY_LEFT));
+    inputManager.addMapping("Right", new KeyTrigger(KeyInput.KEY_D),
+            new KeyTrigger(KeyInput.KEY_RIGHT));
+    inputManager.addMapping("Accelerate", new KeyTrigger(KeyInput.KEY_W),
+            new KeyTrigger(KeyInput.KEY_UP));
+    inputManager.addMapping("Reverse", new KeyTrigger(KeyInput.KEY_S),
+            new KeyTrigger(KeyInput.KEY_DOWN));
+    inputManager.addMapping("Brake", new KeyTrigger(KeyInput.KEY_X),
+            new KeyTrigger(KeyInput.KEY_RSHIFT),new KeyTrigger(KeyInput.KEY_LSHIFT));
     inputManager.addMapping("Jump", new KeyTrigger(KeyInput.KEY_SPACE));
     inputManager.addMapping("Reset", new KeyTrigger(KeyInput.KEY_RETURN));
     inputManager.addListener(this, "Left");
@@ -105,7 +108,7 @@ public class PhysicsVehicle extends SimpleApplication implements ActionListener 
     compoundShape.addChildShape(box, new Vector3f(0, 2, 0));
 
     //create vehicle node
-   vehicleNode = new Node("vehicleNode");
+    vehicleNode = new Node("vehicleNode");
     vehicle = new VehicleControl(compoundShape, 400);
     vehicleNode.addControl(vehicle);
 
