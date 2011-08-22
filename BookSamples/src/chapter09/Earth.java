@@ -36,7 +36,7 @@ public class Earth extends SimpleApplication {
   @Override
   public void simpleInitApp() {
 
-    setDisplayFps(false);
+    setDisplayFps(true);
     setDisplayStatView(false);
 
     createTerrain();
@@ -49,11 +49,11 @@ public class Earth extends SimpleApplication {
     sun.setColor(ColorRGBA.White.clone().multLocal(1.7f));
     rootNode.addLight(sun);
 
-    flyCam.setMoveSpeed(50);
+    flyCam.setMoveSpeed(100);
  
     Spatial sky = SkyFactory.createSky(assetManager, 
             "Textures/Sky/Bright/BrightSky.dds", false);
-    rootNode.attachChild(sky);
+  //  rootNode.attachChild(sky);
 
     cam.setFrustumFar(4000);
 
@@ -81,12 +81,12 @@ public class Earth extends SimpleApplication {
     normalMap0.setWrap(WrapMode.Repeat);
     
     Texture rock = assetManager.loadTexture(
-            "Textures/Terrain/splat/rock.PNG");
+            "Textures/Terrain/splat/rock.png");
     rock.setWrap(WrapMode.Repeat);
     terrain_mat.setTexture("DiffuseMap_1", rock);
-    terrain_mat.setFloat("DiffuseMap_1_scale", 64);
+    terrain_mat.setFloat("DiffuseMap_1_scale", 128);
     Texture normalMap1 = assetManager.loadTexture(
-            "Textures/Terrain/splat/road_normal.png");
+            "Textures/Terrain/splat/rock_normal.png");
     normalMap1.setWrap(WrapMode.Repeat);
     
     Texture road = assetManager.loadTexture(
@@ -95,11 +95,11 @@ public class Earth extends SimpleApplication {
     terrain_mat.setTexture("DiffuseMap_2", road);
     terrain_mat.setFloat("DiffuseMap_2_scale", 128);
     Texture normalMap2 = assetManager.loadTexture(
-            "Textures/Terrain/splat/rock_normal.png");
+            "Textures/Terrain/splat/road_normal.png");
     normalMap2.setWrap(WrapMode.Repeat);
     
     terrain_mat.setTexture("NormalMap", normalMap0);
-    terrain_mat.setTexture("NormalMap_1", normalMap2);
+    terrain_mat.setTexture("NormalMap_1", normalMap1);
     terrain_mat.setTexture("NormalMap_2", normalMap2);
 
     AbstractHeightMap heightmap = null;
