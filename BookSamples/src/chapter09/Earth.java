@@ -53,17 +53,15 @@ public class Earth extends SimpleApplication {
  
     Spatial sky = SkyFactory.createSky(assetManager, 
             "Textures/Sky/Bright/BrightSky.dds", false);
-  //  rootNode.attachChild(sky);
+    rootNode.attachChild(sky);
 
     cam.setFrustumFar(4000);
-
-//    FilterPostProcessor fpp = new FilterPostProcessor(assetManager);
-//    viewPort.addProcessor(fpp);
   }
 
   private void createTerrain() {
     Texture heightMapImage = assetManager.loadTexture(
-            "Textures/Terrain/splat/mountains512.png");
+            "Textures/Terrain/splat/heightmap.png");
+    
     terrain_mat = new Material(assetManager, 
             "Common/MatDefs/Terrain/TerrainLighting.j3md");
     terrain_mat.setBoolean("useTriPlanarMapping", false);
@@ -79,27 +77,26 @@ public class Earth extends SimpleApplication {
     Texture normalMap0 = assetManager.loadTexture(
             "Textures/Terrain/splat/grass_normal.jpg");
     normalMap0.setWrap(WrapMode.Repeat);
+    terrain_mat.setTexture("NormalMap", normalMap0);
     
     Texture rock = assetManager.loadTexture(
             "Textures/Terrain/splat/rock.png");
     rock.setWrap(WrapMode.Repeat);
     terrain_mat.setTexture("DiffuseMap_1", rock);
-    terrain_mat.setFloat("DiffuseMap_1_scale", 128);
+    terrain_mat.setFloat("DiffuseMap_1_scale", 64);
     Texture normalMap1 = assetManager.loadTexture(
             "Textures/Terrain/splat/rock_normal.png");
     normalMap1.setWrap(WrapMode.Repeat);
+    terrain_mat.setTexture("NormalMap_1", normalMap1);
     
     Texture road = assetManager.loadTexture(
             "Textures/Terrain/splat/road.png");
     road.setWrap(WrapMode.Repeat);
     terrain_mat.setTexture("DiffuseMap_2", road);
-    terrain_mat.setFloat("DiffuseMap_2_scale", 128);
+    terrain_mat.setFloat("DiffuseMap_2_scale", 64);
     Texture normalMap2 = assetManager.loadTexture(
             "Textures/Terrain/splat/road_normal.png");
     normalMap2.setWrap(WrapMode.Repeat);
-    
-    terrain_mat.setTexture("NormalMap", normalMap0);
-    terrain_mat.setTexture("NormalMap_1", normalMap1);
     terrain_mat.setTexture("NormalMap_2", normalMap2);
 
     AbstractHeightMap heightmap = null;
@@ -110,14 +107,14 @@ public class Earth extends SimpleApplication {
     } catch (Exception e) {
       e.printStackTrace();
     }
-      
+    heightmap.smooth(0.9f,3);
+    
     terrain = new TerrainQuad("terrain", 65, 513, heightmap.getHeightMap());
     TerrainLodControl lodControl = new TerrainLodControl(terrain, getCamera());
     terrain.addControl(lodControl);
     terrain.setMaterial(terrain_mat);
     terrain.setLocalTranslation(0, -100, 0);
-    //terrain.setLocalScale(2f, 2f, 2f);
-    terrain.setShadowMode(ShadowMode.Receive);
+    
     rootNode.attachChild(terrain);
   }
 
