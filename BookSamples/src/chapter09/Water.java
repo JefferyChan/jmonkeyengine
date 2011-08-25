@@ -1,6 +1,7 @@
 package chapter09;
 
 import com.jme3.app.SimpleApplication;
+import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
@@ -31,7 +32,7 @@ import jme3tools.converters.ImageToAwt;
  */
 public class Water extends SimpleApplication {
 
-  private Vector3f lightDir = new Vector3f(-4.9236743f, -1.27054665f, 5.896916f);
+  private Vector3f lightDir = new Vector3f(-5f, -1f, 6f).normalize();//new Vector3f(-4.9236743f, -1.27054665f, 5.896916f);
   private WaterFilter water;
   TerrainQuad terrain;
   Material terrain_mat;
@@ -53,14 +54,17 @@ public class Water extends SimpleApplication {
     Node mainScene = new Node("Main Scene");
     rootNode.attachChild(mainScene);
 
-    createTerrain();
+    createTerrain(mainScene);
 
     DirectionalLight sun = new DirectionalLight();
     sun.setDirection(lightDir);
     sun.setColor(ColorRGBA.White.clone().multLocal(1.7f));
     mainScene.addLight(sun);
+    
+    AmbientLight ambientLight = new AmbientLight();
+    mainScene.addLight(ambientLight);
 
-    flyCam.setMoveSpeed(50);
+    flyCam.setMoveSpeed(400);
     cam.setLocation(new Vector3f(-327.21957f, 61.6459f, 126.884346f));
     cam.setRotation(new Quaternion(0.052168474f, 0.9443102f, -0.18395276f, 0.2678024f));
     cam.setRotation(new Quaternion().fromAngles(new float[]{FastMath.PI * 0.06f, FastMath.PI * 0.65f, 0}));
@@ -69,7 +73,7 @@ public class Water extends SimpleApplication {
     sky.setLocalScale(350);
     mainScene.attachChild(sky);
 
-    cam.setFrustumFar(4000);
+    cam.setFrustumFar(40000);
 
     FilterPostProcessor fpp = new FilterPostProcessor(assetManager);
     viewPort.addProcessor(fpp);
@@ -99,14 +103,12 @@ public class Water extends SimpleApplication {
     fpp.addFilter(dof);
   }
 
-  private void createTerrain() {
+  private void createTerrain(Node mainScene) {
     Texture heightMapImage = assetManager.loadTexture(
             "Textures/Terrain/splat/heightmap.png");
     
     terrain_mat = new Material(assetManager, 
             "Common/MatDefs/Terrain/TerrainLighting.j3md");
-    terrain_mat.setBoolean("useTriPlanarMapping", false);
-    terrain_mat.setBoolean("WardIso", true);
     terrain_mat.setTexture("AlphaMap", assetManager.loadTexture(
             "Textures/Terrain/splat/alphamap.png"));
     
@@ -154,9 +156,10 @@ public class Water extends SimpleApplication {
     TerrainLodControl lodControl = new TerrainLodControl(terrain, getCamera());
     terrain.addControl(lodControl);
     terrain.setMaterial(terrain_mat);
-    terrain.setLocalTranslation(0, -100, 0);
+    terrain.setLocalTranslation(0, -10, 0);
+    terrain.setLocalScale(new Vector3f(4,4,4));
+    mainScene.attachChild(terrain);
     
-    rootNode.attachChild(terrain);
   }
   
   //This part is to emulate tides, slightly varrying the height of the water plane
