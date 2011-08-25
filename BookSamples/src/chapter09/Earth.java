@@ -38,6 +38,8 @@ public class Earth extends SimpleApplication {
 
     setDisplayFps(true);
     setDisplayStatView(false);
+    cam.setFrustumFar(4000);
+    flyCam.setMoveSpeed(100);
 
     createTerrain();
 
@@ -48,14 +50,10 @@ public class Earth extends SimpleApplication {
     sun.setDirection(new Vector3f(-2.9236743f, -1.27054665f, 5.896916f));
     sun.setColor(ColorRGBA.White.clone().multLocal(1.7f));
     rootNode.addLight(sun);
-
-    flyCam.setMoveSpeed(100);
  
     Spatial sky = SkyFactory.createSky(assetManager, 
             "Textures/Sky/Bright/BrightSky.dds", false);
     rootNode.attachChild(sky);
-
-    cam.setFrustumFar(4000);
   }
 
   private void createTerrain() {
@@ -65,7 +63,7 @@ public class Earth extends SimpleApplication {
     terrain_mat = new Material(assetManager, 
             "Common/MatDefs/Terrain/TerrainLighting.j3md");
     terrain_mat.setBoolean("useTriPlanarMapping", false);
-    terrain_mat.setBoolean("WardIso", true);
+    terrain_mat.setBoolean("WardIso", true);    
     terrain_mat.setTexture("AlphaMap", assetManager.loadTexture(
             "Textures/Terrain/splat/alphamap.png"));
     

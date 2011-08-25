@@ -9,6 +9,7 @@ import com.jme3.terrain.geomipmap.TerrainLodControl;
 import com.jme3.terrain.heightmap.AbstractHeightMap;
 import com.jme3.terrain.heightmap.ImageBasedHeightMap;
 import com.jme3.terrain.geomipmap.TerrainQuad;
+import com.jme3.terrain.heightmap.HillHeightMap;
 import com.jme3.texture.Texture;
 import com.jme3.texture.Texture.WrapMode;
 
@@ -29,9 +30,10 @@ public class SimpleEarth extends SimpleApplication {
 
   @Override
   public void simpleInitApp() {
-    flyCam.setMoveSpeed(100f);
-    cam.setLocation(new Vector3f(0, 10, -10));
-    cam.lookAtDirection(new Vector3f(0, -1.5f, -1).normalizeLocal(), Vector3f.UNIT_Y);
+    setDisplayFps(true);
+    setDisplayStatView(false);
+    cam.setFrustumFar(4000);
+    flyCam.setMoveSpeed(100);
 
     // Terrain material supports texture splatting
     terrain_mat = new Material(assetManager,
@@ -69,24 +71,20 @@ public class SimpleEarth extends SimpleApplication {
     AbstractHeightMap heightmap = null;
     try {
       heightmap = new ImageBasedHeightMap(ImageToAwt.convert(
-              heightMapImage.getImage(), false, true, 0), 1f);
+              heightMapImage.getImage(), false, true, 0), 0.5f);
+      heightmap = new HillHeightMap(1025, 1000, 50, 100, (byte) 3);
       heightmap.load();
     } catch (Exception e) {
       e.printStackTrace();
     }
 
-    // Create the terrain and apply the material
+    // Create the terrain, apply the material, attach to rootnode
     terrain = new TerrainQuad("terrain", 65, 513, heightmap.getHeightMap());
-    TerrainLodControl control = new TerrainLodControl(terrain, getCamera());
-    terrain.addControl(control);
     terrain.setMaterial(terrain_mat);
-    terrain.setLocalTranslation(0, -100, 0);
+    terrain.setLocalTranslation(0, -150, 0);
     terrain.setLocalScale(2f, 1f, 2f);
     rootNode.attachChild(terrain);
 
-    DirectionalLight light = new DirectionalLight();
-    light.setDirection((new Vector3f(-0.5f, -1f, -0.5f)).normalize());
-    rootNode.addLight(light);
 
   }
 }

@@ -35,6 +35,9 @@ public class Water extends SimpleApplication {
   private WaterFilter water;
   TerrainQuad terrain;
   Material terrain_mat;
+  private float time = 0.0f;
+  private float waterHeight = 0.0f;
+  private float initialWaterHeight = 0.8f;
 
   public static void main(String[] args) {
     Water app = new Water();
@@ -157,10 +160,6 @@ public class Water extends SimpleApplication {
   }
   
   //This part is to emulate tides, slightly varrying the height of the water plane
-  private float time = 0.0f;
-  private float waterHeight = 0.0f;
-  private float initialWaterHeight = 0.8f;
-
   @Override
   public void simpleUpdate(float tpf) {
     time += tpf;
