@@ -6,8 +6,6 @@ import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
-import com.jme3.post.FilterPostProcessor;
-import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Spatial;
 import com.jme3.terrain.geomipmap.TerrainLodControl;
 import com.jme3.terrain.geomipmap.TerrainQuad;
@@ -19,17 +17,16 @@ import com.jme3.util.SkyFactory;
 import jme3tools.converters.ImageToAwt;
 
 /**
- * test
- *
- * @author normenhansen
+ * A better-looking terrain with Phong lighting and normal maps.
+ * @author Brent Owens, zathras
  */
-public class Earth extends SimpleApplication {
+public class TerrainLighting extends SimpleApplication {
 
   TerrainQuad terrain;
   Material terrain_mat;
 
   public static void main(String[] args) {
-    Earth app = new Earth();
+    TerrainLighting app = new TerrainLighting();
     app.start();
   }
 
@@ -58,42 +55,42 @@ public class Earth extends SimpleApplication {
 
   private void createTerrain() {
     Texture heightMapImage = assetManager.loadTexture(
-            "Textures/Terrain/splat/heightmap.png");
+            "Textures/Terrain/heightmap.png");
     
     terrain_mat = new Material(assetManager, 
             "Common/MatDefs/Terrain/TerrainLighting.j3md");
     terrain_mat.setBoolean("useTriPlanarMapping", false);
     terrain_mat.setBoolean("WardIso", true);    
     terrain_mat.setTexture("AlphaMap", assetManager.loadTexture(
-            "Textures/Terrain/splat/alphamap.png"));
+            "Textures/Terrain/alphamap.png"));
     
     Texture grass = assetManager.loadTexture(
-            "Textures/Terrain/splat/grass.jpg");
+            "Textures/Terrain/grass.jpg");
     grass.setWrap(WrapMode.Repeat);
     terrain_mat.setTexture("DiffuseMap", grass);
     terrain_mat.setFloat("DiffuseMap_0_scale", 64);
     Texture normalMap0 = assetManager.loadTexture(
-            "Textures/Terrain/splat/grass_normal.jpg");
+            "Textures/Terrain/grass_normal.jpg");
     normalMap0.setWrap(WrapMode.Repeat);
     terrain_mat.setTexture("NormalMap", normalMap0);
     
     Texture rock = assetManager.loadTexture(
-            "Textures/Terrain/splat/rock.png");
+            "Textures/Terrain/rock.png");
     rock.setWrap(WrapMode.Repeat);
     terrain_mat.setTexture("DiffuseMap_1", rock);
     terrain_mat.setFloat("DiffuseMap_1_scale", 64);
     Texture normalMap1 = assetManager.loadTexture(
-            "Textures/Terrain/splat/rock_normal.png");
+            "Textures/Terrain/rock_normal.png");
     normalMap1.setWrap(WrapMode.Repeat);
     terrain_mat.setTexture("NormalMap_1", normalMap1);
     
     Texture road = assetManager.loadTexture(
-            "Textures/Terrain/splat/road.png");
+            "Textures/Terrain/road.png");
     road.setWrap(WrapMode.Repeat);
     terrain_mat.setTexture("DiffuseMap_2", road);
     terrain_mat.setFloat("DiffuseMap_2_scale", 64);
     Texture normalMap2 = assetManager.loadTexture(
-            "Textures/Terrain/splat/road_normal.png");
+            "Textures/Terrain/road_normal.png");
     normalMap2.setWrap(WrapMode.Repeat);
     terrain_mat.setTexture("NormalMap_2", normalMap2);
 

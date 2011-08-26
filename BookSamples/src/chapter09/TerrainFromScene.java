@@ -11,17 +11,17 @@ import com.jme3.terrain.geomipmap.TerrainQuad;
 import com.jme3.util.SkyFactory;
 
 /**
- * terrain
+ * This demo shows hwo to load a terrain from a .j30 scene file.
  *
  * @author normenhansen
  */
-public class EarthScene extends SimpleApplication {
+public class TerrainFromScene extends SimpleApplication {
 
   TerrainQuad terrain;
   Material terrain_mat;
 
   public static void main(String[] args) {
-    EarthScene app = new EarthScene();
+    TerrainFromScene app = new TerrainFromScene();
     app.start();
   }
 
@@ -31,7 +31,7 @@ public class EarthScene extends SimpleApplication {
     setDisplayFps(true);
     setDisplayStatView(false);
 
-    Spatial myTerrain = assetManager.loadModel("Scenes/newScene765.j3o");
+    Spatial myTerrain = assetManager.loadModel("Scenes/myTerrain.j3o");
     rootNode.attachChild(myTerrain);
 
     AmbientLight ambient = new AmbientLight();
