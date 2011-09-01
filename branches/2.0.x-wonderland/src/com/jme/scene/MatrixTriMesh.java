@@ -108,7 +108,7 @@ public class MatrixTriMesh extends TriMesh implements MatrixGeometry {
             DisplaySystem.checkForRenderThread();
         }
         
-        super.setLocalRotation(quaternion);
+        matrix.setLocalRotation(quaternion);
     }
     
     @Override

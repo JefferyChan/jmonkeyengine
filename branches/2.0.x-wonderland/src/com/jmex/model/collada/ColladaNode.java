@@ -40,6 +40,8 @@ import com.jme.scene.Spatial;
 import com.jme.scene.state.RenderState;
 import java.util.Collection;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -60,6 +62,11 @@ public class ColladaNode extends MatrixNode implements ColladaCloneable {
             new LinkedHashMap<String, ColladaTransform>();
 
     /**
+     * map of nodes this node instantiates. Used for delayed instantiation.
+     */
+    private List<String> instanceNodes;
+    
+    /**
      * Create a new ColladaNode with the given name
      */
     public ColladaNode(String name) {
@@ -78,7 +85,14 @@ public class ColladaNode extends MatrixNode implements ColladaCloneable {
         
         // copy transforms
         for (ColladaTransform t : node.getAllTransforms()) {
-            addTransform(t);
+            transforms.put(t.getSid(), t);
+        }
+        
+        if (node.getInstanceNodes() != null) {
+            instanceNodes = new LinkedList<String>();
+            for (String instanceNode : node.getInstanceNodes()) {
+                instanceNodes.add(instanceNode);
+            }
         }
     }
     
@@ -108,6 +122,26 @@ public class ColladaNode extends MatrixNode implements ColladaCloneable {
      */
     protected Collection<ColladaTransform> getAllTransforms() {
         return transforms.values();
+    }
+     
+    /**
+     * Add a reference to an instance node
+     * @param instanceNode the name of the node to reference
+     */
+    void addInstanceNode(String instanceNode) {
+        if (instanceNodes == null) {
+            instanceNodes = new LinkedList<String>();
+        }
+        
+        instanceNodes.add(instanceNode);
+    }
+    
+    /**
+     * Get the list of instance node references
+     * @return the list of instance node references
+     */
+    List<String> getInstanceNodes() {
+        return instanceNodes;
     }
     
     /**

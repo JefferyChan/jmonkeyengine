@@ -31,47 +31,23 @@
  */
 package com.jmex.model.collada;
 
-import com.jme.scene.MatrixSharedMesh;
-import com.jme.scene.TriMesh;
-
 /**
- * Cloneable trimesh
+ * Interface for Collada Geometry, which can be annotated with a material
+ * to bind later.
  * @author Jonathan Kaplan
  */
-public class ColladaTriMesh extends MatrixSharedMesh 
-    implements ColladaGeometry, ColladaCloneable 
-{
-    private String material;
-    
-    public ColladaTriMesh() {
-        super();
-    }
-    
-    public ColladaTriMesh(String name, TriMesh target) {
-        super (name, target);
-    }
+public interface ColladaGeometry {
+     
+    /**
+     * Get the name of the material to bind to this geometry object.
+     * @return material the name of the material to bind, or null if this
+     * geometry does not have a material defined
+     */
+    public String getMaterial();
     
     /**
-     * Copy constructor
-     * @param copy the colladatrimesh to copy
+     * Set the name of the material to bind to this geometry object.
+     * @param material the name of the material to bind
      */
-    protected ColladaTriMesh(ColladaTriMesh copy) {
-        super (copy.getName(), copy);
-        
-        // copy material
-        this.material = copy.getMaterial();
-    }
-
-    public String getMaterial() {
-        return material;
-    }
-
-    public void setMaterial(String material) {
-        this.material = material;
-    }
-    
-    @Override
-    public ColladaTriMesh clone() {
-        return new ColladaTriMesh(this);
-    }
+    public void setMaterial(String material);
 }

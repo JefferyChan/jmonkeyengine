@@ -186,7 +186,7 @@ public class MatrixSharedMesh extends SharedMesh implements MatrixGeometry {
             DisplaySystem.checkForRenderThread();
         }
         
-        super.setLocalRotation(quaternion);
+        matrix.setLocalRotation(quaternion);
     }
     
     @Override

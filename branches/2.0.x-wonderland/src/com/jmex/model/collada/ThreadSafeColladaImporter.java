@@ -167,7 +167,6 @@ import com.jmex.model.collada.schema.matrixType;
 import com.jmex.model.collada.schema.polylistType;
 import com.jmex.model.collada.schema.rotateType;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -215,7 +214,6 @@ public class ThreadSafeColladaImporter {
     private ArrayList<String> lightNodeNames;
     private ArrayList<String> geometryNames;
     private Map<String, Object> userInformation;
-    private Map<Geometry, String> subMaterialLibrary;
     private Map<Geometry, int[]> meshVertices;
     private Map<String, ColladaJointNode> skeletons;
     private ColladaRootNode model;
@@ -283,7 +281,6 @@ public class ThreadSafeColladaImporter {
     public void load(InputStream source) {
         model = new ColladaRootNode(name);
         resourceLibrary = new HashMap<String, Object>();
-        subMaterialLibrary = new HashMap<Geometry, String>();
         meshVertices = new HashMap<Geometry, int[]>();
         skeletons = new HashMap<String, ColladaJointNode>();
         
@@ -302,6 +299,11 @@ public class ThreadSafeColladaImporter {
             System.out.println(ex);
             logger.log(Level.SEVERE, "Unable to load Collada file. ", ex);
             return;
+        } finally {
+            // clear lists we created
+            resourceLibrary.clear();
+            meshVertices.clear();
+            skeletons.clear();
         }
     }
 
@@ -2834,11 +2836,10 @@ public class ThreadSafeColladaImporter {
                 // binding has happened in processInstanceMaterials()
                 spatial.setName(geom.getid().toString() + "-" + wrapper.getMaterial());
                 
-                if (spatial instanceof SharedMesh) {
-                    subMaterialLibrary.put(((SharedMesh) spatial).getTarget(),
-                                           wrapper.getMaterial());
+                if (spatial instanceof ColladaGeometry) {
+                    ((ColladaGeometry) spatial).setMaterial(wrapper.getMaterial());
                 } else {
-                    subMaterialLibrary.put(spatial, wrapper.getMaterial());
+                    logger.warning("Unable to add material to " + spatial);
                 }
             } else {
                 spatial.setName(geom.getid().toString());
@@ -3047,7 +3048,7 @@ public class ThreadSafeColladaImporter {
             throws Exception {
         Node tempParent = new Node("temp_parent");
         for (int i = 0; i < type.getnodeCount(); i++) {
-            processNode(type.getnodeAt(i), tempParent);
+            processNode(type.getnodeAt(i), tempParent, false);
         }
         // should all be in the resource library now.
     }
@@ -3085,7 +3086,7 @@ public class ThreadSafeColladaImporter {
     private void processVisualScene(visual_sceneType scene, Node node)
             throws Exception {
         for (int i = 0; i < scene.getnodeCount(); i++) {
-            processNode(scene.getnodeAt(i), node);
+            processNode(scene.getnodeAt(i), node, true);
         }
     }
 
@@ -3096,7 +3097,8 @@ public class ThreadSafeColladaImporter {
      * @param parent
      * @throws Exception
      */
-    private void processNode(nodeType2 xmlNode, Node parent) throws Exception {
+    private void processNode(nodeType2 xmlNode, Node parent, boolean instantiateNodes) 
+            throws Exception {
         String childName = null;
         String globalName = null;
 
@@ -3219,7 +3221,11 @@ public class ThreadSafeColladaImporter {
         }
         if (xmlNode.hasinstance_node()) {
             for (int i = 0; i < xmlNode.getinstance_nodeCount(); i++) {
-                processInstanceNode(xmlNode.getinstance_nodeAt(i), child);
+                if (instantiateNodes) {
+                    processInstanceNode(xmlNode.getinstance_nodeAt(i), child);
+                } else {
+                    processDelayedInstanceNode(xmlNode.getinstance_nodeAt(i), child);
+                }
             }
         }
         if (xmlNode.hasinstance_light()) {
@@ -3231,7 +3237,7 @@ public class ThreadSafeColladaImporter {
         // parse subnodes
         if (xmlNode.hasnode()) {
             for (int i = 0; i < xmlNode.getnodeCount(); i++) {
-                processNode(xmlNode.getnodeAt(i), child);
+                processNode(xmlNode.getnodeAt(i), child, instantiateNodes);
             }
         }
     }
@@ -3323,6 +3329,10 @@ public class ThreadSafeColladaImporter {
     private void processInstanceNode(InstanceWithExtra instance, Node parent)
             throws Exception {
         String key = instance.geturl().toString();
+        processInstanceNode(key, parent);
+    }
+    
+    private void processInstanceNode(String key, Node parent) {
         if (key.startsWith("#")) {
             key = key.substring(1);
         }
@@ -3332,7 +3342,39 @@ public class ThreadSafeColladaImporter {
             // make a copy
             inst = inst.cloneTree();
             parent.attachChild(inst);
+        
+            // handle instantiation for any added children
+            processDelayedInstances(inst);
         }
+    }
+    
+    private void processDelayedInstances(ColladaNode parent) {
+        // store list of children before we add any
+        List<ColladaNode> children = new LinkedList<ColladaNode>();
+        for (int i = 0; i < parent.getQuantity(); i++) {
+            Spatial child = parent.getChild(i);
+            if (child instanceof ColladaNode) {
+                children.add((ColladaNode) child);
+            }
+        }
+        
+        // see if there are delayed instantiations for this node
+        List<String> nodeList = parent.getInstanceNodes();
+        if (nodeList != null) {
+            for (String node : nodeList) {
+                processInstanceNode(node, parent);
+            }
+        } 
+        
+        // continue walking only the original children
+        for (ColladaNode child : children) {
+            processDelayedInstances(child);
+        }
+    }
+    
+    private void processDelayedInstanceNode(InstanceWithExtra instance, ColladaNode parent)
+            throws Exception {
+        parent.addInstanceNode(instance.geturl().toString());
     }
 
     /**
@@ -3391,13 +3433,9 @@ public class ThreadSafeColladaImporter {
             Node targetNode = (Node) target;
             for (int i = 0; i < targetNode.getQuantity(); ++i) {
                 Spatial child = targetNode.getChild(i);
-                if (child instanceof TriMesh
-                        && symbol.equals(subMaterialLibrary.get(child))) {
-                    target = child;
-                    break;
-                } else if (child instanceof SharedMesh
-                        && symbol.equals(subMaterialLibrary
-                                .get(((SharedMesh) child).getTarget()))) {
+                if (child instanceof ColladaGeometry &&
+                        symbol.equals(((ColladaGeometry) child).getMaterial())) 
+                {
                     target = child;
                     break;
                 }

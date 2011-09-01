@@ -36,7 +36,6 @@ import com.jme.math.Matrix4f;
 import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
 import com.jme.system.DisplaySystem;
-import com.jme.util.export.InputCapsule;
 import com.jme.util.export.JMEExporter;
 import com.jme.util.export.JMEImporter;
 import java.io.IOException;
@@ -120,7 +119,7 @@ public class MatrixNode extends Node implements MatrixGeometry {
             DisplaySystem.checkForRenderThread();
         }
         
-        super.setLocalRotation(quaternion);
+        matrix.setLocalRotation(quaternion);
     }
     
     @Override

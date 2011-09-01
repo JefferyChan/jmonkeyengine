@@ -37,7 +37,11 @@ import com.jme.scene.MatrixLine;
  * Cloneable line
  * @author Jonathan Kaplan
  */
-public class ColladaLine extends MatrixLine implements ColladaCloneable {
+public class ColladaLine extends MatrixLine 
+    implements ColladaGeometry, ColladaCloneable 
+{
+    private String material;
+    
     public ColladaLine() {
         super ();
     }
@@ -51,6 +55,9 @@ public class ColladaLine extends MatrixLine implements ColladaCloneable {
         
         // copy spatial attributes
         ColladaNode.cloneSpatial(copy, this);
+        
+        // copy material
+        this.material = copy.getMaterial();
         
         // shallow copy of geometry data
         this.setIndexBuffer(copy.getIndexBuffer());
@@ -74,6 +81,14 @@ public class ColladaLine extends MatrixLine implements ColladaCloneable {
         this.setAntialiased(copy.isAntialiased());
     }
     
+    public String getMaterial() {
+        return material;
+    }
+    
+    public void setMaterial(String material) {
+        this.material = material;
+    }
+  
     @Override
     public ColladaLine clone() {
         return new ColladaLine(this);

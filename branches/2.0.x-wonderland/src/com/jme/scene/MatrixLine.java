@@ -108,7 +108,7 @@ public class MatrixLine extends Line implements MatrixGeometry {
             DisplaySystem.checkForRenderThread();
         }
         
-        super.setLocalRotation(quaternion);
+        matrix.setLocalRotation(quaternion);
     }
     
     @Override
