@@ -15,7 +15,7 @@ import com.jme3.scene.shape.Box;
  */
 public class AudioTrigger extends SimpleApplication {
 
-  private AudioNode audio_gun;
+  private AudioNode gun_audio;
 
   public static void main(String[] args) {
     AudioTrigger app = new AudioTrigger();
@@ -36,7 +36,7 @@ public class AudioTrigger extends SimpleApplication {
   private void initScene() {
     Box box1 = new Box(Vector3f.ZERO, 1, 1, 1);
     Geometry player = new Geometry("Player", box1);
-    Material mat1 = new Material(assetManager, 
+    Material mat1 = new Material(assetManager,
             "Common/MatDefs/Misc/Unshaded.j3md");
     mat1.setColor("Color", ColorRGBA.Blue);
     player.setMaterial(mat1);
@@ -47,9 +47,7 @@ public class AudioTrigger extends SimpleApplication {
    * Create the audio object (a gun sound) and configure it. 
    */
   private void initAudio() {
-    audio_gun = new AudioNode(assetManager, "Sounds/Effects/Gun.wav");
-    audio_gun.setLooping(false); // tell it to play only once.
-    audio_gun.setVolume(2);
+    gun_audio = new AudioNode(assetManager, "Sounds/Effects/Gun.wav");
   }
 
   /** 
@@ -59,15 +57,16 @@ public class AudioTrigger extends SimpleApplication {
     inputManager.addMapping("Shoot", new MouseButtonTrigger(0));
     inputManager.addListener(actionListener, "Shoot");
   }
-  
   /**
    * Define what the "Shoot" action does: It plays the gun sound once.
    */
   private ActionListener actionListener = new ActionListener() {
+
     @Override
     public void onAction(String name, boolean keyPressed, float tpf) {
       if (name.equals("Shoot") && !keyPressed) {
-        audio_gun.play(); // play it (once)
+        gun_audio.play(); // play it (once - no looping)
+        // target picking and damage code goes here.
       }
     }
   };

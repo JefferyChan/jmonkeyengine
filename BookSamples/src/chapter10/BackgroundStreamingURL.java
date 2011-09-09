@@ -18,7 +18,7 @@ public class BackgroundStreamingURL extends SimpleApplication {
     @Override
      public void simpleInitApp(){
         assetManager.registerLocator("http://www.vorbis.com/music/", UrlLocator.class);
-        AudioNode src = new AudioNode(assetManager, "Lumme-Badloop.ogg", true);
+        AudioNode src = new AudioNode(assetManager, "Lumme-Badloop.ogg", false);
         src.play();
     }
 }

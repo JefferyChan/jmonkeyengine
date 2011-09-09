@@ -10,11 +10,9 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Box;
 
 /**
- * Playing 3D audio. 
+ * Playing ambient noises. 
  */
 public class BackgroundSounds extends SimpleApplication {
-
-  private AudioNode audio_nature;
 
   public static void main(String[] args) {
     BackgroundSounds app = new BackgroundSounds();
@@ -27,11 +25,8 @@ public class BackgroundSounds extends SimpleApplication {
     initScene();
     
     // create and configure a sound
-    audio_nature = new AudioNode(assetManager, "Sounds/Environment/River.ogg");
-    audio_nature.setPositional(true); // Use 3D audio
-    audio_nature.setRefDistance(5);   // Half the distance where still audible
-    audio_nature.setMaxDistance(100); // Distance where it stop becoming quieter
-    audio_nature.setLocalTranslation(Vector3f.ZERO);
+    AudioNode audio_nature = new AudioNode(assetManager, 
+            "Sounds/Environment/River.ogg");
     audio_nature.setVolume(5);    
     audio_nature.setLooping(true); // activate continous play mode
     audio_nature.play();           // start playing continuously!  
@@ -50,10 +45,6 @@ public class BackgroundSounds extends SimpleApplication {
     rootNode.attachChild(player);
   }
 
-  /** Move the listener with the a camera - for 3D audio. */
   @Override
-  public void simpleUpdate(float tpf) {
-    listener.setLocation(cam.getLocation());
-    listener.setRotation(cam.getRotation());
-  }
+  public void simpleUpdate(float tpf) { }
 }
