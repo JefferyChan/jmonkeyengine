@@ -11,15 +11,15 @@ import com.jme3.scene.Node;
 import com.jme3.scene.shape.Sphere;
 
 /**
- * This sampel code demonstrates the Doppler effect in an orbiting "UFO".
+ * This example demonstrates the Doppler effect in an orbiting "UFO".
  */
 public class UfoDoppler extends SimpleApplication {
 
   UfoDoppler app;
   private AudioNode ufo_audio;
   private Geometry ufo_geo;
-  private Node ufo_node=new Node("UFO");
-  float x=1,z=1;
+  private Node ufo_node = new Node("UFO");
+  float x = 1, z = 1;
   private float rate = -0.25f;
   private float xDist = 2.5f;
   private float zDist = 2.5f;
@@ -31,9 +31,9 @@ public class UfoDoppler extends SimpleApplication {
   }
 
   @Override
-  public void simpleInitApp() { 
+  public void simpleInitApp() {
     // position the camera
-    cam.setLocation(new Vector3f(-5,0,5));
+    cam.setLocation(new Vector3f(-5, 0, 5));
     // configure UFO sound
     ufo_audio = new AudioNode(assetManager, "Sounds/Effects/Beep.ogg");
     ufo_audio.setPositional(true);    // moving 3D sound
@@ -46,7 +46,7 @@ public class UfoDoppler extends SimpleApplication {
     // a simple UFO geometry marking the position of the sound
     Sphere sphere = new Sphere(32, 32, .5f);
     ufo_geo = new Geometry("ufo", sphere);
-    Material mat = new Material(assetManager, 
+    Material mat = new Material(assetManager,
             "Common/MatDefs/Misc/Unshaded.j3md");
     mat.setColor("Color", ColorRGBA.LightGray);
     ufo_geo.setMaterial(mat);
@@ -54,12 +54,12 @@ public class UfoDoppler extends SimpleApplication {
     // both sound and geometry are attached to one ufo_node
     rootNode.attachChild(ufo_node);
   }
-  
+
   @Override
   public void simpleUpdate(float tpf) {
     // this formula calculates coordinates of the UFOs orbit
     float dx = (float) (Math.sin(angle) * xDist);
-    float dz = (float) (-Math.cos(angle) * zDist);   
+    float dz = (float) (-Math.cos(angle) * zDist);
     x += dx * tpf;
     z += dz * tpf;
     angle += tpf * rate;
@@ -79,5 +79,4 @@ public class UfoDoppler extends SimpleApplication {
     listener.setLocation(cam.getLocation());
     listener.setRotation(cam.getRotation());
   }
-
 }

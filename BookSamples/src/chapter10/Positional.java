@@ -10,8 +10,10 @@ import com.jme3.scene.Node;
 import com.jme3.scene.shape.Box;
 
 /**
- * Playing positional sounds. The positional sound and a geometry
- * are attached to a scene node. The scene node is attached to rootnode. */
+ * This exmaple shows how to play positional sounds. The positional sound is
+ * attached to a blue box (which is attached to rootnode). You hear the sound
+ * coming from the box.
+ */
 public class Positional extends SimpleApplication {
 
   private Node landing_node;
@@ -34,15 +36,15 @@ public class Positional extends SimpleApplication {
     water_audio.setVolume(5);
     water_audio.setLooping(true); // activate continous play mode
     water_audio.play();           // start playing continuously!  
-    
+
     // Create a node for the object the sound belongs to
     landing_node = new Node("Harbor");
     landing_node.setLocalTranslation(Vector3f.ZERO);
     rootNode.attachChild(landing_node);
-    
+
     // attach this positional sound to a scene node
     landing_node.attachChild(water_audio);
-    
+
     // attach a geometry to the scene node -- here just a blue cube
     Box box1 = new Box(Vector3f.ZERO, 1, 1, 1);
     Geometry landing_geo = new Geometry("boat landing", box1);

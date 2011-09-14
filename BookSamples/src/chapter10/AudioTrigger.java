@@ -11,7 +11,7 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Box;
 
 /**
- * How to make user input trigger a (non-looping) sound.
+ * The demo shows how to make user input trigger a (non-looping) sound.
  */
 public class AudioTrigger extends SimpleApplication {
 

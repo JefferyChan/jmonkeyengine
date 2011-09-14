@@ -8,6 +8,11 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Box;
 
+/**
+ * This demo shows the difference between streamed (long) and buffered audio
+ * (short).
+ * @author zathras
+ */
 public class BufferedVsStreamed extends SimpleApplication {
 
   private AudioNode nature_audio, steps_audio;

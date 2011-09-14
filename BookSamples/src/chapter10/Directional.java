@@ -9,6 +9,14 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.shape.Box;
 
+/**
+ * This example demonstrates directional sound that it only audible within a
+ * "sound cone". the sound cone is defined by a direction and and inner angle
+ * (loudest) and outer angle (more quite). The sound is not audible outside the
+ * "sound cone".
+ *
+ * @author zathras
+ */
 public class Directional extends SimpleApplication {
 
   private AudioNode waves_audio;
@@ -35,15 +43,15 @@ public class Directional extends SimpleApplication {
     waves_geo.setMaterial(mat1);
     waves_node.attachChild(waves_geo);
     // load sound as prebuffered (streaming=false)
-    waves_audio = new AudioNode(assetManager, 
+    waves_audio = new AudioNode(assetManager,
             "Sounds/Environment/Ocean Waves.ogg", false);
     waves_audio.setLooping(true);
     waves_audio.setPositional(true);
     waves_audio.setDirectional(true);
     waves_audio.setInnerAngle(50);
     waves_audio.setOuterAngle(120);
-    waves_audio.setDirection(new Vector3f(0,0,1));
-    waves_audio.play(); 
+    waves_audio.setDirection(new Vector3f(0, 0, 1));
+    waves_audio.play();
     // attach the sound to its parent node
     waves_node.attachChild(waves_audio);
   }

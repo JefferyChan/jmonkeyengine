@@ -1,4 +1,4 @@
-package chapter10;  //works, node moves, ear stays
+package chapter10;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.audio.AudioNode;
@@ -6,6 +6,13 @@ import com.jme3.audio.Environment;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 
+/**
+ * This example demonstrates positional sound. Your hear the sound of a gun shot
+ * from various directions. Each quardrant represents a different environment.
+ * The ear (listener) moves with the camera.
+ *
+ * @author ruth
+ */
 public class PositionalEnvironment extends SimpleApplication {
 
   private AudioNode soundsource;
@@ -25,9 +32,7 @@ public class PositionalEnvironment extends SimpleApplication {
 
   @Override
   public void simpleUpdate(float tpf) {
-    /**
-     * Move the listener with the a camera - for 3D audio.
-     */
+    // Move the listener with the a camera - for 3D audio.
     listener.setLocation(cam.getLocation());
     listener.setRotation(cam.getRotation());
     // every time the sound source is done playing, move it to a random spot.
