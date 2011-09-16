@@ -9,8 +9,8 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Box;
 
 /**
- * This demo shows the difference between streamed (long) and buffered audio
- * (short).
+ * This demo shows the difference between streamed (a long quiet nature sound) 
+ * and buffered audio (a short loud foot step sound).
  * @author zathras
  */
 public class BufferedVsStreamed extends SimpleApplication {

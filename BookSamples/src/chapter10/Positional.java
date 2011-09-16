@@ -10,9 +10,9 @@ import com.jme3.scene.Node;
 import com.jme3.scene.shape.Box;
 
 /**
- * This exmaple shows how to play positional sounds. The positional sound is
- * attached to a blue box (which is attached to rootnode). You hear the sound
- * coming from the box.
+ * This example shows how to play positional sounds. The positional sound is
+ * attached to a blue box (which is attached to rootnode). When you move around 
+ * you always hear the sound coming from the box.
  */
 public class Positional extends SimpleApplication {
 
