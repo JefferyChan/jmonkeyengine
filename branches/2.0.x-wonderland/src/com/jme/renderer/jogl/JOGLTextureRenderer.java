@@ -982,8 +982,11 @@ public class JOGLTextureRenderer implements TextureRenderer {
     private void doDraw(ArrayList<? extends Spatial> toDraw) {
         for (int x = 0, max = toDraw.size(); x < max; x++) {
             Spatial spat = toDraw.get(x);
-            doDraw(spat);
+            spat.onDraw(parentRenderer);
         }
+        
+        // now that all geometry is drawn, render the buckets
+        parentRenderer.renderQueue();
     }
 
     private void activate() {
