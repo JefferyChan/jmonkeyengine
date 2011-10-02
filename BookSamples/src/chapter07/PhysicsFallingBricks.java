@@ -149,15 +149,19 @@ public class PhysicsFallingBricks extends SimpleApplication {
     ball_phy = new RigidBodyControl(5f);
     ball_geo.addControl(ball_phy);
     bulletAppState.getPhysicsSpace().add(ball_phy);
+    
+    ball_phy.setCcdSweptSphereRadius(0.25f);
+    ball_phy.setCcdMotionThreshold(100);
+    
     /** Accelerate the physical ball in camera direction to shoot it! */
     ball_phy.setLinearVelocity(cam.getDirection().mult(50));
   }
   
   /** Create reusable materials. */
   private void initMaterials() {
-    brick_mat  = (Material) assetManager.loadAsset("Materials/brick.j3m");
-    stone_mat  = (Material) assetManager.loadAsset("Materials/pebbles.j3m");
-    wood_mat   = (Material) assetManager.loadAsset("Materials/bark.j3m");
+    brick_mat  = assetManager.loadMaterial("Materials/brick.j3m");
+    stone_mat  = assetManager.loadMaterial("Materials/pebbles.j3m");
+    wood_mat   = assetManager.loadMaterial("Materials/bark.j3m");
   }
   
   /** Create light sources. */

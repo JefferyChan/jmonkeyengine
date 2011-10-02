@@ -10,7 +10,6 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Box;
-import com.jme3.scene.shape.Cylinder;
 import com.jme3.scene.shape.Sphere;
 import com.jme3.util.TangentBinormalGenerator;
 
@@ -28,6 +27,8 @@ public class GlassMaterial extends SimpleApplication {
    
     /** A wall with a rough bricky surface */
     Box box = new Box(2,2,2);
+    TangentBinormalGenerator.generate(box);
+    
     Geometry wall = new Geometry("Wall", box);
     
     Material wall_mat = new Material(assetManager, 
@@ -41,6 +42,8 @@ public class GlassMaterial extends SimpleApplication {
     rootNode.attachChild(wall);
  
     Sphere sphere = new Sphere(32,32, 2f);
+    TangentBinormalGenerator.generate(sphere);
+    
     Geometry glass_geo = new Geometry("normal sphere", sphere);
     Material glass_mat = new Material(assetManager, 
             "Common/MatDefs/Light/Lighting.j3md");

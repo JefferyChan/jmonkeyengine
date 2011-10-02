@@ -48,7 +48,6 @@ public class MaterialLighting extends SimpleApplication {
             assetManager.loadTexture("Textures/BrickWall/BrickWall_diffuse.jpg"));
     mat_wall.setTexture("NormalMap",
             assetManager.loadTexture("Textures/BrickWall/BrickWall_normal.jpg"));
-    mat_wall.setFloat("Shininess", 0f); // [0,128]
     wall.setMaterial(mat_wall);
     wall.setLocalTranslation(0,-3,0);   // Move it a bit
     rootNode.attachChild(wall);

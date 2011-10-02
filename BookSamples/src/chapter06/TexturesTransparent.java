@@ -3,8 +3,10 @@ package chapter06;
 import com.jme3.app.SimpleApplication;
 import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
+import com.jme3.material.RenderState.BlendMode;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Box;
 
@@ -40,6 +42,11 @@ public class TexturesTransparent extends SimpleApplication {
                 "Common/MatDefs/Light/Lighting.j3md");
         mat_tt.setTexture("DiffuseMap",
                 assetManager.loadTexture("Textures/mucha-window.png"));
+        
+        mat_tt.getAdditionalRenderState().setBlendMode(BlendMode.Alpha);
+        window_frame.setQueueBucket(Bucket.Transparent);
+        
+        
         window_frame.setMaterial(mat_tt);
         rootNode.attachChild(window_frame);
 

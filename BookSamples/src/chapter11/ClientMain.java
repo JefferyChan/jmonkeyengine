@@ -8,7 +8,8 @@ import com.jme3.network.Network;
 import com.jme3.network.serializing.Serializer;
 import com.jme3.system.JmeContext;
 import java.io.IOException;
-import java.util.logging.Level;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 /**
  *
@@ -37,8 +38,13 @@ public class ClientMain extends SimpleApplication implements ClientStateListener
 
     Message m = new GreetingMessage("Hi server, do you hear me?");
     myClient.send(m);
-    Message message = new InetAddressMessage(InetAddress.getByName("jmonkeyengine.org"));
-    myClient.send(message);
+        try {
+            Message message = new InetAddressMessage(InetAddress.getByName("jmonkeyengine.org"));
+            myClient.send(message);
+        } catch (UnknownHostException ex) {
+            ex.printStackTrace();
+        }
+    
 
   }
 
