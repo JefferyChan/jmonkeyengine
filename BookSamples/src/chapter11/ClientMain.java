@@ -10,6 +10,7 @@ import com.jme3.system.JmeContext;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.logging.Level;
 
 /**
  *
@@ -33,6 +34,9 @@ public class ClientMain extends SimpleApplication implements ClientStateListener
     } catch (IOException ex) {
     }
     Serializer.registerClass(GreetingMessage.class);
+    Serializer.registerClass(InetAddressMessage.class);
+    Serializer.registerClass(InetAddress.class, new InetAddressSerializer());
+
     myClient.addMessageListener(new ClientListener(), GreetingMessage.class);
     myClient.addClientStateListener(this);
 

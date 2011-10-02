@@ -39,7 +39,9 @@ public class ServerMain extends SimpleApplication implements ConnectionListener 
     } catch (IOException ex) {
     }
     Serializer.registerClass(GreetingMessage.class);
+    Serializer.registerClass(InetAddressMessage.class);
     Serializer.registerClass(InetAddress.class, new InetAddressSerializer());
+    
     myServer.addMessageListener(new ServerListener(), GreetingMessage.class);
     myServer.addConnectionListener(this);
     myServer.addMessageListener(new ServerListener(), InetAddressMessage.class);

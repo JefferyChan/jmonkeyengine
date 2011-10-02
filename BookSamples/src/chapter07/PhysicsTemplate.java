@@ -44,7 +44,7 @@ public class PhysicsTemplate extends SimpleApplication {
 
     box = new Box(Vector3f.ZERO, 1f,1f,1f);
     Geometry brick_geo = new Geometry("brick", box);
-    Material wall_mat = (Material) assetManager.loadAsset("Materials/brick.j3m");
+    Material wall_mat = assetManager.loadMaterial("Materials/brick.j3m");
     brick_geo.setMaterial(wall_mat);
     rootNode.attachChild(brick_geo);
     /** Make brick physical with a mass > 0.0f. */
