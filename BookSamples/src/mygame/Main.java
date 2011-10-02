@@ -117,6 +117,7 @@ public class Main extends SimpleApplication {
       hudText.setText(
               "Budget: " + player.getBudget() + 
               ", Health: " + player.getHealth() + "      YOU WIN!");
+      gamerunning= false;
     }
     }
   }
