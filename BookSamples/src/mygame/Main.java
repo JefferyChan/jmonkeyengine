@@ -14,43 +14,42 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
-import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Main=PlanetControl
- * Planet (contains towers, creeps, 1 playerbase), 
- * Tower (contains Charges),
+ * Main = PlanetControl 
+ * Planet (contains towers, creeps, 1 playerbase), not very useful yet
+ * Tower (contains Charges, shoots at creeps),
  * Charge (substracts creep‘s speed or health), 
  * Player (counts player‘s health and budget), 
  * Creep (counts its health, moves towards base, substracts player‘s health)
- *
  * @author zathras
  */
 public class Main extends SimpleApplication {
 
-  private PlanetData planet;
+  private PlanetData planet; // TODO use this more consistently?
   private PlayerData player;
   private List<TowerData> towers;
   private List<CreepData> creeps;
-  private int level = 2;
-  private int creepNum = level * 6;
-  private int towerNum = 4 * level;
   private int selected = -1;     // which tower the player has selected
+  private int level = 2;    // TODO more values must depend on level
+  private int creepNum = level * 6;
+  private int towerNum = level * 4;
   private boolean gamerunning=true;
-  // scales and ratios
-  private float scale = 1.0f;
+  // Geometry scales and ratios are relative to one another
+  private float scale = 1.0f;  // TODO more values must depend on scale
   private float creepRadius = 0.3f;
   private float towerRadius = 0.3f;
   private float towerHeight = 2.0f;
-  //
+  // GUI
   private BitmapText hudText;
   private BitmapText infoText;
+  // timers
   private float timer_beam;
   private float timer_budget;
-  //
+  // some nodes TODO this breaks MVC paradigm I guess?
   private Node towerNode = new Node("tower node");
   private Node creepNode = new Node("creep node");
   private Node beamNode = new Node("beam node");
@@ -67,19 +66,21 @@ public class Main extends SimpleApplication {
     cam.lookAt(new Vector3f(0f, 0f, 10 * scale), Vector3f.UNIT_Y);
     initHUD();
     initInputs();
-
     player = initPlayer();
     creeps = initCreeps();
     towers = initTowers();
-    planet = initPlanet();
+    planet = initPlanet(); 
+    // TODO: they depend on one another, so I can't pass planet to the others? Maybe afterwards?
   }
 
   private void initHUD() {
+    // score: health and budget
     hudText = new BitmapText(guiFont, false);
     hudText.setSize(guiFont.getCharSet().getRenderedSize());
     hudText.setColor(ColorRGBA.Blue);
     hudText.setLocalTranslation(300, settings.getHeight() - hudText.getLineHeight() * 2, 0);
     guiNode.attachChild(hudText);
+    // info text
     infoText = new BitmapText(guiFont, false);
     infoText.setSize(guiFont.getCharSet().getRenderedSize());
     infoText.setColor(ColorRGBA.Blue);
@@ -90,39 +91,46 @@ public class Main extends SimpleApplication {
 
   @Override
   public void simpleUpdate(float tpf) {
-    if(gamerunning){
-    timer_budget += tpf;
-    if (timer_budget > 20) {
-      player.addBudgetMod(1);
-      timer_budget = 0;
-    }
-    timer_beam += tpf;
-    if (timer_beam > 1f) {
-      if (beamNode.descendantMatches("Beam").size() > 0) {
-        beamNode.detachAllChildren();
+    if(gamerunning) {
+      // player also earns money automatically
+      timer_budget += tpf;
+      if (timer_budget > 20) {
+        player.addBudgetMod(1);
+        timer_budget = 0;
       }
-      timer_beam = 0;
-    }
-    hudText.setText(
-            "Budget: " + player.getBudget() +
-            ", Health: " + player.getHealth() + "      GO! GO! GO!");
-    if (player.getHealth() <= 0) {
+      // reset all laserbeams and GC them
+      timer_beam += tpf;
+      if (timer_beam > 1f) {
+        if (beamNode.descendantMatches("Beam").size() > 0) {
+          beamNode.detachAllChildren();
+        }
+        timer_beam = 0;
+      }
+      // update score and test whether won or lost
       hudText.setText(
-              "Budget: " + player.getBudget() + 
-              ", Health: " + player.getHealth() + "      YOU LOSE.");
-      gamerunning= false;
-    } 
-      System.out.println("score: "+creepNum +" vs "+ player.getEliminatedCreeps());
-    if (creepNum == player.getEliminatedCreeps() ) {
-      hudText.setText(
-              "Budget: " + player.getBudget() + 
-              ", Health: " + player.getHealth() + "      YOU WIN!");
-      gamerunning= false;
-    }
+              "Budget: " + player.getBudget()
+              + ", Health: " + player.getHealth() + "      GO! GO! GO!");
+      if (player.getHealth() <= 0) {
+        hudText.setText(
+                "Budget: " + player.getBudget()
+                + ", Health: " + player.getHealth() + "      YOU LOSE.");
+        gamerunning = false;
+      }
+      if (creepNum == player.getEliminatedCreeps()) { 
+        // make sure no controls are left running after game ends
+        // TODO improve this stupid way to check whether the game is over
+        for(CreepData c: creeps)c.kamikaze(); 
+        hudText.setText(
+                "Budget: " + player.getBudget()
+                + ", Health: " + player.getHealth() + "      YOU WIN!");
+        gamerunning = false;
+        // TODO if health > 0 but not all creeps dead it should say "YOU SURVIVED"
+      }
     }
   }
+  
   /**
-   * Defining the "Select" action: Determine what was hit and how to respond.
+   * Defining the "Select" action for towers: 
    */
   private ActionListener actionListener = new ActionListener() {
 
@@ -141,7 +149,7 @@ public class Main extends SimpleApplication {
         if (results.size() > 0) {
           // player has selected a tower
           if (selected != -1) {
-            // if a tower was selected, deselect it
+            // if a tower was selected, deselect previosu one
             TowerNode t = (TowerNode) (towerNode.getChild(selected));
             t.setMaterial(t.getStandardMaterial());
           }
@@ -151,11 +159,13 @@ public class Main extends SimpleApplication {
           t.setMaterial(t.getSelectedMaterial());
           System.out.println("Selected: " + selected + " -- Now press F/N/G.");
         } else {
-          // player has clicked nothing, towers are deselected.
+          // player has clicked nothing, all towers are deselected.
           System.out.println("Selected: NOTHING");
           selected = -1;
+          // TODO how to delesect all (geometry materials)?
         }
       }
+      // player with budget presses keys to load towers with charges:
       if (!keyPressed && selected != -1 && player.getBudget() > 0) {
         if (name.equals("Make FreezeTower")) {
           if (planet.getTowers().get(selected).getChargeNum() <= level) {
@@ -189,6 +199,8 @@ public class Main extends SimpleApplication {
             "Make GatlingTower", "Make NukeTower", "Make FreezeTower");
   }
 
+  /** Towers stand in two rows to the left and right. 
+   * They shoot beams from their tops at creeps who are close. */
   private List<TowerData> initTowers() {
     List<TowerData> towerData = new ArrayList<TowerData>();
     for (int index = 0; index < towerNum; index++) {
@@ -202,8 +214,9 @@ public class Main extends SimpleApplication {
     return towerData;
   }
 
+  /** Creeps start at a certain distance from the towers at a spawnloc 
+   * with random X coordinates within an interval. */
   private List<CreepData> initCreeps() {
-
     List<CreepData> creepData = new ArrayList<CreepData>();
     for (int index = 0; index < creepNum; index++) {
       int offset_x = (index % 2 == 0 ? 1 : -1);

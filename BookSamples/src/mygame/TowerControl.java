@@ -16,7 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
+ * Tower has charges and fires at creeps nearby until out of ammo.
+ * Charge status is shown with colored spheres. in each level it can have more charges.
  */
 public class TowerControl extends AbstractControl implements Savable, Cloneable {
 
@@ -31,7 +32,7 @@ public class TowerControl extends AbstractControl implements Savable, Cloneable 
   @Override
   protected void controlUpdate(float tpf) {
     this.dotNode = ((Node) (spatial.getParent().getChild("dot node")));
-    /* if this tower has ammo, then plan attack */
+    /* if this tower has ammo=charges, then plan attack */
     num = td.getChargeNum();
     if (num > 0) {
       /* visualize charges */
@@ -49,6 +50,8 @@ public class TowerControl extends AbstractControl implements Savable, Cloneable 
       for (CreepData c : cd) {
         if (c.isAlive() && td.getTop().distance(c.getLoc()) < a.getRange()) {
           reachable.add(c);
+          System.out.println("creeps: "+reachable.size());
+          // TODO this should be empty if all creeps dead?
         }
       }
       /* if this tower has ammo, and can reach a creep */
@@ -71,7 +74,7 @@ public class TowerControl extends AbstractControl implements Savable, Cloneable 
             /* the laser beam has an effect */
             creep.addHealth(a.getHealthImpact()); // all towers do damage to target
             creep.addSpeed(a.getSpeedImpact());   // freeze towers also slow target down
-            // TODO: consider blastrange for nukes
+            // TODO: consider blastrange factor, e.g. for nukes
             /** shooting uses up ammo in this charge */
             a.addAmmo(-1);
             if (a.getAmmo() <= 0) {
@@ -84,6 +87,7 @@ public class TowerControl extends AbstractControl implements Savable, Cloneable 
                 dotNode.attachChild(makeDot(c, all.indexOf(c), td.getLoc()));
               }
               break;
+              // TODO: this shoots very fast, add a sleep timer?
             }
           }
         }
@@ -96,7 +100,6 @@ public class TowerControl extends AbstractControl implements Savable, Cloneable 
   }
 
   private Geometry makeDot(Charge a, int i, Vector3f loc) {
-    System.out.println("Charge " + a + " index " + i);
     Sphere dot = new Sphere(10, 10, .1f);
     Geometry dot_geo = new Geometry("Beam", dot);
     dot_geo.setMaterial(a.getBeamMaterial());
