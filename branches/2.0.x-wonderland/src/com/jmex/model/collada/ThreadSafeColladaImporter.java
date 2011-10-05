@@ -2850,6 +2850,13 @@ public class ThreadSafeColladaImporter {
             
             // create an index buffer writer
             int vertexCount = processor.getShapeSize() * processor.getShapeCount();
+            
+            // OWL issue #210: some meshes have no vertices. Skip them as they
+            // will cause other problems later
+            if (vertexCount == 0) {
+                continue;
+            }
+            
             IntBuffer indexBuffer = createIndexBuffer(spatial, vertexCount);
             if (indexBuffer != null) {
                 processor.addInput(new IndexBufferWriter(indexBuffer));
