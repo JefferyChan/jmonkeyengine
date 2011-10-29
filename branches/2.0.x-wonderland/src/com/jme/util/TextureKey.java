@@ -150,8 +150,9 @@ final public class TextureKey implements Savable {
         String file = capsule.readString("file", null);
         if (file != null)
             location = ResourceLocatorTool.locateResource(
-                    ResourceLocatorTool.TYPE_TEXTURE, URLDecoder.decode(file,
-                            "UTF-8"));
+                    // file should not be URL decoded, it should be restored
+                    // exactly as it was saved.
+                    ResourceLocatorTool.TYPE_TEXTURE, file);
         if (location == null && protocol != null && host != null
                 && file != null) {
             location = new URL(protocol, host, file);

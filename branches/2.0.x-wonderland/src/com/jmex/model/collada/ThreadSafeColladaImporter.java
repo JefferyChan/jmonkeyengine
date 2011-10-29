@@ -3748,6 +3748,14 @@ public class ThreadSafeColladaImporter {
     private static <T> Source<T> getSource(sourceType source) 
             throws Exception
     {
+        // if the source has no accessors, return a dummy
+        if (!source.hastechnique_common() ||
+            !source.gettechnique_common().hasaccessor())
+        {
+            return new Source<T>(source.getid().toString(),
+                                 0, 0, (T[]) new Object[0]);
+        }
+        
         T[] data = null;
         int count = source.gettechnique_common().getaccessor().getcount().intValue();
         int stride = source.gettechnique_common().getaccessor().getstride().intValue();
