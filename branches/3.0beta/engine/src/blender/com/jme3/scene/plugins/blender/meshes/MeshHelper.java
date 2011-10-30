@@ -489,7 +489,7 @@ public class MeshHelper extends AbstractBlenderHelper {
      *             this exception is thrown when the blend file structure is somehow invalid or corrupted
      */
     @SuppressWarnings("unchecked")
-    public Vector3f[] getVertices(Structure meshStructure, BlenderContext blenderContext) throws BlenderFileException {
+    private Vector3f[] getVertices(Structure meshStructure, BlenderContext blenderContext) throws BlenderFileException {
         int verticesAmount = ((Number) meshStructure.getFieldValue("totvert")).intValue();
         Vector3f[] vertices = new Vector3f[verticesAmount];
         if (verticesAmount == 0) {
@@ -498,9 +498,16 @@ public class MeshHelper extends AbstractBlenderHelper {
 
         Pointer pMVert = (Pointer) meshStructure.getFieldValue("mvert");
         List<Structure> mVerts = pMVert.fetchData(blenderContext.getInputStream());
-        for (int i = 0; i < verticesAmount; ++i) {
-            DynamicArray<Number> coordinates = (DynamicArray<Number>) mVerts.get(i).getFieldValue("co");
-            vertices[i] = new Vector3f(coordinates.get(0).floatValue(), coordinates.get(1).floatValue(), coordinates.get(2).floatValue());
+        if(this.fixUpAxis) {
+        	for (int i = 0; i < verticesAmount; ++i) {
+                DynamicArray<Number> coordinates = (DynamicArray<Number>) mVerts.get(i).getFieldValue("co");
+                vertices[i] = new Vector3f(coordinates.get(0).floatValue(), coordinates.get(2).floatValue(), -coordinates.get(1).floatValue());
+            }
+        } else {
+        	for (int i = 0; i < verticesAmount; ++i) {
+                DynamicArray<Number> coordinates = (DynamicArray<Number>) mVerts.get(i).getFieldValue("co");
+                vertices[i] = new Vector3f(coordinates.get(0).floatValue(), coordinates.get(1).floatValue(), coordinates.get(2).floatValue());
+            }
         }
         return vertices;
     }
