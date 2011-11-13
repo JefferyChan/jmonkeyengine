@@ -17,6 +17,7 @@ import com.jme3.light.DirectionalLight;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
+import java.util.concurrent.Callable;
 import java.util.logging.Logger;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
@@ -36,11 +37,14 @@ public final class VehicleCreatorTopComponent extends TopComponent implements Sc
     /** path to the icon used by the component and its open action */
     static final String ICON_PATH = "com/jme3/gde/vehiclecreator/objects_039.gif";
     private static final String PREFERRED_ID = "VehicleCreatorTopComponent";
+    private VehicleEditorController newEditorController;
     private VehicleEditorController editorController;
     private SceneRequest currentRequest;
+    private SceneRequest sentRequest;
     private boolean testing = false;
     DirectionalLight dirLight = new DirectionalLight();
     private HelpCtx ctx = new HelpCtx("sdk.vehicle_creator");
+    private VehicleCreatorCameraController cameraController;
 
     public VehicleCreatorTopComponent() {
         initComponents();
@@ -804,7 +808,7 @@ public final class VehicleCreatorTopComponent extends TopComponent implements Sc
     protected void componentActivated() {
         SceneViewerTopComponent.findInstance().requestVisible();
     }
-    
+
     void writeProperties(java.util.Properties p) {
         // better to version settings since initial version as advocated at
         // http://wiki.apidesign.org/wiki/PropertyFiles
@@ -834,7 +838,6 @@ public final class VehicleCreatorTopComponent extends TopComponent implements Sc
     public HelpCtx getHelpCtx() {
         return ctx;
     }
-
 
     private SuspensionSettings getSuspensionSettings() {
         SuspensionSettings settings = new SuspensionSettings();
@@ -867,60 +870,75 @@ public final class VehicleCreatorTopComponent extends TopComponent implements Sc
 
     public void openFile(BinaryModelDataObject file, Node spatial) {
         JmeNode node = NodeUtility.createNode(spatial, false);
-        editorController = new VehicleEditorController(node, file);
+        newEditorController = new VehicleEditorController(node, file);
         SceneApplication.getApplication().addSceneListener(this);
-        currentRequest = new SceneRequest(this, node, file.getLookup().lookup(ProjectAssetManager.class));
-        currentRequest.setWindowTitle("Vehicle Creator");
-        currentRequest.setDataObject(file);
-        currentRequest.setToolNode(editorController.getToolsNode());
-        currentRequest.setHelpCtx(ctx);
-        SceneApplication.getApplication().requestScene(currentRequest);
+        sentRequest = new SceneRequest(this, node, file.getLookup().lookup(ProjectAssetManager.class));
+        sentRequest.setWindowTitle("Vehicle Creator");
+        sentRequest.setDataObject(file);
+        sentRequest.setToolNode(newEditorController.getToolsNode());
+        sentRequest.setHelpCtx(ctx);
+        SceneApplication.getApplication().openScene(sentRequest);
     }
 
-    public void previewRequested(PreviewRequest request) {
+    public void previewCreated(PreviewRequest request) {
     }
 
-    public boolean sceneClose(SceneRequest request) {
+    public void sceneClosed(SceneRequest request) {
         if (request == currentRequest) {
             SceneApplication.getApplication().removeSceneListener(this);
-            currentRequest.getRootNode().getParent().removeLight(dirLight);
-            editorController.cleanupApplication();
-            SceneApplication.getApplication().getStateManager().detach(editorController.getBulletState());
-            setLoadedScene(null, false);
+            final SceneRequest current = currentRequest;
             currentRequest = null;
+            final VehicleEditorController controller = editorController;
+            setLoadedScene(null, false);
+            cameraController.disable();
+            cameraController = null;
+            SceneApplication.getApplication().enqueue(new Callable<Void>() {
+
+                public Void call() throws Exception {
+                    controller.cleanupApplication();
+                    current.getRootNode().getParent().removeLight(dirLight);
+                    return null;
+                }
+            });
         }
-        return true;
     }
 
-    public void sceneRequested(SceneRequest request) {
-        if (request == currentRequest) {
-            editorController.prepareApplication();
-            SceneApplication.getApplication().getStateManager().attach(editorController.getBulletState());
-            setLoadedScene(currentRequest.getJmeNode(), true);
-            currentRequest.getRootNode().getParent().addLight(dirLight);
+    public void sceneOpened(final SceneRequest request) {
+        if (request == sentRequest) {
+            currentRequest = request;
+            editorController = newEditorController;
+            cameraController = new VehicleCreatorCameraController(SceneApplication.getApplication().getCamera(), SceneApplication.getApplication().getInputManager());
+            cameraController.setMaster(this);
+            cameraController.enable();
+            cameraController.setVehicle(request.getRootNode());
+            setLoadedScene(currentRequest.getDataObject().getNodeDelegate(), true);
+            final VehicleEditorController controller = editorController;
+            SceneApplication.getApplication().enqueue(new Callable<Void>() {
+
+                public Void call() throws Exception {
+                    controller.prepareApplication();
+                    request.getRootNode().getParent().addLight(dirLight);
+                    return null;
+                }
+            });
         }
     }
 
     private void setLoadedScene(final org.openide.nodes.Node jmeNode, final boolean active) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-
-            public void run() {
-                if (!active) {
-                    close();
-                    setActivatedNodes(new org.openide.nodes.Node[]{});
-                    if (editorController != null) {
-                        editorController.cleanup();
-                        editorController = null;
-                    }
-                } else {
-                    if (!isOpened()) {
-                        open();
-                    }
-                    requestActive();
-//                    setActivatedNodes(new org.openide.nodes.Node[]{jmeNode});
-                    editorController.checkVehicle();
-                }
+        if (!active) {
+            close();
+            setActivatedNodes(new org.openide.nodes.Node[]{});
+            if (editorController != null) {
+                editorController.cleanup();
+                editorController = null;
             }
-        });
+        } else {
+            if (!isOpened()) {
+                open();
+            }
+            requestActive();
+            setActivatedNodes(new org.openide.nodes.Node[]{jmeNode});
+            editorController.checkVehicle();
+        }
     }
 }

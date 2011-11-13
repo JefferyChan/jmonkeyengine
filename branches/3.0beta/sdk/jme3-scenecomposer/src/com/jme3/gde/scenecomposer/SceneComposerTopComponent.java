@@ -13,6 +13,7 @@ import com.jme3.gde.core.scene.PreviewRequest;
 import com.jme3.gde.core.scene.SceneApplication;
 import com.jme3.gde.core.scene.SceneListener;
 import com.jme3.gde.core.scene.SceneRequest;
+import com.jme3.gde.core.sceneexplorer.SceneExplorerTopComponent;
 import com.jme3.gde.core.sceneexplorer.nodes.JmeNode;
 import com.jme3.gde.core.sceneexplorer.nodes.JmeSpatial;
 import com.jme3.gde.core.sceneexplorer.nodes.NodeUtility;
@@ -23,13 +24,15 @@ import com.jme3.gde.scenecomposer.tools.SelectTool;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.concurrent.Callable;
 import java.util.logging.Logger;
 import javax.swing.ButtonGroup;
 import javax.swing.border.TitledBorder;
-import org.openide.util.Lookup.Result;
-import org.openide.util.LookupEvent;
+import org.netbeans.api.progress.ProgressHandle;
+import org.netbeans.api.progress.ProgressHandleFactory;
+import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
@@ -45,6 +48,8 @@ import org.openide.awt.UndoRedo;
 import org.openide.filesystems.FileObject;
 import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
+import org.openide.util.Lookup.Result;
+import org.openide.util.LookupEvent;
 import org.openide.util.LookupListener;
 import org.openide.util.Utilities;
 
@@ -64,9 +69,10 @@ public final class SceneComposerTopComponent extends TopComponent implements Sce
     ComposerCameraController camController;
     SceneComposerToolController toolController;
     SceneEditorController editorController;
-//    private SaveCookie saveCookie = new SaveCookieImpl();
+    private SceneRequest sentRequest;
     private SceneRequest currentRequest;
     private HelpCtx ctx = new HelpCtx("sdk.scene_composer");
+    private ProjectAssetManager.ClassPathChangeListener listener;
 
     public SceneComposerTopComponent() {
         initComponents();
@@ -107,6 +113,9 @@ public final class SceneComposerTopComponent extends TopComponent implements Sce
         jLabel2 = new javax.swing.JLabel();
         camToCursorSelectionButton = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JToolBar.Separator();
+        jLabel6 = new javax.swing.JLabel();
+        jButton2 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
         jToolBar2 = new javax.swing.JToolBar();
@@ -145,7 +154,7 @@ public final class SceneComposerTopComponent extends TopComponent implements Sce
                 .addComponent(sceneInfoLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(sceneInfoLabel2)
-                .addContainerGap(106, Short.MAX_VALUE))
+                .addContainerGap(107, Short.MAX_VALUE))
         );
 
         jToolBar1.setBackground(new java.awt.Color(204, 204, 204));
@@ -300,17 +309,47 @@ public final class SceneComposerTopComponent extends TopComponent implements Sce
         jToolBar1.add(camToCursorSelectionButton);
         jToolBar1.add(jSeparator1);
 
+        jLabel6.setFont(new java.awt.Font("Lucida Grande", 0, 10)); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(jLabel6, org.openide.util.NbBundle.getMessage(SceneComposerTopComponent.class, "SceneComposerTopComponent.jLabel6.text")); // NOI18N
+        jToolBar1.add(jLabel6);
+
+        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/jme3/gde/scenecomposer/play.gif"))); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(jButton2, org.openide.util.NbBundle.getMessage(SceneComposerTopComponent.class, "SceneComposerTopComponent.jButton2.text")); // NOI18N
+        jButton2.setToolTipText(org.openide.util.NbBundle.getMessage(SceneComposerTopComponent.class, "SceneComposerTopComponent.jButton2.toolTipText")); // NOI18N
+        jButton2.setFocusable(false);
+        jButton2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(jButton2);
+
+        jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/jme3/gde/scenecomposer/pause.gif"))); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(jButton3, org.openide.util.NbBundle.getMessage(SceneComposerTopComponent.class, "SceneComposerTopComponent.jButton3.text")); // NOI18N
+        jButton3.setToolTipText(org.openide.util.NbBundle.getMessage(SceneComposerTopComponent.class, "SceneComposerTopComponent.jButton3.toolTipText")); // NOI18N
+        jButton3.setFocusable(false);
+        jButton3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton3.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(jButton3);
+
         jPanel3.setBackground(new java.awt.Color(204, 204, 204));
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 321, Short.MAX_VALUE)
+            .addGap(0, 131, Short.MAX_VALUE)
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 23, Short.MAX_VALUE)
+            .addGap(0, 21, Short.MAX_VALUE)
         );
 
         jToolBar1.add(jPanel3);
@@ -381,8 +420,8 @@ public final class SceneComposerTopComponent extends TopComponent implements Sce
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jToolBar2, javax.swing.GroupLayout.DEFAULT_SIZE, 342, Short.MAX_VALUE)
-            .addComponent(jToolBar3, javax.swing.GroupLayout.DEFAULT_SIZE, 342, Short.MAX_VALUE)
+            .addComponent(jToolBar2, javax.swing.GroupLayout.DEFAULT_SIZE, 377, Short.MAX_VALUE)
+            .addComponent(jToolBar3, javax.swing.GroupLayout.DEFAULT_SIZE, 377, Short.MAX_VALUE)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -391,7 +430,7 @@ public final class SceneComposerTopComponent extends TopComponent implements Sce
                         .addComponent(jLabel5)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(emitButton, javax.swing.GroupLayout.DEFAULT_SIZE, 267, Short.MAX_VALUE))
-                    .addComponent(jSeparator6, javax.swing.GroupLayout.DEFAULT_SIZE, 322, Short.MAX_VALUE))
+                    .addComponent(jSeparator6, javax.swing.GroupLayout.DEFAULT_SIZE, 337, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
@@ -417,7 +456,7 @@ public final class SceneComposerTopComponent extends TopComponent implements Sce
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(sceneInfoPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 737, Short.MAX_VALUE)
+            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 766, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -515,6 +554,13 @@ private void scaleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
     toolController.showEditTool(tool);
 }//GEN-LAST:event_scaleButtonActionPerformed
 
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        SceneApplication.getApplication().setPhysicsEnabled(true);
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        SceneApplication.getApplication().setPhysicsEnabled(false);
+    }//GEN-LAST:event_jButton3ActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton camToCursorSelectionButton;
     private javax.swing.JButton createPhysicsMeshButton;
@@ -523,12 +569,15 @@ private void scaleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
     private javax.swing.JCheckBox fixedCheckBox;
     private javax.swing.JSpinner heightSpinner;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JToolBar.Separator jSeparator1;
@@ -649,7 +698,7 @@ private void scaleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
     protected void componentActivated() {
         SceneViewerTopComponent.findInstance().requestVisible();
     }
-    
+
     void writeProperties(java.util.Properties p) {
         // better to version settings since initial version as advocated at
         // http://wiki.apidesign.org/wiki/PropertyFiles
@@ -680,7 +729,6 @@ private void scaleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
 
             public void run() {
                 if (text != null) {
-                    //XXX: wtf? why do i have to repaint?
                     ((TitledBorder) jPanel4.getBorder()).setTitle("Utilities - " + text);
                 } else {
                     ((TitledBorder) jPanel4.getBorder()).setTitle("Utilities - no spatial selected");
@@ -694,49 +742,43 @@ private void scaleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
      */
     private void setSceneInfo(final JmeNode jmeNode, final FileObject file, final boolean active) {
         final SceneComposerTopComponent inst = this;
-        java.awt.EventQueue.invokeLater(new Runnable() {
+        if (jmeNode != null) {
+            ((TitledBorder) sceneInfoPanel.getBorder()).setTitle(jmeNode.getName());
+            selectSpatial(jmeNode);
+        } else {
+            ((TitledBorder) sceneInfoPanel.getBorder()).setTitle("");
+        }
+        //XXX: wtf? why do i have to repaint?
+        sceneInfoPanel.repaint();
 
-            public void run() {
-                if (jmeNode != null) {
-                    ((TitledBorder) sceneInfoPanel.getBorder()).setTitle(jmeNode.getName());
-                    selectSpatial(jmeNode);
-                } else {
-                    ((TitledBorder) sceneInfoPanel.getBorder()).setTitle("");
-                }
-                //XXX: wtf? why do i have to repaint?
-                sceneInfoPanel.repaint();
-
-                if (!active) {
-                    result.removeLookupListener(inst);
-                    showSelectionToggleButton.setSelected(true);
-                    showGridToggleButton.setSelected(false);
-                    sceneInfoLabel1.setText("");
-                    sceneInfoLabel2.setText("");
-                    sceneInfoLabel1.setToolTipText("");
-                    sceneInfoLabel2.setToolTipText("");
-                    close();
-                } else {
-                    showSelectionToggleButton.setSelected(true);
-                    showGridToggleButton.setSelected(false);
-                    //TODO: threading
-                    if (file != null) {
-                        sceneInfoLabel1.setText("Name: " + file.getNameExt());
-                        sceneInfoLabel2.setText("Size: " + file.getSize() / 1024 + " kB");
-                        sceneInfoLabel1.setToolTipText("Name: " + file.getNameExt());
-                        sceneInfoLabel2.setToolTipText("Size: " + file.getSize() / 1024 + " kB");
-                    }
-                    open();
-                    requestActive();
-                }
+        if (!active) {
+            result.removeLookupListener(inst);
+            showSelectionToggleButton.setSelected(true);
+            showGridToggleButton.setSelected(false);
+            sceneInfoLabel1.setText("");
+            sceneInfoLabel2.setText("");
+            sceneInfoLabel1.setToolTipText("");
+            sceneInfoLabel2.setToolTipText("");
+            close();
+        } else {
+            showSelectionToggleButton.setSelected(true);
+            showGridToggleButton.setSelected(false);
+            //TODO: threading
+            if (file != null) {
+                sceneInfoLabel1.setText("Name: " + file.getNameExt());
+                sceneInfoLabel2.setText("Size: " + file.getSize() / 1024 + " kB");
+                sceneInfoLabel1.setToolTipText("Name: " + file.getNameExt());
+                sceneInfoLabel2.setToolTipText("Size: " + file.getSize() / 1024 + " kB");
             }
-        });
+            open();
+            requestActive();
+        }
     }
 
     public void openScene(Spatial spat, AssetDataObject file, ProjectAssetManager manager) {
         cleanupControllers();
         SceneApplication.getApplication().addSceneListener(this);
         result.addLookupListener(this);
-        //TODO: handle request change
         Node node;
         if (spat instanceof Node) {
             node = (Node) spat;
@@ -748,15 +790,10 @@ private void scaleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
         SceneRequest request = new SceneRequest(this, jmeNode, manager);
         request.setDataObject(file);
         request.setHelpCtx(ctx);
-//        file.setSaveCookie(saveCookie);
-        if (editorController != null) {
-            editorController.cleanup();
-        }
-        editorController = new SceneEditorController(jmeNode, file);
-        this.currentRequest = request;
+        this.sentRequest = request;
         request.setWindowTitle("SceneComposer - " + manager.getRelativeAssetPath(file.getPrimaryFile().getPath()));
         request.setToolNode(new Node("SceneComposerToolNode"));
-        SceneApplication.getApplication().requestScene(request);
+        SceneApplication.getApplication().openScene(request);
     }
 
     public void addModel(Spatial model) {
@@ -806,23 +843,17 @@ private void scaleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
     }
 
     private void selectSpatial(JmeSpatial spatial) {
-
+        if (editorController != null) {
+            editorController.setSelectedSpat(spatial);
+        }
         if (spatial == null) {
             setSelectedObjectText(null);
-            if (editorController != null) {
-                editorController.setSelectedSpat(spatial);
-            }
-            setActivatedNodes(new org.openide.nodes.Node[]{});
             return;
         } else {
             if (toolController != null) {
                 toolController.updateSelection(spatial.getLookup().lookup(Spatial.class));
             }
         }
-        if (editorController == null) {
-            return;
-        }
-        editorController.setSelectedSpat(spatial);
         if (spatial.getLookup().lookup(Node.class) != null) {
             setSelectedObjectText(spatial.getLookup().lookup(Node.class).getName());
         } else if (spatial.getLookup().lookup(Spatial.class) != null) {
@@ -830,39 +861,9 @@ private void scaleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
         } else {
             setSelectedObjectText(null);
         }
-        SceneApplication.getApplication().setCurrentFileNode(spatial);
-        setActivatedNodes(new org.openide.nodes.Node[]{spatial});
+        SceneExplorerTopComponent.findInstance().setSelectedNode(spatial);
     }
 
-    private boolean checkSaved() {
-        if (editorController != null && editorController.isNeedSave()) {
-            Confirmation msg = new NotifyDescriptor.Confirmation(
-                    "Your Scene is not saved, do you want to save?",
-                    NotifyDescriptor.YES_NO_OPTION,
-                    NotifyDescriptor.WARNING_MESSAGE);
-            Object result = DialogDisplayer.getDefault().notify(msg);
-            if (NotifyDescriptor.CANCEL_OPTION.equals(result)) {
-                return false;
-            } else if (NotifyDescriptor.YES_OPTION.equals(result)) {
-                editorController.saveScene();
-                return true;
-            } else if (NotifyDescriptor.NO_OPTION.equals(result)) {
-                return true;
-            }
-        }
-        return true;
-    }
-
-//    public class SaveCookieImpl implements SaveCookie {
-//
-//        public void save() throws IOException {
-//            editorController.saveScene();
-//            //TODO: update infos.. runs on callable..
-////            if (currentRequest != null) {
-////                setSceneInfo(currentRequest.getRootNode(), editorController.getCurrentFileObject(), true);
-////            }
-//        }
-//    }
     private void cleanupControllers() {
         if (camController != null) {
             camController.disable();
@@ -876,22 +877,27 @@ private void scaleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
             editorController.cleanup();
             editorController = null;
         }
-        setActivatedNodes(new org.openide.nodes.Node[]{});
     }
 
     /*
      * SceneListener
      */
-    public void sceneRequested(SceneRequest request) {
-        if (request.equals(currentRequest)) {
-            setSceneInfo(currentRequest.getJmeNode(), editorController.getCurrentFileObject(), true);
+    public void sceneOpened(SceneRequest request) {
+        if (request.equals(sentRequest)) {
+            currentRequest = request;
+            if (editorController != null) {
+                editorController.cleanup();
+            }
+            editorController = new SceneEditorController(request.getJmeNode(), request.getDataObject());
+            setActivatedNodes(new org.openide.nodes.Node[]{request.getDataObject().getNodeDelegate()});
+            setSceneInfo(request.getJmeNode(), editorController.getCurrentFileObject(), true);
             if (camController != null) {
                 camController.disable();
             }
             if (toolController != null) {
                 toolController.cleanup();
             }
-            toolController = new SceneComposerToolController(currentRequest.getToolNode(), currentRequest.getManager(), request.getJmeNode());
+            toolController = new SceneComposerToolController(request.getToolNode(), request.getManager(), request.getJmeNode());
 
             camController = new ComposerCameraController(SceneApplication.getApplication().getCamera(), request.getJmeNode());
             toolController.setEditorController(editorController);
@@ -903,44 +909,84 @@ private void scaleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
             SelectTool tool = new SelectTool();
             toolController.showEditTool(tool);
             toolController.setShowSelection(true);
-            
+
             editorController.setToolController(toolController);
             toolController.refreshNonSpatialMarkers();
-            
+
             editorController.setTerrainLodCamera();
-        }/* else {
-         SceneApplication.getApplication().removeSceneListener(this);
-         currentRequest = null;
-         setSceneInfo(null, false);
-         cleanupControllers();
-         }*/
+            final SpatialAssetDataObject dobj = ((SpatialAssetDataObject) currentRequest.getDataObject());
+            listener = new ProjectAssetManager.ClassPathChangeListener() {
+
+                public void classPathChanged(final ProjectAssetManager manager) {
+                    if (dobj.isModified()) {
+                        Confirmation msg = new NotifyDescriptor.Confirmation(
+                                "Classes have been changed, save and reload scene?",
+                                NotifyDescriptor.OK_CANCEL_OPTION,
+                                NotifyDescriptor.INFORMATION_MESSAGE);
+                        Object result = DialogDisplayer.getDefault().notify(msg);
+                        if (!NotifyDescriptor.OK_OPTION.equals(result)) {
+                            return;
+                        }
+                        try {
+                            dobj.saveAsset();
+                        } catch (IOException ex) {
+                            Exceptions.printStackTrace(ex);
+                        }
+                    }
+                    Runnable call = new Runnable() {
+
+                        public void run() {
+                            ProgressHandle progressHandle = ProgressHandleFactory.createHandle("Reloading Scene..");
+                            progressHandle.start();
+                            try {
+                                manager.clearCache();
+                                final Spatial asset = dobj.loadAsset();
+                                if (asset != null) {
+                                    java.awt.EventQueue.invokeLater(new Runnable() {
+
+                                        public void run() {
+                                            SceneComposerTopComponent composer = SceneComposerTopComponent.findInstance();
+                                            composer.openScene(asset, dobj, manager);
+                                        }
+                                    });
+                                } else {
+                                    Confirmation msg = new NotifyDescriptor.Confirmation(
+                                            "Error opening " + dobj.getPrimaryFile().getNameExt(),
+                                            NotifyDescriptor.OK_CANCEL_OPTION,
+                                            NotifyDescriptor.ERROR_MESSAGE);
+                                    DialogDisplayer.getDefault().notify(msg);
+                                }
+                            } finally {
+                                progressHandle.finish();
+                            }
+                        }
+                    };
+                    new Thread(call).start();
+                }
+            };
+            currentRequest.getManager().addClassPathEventListener(listener);
+        }
     }
 
-    public boolean sceneClose(SceneRequest request) {
+    public void sceneClosed(SceneRequest request) {
         if (request.equals(currentRequest)) {
-//            if (checkSaved()) {
+            setActivatedNodes(new org.openide.nodes.Node[]{});
+            if (request != null) {
+                request.getManager().removeClassPathEventListener(listener);
+                listener = null;
+            }
             SceneApplication.getApplication().removeSceneListener(this);
             currentRequest = null;
             setSceneInfo(null, null, false);
-            java.awt.EventQueue.invokeLater(new Runnable() {
-
-                public void run() {
-                    cleanupControllers();
-                }
-            });
-//            } else {
-//                return false;
-//            }
+            cleanupControllers();
         }
-        return true;
     }
 
-    public void previewRequested(PreviewRequest request) {
+    public void previewCreated(PreviewRequest request) {
     }
 
     public void displayInfo(String info) {
         Message msg = new NotifyDescriptor.Message(info);
         DialogDisplayer.getDefault().notifyLater(msg);
     }
-    
 }

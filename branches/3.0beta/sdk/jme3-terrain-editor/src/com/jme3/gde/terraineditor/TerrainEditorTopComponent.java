@@ -126,11 +126,12 @@ public final class TerrainEditorTopComponent extends TopComponent implements Sce
     TerrainToolController toolController;
     TerrainEditorController editorController;
     private SceneRequest currentRequest;
+    private SceneRequest sentRequest;
     private boolean alreadyChoosing = false; // used for texture table selection
     private CreateTerrainWizardAction terrainWizard;
     private SkyboxWizardAction skyboxWizard;
     private JmeSpatial selectedSpat;
-    private TerrainNodeListener terrainDeletedNodeListener;
+    //private TerrainNodeListener terrainDeletedNodeListener;
     private boolean availableNormalTextures;
     private HelpCtx ctx = new HelpCtx("sdk.terrain_editor");
     private DDSPreview ddsPreview;
@@ -871,8 +872,8 @@ public final class TerrainEditorTopComponent extends TopComponent implements Sce
         selectedSpat = spatial;
         editorController.setSelectedSpat(spatial);
         /*if (selectedSpat instanceof JmeTerrainQuad) { //TODO shouldn't be terrainQuad, should be a generic JmeTerrain
-            selectedSpat.removeNodeListener(terrainDeletedNodeListener); // remove it if it exists, no way to check if it is there already
-            selectedSpat.addNodeListener(terrainDeletedNodeListener); // add it back
+        selectedSpat.removeNodeListener(terrainDeletedNodeListener); // remove it if it exists, no way to check if it is there already
+        selectedSpat.addNodeListener(terrainDeletedNodeListener); // add it back
         }*/
     }
 
@@ -948,7 +949,7 @@ public final class TerrainEditorTopComponent extends TopComponent implements Sce
     protected void componentActivated() {
         SceneViewerTopComponent.findInstance().requestVisible();
     }
-    
+
     void writeProperties(java.util.Properties p) {
         // better to version settings since initial version as advocated at
         // http://wiki.apidesign.org/wiki/PropertyFiles
@@ -1006,21 +1007,22 @@ public final class TerrainEditorTopComponent extends TopComponent implements Sce
             editorController.cleanup();
         }
         editorController = new TerrainEditorController(jmeNode, file, this);
-        this.currentRequest = request;
+        this.sentRequest = request;
         request.setWindowTitle("TerrainEditor - " + manager.getRelativeAssetPath(file.getPrimaryFile().getPath()));
         request.setToolNode(new Node("TerrainEditorToolNode"));
-        SceneApplication.getApplication().requestScene(request);
+        SceneApplication.getApplication().openScene(request);
 
-        terrainDeletedNodeListener = new TerrainNodeListener();
-        editorController.enableTextureButtons();
+        //terrainDeletedNodeListener = new TerrainNodeListener();
+        //editorController.enableTextureButtons();
 
     }
 
-    // run on GL thread
-    public void sceneRequested(SceneRequest request) {
+    // runs on AWT thread now
+    public void sceneOpened(SceneRequest request) {
 
-        if (request.equals(currentRequest)) {
-            Logger.getLogger(TerrainEditorTopComponent.class.getName()).finer("Terrain sceneRequested " + request.getWindowTitle());
+        if (request.equals(sentRequest)) {
+            currentRequest = request;
+            //Logger.getLogger(TerrainEditorTopComponent.class.getName()).finer("Terrain sceneRequested " + request.getWindowTitle());
 
             setSceneInfo(currentRequest.getJmeNode(), true);
 
@@ -1031,7 +1033,6 @@ public final class TerrainEditorTopComponent extends TopComponent implements Sce
             if (terrain != null) {
                 // add the terrain root save node
 
-                // ugh! wtf, why is this fixing the material problem?
                 ((Node) terrain).setMaterial(terrain.getMaterial());
                 // it appears when loading the actual applied material on the terrain
                 // does not reflect the material that we get from the terrain.
@@ -1045,9 +1046,6 @@ public final class TerrainEditorTopComponent extends TopComponent implements Sce
             if (toolController != null) {
                 toolController.cleanup();
             }
-
-            //for (int i=0; i<textureTable.getModel().getRowCount(); i++)
-            //    ((TextureTableModel)textureTable.getModel()).removeRow(i);
 
             toolController = new TerrainToolController(currentRequest.getToolNode(), currentRequest.getManager().getManager(), request.getJmeNode());
             camController = new TerrainCameraController(SceneApplication.getApplication().getCamera());
@@ -1064,16 +1062,11 @@ public final class TerrainEditorTopComponent extends TopComponent implements Sce
             toolController.setHeightToolHeight((float) heightSlider.getValue() / (float) heightSlider.getMaximum());
 
             editorController.setTerrainLodCamera();
-            
-            java.awt.EventQueue.invokeLater(new Runnable() {
 
-                public void run() {
-                    reinitTextureTable(); // update the UI
-                    if (editorController.getTerrain(null) != null) {
-                        //createTerrainButton.setEnabled(false); // only let the user add one terrain
-                    }
-                }
-            });
+            reinitTextureTable(); // update the UI
+            if (editorController.getTerrain(null) != null) {
+                //createTerrainButton.setEnabled(false); // only let the user add one terrain
+            }
         }
     }
 
@@ -1092,42 +1085,30 @@ public final class TerrainEditorTopComponent extends TopComponent implements Sce
 
     private void setSceneInfo(final JmeNode jmeNode, final boolean active) {
         final TerrainEditorTopComponent inst = this;
-        java.awt.EventQueue.invokeLater(new Runnable() {
-
-            public void run() {
-                if (jmeNode != null) {
-                } else {
-                }
-
-                if (!active) {
-                    result.removeLookupListener(inst);
-                    close();
-                } else {
-                    open();
-                    requestActive();
-                }
-            }
-        });
-    }
-
-    public boolean sceneClose(SceneRequest request) {
-        if (request.equals(currentRequest)) {
-//            if (checkSaved()) {
-            SceneApplication.getApplication().removeSceneListener(this);
-            setSceneInfo(null, false);
-            currentRequest = null;
-            java.awt.EventQueue.invokeLater(new Runnable() {
-
-                public void run() {
-                    cleanupControllers();
-                }
-            });
-//            }
+        if (jmeNode != null) {
+        } else {
         }
-        return true;
+
+        if (!active) {
+            result.removeLookupListener(inst);
+            close();
+        } else {
+            open();
+            requestActive();
+        }
     }
 
-    public void previewRequested(PreviewRequest request) {
+    public void sceneClosed(SceneRequest request) {
+        if (request.equals(currentRequest)) {
+            setActivatedNodes(new org.openide.nodes.Node[]{});
+            SceneApplication.getApplication().removeSceneListener(this);
+            currentRequest = null;
+            setSceneInfo(null, false);
+            cleanupControllers();
+        }
+    }
+
+    public void previewCreated(PreviewRequest request) {
     }
 
     private void cleanupControllers() {
@@ -1151,6 +1132,9 @@ public final class TerrainEditorTopComponent extends TopComponent implements Sce
      */
     protected void reinitTextureTable() {
 
+        if (toolController == null)
+            return; // we are not initialized yet
+        
         clearTextureTable();
 
         getTableModel().initModel();
@@ -1175,14 +1159,15 @@ public final class TerrainEditorTopComponent extends TopComponent implements Sce
         textureTable.getColumnModel().getColumn(2).setCellEditor(rendererNormal);
 
         // empty out the table
-        while (textureTable.getModel().getRowCount() > 0)
-             ((TextureTableModel) textureTable.getModel()).removeRow(0);
+        while (textureTable.getModel().getRowCount() > 0) {
+            ((TextureTableModel) textureTable.getModel()).removeRow(0);
+        }
 
         if (editorController.getTerrain(null) == null) {
             return;
         }
     }
-    
+
     /**
      * Adds another texture layer to the material, sets a default texture for it.
      * Assumes that the new index is in the range of the amount of available textures
@@ -1596,22 +1581,22 @@ public final class TerrainEditorTopComponent extends TopComponent implements Sce
             throw new UnsupportedOperationException("Unable to create directory");
         }
         /*
-         @Override
-         public File[] getRoots()
-         {
-         return rootDirectories;
-         }
-
-         @Override
-         public boolean isRoot(File file)
-         {
-         for (File root : rootDirectories) {
-         if (root.equals(file)) {
-         return true;
-         }
-         }
-         return false;
-         }*/
+        @Override
+        public File[] getRoots()
+        {
+        return rootDirectories;
+        }
+        
+        @Override
+        public boolean isRoot(File file)
+        {
+        for (File root : rootDirectories) {
+        if (root.equals(file)) {
+        return true;
+        }
+        }
+        return false;
+        }*/
     }
 
     public class Utils {

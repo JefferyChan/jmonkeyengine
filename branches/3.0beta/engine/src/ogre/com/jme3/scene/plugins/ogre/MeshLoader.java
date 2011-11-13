@@ -55,6 +55,7 @@ import com.jme3.scene.VertexBuffer.Usage;
 import com.jme3.util.BufferUtils;
 import com.jme3.util.IntMap;
 import com.jme3.util.IntMap.Entry;
+import com.jme3.util.PlaceholderAssets;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.Buffer;
@@ -97,6 +98,7 @@ public class MeshLoader extends DefaultHandler implements AssetLoader {
         Type.TexCoord6,
         Type.TexCoord7,
         Type.TexCoord8,};
+    private AssetKey key;
     private String meshName;
     private String folderName;
     private AssetManager assetManager;
@@ -201,19 +203,20 @@ public class MeshLoader extends DefaultHandler implements AssetLoader {
         Material mat = null;
         if (matName.endsWith(".j3m")) {
             // load as native jme3 material instance
-            mat = assetManager.loadMaterial(matName);
+            try {
+                mat = assetManager.loadMaterial(matName);
+            } catch (AssetNotFoundException ex){
+                // Warning will be raised (see below)
+            }
         } else {
             if (materialList != null) {
                 mat = materialList.get(matName);
             }
-            if (mat == null) {
-                logger.log(Level.WARNING, "Material {0} not found. Applying default material", matName);
-                mat = (Material) assetManager.loadMaterial("Common/Materials/RedColor.j3m");
-            }
         }
-
+        
         if (mat == null) {
-            throw new RuntimeException("Cannot locate material named " + matName);
+            logger.log(Level.WARNING, "Cannot locate {0} for model {1}", new Object[]{matName, key});
+            mat = PlaceholderAssets.getPlaceholderMaterial(assetManager);
         }
 
         if (mat.isTransparent()) {
@@ -550,7 +553,13 @@ public class MeshLoader extends DefaultHandler implements AssetLoader {
     }
 
     private void startSkeleton(String name) {
-        animData = (AnimData) assetManager.loadAsset(folderName + name + ".xml");
+        AssetKey assetKey = new AssetKey(folderName + name + ".xml");
+        try {
+            animData = (AnimData) assetManager.loadAsset(assetKey);
+        } catch (AssetNotFoundException ex){
+            logger.log(Level.WARNING, "Cannot locate {0} for model {1}", new Object[]{assetKey, key});
+            animData = null;
+        }
     }
 
     private void startSubmeshName(String indexStr, String nameStr) {
@@ -780,7 +789,7 @@ public class MeshLoader extends DefaultHandler implements AssetLoader {
 
     public Object load(AssetInfo info) throws IOException {
         try {
-            AssetKey key = info.getKey();
+            key = info.getKey();
             meshName = key.getName();
             folderName = key.getFolder();
             String ext = key.getExtension();
@@ -790,38 +799,36 @@ public class MeshLoader extends DefaultHandler implements AssetLoader {
             }
             assetManager = info.getManager();
 
-            OgreMeshKey meshKey = null;
             if (key instanceof OgreMeshKey) {
-                meshKey = (OgreMeshKey) key;
+                // OgreMeshKey is being used, try getting the material list
+                // from it
+                OgreMeshKey meshKey = (OgreMeshKey) key;
                 materialList = meshKey.getMaterialList();
                 String materialName = meshKey.getMaterialName();
-                if (materialList == null) {
-                    if (materialName != null) {
-                        try {
-                            materialList = (MaterialList) assetManager.loadAsset(new OgreMaterialKey(folderName + materialName + ".material"));
-                        } catch (AssetNotFoundException e) {
-                            logger.log(Level.WARNING, "Cannot locate {0}{1}.material for model {2}{3}.{4}", new Object[]{folderName, materialName, folderName, meshName, ext});
-                            logger.log(Level.WARNING, "", e);
-                        }
-                    } else {
-                        try {
-                            materialList = (MaterialList) assetManager.loadAsset(new OgreMaterialKey(folderName + meshName + ".material"));
-                        } catch (AssetNotFoundException e) {
-                            logger.log(Level.WARNING, "Cannot locate {0}{1}.material for model {2}{3}.{4}", new Object[]{folderName, meshName, folderName, meshName, ext});
-                            logger.log(Level.WARNING, "", e);
-                        }
+                
+                // Material list not set but material name is available
+                if (materialList == null && materialName != null) {
+                    OgreMaterialKey materialKey = new OgreMaterialKey(folderName + materialName + ".material");
+                    try {
+                        materialList = (MaterialList) assetManager.loadAsset(materialKey);
+                    } catch (AssetNotFoundException e) {
+                        logger.log(Level.WARNING, "Cannot locate {0} for model {1}", new Object[]{materialKey, key});
                     }
                 }
-            } else {
-                try {
-                    materialList = (MaterialList) assetManager.loadAsset(new OgreMaterialKey(folderName + meshName + ".material"));
-                } catch (AssetNotFoundException e) {
-                    logger.log(Level.WARNING, "Cannot locate {0}{1}.material for model {2}{3}.{4}", new Object[]{folderName, meshName, folderName, meshName, ext});
-					logger.log(Level.WARNING, "", e);
-				}
-
             }
 
+            // If for some reason material list could not be found through
+            // OgreMeshKey, or if regular ModelKey specified, load using 
+            // default method.
+            if (materialList == null){
+                OgreMaterialKey materialKey = new OgreMaterialKey(folderName + meshName + ".material");
+                try {
+                    materialList = (MaterialList) assetManager.loadAsset(materialKey);
+                } catch (AssetNotFoundException e) {
+                    logger.log(Level.WARNING, "Cannot locate {0} for model {1}", new Object[]{ materialKey, key });
+                }
+            }
+            
             // Added by larynx 25.06.2011
             // Android needs the namespace aware flag set to true                 
             // Kirill 30.06.2011

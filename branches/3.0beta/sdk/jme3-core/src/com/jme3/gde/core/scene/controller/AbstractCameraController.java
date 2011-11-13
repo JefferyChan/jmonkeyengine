@@ -95,20 +95,22 @@ public abstract class AbstractCameraController extends AbstractAppState implemen
     }
 
     public void enable() {
-        inputManager.addRawInputListener(this);
-        inputManager.addListener(this, "MouseAxisX", "MouseAxisY", "MouseAxisX-", "MouseAxisY-", "MouseWheel", "MouseWheel-", "MouseButtonLeft", "MouseButtonMiddle", "MouseButtonRight");
         SceneApplication.getApplication().getStateManager().attach(this);
-        AbstractCameraController cc = SceneApplication.getApplication().getActiveCameraController();
-        if (cc != null) {
-            cam.setLocation(cc.cam.getLocation());
-            focus.set(cc.focus);
-        }
+        final AbstractCameraController cc = SceneApplication.getApplication().getActiveCameraController();
 
         SceneApplication.getApplication().setActiveCameraController(this);
-        java.awt.EventQueue.invokeLater(new Runnable() {
+        addAdditionnalToolbar();
+        final AbstractCameraController me = this;
+        SceneApplication.getApplication().enqueue(new Callable<Object>() {
 
-            public void run() {
-                addAdditionnalToolbar();
+            public Object call() throws Exception {
+                if (cc != null) {
+                    cam.setLocation(cc.cam.getLocation());
+                    focus.set(cc.focus);
+                }
+                inputManager.addRawInputListener(me);
+                inputManager.addListener(me, "MouseAxisX", "MouseAxisY", "MouseAxisX-", "MouseAxisY-", "MouseWheel", "MouseWheel-", "MouseButtonLeft", "MouseButtonMiddle", "MouseButtonRight");
+                return null;
             }
         });
     }
@@ -131,18 +133,19 @@ public abstract class AbstractCameraController extends AbstractAppState implemen
     }
 
     public void disable() {
-        inputManager.removeRawInputListener(this);
-        inputManager.removeListener(this);
         SceneApplication.getApplication().getStateManager().detach(this);
         if (SceneApplication.getApplication().getActiveCameraController() == this) {
-            java.awt.EventQueue.invokeLater(new Runnable() {
-
-                public void run() {
-                    removeAdditionnalToolbar();
-
-                }
-            });
+            removeAdditionnalToolbar();
         }
+        final AbstractCameraController me = this;
+        SceneApplication.getApplication().enqueue(new Callable<Object>() {
+
+            public Object call() throws Exception {
+                inputManager.removeRawInputListener(me);
+                inputManager.removeListener(me);
+                return null;
+            }
+        });
     }
 
     public void setCamFocus(final Vector3f focus) {
@@ -164,7 +167,7 @@ public abstract class AbstractCameraController extends AbstractAppState implemen
     /*
      * methods to move camera
      */
-    protected void rotateCamera(Vector3f axis, float amount) {
+    protected void doRotateCamera(Vector3f axis, float amount) {
         if (axis.equals(cam.getLeft())) {
             float elevation = -FastMath.asin(cam.getDirection().y);
             amount = Math.min(Math.max(elevation + amount,
@@ -191,7 +194,7 @@ public abstract class AbstractCameraController extends AbstractAppState implemen
         });
     }
 
-    protected void panCamera(float left, float up) {
+    protected void doPanCamera(float left, float up) {
         cam.getLeft().mult(left, vector);
         vector.scaleAdd(up, cam.getUp(), vector);
         vector.multLocal(cam.getLocation().distance(focus));
@@ -199,12 +202,12 @@ public abstract class AbstractCameraController extends AbstractAppState implemen
         focus.addLocal(vector);
     }
 
-    protected void moveCamera(float forward) {
+    protected void doMoveCamera(float forward) {
         cam.getDirection().mult(forward, vector);
         cam.setLocation(cam.getLocation().add(vector));
     }
 
-    protected void zoomCamera(float amount) {
+    protected void doZoomCamera(float amount) {
         amount = cam.getLocation().distance(focus) * amount;
         float dist = cam.getLocation().distance(focus);
         amount = dist - Math.max(0f, dist - amount);
@@ -305,10 +308,10 @@ public abstract class AbstractCameraController extends AbstractAppState implemen
             movedR = true;
 
             if ((buttonDownL && useCameraControls()) || (buttonDownM && !shiftModifier)) {
-                rotateCamera(Vector3f.UNIT_Y, -f1 * 2.5f);
+                doRotateCamera(Vector3f.UNIT_Y, -f1 * 2.5f);
             }
             if ((buttonDownR && useCameraControls()) || (buttonDownM && shiftModifier)) {
-                panCamera(f1 * 2.5f, 0);
+                doPanCamera(f1 * 2.5f, 0);
             }
 
         } else if ("MouseAxisY".equals(string)) {
@@ -316,10 +319,10 @@ public abstract class AbstractCameraController extends AbstractAppState implemen
             movedR = true;
 
             if ((buttonDownL && useCameraControls()) || (buttonDownM && !shiftModifier)) {
-                rotateCamera(cam.getLeft(), -f1 * 2.5f);
+                doRotateCamera(cam.getLeft(), -f1 * 2.5f);
             }
             if ((buttonDownR && useCameraControls()) || (buttonDownM && shiftModifier)) {
-                panCamera(0, -f1 * 2.5f);
+                doPanCamera(0, -f1 * 2.5f);
             }
 
         } else if ("MouseAxisX-".equals(string)) {
@@ -327,10 +330,10 @@ public abstract class AbstractCameraController extends AbstractAppState implemen
             movedR = true;
 
             if ((buttonDownL && useCameraControls()) || (buttonDownM && !shiftModifier)) {
-                rotateCamera(Vector3f.UNIT_Y, f1 * 2.5f);
+                doRotateCamera(Vector3f.UNIT_Y, f1 * 2.5f);
             }
             if ((buttonDownR && useCameraControls()) || (buttonDownM && shiftModifier)) {
-                panCamera(-f1 * 2.5f, 0);
+                doPanCamera(-f1 * 2.5f, 0);
             }
 
         } else if ("MouseAxisY-".equals(string)) {
@@ -338,16 +341,16 @@ public abstract class AbstractCameraController extends AbstractAppState implemen
             movedR = true;
 
             if ((buttonDownL && useCameraControls()) || (buttonDownM && !shiftModifier)) {
-                rotateCamera(cam.getLeft(), f1 * 2.5f);
+                doRotateCamera(cam.getLeft(), f1 * 2.5f);
             }
             if ((buttonDownR && useCameraControls()) || (buttonDownM && shiftModifier)) {
-                panCamera(0, f1 * 2.5f);
+                doPanCamera(0, f1 * 2.5f);
             }
 
         } else if ("MouseWheel".equals(string)) {
-            zoomCamera(.1f);
+            doZoomCamera(.1f);
         } else if ("MouseWheel-".equals(string)) {
-            zoomCamera(-.1f);
+            doZoomCamera(-.1f);
         }
     }
 

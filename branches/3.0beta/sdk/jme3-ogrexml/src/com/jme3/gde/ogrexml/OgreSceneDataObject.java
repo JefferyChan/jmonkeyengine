@@ -51,7 +51,7 @@ public class OgreSceneDataObject extends SpatialAssetDataObject {
     }
 
     @Override
-    public Spatial loadAsset() {
+    public synchronized Spatial loadAsset() {
         if (isModified() && savable != null) {
             return (Spatial) savable;
         }
@@ -85,7 +85,9 @@ public class OgreSceneDataObject extends SpatialAssetDataObject {
         try {
             lock = getPrimaryFile().lock();
             mgr.deleteFromCache(getAssetKey());
+            listListener.start();
             Spatial spatial = mgr.loadModel(getAssetKey());
+            listListener.stop();
             savable = spatial;
             lock.releaseLock();
             return spatial;

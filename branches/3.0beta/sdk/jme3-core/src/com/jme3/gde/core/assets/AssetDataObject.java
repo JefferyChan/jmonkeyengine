@@ -31,6 +31,7 @@
  */
 package com.jme3.gde.core.assets;
 
+import com.jme3.asset.AssetEventListener;
 import com.jme3.asset.AssetKey;
 import com.jme3.export.Savable;
 import com.jme3.export.binary.BinaryExporter;
@@ -38,6 +39,8 @@ import com.jme3.gde.core.scene.SceneApplication;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -91,12 +94,17 @@ public class AssetDataObject extends MultiDataObject {
     protected Savable savable;
     protected String saveExtension;
     protected AbstractLookup contentLookup;
+    protected AssetListListener listListener;
+    protected List<FileObject> assetList = new LinkedList<FileObject>();
+    protected List<AssetKey> assetKeyList = new LinkedList<AssetKey>();
+    protected List<AssetKey> failedList = new LinkedList<AssetKey>();
 
     public AssetDataObject(FileObject pf, MultiFileLoader loader) throws DataObjectExistsException, IOException {
         super(pf, loader);
         contentLookup = new AbstractLookup(getLookupContents());
         lookupContents.add(new AssetData(this));
         lookup = new ProxyLookup(getCookieSet().getLookup(), contentLookup);
+        listListener = new AssetListListener(this, assetList, assetKeyList, failedList);
         setSaveCookie(saveCookie);
         findAssetManager();
     }
@@ -132,7 +140,7 @@ public class AssetDataObject extends MultiDataObject {
     }
 
     @Override
-    public void setModified(boolean modif) {
+    public synchronized void setModified(boolean modif) {
         super.setModified(modif);
         if (modif && saveCookie != null) {
             getCookieSet().assign(SaveCookie.class, saveCookie);
@@ -150,13 +158,13 @@ public class AssetDataObject extends MultiDataObject {
         return lookupContents;
     }
 
-    public void setSaveCookie(SaveCookie cookie) {
+    public synchronized void setSaveCookie(SaveCookie cookie) {
         this.saveCookie = cookie;
         getCookieSet().assign(SaveCookie.class, saveCookie);
         setModified(false);
     }
 
-    public Savable loadAsset() {
+    public synchronized Savable loadAsset() {
         if (isModified() && savable != null) {
             return savable;
         }
@@ -168,7 +176,9 @@ public class AssetDataObject extends MultiDataObject {
         FileLock lock = null;
         try {
             lock = getPrimaryFile().lock();
+            listListener.start();
             Savable spatial = (Savable) mgr.loadAsset(getAssetKey());
+            listListener.stop();
             savable = spatial;
             lock.releaseLock();
         } catch (Exception ex) {
@@ -181,7 +191,7 @@ public class AssetDataObject extends MultiDataObject {
         return savable;
     }
 
-    public void saveAsset() throws IOException {
+    public synchronized void saveAsset() throws IOException {
         if (savable == null) {
             Logger.getLogger(AssetDataObject.class.getName()).log(Level.WARNING, "Trying to save asset that has not been loaded before or does not support saving!");
             return;
@@ -217,7 +227,7 @@ public class AssetDataObject extends MultiDataObject {
         setModified(false);
     }
 
-    public AssetKey<?> getAssetKey() {
+    public synchronized AssetKey<?> getAssetKey() {
         if (assetKey == null) {
             ProjectAssetManager mgr = getLookup().lookup(ProjectAssetManager.class);
             if (mgr == null) {
@@ -229,7 +239,7 @@ public class AssetDataObject extends MultiDataObject {
         return assetKey;
     }
 
-    public void setAssetKeyData(AssetKey key) {
+    public synchronized void setAssetKeyData(AssetKey key) {
         try {
             BeanUtils.copyProperties(getAssetKey(), key);
         } catch (IllegalAccessException ex) {
@@ -238,4 +248,79 @@ public class AssetDataObject extends MultiDataObject {
             Exceptions.printStackTrace(ex);
         }
     }
+
+    public synchronized List<FileObject> getAssetList() {
+        return new LinkedList<FileObject>(assetList);
+    }
+
+    public synchronized List<AssetKey> getAssetKeyList() {
+        return new LinkedList<AssetKey>(assetKeyList);
+    }
+
+    public synchronized List<AssetKey> getFailedList() {
+        return new LinkedList<AssetKey>(failedList);
+    }
+
+    protected static class AssetListListener implements AssetEventListener {
+
+        private AssetDataObject obj;
+        private List<FileObject> assetList;
+        private List<AssetKey> assetKeyList;
+        private List<AssetKey> failedList;
+        private Thread loadingThread;
+
+        public AssetListListener(AssetDataObject obj, List<FileObject> assetList, List<AssetKey> assetKeyList, List<AssetKey> failedList) {
+            this.obj = obj;
+            this.assetList = assetList;
+            this.assetKeyList = assetKeyList;
+            this.failedList = failedList;
+        }
+
+        public void assetLoaded(AssetKey ak) {
+        }
+
+        public void assetRequested(AssetKey ak) {
+            ProjectAssetManager pm = obj.getLookup().lookup(ProjectAssetManager.class);
+            if (pm == null || loadingThread != Thread.currentThread()) {
+                return;
+            }
+            FileObject obj = pm.getAssetFolder().getFileObject(ak.getName());
+            if (obj != null) {
+                assetList.add(obj);
+                assetKeyList.add(ak);
+            }
+        }
+
+        public void assetDependencyNotFound(AssetKey ak, AssetKey ak1) {
+            ProjectAssetManager pm = obj.getLookup().lookup(ProjectAssetManager.class);
+            if (pm == null || loadingThread != Thread.currentThread()) {
+                return;
+            }
+            FileObject obj = pm.getAssetFolder().getFileObject(ak1.getName());
+            if (obj != null && assetList.contains(obj)) {
+                assetList.remove(obj);
+                failedList.add(ak1);
+            }
+        }
+
+        public void start() {
+            ProjectAssetManager pm = obj.getLookup().lookup(ProjectAssetManager.class);
+            loadingThread = Thread.currentThread();
+            assetList.clear();
+            assetKeyList.clear();
+            failedList.clear();
+            if (pm == null) {
+                return;
+            }
+            pm.addAssetEventListener(this);
+        }
+
+        public void stop() {
+            ProjectAssetManager pm = obj.getLookup().lookup(ProjectAssetManager.class);
+            if (pm == null) {
+                return;
+            }
+            pm.removeAssetEventListener(this);
+        }
+    };
 }

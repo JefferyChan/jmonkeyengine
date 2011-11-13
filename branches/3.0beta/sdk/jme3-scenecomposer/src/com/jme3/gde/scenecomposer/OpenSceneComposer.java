@@ -4,22 +4,16 @@
  */
 package com.jme3.gde.scenecomposer;
 
-import com.jme3.asset.DesktopAssetManager;
 import com.jme3.gde.core.assets.ProjectAssetManager;
 import com.jme3.gde.core.assets.BinaryModelDataObject;
 import com.jme3.scene.Spatial;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import java.io.IOException;
 import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.api.progress.ProgressHandleFactory;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.NotifyDescriptor.Confirmation;
-import org.openide.filesystems.FileLock;
-import org.openide.filesystems.FileObject;
-import org.openide.util.Exceptions;
-import sun.misc.Perf.GetPerfAction;
 
 public final class OpenSceneComposer implements ActionListener {
 
@@ -40,14 +34,12 @@ public final class OpenSceneComposer implements ActionListener {
                 ProgressHandle progressHandle = ProgressHandleFactory.createHandle("Opening in SceneComposer");
                 progressHandle.start();
                 try {
-
+                    manager.clearCache();
                     final Spatial asset = context.loadAsset();
-
                     if (asset != null) {
                         java.awt.EventQueue.invokeLater(new Runnable() {
 
                             public void run() {
-                                manager.clearCache();
                                 SceneComposerTopComponent composer = SceneComposerTopComponent.findInstance();
                                 composer.openScene(asset, context, manager);
                             }

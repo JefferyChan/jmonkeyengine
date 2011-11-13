@@ -97,12 +97,20 @@ public class SceneToolController implements AppState {
         //cursor.attachChild(cursorArrowX);
         cursor.attachChild(cursorArrowY);
         //cursor.attachChild(cursorArrowZ);
-        toolsNode.attachChild(cursor);
 
         //grid
         grid = new Geometry("grid", new Grid(20, 20, 1.0f));
         grid.setMaterial(grayMat);
         grid.setLocalTranslation(-10, 0, -10);
+        final Spatial cursor = this.cursor;
+        final Node toolsNode = this.toolsNode;
+        SceneApplication.getApplication().enqueue(new Callable<Object>() {
+
+            public Object call() throws Exception {
+                toolsNode.attachChild(cursor);
+                return null;
+            }
+        });
     }
 
     public void updateSelection(final Spatial spat) {
@@ -203,11 +211,17 @@ public class SceneToolController implements AppState {
         if (mesh == null) {
             return;
         }
-        Geometry selectionGeometry = new Geometry("selection_geometry_sceneviewer", mesh);
+        final Geometry selectionGeometry = new Geometry("selection_geometry_sceneviewer", mesh);
         selectionGeometry.setMaterial(blueMat);
         selectionGeometry.setLocalTransform(geom.getWorldTransform());
-        toolsNode.attachChild(selectionGeometry);
         selectionShape = selectionGeometry;
+        SceneApplication.getApplication().enqueue(new Callable<Object>() {
+
+            public Object call() throws Exception {
+                toolsNode.attachChild(selectionGeometry);
+                return null;
+            }
+        });
     }
 
     protected void attachBoxSelection(Spatial geom) {
@@ -219,12 +233,18 @@ public class SceneToolController implements AppState {
             WireBox wireBox = new WireBox();
             wireBox.fromBoundingBox(bbox);
             selctionShapeOffset.set(bbox.getCenter()).subtractLocal(geom.getWorldTranslation());
-            Geometry selectionGeometry = new Geometry("selection_geometry_sceneviewer", wireBox);
+            final Geometry selectionGeometry = new Geometry("selection_geometry_sceneviewer", wireBox);
             selectionGeometry.setMaterial(blueMat);
             selectionGeometry.setLocalTransform(geom.getWorldTransform());
             selectionGeometry.setLocalTranslation(bbox.getCenter());
-            toolsNode.attachChild(selectionGeometry);
             selectionShape = selectionGeometry;
+            SceneApplication.getApplication().enqueue(new Callable<Object>() {
+
+                public Object call() throws Exception {
+                    toolsNode.attachChild(selectionGeometry);
+                    return null;
+                }
+            });
 
         }
     }
@@ -250,26 +270,47 @@ public class SceneToolController implements AppState {
         if (control == null) {
             return;
         }
-        Spatial selectionGeometry = DebugShapeFactory.getDebugShape(control.getCollisionShape());
+        final Spatial selectionGeometry = DebugShapeFactory.getDebugShape(control.getCollisionShape());
         if (selectionGeometry != null) {
             selectionGeometry.setMaterial(blueMat);
             selectionGeometry.setLocalTransform(geom.getWorldTransform());
-            toolsNode.attachChild(selectionGeometry);
             selectionShape = selectionGeometry;
+            SceneApplication.getApplication().enqueue(new Callable<Object>() {
+
+                public Object call() throws Exception {
+                    toolsNode.attachChild(selectionGeometry);
+                    return null;
+                }
+            });
         }
     }
 
     protected void detachSelectionShape() {
         if (selectionShape != null) {
-            selectionShape.removeFromParent();
+            final Spatial shape = selectionShape;
             selectionShape = null;
+            SceneApplication.getApplication().enqueue(new Callable<Void>() {
+
+                public Void call() throws Exception {
+                    shape.removeFromParent();
+                    return null;
+                }
+            });
         }
     }
 
     public void cleanup() {
         detachSelectionShape();
-        cursor.removeFromParent();
-        grid.removeFromParent();
+        final Spatial cursor = this.cursor;
+        final Spatial grid = this.grid;
+        SceneApplication.getApplication().enqueue(new Callable<Void>() {
+
+            public Void call() throws Exception {
+                cursor.removeFromParent();
+                grid.removeFromParent();
+                return null;
+            }
+        });
         SceneApplication.getApplication().getStateManager().detach(this);
     }
 

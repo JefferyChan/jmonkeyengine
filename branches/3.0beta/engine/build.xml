@@ -12,6 +12,10 @@
     </target>
     
     <target name="-post-jar" depends="-create-optional-packages">
+        <!--move back classes-->
+        <move file="build/testclasses/jme3test" todir="build/classes/" failonerror="false"/>
+        <move file="build/testclasses/jme3game" todir="build/classes/" failonerror="false"/>
+        <move file="build/jbullet/com/jme3/bullet" todir="build/classes/com/jme3/" failonerror="false"/>
     </target>
 
     <!-- compiles the java classes of the native bullet version (works on all systems) -->
@@ -24,7 +28,7 @@
     
     <!-- compiles the android jar for jME3 -->
     <target name="-compile-android" description="builds the jMonkeyEngine3 distribution for android">
-        <echo message="Compiling Android jMonkeyEngin3.jar"/>
+        <echo message="Compiling Android jMonkeyEngine3.jar"/>
         <path id="android-classpath">
             <pathelement path="lib/android/android.jar"/>
             <pathelement path="build/classes"/>
@@ -37,7 +41,7 @@
                 srcdir="src/android"
                 destdir="build/android"
                 classpathref="android-classpath"
-                excludes="**/OGLESRenderer.java,**/TestsActivity.java,**/AboutActivity.java"/>
+                excludes="**/OGLESRenderer.java,**/TestsActivity.java,**/AboutActivity.java,nbproject/**"/>
     </target>
     
     <!--this target creates the separate jar files for jme3 and modifies the classpath to include them-->
@@ -100,8 +104,17 @@
     </target>
 
     <!-- compiles the *native binary* of the native bullet version (read bullet-native-build.txt for more info) -->
-    <target name="build-bullet-natives" description="uses native build tools to build the bulletjme binary (read bullet-native-build.txt for more info)">
+    <target name="build-bullet-natives" description="uses native build tools to build the bulletjme binary (read bullet-native-build.txt for more info)" depends="jar">
         <ant antfile="src/bullet/native/build.xml" target="build-bullet-natives"/>
+    </target>
+    
+    <target name="run-bullet-native" description="runs the jMonkeyEngine3 demos using native bullet">
+        <copy file="dist/opt/native-bullet/lib/jME3-bullet-natives.jar" todir="dist/lib" failonerror="false"/>
+        <copy file="dist/opt/native-bullet/lib/jME3-bullet.jar" todir="dist/lib" failonerror="false"/>
+        <delete file="dist/lib/jME3-jbullet.jar" failonerror="false"/>
+        <exec executable="java" dir="dist">
+            <arg line="-jar jMonkeyEngine3.jar"/>
+        </exec>
     </target>
     
     <!-- overrides javadoc generation to only include relevant classes -->
@@ -344,6 +357,12 @@
             file="${jme3zip}"
             toDir="/var/www/com/stable" overwrite="true" failonerror="true" verbose="false"
             />
+        <copydir
+            src="dist/javadoc/" dest="/var/www/org/javadoc/" forceoverwrite="true"
+            />
+    </target>
+    
+    <target name="copy-javadoc">
         <copydir
             src="dist/javadoc/" dest="/var/www/org/javadoc/" forceoverwrite="true"
             />

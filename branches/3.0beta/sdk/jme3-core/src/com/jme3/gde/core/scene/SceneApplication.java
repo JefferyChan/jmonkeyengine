@@ -26,12 +26,12 @@ package com.jme3.gde.core.scene;
 
 import com.jme3.app.Application;
 import com.jme3.app.StatsView;
+import com.jme3.bullet.BulletAppState;
 import com.jme3.font.BitmapFont;
 import com.jme3.font.BitmapText;
 import com.jme3.gde.core.Installer;
 import com.jme3.gde.core.assets.AssetData;
 import com.jme3.gde.core.scene.controller.AbstractCameraController;
-import com.jme3.gde.core.sceneexplorer.nodes.JmeSpatial;
 import com.jme3.gde.core.scene.processors.WireProcessor;
 import com.jme3.gde.core.sceneviewer.SceneViewerTopComponent;
 import com.jme3.gde.core.undoredo.SceneUndoRedoManager;
@@ -55,7 +55,6 @@ import com.jme3.system.awt.AwtPanelsContext;
 import com.jme3.system.awt.PaintMode;
 import java.awt.Component;
 import java.io.IOException;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -68,22 +67,19 @@ import org.openide.NotifyDescriptor;
 import org.openide.NotifyDescriptor.Confirmation;
 import org.openide.NotifyDescriptor.Message;
 import org.openide.awt.StatusDisplayer;
+import org.openide.loaders.DataObject;
 import org.openide.util.Exceptions;
 import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
-import org.openide.util.LookupEvent;
-import org.openide.util.LookupListener;
 import org.openide.util.NbPreferences;
-import org.openide.util.Utilities;
 import org.openide.util.lookup.Lookups;
 
 /**
- * <p/> <p/> <p/> <p/>
- * <p/>
+ * 
  * @author normenhansen
  */
 @SuppressWarnings("unchecked")
-public class SceneApplication extends Application implements LookupProvider, LookupListener {
+public class SceneApplication extends Application implements LookupProvider {
 
     private PointLight camLight;
     private static SceneApplication application;
@@ -109,7 +105,6 @@ public class SceneApplication extends Application implements LookupProvider, Loo
     private SceneRequest currentSceneRequest;
     private ConcurrentLinkedQueue<SceneListener> listeners = new ConcurrentLinkedQueue<SceneListener>();
     private ScenePreviewProcessor previewProcessor;
-    private Lookup.Result nodeSelectionResult;
     private ApplicationLogHandler logHandler = new ApplicationLogHandler();
     private WireProcessor wireProcessor;
     private ProgressHandle progressHandle = ProgressHandleFactory.createHandle("Opening SceneViewer..");
@@ -118,6 +113,8 @@ public class SceneApplication extends Application implements LookupProvider, Loo
     private AwtPanel panel;
     private ViewPort overlayView;
     boolean useCanvas = false;
+    private BulletAppState physicsState;
+    private Thread thread;
 
     public SceneApplication() {
         progressHandle.start(7);
@@ -137,9 +134,6 @@ public class SceneApplication extends Application implements LookupProvider, Loo
 
             setPauseOnLostFocus(false);
 
-            //add listener for project selection
-            nodeSelectionResult = Utilities.actionsGlobalContext().lookupResult(JmeSpatial.class);
-            nodeSelectionResult.addLookupListener(this);
             if (useCanvas) {
                 createCanvas();
                 startCanvas(true);
@@ -206,6 +200,7 @@ public class SceneApplication extends Application implements LookupProvider, Loo
 
     @Override
     public void initialize() {
+        thread = Thread.currentThread();
         try {
             super.initialize();
             {
@@ -214,7 +209,7 @@ public class SceneApplication extends Application implements LookupProvider, Loo
                 guiViewPort.setClearFlags(false, false, false);
             }
             getProgressHandle().progress("Setup Camera Controller", 2);
-            //create camera controler
+            //create camera controller
             camController = new SceneCameraController(cam, inputManager);
             //create preview view
             getProgressHandle().progress("Setup Preview Scene", 3);
@@ -301,20 +296,6 @@ public class SceneApplication extends Application implements LookupProvider, Loo
         return Lookups.fixed(getApplication());
     }
 
-    /**
-     * updates node selection
-     * @param ev
-     */
-    public void resultChanged(LookupEvent ev) {
-        Collection collection = nodeSelectionResult.allInstances();
-        for (Iterator it = collection.iterator(); it.hasNext();) {
-            Object object = it.next();
-            if (object instanceof JmeSpatial) {
-                return;
-            }
-        }
-    }
-
     //TODO: replace with Lookup functionality
     public void addSceneListener(SceneListener listener) {
         listeners.add(listener);
@@ -324,28 +305,30 @@ public class SceneApplication extends Application implements LookupProvider, Loo
         listeners.remove(listener);
     }
 
-    private void notifySceneListeners() {
+    private void notifyOpen(final SceneRequest opened) {
         for (Iterator<SceneListener> it = listeners.iterator(); it.hasNext();) {
             SceneListener sceneViewerListener = it.next();
-            sceneViewerListener.sceneRequested(currentSceneRequest);
+            sceneViewerListener.sceneOpened(opened);
         }
     }
 
-    private boolean notifySceneListeners(SceneRequest closed) {
+    private void notifyClose(final SceneRequest closed) {
         for (Iterator<SceneListener> it = listeners.iterator(); it.hasNext();) {
             SceneListener sceneViewerListener = it.next();
-            if (!sceneViewerListener.sceneClose(closed)) {
-                return false;
+            sceneViewerListener.sceneClosed(closed);
+        }
+    }
+
+    public void notifyPreview(final PreviewRequest request) {
+        java.awt.EventQueue.invokeLater(new Runnable() {
+
+            public void run() {
+                for (Iterator<SceneListener> it = listeners.iterator(); it.hasNext();) {
+                    SceneListener sceneViewerListener = it.next();
+                    sceneViewerListener.previewCreated(request);
+                }
             }
-        }
-        return true;
-    }
-
-    public void notifySceneListeners(PreviewRequest request) {
-        for (Iterator<SceneListener> it = listeners.iterator(); it.hasNext();) {
-            SceneListener sceneViewerListener = it.next();
-            sceneViewerListener.previewRequested(request);
-        }
+        });
     }
 
     public void createPreview(final PreviewRequest request) {
@@ -354,22 +337,15 @@ public class SceneApplication extends Application implements LookupProvider, Loo
 
     /**
      * method to display the node tree of a plugin (threadsafe)
-     * @param tree
+     * @param request
      */
-    public void requestScene(final SceneRequest request) {
-        enqueue(new Callable() {
+    public void openScene(final SceneRequest request) {
+        closeScene(currentSceneRequest, request);
+        java.awt.EventQueue.invokeLater(new Runnable() {
 
-            public Object call() throws Exception {
-                if (!closeCurrentScene()) {
-                    return null;
-                }
-                if (request.getManager() != null) {
-                    assetManager = request.getManager();
-                }
-                if (request.getRequester() instanceof SceneApplication) {
-                    camController.enable();
-                } else {
-                    camController.disable();
+            public void run() {
+                if (request == null) {
+                    return;
                 }
                 currentSceneRequest = request;
                 if (request.getDataObject() != null) {
@@ -378,103 +354,107 @@ public class SceneApplication extends Application implements LookupProvider, Loo
                     setCurrentFileNode(null);
                 }
                 setHelpContext(request.getHelpCtx());
-                getCurrentSceneRequest().setDisplayed(true);
-                Spatial model = request.getRootNode();
-                if (model == null) {
-                    StatusDisplayer.getDefault().setStatusText("could not load Spatial from request: " + getCurrentSceneRequest().getWindowTitle());
-                    return null;
-                }
-                rootNode.attachChild(model);
-                if (request.getToolNode() != null) {
-                    toolsNode.attachChild(request.getToolNode());
-                }
-                notifySceneListeners();
                 setWindowTitle(request.getWindowTitle());
-                return null;
+                if (request.getRequester() instanceof SceneApplication) {
+                    camController.enable();
+                } else {
+                    camController.disable();
+                }
+                enqueue(new Callable() {
+
+                    public Object call() throws Exception {
+                        if (request.getManager() != null) {
+                            assetManager = request.getManager();
+                        }
+                        Spatial model = request.getRootNode();
+                        if (model == null) {
+                            StatusDisplayer.getDefault().setStatusText("could not load Spatial from request: " + getCurrentSceneRequest().getWindowTitle());
+                            return null;
+                        }
+                        rootNode.attachChild(model);
+                        if (request.getToolNode() != null) {
+                            toolsNode.attachChild(request.getToolNode());
+                        }
+                        request.setDisplayed(true);
+                        return null;
+                    }
+                });
+                notifyOpen(request);
             }
         });
-    }
-
-    private void checkSave() {
-        if ((currentSceneRequest != null)
-                && currentSceneRequest.getDataObject().isModified()) {
-            final SceneRequest req = currentSceneRequest;
-            java.awt.EventQueue.invokeLater(new Runnable() {
-
-                public void run() {
-                    Confirmation mesg = new NotifyDescriptor.Confirmation("Scene has not been saved,\ndo you want to save it?",
-                            "Not Saved",
-                            NotifyDescriptor.YES_NO_OPTION);
-                    DialogDisplayer.getDefault().notify(mesg);
-                    if (mesg.getValue() == Confirmation.YES_OPTION) {
-                        try {
-                            req.getDataObject().getLookup().lookup(AssetData.class).saveAsset();
-                        } catch (IOException ex) {
-                            Exceptions.printStackTrace(ex);
-                        }
-                    } else if (mesg.getValue() == Confirmation.CANCEL_OPTION) {
-                        return;
-                    } else if (mesg.getValue() == Confirmation.NO_OPTION) {
-                        req.getDataObject().setModified(false);
-                    }
-                }
-            });
-        }
     }
 
     /**
      * method to close a scene displayed by a scene request (threadsafe)
-     * @param tree
+     * @param request
      */
     public void closeScene(final SceneRequest request) {
-        enqueue(new Callable() {
-
-            public Object call() throws Exception {
-                if (request == currentSceneRequest) {
-                    if (closeCurrentScene()) {
-                        if (request.getRequester() instanceof SceneApplication) {
-                            camController.disable();
-                        }
-                        currentSceneRequest = null;
-                        setCurrentFileNode(null);
-                        setWindowTitle("OpenGL Window");
-                    }
-                }
-                return null;
-            }
-        });
+        closeScene(request, null);
     }
 
-    private boolean closeCurrentScene() {
-        return closeCurrentScene(false);
-    }
-
-    private boolean closeCurrentScene(boolean force) {
-        if (currentSceneRequest != null) {
-            if (!notifySceneListeners(currentSceneRequest)) {
-                if (!force) {
-                    return false;
-                }
-            }
-            checkSave();
-            currentSceneRequest.setDisplayed(false);
-        }
-        toolsNode.detachAllChildren();
-        rootNode.detachAllChildren();
-        setHelpContext(null);
-        // resetCam();
-        currentSceneRequest = null;
-        lastError = "";
+    private void closeScene(final SceneRequest oldRequest, final SceneRequest newRequest) {
         java.awt.EventQueue.invokeLater(new Runnable() {
 
             public void run() {
-                SceneUndoRedoManager manager = Lookup.getDefault().lookup(SceneUndoRedoManager.class);
-                if (manager != null) {
-                    manager.discardAllEdits();
+                if (oldRequest == null) {
+                    return;
                 }
+                notifyClose(oldRequest);
+                if (newRequest == null || newRequest.getDataObject() != oldRequest.getDataObject()) {
+                    checkSave(oldRequest);
+                    SceneUndoRedoManager manager = Lookup.getDefault().lookup(SceneUndoRedoManager.class);
+                    if (manager != null) {
+                        manager.discardAllEdits();
+                    }
+                }
+                if (newRequest == null) {
+                    setCurrentFileNode(null);
+                    setWindowTitle("OpenGL Window");
+                    setHelpContext(null);
+                }
+                if (oldRequest.getRequester() instanceof SceneApplication) {
+                    camController.disable();
+                }
+                enqueue(new Callable() {
+
+                    public Object call() throws Exception {
+                        if (physicsState != null) {
+                            physicsState.getPhysicsSpace().removeAll(rootNode);
+                            getStateManager().detach(physicsState);
+                            physicsState = null;
+                        }
+                        toolsNode.detachAllChildren();
+                        rootNode.detachAllChildren();
+                        // resetCam();
+                        lastError = "";
+                        oldRequest.setDisplayed(false);
+                        return null;
+                    }
+                });
             }
         });
-        return true;
+    }
+
+    private void checkSave(SceneRequest request) {
+        if ((request != null)
+                && request.getDataObject().isModified()) {
+            final DataObject req = request.getDataObject();
+            Confirmation mesg = new NotifyDescriptor.Confirmation("Scene has not been saved,\ndo you want to save it?",
+                    "Not Saved",
+                    NotifyDescriptor.YES_NO_OPTION);
+            DialogDisplayer.getDefault().notify(mesg);
+            if (mesg.getValue() == Confirmation.YES_OPTION) {
+                try {
+                    req.getLookup().lookup(AssetData.class).saveAsset();
+                } catch (IOException ex) {
+                    Exceptions.printStackTrace(ex);
+                }
+            } else if (mesg.getValue() == Confirmation.CANCEL_OPTION) {
+                return;
+            } else if (mesg.getValue() == Confirmation.NO_OPTION) {
+                req.setModified(false);
+            }
+        }
     }
 
     private void resetCam() {
@@ -483,41 +463,26 @@ public class SceneApplication extends Application implements LookupProvider, Loo
     }
 
     private void setWindowTitle(final String string) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-
-            public void run() {
-                SceneViewerTopComponent.findInstance().setDisplayName(string);
-            }
-        });
+        SceneViewerTopComponent.findInstance().setDisplayName(string);
     }
 
-    public void setCurrentFileNode(final org.openide.nodes.Node node) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-
-            public void run() {
-                if (node == null) {
-                    SceneViewerTopComponent.findInstance().setActivatedNodes(new org.openide.nodes.Node[]{});
-                    SceneViewerTopComponent.findInstance().close();
-                } else {
-                    SceneViewerTopComponent.findInstance().setActivatedNodes(new org.openide.nodes.Node[]{node});
-                    SceneViewerTopComponent.findInstance().open();
-                    SceneViewerTopComponent.findInstance().requestVisible();
-                }
-            }
-        });
+    private void setCurrentFileNode(final org.openide.nodes.Node node) {
+        if (node == null) {
+            SceneViewerTopComponent.findInstance().setActivatedNodes(new org.openide.nodes.Node[]{});
+            SceneViewerTopComponent.findInstance().close();
+        } else {
+            SceneViewerTopComponent.findInstance().setActivatedNodes(new org.openide.nodes.Node[]{node});
+            SceneViewerTopComponent.findInstance().open();
+            SceneViewerTopComponent.findInstance().requestVisible();
+        }
     }
 
-    public void setHelpContext(final HelpCtx helpContext) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-
-            public void run() {
-                if (helpContext == null) {
-                    SceneViewerTopComponent.findInstance().setHelpContext(new HelpCtx("com.jme3.gde.core.sceneviewer"));
-                } else {
-                    SceneViewerTopComponent.findInstance().setHelpContext(helpContext);
-                }
-            }
-        });
+    private void setHelpContext(final HelpCtx helpContext) {
+        if (helpContext == null) {
+            SceneViewerTopComponent.findInstance().setHelpContext(new HelpCtx("com.jme3.gde.core.sceneviewer"));
+        } else {
+            SceneViewerTopComponent.findInstance().setHelpContext(helpContext);
+        }
     }
 
     public void enableCamLight(final boolean enabled) {
@@ -557,6 +522,28 @@ public class SceneApplication extends Application implements LookupProvider, Loo
                     viewPort.addProcessor(wireProcessor);
                 } else {
                     viewPort.removeProcessor(wireProcessor);
+                }
+                return null;
+            }
+        });
+    }
+
+    public void setPhysicsEnabled(final boolean enabled) {
+        enqueue(new Callable() {
+
+            public Object call() throws Exception {
+                if (enabled) {
+                    if (physicsState == null) {
+                        physicsState = new BulletAppState();
+                        getStateManager().attach(physicsState);
+                        physicsState.getPhysicsSpace().addAll(rootNode);
+                    }
+                } else {
+                    if (physicsState != null) {
+                        physicsState.getPhysicsSpace().removeAll(rootNode);
+                        getStateManager().detach(physicsState);
+                        physicsState = null;
+                    }
                 }
                 return null;
             }
@@ -618,5 +605,13 @@ public class SceneApplication extends Application implements LookupProvider, Loo
 
     public void setActiveCameraController(AbstractCameraController activeCamController) {
         this.activeCamController = activeCamController;
+    }
+
+    public boolean isOgl() {
+        return Thread.currentThread() == thread;
+    }
+
+    public boolean isAwt() {
+        return java.awt.EventQueue.isDispatchThread();
     }
 }

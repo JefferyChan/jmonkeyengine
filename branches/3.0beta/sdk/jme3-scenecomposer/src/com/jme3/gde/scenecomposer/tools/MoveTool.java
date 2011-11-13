@@ -5,6 +5,8 @@
 package com.jme3.gde.scenecomposer.tools;
 
 import com.jme3.asset.AssetManager;
+import com.jme3.bullet.control.CharacterControl;
+import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.gde.core.sceneexplorer.nodes.JmeNode;
 import com.jme3.gde.core.undoredo.AbstractUndoableSceneEdit;
 import com.jme3.gde.scenecomposer.SceneComposerToolController;
@@ -135,6 +137,14 @@ public class MoveTool extends SceneEditTool {
         Vector3f newPos = planeHit.subtract(offset);
         lastLoc = newPos;
         toolController.getSelectedSpatial().setLocalTranslation(newPos);
+        RigidBodyControl control = toolController.getSelectedSpatial().getControl(RigidBodyControl.class);
+        if (control != null) {
+            control.setPhysicsLocation(toolController.getSelectedSpatial().getWorldTranslation());
+        }
+        CharacterControl character = toolController.getSelectedSpatial().getControl(CharacterControl.class);
+        if (character != null) {
+            character.setPhysicsLocation(toolController.getSelectedSpatial().getWorldTranslation());
+        }
         updateToolsTransformation();
         
         wasDragging = true;
@@ -159,14 +169,29 @@ public class MoveTool extends SceneEditTool {
         @Override
         public void sceneUndo() {
             spatial.setLocalTranslation(before);
+            RigidBodyControl control = toolController.getSelectedSpatial().getControl(RigidBodyControl.class);
+            if (control != null) {
+                control.setPhysicsLocation(toolController.getSelectedSpatial().getWorldTranslation());
+            }
+            CharacterControl character = toolController.getSelectedSpatial().getControl(CharacterControl.class);
+            if (character != null) {
+                character.setPhysicsLocation(toolController.getSelectedSpatial().getWorldTranslation());
+            }
             toolController.selectedSpatialTransformed();
         }
 
         @Override
         public void sceneRedo() {
             spatial.setLocalTranslation(after);
+            RigidBodyControl control = toolController.getSelectedSpatial().getControl(RigidBodyControl.class);
+            if (control != null) {
+                control.setPhysicsLocation(toolController.getSelectedSpatial().getWorldTranslation());
+            }
+            CharacterControl character = toolController.getSelectedSpatial().getControl(CharacterControl.class);
+            if (character != null) {
+                character.setPhysicsLocation(toolController.getSelectedSpatial().getWorldTranslation());
+            }
             toolController.selectedSpatialTransformed();
         }
-        
     }
 }

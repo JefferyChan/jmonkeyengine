@@ -36,6 +36,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.List;
 import java.util.Properties;
 import org.openide.filesystems.FileAlreadyLockedException;
 import org.openide.filesystems.FileLock;
@@ -47,6 +48,7 @@ import org.openide.util.Exceptions;
  *
  * @author normenhansen
  */
+@SuppressWarnings("unchecked")
 public class AssetData extends Properties {
 
     private AssetDataObject file;
@@ -76,7 +78,19 @@ public class AssetData extends Properties {
     public void saveAsset() throws IOException {
         file.saveAsset();
     }
+    
+    public List<FileObject> getAssetList(){
+        return file.getAssetList();
+    }
 
+    public List<AssetKey> getAssetKeyList(){
+        return file.getAssetKeyList();
+    }
+    
+    public List<AssetKey> getFailedList() {
+        return file.getFailedList();
+    }
+    
     @Override
     public synchronized String getProperty(String key) {
         return super.getProperty(key);
