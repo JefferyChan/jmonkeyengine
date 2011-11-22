@@ -11,7 +11,6 @@ import com.jme3.gde.core.scene.SceneApplication;
 import com.jme3.gde.gui.NiftyGuiDataObject;
 import com.jme3.renderer.ViewPort;
 import de.lessvoid.nifty.Nifty;
-import de.lessvoid.nifty.tools.resourceloader.FileSystemLocation;
 import java.awt.Dimension;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
@@ -20,7 +19,6 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.io.File;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.concurrent.Callable;
@@ -57,6 +55,7 @@ public class NiftyPreviewPanel extends PanelView {
     private NiftyPreviewInputHandler inputHandler;
     private NiftyJmeDisplay niftyDisplay;
     private JScrollPane scrollPanel;
+    private int width = 640, height = 480;
 
     public NiftyPreviewPanel(NiftyGuiDataObject niftyObject, ToolBarDesignEditor comp) {
         super();
@@ -73,13 +72,11 @@ public class NiftyPreviewPanel extends PanelView {
         toolBar.setPreferredSize(new Dimension(10000, 24));
         toolBar.setMaximumSize(new Dimension(10000, 24));
         toolBar.setFloatable(false);
-        JComboBox comboBox = new JComboBox(new String[]{"640x480", "480x800","800x480", "800x600", "1024x768", "1280x720"});
+        JComboBox comboBox = new JComboBox(new String[]{"640x480", "480x800", "800x480", "800x600", "1024x768", "1280x720"});
         comboBox.addItemListener(new ItemListener() {
 
             public void itemStateChanged(ItemEvent e) {
                 String string = (String) e.getItem();
-                final int width;
-                final int height;
                 if ("640x480".equals(string)) {
                     width = 640;
                     height = 480;
@@ -110,7 +107,7 @@ public class NiftyPreviewPanel extends PanelView {
                         return null;
                     }
                 });
-                updatePreView(screen);
+//                updatePreView();
             }
         });
         toolBar.add(comboBox);
@@ -244,7 +241,6 @@ public class NiftyPreviewPanel extends PanelView {
                         audioRenderer,
                         guiViewPort);
                 nifty = niftyDisplay.getNifty();
-                de.lessvoid.nifty.tools.resourceloader.ResourceLoader.addResourceLocation(new FileSystemLocation(new File(pm.getAssetFolderName())));
 
                 // attach the nifty display to the gui view port as a processor
                 guiViewPort.addProcessor(niftyDisplay);
@@ -261,6 +257,7 @@ public class NiftyPreviewPanel extends PanelView {
     @Override
     public void showSelection(Node[] nodes) {
         this.screen = nodes[0].getName();
+        final String screen = this.screen;
         SceneApplication.getApplication().enqueue(new Callable<Object>() {
 
             public Object call() throws Exception {
@@ -272,6 +269,13 @@ public class NiftyPreviewPanel extends PanelView {
 
     public void cleanup() {
         offPanel.stopPreview();
-        nifty.exit();
+        SceneApplication.getApplication().enqueue(new Callable<Object>() {
+
+            public Object call() throws Exception {
+                ViewPort guiViewPort = offPanel.getViewPort();
+                guiViewPort.removeProcessor(niftyDisplay);
+                return null;
+            }
+        });
     }
 }
