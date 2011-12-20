@@ -31,14 +31,14 @@ public class TerrainFromScene extends SimpleApplication {
     setDisplayFps(true);
     setDisplayStatView(false);
 
-    Spatial myTerrain = assetManager.loadModel("Scenes/myTerrain.j3o");
+    Spatial myTerrain = assetManager.loadModel("Scenes/myTerrainDemo.j3o");
     rootNode.attachChild(myTerrain);
 
     AmbientLight ambient = new AmbientLight();
     ambient.setColor(ColorRGBA.White);
     rootNode.addLight(ambient);
     DirectionalLight sun = new DirectionalLight();
-    sun.setDirection(new Vector3f(-2.9236743f, -1.27054665f, 5.896916f));
+    sun.setDirection(new Vector3f(-1,-1,-1).normalizeLocal());
     sun.setColor(ColorRGBA.White.clone().multLocal(1.7f));
     rootNode.addLight(sun);
 

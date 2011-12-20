@@ -1,12 +1,10 @@
 package chapter09;
 
-import jme3tools.converters.ImageToAwt;
 import com.jme3.app.SimpleApplication;
 import com.jme3.material.Material;
 import com.jme3.terrain.heightmap.AbstractHeightMap;
 import com.jme3.terrain.heightmap.ImageBasedHeightMap;
 import com.jme3.terrain.geomipmap.TerrainQuad;
-import com.jme3.terrain.heightmap.HillHeightMap;
 import com.jme3.texture.Texture;
 import com.jme3.texture.Texture.WrapMode;
 
@@ -66,9 +64,8 @@ public class TerrainSimple extends SimpleApplication {
     // Create the heightmap object from the heightmap image 
     AbstractHeightMap heightmap = null;
     try {
-      heightmap = new ImageBasedHeightMap(ImageToAwt.convert(
-              heightMapImage.getImage(), false, true, 0), 0.5f);
-      /** heightmap = new HillHeightMap(1025, 1000, 50, 100, (byte) 3); **/
+      heightmap = new ImageBasedHeightMap(heightMapImage.getImage(), 0.25f);
+      //heightmap = new HillHeightMap(1025, 1000, 50, 100, (byte) 3); 
       heightmap.load();
     } catch (Exception e) {
       e.printStackTrace();

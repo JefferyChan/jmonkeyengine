@@ -6,7 +6,6 @@ import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
-import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.post.FilterPostProcessor;
 import com.jme3.post.filters.BloomFilter;
@@ -23,7 +22,6 @@ import com.jme3.texture.Texture.WrapMode;
 import com.jme3.texture.Texture2D;
 import com.jme3.util.SkyFactory;
 import com.jme3.water.WaterFilter;
-import jme3tools.converters.ImageToAwt;
 
 /**
  * Demo of advanced water effect with sky, terrain, waves, foam, tides,
@@ -149,8 +147,7 @@ public class WaterTerrainSky extends SimpleApplication {
             "Textures/Terrain/heightmap.png");
     AbstractHeightMap heightmap = null;
     try {
-      heightmap = new ImageBasedHeightMap(
-              ImageToAwt.convert(heightMapImage.getImage(), false, true, 0), 0.25f);
+      heightmap = new ImageBasedHeightMap(heightMapImage.getImage(), 0.25f);
       heightmap.load();
     } catch (Exception e) {
       e.printStackTrace();

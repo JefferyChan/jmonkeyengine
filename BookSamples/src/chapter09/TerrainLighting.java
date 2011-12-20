@@ -14,7 +14,6 @@ import com.jme3.terrain.heightmap.ImageBasedHeightMap;
 import com.jme3.texture.Texture;
 import com.jme3.texture.Texture.WrapMode;
 import com.jme3.util.SkyFactory;
-import jme3tools.converters.ImageToAwt;
 
 /**
  * A better-looking terrain with Phong lighting and normal maps.
@@ -96,8 +95,8 @@ public class TerrainLighting extends SimpleApplication {
 
     AbstractHeightMap heightmap = null;
     try {
-      heightmap = new ImageBasedHeightMap(
-              ImageToAwt.convert(heightMapImage.getImage(), false, true, 0), 0.25f);
+
+      heightmap = new ImageBasedHeightMap(heightMapImage.getImage(), 0.25f);
       heightmap.load();
     } catch (Exception e) {
       e.printStackTrace();
