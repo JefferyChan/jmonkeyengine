@@ -16,51 +16,107 @@ import com.jme3.scene.control.Control;
  */
 public class CreepControl extends AbstractControl implements Savable, Cloneable {
 
+    private final float speed_min = 0.5f;
 
-  private CreepData theCreep;
+    public CreepControl() {}
+        
 
-  public CreepControl(CreepData cd) {
-    this.theCreep = cd;
-  }
-
-  public Boolean isAlive() {
-    return theCreep.getHealth() > 0;
-  }
-
-  @Override
-  protected void controlUpdate(float tpf) {
-
-    if (theCreep.isAlive()) {
-      Vector3f newloc = new Vector3f(
-              spatial.getLocalTranslation().getX(),
-              spatial.getLocalTranslation().getY(),
-              spatial.getLocalTranslation().getZ()
-              - (theCreep.getSpeed() * tpf * FastMath.rand.nextFloat()));
-      if (newloc.z > 0) {
-        // if not there yet, creep keeps walking towards player base
-        spatial.setLocalTranslation(newloc);
-        theCreep.setLoc(newloc);
-      } else {
-        // creep has reached player base and performs kamikaze attack!
-        theCreep.kamikaze();
-        theCreep.getPlayer().addHealthMod(-1);
-        spatial.removeFromParent();
-        spatial.removeControl(this);
-      }
-    } else {
-      // player's towers killed the creep. Reward: increase player budget.
-        theCreep.getPlayer().eliminateCreep();
-        theCreep.getPlayer().addBudgetMod(2);
-        spatial.removeFromParent();
-        spatial.removeControl(this);
+  public void setHealth(float h) {
+        spatial.setUserData("health",h);
     }
-  }
+    public float getHealth() {
+        return (Float)spatial.getUserData("health");
+    }
 
-  @Override
-  protected void controlRender(RenderManager rm, ViewPort vp) {
-  }
+    public Boolean isAlive() {
+        return getHealth() > 0f;
+    }
 
-  public Control cloneForSpatial(Spatial spatial) {
-    throw new UnsupportedOperationException("Not supported yet.");
-  }
+    /**
+     * @param mod (typically) a negative number 
+     * by how much to decrease the creep's health.
+     */
+    public void addHealth(float mod) {
+        spatial.setUserData("health", getHealth()+mod);
+    }
+
+    /** Creep commits kamikaze when attacking the base. 
+     * impact depends on creeps remaining health.
+     */
+    public void kamikaze() {
+        getPlayer().addHealthMod(getHealth()/-10);
+        setHealth(0f);
+        remove();
+    }
+
+    /**
+     * @param mod (typically) a negative number 
+     * by how much to decrease the creep's speed.
+     */
+    public void addSpeed(float mod) {
+        spatial.setUserData("speed", getSpeed()+mod);
+        if (getSpeed() < speed_min) {
+            spatial.setUserData("speed", speed_min);
+        }
+    }
+
+    public void setLoc(Vector3f loc) {
+        spatial.setLocalTranslation(loc);
+    }
+
+    public Vector3f getLoc() {
+        return spatial.getLocalTranslation();
+    }
+
+    public int getIndex() {
+        return (Integer)spatial.getUserData("index");
+    }
+
+    public float getSpeed() {
+        return (Float)spatial.getUserData("speed");
+    }
+    
+    public PlayerBaseControl getPlayer() {
+        return ((PlayerBaseControl)spatial.getUserData("playerdata"));
+    }
+
+    @Override
+    protected void controlUpdate(float tpf) {
+
+        if (isAlive()) {
+            Vector3f newloc = new Vector3f(
+                    spatial.getLocalTranslation().getX(),
+                    spatial.getLocalTranslation().getY(),
+                    spatial.getLocalTranslation().getZ()
+                    - (getSpeed() * tpf * FastMath.rand.nextFloat()));
+            if (newloc.z > 0) {
+                /* if creep has not yet reached playerbase at z=0,
+                regenerate speed and keep walking towards playerbase */
+                addSpeed(getPlayer().getLevel()/10);
+                setLoc(newloc);
+            } else {
+                // creep has reached player base and performs kamikaze attack!
+                kamikaze();
+            }
+        } else {
+            // is dead. player tower has killed the creep. Reward: increase player budget.
+            getPlayer().addBudgetMod(getPlayer().getLevel());
+            remove();
+        }
+    }
+    
+    public void remove(){
+            spatial.removeFromParent();
+            spatial.removeControl(this);
+    
+    }
+
+    @Override
+    protected void controlRender(RenderManager rm, ViewPort vp) {
+    }
+
+    public Control cloneForSpatial(Spatial spatial) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }
+
