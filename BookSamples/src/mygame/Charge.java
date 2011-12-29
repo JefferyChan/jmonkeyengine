@@ -38,14 +38,19 @@ public class Charge implements Savable {
     this.beam_mat = m;
   }
 
-  public int getAmmo() {
+  /** How much Ammo this charge has*/
+  public int getAmmoNum() {
     return ammo;
   }
 
+  /** how much impact on speed one shot of this ammo has. 
+   * typically a negative number, used to slow down creeps. */
   public float getSpeedImpact() {
     return speedDamage;
   }
 
+  /** how much impact on health one shot of this ammo has.
+   Typically a negative number to weaken creeps. */
   public float getHealthImpact() {
     return healthDamage;
   }

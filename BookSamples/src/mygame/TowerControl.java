@@ -1,6 +1,7 @@
 package mygame;
 
 import com.jme3.export.Savable;
+import com.jme3.material.Material;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
@@ -16,102 +17,108 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Tower has charges and fires at creeps nearby until out of ammo.
- * Charge status is shown with colored spheres. in each level it can have more charges.
+ * Tower has charges. It regularly fires at all creeps nearby until out of ammo.
+ * Its current Charge status is visualized by colored spheres (ChargeMarkers). 
+ * In each level, a tower can have level+1 Charges.
  */
 public class TowerControl extends AbstractControl implements Savable, Cloneable {
 
     private List<Charge> charges = new ArrayList<Charge>();
 
-    public TowerControl(){}
-    
-   
+    public TowerControl() {}
 
     @Override
     protected void controlUpdate(float tpf) {
-        /* if this tower is loaded with charges, then plan attack */
+        /* Test whether this tower is loaded with charges. */
         if (getChargeNum() > 0) {
-            /* visualize current charges */
-            int ix = 0;
-            for (Charge c : getCharges()) {
-                System.out.println(spatial.getName()+" has one charge with ammo "+c.getAmmo());
-                getDotNode().attachChild(makeDot(c, ix, getLoc()));
-                ix++;
-            }
-            /* pick the top charge from the list */
-            Charge charge = getNextCharge();
-            /* identify reachable creeps - depends on creep's distance to tower */
+            // Tower is loaded: Tower can attack.
+            updateMyChargeMarkers();
+            /* Load the cannon with the first charge */
+            Charge charge = popNextCharge();
+            /* Identify reachable creeps */
             List<CreepControl> reachable = new ArrayList<CreepControl>();
-            List<Spatial> creeps = (List<Spatial>)(getCreeps().getChildren());
+            List<Spatial> creeps = getCreepNode().getChildren();
             for (Spatial creep_geo : creeps) {
                 CreepControl creep = creep_geo.getControl(CreepControl.class);
-                if ( creep.isAlive() 
-                        && 
-                        getTowerTop().distance(creep.getLoc()) < charge.getRange()) {
+                // Depends on creep's distance to tower top versus range of charge:
+                if (creep.isAlive()
+                        && getTowerTop().distance(creep.getLoc()) < charge.getRange()) {
                     reachable.add(creep);
-                    // TODO this should be empty if all creeps dead?
                 }
             }
-            /* if this tower has ammo, and can reach a creep, then... */
+            /* If the loaded tower can reach at least one creep, then... */
             if (reachable.size() > 0) {
-                System.out.println(spatial.getName()+" has ammo? "+charge.getAmmo());
-                /* ... shoot at each reachable creep once, until out of creeps or out of ammo */
-                for (int i = charge.getAmmo(); i > 0; i--) {
-                    System.out.println(spatial.getName()+" ammo left: "+i);
+                /* ... shoot at each reachable creep once, 
+                 until out of reachable creeps or charge out of ammo */
+                for (int ammo = charge.getAmmoNum(); ammo > 0; ammo--) {
                     for (CreepControl creep : reachable) {
-                        /* show a laser beam from tower to the creep that got hit. the laser visuals are slightly random. */
+                        /* Show a laser beam from tower to the creep that got hit. 
+                         * The laser visuals are slightly random. */
                         Vector3f hit = creep.getLoc();
                         Line beam = new Line(
                                 getTowerTop(),
                                 new Vector3f(
-                                hit.x + FastMath.rand.nextFloat() / 4,
-                                hit.y + FastMath.rand.nextFloat() / 4,
-                                hit.z + FastMath.rand.nextFloat() / 4));
+                                hit.x + FastMath.rand.nextFloat() / 10f,
+                                hit.y + FastMath.rand.nextFloat() / 10f,
+                                hit.z + FastMath.rand.nextFloat() / 10f));
                         Geometry beam_geo = new Geometry("Beam", beam);
                         beam_geo.setMaterial(charge.getBeamMaterial());
                         getBeamNode().attachChild(beam_geo);
-                        /* the laser beam has an effect */
+                        /* The laser beam has an effect on the creep */
                         creep.addHealth(charge.getHealthImpact()); // all towers do damage to target
                         creep.addSpeed(charge.getSpeedImpact());   // freeze towers also slow target down
-                        // TODO: consider blastrange factor, e.g. for nukes
-                        /** shooting uses up ammo in this charge */
+                        blast(creep, charge.getBlast(), charge.getHealthImpact() ); // blast impact on neighbours
+                        /** Shooting uses up ammo in this charge */
                         charge.addAmmo(-1);
-                        if (charge.getAmmo() <= 0) {
-                            /** this charge is out of ammo, stop shooting until next turn. */
+                        if (charge.getAmmoNum() <= 0) {
+                            // this charge is out of ammo, discard the charge.
+                            ammo=0;
                             removeCharge(charge);
-                            // update visuals to reflect current charge status
-                            getDotNode().detachAllChildren();
-                            for (Charge c : getCharges()) {
-                                getDotNode().attachChild(makeDot(c, getCharges().indexOf(c), getLoc()));
-                            }
+                            // update visuals 
+                            updateMyChargeMarkers();
+                            // pause to reload, that is, stop shooting until next turn.
                             break;
-                            // TODO: this shoots very fast, add a sleep timer?
+                            // TODO: this still shoots very fast, break earlier? add a sleep timer?
                         }
                     }
                 }
             }
         } else {
-            // else this tower has no ammo
-            getDotNode().detachAllChildren();
+            // this tower has no ammo and displays no ChargeMarkers
+            getChargeMarkerNode().detachAllChildren();
 
         }
     }
 
-    private Geometry makeDot(Charge a, int i, Vector3f loc) {
+    /** --------------------------------------- */
+
+    private Node getChargeMarkerNode() {
+        return (Node) spatial.getUserData("dotNode");
+    }
+
+    /** Resets outdated chargeMarkers of this tower and displays the current ones. */
+    private void updateMyChargeMarkers() {
+        getChargeMarkerNode().detachAllChildren();
+        for (int index = 0; index < getChargeNum(); index++ ) {
+            getChargeMarkerNode().attachChild(makeChargeMarker(index));
+        }
+    }
+
+    /** Creates a new ChargeMarker in the color of the beam of the Charge
+     * and attaches it to the top of the tower, under the previous one 
+     * (offset depends on charge index and by tower index/position). */
+    private Geometry makeChargeMarker(int chargeIndex) {
+        Vector3f loc = spatial.getLocalTranslation();
+        Charge charge = getCharge(chargeIndex);
         Sphere dot = new Sphere(10, 10, .1f);
-        Geometry dot_geo = new Geometry("ChargeMarkerDot", dot);
-        dot_geo.setMaterial(a.getBeamMaterial());
+        Geometry chargeMarker_geo = new Geometry("ChargeMarker", dot);
+        chargeMarker_geo.setMaterial(charge.getBeamMaterial());
         int offset_x = (getIndex() % 2 == 0 ? 1 : -1);
-        dot_geo.setLocalTranslation(loc.x - (offset_x * 0.33f), loc.y - (i * .25f) + 1, loc.z);
-        return dot_geo;
-    }
-
-    @Override
-    protected void controlRender(RenderManager rm, ViewPort vp) {
-    }
-
-    public Control cloneForSpatial(Spatial spatial) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        chargeMarker_geo.setLocalTranslation(
+                loc.x - (offset_x * 0.33f), 
+                loc.y - (chargeIndex * .25f) + 1, 
+                loc.z);
+        return chargeMarker_geo;
     }
 
     public void addCharge(Charge a) {
@@ -122,54 +129,87 @@ public class TowerControl extends AbstractControl implements Savable, Cloneable 
         return charges.size();
     }
 
+    /** Returns a copy of a certain Charge without popping it from the queue */
+    public Charge getCharge(int i) {
+        return ((ArrayList<Charge>)((ArrayList)charges).clone()).get(i); // TODO  get, not pop, from arraylist?
+    }
+
+    /** returns the first Charge (FIFO?) and pops it from the queue */
+    public Charge popNextCharge() {
+        return charges.get(charges.size() - 1);
+    }
+
     public void removeCharge(Charge a) {
         charges.remove(a);
     }
 
+    /** --------------------------------------- */
     
-    public Node getCreeps() {
-        return (Node)spatial.getUserData("creepNode");
+    public float getHeight() {
+        return (Float) spatial.getUserData("towerHeight");
+    }
+
+
+    public int getIndex() {
+        return (Integer) spatial.getUserData("index");
+    }
+
+    public Node getBeamNode() {
+        return (Node) spatial.getUserData("beamNode");
+    }
+
+    public Node getCreepNode() {
+        return (Node) spatial.getUserData("creepNode");
     }
 
     /**
      * The location and height of the tower is needed to calculate range.
-     * @return the location of the tip of this tower
+     * @return loc the coordinates of the top of this tower.
      */
     public Vector3f getTowerTop() {
         Vector3f loc = getLoc();
-        return new Vector3f(loc.x, loc.y + getHeight() / 2 , loc.z);
+        return new Vector3f(loc.x, loc.y + getHeight() / 2, loc.z);
     }
 
     public Vector3f getLoc() {
         return spatial.getLocalTranslation();
     }
     
-   public Node getBeamNode() {
-        return (Node)spatial.getUserData("beamNode");
+    private Material getBlastMaterial(){
+    return (Material)spatial.getUserData("blastMaterial");
     }
 
-    public float getHeight() {
-        return (Float)spatial.getUserData("towerHeight");
+    /** --------------------------------------- */
+
+    private void blast(CreepControl creep, float blastRange, float extra_damage){
+        System.out.println("I'm blasting");
+        Sphere s = new Sphere(16, 16, blastRange);
+        Geometry blast_geo = new Geometry("Blast Range", s);
+        blast_geo.setMaterial(getBlastMaterial());
+
+        spatial.getParent().attachChild(blast_geo);
+        blast_geo.setLocalTranslation(creep.getLoc());
+        System.out.println(blast_geo + " is here" + creep.getLoc());
+        
+        List<Spatial> creeps = (getCreepNode().getChildren());
+        for (Spatial neighbour : creeps) {
+            float dist = neighbour.getLocalTranslation().distance(creep.getLoc());
+            if ( dist < blastRange && dist > 0f) {
+                neighbour.getControl(CreepControl.class).addHealth(extra_damage / 2f);
+                neighbour.getControl(CreepControl.class).addSpeed(extra_damage / -4f);
+            }
+        }
+     //   spatial.getParent().detachChild(blast_geo);
+    }
+    
+    /** --------------------------------------- */
+    
+    @Override
+    protected void controlRender(RenderManager rm, ViewPort vp) {
     }
 
-    public Charge getAttack(int i) {
-        return charges.get(i);
+    public Control cloneForSpatial(Spatial spatial) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public List<Charge> getCharges() {
-        return charges;
-    }
-
-    public Charge getNextCharge() {
-        return charges.get(charges.size() - 1);
-    }
-
-    public int getIndex() {
-        return (Integer)spatial.getUserData("index");
-    }
-
-    private Node getDotNode() {
-       return spatial.getUserData("dotNode");
-    }
-
-}
+ }

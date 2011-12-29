@@ -1,6 +1,7 @@
 package mygame;
 
 import com.jme3.asset.AssetManager;
+import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
@@ -11,9 +12,11 @@ import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Dome;
 
 /**
- * init order: 1. playerbase, 2. creeps, 3. towers.
- * towers depend on creeps (towers want to shoot at creeps);
- * creeps depend on playerbase (they want to attack player).
+ * The factory class initializes the scene. 
+ * The number of elements generated depends on the level.
+ * Init order: 1. playerbase, 2. creeps, 3. towers.
+ * (Because towers depend on creeps (towers want to shoot at creeps);
+ * and creeps depend on the playerbase (they want to attack the player)).
  * @author ruth
  */
 public final class Factory {
@@ -36,6 +39,7 @@ public final class Factory {
     Material playerbase_mat;
     Material tower_sel_mat;
     Material tower_std_mat;
+    Material blast_mat;
 
     public Factory(Node rootNode, AssetManager as, int level) {
         this.assetManager = as;
@@ -70,7 +74,7 @@ public final class Factory {
         tower_std_mat = new Material(assetManager,
                 "Common/MatDefs/Misc/Unshaded.j3md");
         tower_std_mat.setColor("Color", ColorRGBA.Green);
-
+        blast_mat =(Material)assetManager.loadMaterial( "Materials/blast.j3m");
     }
 
     public void initPlayerBase() {
@@ -101,7 +105,12 @@ public final class Factory {
         // add nodes to rootNode
         playerbase_node.attachChild(planet_node);
         rootNode.attachChild(playerbase_node);
-        
+     
+            /** A white, directional light source */ 
+    DirectionalLight sun = new DirectionalLight();
+    sun.setDirection(new Vector3f(1.3f,0,-1.3f).normalizeLocal());
+    sun.setColor(ColorRGBA.White);
+    rootNode.addLight(sun); 
     }
 
 
@@ -145,6 +154,7 @@ public final class Factory {
             tower_geo.setUserData("dotNode",  dotNode);
             tower_geo.setUserData("beamNode", beamNode);
             tower_geo.setUserData("creepNode", creepNode);
+            tower_geo.setUserData("blastMaterial",blast_mat);
             tower_geo.setUserData("selectedMaterial", tower_sel_mat);
             tower_geo.setUserData("standardMaterial", tower_std_mat);
             tower_geo.addControl(new TowerControl());  
@@ -188,22 +198,26 @@ public final class Factory {
         rootNode.attachChild(creepNode);
     }
     
-        /**
+    /** --------------------------------------------------------------------*/
+    
+     /**
      * freeze charges slow down the target and do a bit of damage.
      */
     public Charge getFreezeCharge() {
         Material beam_mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
         beam_mat.setColor("Color", ColorRGBA.Cyan);
-        return new Charge(-.5f, -2, 2, 2f * towerHeight, 1f, beam_mat);
+        // SpeedDamage, Healthdamage, Ammo, Range, Blastrange
+        return new Charge(-.5f, -2f, 3, 2f * towerHeight, 1f, beam_mat);
     }
 
     /**
-     * gatling charges do minimal damage but they can shoot more often.
+     * gatling charges do minimal damage but they can be shot more often at various targets.
      */
     public Charge getGatlingCharge() {
         Material beam_mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
         beam_mat.setColor("Color", ColorRGBA.Yellow);
-        return new Charge(0, -1, 8, 2.75f * towerHeight, 1.5f, beam_mat);
+        // SpeedDamage, Healthdamage, Ammo, Range, Blastrange
+        return new Charge(0f, -1f, 8, 2.5f * towerHeight, 0f, beam_mat);
     }
 
     /**
@@ -212,6 +226,7 @@ public final class Factory {
     public Charge getNukeCharge() {
         Material beam_mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
         beam_mat.setColor("Color", ColorRGBA.Red);
-        return new Charge(0, -8, 1, 2.5f * towerHeight, 2, beam_mat);
+        // SpeedDamage, Healthdamage, Ammo, Range, Blastrange
+        return new Charge(0f, -8f, 1, 2f * towerHeight, 2f, beam_mat);
     }
 }
