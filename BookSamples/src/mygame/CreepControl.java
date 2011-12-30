@@ -10,8 +10,9 @@ import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.control.Control;
 
 /**
- * Creeps count their own health, move towards base, only forwards in straight line; 
- * they can walk through each other. Creeps substract player‘s health at arrival.
+ * Creeps manage their health and approach player base as long as they're alive.
+ * They move forwards in a straight line; they can walk through each other. 
+ * Creeps substract player‘s health at arrival (kamikaze attack).
  * @author zathras
  */
 public class CreepControl extends AbstractControl implements Savable, Cloneable {
@@ -19,29 +20,29 @@ public class CreepControl extends AbstractControl implements Savable, Cloneable 
     private final float speed_min = 0.5f;
 
     public CreepControl() {}
-    
+
     @Override
     protected void controlUpdate(float tpf) {
-
         if (isAlive()) {
+            // walk forward along z axis
             Vector3f newloc = new Vector3f(
                     spatial.getLocalTranslation().getX(),
                     spatial.getLocalTranslation().getY(),
                     spatial.getLocalTranslation().getZ()
                     - (getSpeed() * tpf * FastMath.rand.nextFloat()));
             if (newloc.z > 0) {
-                /* if creep has not yet reached playerbase at z=0,
-                 * thaw a bit (or regenerate speed, in any case), 
+                /* if creep has not yet reached player base at z=0,
+                 * thaw a bit (or increase speed, in any case), 
                  * and keep walking towards playerbase */
-                addSpeed(getPlayer().getLevel() / 10);
+                addSpeed(getPlayer().getLevel() / 10000f);
                 setLoc(newloc);
             } else {
-                // creep has reached player base and performs kamikaze attack!
+                // creep has reached player base and attacks
                 kamikaze();
             }
         } else {
-            // tower kills creep. Reward: increase player budget.
-            getPlayer().addBudgetMod(getPlayer().getLevel()/2);
+            // creep got killed by tower. Reward: increase player budget.
+            getPlayer().addBudgetMod(1);
             remove();
         }
     }
@@ -89,13 +90,13 @@ public class CreepControl extends AbstractControl implements Savable, Cloneable 
             spatial.setUserData("speed", speed_min);
         }
     }
-    
+
     public float getSpeed() {
         return (Float) spatial.getUserData("speed");
     }
-    
-    /** ---------------------------------------------- */
 
+    /** ---------------------------------------------- */
+    
     public void setLoc(Vector3f loc) {
         spatial.setLocalTranslation(loc);
     }
@@ -105,7 +106,7 @@ public class CreepControl extends AbstractControl implements Savable, Cloneable 
     }
 
     /** ---------------------------------------------- */
-
+    
     public int getIndex() {
         return (Integer) spatial.getUserData("index");
     }
@@ -121,7 +122,7 @@ public class CreepControl extends AbstractControl implements Savable, Cloneable 
     }
 
     /** ---------------------------------------------- */
-
+    
     @Override
     protected void controlRender(RenderManager rm, ViewPort vp) {
     }

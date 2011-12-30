@@ -24,11 +24,12 @@ import java.util.List;
 public class TowerControl extends AbstractControl implements Savable, Cloneable {
 
     private List<Charge> charges = new ArrayList<Charge>();
-
+    float timer=0f;
     public TowerControl() {}
 
     @Override
     protected void controlUpdate(float tpf) {
+        timer+=tpf;
         /* Test whether this tower is loaded with charges. */
         if (getChargeNum() > 0) {
             // Tower is loaded: Tower can attack.
@@ -47,7 +48,7 @@ public class TowerControl extends AbstractControl implements Savable, Cloneable 
                 }
             }
             /* If the loaded tower can reach at least one creep, then... */
-            if (reachable.size() > 0) {
+            if (reachable.size() > 0 && timer > .5f) {
                 /* ... shoot at each reachable creep once, 
                  until out of reachable creeps or charge out of ammo */
                 for (int ammo = charge.getAmmoNum(); ammo > 0; ammo--) {
@@ -67,7 +68,8 @@ public class TowerControl extends AbstractControl implements Savable, Cloneable 
                         /* The laser beam has an effect on the creep */
                         creep.addHealth(charge.getHealthImpact()); // all towers do damage to target
                         creep.addSpeed(charge.getSpeedImpact());   // freeze towers also slow target down
-                        blast(creep, charge.getBlast(), charge.getHealthImpact() ); // blast impact on neighbours
+                         // additional blast impact on neighbours of this creep
+                        blast(creep, charge.getBlast(), charge.getHealthImpact(), charge.getSpeedImpact() );
                         /** Shooting uses up ammo in this charge */
                         charge.addAmmo(-1);
                         if (charge.getAmmoNum() <= 0) {
@@ -82,6 +84,7 @@ public class TowerControl extends AbstractControl implements Savable, Cloneable 
                         }
                     }
                 }
+                timer=0f;
             }
         } else {
             // this tower has no ammo and displays no ChargeMarkers
@@ -181,22 +184,22 @@ public class TowerControl extends AbstractControl implements Savable, Cloneable 
 
     /** --------------------------------------- */
 
-    private void blast(CreepControl creep, float blastRange, float extra_damage){
-        System.out.println("I'm blasting");
+    /** A blast charge deals extra damage to neighbours of target, but it also
+     * recharges their speed (thaws them). */
+    private void blast(CreepControl creep, float blastRange, float health_damage, float speed_damage){
         Sphere s = new Sphere(16, 16, blastRange);
         Geometry blast_geo = new Geometry("Blast Range", s);
         blast_geo.setMaterial(getBlastMaterial());
 
         spatial.getParent().attachChild(blast_geo);
         blast_geo.setLocalTranslation(creep.getLoc());
-        System.out.println(blast_geo + " is here" + creep.getLoc());
         
         List<Spatial> creeps = (getCreepNode().getChildren());
         for (Spatial neighbour : creeps) {
             float dist = neighbour.getLocalTranslation().distance(creep.getLoc());
             if ( dist < blastRange && dist > 0f) {
-                neighbour.getControl(CreepControl.class).addHealth(extra_damage / 2f);
-                neighbour.getControl(CreepControl.class).addSpeed(extra_damage / -4f);
+                neighbour.getControl(CreepControl.class).addHealth(health_damage / 2f);
+                neighbour.getControl(CreepControl.class).addSpeed(speed_damage / 2);
             }
         }
      //   spatial.getParent().detachChild(blast_geo);

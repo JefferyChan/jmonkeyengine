@@ -1,11 +1,13 @@
 package mygame;
 
 import com.jme3.export.Savable;
+import com.jme3.math.FastMath;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.control.Control;
+import java.text.DecimalFormat;
 
 /**
  * Playerbase is the central game data object. It manages 
@@ -33,7 +35,8 @@ public class PlayerBaseControl extends AbstractControl implements Savable, Clone
     }
 
     public float getHealth() {
-        return (Float) spatial.getUserData("health");
+        float f = (Float) spatial.getUserData("health");
+        return Math.round(f * 100) /100;
     }
 
     /**

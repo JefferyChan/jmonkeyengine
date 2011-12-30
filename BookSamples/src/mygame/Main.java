@@ -15,11 +15,16 @@ import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import java.util.Collection;
+import java.text.DecimalFormat;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
+ * The player base is at the origin. The tower-protected valley is along the positive z axis.
+ * The towers stand to the left and to the right of the valley. A pack of creeps
+ * appears futher down the positive z axis and walks down the valley towards
+ * the player base.<br />
+ * The creeps plan a kamikaze attack against the player base. The user has to
+ * recharge the towers with different types of ammo to stop them.
  * <ul>
  * <li>Main: Event loop, HUD, input handling (loading Charges into selected Towers)</li>
  * <li>Factory: Initializes the scene, generates Charges.</li>
@@ -34,19 +39,21 @@ import java.util.logging.Logger;
 public class Main extends SimpleApplication {
 
     private boolean gamerunning = true;
-    // TODO more values should depend on level
-    private int level = 2;
-    // Factory creates playerbase, creeps, towers, and charges
+    private boolean lastGameWon=false;
+    // Factory creates playerbase, creeps, towers, and charges:
     Factory factory;
     // GUI
     private int selected = -1;   // which tower the player has selected 
     private BitmapText hudText;  // HUD displays score
     private BitmapText infoText; // HUD displays instructions
+    private String infostring;
     // timers reset beam visualizations and dispense budget
     private float timer_beam;
     private float timer_budget;
     // main control manages score etc
     private PlayerBaseControl playerBase;
+    
+    /** -------------------------------------------------------------- */
 
     public static void main(String[] args) {
         Main app = new Main();
@@ -61,11 +68,11 @@ public class Main extends SimpleApplication {
         cam.lookAt(new Vector3f(0f, 0f, 8), Vector3f.UNIT_Y);
         initHUD();
         initInputs();
-        factory = new Factory(rootNode, assetManager, level);
-        playerBase = rootNode.getChild("PlayerBaseNode").getControl(PlayerBaseControl.class);
+        startGame(1); // level 1
     }
 
     private void initHUD() {
+        infostring = "Click tower to select. Press N(uke) / G(atling) / F(reeze) to load charges.";
         hudText = new BitmapText(guiFont, false);
         infoText = new BitmapText(guiFont, false);
         int screenHeight = settings.getHeight();
@@ -74,7 +81,7 @@ public class Main extends SimpleApplication {
         infoText.setSize(guiFont.getCharSet().getRenderedSize());
         infoText.setColor(ColorRGBA.Blue);
         infoText.setLocalTranslation(300, screenHeight - lineHeight, 0);
-        infoText.setText("Click tower to select. Press N(uke) / G(atling) / F(reeze) to load charges.");
+        infoText.setText(infostring);
         guiNode.attachChild(infoText);
         // score: display health and budget
         hudText.setSize(guiFont.getCharSet().getRenderedSize());
@@ -82,6 +89,8 @@ public class Main extends SimpleApplication {
         hudText.setLocalTranslation(300, screenHeight - lineHeight * 2, 0);
         guiNode.attachChild(hudText);
     }
+    
+    /** -------------------------------------------------------------- */
 
     /**
      * Input handling :Defining the "Select" action for towers: 
@@ -94,6 +103,7 @@ public class Main extends SimpleApplication {
 
         @Override
         public void onAction(String mapping, boolean keyPressed, float tpf) {
+            if(gamerunning){
             // A player clicks to select a tower.
             if (mapping.equals("Select") && !keyPressed) {
                 if (selected != -1) {
@@ -113,7 +123,8 @@ public class Main extends SimpleApplication {
                 if (results.size() > 0) {
                     // player has selected a tower
                     CollisionResult closest = results.getClosestCollision();
-                    selected = closest.getGeometry().getControl(TowerControl.class).getIndex();
+                    System.out.println("clostes geo:"+closest.getGeometry().getName());
+                    selected = closest.getGeometry().getControl(TowerControl.class).getIndex(); //NPE
                     Spatial selectedTower = rootNode.getChild("tower-" + selected);
                     selectedTower.setMaterial((Material) selectedTower.getUserData("selectedMaterial"));
                 } else {
@@ -126,21 +137,29 @@ public class Main extends SimpleApplication {
             if (!keyPressed && selected != -1 && playerBase.getBudget() > 0) {
                 TowerControl selectedTower = rootNode.getChild("tower-" + selected).getControl(TowerControl.class);
                 if (mapping.equals("Make FreezeTower")) {
-                    if (selectedTower.getChargeNum() <= level) {
+                    if (selectedTower.getChargeNum() <= playerBase.getLevel()) {
                         selectedTower.addCharge(factory.getFreezeCharge());
                         playerBase.addBudgetMod(-1);
                     }
                 } else if (mapping.equals("Make NukeTower")) {
-                    if (selectedTower.getChargeNum() <= level) {
+                    if (selectedTower.getChargeNum() <= playerBase.getLevel()) {
                         selectedTower.addCharge(factory.getNukeCharge());
                         playerBase.addBudgetMod(-1);
                     }
                 } else if (mapping.equals("Make GatlingTower")) {
-                    if (selectedTower.getChargeNum() <= level) {
+                    if (selectedTower.getChargeNum() <= playerBase.getLevel()) {
                         selectedTower.addCharge(factory.getGatlingCharge());
                         playerBase.addBudgetMod(-1);
                     }
                 }
+            }
+            } else {
+            if (mapping.equals("Restart") && !keyPressed) {
+                if(lastGameWon)
+                    startGame(playerBase.getLevel()+1);
+                else
+                    startGame(1);
+            }
             }
         }
     };
@@ -152,17 +171,26 @@ public class Main extends SimpleApplication {
         inputManager.addMapping("Make FreezeTower",  new KeyTrigger(KeyInput.KEY_F));
         inputManager.addMapping("Make NukeTower",    new KeyTrigger(KeyInput.KEY_N));
         inputManager.addMapping("Make GatlingTower", new KeyTrigger(KeyInput.KEY_G));
-        inputManager.addListener(actionListener,
-                "Select", "Make GatlingTower", "Make NukeTower", "Make FreezeTower");
+        inputManager.addMapping("Restart",           new KeyTrigger(KeyInput.KEY_RETURN));
+        inputManager.addListener(actionListener, "Select", "Restart",
+                "Make GatlingTower", "Make NukeTower", "Make FreezeTower");
     }
 
+    /** -------------------------------------------------------------- */
+
+    /** 
+     * The main loop increases the player budget, displays the score, and
+     * resets the laser beams.
+     * It also tests whether the player or the creeps got killed and determines
+     * winning or losing.
+     */
     @Override
     public void simpleUpdate(float tpf) {
         if (gamerunning) {
             // Player earns money roughly every 10 secs
             timer_budget += tpf;
             if (timer_budget > playerBase.getLevel() + 10) {
-                playerBase.addBudgetMod(playerBase.getLevel());
+                playerBase.addBudgetMod(1 + playerBase.getLevel()/4);
                 timer_budget = 0;
             }
             // Reset all laserbeam visualizations and GC them every second
@@ -171,36 +199,31 @@ public class Main extends SimpleApplication {
                 if (thereAreBeams()) clearAllBeams();
                 timer_beam = 0;
             }
-            // Update score display
-            hudText.setText(
-                    "Budget: " + playerBase.getBudget()
-                    + ", Health: " + playerBase.getHealth()
-                    + "      GO! GO! GO!");
-            // Test whether player loses and game ends
+            
+            // Update score display:
+            String score = "(" + playerBase.getLevel() + 
+                    ") Budget: " + playerBase.getBudget()
+                    + ", Health: " + playerBase.getHealth();
+            
+            // Display: Test whether player loses and game ends?
             if (playerBase.getHealth() <= 0) {
-                hudText.setText(
-                        "Budget: " + playerBase.getBudget()
-                        + ", Health: " + playerBase.getHealth()
-                        + "      YOU LOSE.");
+                hudText.setText(score+ "      YOU LOSE.");
+                lastGameWon=false;
                 endGame();
             }
-            // Test whether player wins and game ends
-            if ((getCreepNum() == 0) && playerBase.getHealth() > 0) {
-                hudText.setText(
-                        "Budget: " + playerBase.getBudget()
-                        + ", Health: " + playerBase.getHealth()
-                        + "      YOU WIN!");
+            // Display: Test whether player wins and game ends?
+            else if ((getCreepNum() == 0) && playerBase.getHealth() > 0) {
+                hudText.setText(score+ "      YOU WIN!");
+                lastGameWon=true;
                 endGame();
+            } else {
+            // Display: Otherwise display default text, battle is ongoing:
+                hudText.setText(score+ "      GO! GO! GO!");
             }
         }
     }
     
-    /** -------------------------------- */
-
-    /** Remove the laser beam visualizations. */
-    private void clearAllBeams() {
-        ((Node) (rootNode.getChild("BeamNode"))).detachAllChildren();
-    }
+    /** -------------------------------------------------------------- */
 
     /** How many creeps are still in the game? */
     private int getCreepNum() {
@@ -208,13 +231,28 @@ public class Main extends SimpleApplication {
     }
 
     /** How many laser beams extend from all towers, more than zero? 
-     Need to test this to GC them after a few seconds. */
+     Need to test this to GC beam geometries every few seconds. */
     private Boolean thereAreBeams() {
         return ((Node) (rootNode.getChild("BeamNode"))).descendantMatches("Beam").size() > 0;
     }
 
-    /** -------------------------------- */
+    /** GC the laser beam visualizations. */
+    private void clearAllBeams() {
+        ((Node) (rootNode.getChild("BeamNode"))).detachAllChildren();
+    }
 
+    /** -------------------------------------------------------------- */
+    
+    /** */
+    // TODO start next level
+    private void startGame(int level){
+        rootNode.detachAllChildren();
+        factory = new Factory(rootNode, assetManager, level);
+        playerBase = rootNode.getChild("PlayerBaseNode").getControl(PlayerBaseControl.class);  
+        infoText.setText(infostring);
+        gamerunning=true;
+    }
+    
     /** Remove the controls from all remaining creeps when game ends so they stop walking */
     private void stopCreeps() {
         for (Spatial c : rootNode.descendantMatches("Creep-.*")) {
@@ -227,6 +265,6 @@ public class Main extends SimpleApplication {
         gamerunning = false;
         stopCreeps();
         clearAllBeams();
-        // TODO start next level
+        infoText.setText("Press RETURN to continue.");
     }
 }
