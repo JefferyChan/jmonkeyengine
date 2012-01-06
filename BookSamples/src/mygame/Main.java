@@ -8,6 +8,8 @@ import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.input.controls.MouseButtonTrigger;
+import com.jme3.light.Light;
+import com.jme3.light.LightList;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Ray;
@@ -123,8 +125,7 @@ public class Main extends SimpleApplication {
                 if (results.size() > 0) {
                     // player has selected a tower
                     CollisionResult closest = results.getClosestCollision();
-                    System.out.println("clostes geo:"+closest.getGeometry().getName());
-                    selected = closest.getGeometry().getControl(TowerControl.class).getIndex(); //NPE
+                    selected = closest.getGeometry().getControl(TowerControl.class).getIndex();  // TODO: NPE?!
                     Spatial selectedTower = rootNode.getChild("tower-" + selected);
                     selectedTower.setMaterial((Material) selectedTower.getUserData("selectedMaterial"));
                 } else {
@@ -247,6 +248,7 @@ public class Main extends SimpleApplication {
     // TODO start next level
     private void startGame(int level){
         rootNode.detachAllChildren();
+        rootNode.getLocalLightList().clear();
         factory = new Factory(rootNode, assetManager, level);
         playerBase = rootNode.getChild("PlayerBaseNode").getControl(PlayerBaseControl.class);  
         infoText.setText(infostring);

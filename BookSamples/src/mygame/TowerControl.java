@@ -191,7 +191,7 @@ public class TowerControl extends AbstractControl implements Savable, Cloneable 
         Geometry blast_geo = new Geometry("Blast Range", s);
         blast_geo.setMaterial(getBlastMaterial());
 
-        spatial.getParent().attachChild(blast_geo);
+        getBeamNode().attachChild(blast_geo); // TODO: not visible?
         blast_geo.setLocalTranslation(creep.getLoc());
         
         List<Spatial> creeps = (getCreepNode().getChildren());
