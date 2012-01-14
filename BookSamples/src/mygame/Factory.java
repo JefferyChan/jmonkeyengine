@@ -50,7 +50,7 @@ public final class Factory {
   private final float CREEP_INIT_HEALTH;
   private final float CREEP_INIT_SPEED;
   // CONFIGURABLE TOWER CHARGES: SpeedDamage, HealthDamage, AmmoNum, BlastRange
-  private final float[] GATLING = {0.0f, -1f, 7, 0f};
+  private final float[] GATLING = {0.0f, -1f, 5, 0f};
   private final float[] FREEZE  = {-1f,  -2f, 3, 0f};
   private final float[] NUKE    = {+.5f, -10f, 1, 2f};
 
