@@ -49,10 +49,10 @@ public final class Factory {
   private final float PLAYER_INIT_HEALTH;
   private final float CREEP_INIT_HEALTH;
   private final float CREEP_INIT_SPEED;
-  // CONFIGURABLE TOWER CHARGES: SpeedDamage, HealthDamage, AmmoNum, Range, Blastrange
-  private final float[] GATLING = {0.0f, -01f, 10, 2.50f * TOWER_HEIGHT, 1f};
-  private final float[] FREEZE  = {-.5f, -02f, 3, 2.25f * TOWER_HEIGHT, 0f};
-  private final float[] NUKE    = {+.5f, -10f, 1, 2.00f * TOWER_HEIGHT, 2f};
+  // CONFIGURABLE TOWER CHARGES: SpeedDamage, HealthDamage, AmmoNum, Blastrange
+  private final float[] GATLING = {0.0f, -01f, 10, 1f};
+  private final float[] FREEZE  = {-.5f, -02f, 3, 0f};
+  private final float[] NUKE    = {+.5f, -10f, 1, 2f};
 
   public Factory(Node rootNode, AssetManager as, int level) {
     this.assetManager = as;
@@ -60,7 +60,7 @@ public final class Factory {
     this.level        = level;
     // configurable factors depend on level
     this.CREEP_INIT_NUM      = 2 + level * 2;
-    this.TOWER_INIT_NUM      = 2 + level * 2;
+    this.TOWER_INIT_NUM      = 4 + level / 2;
     this.PLAYER_INIT_BUDGET  = 5 + level * 2;
     this.PLAYER_INIT_HEALTH  = 2f + level;
     this.CREEP_INIT_HEALTH   = 20f + level * 10;
@@ -130,7 +130,7 @@ public final class Factory {
       // Distribute towers to left and right of valley along positive z axis
       int leftOrRight = (index % 2 == 0 ? 1 : -1); // -1 or +1
       float offset_x = leftOrRight * 2.5f;
-      float offset_y = TOWER_HEIGHT;
+      float offset_y = TOWER_HEIGHT/2;
       Vector3f loc = new Vector3f(offset_x, offset_y, index);
       // tower geo
       Geometry tower_geo = makeTower(TOWER_RADIUS, TOWER_HEIGHT, index);
@@ -183,7 +183,7 @@ public final class Factory {
       int leftOrRight = (index % 2 == 0 ? 1 : -1); // +1 or -1
       float offset_x = 1.75f * leftOrRight * FastMath.rand.nextFloat();
       float offset_z = 2.5f * ((TOWER_INIT_NUM / 2f) + 3f);
-      Vector3f spawnloc = new Vector3f(offset_x, 1f, offset_z);
+      Vector3f spawnloc = new Vector3f(offset_x, CREEP_RADIUS, offset_z);
       // creep geometry
       Geometry creep_geo = makeCreep(CREEP_RADIUS, spawnloc, index);
       creepNode.attachChild(creep_geo);
@@ -203,7 +203,6 @@ public final class Factory {
   
   /**
    * Freeze charges slow down the target and do a bit of damage.
-   * Range: medium.
    */
   public Charge getFreezeCharge() {
     Material beam_mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
@@ -213,7 +212,7 @@ public final class Factory {
 
   /**
    * Gatling charges do minimal damage but they can be shot more often per round 
-   * and at various targets. Range: far.
+   * and at various targets. 
    */
   public Charge getGatlingCharge() {
     Material beam_mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
@@ -224,7 +223,7 @@ public final class Factory {
   /**
    * Nuke charges do a lot of damage but they are expensive (only one shot per charge).
    * As a side effect they not only damage but also thaw/accelerate 
-   * the neighbouring creeps! Range: short.
+   * the neighbouring creeps! 
    */
   public Charge getNukeCharge() {
     Material beam_mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
@@ -269,7 +268,7 @@ public final class Factory {
 
   private void initLights() {
     DirectionalLight sun = new DirectionalLight();
-    sun.setDirection(new Vector3f(0.8f, -0.7f, 1).normalizeLocal());
+    sun.setDirection(new Vector3f(0.8f, -0.7f, -1).normalizeLocal());
     sun.setColor(ColorRGBA.White);
     rootNode.addLight(sun);
   }

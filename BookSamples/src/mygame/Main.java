@@ -72,8 +72,8 @@ public class Main extends SimpleApplication {
     java.util.logging.Logger.getLogger("").setLevel(Level.WARNING);
     setDisplayStatView(false); // don't show debugger
     viewPort.setBackgroundColor(ColorRGBA.White);
-    cam.setLocation(new Vector3f(0, 8, -6f));
-    cam.lookAt(new Vector3f(0f, 0f, 8), Vector3f.UNIT_Y);
+    cam.setLocation(new Vector3f(0, 4, 20f));
+    cam.lookAt(Vector3f.ZERO, Vector3f.UNIT_Y);
     // initialize the scene graph
     initHUD();    // attach user interface (info text)
     initInputs(); // activate input handling

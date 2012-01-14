@@ -22,7 +22,6 @@ public class Charge implements Savable {
   private float healthDamage;
   private int   ammoNum;
   private float blast;
-  private float range;
   private Material beam_mat;
 
   /** 
@@ -35,11 +34,10 @@ public class Charge implements Savable {
    *  (recommended: >1 for nuke, 1 for gatling, 0 for freeze).
    * @param m A colored material that is used for the laser beam.
    */
-  public Charge(float s, float h, int a, float r, float b, Material m) {
+  public Charge(float s, float h, int a, float b, Material m) {
     this.speedDamage = s;
     this.healthDamage = h;
     this.ammoNum = a;
-    this.range = r;
     this.blast = b;
     this.beam_mat = m;
   }
@@ -53,8 +51,7 @@ public class Charge implements Savable {
     this.speedDamage = v[0];
     this.healthDamage = v[1];
     this.ammoNum = (int) v[2];
-    this.range = v[3];
-    this.blast = v[4];
+    this.blast = v[3];
     this.beam_mat = m;
   }
 
@@ -84,10 +81,6 @@ public class Charge implements Savable {
     return blast;
   }
 
-  public float getAimingRange() {
-    return range;
-  }
-
   public Material getBeamMaterial() {
     return beam_mat;
   }
@@ -100,7 +93,6 @@ public class Charge implements Savable {
     capsule.write(healthDamage, "healthDamage", 1f);
     capsule.write(speedDamage,  "speedDamage", 1f);
     capsule.write(blast,        "blast", 1f);
-    capsule.write(range,        "range", 1f);
     capsule.write(beam_mat,     "beam_mat", new Material());
   }
 
@@ -110,7 +102,6 @@ public class Charge implements Savable {
     healthDamage  = capsule.readFloat("healthDamage", 1);
     speedDamage   = capsule.readFloat("speedDamage", 1);
     blast         = capsule.readFloat("blast", 1);
-    range         = capsule.readFloat("range", 1);
     beam_mat      = (Material) capsule.readSavable("beam_mat", new Material());
   }
 }

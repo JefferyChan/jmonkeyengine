@@ -35,7 +35,7 @@ public class CreepControl extends AbstractControl implements Savable, Cloneable 
         // If creep has not yet reached player base at origin,
         // it increases speed a bit (thaws or runs)
         // and keeps walking towards playerbase.
-        addSpeed(FastMath.rand.nextFloat()*0.005f);
+        addSpeed(FastMath.rand.nextFloat()*0.001f);
         setLoc(newloc);
       } else {
         // Creep has reached player base and attacks player.
