@@ -35,7 +35,7 @@ public class PlayerBaseControl extends AbstractControl implements Savable, Clone
 
   public float getHealth() {
     float f = (Float) spatial.getUserData("health");
-    return Math.round(f * 100) / 100; // drop the decimals
+    return Math.round(f * 10) / 10; // drop the decimals
   }
 
   /**

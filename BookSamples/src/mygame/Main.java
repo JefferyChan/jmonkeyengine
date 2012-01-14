@@ -72,8 +72,9 @@ public class Main extends SimpleApplication {
     java.util.logging.Logger.getLogger("").setLevel(Level.WARNING);
     setDisplayStatView(false); // don't show debugger
     viewPort.setBackgroundColor(ColorRGBA.White);
-    cam.setLocation(new Vector3f(0, 4, 20f));
-    cam.lookAt(Vector3f.ZERO, Vector3f.UNIT_Y);
+    cam.setLocation(new Vector3f(0, 16, 16f));
+    cam.lookAt(new Vector3f(0,0,8f), Vector3f.UNIT_Y);
+    
     // initialize the scene graph
     initHUD();    // attach user interface (info text)
     initInputs(); // activate input handling
@@ -111,6 +112,7 @@ public class Main extends SimpleApplication {
   private void initInputs() {
     // deactivate default input mapping: camera is static in this game.
     inputManager.clearMappings();
+    //flyCam.setMoveSpeed(25);
     // user needs to see mouse pointer to be able to click
     inputManager.setCursorVisible(true);
     // configure input mappings

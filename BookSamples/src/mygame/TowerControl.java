@@ -44,17 +44,16 @@ public class TowerControl extends AbstractControl implements Savable, Cloneable 
         CreepControl creep = creep_geo.getControl(CreepControl.class);
         // Depends on creep's distance to tower top versus range of charge:
         if (creep.isAlive()
-                && getTowerTop().distance(creep.getLoc()) < 4.5f) { // RANGE
+                && getTowerTop().distance(creep.getLoc()) < getHeight()*2f) { // RANGE
           reachable.add(creep);
         }
       }
       /* If the loaded tower can reach at least one creep, then... */
-      if (reachable.size() > 0) {
+      if (reachable.size() > 0 && charge.getAmmoNum() > 0) {
         /* ... shoot at each reachable creep once, 
         until out of reachable creeps or charge out of ammo */
-        for (int ammo = charge.getAmmoNum(); ammo > 0; ammo--) {
-          for (CreepControl creep : reachable) {
-            if( timer > .02f){
+        for (CreepControl creep : reachable) {
+          if (timer > .02f) {
             /* Show a laser beam from tower to the creep that got hit. 
              * The laser visuals are slightly random. */
             Vector3f hit = creep.getLoc();
@@ -73,19 +72,17 @@ public class TowerControl extends AbstractControl implements Savable, Cloneable 
             charge.addAmmo(-1);
             if (charge.getAmmoNum() <= 0) {
               // this charge is out of ammo, discard the charge.
-              ammo = 0;
               charges.remove(charge);
-              updateChargeMarkers(); 
+              updateChargeMarkers();
               // pause to reload, that is, stop shooting until next turn.
               break;
             }
             break;
           }
-          } 
-        timer = 0f;
         }
+        timer = 0f;
       }
-    } 
+    }
   }
 
   /** --------------------------------------- */
@@ -103,8 +100,7 @@ public class TowerControl extends AbstractControl implements Savable, Cloneable 
       float dist = neighbour.getLocalTranslation().distance(creep.getLoc());
       if (dist < charge.getBlastRange() && dist > 0f) {
         neighbour.getControl(CreepControl.class).addHealth(charge.getHealthImpact() / 2f);
-        neighbour.getControl(CreepControl.class).addSpeed(charge.getSpeedImpact() / 2);
-        creep.addSpeed(charge.getSpeedImpact() / -2);
+        neighbour.getControl(CreepControl.class).addSpeed(charge.getSpeedImpact() / 3);
       }
     }
   }

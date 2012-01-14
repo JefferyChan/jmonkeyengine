@@ -33,9 +33,7 @@ public class CreepControl extends AbstractControl implements Savable, Cloneable 
               - (getSpeed() * tpf * FastMath.rand.nextFloat()));
       if (newloc.z > 0) {
         // If creep has not yet reached player base at origin,
-        // it increases speed a bit (thaws or runs)
-        // and keeps walking towards playerbase.
-        addSpeed(FastMath.rand.nextFloat()*0.001f);
+        // it keeps walking towards playerbase.
         setLoc(newloc);
       } else {
         // Creep has reached player base and attacks player.
@@ -71,7 +69,7 @@ public class CreepControl extends AbstractControl implements Savable, Cloneable 
   }
 
   /** Creep commits kamikaze when attacking the base. 
-   * impact depends on creeps remaining health.
+   * kamikaze damage depends on creeps remaining health.
    */
   public void kamikaze() {
     getPlayer().addHealthMod(getHealth() / -10);

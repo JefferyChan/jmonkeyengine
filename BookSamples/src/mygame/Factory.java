@@ -49,9 +49,9 @@ public final class Factory {
   private final float PLAYER_INIT_HEALTH;
   private final float CREEP_INIT_HEALTH;
   private final float CREEP_INIT_SPEED;
-  // CONFIGURABLE TOWER CHARGES: SpeedDamage, HealthDamage, AmmoNum, Blastrange
-  private final float[] GATLING = {0.0f, -01f, 10, 1f};
-  private final float[] FREEZE  = {-.5f, -02f, 3, 0f};
+  // CONFIGURABLE TOWER CHARGES: SpeedDamage, HealthDamage, AmmoNum, BlastRange
+  private final float[] GATLING = {0.0f, -1f, 7, 0f};
+  private final float[] FREEZE  = {-1f,  -2f, 3, 0f};
   private final float[] NUKE    = {+.5f, -10f, 1, 2f};
 
   public Factory(Node rootNode, AssetManager as, int level) {
@@ -63,8 +63,8 @@ public final class Factory {
     this.TOWER_INIT_NUM      = 4 + level / 2;
     this.PLAYER_INIT_BUDGET  = 5 + level * 2;
     this.PLAYER_INIT_HEALTH  = 2f + level;
-    this.CREEP_INIT_HEALTH   = 20f + level * 10;
-    this.CREEP_INIT_SPEED    = 2f * FastMath.rand.nextFloat() + (level / 5f);
+    this.CREEP_INIT_HEALTH   = 20f + level * 2;
+    this.CREEP_INIT_SPEED    = 0.5f + level/10;
     // init the scene
     initLights();
     initMaterials();
@@ -77,18 +77,18 @@ public final class Factory {
   
   public void initPlayerBase() {
     // player base geometry
-    Box b2 = new Box(Vector3f.ZERO, 3f / 2f, .5f, .5f);
+    Box b2 = new Box(Vector3f.ZERO, 1.5f, .8f, 1f);
     Geometry playerbase_geo = new Geometry("Playerbase", b2);
     playerbase_geo.setMaterial(playerbase_mat);
-    playerbase_geo.move(0, 1, 0);
+    playerbase_geo.move(0, .8f, -1f);
     playerbase_node.attachChild(playerbase_geo);
 
     // floor geometry
     Node floor_node = new Node("Floor");
-    Box b = new Box(Vector3f.ZERO, 33f, 1f, 33f);
+    Box b = new Box(Vector3f.ZERO, 33f, 0.1f, 33f);
     Geometry floor = new Geometry("Floor", b);
     floor.setMaterial(floor_mat);
-    floor.setLocalTranslation(0, -.5f, 0);
+    //floor.setLocalTranslation(0, 0f, 0);
     floor_node.attachChild(floor);
 
     // data
@@ -106,12 +106,12 @@ public final class Factory {
   /** --------------------------------------------------------- */
   
   /** Creates one tower geometry at the origin. */
-  private Geometry makeTower(float towerRadius, float towerHeight, int index) {
+  private Geometry makeTower(int index) {
     Box tower_shape = new Box(
             Vector3f.ZERO,
-            towerRadius,
-            towerHeight*.5f,
-            towerRadius);
+            TOWER_RADIUS,
+            TOWER_HEIGHT*.5f,
+            TOWER_RADIUS);
     Geometry tower_geo = new Geometry("tower-" + index, tower_shape);
     tower_geo.setMaterial(tower_std_mat);
     return tower_geo;
@@ -130,10 +130,11 @@ public final class Factory {
       // Distribute towers to left and right of valley along positive z axis
       int leftOrRight = (index % 2 == 0 ? 1 : -1); // -1 or +1
       float offset_x = leftOrRight * 2.5f;
-      float offset_y = TOWER_HEIGHT/2;
-      Vector3f loc = new Vector3f(offset_x, offset_y, index);
+      float offset_y = TOWER_HEIGHT*.5f;
+      float offset_z = index + 2;
+      Vector3f loc = new Vector3f(offset_x, offset_y, offset_z);
       // tower geo
-      Geometry tower_geo = makeTower(TOWER_RADIUS, TOWER_HEIGHT, index);
+      Geometry tower_geo = makeTower(index);
       tower_geo.setLocalTranslation(loc);
       towerNode.attachChild(tower_geo);
       // the chargeMarkerNode holds the ChargeMarkers for one tower
@@ -182,8 +183,9 @@ public final class Factory {
       // distribute creeps to the left and right of the positive x axis
       int leftOrRight = (index % 2 == 0 ? 1 : -1); // +1 or -1
       float offset_x = 1.75f * leftOrRight * FastMath.rand.nextFloat();
-      float offset_z = 2.5f * ((TOWER_INIT_NUM / 2f) + 3f);
-      Vector3f spawnloc = new Vector3f(offset_x, CREEP_RADIUS, offset_z);
+      float offset_y = 0;
+      float offset_z = 2.5f * ((TOWER_INIT_NUM / 2f) + 6f);
+      Vector3f spawnloc = new Vector3f(offset_x, offset_y, offset_z);
       // creep geometry
       Geometry creep_geo = makeCreep(CREEP_RADIUS, spawnloc, index);
       creepNode.attachChild(creep_geo);
