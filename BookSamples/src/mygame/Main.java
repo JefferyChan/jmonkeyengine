@@ -115,13 +115,15 @@ public class Main extends SimpleApplication {
     inputManager.setCursorVisible(true);
     // configure input mappings
     inputManager.addMapping("Restart", new KeyTrigger(KeyInput.KEY_RETURN));
-    inputManager.addMapping("Select", new MouseButtonTrigger(0)); // click
+    inputManager.addMapping("Quit",    new KeyTrigger(KeyInput.KEY_ESCAPE));
+    inputManager.addMapping("Select",  new MouseButtonTrigger(0)); // click
     inputManager.addMapping("LoadFreezeCharge", new KeyTrigger(KeyInput.KEY_F));
     inputManager.addMapping("LoadNukeCharge", new KeyTrigger(KeyInput.KEY_N));
     inputManager.addMapping("LoadGatlingCharge", new KeyTrigger(KeyInput.KEY_G));
     // register to listener
     inputManager.addListener(actionListener,
-            "Restart", "Select", "LoadGatlingCharge", "LoadNukeCharge", "LoadFreezeCharge");
+            "Restart", "Select", "Quit", 
+            "LoadGatlingCharge", "LoadNukeCharge", "LoadFreezeCharge");
   }
   /**
    * Input handling<br />
@@ -195,6 +197,10 @@ public class Main extends SimpleApplication {
             startGame(1); 
           }
         }
+      }
+      if (mapping.equals("Quit") && !keyDown) {
+        endGame();
+        stop();
       }
     }
   };
