@@ -44,7 +44,7 @@ public class PhysicsVehicle extends SimpleApplication implements ActionListener 
   public void simpleInitApp() {
     bulletAppState = new BulletAppState();
     stateManager.attach(bulletAppState);
-    viewPort.setBackgroundColor(ColorRGBA.Cyan);
+    viewPort.setBackgroundColor(ColorRGBA.White);
     PhysicsTestHelper.createPhysicsTestWorld(rootNode, assetManager, bulletAppState.getPhysicsSpace());
 
     buildPlayer();
@@ -201,6 +201,13 @@ public class PhysicsVehicle extends SimpleApplication implements ActionListener 
         accelerationValue += accelerationForce;
       } else {
         accelerationValue -= accelerationForce;
+      }
+      vehicle.accelerate(accelerationValue);
+    } else if (binding.equals("Reverse")) {
+      if (value) {
+        accelerationValue -= accelerationForce;
+      } else {
+        accelerationValue += accelerationForce;
       }
       vehicle.accelerate(accelerationValue);
     } else if (binding.equals("Brake")) {
