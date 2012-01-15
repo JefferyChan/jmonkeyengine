@@ -2,14 +2,15 @@ package chapter07;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.PhysicsSpace;
-import com.jme3.bullet.collision.shapes.MeshCollisionShape;
-import com.jme3.bullet.collision.shapes.SphereCollisionShape;
+import com.jme3.bullet.collision.shapes.PlaneCollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.light.AmbientLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
+import com.jme3.math.Plane;
 import com.jme3.math.Vector2f;
+import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.shape.Box;
@@ -32,15 +33,15 @@ public class PhysicsTestHelper {
         rootNode.addLight(light);
 
 
-        Box floorBox = new Box(240, 3f, 240);
+        Box floorBox = new Box(240, 2f, 240);
         floorBox.scaleTextureCoordinates(new Vector2f(50,50));
         Geometry floorGeometry = new Geometry("Floor", floorBox);
         
         Material mat=assetManager.loadMaterial("Materials/pebbles.j3m");
         floorGeometry.setMaterial(mat);
-        floorGeometry.setLocalTranslation(0, -5, 0);
-        
+        floorGeometry.setLocalTranslation(0, -1f, 0);
         floorGeometry.addControl(new RigidBodyControl(0));
+
         rootNode.attachChild(floorGeometry);
         space.add(floorGeometry);
 

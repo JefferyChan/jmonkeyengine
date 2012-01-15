@@ -56,7 +56,7 @@ public class PhysicsVehicle extends SimpleApplication implements ActionListener 
     //attach the camNode to the vehicle
     vehicleNode.attachChild(camNode);
     //set the local translation of the cam node to move it away from the vehicle
-    camNode.setLocalTranslation(new Vector3f(0, 2, -5));
+    camNode.setLocalTranslation(new Vector3f(0, 2, -6));
     //set the camNode to look at the vehicle
     camNode.lookAt(vehicleNode.getLocalTranslation(), Vector3f.UNIT_Y);
     //disable the default flyCam (don't forget that!)
@@ -101,15 +101,15 @@ public class PhysicsVehicle extends SimpleApplication implements ActionListener 
     mat.getAdditionalRenderState().setWireframe(true);
     mat.setColor("Color", ColorRGBA.Red);
 
-    //create a compound shape and attach the BoxCollisionShape for the car body at 0,2,0
-    //this shifts the effective center of mass of the BoxCollisionShape to 0,-2,0
+    //create a compound shape and attach the BoxCollisionShape for the car body at 0,1,0
+    //this shifts the effective center of mass of the BoxCollisionShape to 0,-1,0
     CompoundCollisionShape compoundShape = new CompoundCollisionShape();
     BoxCollisionShape box = new BoxCollisionShape(new Vector3f(1.2f, 0.5f, 2.4f));
-    compoundShape.addChildShape(box, new Vector3f(0, 2, 0));
+    compoundShape.addChildShape(box, new Vector3f(0, 1, 0));
 
     //create vehicle node
     vehicleNode = new Node("vehicleNode");
-    vehicle = new VehicleControl(compoundShape, 400);
+    vehicle = new VehicleControl(compoundShape, 600);
     vehicleNode.addControl(vehicle);
 
     //setting suspension values for wheels, this can be a bit tricky
