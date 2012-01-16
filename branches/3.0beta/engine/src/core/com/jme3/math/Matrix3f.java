@@ -31,11 +31,7 @@
  */
 package com.jme3.math;
 
-import com.jme3.export.InputCapsule;
-import com.jme3.export.JmeExporter;
-import com.jme3.export.JmeImporter;
-import com.jme3.export.OutputCapsule;
-import com.jme3.export.Savable;
+import com.jme3.export.*;
 import com.jme3.util.BufferUtils;
 import com.jme3.util.TempVars;
 import java.io.IOException;
@@ -1050,9 +1046,9 @@ public final class Matrix3f implements Savable, Cloneable, java.io.Serializable 
     }
 
     /**
-     * <code>determinant</code> generates the determinate of this matrix.
+     * <code>determinant</code> generates the determinant of this matrix.
      * 
-     * @return the determinate
+     * @return the determinant
      */
     public float determinant() {
         float fCo00 = m11 * m22 - m12 * m21;

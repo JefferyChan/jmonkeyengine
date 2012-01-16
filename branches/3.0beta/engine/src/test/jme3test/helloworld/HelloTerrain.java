@@ -35,14 +35,12 @@ package jme3test.helloworld;
 import com.jme3.app.SimpleApplication;
 import com.jme3.material.Material;
 import com.jme3.terrain.geomipmap.TerrainLodControl;
-import com.jme3.terrain.heightmap.AbstractHeightMap;
 import com.jme3.terrain.geomipmap.TerrainQuad;
 import com.jme3.terrain.geomipmap.lodcalc.DistanceLodCalculator;
-import com.jme3.terrain.heightmap.HillHeightMap; // for exercise 2
+import com.jme3.terrain.heightmap.AbstractHeightMap;
 import com.jme3.terrain.heightmap.ImageBasedHeightMap;
 import com.jme3.texture.Texture;
 import com.jme3.texture.Texture.WrapMode;
-import jme3tools.converters.ImageToAwt;
 
 public class HelloTerrain extends SimpleApplication {
 
@@ -91,8 +89,7 @@ public class HelloTerrain extends SimpleApplication {
     AbstractHeightMap heightmap = null;
     Texture heightMapImage = assetManager.loadTexture(
             "Textures/Terrain/splat/mountains512.png");
-    heightmap = new ImageBasedHeightMap(
-      ImageToAwt.convert(heightMapImage.getImage(), false, true, 0));
+    heightmap = new ImageBasedHeightMap(heightMapImage.getImage());
     heightmap.load();
 
     /** 3. We have prepared material and heightmap. 

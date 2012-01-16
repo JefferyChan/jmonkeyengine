@@ -32,21 +32,15 @@
 package com.jme3.export;
 
 import com.jme3.animation.Animation;
-import com.jme3.effect.shapes.EmitterBoxShape;
-import com.jme3.effect.shapes.EmitterMeshConvexHullShape;
-import com.jme3.effect.shapes.EmitterMeshFaceShape;
-import com.jme3.effect.shapes.EmitterMeshVertexShape;
-import com.jme3.effect.shapes.EmitterPointShape;
-import com.jme3.effect.shapes.EmitterSphereShape;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
+import com.jme3.effect.shapes.*;
 import com.jme3.material.MatParamTexture;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * <code>SavableClassUtil</code> contains various utilities to handle
@@ -88,13 +82,8 @@ public class SavableClassUtil {
     }
     
     public static boolean isImplementingSavable(Class clazz){
-        Class[] interfaces = clazz.getInterfaces();
-        for (Class interfaceClass : interfaces){
-            if (interfaceClass == Savable.class){
-                return true;
-            }
-        }
-        return false;
+        boolean result = Savable.class.isAssignableFrom(clazz);
+        return result;
     }
 
     public static int[] getSavableVersions(Class<? extends Savable> clazz) throws IOException{
@@ -115,7 +104,12 @@ public class SavableClassUtil {
     public static int getSavableVersion(Class<? extends Savable> clazz) throws IOException{
         try {
             Field field = clazz.getField("SAVABLE_VERSION");
-            return field.getInt(null);
+            Class<? extends Savable> declaringClass = (Class<? extends Savable>) field.getDeclaringClass();
+            if (declaringClass == clazz){
+                return field.getInt(null); 
+            }else{
+                return 0; // This class doesn't declare this field, e.g. version == 0
+            }
         } catch (IllegalAccessException ex) {
             IOException ioEx = new IOException();
             ioEx.initCause(ex);
@@ -127,22 +121,32 @@ public class SavableClassUtil {
         }
     }
     
-    public static int getSavedSavableVersion(Object savable, Class<? extends Savable> desiredClass, int[] versions){
+    public static int getSavedSavableVersion(Object savable, Class<? extends Savable> desiredClass, int[] versions, int formatVersion){
         Class thisClass = savable.getClass();
         int count = 0;
-        while (thisClass != null && thisClass != desiredClass){
+        
+        while (thisClass != desiredClass) {
             thisClass = thisClass.getSuperclass();
-            count ++;
+            if (thisClass != null && SavableClassUtil.isImplementingSavable(thisClass)){
+                count ++;
+            }else{
+                break;
+            }
         }
+
         if (thisClass == null){
             throw new IllegalArgumentException(savable.getClass().getName() + 
                                                " does not extend " + 
                                                desiredClass.getName() + "!");
-        }else if (count > versions.length){
-            throw new IllegalArgumentException(savable.getClass().getName() + 
-                                               " cannot access version of " +
-                                               desiredClass.getName() + 
-                                               " because it doesn't implement Savable");
+        }else if (count >= versions.length){
+            if (formatVersion <= 1){
+                return 0; // for buggy versions of j3o
+            }else{
+                throw new IllegalArgumentException(savable.getClass().getName() + 
+                                                   " cannot access version of " +
+                                                   desiredClass.getName() + 
+                                                   " because it doesn't implement Savable");
+            }
         }
         return versions[count];
     }

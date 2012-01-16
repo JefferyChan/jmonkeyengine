@@ -8,13 +8,7 @@ import com.jme3.texture.FrameBuffer;
 import com.jme3.texture.Image.Format;
 import com.jme3.util.BufferUtils;
 import com.jme3.util.Screenshots;
-import java.awt.AWTException;
-import java.awt.BufferCapabilities;
-import java.awt.Canvas;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.ImageCapabilities;
-import java.awt.RenderingHints;
+import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.geom.AffineTransform;
@@ -109,7 +103,7 @@ public class AwtPanel extends Canvas implements SceneProcessor {
     public boolean checkVisibilityState(){
         if (!hasNativePeer.get()){
             if (strategy != null){
-                strategy.dispose();
+//                strategy.dispose();
                 strategy = null;
                 System.out.println("OGL: Not visible. Destroy strategy.");
             }

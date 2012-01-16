@@ -31,11 +31,7 @@
  */
 package com.jme3.cinematic;
 
-import com.jme3.export.InputCapsule;
-import com.jme3.export.JmeExporter;
-import com.jme3.export.JmeImporter;
-import com.jme3.export.OutputCapsule;
-import com.jme3.export.Savable;
+import com.jme3.export.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -92,6 +88,10 @@ public class TimeLine extends HashMap<Integer, KeyFrame> implements Savable {
 
     public int getKeyFrameIndexFromTime(float time) {
         return Math.round(time * keyFramesPerSeconds);
+    }
+    
+    public float getKeyFrameTime(KeyFrame keyFrame) {
+        return (float)keyFrame.getIndex()/(float)keyFramesPerSeconds;
     }
 
     public Collection<KeyFrame> getAllKeyFrames() {

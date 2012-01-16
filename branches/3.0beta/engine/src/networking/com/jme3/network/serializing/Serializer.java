@@ -33,9 +33,12 @@
 package com.jme3.network.serializing;
 
 import com.jme3.math.Vector3f;
-import com.jme3.network.message.*;
+import com.jme3.network.message.ChannelInfoMessage;
+import com.jme3.network.message.ClientRegistrationMessage;
+import com.jme3.network.message.DisconnectMessage;
+import com.jme3.network.message.GZIPCompressedMessage;
+import com.jme3.network.message.ZIPCompressedMessage;
 import com.jme3.network.serializing.serializers.*;
-import java.awt.RenderingHints;
 import java.beans.beancontext.BeanContextServicesSupport;
 import java.beans.beancontext.BeanContextSupport;
 import java.io.File;
@@ -69,6 +72,27 @@ public abstract class Serializer {
     private static short                                    nextId                  = -1;
 
     private static boolean strictRegistration = true;
+
+    /****************************************************************
+     ****************************************************************
+     ****************************************************************
+     
+        READ THIS BEFORE CHANGING ANYTHING BELOW
+        
+        If a registration is moved or removed before the 
+        ClientRegistrationMessage then it screws up the application's
+        ability to gracefully warn users about bad versions. 
+ 
+        There really needs to be a version rolled into the protocol
+        and I intend to do that very soon.  In the mean time, don't
+        edit the static registrations without decrementing nextId
+        appropriately.
+        
+        Yes, that's how fragile this is.  Live and learn.       
+     
+     ****************************************************************     
+     ****************************************************************
+     ****************************************************************/
 
 
     // Registers the classes we already have serializers for.
@@ -115,7 +139,6 @@ public abstract class Serializer {
         registerClass(HashMap.class,                    new MapSerializer());
         registerClass(Hashtable.class,                  new MapSerializer());
         registerClass(IdentityHashMap.class,            new MapSerializer());
-        registerClass(RenderingHints.class,             new MapSerializer());
         registerClass(TreeMap.class,                    new MapSerializer());
         registerClass(WeakHashMap.class,                new MapSerializer());
         
@@ -125,6 +148,7 @@ public abstract class Serializer {
 
         registerClass(DisconnectMessage.class);
         registerClass(ClientRegistrationMessage.class);
+        registerClass(ChannelInfoMessage.class);
     }
     
     /**

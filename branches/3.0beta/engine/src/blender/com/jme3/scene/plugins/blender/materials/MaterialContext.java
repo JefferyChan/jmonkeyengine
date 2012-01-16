@@ -1,13 +1,5 @@
 package com.jme3.scene.plugins.blender.materials;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import com.jme3.math.ColorRGBA;
 import com.jme3.scene.plugins.blender.BlenderContext;
 import com.jme3.scene.plugins.blender.exceptions.BlenderFileException;
@@ -20,6 +12,13 @@ import com.jme3.scene.plugins.blender.textures.TextureHelper;
 import com.jme3.texture.Texture;
 import com.jme3.texture.Texture.Type;
 import com.jme3.texture.Texture.WrapMode;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This class holds the data about the material.
@@ -64,14 +63,18 @@ public final class MaterialContext {
 		int mode = ((Number) structure.getFieldValue("mode")).intValue();
 		shadeless = (mode & 0x4) != 0;
 		vertexColor = (mode & 0x80) != 0;
-		transparent = (mode & 0x10000) != 0;
 		vTangent = (mode & 0x4000000) != 0; // NOTE: Requires tangents
 
 		int diff_shader = ((Number) structure.getFieldValue("diff_shader")).intValue();
 		diffuseShader = DiffuseShader.values()[diff_shader];
 		
 		if(this.shadeless) {
-			diffuseColor = ColorRGBA.White.clone();
+                        float r = ((Number) structure.getFieldValue("r")).floatValue();
+                        float g = ((Number) structure.getFieldValue("g")).floatValue();
+                        float b = ((Number) structure.getFieldValue("b")).floatValue();
+                        float alpha = ((Number) structure.getFieldValue("alpha")).floatValue();
+
+			diffuseColor = new ColorRGBA(r, g, b, alpha);
 			specularShader = null;
 			specularColor = ambientColor = null;
 			shininess = 0.0f;
@@ -91,6 +94,7 @@ public final class MaterialContext {
 			float shininess = ((Number) structure.getFieldValue("emit")).floatValue();
 			this.shininess = shininess > 0.0f ? shininess : MaterialHelper.DEFAULT_SHININESS;
 		}
+		
 		float[] diffuseColorArray = new float[] {diffuseColor.r, diffuseColor.g, diffuseColor.b, diffuseColor.a};//TODO: czy trzeba wstawiac te dane?
 		
 		mTexs = new ArrayList<Structure>();
@@ -162,6 +166,21 @@ public final class MaterialContext {
 
 		this.texturesCount = mTexs.size();
 		this.textureType = firstTextureType;
+		
+		//veryfying if  the transparency is present
+		//(in blender transparent mask is 0x10000 but its better to verify it because blender can indicate transparency when
+		//it is not required
+		boolean transparent = false;
+		if(diffuseColor != null) {
+			transparent = diffuseColor.a < 1.0f;
+		}
+		if(specularColor != null) {
+			transparent = transparent || specularColor.a < 1.0f;
+		}
+		if(ambientColor != null) {
+			transparent = transparent || ambientColor.a < 1.0f;
+		}
+		this.transparent = transparent;
 	}
 	
 	/**

@@ -4,11 +4,7 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
-import com.jme3.math.ColorRGBA;
-import com.jme3.math.FastMath;
-import com.jme3.math.Quaternion;
-import com.jme3.math.Vector2f;
-import com.jme3.math.Vector3f;
+import com.jme3.math.*;
 import com.jme3.post.FilterPostProcessor;
 import com.jme3.post.ssao.SSAOFilter;
 import com.jme3.renderer.queue.RenderQueue.Bucket;
@@ -46,7 +42,7 @@ public class TestTransparentSSAO extends SimpleApplication {
         rootNode.attachChild(geom);
 
         // create the geometry and attach it
-        Spatial teaGeom = assetManager.loadModel("Models/Tree/Tree2.mesh.xml");
+        Spatial teaGeom = assetManager.loadModel("Models/Tree/Tree.mesh.j3o");
         teaGeom.setQueueBucket(Bucket.Transparent);
         teaGeom.setShadowMode(ShadowMode.Cast);
 

@@ -510,14 +510,24 @@ Use PhysicsControl&#039;s joints.
 
 </div>
 
-<h3><a>How do I get rid of the debug display (fps, stats)?</a></h3>
+<h3><a>What are these FPS/Objects/Vertices/Triangles statistics?</a></h3>
+<div>
+
+<p>
+At the bottom left of every default SimpleGame, you see the <a href="/com/jme3/gde/core/docs/jme3/advanced/statsview.html">StatsView</a> and the FPS (frames per seconds) view. It provides you with extra information during the development phase. For example, if the object count is increasing and the FPS slows down, then you now that your code attaches too many and does not detach enough objects.
+</p>
+
+</div>
+
+<h3><a>How do I get rid of the FPS/Objects statistics?</a></h3>
 <div>
 
 <p>
 In the application&#039;s simpleInitApp() method, call: 
+
 </p>
-<pre>setDisplayFps(false);
-setDisplayStatView(false);</pre>
+<pre>setDisplayFps(false); // to hide the FPS
+setDisplayStatView(false); // to hide the statistics </pre>
 
 </div>
 
@@ -696,9 +706,13 @@ Logger.getLogger&#40;HelloJME3.class.getName&#40;&#41;&#41;.log&#40;Level.INFO, 
 <p>
 
 The following shortened example shows the capabilities of an older graphic card. In this case you decide whether to branch to a low-quality rendering of the unsupported features (if you still want to support this card), or print an error message explaining the user what capabilities the card is missing to play the game.
+</p>
+
+<p>
+Here is an example of the capabilities of an older graphic card:
 
 </p>
-<pre>INFO: Running on jMonkey Engine 3 Alpha 0.6
+<pre>INFO: Running on jMonkey Engine 3 
 INFO: Using LWJGL 2.7.1
 INFO: Selected display mode: 1024 x 768 x 0 @0Hz
 INFO: Adapter: null
@@ -709,8 +723,30 @@ INFO: Renderer: ATI Radeon X1600 OpenGL Engine
 INFO: GLSL Ver: 1.20
 INFO: Timer resolution: 1.000 ticks per second
 INFO: Capabilities: [FrameBuffer, FrameBufferMRT, FrameBufferMultisample,
-OpenGL20, ARBprogram, GLSL100, GLSL110, GLSL120, VertexTextureFetch,
-FloatTexture, TextureCompressionLATC, NonPowerOfTwoTextures]</pre>
+OpenGL20, ARBprogram, GLSL100, GLSL110, GLSL120, 
+VertexTextureFetch, FloatTexture, 
+TextureCompressionLATC, NonPowerOfTwoTextures]</pre>
+
+<p>
+
+A newer graphic card has better capabilities, for example: 
+
+</p>
+<pre>INFO: Running on jMonkeyEngine 3.0.0 
+INFO: Using LWJGL 2.8.2
+INFO: Selected display mode: 1280 x 720 x 0 @0Hz
+INFO: Adapter: null
+INFO: Driver Version: null
+INFO: Vendor: ATI Technologies Inc.
+INFO: OpenGL Version: 2.1 ATI-7.14.5
+INFO: Renderer: AMD Radeon HD 6770M OpenGL Engine
+INFO: GLSL Ver: 1.20
+INFO: Timer resolution: 1.000 ticks per second
+INFO: Capabilities: [FrameBuffer, FrameBufferMRT, FrameBufferMultisample, 
+OpenGL20, OpenGL21, ARBprogram, GLSL100, GLSL110, GLSL120, 
+VertexTextureFetch, TextureArray, FloatTexture, 
+FloatColorBuffer, FloatDepthBuffer, PackedFloatTexture, SharedExponentTexture, PackedFloatColorBuffer, 
+TextureCompressionLATC, NonPowerOfTwoTextures, MeshInstancing]</pre>
 
 </div>
 

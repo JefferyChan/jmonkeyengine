@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 jMonkeyEngine
+ * Copyright (c) 2009-2012 jMonkeyEngine
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -31,11 +31,6 @@
  */
 package com.jme3.asset;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Queue;
-
 import com.jme3.bounding.BoundingVolume;
 import com.jme3.collision.Collidable;
 import com.jme3.collision.CollisionResults;
@@ -54,6 +49,10 @@ import com.jme3.scene.SceneGraphVisitor;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.plugins.ogre.AnimData;
 import com.jme3.texture.Texture;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Queue;
 
 /**
  * Blender key. Contains path of the blender file and its loading properties.
@@ -245,7 +244,7 @@ public class BlenderKey extends ModelKey {
 
 	/**
 	 * This method removes features from being loaded.
-	 * @param featuresToLoad
+	 * @param featuresNotToLoad
 	 *        bitwise flag of FeaturesToLoad interface values
 	 */
 	public void excludeFromLoading(int featuresNotToLoad) {

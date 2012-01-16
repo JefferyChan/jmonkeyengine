@@ -1,14 +1,13 @@
 package com.jme3.scene.plugins.blender.cameras;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import com.jme3.asset.BlenderKey.FeaturesToLoad;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.plugins.blender.AbstractBlenderHelper;
 import com.jme3.scene.plugins.blender.BlenderContext;
 import com.jme3.scene.plugins.blender.exceptions.BlenderFileException;
 import com.jme3.scene.plugins.blender.file.Structure;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * A class that is used to load cameras into the scene.
@@ -25,9 +24,11 @@ public class CameraHelper extends AbstractBlenderHelper {
      * different blender versions.
      * @param blenderVersion
      *        the version read from the blend file
+     * @param fixUpAxis
+     *        a variable that indicates if the Y asxis is the UP axis or not
      */
-    public CameraHelper(String blenderVersion) {
-        super(blenderVersion);
+    public CameraHelper(String blenderVersion, boolean fixUpAxis) {
+        super(blenderVersion, fixUpAxis);
     }
     
 	/**

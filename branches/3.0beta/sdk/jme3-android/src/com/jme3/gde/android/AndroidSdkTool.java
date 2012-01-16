@@ -13,6 +13,7 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 import org.netbeans.api.project.Project;
+import org.netbeans.api.project.ProjectInformation;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.NotifyDescriptor.Message;
@@ -239,6 +240,7 @@ public class AndroidSdkTool {
             Exceptions.printStackTrace(ex);
         }
         updateAndroidManifest(project);
+        updateAndroidApplicationName(project, name);
     }
 
     public static void updateProject(Project project, String target, String name) {
@@ -267,6 +269,7 @@ public class AndroidSdkTool {
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
         }
+        updateAndroidApplicationName(project, name);
     }
 
     private static void updateAndroidManifest(Project project) {
@@ -282,13 +285,79 @@ public class AndroidSdkTool {
             Document configuration = XMLUtil.parse(new InputSource(in), false, false, null, null);
             in.close();
             in = null;
+            boolean changed = false;
             Element sdkElement = XmlHelper.findChildElement(configuration.getDocumentElement(), "uses-sdk");
             if (sdkElement == null) {
                 sdkElement = configuration.createElement("uses-sdk");
                 configuration.getDocumentElement().appendChild(sdkElement);
+                changed = true;
             }
-            if (!sdkElement.getAttribute("android:minSdkVersion").equals("8")) {
+            if (!"8".equals(sdkElement.getAttribute("android:minSdkVersion"))) {
                 sdkElement.setAttribute("android:minSdkVersion", "8");
+                changed = true;
+            }
+            Element screensElement = XmlHelper.findChildElement(configuration.getDocumentElement(), "supports-screens");
+            if (screensElement == null) {
+                screensElement = configuration.createElement("supports-screens");
+                screensElement.setAttribute("android:anyDensity", "true");
+//                screensElement.setAttribute("android:xlargeScreens", "true");
+                screensElement.setAttribute("android:largeScreens", "true");
+                screensElement.setAttribute("android:smallScreens", "true");
+                screensElement.setAttribute("android:normalScreens", "true");
+                configuration.getDocumentElement().appendChild(screensElement);
+                changed = true;
+            }
+            if (changed) {
+                lock = manifest.lock();
+                out = manifest.getOutputStream(lock);
+                XMLUtil.write(configuration, out, "UTF-8");
+                out.close();
+                out = null;
+                lock.releaseLock();
+                lock = null;
+            }
+        } catch (SAXException ex) {
+            Exceptions.printStackTrace(ex);
+        } catch (IOException ex) {
+            Exceptions.printStackTrace(ex);
+        } finally {
+            if (lock != null) {
+                lock.releaseLock();
+            }
+            try {
+                if (in != null) {
+                    in.close();
+                }
+                if (out != null) {
+                    out.close();
+                }
+            } catch (IOException ex1) {
+                Exceptions.printStackTrace(ex1);
+            }
+        }
+    }
+
+    private static void updateAndroidApplicationName(Project project, String name) {
+        FileObject manifest = project.getProjectDirectory().getFileObject("mobile/res/values/strings.xml");
+        if (manifest == null) {
+            return;
+        }
+        InputStream in = null;
+        FileLock lock = null;
+        OutputStream out = null;
+        try {
+            in = manifest.getInputStream();
+            Document configuration = XMLUtil.parse(new InputSource(in), false, false, null, null);
+            in.close();
+            in = null;
+            Element sdkElement = XmlHelper.findChildElementWithAttribute(configuration.getDocumentElement(), "string", "name", "app_name");
+            if (sdkElement == null) {
+                sdkElement = configuration.createElement("string");
+                sdkElement.setAttribute("name", "app_name");
+                configuration.getDocumentElement().appendChild(sdkElement);
+            }
+            if (!sdkElement.getTextContent().trim().equals(name)) {
+                sdkElement.setTextContent(name);
                 lock = manifest.lock();
                 out = manifest.getOutputStream(lock);
                 XMLUtil.write(configuration, out, "UTF-8");
@@ -319,7 +388,7 @@ public class AndroidSdkTool {
     }
 
     private static String mainActivityString(String mainClass, String packag) {
-        String str = 
+        String str =
                 "package " + packag + ";\n"
                 + " \n"
                 + "import com.jme3.app.AndroidHarness;\n"

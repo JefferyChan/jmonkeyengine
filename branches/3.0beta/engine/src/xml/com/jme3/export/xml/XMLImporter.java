@@ -34,8 +34,8 @@ package com.jme3.export.xml;
 
 import com.jme3.asset.AssetInfo;
 import com.jme3.asset.AssetManager;
-import com.jme3.export.JmeImporter;
 import com.jme3.export.InputCapsule;
+import com.jme3.export.JmeImporter;
 import com.jme3.export.Savable;
 import java.io.File;
 import java.io.FileInputStream;
@@ -54,12 +54,13 @@ public class XMLImporter implements JmeImporter {
 
     private AssetManager assetManager;
     private DOMInputCapsule domIn;
+    int formatVersion = 0;
     
     public XMLImporter() {
     }
 
     public int getFormatVersion() {
-        return 0;
+        return formatVersion;
     }
     
     public AssetManager getAssetManager(){

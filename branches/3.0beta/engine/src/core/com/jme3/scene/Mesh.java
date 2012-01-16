@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 jMonkeyEngine
+ * Copyright (c) 2009-2012 jMonkeyEngine
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -32,39 +32,31 @@
 
 package com.jme3.scene;
 
-import com.jme3.scene.mesh.IndexShortBuffer;
-import com.jme3.scene.mesh.IndexIntBuffer;
-import com.jme3.scene.mesh.IndexBuffer;
-import com.jme3.scene.mesh.IndexByteBuffer;
 import com.jme3.bounding.BoundingBox;
 import com.jme3.bounding.BoundingVolume;
 import com.jme3.collision.Collidable;
 import com.jme3.collision.CollisionResults;
 import com.jme3.collision.bih.BIHTree;
-import com.jme3.export.JmeExporter;
-import com.jme3.export.JmeImporter;
-import com.jme3.export.InputCapsule;
-import com.jme3.export.OutputCapsule;
-import com.jme3.export.Savable;
+import com.jme3.export.*;
 import com.jme3.material.RenderState;
 import com.jme3.math.Matrix4f;
 import com.jme3.math.Triangle;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
-import com.jme3.scene.VertexBuffer.*;
-import com.jme3.scene.mesh.VirtualIndexBuffer;
-import com.jme3.scene.mesh.WrappedIndexBuffer;
+import com.jme3.scene.VertexBuffer;
+import com.jme3.scene.VertexBuffer.Format;
+import com.jme3.scene.VertexBuffer.Type;
+import com.jme3.scene.VertexBuffer.Usage;
+import com.jme3.scene.mesh.*;
 import com.jme3.util.BufferUtils;
 import com.jme3.util.IntMap;
 import com.jme3.util.IntMap.Entry;
+import com.jme3.util.SafeArrayList;
 import java.io.IOException;
-import java.nio.Buffer;
-import java.nio.ByteBuffer;
-import java.nio.DoubleBuffer;
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
-import java.nio.ShortBuffer;
+import java.nio.*;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * <code>Mesh</code> is used to store rendering data.
@@ -176,7 +168,7 @@ public class Mesh implements Savable, Cloneable {
 
     private CollisionData collisionTree = null;
 
-    private ArrayList<VertexBuffer> buffersList = new ArrayList<VertexBuffer>(5);
+    private SafeArrayList<VertexBuffer> buffersList = new SafeArrayList<VertexBuffer>(VertexBuffer.class);
     private IntMap<VertexBuffer> buffers = new IntMap<VertexBuffer>();
     private VertexBuffer[] lodLevels;
     private float pointSize = 1;
@@ -213,7 +205,7 @@ public class Mesh implements Savable, Cloneable {
             clone.meshBound = meshBound.clone();
             clone.collisionTree = collisionTree != null ? collisionTree : null;
             clone.buffers = buffers.clone();
-            clone.buffersList = new ArrayList<VertexBuffer>(buffersList);
+            clone.buffersList = new SafeArrayList<VertexBuffer>(VertexBuffer.class,buffersList);
             clone.vertexArrayID = -1;
             if (elementLengths != null) {
                 clone.elementLengths = elementLengths.clone();
@@ -244,7 +236,7 @@ public class Mesh implements Savable, Cloneable {
             clone.collisionTree = null; // it will get re-generated in any case
 
             clone.buffers = new IntMap<VertexBuffer>();
-            clone.buffersList = new ArrayList<VertexBuffer>();
+            clone.buffersList = new SafeArrayList<VertexBuffer>(VertexBuffer.class);
             for (Entry<VertexBuffer> ent : buffers){
                 VertexBuffer bufClone = ent.getValue().clone();
                 clone.buffers.put(ent.getKey(), bufClone);
@@ -271,7 +263,7 @@ public class Mesh implements Savable, Cloneable {
      * Clone the mesh for animation use.
      * This creates a shallow clone of the mesh, sharing most
      * of the {@link VertexBuffer vertex buffer} data, however the
-     * {@link Type#BindPosePosition} and {@link Type#BindPoseNormal} buffers
+     * {@link Type#Position}, {@link Type#Normal}, and {@link Type#Tangent} buffers
      * are deeply cloned.
      * 
      * @return A clone of the mesh for animation use.
@@ -280,6 +272,7 @@ public class Mesh implements Savable, Cloneable {
         Mesh clone = clone();
         if (getBuffer(Type.BindPosePosition) != null){
             VertexBuffer oldPos = getBuffer(Type.Position);
+            
             // NOTE: creates deep clone
             VertexBuffer newPos = oldPos.clone();
             clone.clearBuffer(Type.Position);
@@ -290,13 +283,21 @@ public class Mesh implements Savable, Cloneable {
                 VertexBuffer newNorm = oldNorm.clone();
                 clone.clearBuffer(Type.Normal);
                 clone.setBuffer(newNorm);
+                
+                if (getBuffer(Type.BindPoseTangent) != null){
+                    VertexBuffer oldTang = getBuffer(Type.Tangent);
+                    VertexBuffer newTang = oldTang.clone();
+                    clone.clearBuffer(Type.Tangent);
+                    clone.setBuffer(newTang);
+                }
             }
         }
         return clone;
     }
 
     /**
-     * Generates the {@link Type#BindPosePosition} and {@link Type#BindPoseNormal}
+     * Generates the {@link Type#BindPosePosition}, {@link Type#BindPoseNormal},
+     * and {@link Type#BindPoseTangent} 
      * buffers for this mesh by duplicating them based on the position and normal
      * buffers already set on the mesh.
      * This method does nothing if the mesh has no bone weight or index
@@ -1005,7 +1006,6 @@ public class Mesh implements Savable, Cloneable {
      * Acquires an index buffer that will read the vertices on the mesh
      * as a list.
      * 
-     * @param mesh The mesh to read from
      * @return A virtual or wrapped index buffer to read the data as a list
      */
     public IndexBuffer getIndicesAsList(){
@@ -1054,6 +1054,113 @@ public class Mesh implements Savable, Cloneable {
         }
     }
 
+    /**
+     * Extracts the vertex attributes from the given mesh into
+     * this mesh, by using this mesh's {@link #getIndexBuffer() index buffer}
+     * to index into the attributes of the other mesh.
+     * Note that this will also change this mesh's index buffer so that
+     * the references to the vertex data match the new indices.
+     * 
+     * @param other The mesh to extract the vertex data from
+     */
+    public void extractVertexData(Mesh other) {
+        // Determine the number of unique vertices need to
+        // be created. Also determine the mappings
+        // between old indices to new indices (since we avoid duplicating
+        // vertices, this is a map and not an array).
+        VertexBuffer oldIdxBuf = getBuffer(Type.Index);
+        IndexBuffer indexBuf = getIndexBuffer();
+        int numIndices = indexBuf.size();
+
+        IntMap<Integer> oldIndicesToNewIndices = new IntMap<Integer>(numIndices);
+        ArrayList<Integer> newIndicesToOldIndices = new ArrayList<Integer>();
+        int newIndex = 0;
+
+        for (int i = 0; i < numIndices; i++) {
+            int oldIndex = indexBuf.get(i);
+
+            if (!oldIndicesToNewIndices.containsKey(oldIndex)) {
+                // this vertex has not been added, so allocate a 
+                // new index for it and add it to the map
+                oldIndicesToNewIndices.put(oldIndex, newIndex);
+                newIndicesToOldIndices.add(oldIndex);
+
+                // increment to have the next index
+                newIndex++;
+            }
+        }
+
+        // Number of unique verts to be created now available
+        int newNumVerts = newIndicesToOldIndices.size();
+
+        if (newIndex != newNumVerts) {
+            throw new AssertionError();
+        }
+
+        // Create the new index buffer. 
+        // Do not overwrite the old one because we might be able to 
+        // convert from int index buffer to short index buffer
+        IndexBuffer newIndexBuf;
+        if (newNumVerts >= 65536) {
+            newIndexBuf = new IndexIntBuffer(BufferUtils.createIntBuffer(numIndices));
+        } else {
+            newIndexBuf = new IndexShortBuffer(BufferUtils.createShortBuffer(numIndices));
+        }
+
+        for (int i = 0; i < numIndices; i++) {
+            // Map the old indices to the new indices
+            int oldIndex = indexBuf.get(i);
+            newIndex = oldIndicesToNewIndices.get(oldIndex);
+
+            newIndexBuf.put(i, newIndex);
+        }
+        
+        VertexBuffer newIdxBuf = new VertexBuffer(Type.Index);
+        newIdxBuf.setupData(oldIdxBuf.getUsage(), 
+                            oldIdxBuf.getNumComponents(), 
+                            newIndexBuf instanceof IndexIntBuffer ? Format.UnsignedInt : Format.UnsignedShort,
+                            newIndexBuf.getBuffer());
+        clearBuffer(Type.Index);
+        setBuffer(newIdxBuf);
+
+        // Now, create the vertex buffers
+        SafeArrayList<VertexBuffer> oldVertexData = other.getBufferList();
+        for (VertexBuffer oldVb : oldVertexData) {
+            if (oldVb.getBufferType() == VertexBuffer.Type.Index) {
+                // ignore the index buffer
+                continue;
+            }
+
+            // Create a new vertex buffer with similar configuration, but
+            // with the capacity of number of unique vertices
+            Buffer buffer = VertexBuffer.createBuffer(oldVb.getFormat(), oldVb.getNumComponents(), newNumVerts);
+
+            VertexBuffer newVb = new VertexBuffer(oldVb.getBufferType());
+            newVb.setNormalized(oldVb.isNormalized());
+            newVb.setupData(oldVb.getUsage(), oldVb.getNumComponents(), oldVb.getFormat(), buffer);
+
+            // Copy the vertex data from the old buffer into the new buffer
+            for (int i = 0; i < newNumVerts; i++) {
+                int oldIndex = newIndicesToOldIndices.get(i);
+
+                // Copy the vertex attribute from the old index
+                // to the new index
+                oldVb.copyElement(oldIndex, newVb, i);
+            }
+            
+            // Set the buffer on the mesh
+            clearBuffer(newVb.getBufferType());
+            setBuffer(newVb);
+        }
+        
+        // Copy max weights per vertex as well
+        setMaxNumWeights(other.getMaxNumWeights());
+        
+        // The data has been copied over, update informations
+        updateCounts();
+        updateBound();
+    }
+    
     /**
      * Scales the texture coordinate buffer on this mesh by the given
      * scale factor. 
@@ -1141,7 +1248,16 @@ public class Mesh implements Savable, Cloneable {
         return buffers;
     }
     
-    public ArrayList<VertexBuffer> getBufferList(){
+    /**
+     * Returns a list of all {@link VertexBuffer vertex buffers} on this Mesh.
+     * Using a list instead an IntMap via the {@link #getBuffers() } method is
+     * better for iteration as there's no need to create an iterator instance.
+     * Note that the returned list is a reference to the list used internally,
+     * modifying it will cause undefined results.
+     * 
+     * @return list of vertex buffers on this mesh.
+     */
+    public SafeArrayList<VertexBuffer> getBufferList(){
         return buffersList;
     }
 

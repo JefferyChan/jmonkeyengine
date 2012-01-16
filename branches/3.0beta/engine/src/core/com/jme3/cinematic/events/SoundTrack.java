@@ -34,7 +34,6 @@ package com.jme3.cinematic.events;
 import com.jme3.animation.LoopMode;
 import com.jme3.app.Application;
 import com.jme3.audio.AudioNode;
-import com.jme3.audio.AudioRenderer;
 import com.jme3.cinematic.Cinematic;
 import com.jme3.export.InputCapsule;
 import com.jme3.export.JmeExporter;
@@ -111,13 +110,17 @@ public class SoundTrack extends AbstractCinematicEvent {
         super.initEvent(app, cinematic);
         audioNode = new AudioNode(app.getAssetManager(), path, stream);
         setLoopMode(loopMode);
+    }
 
+    @Override
+    public void setTime(float time) {
+        super.setTime(time);
+        //TODO has to be implemented in the audioRenderer
     }
 
     @Override
     public void onPlay() {
-        audioNode.play();
-        
+        audioNode.play();        
     }
 
     @Override

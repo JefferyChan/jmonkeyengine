@@ -35,16 +35,10 @@ package com.jme3.niftygui;
 import com.jme3.input.InputManager;
 import com.jme3.input.KeyInput;
 import com.jme3.input.RawInputListener;
-import com.jme3.input.event.InputEvent;
-import com.jme3.input.event.JoyAxisEvent;
-import com.jme3.input.event.JoyButtonEvent;
-import com.jme3.input.event.KeyInputEvent;
-import com.jme3.input.event.MouseButtonEvent;
-import com.jme3.input.event.MouseMotionEvent;
-import com.jme3.input.event.TouchEvent;
-
+import com.jme3.input.event.*;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.NiftyInputConsumer;
+import de.lessvoid.nifty.tools.resourceloader.NiftyResourceLoader;
 import de.lessvoid.nifty.input.keyboard.KeyboardInputEvent;
 import de.lessvoid.nifty.spi.input.InputSystem;
 import java.util.ArrayList;
@@ -70,6 +64,9 @@ public class InputSystemJme implements InputSystem, RawInputListener {
         this.inputManager = inputManager;
     }
 
+    public void setResourceLoader(NiftyResourceLoader niftyResourceLoader) {
+    }
+
     public void setNifty(Nifty nifty) {
         this.nifty = nifty;
     }
@@ -92,6 +89,37 @@ public class InputSystemJme implements InputSystem, RawInputListener {
         boolean result = nifty.update();
     }
 
+    private void onTouchEventQueued(TouchEvent evt, NiftyInputConsumer nic) {  
+        boolean consumed = false;
+
+        x = (int) evt.getX();
+        y = (int) (height - evt.getY());
+
+        switch (evt.getType()) {
+           case DOWN:
+               consumed = nic.processMouseEvent(x, y, 0, 0, false);
+               isDragging = true;
+               niftyOwnsDragging = consumed;
+               if (consumed){
+                   evt.setConsumed();
+               }
+
+               break;
+
+           case UP:
+               if (niftyOwnsDragging){
+                   consumed = nic.processMouseEvent(x, y, 0, buttonIndex, pressed);
+                   if (consumed){
+                       evt.setConsumed();
+                   }
+               }
+
+               isDragging = false;
+               niftyOwnsDragging = false;
+               break;
+       }
+    }
+    
     private void onMouseMotionEventQueued(MouseMotionEvent evt, NiftyInputConsumer nic) {
         x = evt.getX();
         y = height - evt.getY();
@@ -178,7 +206,8 @@ public class InputSystemJme implements InputSystem, RawInputListener {
         inputQueue.add(evt);
     }
     
-    public void onTouchEvent(TouchEvent evt) {        
+    public void onTouchEvent(TouchEvent evt) {     
+        inputQueue.add(evt);
     }
 
     public void forwardEvents(NiftyInputConsumer nic) {
@@ -192,6 +221,8 @@ public class InputSystemJme implements InputSystem, RawInputListener {
                 onMouseButtonEventQueued( (MouseButtonEvent)evt, nic);
             }else if (evt instanceof KeyInputEvent){
                 onKeyEventQueued( (KeyInputEvent)evt, nic);
+            }else if (evt instanceof TouchEvent){
+                onTouchEventQueued( (TouchEvent)evt, nic);
             }
         }
 

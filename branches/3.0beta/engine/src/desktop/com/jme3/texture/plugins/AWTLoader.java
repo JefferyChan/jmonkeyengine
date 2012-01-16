@@ -32,19 +32,15 @@
 
 package com.jme3.texture.plugins;
 
-import com.jme3.asset.*;
+import com.jme3.asset.AssetInfo;
+import com.jme3.asset.AssetLoader;
+import com.jme3.asset.TextureKey;
 import com.jme3.texture.Image;
 import com.jme3.texture.Image.Format;
 import com.jme3.util.BufferUtils;
 import java.awt.Transparency;
 import java.awt.color.ColorSpace;
-import java.awt.image.BufferedImage;
-import java.awt.image.ColorModel;
-import java.awt.image.ComponentColorModel;
-import java.awt.image.DataBuffer;
-import java.awt.image.DataBufferByte;
-import java.awt.image.DataBufferUShort;
-import java.awt.image.DirectColorModel;
+import java.awt.image.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -94,7 +90,7 @@ public class AWTLoader implements AssetLoader {
     private void flipImage(short[] img, int width, int height, int bpp){
         int scSz = (width * bpp) / 8;
         scSz /= 2; // Because shorts are 2 bytes
-        byte[] sln = new byte[scSz];
+        short[] sln = new short[scSz];
         int y2 = 0;
         for (int y1 = 0; y1 < height / 2; y1++){
             y2 = height - y1 - 1;

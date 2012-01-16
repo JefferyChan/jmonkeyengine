@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 jMonkeyEngine
+ * Copyright (c) 2009-2012 jMonkeyEngine
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -32,16 +32,12 @@
 package com.jme3.bullet.objects;
 
 import com.bulletphysics.dynamics.RigidBody;
+import com.jme3.bullet.collision.PhysicsCollisionObject;
+import com.jme3.bullet.util.Converter;
+import com.jme3.export.*;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
-import com.jme3.bullet.collision.PhysicsCollisionObject;
-import com.jme3.bullet.util.Converter;
-import com.jme3.export.InputCapsule;
-import com.jme3.export.JmeExporter;
-import com.jme3.export.JmeImporter;
-import com.jme3.export.OutputCapsule;
-import com.jme3.export.Savable;
 import java.io.IOException;
 
 /**
@@ -242,7 +238,7 @@ public class VehicleWheel implements Savable {
     /**
      * The maximum suspension force, raise this above the default 6000 if your suspension cannot
      * handle the weight of your vehcile.
-     * @param maxSuspensionTravelCm
+     * @param maxSuspensionForce
      */
     public void setMaxSuspensionForce(float maxSuspensionForce) {
         this.maxSuspensionForce = maxSuspensionForce;
@@ -334,6 +330,14 @@ public class VehicleWheel implements Savable {
      */
     public float getSkidInfo() {
         return wheelInfo.skidInfo;
+    }
+    
+    /**
+     * returns how many degrees the wheel has turned since the last physics
+     * step.
+     */
+    public float getDeltaRotation() {
+        return wheelInfo.deltaRotation;
     }
 
     @Override

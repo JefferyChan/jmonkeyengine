@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 jMonkeyEngine
+ * Copyright (c) 2009-2012 jMonkeyEngine
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -42,12 +42,7 @@ import com.jme3.util.IntMap;
 import com.jme3.util.IntMap.Entry;
 import java.nio.Buffer;
 import java.nio.ShortBuffer;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class TriangleCollector {
 
@@ -97,7 +92,7 @@ public class TriangleCollector {
      * (using the indices OCTTriangle.getGeometryIndex() & OCTTriangle.getTriangleIndex())
      * then organizes them into output geometry.
      *
-     * @param geoms
+     * @param inGeoms
      * @param tris
      * @return
      */

@@ -1,13 +1,11 @@
 package com.jme3.scene.plugins.blender.constraints;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import com.jme3.animation.Animation;
 import com.jme3.scene.plugins.blender.BlenderContext;
 import com.jme3.scene.plugins.blender.animations.Ipo;
 import com.jme3.scene.plugins.blender.exceptions.BlenderFileException;
 import com.jme3.scene.plugins.blender.file.Structure;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This class represents 'Transform' constraint type in blender.
@@ -20,8 +18,8 @@ import com.jme3.scene.plugins.blender.file.Structure;
 	 * This constructor creates the constraint instance.
 	 * 
 	 * @param constraintStructure
-	 *            the constraint's structure (bConstraint clss in blender 2.49).
-	 * @param boneOMA
+	 *            the constraint's structure
+	 * @param ownerOMA
 	 *            the old memory address of the constraint owner
 	 * @param influenceIpo
 	 *            the ipo curve of the influence factor
@@ -31,19 +29,20 @@ import com.jme3.scene.plugins.blender.file.Structure;
 	 *             this exception is thrown when the blender file is somehow
 	 *             corrupted
 	 */
-	public ConstraintTransform(Structure constraintStructure, Long boneOMA,
+	public ConstraintTransform(Structure constraintStructure, Long ownerOMA,
 			Ipo influenceIpo, BlenderContext blenderContext) throws BlenderFileException {
-		super(constraintStructure, boneOMA, influenceIpo, blenderContext);
+		super(constraintStructure, ownerOMA, influenceIpo, blenderContext);
 	}
 
 	@Override
-	public void affectAnimation(Animation animation, int targetIndex) {
+	protected void bakeDynamic() {
 		// TODO: implement 'Transform' constraint
 		LOGGER.log(Level.WARNING, "'Transform' constraint NOT implemented!");
 	}
 	
 	@Override
-	public ConstraintType getType() {
-		return ConstraintType.CONSTRAINT_TYPE_TRANSFORM;
+	protected void bakeStatic() {
+		// TODO: implement 'Transform' constraint
+		LOGGER.log(Level.WARNING, "'Transform' constraint NOT implemented!");
 	}
 }

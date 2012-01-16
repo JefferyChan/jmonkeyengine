@@ -22,9 +22,11 @@ public class IpoHelper extends AbstractBlenderHelper {
      * different blender versions.
      * @param blenderVersion
      *        the version read from the blend file
+     * @param fixUpAxis
+     *        a variable that indicates if the Y asxis is the UP axis or not
      */
-    public IpoHelper(String blenderVersion) {
-        super(blenderVersion);
+    public IpoHelper(String blenderVersion, boolean fixUpAxis) {
+        super(blenderVersion, fixUpAxis);
     }
 
     /**
@@ -53,7 +55,7 @@ public class IpoHelper extends AbstractBlenderHelper {
                 bezierCurves[frame++] = new BezierCurve(type, bezTriples, 2);
             }
             curves.clear();
-            result = new Ipo(bezierCurves);
+            result = new Ipo(bezierCurves, fixUpAxis);
             blenderContext.addLoadedFeatures(ipoStructure.getOldMemoryAddress(), ipoStructure.getName(), ipoStructure, result);
         }
         return result;
@@ -91,7 +93,7 @@ public class IpoHelper extends AbstractBlenderHelper {
          *        the constant value of this ipo
          */
         public ConstIpo(float constValue) {
-            super(null);
+            super(null, false);
             this.constValue = constValue;
         }
 

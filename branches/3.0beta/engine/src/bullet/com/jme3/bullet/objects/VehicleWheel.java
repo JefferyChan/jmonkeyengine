@@ -31,19 +31,13 @@
  */
 package com.jme3.bullet.objects;
 
+import com.jme3.bullet.collision.PhysicsCollisionObject;
+import com.jme3.export.*;
+import com.jme3.math.Matrix3f;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
-import com.jme3.bullet.collision.PhysicsCollisionObject;
-import com.jme3.export.InputCapsule;
-import com.jme3.export.JmeExporter;
-import com.jme3.export.JmeImporter;
-import com.jme3.export.OutputCapsule;
-import com.jme3.export.Savable;
-import com.jme3.math.Matrix3f;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Stores info about one wheel of a PhysicsVehicle
@@ -355,6 +349,16 @@ public class VehicleWheel implements Savable {
     }
 
     public native float getSkidInfo(long wheelId, int wheelIndex);
+    
+    /**
+     * returns how many degrees the wheel has turned since the last physics
+     * step.
+     */
+    public float getDeltaRotation() {
+        return getDeltaRotation(wheelId, wheelIndex);
+    }
+    
+    public native float getDeltaRotation(long wheelId, int wheelIndex);
 
     @Override
     public void read(JmeImporter im) throws IOException {

@@ -1,7 +1,5 @@
 package com.jme3.animation;
 
-import java.io.IOException;
-
 import com.jme3.export.InputCapsule;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
@@ -10,6 +8,7 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
 import com.jme3.util.TempVars;
+import java.io.IOException;
 import java.util.Arrays;
 
 /**
@@ -65,8 +64,6 @@ public class SpatialTrack implements Track {
      * 
      * @param time
      *            the current time of the animation
-     * @param spatial
-     *            the spatial that should be animated with this track
      */
     public void setTime(float time, float weight, AnimControl control, AnimChannel channel, TempVars vars) {
         Spatial spatial = control.getSpatial();

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 jMonkeyEngine
+ * Copyright (c) 2009-2012 jMonkeyEngine
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -31,14 +31,6 @@
  */
 package com.jme3.scene.plugins.blender.materials;
 
-import java.nio.ByteBuffer;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import com.jme3.asset.BlenderKey.FeaturesToLoad;
 import com.jme3.material.MatParam;
 import com.jme3.material.MatParamTexture;
@@ -53,13 +45,19 @@ import com.jme3.scene.plugins.blender.BlenderContext.LoadedFeatureDataType;
 import com.jme3.scene.plugins.blender.exceptions.BlenderFileException;
 import com.jme3.scene.plugins.blender.file.Pointer;
 import com.jme3.scene.plugins.blender.file.Structure;
-import com.jme3.scene.plugins.blender.textures.TextureHelper;
 import com.jme3.shader.VarType;
 import com.jme3.texture.Image;
 import com.jme3.texture.Image.Format;
 import com.jme3.texture.Texture;
 import com.jme3.texture.Texture.Type;
 import com.jme3.util.BufferUtils;
+import java.nio.ByteBuffer;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class MaterialHelper extends AbstractBlenderHelper {
 	private static final Logger					LOGGER					= Logger.getLogger(MaterialHelper.class.getName());
@@ -102,9 +100,11 @@ public class MaterialHelper extends AbstractBlenderHelper {
 	 * 
 	 * @param blenderVersion
 	 *        the version read from the blend file
+	 * @param fixUpAxis
+     *        a variable that indicates if the Y asxis is the UP axis or not
 	 */
-	public MaterialHelper(String blenderVersion) {
-		super(blenderVersion);
+	public MaterialHelper(String blenderVersion, boolean fixUpAxis) {
+		super(blenderVersion, false);
 		// setting alpha masks
 		alphaMasks.put(ALPHA_MASK_NONE, new IAlphaMask() {
 			@Override
@@ -205,7 +205,6 @@ public class MaterialHelper extends AbstractBlenderHelper {
 		// texture
 		Type colorTextureType = null;
 		Map<String, Texture> texturesMap = new HashMap<String, Texture>();
-		TextureHelper textureHelper = blenderContext.getHelper(TextureHelper.class);
 		for(Entry<Number, Texture> textureEntry : materialContext.loadedTextures.entrySet()) {
 			int mapto = textureEntry.getKey().intValue();
 			Texture texture = textureEntry.getValue();
@@ -242,6 +241,12 @@ public class MaterialHelper extends AbstractBlenderHelper {
 		} else {
 			if (materialContext.shadeless) {
 				result = new Material(blenderContext.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
+                                
+                                if (!materialContext.transparent) {
+                                    materialContext.diffuseColor.a = 1;
+                                }
+                                
+                                result.setColor("Color", materialContext.diffuseColor);
 			} else {
 				result = new Material(blenderContext.getAssetManager(), "Common/MatDefs/Light/Lighting.j3md");
 				result.setBoolean("UseMaterialColors", Boolean.TRUE);
@@ -277,6 +282,7 @@ public class MaterialHelper extends AbstractBlenderHelper {
 			result.getAdditionalRenderState().setBlendMode(BlendMode.Alpha);
 		}
 		
+		result.setName(materialContext.getName());
 		blenderContext.setMaterialContext(result, materialContext);
 		blenderContext.addLoadedFeatures(structure.getOldMemoryAddress(), structure.getName(), structure, result);
 		return result;
@@ -463,8 +469,12 @@ public class MaterialHelper extends AbstractBlenderHelper {
 	/**
 	 * This method converts rgb values to hsv values.
 	 * 
-	 * @param rgb
-	 *        rgb values of the color
+	 * @param r
+	 *        red value of the color
+         * @param g
+         *        green value of the color
+         * @param b
+         *        blue value of the color
 	 * @param hsv
 	 *        hsv values of a color (this table contains the result of the transformation)
 	 */

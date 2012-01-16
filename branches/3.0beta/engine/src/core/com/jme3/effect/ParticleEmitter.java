@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 jMonkeyEngine
+ * Copyright (c) 2009-2012 jMonkeyEngine
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -37,9 +37,9 @@ import com.jme3.effect.influencers.DefaultParticleInfluencer;
 import com.jme3.effect.influencers.ParticleInfluencer;
 import com.jme3.effect.shapes.EmitterPointShape;
 import com.jme3.effect.shapes.EmitterShape;
+import com.jme3.export.InputCapsule;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
-import com.jme3.export.InputCapsule;
 import com.jme3.export.OutputCapsule;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
@@ -591,7 +591,9 @@ public class ParticleEmitter extends Geometry {
     /**
      * Sets the gravity vector.
      * 
-     * @param gravity the gravity vector
+     * @param x the x component of the gravity vector
+     * @param y the y component of the gravity vector
+     * @param z the z component of the gravity vector
      */
     public void setGravity(float x, float y, float z) {
         this.gravity.x = x;

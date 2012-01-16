@@ -223,7 +223,7 @@ public class TestLoadingScreen extends SimpleApplication implements ScreenContro
     @Override
     public void simpleUpdate&#40;float tpf&#41; &#123;
 &nbsp;
-        if &#40;load == true&#41; &#123; //loading is done over many frames
+        if &#40;load&#41; &#123; //loading is done over many frames
             if &#40;frameCount == 1&#41; &#123;
                 Element element = nifty.getScreen&#40;&quot;loadlevel&quot;&#41;.findElementByName&#40;&quot;loadingtext&quot;&#41;;
                 textRenderer = element.getRenderer&#40;TextRenderer.class&#41;;

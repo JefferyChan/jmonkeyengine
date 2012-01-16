@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 jMonkeyEngine
+ * Copyright (c) 2009-2012 jMonkeyEngine
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -131,7 +131,7 @@ public interface Terrain {
      * This is where the Terrain's LOD algorithm will change the detail of
      * the terrain based on how far away this position is from the particular
      * terrain patch.
-     * @param location: the Camera's location. A list of one camera location is normal 
+     * @param location the Camera's location. A list of one camera location is normal 
      *  if you just have one camera in your scene.
      */
     public void update(List<Vector3f> location, LodCalculator lodCalculator);
@@ -154,10 +154,26 @@ public interface Terrain {
 
     /**
      * Returns the material that this terrain uses.
-     * This does not necessarily have to guarantee the material
-     * return is the only material used in the whole terrain structure.
+     * If it uses many materials, just return the one you think is best.
+     * For TerrainQuads this is sufficient. For TerrainGrid you want to call
+     * getMaterial(Vector3f) instead.
      */
     public Material getMaterial();
+    
+    /**
+     * Returns the material that this terrain uses.
+     * Terrain can have different materials in different locations.
+     * In general, the TerrainQuad will only have one material. But 
+     * TerrainGrid will have a different material per tile.
+     * 
+     * It could be possible to pass in null for the location, some Terrain
+     * implementations might just have the one material and not care where
+     * you are looking. So implementations must handle null being supplied.
+     * 
+     * @param worldLocation the location, in world coordinates, of where 
+     * we are interested in the underlying texture.
+     */
+    public Material getMaterial(Vector3f worldLocation);
 
     /**
      * Used for painting to get the number of vertices along the edge of the
@@ -180,6 +196,14 @@ public interface Terrain {
      * 1/512 (or 0.00195) percent of the texture.
      * This is used for converting between tri-planar texture scales and regular
      * texture scales.
+     * 
+     * not needed
      */
-    public float getTextureCoordinateScale();
+    //public float getTextureCoordinateScale();
+    
+    /**
+     * 
+     * 
+     */
+    public int getNumMajorSubdivisions();
 }

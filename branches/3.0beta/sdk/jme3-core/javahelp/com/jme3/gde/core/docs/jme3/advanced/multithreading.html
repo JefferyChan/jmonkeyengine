@@ -26,15 +26,15 @@ Effectively, each for-loop in the main update loop might be a chance for multith
 
 <p>
 
-The java.util.concurrent package provides a good foundation for multithreading and dividing work into tasks that can be executed concurrently (hence the name). The three basic components are the Executor, Callable Objects (the tasks), and Future Objects. You can <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://download.oracle.com/javase/tutorial/essential/concurrency/"><param name="text" value="<html><u>read about the concurrent package more here</u></html>"><param name="textColor" value="blue"></object>, I will give just a short introduction.
+The java.util.concurrent package provides a good foundation for multithreading and dividing work into tasks that can be executed concurrently (hence the name). The three basic components are the Executor (supervises threads), Callable Objects (the tasks), and Future Objects (the result). You can <object classid="java:org.netbeans.modules.javahelp.BrowserDisplayer"><param name="content" value="http://download.oracle.com/javase/tutorial/essential/concurrency/"><param name="text" value="<html><u>read about the concurrent package more here</u></html>"><param name="textColor" value="blue"></object>, I will give just a short introduction.
 
 </p>
 <ul>
-<li><div> A Callable is a class with a method call() that gets executed on a thread in the Executor. It represents one task (e.g, path finding).</div>
+<li><div> A Callable is one of the classes that gets executed on a thread in the Executor. The object represents one of several concurrent tasks (e.g, one NPC&#039;s path finding task). Each Callable is started from the updateloop by calling a method named <code>call()</code>.</div>
 </li>
-<li><div> The Executor is one central object that manages the threads that are running to execute the Callables. Every time a Callable is added to the Executor, the Executor returns a Future object for it. </div>
+<li><div> The Executor is one central object that manages all your Callables. Every time you schedule a Callable in the Executor, the Executor returns a Future object for it. </div>
 </li>
-<li><div> A Future is an object that you use to check the status of an individual Callable&#039;s execution. It also gives you the return value in case one is created.</div>
+<li><div> A Future is an object that you use to check the status of an individual Callable task. The Future also gives you the return value in case one is returned.</div>
 </li>
 </ul>
 

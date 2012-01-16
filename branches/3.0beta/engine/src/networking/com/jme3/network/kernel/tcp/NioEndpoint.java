@@ -32,12 +32,13 @@
 
 package com.jme3.network.kernel.tcp;
 
+import com.jme3.network.kernel.Endpoint;
+import com.jme3.network.kernel.Kernel;
+import com.jme3.network.kernel.KernelException;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 import java.util.concurrent.ConcurrentLinkedQueue;
-
-import com.jme3.network.kernel.*;
 
 
 /**
@@ -88,6 +89,9 @@ public class NioEndpoint implements Endpoint
         }
     
         try {
+            // Note: even though we may be disconnected from the socket.isConnected()
+            // standpoint, it's still safest to tell the kernel so that it can be sure
+            // to stop managing us gracefully.
             kernel.closeEndpoint(this);
         } catch( IOException e ) {
             throw new KernelException( "Error closing endpoint for socket:" + socket, e );

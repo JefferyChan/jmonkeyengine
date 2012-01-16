@@ -42,18 +42,9 @@ import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
-import java.util.ArrayList;
-import java.util.BitSet;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Logger;
-
-import org.w3c.dom.DOMException;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import org.w3c.dom.*;
 
 /**
  * Part of the jME XML IO system as introduced in the google code jmexml project.
@@ -79,12 +70,15 @@ public class DOMInputCapsule implements InputCapsule {
         this.doc = doc;
         this.importer = importer;
         currentElem = doc.getDocumentElement();
+        
+        String version = currentElem.getAttribute("format_version");
+        importer.formatVersion = version.equals("") ? 0 : Integer.parseInt(version);
     }
 
     public int getSavableVersion(Class<? extends Savable> desiredClass) {
         if (classHierarchyVersions != null){
             return SavableClassUtil.getSavedSavableVersion(savable, desiredClass, 
-                                                        classHierarchyVersions);
+                                                        classHierarchyVersions, importer.getFormatVersion());
         }else{
             return 0;
         }

@@ -31,14 +31,6 @@
  */
 package com.jme3.scene.plugins.blender.meshes;
 
-import java.nio.FloatBuffer;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import com.jme3.asset.BlenderKey.FeaturesToLoad;
 import com.jme3.material.Material;
 import com.jme3.math.FastMath;
@@ -65,6 +57,10 @@ import com.jme3.scene.plugins.blender.textures.TextureHelper;
 import com.jme3.scene.plugins.blender.textures.UVCoordinatesGenerator;
 import com.jme3.texture.Texture;
 import com.jme3.util.BufferUtils;
+import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
+import java.util.*;
+import java.util.Map.Entry;
 
 /**
  * A class that is used in mesh calculations.
@@ -79,9 +75,11 @@ public class MeshHelper extends AbstractBlenderHelper {
      * 
      * @param blenderVersion
      *            the version read from the blend file
+     * @param fixUpAxis
+     *        a variable that indicates if the Y asxis is the UP axis or not
      */
-    public MeshHelper(String blenderVersion) {
-        super(blenderVersion);
+    public MeshHelper(String blenderVersion, boolean fixUpAxis) {
+        super(blenderVersion,fixUpAxis);
     }
 
     /**
@@ -116,7 +114,7 @@ public class MeshHelper extends AbstractBlenderHelper {
         int verticesAmount = vertices.length;
 
         // vertices Colors
-        List<float[]> verticesColors = this.getVerticesColors(structure, blenderContext);
+        List<byte[]> verticesColors = this.getVerticesColors(structure, blenderContext);
 
         // reading faces
         // the following map sorts faces by material number (because in jme Mesh can have only one material)
@@ -300,25 +298,34 @@ public class MeshHelper extends AbstractBlenderHelper {
         Properties properties = this.loadProperties(structure, blenderContext);
 
         // generating meshes
-        FloatBuffer verticesColorsBuffer = this.createFloatBuffer(verticesColors);
+        //FloatBuffer verticesColorsBuffer = this.createFloatBuffer(verticesColors);
+        ByteBuffer verticesColorsBuffer = createByteBuffer(verticesColors);
         for (Entry<Integer, List<Integer>> meshEntry : meshesMap.entrySet()) {
             Mesh mesh = new Mesh();
 
             // creating vertices indices for this mesh
             List<Integer> indexList = meshEntry.getValue();
-            int[] indices = new int[indexList.size()];
-            for (int i = 0; i < indexList.size(); ++i) {
-                indices[i] = indexList.get(i).intValue();
+            if(verticesAmount < Short.MAX_VALUE * 2) {
+            	short[] indices = new short[indexList.size()];
+                for (int i = 0; i < indexList.size(); ++i) {
+                    indices[i] = indexList.get(i).shortValue();
+                }
+                mesh.setBuffer(Type.Index, 1, indices);
+            } else {
+            	int[] indices = new int[indexList.size()];
+                for (int i = 0; i < indexList.size(); ++i) {
+                    indices[i] = indexList.get(i).intValue();
+                }
+                mesh.setBuffer(Type.Index, 1, indices);
             }
-
-            // setting vertices
-            mesh.setBuffer(Type.Index, 1, indices);
+            
             mesh.setBuffer(verticesBuffer);
             mesh.setBuffer(verticesBind);
 
             // setting vertices colors
             if (verticesColorsBuffer != null) {
                 mesh.setBuffer(Type.Color, 4, verticesColorsBuffer);
+                mesh.getBuffer(Type.Color).setNormalized(true);
             }
 
             // setting faces' normals
@@ -398,6 +405,15 @@ public class MeshHelper extends AbstractBlenderHelper {
                 }
             }
         }
+        
+        // if there are multiple materials used, extract the shared
+        // vertex data
+        if (geometries.size() > 1){
+            // extract from itself
+            for (Geometry geom : geometries){
+                geom.getMesh().extractVertexData(geom.getMesh());
+            }
+        }
 
         blenderContext.addLoadedFeatures(structure.getOldMemoryAddress(), structure.getName(), structure, geometries);
         blenderContext.setMeshContext(structure.getOldMemoryAddress(), meshContext);
@@ -449,7 +465,7 @@ public class MeshHelper extends AbstractBlenderHelper {
     }
 
     /**
-     * This method returns the vertices colors. Each vertex is stored in float[4] array.
+     * This method returns the vertices colors. Each vertex is stored in byte[4] array.
      * 
      * @param meshStructure
      *            the structure containing the mesh data
@@ -459,19 +475,19 @@ public class MeshHelper extends AbstractBlenderHelper {
      * @throws BlenderFileException
      *             this exception is thrown when the blend file structure is somehow invalid or corrupted
      */
-    public List<float[]> getVerticesColors(Structure meshStructure, BlenderContext blenderContext) throws BlenderFileException {
+    public List<byte[]> getVerticesColors(Structure meshStructure, BlenderContext blenderContext) throws BlenderFileException {
         Pointer pMCol = (Pointer) meshStructure.getFieldValue("mcol");
-        List<float[]> verticesColors = null;
+        List<byte[]> verticesColors = null;
         List<Structure> mCol = null;
         if (pMCol.isNotNull()) {
-            verticesColors = new LinkedList<float[]>();
+            verticesColors = new LinkedList<byte[]>();
             mCol = pMCol.fetchData(blenderContext.getInputStream());
             for (Structure color : mCol) {
-                float r = ((Number) color.getFieldValue("r")).byteValue() / 256.0f;
-                float g = ((Number) color.getFieldValue("g")).byteValue() / 256.0f;
-                float b = ((Number) color.getFieldValue("b")).byteValue() / 256.0f;
-                float a = ((Number) color.getFieldValue("a")).byteValue() / 256.0f;
-                verticesColors.add(new float[]{b, g, r, a});
+                byte r = ((Number)color.getFieldValue("r")).byteValue();
+                byte g = ((Number)color.getFieldValue("g")).byteValue();
+                byte b = ((Number)color.getFieldValue("b")).byteValue();
+                byte a = ((Number)color.getFieldValue("a")).byteValue();
+                verticesColors.add(new byte[]{b, g, r, a});
             }
         }
         return verticesColors;

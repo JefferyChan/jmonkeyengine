@@ -31,10 +31,10 @@
  */
 package jme3test.animation;
 
-import com.jme3.cinematic.events.MotionTrack;
+import com.jme3.app.SimpleApplication;
 import com.jme3.cinematic.MotionPath;
 import com.jme3.cinematic.MotionPathListener;
-import com.jme3.app.SimpleApplication;
+import com.jme3.cinematic.events.MotionTrack;
 import com.jme3.font.BitmapText;
 import com.jme3.input.ChaseCamera;
 import com.jme3.input.KeyInput;
@@ -83,7 +83,7 @@ public class TestMotionPath extends SimpleApplication {
         motionControl.setDirectionType(MotionTrack.Direction.PathAndRotation);
         motionControl.setRotation(new Quaternion().fromAngleNormalAxis(-FastMath.HALF_PI, Vector3f.UNIT_Y));
         motionControl.setInitialDuration(10f);
-        motionControl.setSpeed(0.1f);
+        motionControl.setSpeed(2f);
 
         guiFont = assetManager.loadFont("Interface/Fonts/Default.fnt");
         final BitmapText wayPointsText = new BitmapText(guiFont, false);

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 jMonkeyEngine
+ * Copyright (c) 2009-2012 jMonkeyEngine
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -31,11 +31,10 @@
  */
 package com.jme3.scene.plugins.blender.file;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.jme3.scene.plugins.blender.BlenderContext;
 import com.jme3.scene.plugins.blender.exceptions.BlenderFileException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A class that represents a pointer of any level that can be stored in the file.
@@ -81,8 +80,6 @@ public class Pointer {
      * This method fetches the data stored under the given address.
      * @param inputStream
      *        the stream we read data from
-     * @param dataIndices
-     *        the offset of the data in the table pointed by the pointer
      * @return the data read from the file
      * @throws BlenderFileException
      *         this exception is thrown when the blend file structure is somehow invalid or corrupted

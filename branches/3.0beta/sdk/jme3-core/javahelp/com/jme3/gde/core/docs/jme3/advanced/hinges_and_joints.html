@@ -125,7 +125,7 @@ Now consider some examples of objects with joints:
 
 <p>
 
-You&#039;ll understand that, when creating any type of joint, it is important to correctly specify the DOFs that the joint restricts, and the DOFs that the joint allows. For the typical DOF of a <a href="/com/jme3/gde/core/docs/jme3/advanced/ragdoll.html">ragDoll</a> character&#039;s limbs, jME even offers a special joint, <code>PhysicsConeJoint</code>.
+You&#039;ll understand that, when creating any type of joint, it is important to correctly specify the DOFs that the joint restricts, and the DOFs that the joint allows. For the typical DOF of a <a href="/com/jme3/gde/core/docs/jme3/advanced/ragdoll.html">ragDoll</a> character&#039;s limbs, jME even offers a special joint, <code>ConeJoint</code>.
 </p>
 
 </div>
@@ -135,7 +135,7 @@ You&#039;ll understand that, when creating any type of joint, it is important to
 
 <p>
 
-You create the PhysicsHingeJoint after you have created the nodes that are to be chained together. In the code snippet you see that the PhysicsHingeJoint constructor requires the two node objects. You also have to specify axes and pivots – they are the degrees of freedom that you just heard about.
+You create the HingeJoint after you have created the nodes that are to be chained together. In the code snippet you see that the HingeJoint constructor requires the two node objects. You also have to specify axes and pivots – they are the degrees of freedom that you just heard about.
 </p>
 <pre>private HingeJoint joint;
 ...
@@ -146,10 +146,15 @@ You create the PhysicsHingeJoint after you have created the nodes that are to be
 &nbsp;
     joint=new HingeJoint&#40;hookNode.getControl&#40;RigidBodyControl.class&#41;, // A
                      pendulumNode.getControl&#40;RigidBodyControl.class&#41;, // B
-                     new Vector3f&#40;0f, 0f, 0f&#41;,  // pivot point of A
-                     new Vector3f&#40;0f,-1f, 0f&#41;,  // pivot point of B 
+                     new Vector3f&#40;0f, 0f, 0f&#41;,  // pivot point local to A
+                     new Vector3f&#40;0f, 1f, 0f&#41;,  // pivot point local to B 
                      Vector3f.UNIT_Z,           // DoF Axis of A (Z axis)
                      Vector3f.UNIT_Z  &#41;;        // DoF Axis of B (Z axis)</pre>
+
+<p>
+
+The pivot point&#039;s position will be at <code>(0,0,0)</code> in the global 3D space. In A&#039;s local space that is at <code>(0,0,0)</code> and in B&#039;s local space (remember B&#039;s position was set to <code>(0,-1,0)</code>) that is at <code>(0,1,0)</code>.
+</p>
 
 <p>
 Specify the following parameters for each joint:
@@ -157,7 +162,7 @@ Specify the following parameters for each joint:
 <ul>
 <li><div> PhysicsControl A and B – the two nodes that are to be joined</div>
 </li>
-<li><div> Vector3f pivot A and pivot B – coordinates of the two attachment points</div>
+<li><div> Vector3f pivot A and pivot B – coordinates of the attachment point relative to A and B</div>
 <ul>
 <li><div> The points typically lie on the surface of the PhysicsControl&#039;s Spatials, rarely in the middle.</div>
 </li>

@@ -49,15 +49,10 @@ import com.jme3.input.controls.KeyTrigger;
 import com.jme3.light.DirectionalLight;
 import com.jme3.light.PointLight;
 import com.jme3.material.Material;
-import com.jme3.math.ColorRGBA;
-import com.jme3.math.FastMath;
-import com.jme3.math.Matrix3f;
-import com.jme3.math.Quaternion;
-import com.jme3.math.Vector3f;
+import com.jme3.math.*;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Geometry;
-import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.shadow.PssmShadowRenderer;
 import com.jme3.shadow.PssmShadowRenderer.CompareMode;
@@ -71,7 +66,6 @@ import com.jme3.texture.Texture.WrapMode;
 import com.jme3.util.SkyFactory;
 import java.util.ArrayList;
 import java.util.List;
-import jme3tools.converters.ImageToAwt;
 
 public class TestHoveringTank extends SimpleApplication implements AnalogListener,
         ActionListener {
@@ -282,7 +276,7 @@ public class TestHoveringTank extends SimpleApplication implements AnalogListene
 
         AbstractHeightMap heightmap = null;
         try {
-            heightmap = new ImageBasedHeightMap(ImageToAwt.convert(heightMapImage.getImage(), false, true, 0), 0.25f);
+            heightmap = new ImageBasedHeightMap(heightMapImage.getImage(), 0.25f);
             heightmap.load();
         } catch (Exception e) {
             e.printStackTrace();

@@ -33,9 +33,9 @@
 package com.jme3.texture;
 
 import com.jme3.renderer.Caps;
-import com.jme3.util.NativeObject;
 import com.jme3.renderer.Renderer;
 import com.jme3.texture.Image.Format;
+import com.jme3.util.NativeObject;
 import java.util.ArrayList;
 
 /**
@@ -284,12 +284,13 @@ public class FrameBuffer extends NativeObject {
      */
     public void setTargetIndex(int index){
         if (index < 0 || index >= 16)
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Target index must be between 0 and 16");
 
-        if (colorBufs.size() >= index)
+        if (colorBufs.size() < index)
             throw new IllegalArgumentException("The target at " + index + " is not set!");
 
         colorBufIndex = index;
+        setUpdateNeeded();
     }
 
     /**

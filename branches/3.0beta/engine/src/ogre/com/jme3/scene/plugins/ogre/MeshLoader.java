@@ -31,54 +31,39 @@
  */
 package com.jme3.scene.plugins.ogre;
 
-import com.jme3.animation.Animation;
-import com.jme3.scene.plugins.ogre.matext.OgreMaterialKey;
 import com.jme3.animation.AnimControl;
+import com.jme3.animation.Animation;
 import com.jme3.animation.SkeletonControl;
-import com.jme3.asset.AssetInfo;
-import com.jme3.asset.AssetKey;
-import com.jme3.asset.AssetLoader;
-import com.jme3.asset.AssetManager;
-import com.jme3.asset.AssetNotFoundException;
+import com.jme3.asset.*;
 import com.jme3.material.Material;
 import com.jme3.material.MaterialList;
 import com.jme3.math.ColorRGBA;
 import com.jme3.renderer.queue.RenderQueue.Bucket;
-import com.jme3.scene.Geometry;
-import com.jme3.scene.Mesh;
-import com.jme3.scene.Node;
-import com.jme3.scene.UserData;
-import com.jme3.scene.VertexBuffer;
+import com.jme3.scene.*;
 import com.jme3.scene.VertexBuffer.Format;
 import com.jme3.scene.VertexBuffer.Type;
 import com.jme3.scene.VertexBuffer.Usage;
+import com.jme3.scene.plugins.ogre.matext.OgreMaterialKey;
 import com.jme3.util.BufferUtils;
 import com.jme3.util.IntMap;
 import com.jme3.util.IntMap.Entry;
 import com.jme3.util.PlaceholderAssets;
+import static com.jme3.util.xml.SAXUtil.*;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.nio.Buffer;
-import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
-import java.nio.ShortBuffer;
+import java.nio.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
-
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
-
-import static com.jme3.util.xml.SAXUtil.*;
 
 /**
  * Loads Ogre3D mesh.xml files.
@@ -122,6 +107,7 @@ public class MeshLoader extends DefaultHandler implements AssetLoader {
     private int texCoordIndex = 0;
     private String ignoreUntilEnd = null;
     private List<Geometry> geoms = new ArrayList<Geometry>();
+    private ArrayList<Boolean> usesSharedMesh = new ArrayList<Boolean>();
     private IntMap<List<VertexBuffer>> lodLevels = new IntMap<List<VertexBuffer>>();
     private AnimData animData;
 
@@ -142,6 +128,7 @@ public class MeshLoader extends DefaultHandler implements AssetLoader {
         geom = null;
         sharedMesh = null;
 
+        usesSharedMesh.clear();
         usesSharedVerts = false;
         vertCount = 0;
         meshIndex = 0;
@@ -159,42 +146,66 @@ public class MeshLoader extends DefaultHandler implements AssetLoader {
     public void endDocument() {
     }
 
+    private void pushIndex(int index){
+        if (ib != null){
+            ib.put(index);
+        }else{
+            sb.put((short)index);
+        }
+    }
+    
     private void pushFace(String v1, String v2, String v3) throws SAXException {
-        int i1 = parseInt(v1);
-
         // TODO: fan/strip support
-        int i2 = parseInt(v2);
-        int i3 = parseInt(v3);
-        if (ib != null) {
-            ib.put(i1).put(i2).put(i3);
-        } else {
-            sb.put((short) i1).put((short) i2).put((short) i3);
+        switch (mesh.getMode()){
+            case Triangles:
+                pushIndex(parseInt(v1));
+                pushIndex(parseInt(v2));
+                pushIndex(parseInt(v3));
+                break;
+            case Lines:
+                pushIndex(parseInt(v1));
+                pushIndex(parseInt(v2));
+                break;
+            case Points:
+                pushIndex(parseInt(v1));
+                break;
         }
     }
 
-    private boolean isUsingSharedVerts(Geometry geom) {
-        return geom.getUserData(UserData.JME_SHAREDMESH) != null;
-    }
+//    private boolean isUsingSharedVerts(Geometry geom) {
+        // Old code for buffer sharer
+        //return geom.getUserData(UserData.JME_SHAREDMESH) != null;
+//    }
 
     private void startFaces(String count) throws SAXException {
         int numFaces = parseInt(count);
-        int numIndices;
+        int indicesPerFace = 0;
 
-        if (mesh.getMode() == Mesh.Mode.Triangles) {
-            numIndices = numFaces * 3;
-        } else {
-            throw new SAXException("Triangle strip or fan not supported!");
+        switch (mesh.getMode()){
+            case Triangles:
+                indicesPerFace = 3;
+                break;
+            case Lines:
+                indicesPerFace = 2;
+                break;
+            case Points:
+                indicesPerFace = 1;
+                break;
+            default:
+                throw new SAXException("Strips or fans not supported!");
         }
 
+        int numIndices = indicesPerFace * numFaces;
+        
         vb = new VertexBuffer(VertexBuffer.Type.Index);
         if (!usesBigIndices) {
             sb = BufferUtils.createShortBuffer(numIndices);
             ib = null;
-            vb.setupData(Usage.Static, 3, Format.UnsignedShort, sb);
+            vb.setupData(Usage.Static, indicesPerFace, Format.UnsignedShort, sb);
         } else {
             ib = BufferUtils.createIntBuffer(numIndices);
             sb = null;
-            vb.setupData(Usage.Static, 3, Format.UnsignedInt, ib);
+            vb.setupData(Usage.Static, indicesPerFace, Format.UnsignedInt, ib);
         }
         mesh.setBuffer(vb);
     }
@@ -207,6 +218,9 @@ public class MeshLoader extends DefaultHandler implements AssetLoader {
                 mat = assetManager.loadMaterial(matName);
             } catch (AssetNotFoundException ex){
                 // Warning will be raised (see below)
+                if (!ex.getMessage().equals(matName)){
+                    throw ex;
+                }
             }
         } else {
             if (materialList != null) {
@@ -230,20 +244,29 @@ public class MeshLoader extends DefaultHandler implements AssetLoader {
         mesh = new Mesh();
         if (opType == null || opType.equals("triangle_list")) {
             mesh.setMode(Mesh.Mode.Triangles);
-        } else if (opType.equals("triangle_strip")) {
-            mesh.setMode(Mesh.Mode.TriangleStrip);
-        } else if (opType.equals("triangle_fan")) {
-            mesh.setMode(Mesh.Mode.TriangleFan);
+        //} else if (opType.equals("triangle_strip")) {
+        //    mesh.setMode(Mesh.Mode.TriangleStrip);
+        //} else if (opType.equals("triangle_fan")) {
+        //    mesh.setMode(Mesh.Mode.TriangleFan);
+        } else if (opType.equals("line_list")) {
+            mesh.setMode(Mesh.Mode.Lines);
+        } else {
+            throw new SAXException("Unsupported operation type: " + opType);
         }
 
         usesBigIndices = parseBool(use32bitIndices, false);
         usesSharedVerts = parseBool(usesharedvertices, false);
         if (usesSharedVerts) {
+            usesSharedMesh.add(true);
+            
+            // Old code for buffer sharer
             // import vertexbuffers from shared geom
-            IntMap<VertexBuffer> sharedBufs = sharedMesh.getBuffers();
-            for (Entry<VertexBuffer> entry : sharedBufs) {
-                mesh.setBuffer(entry.getValue());
-            }
+//            IntMap<VertexBuffer> sharedBufs = sharedMesh.getBuffers();
+//            for (Entry<VertexBuffer> entry : sharedBufs) {
+//                mesh.setBuffer(entry.getValue());
+//            }
+        }else{
+            usesSharedMesh.add(false);
         }
 
         if (meshName == null) {
@@ -253,8 +276,9 @@ public class MeshLoader extends DefaultHandler implements AssetLoader {
         }
 
         if (usesSharedVerts) {
+            // Old code for buffer sharer
             // this mesh is shared!
-            geom.setUserData(UserData.JME_SHAREDMESH, sharedMesh);
+            //geom.setUserData(UserData.JME_SHAREDMESH, sharedMesh);
         }
 
         applyMaterial(geom, matName);
@@ -279,9 +303,9 @@ public class MeshLoader extends DefaultHandler implements AssetLoader {
      * for all vertices in the buffer.
      */
     private void endBoneAssigns() {
-        if (mesh != sharedMesh && isUsingSharedVerts(geom)) {
-            return;
-        }
+//        if (mesh != sharedMesh && isUsingSharedVerts(geom)) {
+//            return;
+//        }
 
         if (!actuallyHasWeights){
             // No weights were actually written (the tag didn't have any entries)
@@ -489,21 +513,31 @@ public class MeshLoader extends DefaultHandler implements AssetLoader {
 
     private void startLodFaceList(String submeshindex, String numfaces) {
         int index = Integer.parseInt(submeshindex);
+        mesh = geoms.get(index).getMesh();
         int faceCount = Integer.parseInt(numfaces);
-
+        
+        VertexBuffer originalIndexBuffer = mesh.getBuffer(Type.Index);
         vb = new VertexBuffer(VertexBuffer.Type.Index);
-        sb = BufferUtils.createShortBuffer(faceCount * 3);
-        ib = null;
-        vb.setupData(Usage.Static, 3, Format.UnsignedShort, sb);
+        if (originalIndexBuffer.getFormat() == Format.UnsignedInt){
+            // LOD buffer should also be integer
+            ib = BufferUtils.createIntBuffer(faceCount * 3);
+            sb = null;
+            vb.setupData(Usage.Static, 3, Format.UnsignedInt, ib);
+        }else{
+            sb = BufferUtils.createShortBuffer(faceCount * 3);
+            ib = null;
+            vb.setupData(Usage.Static, 3, Format.UnsignedShort, sb);
+        }
 
         List<VertexBuffer> levels = lodLevels.get(index);
         if (levels == null) {
+            // Create the LOD levels list
             levels = new ArrayList<VertexBuffer>();
-            Mesh submesh = geoms.get(index).getMesh();
-            levels.add(submesh.getBuffer(Type.Index));
+            
+            // Add the first LOD level (always the original index buffer)
+            levels.add(originalIndexBuffer);
             lodLevels.put(index, levels);
         }
-
         levels.add(vb);
     }
 
@@ -713,9 +747,16 @@ public class MeshLoader extends DefaultHandler implements AssetLoader {
         for (int i = 0; i < geoms.size(); i++) {
             Geometry g = geoms.get(i);
             Mesh m = g.getMesh();
-            if (sharedMesh != null && isUsingSharedVerts(g)) {
-                m.setBound(sharedMesh.getBound().clone());
+            
+            // New code for buffer extract
+            if (sharedMesh != null && usesSharedMesh.get(i)) {
+                m.extractVertexData(sharedMesh);
             }
+            
+            // Old code for buffer sharer
+            //if (sharedMesh != null && isUsingSharedVerts(g)) {
+            //    m.setBound(sharedMesh.getBound().clone());
+            //}
             model.attachChild(geoms.get(i));
         }
 
@@ -724,45 +765,26 @@ public class MeshLoader extends DefaultHandler implements AssetLoader {
         if (animData != null) {
             // This model uses animation
 
+            // Old code for buffer sharer
             // generate bind pose for mesh
             // ONLY if not using shared geometry
             // This includes the shared geoemtry itself actually
-            if (sharedMesh != null) {
-                sharedMesh.generateBindPose(!HARDWARE_SKINNING);
-            }
+            //if (sharedMesh != null) {
+            //    sharedMesh.generateBindPose(!HARDWARE_SKINNING);
+            //}
 
             for (int i = 0; i < geoms.size(); i++) {
                 Geometry g = geoms.get(i);
                 Mesh m = geoms.get(i).getMesh();
-                boolean useShared = isUsingSharedVerts(g);
-
-
-                if (!useShared) {
+                
+                m.generateBindPose(!HARDWARE_SKINNING);
+                
+                // Old code for buffer sharer
+                //boolean useShared = isUsingSharedVerts(g);
+                //if (!useShared) {
                     // create bind pose
-                    m.generateBindPose(!HARDWARE_SKINNING);
-//                } else {
-                    // Inherit animation data from shared mesh
-//                    VertexBuffer bindPos = sharedMesh.getBuffer(Type.BindPosePosition);
-//                    VertexBuffer bindNorm = sharedMesh.getBuffer(Type.BindPoseNormal);
-//                    VertexBuffer boneIndex = sharedMesh.getBuffer(Type.BoneIndex);
-//                    VertexBuffer boneWeight = sharedMesh.getBuffer(Type.BoneWeight);
-//
-//                    if (bindPos != null) {
-//                        m.setBuffer(bindPos);
-//                    }
-//
-//                    if (bindNorm != null) {
-//                        m.setBuffer(bindNorm);
-//                    }
-//
-//                    if (boneIndex != null) {
-//                        m.setBuffer(boneIndex);
-//                    }
-//
-//                    if (boneWeight != null) {
-//                        m.setBuffer(boneWeight);
-//                    }
-                }
+                    //m.generateBindPose(!HARDWARE_SKINNING);
+                //}
             }
 
             // Put the animations in the AnimControl

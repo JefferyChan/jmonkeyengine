@@ -4,31 +4,23 @@ import com.jme3.material.Material;
 import com.jme3.math.Matrix4f;
 import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
-import com.jme3.scene.Geometry;
-import com.jme3.scene.Mesh;
 import com.jme3.scene.Mesh.Mode;
-import com.jme3.scene.Node;
-import com.jme3.scene.Spatial;
-import com.jme3.scene.VertexBuffer;
+import com.jme3.scene.*;
 import com.jme3.scene.VertexBuffer.Format;
 import com.jme3.scene.VertexBuffer.Type;
 import com.jme3.scene.VertexBuffer.Usage;
 import com.jme3.scene.mesh.IndexBuffer;
-import com.jme3.scene.mesh.VirtualIndexBuffer;
-import com.jme3.scene.mesh.WrappedIndexBuffer;
 import com.jme3.util.BufferUtils;
 import com.jme3.util.IntMap.Entry;
 import java.nio.Buffer;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.logging.Logger;
 
 public class GeometryBatchFactory {
+
+    private static final Logger logger = Logger.getLogger(GeometryBatchFactory.class.getName());
 
     private static void doTransformVerts(FloatBuffer inBuf, int offset, FloatBuffer outBuf, Matrix4f transform) {
         Vector3f pos = new Vector3f();
@@ -72,7 +64,7 @@ public class GeometryBatchFactory {
 
     /**
      * Merges all geometries in the collection into
-     * the output mesh. Does not take into account materials.
+     * the output mesh. Creates a new material using the TextureAtlas.
      * 
      * @param geometries
      * @param outMesh
@@ -169,7 +161,7 @@ public class GeometryBatchFactory {
                 VertexBuffer inBuf = inMesh.getBuffer(Type.values()[bufType]);
                 VertexBuffer outBuf = outMesh.getBuffer(Type.values()[bufType]);
 
-                if (outBuf == null) {
+                if (inBuf == null || outBuf == null) {
                     continue;
                 }
 
@@ -299,7 +291,7 @@ public class GeometryBatchFactory {
         return retVal;
     }
 
-    private static void gatherGeoms(Spatial scene, List<Geometry> geoms) {
+    public static void gatherGeoms(Spatial scene, List<Geometry> geoms) {
         if (scene instanceof Node) {
             Node node = (Node) scene;
             for (Spatial child : node.getChildren()) {
@@ -346,7 +338,7 @@ public class GeometryBatchFactory {
 
         // Since the scene is returned unaltered the transform must be reset
         scene.setLocalTransform(Transform.IDENTITY);
-        
+
         return scene;
     }
 

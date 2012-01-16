@@ -32,18 +32,14 @@
 
 package com.jme3.texture;
 
-import com.jme3.export.JmeExporter;
-import com.jme3.export.JmeImporter;
-import com.jme3.export.InputCapsule;
-import com.jme3.export.OutputCapsule;
+import com.jme3.export.*;
 import com.jme3.renderer.Renderer;
+import com.jme3.util.NativeObject;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import com.jme3.export.Savable;
-import com.jme3.util.NativeObject;
 
 /**
  * <code>Image</code> defines a data format for a graphical image. The image
@@ -433,7 +429,7 @@ public class Image extends NativeObject implements Savable /*, Cloneable*/ {
      * Constructor instantiates a new <code>Image</code> object. The
      * attributes of the image are defined during construction.
      *
-     * @param type
+     * @param format
      *            the data format of the image.
      * @param width
      *            the width of the image.
@@ -450,7 +446,7 @@ public class Image extends NativeObject implements Savable /*, Cloneable*/ {
      * Constructor instantiates a new <code>Image</code> object. The
      * attributes of the image are defined during construction.
      *
-     * @param type
+     * @param format
      *            the data format of the image.
      * @param width
      *            the width of the image.
@@ -539,7 +535,7 @@ public class Image extends NativeObject implements Savable /*, Cloneable*/ {
      * Some system implementations are more efficient at operating
      * on data other than ByteBuffers, in that case, this method can be used.
      *
-     * @param efficentData
+     * @param efficientData
      */
     public void setEfficentData(Object efficientData){
         this.efficientData = efficientData;

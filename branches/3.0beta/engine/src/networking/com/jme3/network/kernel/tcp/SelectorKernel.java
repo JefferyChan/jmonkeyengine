@@ -32,21 +32,21 @@
 
 package com.jme3.network.kernel.tcp;
 
+import com.jme3.network.Filter;
+import com.jme3.network.kernel.*;
 import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.channels.*;
-import java.nio.channels.spi.SelectorProvider;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.util.*;
+import java.nio.ByteBuffer;
+import java.nio.channels.*;
+import java.nio.channels.spi.SelectorProvider;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import com.jme3.network.Filter;
-import com.jme3.network.kernel.*;
 
 
 /**
@@ -118,13 +118,12 @@ public class SelectorKernel extends AbstractKernel
         if( !reliable )
             throw new UnsupportedOperationException( "Unreliable send not supported by this kernel." );
 
-        if( copy )
-            {
+        if( copy ) {
             // Copy the data just once
             byte[] temp = new byte[data.remaining()];
             System.arraycopy(data.array(), data.position(), temp, 0, data.remaining());
             data = ByteBuffer.wrap(temp);
-            }
+        }
 
         // Hand it to all of the endpoints that match our routing
         for( NioEndpoint p : endpoints.values() ) {
@@ -161,6 +160,7 @@ public class SelectorKernel extends AbstractKernel
     protected void removeEndpoint( NioEndpoint p, SocketChannel c )
     {
         endpoints.remove( p.getId() );
+        log.log( Level.FINE, "Endpoints size:{0}", endpoints.size() );
 
         // Enqueue an endpoint event for the listeners
         addEvent( EndpointEvent.createRemove( this, p ) );
@@ -181,7 +181,7 @@ public class SelectorKernel extends AbstractKernel
      */
     protected void closeEndpoint( NioEndpoint p ) throws IOException
     {
-        log.log( Level.INFO, "Closing endpoint:{0}.", p );
+        //log.log( Level.INFO, "Closing endpoint:{0}.", p );
             
         thread.cancel(p);
     }
@@ -323,13 +323,14 @@ public class SelectorKernel extends AbstractKernel
 
         protected void cancel( NioEndpoint p ) throws IOException
         {
-            log.log( Level.INFO, "Closing endpoint:{0}.", p );
             SelectionKey key = endpointKeys.remove(p);
             if( key == null ) {
-                log.log( Level.INFO, "Endpoint already closed:{0}.", p );
+                //log.log( Level.INFO, "Endpoint already closed:{0}.", p );
                 return;  // already closed it
             }                
+            log.log( Level.FINE, "Endpoint keys size:{0}", endpointKeys.size() );
 
+            log.log( Level.INFO, "Closing endpoint:{0}.", p );
             SocketChannel c = (SocketChannel)key.channel();
 
             // Note: key.cancel() is specifically thread safe.  One of
@@ -342,9 +343,11 @@ public class SelectorKernel extends AbstractKernel
 
         protected void cancel( SelectionKey key, SocketChannel c ) throws IOException
         {
-            NioEndpoint p = (NioEndpoint)key.attachment();
+            NioEndpoint p = (NioEndpoint)key.attachment();            
             log.log( Level.INFO, "Closing channel endpoint:{0}.", p );
-            endpointKeys.remove(p);
+            Object o = endpointKeys.remove(p);
+
+            log.log( Level.FINE, "Endpoint keys size:{0}", endpointKeys.size() );
 
             key.cancel();
             c.close();

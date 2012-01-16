@@ -86,7 +86,9 @@ public class AddTerrainAction extends AbstractNewSpatialWizardAction {
         int alphaTextureSize = (Integer) wizardDescriptor.getProperty("alphaTextureSize");
 
         float[] heightmapData = null;
-        AbstractHeightMap heightmap = (AbstractHeightMap) wizardDescriptor.getProperty("abstractHeightMap");
+        AbstractHeightMap heightmap = null;
+        if (wizardDescriptor.getProperty("abstractHeightMap") != null)
+            heightmap = (AbstractHeightMap) wizardDescriptor.getProperty("abstractHeightMap");
         if (heightmap != null) {
             heightmap.load(); // can take a while
             heightmapData = heightmap.getHeightMap();
@@ -152,6 +154,7 @@ public class AddTerrainAction extends AbstractNewSpatialWizardAction {
         mat.setTexture("DiffuseMap", dirtTexture);
         mat.setFloat("DiffuseMap_0_scale", TerrainEditorController.DEFAULT_TEXTURE_SCALE);
         mat.setBoolean("WardIso", true);
+        mat.setFloat("Shininess", 0.01f);
 
         ((Node)terrain).setMaterial(mat);
         ((Node)terrain).setModelBound(new BoundingBox());

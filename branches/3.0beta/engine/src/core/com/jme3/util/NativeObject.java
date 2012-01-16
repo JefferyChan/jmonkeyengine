@@ -32,8 +32,6 @@
 
 package com.jme3.util;
 
-import com.jme3.renderer.Renderer;
-
 /**
  * Describes a native object. An encapsulation of a certain object 
  * on the native side of the graphics or audio library.
@@ -162,7 +160,7 @@ public abstract class NativeObject implements Cloneable {
      * Deletes the GL object from the GPU when it is no longer used. Called
      * automatically by the GL object manager.
      * 
-     * @param r The renderer to be used to delete the object
+     * @param rendererObject The renderer to be used to delete the object
      */
     public abstract void deleteObject(Object rendererObject);
 

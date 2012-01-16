@@ -32,21 +32,21 @@
 
 package com.jme3.network.base;
 
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import com.jme3.network.*;
+import com.jme3.network.Filter;
+import com.jme3.network.HostedConnection;
+import com.jme3.network.Message;
+import com.jme3.network.MessageListener;
 import com.jme3.network.kernel.Endpoint;
 import com.jme3.network.kernel.EndpointEvent;
 import com.jme3.network.kernel.Envelope;
 import com.jme3.network.kernel.Kernel;
-import com.jme3.network.message.ClientRegistrationMessage; //hopefully temporary
-import com.jme3.network.serializing.Serializer;
+import com.jme3.network.message.ClientRegistrationMessage;
+import java.nio.ByteBuffer;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *  Wraps a single Kernel and forwards new messages
@@ -90,6 +90,22 @@ public class KernelAdapter extends Thread
         this.reliable = reliable;
         setDaemon(true);
     }
+
+    public Kernel getKernel()
+    {
+        return kernel;
+    }
+
+    public void initialize()
+    {
+        kernel.initialize();
+    }
+ 
+    public void broadcast( Filter<? super Endpoint> filter, ByteBuffer data, boolean reliable, 
+                           boolean copy )
+    {
+        kernel.broadcast( filter, data, reliable, copy );
+    }                           
  
     public void close() throws InterruptedException
     {
@@ -104,6 +120,9 @@ public class KernelAdapter extends Thread
         // Should really be queued up so the outer thread can
         // retrieve them.  For now we'll just log it.  FIXME
         log.log( Level.SEVERE, "Unhandled error, endpoint:" + p + ", context:" + context, e );
+        
+        // In lieu of other options, at least close the endpoint
+        p.close();
     }                                                      
 
     protected HostedConnection getConnection( Endpoint p )
@@ -116,6 +135,8 @@ public class KernelAdapter extends Thread
         // Remove any message buffer we've been accumulating 
         // on behalf of this endpoing
         messageBuffers.remove(p);
+
+        log.log( Level.FINE, "Buffers size:{0}", messageBuffers.size() );
     
         server.connectionClosed(p);
     }

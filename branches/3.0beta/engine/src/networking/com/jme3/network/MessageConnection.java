@@ -46,5 +46,11 @@ public interface MessageConnection
      *  Sends a message to the other end of the connection.
      */   
     public void send( Message message );
+    
+    /**
+     *  Sends a message to the other end of the connection using
+     *  the specified alternate channel.
+     */   
+    public void send( int channel, Message message );
 }    
 

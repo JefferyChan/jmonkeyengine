@@ -47,14 +47,13 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
 import com.jme3.terrain.geomipmap.TerrainLodControl;
-import com.jme3.terrain.heightmap.AbstractHeightMap;
 import com.jme3.terrain.geomipmap.TerrainQuad;
+import com.jme3.terrain.heightmap.AbstractHeightMap;
 import com.jme3.terrain.heightmap.ImageBasedHeightMap;
 import com.jme3.texture.Texture;
 import com.jme3.texture.Texture.WrapMode;
 import java.util.ArrayList;
 import java.util.List;
-import jme3tools.converters.ImageToAwt;
 
 /**
  * This demo shows a terrain with collision detection, 
@@ -120,8 +119,7 @@ public class HelloTerrainCollision extends SimpleApplication
     AbstractHeightMap heightmap = null;
     Texture heightMapImage = assetManager.loadTexture(
             "Textures/Terrain/splat/mountains512.png");
-    heightmap = new ImageBasedHeightMap(
-      ImageToAwt.convert(heightMapImage.getImage(), false, true, 0));
+    heightmap = new ImageBasedHeightMap(heightMapImage.getImage());
     heightmap.load();
 
     /** 3. We have prepared material and heightmap. 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 jMonkeyEngine
+ * Copyright (c) 2009-2012 jMonkeyEngine
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -31,17 +31,16 @@
  */
 package com.jme3.scene.plugins.blender.modifiers;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import com.jme3.scene.plugins.blender.AbstractBlenderHelper;
 import com.jme3.scene.plugins.blender.BlenderContext;
 import com.jme3.scene.plugins.blender.exceptions.BlenderFileException;
 import com.jme3.scene.plugins.blender.file.Pointer;
 import com.jme3.scene.plugins.blender.file.Structure;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * A class that is used in modifiers calculations.
@@ -56,9 +55,11 @@ public class ModifierHelper extends AbstractBlenderHelper {
      * different blender versions.
      * @param blenderVersion
      *        the version read from the blend file
+     * @param fixUpAxis
+     *        a variable that indicates if the Y asxis is the UP axis or not
      */
-    public ModifierHelper(String blenderVersion) {
-        super(blenderVersion);
+    public ModifierHelper(String blenderVersion, boolean fixUpAxis) {
+        super(blenderVersion, fixUpAxis);
     }
 
     /**
@@ -67,8 +68,6 @@ public class ModifierHelper extends AbstractBlenderHelper {
      *        the object structure
      * @param blenderContext
      *        the blender context
-     * @param converter
-     *        the converter object (in some cases we need to read an object first before loading the modifier)
      * @throws BlenderFileException
      *         this exception is thrown when the blender file is somehow corrupted
      */

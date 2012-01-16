@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 jMonkeyEngine
+ * Copyright (c) 2009-2012 jMonkeyEngine
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -35,21 +35,13 @@ import com.jme3.material.Material;
 import com.jme3.material.MaterialDef;
 import com.jme3.material.RenderState;
 import com.jme3.material.Technique;
-import com.jme3.math.Matrix3f;
-import com.jme3.math.Matrix4f;
-import com.jme3.math.Quaternion;
-import com.jme3.math.Vector2f;
-import com.jme3.math.Vector3f;
+import com.jme3.math.*;
 import com.jme3.post.SceneProcessor;
 import com.jme3.renderer.queue.GeometryList;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
-import com.jme3.scene.Geometry;
-import com.jme3.scene.Mesh;
-import com.jme3.scene.Node;
-import com.jme3.scene.Spatial;
-import com.jme3.scene.VertexBuffer;
+import com.jme3.scene.*;
 import com.jme3.shader.Uniform;
 import com.jme3.shader.UniformBinding;
 import com.jme3.shader.VarType;
@@ -160,7 +152,7 @@ public class RenderManager {
     /**
      * Removes the main ViewPort with the specified name.
      * 
-     * @param view The main ViewPort name to remove
+     * @param viewName The main ViewPort name to remove
      * @return True if the ViewPort was removed successfully.
      * 
      * @see #createMainView(java.lang.String, com.jme3.renderer.Camera) 
@@ -207,7 +199,7 @@ public class RenderManager {
     /**
      * Removes the post ViewPort with the specified name.
      * 
-     * @param view The post ViewPort name to remove
+     * @param viewName The post ViewPort name to remove
      * @return True if the ViewPort was removed successfully.
      * 
      * @see #createPostView(java.lang.String, com.jme3.renderer.Camera) 
