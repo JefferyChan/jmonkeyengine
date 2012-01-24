@@ -2314,7 +2314,11 @@ public class ThreadSafeColladaImporter {
         // set the ambient color value of the material
         if (pt.hasambient() && pt.getambient().hascolor()) {
             ms.setAmbient(getColor(pt.getambient().getcolor()));
+        } else {
+            // JME defaults to a non-zero ambient value
+            ms.setAmbient(ColorRGBA.black);
         }
+        
         // set the diffuse color value of the material
         if (pt.hasdiffuse()) {
             if (pt.getdiffuse().hascolor()) {
@@ -2352,7 +2356,11 @@ public class ThreadSafeColladaImporter {
                     }
                 }
             }
+        } else {
+            // JME defaults to non-zero diffuse
+            ms.setDiffuse(ColorRGBA.black);
         }
+        
         // set the emmission color value of the material
         if (pt.hasemission() && pt.getemission().hascolor()) {
             ms.setEmissive(getColor(pt.getemission().getcolor()));
