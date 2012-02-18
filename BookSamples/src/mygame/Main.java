@@ -67,13 +67,14 @@ public class Main extends SimpleApplication {
 
   // initialize the application
   @Override
-  public void simpleInitApp() {
+  public void simpleInitApp() {    
     // configure the jme app including camera and background color
     java.util.logging.Logger.getLogger("").setLevel(Level.WARNING);
     setDisplayStatView(false); // don't show debugger
     viewPort.setBackgroundColor(ColorRGBA.White);
     cam.setLocation(new Vector3f(0, 16, 16f));
     cam.lookAt(new Vector3f(0,0,8f), Vector3f.UNIT_Y);
+    flyCam.setEnabled(false);
     
     // initialize the scene graph
     initHUD();    // attach user interface (info text)
@@ -110,8 +111,6 @@ public class Main extends SimpleApplication {
    * The strings are identifiers used by the ActionListener later.
    */
   private void initInputs() {
-    // deactivate default input mapping: camera is static in this game.
-    inputManager.clearMappings();
     //flyCam.setMoveSpeed(25);
     // user needs to see mouse pointer to be able to click
     inputManager.setCursorVisible(true);
