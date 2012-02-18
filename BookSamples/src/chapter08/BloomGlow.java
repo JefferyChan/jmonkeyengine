@@ -50,18 +50,15 @@ public class BloomGlow extends SimpleApplication {
   private void initScene() {
     // load sky
     rootNode.attachChild(SkyFactory.createSky(assetManager, "Textures/Sky/Bright/BrightSky.dds", false));
-    /**
-     * Add some objects to the scene: A town
-     */
+    
+    // Add some objects to the scene: A town
     assetManager.registerLocator("town.zip", ZipLocator.class.getName());
     Spatial scene_geo = assetManager.loadModel("main.scene");
     scene_geo.setLocalScale(2f);
     scene_geo.setLocalTranslation(0, -1, 0);
     rootNode.attachChild(scene_geo);
 
-    /**
-     * Add some objects to the scene: a tea pot
-     */
+    // Add some objects to the scene: a tea pot
     Geometry tea_geo = (Geometry) assetManager.loadModel("Models/Teapot/Teapot.j3o");
     Material mat = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
     mat.setBoolean("UseMaterialColors", true);

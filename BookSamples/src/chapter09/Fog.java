@@ -10,7 +10,6 @@ import com.jme3.post.FilterPostProcessor;
 import com.jme3.post.filters.FogFilter;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Spatial;
-import com.jme3.util.SkyFactory;
 
 /**
  * A town with fog.
@@ -26,15 +25,14 @@ public class Fog extends SimpleApplication {
   }
 
   public void simpleInitApp() {
+    // activate fog
     fpp = new FilterPostProcessor(assetManager);
-    //fpp.setNumSamples(4);
     fog = new FogFilter();
     fog.setFogColor(new ColorRGBA(0.9f, 0.9f, 0.9f, 1.0f));
     fog.setFogDistance(155);
     fog.setFogDensity(2.0f);
     fpp.addFilter(fog);
     viewPort.addProcessor(fpp);
-
 
     DirectionalLight dl = new DirectionalLight();
     dl.setDirection(new Vector3f(1f, -1f, -1f));
@@ -44,10 +42,7 @@ public class Fog extends SimpleApplication {
 
   private void initScene() {
     flyCam.setMoveSpeed(30f);
-
-    // load sky
-    rootNode.attachChild(SkyFactory.createSky(assetManager, 
-            "Textures/Sky/Bright/BrightSky.dds", false));
+    viewPort.setBackgroundColor(ColorRGBA.Cyan);
 
     // Add some objects to the scene: A town
     assetManager.registerLocator("town.zip", ZipLocator.class.getName());

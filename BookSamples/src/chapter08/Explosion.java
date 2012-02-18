@@ -5,20 +5,20 @@ import com.jme3.effect.ParticleEmitter;
 import com.jme3.effect.ParticleMesh;
 import com.jme3.effect.ParticleMesh.Type;
 import com.jme3.effect.shapes.EmitterSphereShape;
-import com.jme3.light.AmbientLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
-import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
-import com.jme3.scene.shape.Box;
 
+/**
+ * This demo shows a loop of an explosion with fire, embers, smoke, 
+ * debris, sparks, and shockwave. 
+ */
 public class Explosion extends SimpleApplication {
 
   private float time = 0;
   private int state = 0;
-  private Geometry crate;
   private Node explosionEffect = new Node("explosionFX");
   private ParticleEmitter sparks, burst,
           shockwave, debris,
@@ -197,7 +197,6 @@ public class Explosion extends SimpleApplication {
   public void simpleInitApp() {
     cam.setLocation(new Vector3f(0f,10f,10f)); // get a better view
     cam.lookAt(Vector3f.UNIT_Y, Vector3f.ZERO);
-    //createCrate();
     createSparks();
     createBurst();
     createDebris();
@@ -211,6 +210,7 @@ public class Explosion extends SimpleApplication {
 
   @Override
   public void simpleUpdate(float tpf) {
+    // this is a timer that triggers the effects in the right order
     time += tpf / speed;
     if (time > 1.5f && state == 0) {
       sparks.emitAllParticles();
@@ -247,6 +247,4 @@ public class Explosion extends SimpleApplication {
       time = 0;
     }
   }
-
-
 }

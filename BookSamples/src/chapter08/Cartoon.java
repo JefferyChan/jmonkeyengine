@@ -13,10 +13,10 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.texture.Texture;
-import com.jme3.util.SkyFactory;
 
 /**
- * The demo shows how to make a scene apear in cartoon style.
+ * The demo shows how to make a scene appear in cartoon style. Note the lines
+ * along the edges, and the reduced gradients on the teapot.
  * <p/>
  * @author zathras
  */
@@ -67,20 +67,18 @@ public class Cartoon extends SimpleApplication {
   }
 
  private void initScene() {
-    // load sky
-    rootNode.attachChild(SkyFactory.createSky(assetManager, "Textures/Sky/Bright/BrightSky.dds", false));
-    /**
-     * Add some objects to the scene: A town
-     */
+    viewPort.setBackgroundColor(ColorRGBA.Cyan);    
+    flyCam.setMoveSpeed(50);
+    cam.setLocation(new Vector3f(0, 8f, 0));
+    
+    // Add some objects to the scene: A town 
     assetManager.registerLocator("town.zip", ZipLocator.class.getName());
     Spatial scene_geo = assetManager.loadModel("main.scene");
     scene_geo.setLocalScale(2f);
     scene_geo.setLocalTranslation(0, -1, 0);
     rootNode.attachChild(scene_geo);
 
-    /**
-     * Add some objects to the scene: a tea pot
-     */
+    // Add some objects to the scene: a tea pot
     Geometry tea_geo = (Geometry) assetManager.loadModel("Models/Teapot/Teapot.j3o");
     Material mat = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
     mat.setBoolean("UseMaterialColors", true);
@@ -89,13 +87,11 @@ public class Cartoon extends SimpleApplication {
     tea_geo.scale(3);
     tea_geo.setLocalTranslation(32, 3, -24);
     rootNode.attachChild(tea_geo);
-    cam.setLocation(new Vector3f(0, 8f, 0));
     cam.lookAt(tea_geo.getWorldTranslation(), Vector3f.UNIT_Y);
   }
 
   public static void main(String[] args) {
     Cartoon app = new Cartoon();
     app.start();
-
   }
 }

@@ -16,6 +16,8 @@ import com.jme3.util.SkyFactory;
 public class SunLight extends SimpleApplication {
 
   private FilterPostProcessor fpp;
+  // global vector where the sun is on the skybox
+  private Vector3f lightDir = new Vector3f(-0.39f, -0.32f, -0.74f);
 
   public static void main(String[] args) {
     SunLight app = new SunLight();
@@ -24,21 +26,23 @@ public class SunLight extends SimpleApplication {
 
   public void simpleInitApp() {
     flyCam.setMoveSpeed(30f);
-    fpp = new FilterPostProcessor(assetManager);
-    viewPort.addProcessor(fpp);
 
-    Vector3f lightDirection = new Vector3f(-0.39f, -0.32f, -0.74f);
-    Vector3f lightPos = lightDirection.multLocal(-3000);
-
+    // make light shine from where sun is on skybox
     DirectionalLight sun = new DirectionalLight();
-    sun.setDirection(lightDirection);
+    sun.setDirection(lightDir);
     sun.setColor(ColorRGBA.White.clone().multLocal(2));
     rootNode.addLight(sun);
-
-    LightScatteringFilter sunLight = new LightScatteringFilter(lightPos);
+    
+    // make light beams appear from where sun is on skybox
+    LightScatteringFilter sunLight = new LightScatteringFilter(lightDir.mult(-3000));
+    fpp = new FilterPostProcessor(assetManager);
     fpp.addFilter(sunLight);
+    viewPort.addProcessor(fpp);
 
     initScene();
+    
+    // look into sun :-)
+    cam.lookAtDirection(lightDir.negate(), Vector3f.UNIT_Y);
   }
 
   private void initScene() {
@@ -49,7 +53,7 @@ public class SunLight extends SimpleApplication {
     assetManager.registerLocator("town.zip", ZipLocator.class.getName());
     Spatial scene_geo = assetManager.loadModel("main.scene");
     scene_geo.setLocalScale(2f);
-    scene_geo.setLocalTranslation(0, -1, 0);
+    scene_geo.setLocalTranslation(0, -5f, 0);
     rootNode.attachChild(scene_geo);
   }
 }

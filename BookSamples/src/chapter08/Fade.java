@@ -15,12 +15,12 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Spatial;
 import com.jme3.util.SkyFactory;
 
+/** Press 1 or 0 to fade the scene in or out */
 public class Fade extends SimpleApplication {
 
   private FilterPostProcessor fpp;
   private FadeFilter fade;
 
-  // set default for applets
   public static void main(String[] args) {
     Fade app = new Fade();
     app.start();
@@ -40,12 +40,10 @@ public class Fade extends SimpleApplication {
   }
 
   private void initScene() {
-    // load sky
-    rootNode.attachChild(SkyFactory.createSky(assetManager, "Textures/Sky/Bright/BrightSky.dds", false));
     /**
      * Add some objects to the scene: A town
      */
-    assetManager.registerLocator("assets/Scenes/town.zip", ZipLocator.class.getName());
+    assetManager.registerLocator("town.zip", ZipLocator.class.getName());
     Spatial scene_geo = assetManager.loadModel("main.scene");
     scene_geo.setLocalScale(2f);
     scene_geo.setLocalTranslation(0, -1, 0);

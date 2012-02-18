@@ -1,7 +1,7 @@
-Material Pong Rock : Common/MatDefs/Light/Lighting.j3md {
+Material Pebbles : Common/MatDefs/Light/Lighting.j3md {
      MaterialParameters {
          Shininess: 8.0
-         DiffuseMap: Repeat Textures/Terrain/Pond/Pond.png
-         NormalMap:  Repeat Textures/Terrain/Pond/Pond_normal.png
+         DiffuseMap: Repeat Textures/Pebbles/Pebbles_diffuse.png
+         NormalMap:  Repeat Textures/Pebbles/Pebbles_normal.png
      }
 }

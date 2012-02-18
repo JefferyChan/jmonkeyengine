@@ -7,6 +7,7 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Sphere;
+import com.jme3.util.TangentBinormalGenerator;
 
 /** Three colored spheres with increasing roughness (shininess).
  * A non-shiny surface appears rough, a very shiny surface appears smooth.
@@ -60,6 +61,6 @@ public class MaterialColorShiny extends SimpleApplication {
     sun.setDirection(new Vector3f(1, 0, -2).normalizeLocal());
     sun.setColor(ColorRGBA.White);
     rootNode.addLight(sun);
-    
+   
   }
 }
