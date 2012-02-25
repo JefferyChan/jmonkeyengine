@@ -12,7 +12,9 @@ jME is a community-driven open source project released under the 'new BSD licens
 To get started with JME, you can download the library and sources from the "Downloads" section of this page. Getting the source is recommended since there are examples of almost all of JME's functions in the "jmetest" package. You can find info on how to set up the source and libraries in your IDE in the jme wiki (see below).
 
 You can find documentation, help and a nice community around JME on the jMonkeyEngine Homepage, Wiki and Forum:
+
 *You can login with your google account*
+
   * http://www.jmonkeyengine.com
   * http://www.jmonkeyengine.org/wiki/
   * http://www.jmonkeyengine.org/forums/
