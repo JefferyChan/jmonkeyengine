@@ -15,7 +15,7 @@ You can find documentation, help and a nice community around JME on the jMonkeyE
   * http://www.jmonkeyengine.com
   * http://www.jmonkeyengine.org/wiki/
   * http://www.jmonkeyengine.org/forums/
-
+*You can login with your google account*
 == JME Development ==
 
 This googlecode project contains mainly information about jme3 and its development. To get info about the usage of jme2 (and in future jme3) go to the pages listed above. Everybody who thinks that he can contibrute to jme2 or jme3 is very welcome to do so. Please contact the devlopers through this project page.
