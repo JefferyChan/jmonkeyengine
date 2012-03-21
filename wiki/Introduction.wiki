@@ -5,7 +5,7 @@
 
 jMonkey Engine (jME) is a high-performance 3D game engine, written entirely in Java, OpenGL is supported via LWJGL. For sound, OpenAL is supported. Input via the keyboard, mouse, and other controllers is also supported.
 
-jME is a community-driven open source project released under the 'new BSD license'. It is currently being used by several commercial game studios as well as by university game classes. While the project will continue to support and develop its most popular 2.0 branch for years still to come, a 3.0 branch is quickly emerging in response to higher standards of the next generation in performance and hardware.
+jME is a community-driven open source project released under the 'new BSD license'. It is currently being used by several commercial game studios as well as by university game classes. With the 2.0 branch now community support, jME 3.0 has emerged quickly in response to higher standards of the next generation in performance and hardware.
 
 == Using JME ==
 
