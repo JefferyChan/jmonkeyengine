@@ -155,8 +155,8 @@ public class WaterTerrainSky extends SimpleApplication {
     heightmap.smooth(0.9f, 3);
     // create terrain from heightmap
     terrain = new TerrainQuad("terrain", 65, 513, heightmap.getHeightMap());
-    TerrainLodControl lodControl = new TerrainLodControl(terrain, getCamera());
-    terrain.addControl(lodControl);
+    //TerrainLodControl lodControl = new TerrainLodControl(terrain, getCamera());
+    //terrain.addControl(lodControl);
     terrain.setMaterial(terrain_mat);
     terrain.setLocalTranslation(0, -10, 0);
     terrain.setLocalScale(new Vector3f(4, 4, 4));
@@ -168,6 +168,6 @@ public class WaterTerrainSky extends SimpleApplication {
     // simulate tides by varrying the height of the water plane
     time += tpf;
     waterHeight = (float) Math.cos(((time * 0.6f) % FastMath.TWO_PI)) * 1.5f;
-    water.setWaterHeight(initialWaterHeight + waterHeight);
+    //water.setWaterHeight(initialWaterHeight + waterHeight);
   }
 }

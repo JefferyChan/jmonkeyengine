@@ -31,7 +31,7 @@ public class LoadScene extends SimpleApplication {
     // load a zipped level from an online source
     assetManager.registerLocator(
     "http://jmonkeyengine.googlecode.com/files/quake3level.zip", 
-    HttpZipLocator.class.getName());
+    HttpZipLocator.class);
     MaterialList matList = (MaterialList) assetManager.loadAsset("Scene.material");
     OgreMeshKey key = new OgreMeshKey("main.meshxml", matList);
     Node gameLevel = (Node) assetManager.loadAsset(key);
@@ -41,7 +41,7 @@ public class LoadScene extends SimpleApplication {
 //    // load sky
 //    rootNode.attachChild(SkyFactory.createSky(assetManager, "Textures/Sky/Bright/BrightSky.dds", false));
 //    // load a zipped level from the project directory
-//    assetManager.registerLocator("town.zip", ZipLocator.class.getName());
+//    assetManager.registerLocator("town.zip", ZipLocator.class);
 //    Spatial sceneModel = assetManager.loadModel("main.scene");
 //    sceneModel.setLocalScale(2f);
 //    rootNode.attachChild(sceneModel);

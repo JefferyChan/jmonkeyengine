@@ -45,7 +45,7 @@ public class Fog extends SimpleApplication {
     viewPort.setBackgroundColor(ColorRGBA.Cyan);
 
     // Add some objects to the scene: A town
-    assetManager.registerLocator("town.zip", ZipLocator.class.getName());
+    assetManager.registerLocator("town.zip", ZipLocator.class);
     Spatial scene_geo = assetManager.loadModel("main.scene");
     scene_geo.setLocalScale(2f);
     scene_geo.setLocalTranslation(0, -1, 0);

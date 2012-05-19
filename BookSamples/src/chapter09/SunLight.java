@@ -50,7 +50,7 @@ public class SunLight extends SimpleApplication {
     rootNode.attachChild(SkyFactory.createSky(assetManager,
             "Textures/Sky/Bright/BrightSky.dds", false));
     // load scene content: a town
-    assetManager.registerLocator("town.zip", ZipLocator.class.getName());
+    assetManager.registerLocator("town.zip", ZipLocator.class);
     Spatial scene_geo = assetManager.loadModel("main.scene");
     scene_geo.setLocalScale(2f);
     scene_geo.setLocalTranslation(0, -5f, 0);

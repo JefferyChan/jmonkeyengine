@@ -68,7 +68,7 @@ public class DepthOfFieldBlur extends SimpleApplication {
 
   private void initScene() {
     // load a town model
-    assetManager.registerLocator("town.zip", ZipLocator.class.getName());
+    assetManager.registerLocator("town.zip", ZipLocator.class);
     scene_geo = assetManager.loadModel("main.scene");
     scene_geo.setLocalScale(2f);
     scene_geo.setLocalTranslation(0, -10f, 0);

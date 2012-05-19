@@ -50,7 +50,7 @@ public class PhysicsTown extends SimpleApplication implements ActionListener {
     
     // You load a model with floors and walls and make them solid:
     // 1. Load the scene
-    assetManager.registerLocator("town.zip", ZipLocator.class.getName());
+    assetManager.registerLocator("town.zip", ZipLocator.class);
     scene_geo = assetManager.loadModel("main.scene");
     scene_geo.setLocalScale(2f); // adjust the size a bit
     // 2. Attach scene geometry to rootNode
