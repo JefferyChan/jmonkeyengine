@@ -176,14 +176,15 @@ public class PhysicsFallingBricks extends SimpleApplication {
   
   /** User interface: Crosshairs to help with aiming. */
   protected void initUserInterface() {
-    guiNode.detachAllChildren();
+    // remove the default UI that displays statistics
+    setDisplayStatView(false);
+    // add custom UI that displays crosshairs
     guiFont = assetManager.loadFont("Interface/Fonts/Default.fnt");
     BitmapText ch = new BitmapText(guiFont, false);
     ch.setSize(guiFont.getCharSet().getRenderedSize() * 2);
     ch.setText("+");        // Fake crosshairs made of a plus sign :-)
     ch.setLocalTranslation( // Move crosshairs to center of screen
-            settings.getWidth()  / 2 - guiFont.getCharSet().getRenderedSize() / 3 * 2,
-            settings.getHeight() / 2 - ch.getLineHeight(), 0);
+            (settings.getWidth() / 2) , (settings.getHeight() / 2)  , 0);
     guiNode.attachChild(ch);
   }
 }
