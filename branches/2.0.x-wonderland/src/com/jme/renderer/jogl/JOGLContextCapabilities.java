@@ -70,6 +70,8 @@ public final class JOGLContextCapabilities {
 
     public boolean GL_ARB_imaging;
 
+    public boolean GL_EXT_blend_color;
+    
     public boolean GL_EXT_blend_func_separate;
 
     public boolean GL_EXT_blend_equation_separate;
@@ -168,6 +170,7 @@ public final class JOGLContextCapabilities {
 
         // See BlendState
         GL_ARB_imaging = gl.isExtensionAvailable("GL_ARB_imaging");
+        GL_EXT_blend_color = gl.isExtensionAvailable("GL_EXT_blend_color");
         GL_EXT_blend_func_separate = gl
                 .isExtensionAvailable("GL_EXT_blend_func_separate");
         GL_EXT_blend_equation_separate = gl

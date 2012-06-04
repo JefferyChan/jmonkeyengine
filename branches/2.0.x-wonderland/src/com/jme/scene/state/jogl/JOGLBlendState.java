@@ -70,7 +70,10 @@ public class JOGLBlendState extends BlendState {
         super();
 
         if (!inited) {
-            supportsConstantColor = supportsEq = caps.GL_ARB_imaging;
+            // most cards support constant color, but Intel HD cards report false
+            // for ARB_imaging. Try the blend_color extension as a substitute. See
+            // OWL issue #273 for details.
+            supportsConstantColor = supportsEq = caps.GL_ARB_imaging || caps.GL_EXT_blend_color;
             supportsSeparateFunc = caps.GL_EXT_blend_func_separate;
             supportsSeparateEq = caps.GL_EXT_blend_equation_separate;
             supportsMinMax = caps.GL_EXT_blend_minmax;
