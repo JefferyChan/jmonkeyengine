@@ -6,8 +6,7 @@ import com.jme3.app.state.AppStateManager;
 import com.jme3.renderer.RenderManager;
 
 /** A template how to create an Application State.
- * This example state simply changes the background color 
- * depending on the camera position. */
+  */
 public class MyAppState1 implements AppState {
 
   private Application app;

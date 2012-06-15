@@ -32,7 +32,6 @@ public class CubeChaserState extends AbstractAppState {
     if (results.size() > 0) {
       // The closest result is the target that the player picked:
       Geometry target = results.getClosestCollision().getGeometry();
-      // if the target is one of the chosen ones affected by this control...
       // if camera closer than 10...
       if (cam.getLocation().distance(target.getLocalTranslation()) < 10) {
         // ... move the cube in the direction that camera is facing

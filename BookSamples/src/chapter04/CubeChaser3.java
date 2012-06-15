@@ -5,15 +5,17 @@ import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
+import com.jme3.math.Vector4f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Box;
 
 /**
  * This demo uses a) a Control, and b) an AppState to change the locations 
- * of cubes that the player looks at. 
+ * of certain cubes that the player looks at. 
  * The control is only attached to two white cubes, only they are affected. 
  * The AppState demo affects all cubes.
+ * Uncomment either demo 1 or demo 2.
  * Note that the simpleUpdate() method is empty -- all updates happen in the Control/AppState.
  */
 public class CubeChaser3 extends SimpleApplication {
@@ -27,7 +29,7 @@ public class CubeChaser3 extends SimpleApplication {
 
     // create two white cubes
     Box mesh = new Box(Vector3f.ZERO, 1, 1, 1);
-    cubeA = new Geometry("Box", mesh);
+    cubeA = new Geometry("white cube 1", mesh);
     Material mat = new Material(assetManager,
             "Common/MatDefs/Misc/Unshaded.j3md");
     mat.setColor("Color", ColorRGBA.White);
@@ -35,18 +37,18 @@ public class CubeChaser3 extends SimpleApplication {
     cubeA.setLocalTranslation(-1,-1,-1);
     rootNode.attachChild(cubeA);
     
-    cubeB = new Geometry("Box", mesh);
+    cubeB = new Geometry("white cube 2", mesh);
     cubeB.setMaterial(mat);
     cubeB.setLocalTranslation(1,1,1);
     rootNode.attachChild(cubeB);
     
     /** Demo 1: Add the CubeChaseControl to two white cubes */
-    //cubeA.addControl(new CubeChaserControl(cam, rootNode));
-    //cubeB.addControl(new CubeChaserControl(cam, rootNode));
+    cubeA.addControl(new CubeChaserControl(cam, rootNode));
+    cubeB.addControl(new CubeChaserControl(cam, rootNode));
     
     /** Demo 2: Activate a Chaser AppState on all cubes. */
     CubeChaserState state = new CubeChaserState(cam, rootNode);
-    stateManager.attach(state);
+    //stateManager.attach(state);
 
   }
 
@@ -57,8 +59,9 @@ public class CubeChaser3 extends SimpleApplication {
               FastMath.nextRandomInt(-10, 10),
               FastMath.nextRandomInt(-10, 10),
               FastMath.nextRandomInt(-10, 10));
-      Box mesh = new Box(loc, .5f, .5f, .5f);
-      Geometry geom = new Geometry("Box", mesh);
+      Box mesh = new Box(Vector3f.ZERO, .5f, .5f, .5f);
+      Geometry geom = new Geometry("Box"+i, mesh);
+      geom.setLocalTranslation(loc);
       Material mat = new Material(assetManager,
               "Common/MatDefs/Misc/Unshaded.j3md");
       mat.setColor("Color", ColorRGBA.randomColor());

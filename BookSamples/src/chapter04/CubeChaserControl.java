@@ -44,7 +44,8 @@ public class CubeChaserControl extends AbstractControl {
         // if camera closer than 10...
         if (cam.getLocation().distance(target.getLocalTranslation()) < 10) {
           // ... move the cube in the direction that camera is facing
-          spatial.setLocalTranslation(spatial.getLocalTranslation().addLocal(cam.getDirection()));
+          spatial.setLocalTranslation(spatial.getLocalTranslation().
+                  addLocal(cam.getDirection().normalizeLocal()));
         }
       }
     }

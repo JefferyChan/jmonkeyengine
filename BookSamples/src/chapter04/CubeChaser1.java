@@ -5,62 +5,60 @@ import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
-import com.jme3.renderer.RenderManager;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Box;
 
 /**
  * This demo uses the simpleUpdate() loop to change the location 
- * of one cube if the camera is close to it.
+ * of one white cube if the camera is close to it.
  */
 public class CubeChaser1 extends SimpleApplication {
 
-  private Geometry cube;
-  
-  @Override
-  /** initialize the scene here */
-  public void simpleInitApp() {
-    makeCubes(40);
+  private Geometry myCube;
 
-    Box mesh = new Box(Vector3f.ZERO, 1, 1, 1);
-    cube = new Geometry("Box", mesh);
-    Material mat = new Material(assetManager,
-            "Common/MatDefs/Misc/Unshaded.j3md");
-    mat.setColor("Color", ColorRGBA.White);
-    cube.setMaterial(mat);
-    rootNode.attachChild(cube);
-  }
-
-  private void makeCubes(int max) {
-    // fill the space with some random colored cubes
-    for (int i = 0; i < max; i++) {
+  /** Fill space with random static cubes. You will notice
+   *  myCube moves in relation to these other non-moving ones. */
+  private void makeCubes(int number) {
+    for (int i = 0; i < number; i++) {                // ... A loop that spawns cubes:
       Vector3f loc = new Vector3f(
               FastMath.nextRandomInt(-10, 10),
               FastMath.nextRandomInt(-10, 10),
-              FastMath.nextRandomInt(-10, 10));
-      Box mesh = new Box(loc, .5f, .5f, .5f);
-      Geometry geom = new Geometry("Box", mesh);
-      Material mat = new Material(assetManager,
-              "Common/MatDefs/Misc/Unshaded.j3md");
-      mat.setColor("Color", ColorRGBA.randomColor());
-      geom.setMaterial(mat);
-      rootNode.attachChild(geom);
-    }
+              FastMath.nextRandomInt(-10, 10));       // randomize 3D coordinates
+      Box mesh = new Box(Vector3f.ZERO, .5f, .5f, .5f);         // create cube shape
+      Geometry geom = new Geometry("white cube", mesh);      // create geometry from shape
+      geom.setLocalTranslation(loc);
+      Material mat = new Material(assetManager, 
+              "Common/MatDefs/Misc/Unshaded.j3md");   // create a material
+      mat.setColor("Color", ColorRGBA.randomColor()); // give material a random color
+      geom.setMaterial(mat);                          // apply material to geometry
+      rootNode.attachChild(geom);                     // add geometry to the scene
+    }                                                 // ... repeat.
   }
 
   @Override
-  /** Interact with update loop here */
+  /** initialize the scene here. */
+  public void simpleInitApp() {
+    // Create one white cube -- we want to chase this cube.
+    Box mesh = new Box(Vector3f.ZERO, 1, 1, 1);   // create cube shape
+    myCube = new Geometry("Box", mesh);           // create geometry from shape
+    Material mat = new Material(assetManager,
+            "Common/MatDefs/Misc/Unshaded.j3md"); // create a material
+    mat.setColor("Color", ColorRGBA.White);       // make material white
+    myCube.setMaterial(mat);                      // apply white material to geometry
+    rootNode.attachChild(myCube);                 // add geometry to the scene
+
+    makeCubes(40); // Add some more random colorful cubes as background.
+  }
+
+  @Override
+  /** This update loop controls the game and moves the cube. */
   public void simpleUpdate(float tpf) {
-    // if camera closer than 10...
-    if (cam.getLocation().distance(cube.getLocalTranslation()) < 10) {
-      // ... move the cube in the direction that camera is facing
-      cube.setLocalTranslation(cube.getLocalTranslation().addLocal(cam.getDirection()));
+    // If camera is closer than 10 units to myCube...
+    if (cam.getLocation().distance(myCube.getLocalTranslation()) < 10) {
+      // ... then move myCube away, in the direction that camera is facing.
+      myCube.setLocalTranslation(myCube.getLocalTranslation().addLocal(
+              cam.getDirection().normalizeLocal()));
     }
-  }
-
-  @Override
-  /** (optional) Advanced renderer/frameBuffer modifications */
-  public void simpleRender(RenderManager rm) {
   }
 
   /** Start the jMonkeyEngine application */
