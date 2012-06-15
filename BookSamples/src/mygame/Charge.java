@@ -6,6 +6,7 @@ import com.jme3.export.JmeImporter;
 import com.jme3.export.OutputCapsule;
 import com.jme3.export.Savable;
 import com.jme3.material.Material;
+import com.jme3.scene.Geometry;
 import java.io.IOException;
 
 /** 
@@ -23,6 +24,7 @@ public class Charge implements Savable {
   private int   ammoNum;
   private float blast;
   private Material beam_mat;
+  private Geometry geometry;
 
   /** 
    * This creates one charge type.
@@ -34,12 +36,13 @@ public class Charge implements Savable {
    *  (recommended: >1 for nuke, 1 for gatling, 0 for freeze).
    * @param m A colored material that is used for the laser beam.
    */
-  public Charge(float s, float h, int a, float b, Material m) {
+  public Charge(float s, float h, int a, float b, Geometry m) {
     this.speedDamage = s;
     this.healthDamage = h;
     this.ammoNum = a;
     this.blast = b;
-    this.beam_mat = m;
+    this.geometry = m;
+    this.beam_mat = m.getMaterial();
   }
 
   /** 
@@ -47,12 +50,13 @@ public class Charge implements Savable {
    * @param v A float array with values {SpeedDamage,HealthDamage,Ammo,Range,Blast}. 
    * @param m A colored material that is used for the laser beam.
    */
-  public Charge(float[] v, Material m) {
+  public Charge(float[] v, Geometry m) {
     this.speedDamage = v[0];
     this.healthDamage = v[1];
     this.ammoNum = (int) v[2];
     this.blast = v[3];
-    this.beam_mat = m;
+    this.geometry = m;
+    this.beam_mat = m.getMaterial();
   }
 
   /** How much Ammo this charge has*/
@@ -85,6 +89,9 @@ public class Charge implements Savable {
     return beam_mat;
   }
 
+  public Geometry getGeometry() {
+    return geometry;
+  }
   /** ----------------------------------------------------------- */
   
   public void write(JmeExporter ex) throws IOException {
@@ -93,7 +100,8 @@ public class Charge implements Savable {
     capsule.write(healthDamage, "healthDamage", 1f);
     capsule.write(speedDamage,  "speedDamage", 1f);
     capsule.write(blast,        "blast", 1f);
-    capsule.write(beam_mat,     "beam_mat", new Material());
+    capsule.write(beam_mat,     "beam_mat", null);
+    capsule.write(geometry,      "geometry", null);
   }
 
   public void read(JmeImporter im) throws IOException {
@@ -102,6 +110,7 @@ public class Charge implements Savable {
     healthDamage  = capsule.readFloat("healthDamage", 1);
     speedDamage   = capsule.readFloat("speedDamage", 1);
     blast         = capsule.readFloat("blast", 1);
-    beam_mat      = (Material) capsule.readSavable("beam_mat", new Material());
+    beam_mat      = (Material) capsule.readSavable("beam_mat", null);
+    geometry       = (Geometry)  capsule.readSavable("geometry", null);
   }
 }
