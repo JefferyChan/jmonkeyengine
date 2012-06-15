@@ -36,22 +36,25 @@ public class TowerControl extends AbstractControl implements Savable, Cloneable 
             // Tower is loaded: Tower can attack.
             /* Load the cannon with the first charge */
             Charge charge = popNextCharge();
-            /* Identify reachable creeps */
+            /* Find creeps */
             List<CreepControl> reachable = new ArrayList<CreepControl>();
             List<Spatial> creeps = game.getCreeps();
             for (Spatial creep_geo : creeps) {
                 CreepControl creep = creep_geo.getControl(CreepControl.class);
+                // Find reachable ones
                 // Depends on creep's distance to tower top versus range of charge:
                 if (creep.isAlive()
                         && getTowerTop().distance(creep.getLoc()) < getHeight() * 2f) { // RANGE
                     reachable.add(creep);
+                System.out.println(spatial.getName()+" i can reach something");
                 }
             }
             /* If the loaded tower can reach at least one creep, then... */
             if (reachable.size() > 0 && charge.getAmmoNum() > 0) {
+                                System.out.println(spatial.getName()+" i am attacking something");
                 /* ... shoot once at each reachable creep. */
                 for (CreepControl creep : reachable) {
-                    if (timer > .02f) { // TIMER
+                    if (timer > .002f) { // TIMER
                     /* Show a laser beam from tower to the creep that got hit. 
                          * The laser visuals are slightly random. */
                         Vector3f hit = creep.getLoc();
@@ -77,7 +80,7 @@ public class TowerControl extends AbstractControl implements Savable, Cloneable 
                         break;
                     }
                 }
-                timer = 0f;
+            timer = 0f;
             }
         }
     }
@@ -87,7 +90,8 @@ public class TowerControl extends AbstractControl implements Savable, Cloneable 
      */
     /**
      * All towers do some damage to target. Freeze towers additionally slow
-     * target down. A nuke deals additional damage to neighbours of the target,
+     * target down. 
+     * A nuke charge deals additional blast damage to neighbours of the target,
      * but it also increases their speed ("thaws and recharges them").
      */
     private void applyDamage(CreepControl creep, Charge charge) {

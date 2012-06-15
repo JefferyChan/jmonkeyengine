@@ -43,9 +43,9 @@ public class CreepControl extends AbstractControl implements Savable, Cloneable 
                 kamikaze();
             }
         } else {
-            // Creep got killed by tower, increase player budget as reward.
-            game.addBudgetMod(1);
-            remove();
+            // Creep got killed by tower
+            game.addBudgetMod(1); // increase player budget as reward.
+            remove();             // remove me (this creep)
         }
     }
 
