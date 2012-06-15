@@ -26,8 +26,10 @@ import java.util.logging.Level;
  * A pack of creeps appears at the far end of the positive z axis and 
  * runs down through the valley towards the player base.<br />
  * <ul>
- * <li>Main: Event loop, HUD, input handling (selecting Towers, loading Charges)</li>
- * <li>Factory: Initializes the scene, generates Charges.</li>
+ * <li>Main: Inits UI, light, input handling (selecting Towers, loading Charges), 
+ * starts and ends the game</li>
+ * <li>Factory: Generates static spatials and Charges.</li>
+ * <li>GamePlayAppState: Initializes the scene, runs the main event loop.</li>
  * <li>PlayerBaseControl: Manages score, level, player health, player budget. </li>
  * <li>CreepControl: Manages creep health and speed; 
  *     automatically moves Creeps towards playerbase; 
@@ -41,8 +43,8 @@ import java.util.logging.Level;
  */
 public class Main extends SimpleApplication {
 
-  // Factory creates playerbase, creeps, towers, and charges for a level.
-  Factory factory;
+    // Factory creates playerbase, creeps, towers, and charges for a level.
+    Factory factory;
     // GUI and input handling 
     private int selected = -1;   // tracks which tower the player has selected 
     private GamePlayAppState game;
@@ -75,7 +77,7 @@ public class Main extends SimpleApplication {
         rootNode.addLight(sun);
 
         selected = -1;
-        
+
         factory = new Factory(assetManager);
         // create AppStates and attach ui state already
         ui = new UIAppState(guiNode, guiFont);
@@ -86,6 +88,12 @@ public class Main extends SimpleApplication {
         initInputs(); // activate input handling
         startGame(1); // start game with level 1
     }
+
+    /** This loop is empty! We moved everything cleanly 
+      * into AppStates and Controls. */
+    @Override
+    public void simpleUpdate(float tpf) { }
+    
 
     /**
      * --------------------------------------------------------------
@@ -106,15 +114,15 @@ public class Main extends SimpleApplication {
                 "Restart", "Select", "Quit",
                 "LoadGatlingCharge", "LoadNukeCharge", "LoadFreezeCharge");
     }
-    
     /**
-   * Input handling<br />
-   * You left-click to select one Tower and deselect the previous one.
-   * You press keys (F / G / N) to assign Charges to the selected Tower.
-   * You can only assign Charges if the player has budget.
-   * A tower can have zero to 'level+1' Charges assigned.
+     * Input handling<br />
+     * You left-click to select one Tower and deselect the previous one.
+     * You press keys (F / G / N) to assign Charges to the selected Tower.
+     * You can only assign Charges if the player has budget.
+     * A tower can have zero to 'level+1' Charges assigned.
      */
     private ActionListener actionListener = new ActionListener() {
+
         @Override
         public void onAction(String mapping, boolean keyDown, float tpf) {
             if (stateManager.hasState(game)) {
@@ -205,4 +213,5 @@ public class Main extends SimpleApplication {
     private void endGame() {
         stateManager.detach(game);
     }
+
 }

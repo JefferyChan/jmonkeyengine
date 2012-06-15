@@ -101,7 +101,7 @@ public class Charge implements Savable {
     capsule.write(speedDamage,  "speedDamage", 1f);
     capsule.write(blast,        "blast", 1f);
     capsule.write(beam_mat,     "beam_mat", null);
-    capsule.write(geometry,      "geometry", null);
+    capsule.write(geometry,     "geometry", null);
   }
 
   public void read(JmeImporter im) throws IOException {

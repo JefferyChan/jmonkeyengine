@@ -34,7 +34,7 @@ public class TowerControl extends AbstractControl implements Savable, Cloneable 
         /* Test whether this tower is loaded with charges. */
         if (getChargeNum() > 0) {
             // Tower is loaded: Tower can attack.
-      /* Load the cannon with the first charge */
+            /* Load the cannon with the first charge */
             Charge charge = popNextCharge();
             /* Identify reachable creeps */
             List<CreepControl> reachable = new ArrayList<CreepControl>();
@@ -52,7 +52,7 @@ public class TowerControl extends AbstractControl implements Savable, Cloneable 
                 /* ... shoot once at each reachable creep. */
                 for (CreepControl creep : reachable) {
                     if (timer > .02f) { // TIMER
-            /* Show a laser beam from tower to the creep that got hit. 
+                    /* Show a laser beam from tower to the creep that got hit. 
                          * The laser visuals are slightly random. */
                         Vector3f hit = creep.getLoc();
                         Line beam = new Line(
@@ -64,11 +64,9 @@ public class TowerControl extends AbstractControl implements Savable, Cloneable 
                         Geometry beam_geo = new Geometry("Beam", beam);
                         beam_geo.setMaterial(charge.getBeamMaterial());
                         game.addBeam(beam_geo);
-                        /* The laser beam has an effect on the creep */
+                        // The laser beam has an effect on the creep
                         applyDamage(creep, charge);
-                        /**
-                         * Shooting uses up 1 unit of ammo in this charge
-                         */
+                        // Shooting uses up 1 unit of ammo in this charge
                         charge.addAmmo(-1);
                         if (charge.getAmmoNum() <= 0) {
                             // this charge is out of ammo, discard the charge.

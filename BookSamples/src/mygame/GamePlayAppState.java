@@ -11,6 +11,15 @@ import com.jme3.scene.Spatial;
 import java.util.List;
 
 /**
+ * The GamePlayAppState class initializes the game. <br/> The number of elements
+ * generated depends on the level. Init order: 1. playerbase, 2. creeps, 3.
+ * towers. (Because towers depend on creeps (towers want to shoot at creeps);
+ * and creeps depend on the playerbase (they want to attack the player)).<br/>
+ * Here you also configure the game mechanic factors to make the game more
+ * balanced: initial numbers of towers and creeps, initial speed of creeps,
+ * initial health of creeps and player, initial budget of player, as well as
+ * effects of tower charges (effects are "added" to creep health/speed when the
+ * charge hits).
  *
  * @author normenhansen
  */
