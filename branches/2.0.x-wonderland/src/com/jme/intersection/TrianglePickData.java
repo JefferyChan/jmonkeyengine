@@ -48,10 +48,9 @@ import com.jme.scene.TriMesh;
 public class TrianglePickData extends PickData {
     private static final Logger logger = Logger.getLogger(TrianglePickData.class.getName());
 
-    private final Vector3f[] worldTriangle = new Vector3f[]{new Vector3f(), new Vector3f(), new Vector3f()};
     private final Vector3f[] vertices = new Vector3f[]{new Vector3f(), new Vector3f(), new Vector3f()};
 
-    private final Vector3f intersectionPoint = new Vector3f();
+    private Vector3f intersectionPoint = new Vector3f();
     private int intersectionTri = -1;
     private TriMesh intersectionMesh = null;
 
@@ -107,30 +106,46 @@ public class TrianglePickData extends PickData {
 		}
 		
 		intersectionTri = tris.get(0).intValue();
-        intersectionMesh = mesh;
+                intersectionMesh = mesh;
+                
+                mesh.getTriangle(intersectionTri, vertices);
+                intersectionPoint = getIntersectionPoint(vertices, mesh);
+                        
 		if (Float.isInfinite( distanceSq )) {
             		return distanceSq;
         	} else
 			return FastMath.sqrt(distanceSq);
 	}
 
-	private float getDistanceSquaredToTriangle( Vector3f[] triangle, Spatial spatial ) {
-		// Transform triangle to world space
-		for (int i = 0; i < 3; i++) {
-            spatial.localToWorld(triangle[i], worldTriangle[i]);
-		}
-		// Intersection test
-		Ray ray = getRay();
-		if (ray.intersectWhere(worldTriangle[0], worldTriangle[1],
-				worldTriangle[2], intersectionPoint)) {
-			return ray.getOrigin().distanceSquared(intersectionPoint);
-		}
+	private float getDistanceSquaredToTriangle(Vector3f[] triangle, Spatial spatial) {
+            Vector3f intersection = getIntersectionPoint(triangle, spatial);
+            if (intersection != null) {
+                return getRay().getOrigin().distanceSquared(intersection);
+            }
 
-		// Should not happen
-		//TODO: removed because it does happen = spamming... need to find out why instead
-//        logger.warning("Couldn't detect nearest triangle intersection!");
-		return Float.POSITIVE_INFINITY;
-	}
+            // Should not happen
+            //TODO: removed because it does happen = spamming... need to find out why instead
+            //  logger.warning("Couldn't detect nearest triangle intersection!");
+            return Float.POSITIVE_INFINITY;
+        }
+        
+        private Vector3f getIntersectionPoint(Vector3f[] triangle, Spatial spatial) {
+            // transform triangle to world space
+            Vector3f t0 = spatial.localToWorld(triangle[0], null);
+            Vector3f t1 = spatial.localToWorld(triangle[1], null);
+            Vector3f t2 = spatial.localToWorld(triangle[2], null);
+        
+            // calculate intersection
+            Ray ray = getRay();
+            Vector3f intersection = new Vector3f();
+            if (!ray.intersectWhere(t0, t1, t2, intersection)) {
+                // no intersection
+                return null;
+            }
+            
+            return intersection;
+            
+        }
         
         public void setIntersectionPoint(Vector3f v) {
             intersectionPoint.set(v);
