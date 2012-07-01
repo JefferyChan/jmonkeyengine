@@ -23,6 +23,7 @@ import com.jme3.scene.shape.Box;
 public class TargetPickCursor extends SimpleApplication {
 
     private Trigger trigger_rotate = new MouseButtonTrigger(MouseInput.BUTTON_LEFT);
+    private static Box mesh = new Box(Vector3f.ZERO, 1, 1, 1);
 
     @Override
     /** initialize the scene here */
@@ -40,7 +41,6 @@ public class TargetPickCursor extends SimpleApplication {
 
     /** Creates colored named cubes, translates to their position. */
     public Geometry myBox(String name, Vector3f loc, ColorRGBA color) {
-        Box mesh = new Box(Vector3f.ZERO, 1, 1, 1);
         Geometry geom = new Geometry(name, mesh);
         Material mat = new Material(assetManager,
                 "Common/MatDefs/Misc/Unshaded.j3md");
@@ -59,7 +59,7 @@ public class TargetPickCursor extends SimpleApplication {
                 // Convert screen click to 3d position
                 Vector2f click2d = inputManager.getCursorPosition();
                 Vector3f click3d = cam.getWorldCoordinates(
-                        new Vector2f(click2d.getX(), click2d.getY()), 0f).clone();
+                        new Vector2f(click2d.getX(), click2d.getY()), 0f);
                 Vector3f dir = cam.getWorldCoordinates(
                         new Vector2f(click2d.getX(), click2d.getY()), 1f).subtractLocal(click3d);
                 // Aim the ray from the clicked spot forwards.

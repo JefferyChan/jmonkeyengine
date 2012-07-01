@@ -14,6 +14,7 @@ import com.jme3.scene.shape.Box;
  */
 public class CubeChaser1 extends SimpleApplication {
 
+    private static Box mesh = new Box(Vector3f.ZERO, 1, 1, 1);
     private Geometry scaredCube;
  
     /** Fill space with random static cubes. */
@@ -30,7 +31,6 @@ public class CubeChaser1 extends SimpleApplication {
     }
 
     public Geometry myBox(String name, Vector3f loc, ColorRGBA color) {
-        Box mesh = new Box(Vector3f.ZERO, 1, 1, 1);
         Geometry geom = new Geometry(name, mesh);
         Material mat = new Material(assetManager,
                 "Common/MatDefs/Misc/Unshaded.j3md");

@@ -45,13 +45,13 @@ public class UserInput extends SimpleApplication {
         geom = new Geometry("Box", mesh);
         Material mat = new Material(assetManager,
                 "Common/MatDefs/Misc/Unshaded.j3md");
-        mat.setColor("m_Color", ColorRGBA.Blue);
+        mat.setColor("Color", ColorRGBA.Blue);
         geom.setMaterial(mat);
         rootNode.attachChild(geom);
     }
     private ActionListener actionListener = new ActionListener() {
-
         public void onAction(String name, boolean isPressed, float tpf) {
+System.out.println(name );
             if (name.equals(MAPPING_COLOR) && !isPressed) {
                 geom.getMaterial().setColor("Color", ColorRGBA.randomColor());
             } // else if ...
@@ -60,7 +60,7 @@ public class UserInput extends SimpleApplication {
     private AnalogListener analogListener = new AnalogListener() {
 
         public void onAnalog(String name, float intensity, float tpf) {
-
+    System.out.println(name );
             if (name.equals(MAPPING_ROTATE)) {
                 geom.rotate(0, intensity * 10f, 0);
             } // else if ...

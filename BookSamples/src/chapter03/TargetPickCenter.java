@@ -24,6 +24,7 @@ import com.jme3.scene.shape.Box;
 public class TargetPickCenter extends SimpleApplication {
     private static final String MAPPING_ROTATE = "Rotate";
     private static final Trigger TRIGGER_ROTATE = new MouseButtonTrigger(MouseInput.BUTTON_LEFT);
+    private static Box mesh = new Box(Vector3f.ZERO, 1, 1, 1);
 
     @Override
     /** initialize the scene here */
@@ -41,7 +42,6 @@ public class TargetPickCenter extends SimpleApplication {
 
     /** Creates colored named cubes, translates to their position. */
     public Geometry myBox(String name, Vector3f loc, ColorRGBA color) {
-        Box mesh = new Box(Vector3f.ZERO, 1, 1, 1);
         Geometry geom = new Geometry(name, mesh);
         Material mat = new Material(assetManager,
                 "Common/MatDefs/Misc/Unshaded.j3md");

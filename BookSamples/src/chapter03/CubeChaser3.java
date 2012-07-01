@@ -17,6 +17,8 @@ import com.jme3.scene.shape.Box;
  */
 public class CubeChaser3 extends SimpleApplication {
 
+    private static Box mesh = new Box(Vector3f.ZERO, 1, 1, 1);
+    
     @Override
     /** initialize the scene here */
     public void simpleInitApp() {
@@ -33,15 +35,14 @@ public class CubeChaser3 extends SimpleApplication {
                     FastMath.nextRandomInt(-20, 20));
             Geometry geom = myBox("Cube" + i, loc, ColorRGBA.randomColor());
             // make random cubes chasable
-            if (FastMath.nextRandomInt(1, 4) == 2) {
-                geom.addControl(new CubeChaserControl(cam, rootNode));
+            if (FastMath.nextRandomInt(1, 4) == 4) {
+                geom.addControl(new CubeChaser3Control(cam, rootNode));
             }
             rootNode.attachChild(geom);
         }
     }
 
     public Geometry myBox(String name, Vector3f loc, ColorRGBA color) {
-        Box mesh = new Box(Vector3f.ZERO, 1, 1, 1);
         Geometry geom = new Geometry(name, mesh);
         Material mat = new Material(assetManager,
                 "Common/MatDefs/Misc/Unshaded.j3md");
