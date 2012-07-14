@@ -3,7 +3,6 @@ package chapter04;
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.AnimEventListener;
-import com.jme3.animation.LoopMode;
 import com.jme3.app.SimpleApplication;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
@@ -15,8 +14,9 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 
-/** Sample 7 - how to load an OgreXML model and play an animation, 
- * using channels, a controller, and an AnimEventListener. */
+/** Sample 7 - how to load an animated model and play the animation. 
+ * Press the spacebar to start the animation.
+ * We use a control with one channel, and an AnimEventListener. */
 public class AnimateModel extends SimpleApplication
         implements AnimEventListener {
 
@@ -56,27 +56,22 @@ public class AnimateModel extends SimpleApplication
 
         channel = control.createChannel();
         channel.setAnim(ANI_IDLE);
-        channel.setLoopMode(LoopMode.Loop);
-
-
-//        SkeletonDebugger skeletonDebug =
-//                new SkeletonDebugger("skeleton", control.getSkeleton());
-//        Material mat = new Material(assetManager,
-//                "Common/MatDefs/Misc/Unshaded.j3md");
-//        mat.setColor("Color", ColorRGBA.Green);
-//        mat.getAdditionalRenderState().setDepthTest(false);
-//        skeletonDebug.setMaterial(mat);
-//        player.attachChild(skeletonDebug);
     }
 
     public void onAnimCycleDone(AnimControl control, AnimChannel channel, String animName) {
-//        if (animName.equals(ANI_WALK)) {
-//            channel.setAnim(ANI_IDLE);
-//        }
+        if (animName.equals(ANI_WALK)) {
+            System.out.println(control.getSpatial().getName() + " completed one walk loop.");
+        } else if (animName.equals(ANI_IDLE)) {
+            System.out.println(control.getSpatial().getName() + " completed one idle loop.");
+        }
     }
 
     public void onAnimChange(AnimControl control, AnimChannel channel, String animName) {
-        // unused
+        if (animName.equals(ANI_WALK)) {
+            System.out.println(control.getSpatial().getName() + " started walking.");
+        } else if (animName.equals(ANI_IDLE)) {
+            System.out.println(control.getSpatial().getName() + " started being idle.");
+        }
     }
     private ActionListener actionListener = new ActionListener() {
 
@@ -91,12 +86,11 @@ public class AnimateModel extends SimpleApplication
             }
         }
     };
-    
     private AnalogListener analogListener = new AnalogListener() {
 
         public void onAnalog(String name, float intensity, float tpf) {
-            if (name.equals(MAPPING_WALK) ) {
-                player.move(0, 0,tpf);
+            if (name.equals(MAPPING_WALK)) {
+                player.move(0, 0, tpf);
             }
         }
     };
