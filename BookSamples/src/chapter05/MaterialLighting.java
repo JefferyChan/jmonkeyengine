@@ -33,10 +33,8 @@ public class MaterialLighting extends SimpleApplication {
             "Common/MatDefs/Light/Lighting.j3md");
     rock_mat.setTexture("DiffuseMap",
             assetManager.loadTexture("Textures/Pebbles/Pebbles_diffuse.png"));
-    rock_mat.setTexture("NormalMap",
-            assetManager.loadTexture("Textures/Pebbles/Pebbles_normal.png"));
-    rock_mat.setTexture("SpecularMap",
-            assetManager.loadTexture("Textures/Pebbles/Pebbles_specular.png"));
+//    rock_mat.setTexture("NormalMap",
+//            assetManager.loadTexture("Textures/Pebbles/Pebbles_normal.png"));
     rock_mat.setFloat("Shininess", 10);    // [0,128]
     rock_mat.setBoolean("UseMaterialColors",true);
     rock_mat.setColor("Ambient",ColorRGBA.White);
@@ -49,13 +47,19 @@ public class MaterialLighting extends SimpleApplication {
    
     /** A wall with a rough bricky surface */
     Box wall_mesh = new Box(2,2,2);
-    Geometry wall_geo = new Geometry("Shiny rock", wall_mesh);
+    TangentBinormalGenerator.generate(wall_mesh);           // Generate Normals for bump maps!
+    Geometry wall_geo = new Geometry("bumpy brick wall", wall_mesh);
     Material wall_mat = new Material(assetManager, 
             "Common/MatDefs/Light/Lighting.j3md");
     wall_mat.setTexture("DiffuseMap",
             assetManager.loadTexture("Textures/BrickWall/BrickWall_diffuse.jpg"));
-    wall_mat.setTexture("NormalMap",
-            assetManager.loadTexture("Textures/BrickWall/BrickWall_normal.jpg"));
+//    wall_mat.setTexture("NormalMap",
+//            assetManager.loadTexture("Textures/BrickWall/BrickWall_normal.jpg"));
+    wall_mat.setFloat("Shininess", 10);    // [0,128]
+    wall_mat.setBoolean("UseMaterialColors",true);
+    wall_mat.setColor("Ambient",ColorRGBA.White);
+    wall_mat.setColor("Specular",ColorRGBA.White);
+    wall_mat.setColor("Diffuse",ColorRGBA.White);
     wall_geo.setMaterial(wall_mat);
     wall_geo.setLocalTranslation(0,-3,0);   // Move it a bit
     rootNode.attachChild(wall_geo);
