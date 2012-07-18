@@ -31,7 +31,8 @@ public class MaterialColorGlow extends SimpleApplication {
     Sphere sphere = new Sphere(32,32, 1f);
     
     Geometry shiny_sphere1 = new Geometry("normal sphere", sphere);
-    Material mat_lit1 = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
+    Material mat_lit1 = new Material(assetManager, 
+            "Common/MatDefs/Light/Lighting.j3md");
     mat_lit1.setBoolean("UseMaterialColors",true);
     mat_lit1.setColor("Ambient", ColorRGBA.Cyan );
     mat_lit1.setColor("Diffuse", ColorRGBA.Cyan );
@@ -40,7 +41,8 @@ public class MaterialColorGlow extends SimpleApplication {
     rootNode.attachChild(shiny_sphere1); 
     
     Geometry shiny_sphere2 = new Geometry("black and white chequered", sphere);
-    Material mat_lit2 = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
+    Material mat_lit2 = new Material(assetManager, 
+            "Common/MatDefs/Light/Lighting.j3md");
     mat_lit2.setBoolean("UseMaterialColors",true);
     mat_lit2.setColor("Diffuse", ColorRGBA.Cyan );
     mat_lit2.setColor("Ambient", ColorRGBA.Cyan );
@@ -50,11 +52,13 @@ public class MaterialColorGlow extends SimpleApplication {
     rootNode.attachChild(shiny_sphere2); 
     
     Geometry shiny_sphere3 = new Geometry("random color noise", sphere);
-    Material mat_lit3 = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
+    Material mat_lit3 = new Material(assetManager, 
+            "Common/MatDefs/Light/Lighting.j3md");
     mat_lit3.setBoolean("UseMaterialColors",true);
     mat_lit3.setColor("Diffuse", ColorRGBA.Cyan );
     mat_lit3.setColor("Ambient", ColorRGBA.Cyan );
-    mat_lit3.setTexture("GlowMap", assetManager.loadTexture("Textures/bloom-glow.png"));
+    mat_lit3.setTexture("GlowMap", assetManager.
+            loadTexture("Textures/bloom-glow.png"));
     mat_lit3.setColor("GlowColor", ColorRGBA.White );
     shiny_sphere3.setMaterial(mat_lit3);
     shiny_sphere3.move(2.5f, 0, 0);

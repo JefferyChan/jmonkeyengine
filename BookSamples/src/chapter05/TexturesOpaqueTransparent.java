@@ -17,8 +17,7 @@ import com.jme3.util.TangentBinormalGenerator;
 
 /** 
  * How to give an object's surface a material and texture.
- * This class demonstrates opaque and transparent textures, 
- * and textures that let colors "bleed" through.
+ * This class demonstrates opaque and transparent textures. 
  * Uses Phong illumination. */
 public class TexturesOpaqueTransparent extends SimpleApplication {
 
@@ -37,16 +36,16 @@ public class TexturesOpaqueTransparent extends SimpleApplication {
         Geometry sphere_geo = new Geometry("lit textured sphere", sphere_mesh);
         Material sphere_mat = new Material(assetManager,
                 "Common/MatDefs/Light/Lighting.j3md");
-        sphere_mat.setTexture("AlphaMap",
-                assetManager.loadTexture("Interface/Monkey.png")); 
         sphere_mat.setTexture("DiffuseMap",
-                assetManager.loadTexture("Interface/Monkey.png")); 
+                assetManager.loadTexture("Interface/Monkey.png"));
         sphere_mat.setBoolean("UseMaterialColors", true);
         sphere_mat.setColor("Diffuse", ColorRGBA.Gray);
-        sphere_mat.setColor("Ambient", ColorRGBA.Gray); 
+        sphere_mat.setColor("Ambient", ColorRGBA.Gray);
+        // alpha test start
         sphere_mat.getAdditionalRenderState().setAlphaTest(true);
-        sphere_mat.getAdditionalRenderState().setAlphaFallOff(.0005f);
+        sphere_mat.getAdditionalRenderState().setAlphaFallOff(.5f);
         sphere_geo.setQueueBucket(Bucket.Transparent);
+        // alpha test end
         sphere_geo.setMaterial(sphere_mat);
         sphere_geo.move(-2f, 0f, 0f);
         sphere_geo.rotate(FastMath.DEG_TO_RAD * -90, FastMath.DEG_TO_RAD * 120, 0f);
@@ -54,7 +53,7 @@ public class TexturesOpaqueTransparent extends SimpleApplication {
 
         /** This material turns the box into a stained glass window. 
          * The texture has an alpha channel and is partially transparent. */
-        Box window_mesh = new Box(new Vector3f(1f, 0f, 0f), 1f, 1.4f, 0.01f);
+        Box window_mesh = new Box(new Vector3f(0f, 0f, 0f), 1f, 1.4f, 0.01f);
         Geometry window_geo = new Geometry("stained glass window", window_mesh);
         Material window_mat = new Material(assetManager,
                 "Common/MatDefs/Light/Lighting.j3md");
@@ -64,6 +63,7 @@ public class TexturesOpaqueTransparent extends SimpleApplication {
         window_geo.setMaterial(window_mat);
         window_geo.setQueueBucket(Bucket.Transparent);
         window_geo.setMaterial(window_mat);
+        window_geo.move(1, 0, 0);
         rootNode.attachChild(window_geo);
 
         /** A box with its material color "bleeding" through. The texture has 
@@ -79,8 +79,8 @@ public class TexturesOpaqueTransparent extends SimpleApplication {
                 assetManager.loadTexture("Textures/Bark/bark_normal.png"));
         log_mat.setBoolean("UseMaterialColors", true);
         log_mat.setColor("Diffuse", ColorRGBA.Orange);
-        log_mat.setColor("Ambient", ColorRGBA.Gray); 
-        log_mat.setBoolean("UseAlpha",true);
+        log_mat.setColor("Ambient", ColorRGBA.Gray);
+        log_mat.setBoolean("UseAlpha", true);
         log_geo.setMaterial(log_mat);
         log_geo.move(0f, 0f, -2f);
         log_geo.rotate(0f, FastMath.DEG_TO_RAD * 90, 0f);

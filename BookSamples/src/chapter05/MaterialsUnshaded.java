@@ -16,8 +16,7 @@ import com.jme3.scene.shape.Sphere;
 /** 
  * How to give an object's surface a material and texture.
  * This class demonstrates opaque and transparent textures, 
- * and textures that let colors "bleed" through. 
- * No Phong illumination. */
+ * No Phong illumination -- just unshaded with one lightmap. */
 public class MaterialsUnshaded extends SimpleApplication {
 
     public static void main(String[] args) {
