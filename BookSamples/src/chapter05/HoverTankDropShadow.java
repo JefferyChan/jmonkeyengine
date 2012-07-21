@@ -63,22 +63,22 @@ public class HoverTankDropShadow extends SimpleApplication {
         viewPort.addProcessor(fpp);
 
         /** A floor with a seemless tiled, multimapped texture */
-        Box floor_mesh = new Box(new Vector3f(-20, -1, -20), new Vector3f(20, -2, 20));
-        floor_mesh.scaleTextureCoordinates(new Vector2f(8, 8));
-        Geometry floor_geo = new Geometry("floor", floor_mesh);
-        Material floor_mat = new Material(assetManager,
+        Box floorMesh = new Box(new Vector3f(-20, -1, -20), new Vector3f(20, -2, 20));
+        floorMesh.scaleTextureCoordinates(new Vector2f(8, 8));
+        Geometry floorGeo = new Geometry("floor", floorMesh);
+        Material floorMat = new Material(assetManager,
                 "Common/MatDefs/Light/Lighting.j3md");
-        floor_mat.setTexture("DiffuseMap", assetManager.loadTexture(
+        floorMat.setTexture("DiffuseMap", assetManager.loadTexture(
                 "Textures/BrickWall/BrickWall_diffuse.jpg"));
-        floor_mat.getTextureParam("DiffuseMap").
+        floorMat.getTextureParam("DiffuseMap").
                 getTextureValue().setWrap(WrapMode.Repeat);
-        floor_mat.setTexture("NormalMap", assetManager.loadTexture(
+        floorMat.setTexture("NormalMap", assetManager.loadTexture(
                 "Textures/BrickWall/BrickWall_normal.jpg"));
-        floor_mat.getTextureParam("NormalMap").
+        floorMat.getTextureParam("NormalMap").
                 getTextureValue().setWrap(WrapMode.Repeat);
-        floor_geo.setMaterial(floor_mat);
-        floor_geo.setShadowMode(ShadowMode.Receive);
-        rootNode.attachChild(floor_geo);
+        floorGeo.setMaterial(floorMat);
+        floorGeo.setShadowMode(ShadowMode.Receive);
+        rootNode.attachChild(floorGeo);
     }
 
     @Override

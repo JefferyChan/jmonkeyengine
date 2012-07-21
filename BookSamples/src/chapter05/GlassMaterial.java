@@ -29,41 +29,41 @@ public class GlassMaterial extends SimpleApplication {
         flyCam.setMoveSpeed(50f);
         
         /** A floor with a rough bumpy surface */
-        Box box = new Box(10, 1, 10);
-        TangentBinormalGenerator.generate(box);
+        Box floorMesh = new Box(10, 1, 10);
+        TangentBinormalGenerator.generate(floorMesh);
         //box.scaleTextureCoordinates(new Vector2f(5f,5f));
-        Geometry floor_geo = new Geometry("floor", box);
+        Geometry floorGeo = new Geometry("floor", floorMesh);
 
-        Material floor_mat = new Material(assetManager,
+        Material floorMat = new Material(assetManager,
                 "Common/MatDefs/Light/Lighting.j3md");
-        floor_mat.setTexture("DiffuseMap", assetManager.loadTexture(
+        floorMat.setTexture("DiffuseMap", assetManager.loadTexture(
                 "Textures/BrickWall/BrickWall_diffuse.jpg"));
-        floor_mat.setTexture("NormalMap", assetManager.loadTexture(
+        floorMat.setTexture("NormalMap", assetManager.loadTexture(
                 "Textures/BrickWall/BrickWall_normal.jpg"));
-        floor_geo.setMaterial(floor_mat);
-        floor_mat.getTextureParam("DiffuseMap").
+        floorGeo.setMaterial(floorMat);
+        floorMat.getTextureParam("DiffuseMap").
                 getTextureValue().setWrap(WrapMode.Repeat);
-        floor_geo.setLocalTranslation(0, -4f, 0);   // Move it a bit
-        rootNode.attachChild(floor_geo);
+        floorGeo.setLocalTranslation(0, -4f, 0);   // Move it a bit
+        rootNode.attachChild(floorGeo);
 
-        Sphere sphere = new Sphere(32, 32, 2.5f);
+        Sphere glassMesh = new Sphere(32, 32, 2.5f);
         // generate normal vector data for normal maps
-        TangentBinormalGenerator.generate(sphere);
+        TangentBinormalGenerator.generate(glassMesh);
 
-        Geometry glass_geo = new Geometry("normal sphere", sphere);
-        Material glass_mat = new Material(assetManager,
+        Geometry glassGeo = new Geometry("normal sphere", glassMesh);
+        Material glassMat = new Material(assetManager,
                 "Common/MatDefs/Light/Lighting.j3md");
-        glass_mat.setBoolean("UseMaterialColors", true);
-        glass_mat.setColor("Ambient", new ColorRGBA(0, 1, 1, .66f));
-        glass_mat.setColor("Diffuse", new ColorRGBA(0, 1, 1, .66f));
-        glass_mat.setColor("Specular", ColorRGBA.White);
-        glass_mat.setFloat("Shininess", 128f);    // [0,128]
-        glass_mat.getAdditionalRenderState().setFaceCullMode(FaceCullMode.Off);
-        glass_mat.getAdditionalRenderState().setBlendMode(BlendMode.Alpha);
-        glass_geo.setQueueBucket(Bucket.Transparent);
-        glass_geo.setMaterial(glass_mat);
-        glass_geo.rotate(FastMath.DEG_TO_RAD * 90, 0, 0);
-        rootNode.attachChild(glass_geo);
+        glassMat.setBoolean("UseMaterialColors", true);
+        glassMat.setColor("Ambient", new ColorRGBA(0, 1, 1, .66f));
+        glassMat.setColor("Diffuse", new ColorRGBA(0, 1, 1, .66f));
+        glassMat.setColor("Specular", ColorRGBA.White);
+        glassMat.setFloat("Shininess", 128f);    // [0,128]
+        glassMat.getAdditionalRenderState().setFaceCullMode(FaceCullMode.Off);
+        glassMat.getAdditionalRenderState().setBlendMode(BlendMode.Alpha);
+        glassGeo.setQueueBucket(Bucket.Transparent);
+        glassGeo.setMaterial(glassMat);
+        glassGeo.rotate(FastMath.DEG_TO_RAD * 90, 0, 0);
+        rootNode.attachChild(glassGeo);
 
         /** Must add a light to make the lit object visible! */
         DirectionalLight sun = new DirectionalLight();

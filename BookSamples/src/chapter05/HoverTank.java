@@ -44,23 +44,23 @@ public class HoverTank extends SimpleApplication {
         Material mat = new Material(assetManager,
                 "Common/MatDefs/Light/Lighting.j3md");
 
-        TextureKey tank_diffuse = new TextureKey("Models/HoverTank/tank_diffuse.jpg", false);
-        mat.setTexture("DiffuseMap", assetManager.loadTexture(tank_diffuse));
+        TextureKey tankDiffuse = new TextureKey("Models/HoverTank/tank_diffuse.jpg", false);
+        mat.setTexture("DiffuseMap", assetManager.loadTexture(tankDiffuse));
 
         TangentBinormalGenerator.generate(tank);
-        TextureKey tank_normal = new TextureKey("Models/HoverTank/tank_normals.png", false);
-        mat.setTexture("NormalMap", assetManager.loadTexture(tank_normal));
+        TextureKey tankNormal = new TextureKey("Models/HoverTank/tank_normals.png", false);
+        mat.setTexture("NormalMap", assetManager.loadTexture(tankNormal));
 
-        TextureKey tank_specular = new TextureKey("Models/HoverTank/tank_specular.jpg", false);
-        mat.setTexture("SpecularMap", assetManager.loadTexture(tank_specular));
+        TextureKey tankSpecular = new TextureKey("Models/HoverTank/tank_specular.jpg", false);
+        mat.setTexture("SpecularMap", assetManager.loadTexture(tankSpecular));
         mat.setBoolean("UseMaterialColors", true);
         mat.setColor("Ambient", ColorRGBA.Gray);
         mat.setColor("Diffuse", ColorRGBA.White);
         mat.setColor("Specular", ColorRGBA.White);
         mat.setFloat("Shininess", 120f);
 
-        TextureKey tank_glow = new TextureKey("Models/HoverTank/tank_glow_map.jpg", false);
-        mat.setTexture("GlowMap", assetManager.loadTexture(tank_glow));
+        TextureKey tankGlow = new TextureKey("Models/HoverTank/tank_glow_map.jpg", false);
+        mat.setTexture("GlowMap", assetManager.loadTexture(tankGlow));
         mat.setColor("GlowColor", ColorRGBA.White);
 
         //Material mat = assetManager.loadMaterial("Materials/tank.j3m");
@@ -69,19 +69,19 @@ public class HoverTank extends SimpleApplication {
         rootNode.attachChild(tank);
 
         /** a textured floor geometry */
-        Box floor_mesh = new Box(new Vector3f(-20, -2, -20), new Vector3f(20, -3, 20));
-        floor_mesh.scaleTextureCoordinates(new Vector2f(8, 8));
-        Geometry floor_geo = new Geometry("floor", floor_mesh);
-        Material floor_mat = new Material(assetManager,
+        Box floorMesh = new Box(new Vector3f(-20, -2, -20), new Vector3f(20, -3, 20));
+        floorMesh.scaleTextureCoordinates(new Vector2f(8, 8));
+        Geometry floorGeo = new Geometry("floor", floorMesh);
+        Material floorMat = new Material(assetManager,
                 "Common/MatDefs/Light/Lighting.j3md");
-        floor_mat.setTexture("DiffuseMap", assetManager.loadTexture(
+        floorMat.setTexture("DiffuseMap", assetManager.loadTexture(
                 "Textures/BrickWall/BrickWall_diffuse.jpg"));
-        floor_mat.setTexture("NormalMap", assetManager.loadTexture(
+        floorMat.setTexture("NormalMap", assetManager.loadTexture(
                 "Textures/BrickWall/BrickWall_normal.jpg"));
-        floor_mat.getTextureParam("NormalMap").getTextureValue().setWrap(WrapMode.Repeat);
-        floor_mat.getTextureParam("DiffuseMap").getTextureValue().setWrap(WrapMode.Repeat);
-        floor_geo.setMaterial(floor_mat);
-        rootNode.attachChild(floor_geo);
+        floorMat.getTextureParam("NormalMap").getTextureValue().setWrap(WrapMode.Repeat);
+        floorMat.getTextureParam("DiffuseMap").getTextureValue().setWrap(WrapMode.Repeat);
+        floorGeo.setMaterial(floorMat);
+        rootNode.attachChild(floorGeo);
 
         /** A white, directional light source */
         DirectionalLight sun = new DirectionalLight();

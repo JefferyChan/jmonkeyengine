@@ -24,50 +24,50 @@ public class MaterialLighting extends SimpleApplication {
         flyCam.setMoveSpeed(25);
 
         /** A ball with a smooth shiny pebbly surface */
-        Sphere rock_mesh = new Sphere(16, 16, 1);
+        Sphere rockMesh = new Sphere(16, 16, 1);
         // Generate normal vector data for normal map!
-        TangentBinormalGenerator.generate(rock_mesh);
-        Geometry rock_geo = new Geometry("Shiny rock", rock_mesh);
+        TangentBinormalGenerator.generate(rockMesh);
+        Geometry rockGeo = new Geometry("Shiny rock", rockMesh);
         // better texture quality on spheres
-        rock_mesh.setTextureMode(Sphere.TextureMode.Projected);
+        rockMesh.setTextureMode(Sphere.TextureMode.Projected);
 
-        Material rock_mat = new Material(assetManager,
+        Material rockMat = new Material(assetManager,
                 "Common/MatDefs/Light/Lighting.j3md");
-        rock_mat.setTexture("DiffuseMap", assetManager.loadTexture(
+        rockMat.setTexture("DiffuseMap", assetManager.loadTexture(
                 "Textures/Pebbles/Pebbles_diffuse.png"));
-        rock_mat.setTexture("NormalMap", assetManager.loadTexture(
+        rockMat.setTexture("NormalMap", assetManager.loadTexture(
                 "Textures/Pebbles/Pebbles_normal.png"));
 
-        rock_mat.setBoolean("UseMaterialColors", true);
-        rock_mat.setColor("Ambient", ColorRGBA.White);
-        rock_mat.setColor("Specular", ColorRGBA.White);
-        rock_mat.setColor("Diffuse", ColorRGBA.White);
-        rock_mat.setFloat("Shininess", 10);    // [0,128]
+        rockMat.setBoolean("UseMaterialColors", true);
+        rockMat.setColor("Ambient", ColorRGBA.White);
+        rockMat.setColor("Specular", ColorRGBA.White);
+        rockMat.setColor("Diffuse", ColorRGBA.White);
+        rockMat.setFloat("Shininess", 10);    // [0,128]
 
-        rock_geo.setMaterial(rock_mat);
-        rock_geo.move(0, 0, 0);
-        rock_geo.rotate(FastMath.DEG_TO_RAD * 90, 0, 0);
-        rootNode.attachChild(rock_geo);
+        rockGeo.setMaterial(rockMat);
+        rockGeo.move(0, 0, 0);
+        rockGeo.rotate(FastMath.DEG_TO_RAD * 90, 0, 0);
+        rootNode.attachChild(rockGeo);
 
         /** A wall with a rough bricky surface */
-        Box wall_mesh = new Box(2, 2, 2);
+        Box wallMesh = new Box(2, 2, 2);
         // Generate normal vector data for normal map!
-        TangentBinormalGenerator.generate(wall_mesh);
-        Geometry wall_geo = new Geometry("bumpy brick wall", wall_mesh);
-        Material wall_mat = new Material(assetManager,
+        TangentBinormalGenerator.generate(wallMesh);
+        Geometry wallGeo = new Geometry("bumpy brick wall", wallMesh);
+        Material wallMat = new Material(assetManager,
                 "Common/MatDefs/Light/Lighting.j3md");
-        wall_mat.setTexture("DiffuseMap", assetManager.loadTexture(
+        wallMat.setTexture("DiffuseMap", assetManager.loadTexture(
                 "Textures/BrickWall/BrickWall_diffuse.jpg"));
-        wall_mat.setTexture("NormalMap", assetManager.loadTexture(
+        wallMat.setTexture("NormalMap", assetManager.loadTexture(
                 "Textures/BrickWall/BrickWall_normal.jpg"));
-        wall_mat.setFloat("Shininess", 10);    // [0,128]
-        wall_mat.setBoolean("UseMaterialColors", true);
-        wall_mat.setColor("Ambient", ColorRGBA.White);
-        wall_mat.setColor("Specular", ColorRGBA.White);
-        wall_mat.setColor("Diffuse", ColorRGBA.White);
-        wall_geo.setMaterial(wall_mat);
-        wall_geo.setLocalTranslation(0, -3, 0);   // Move it a bit
-        rootNode.attachChild(wall_geo);
+        wallMat.setFloat("Shininess", 10);    // [0,128]
+        wallMat.setBoolean("UseMaterialColors", true);
+        wallMat.setColor("Ambient", ColorRGBA.White);
+        wallMat.setColor("Specular", ColorRGBA.White);
+        wallMat.setColor("Diffuse", ColorRGBA.White);
+        wallGeo.setMaterial(wallMat);
+        wallGeo.setLocalTranslation(0, -3, 0);   // Move it a bit
+        rootNode.attachChild(wallGeo);
 
         /** Must add a light to make the lit object visible! */
         DirectionalLight sun = new DirectionalLight();

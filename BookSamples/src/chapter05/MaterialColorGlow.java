@@ -28,41 +28,41 @@ public class MaterialColorGlow extends SimpleApplication {
     fpp.addFilter(bloom);
     viewPort.addProcessor(fpp);
     
-    Sphere sphere = new Sphere(32,32, 1f);
+    Sphere sphereMesh = new Sphere(32,32, 1f);
     
-    Geometry shiny_sphere1 = new Geometry("normal sphere", sphere);
-    Material mat_lit1 = new Material(assetManager, 
+    Geometry spherePlainGeo = new Geometry("normal sphere", sphereMesh);
+    Material spherePlainMat = new Material(assetManager, 
             "Common/MatDefs/Light/Lighting.j3md");
-    mat_lit1.setBoolean("UseMaterialColors",true);
-    mat_lit1.setColor("Ambient", ColorRGBA.Cyan );
-    mat_lit1.setColor("Diffuse", ColorRGBA.Cyan );
-    shiny_sphere1.setMaterial(mat_lit1);
-    shiny_sphere1.move(-2.5f, 0, 0);
-    rootNode.attachChild(shiny_sphere1); 
+    spherePlainMat.setBoolean("UseMaterialColors",true);
+    spherePlainMat.setColor("Ambient", ColorRGBA.Cyan );
+    spherePlainMat.setColor("Diffuse", ColorRGBA.Cyan );
+    spherePlainGeo.setMaterial(spherePlainMat);
+    spherePlainGeo.move(-2.5f, 0, 0);
+    rootNode.attachChild(spherePlainGeo); 
     
-    Geometry shiny_sphere2 = new Geometry("black and white chequered", sphere);
-    Material mat_lit2 = new Material(assetManager, 
+    Geometry sphereCheqGeo = new Geometry("black and white chequered", sphereMesh);
+    Material sphereCheqMat = new Material(assetManager, 
             "Common/MatDefs/Light/Lighting.j3md");
-    mat_lit2.setBoolean("UseMaterialColors",true);
-    mat_lit2.setColor("Diffuse", ColorRGBA.Cyan );
-    mat_lit2.setColor("Ambient", ColorRGBA.Cyan );
-    mat_lit2.setTexture("GlowMap", assetManager.loadTexture("Textures/bloom-glow2.png"));
-    mat_lit2.setColor("GlowColor", ColorRGBA.Red );
-    shiny_sphere2.setMaterial(mat_lit2);
-    rootNode.attachChild(shiny_sphere2); 
+    sphereCheqMat.setBoolean("UseMaterialColors",true);
+    sphereCheqMat.setColor("Diffuse", ColorRGBA.Cyan );
+    sphereCheqMat.setColor("Ambient", ColorRGBA.Cyan );
+    sphereCheqMat.setTexture("GlowMap", assetManager.loadTexture("Textures/bloom-glow2.png"));
+    sphereCheqMat.setColor("GlowColor", ColorRGBA.Red );
+    sphereCheqGeo.setMaterial(sphereCheqMat);
+    rootNode.attachChild(sphereCheqGeo); 
     
-    Geometry shiny_sphere3 = new Geometry("random color noise", sphere);
-    Material mat_lit3 = new Material(assetManager, 
+    Geometry sphereNoiseGeo = new Geometry("random color noise", sphereMesh);
+    Material sphereNoiseMat = new Material(assetManager, 
             "Common/MatDefs/Light/Lighting.j3md");
-    mat_lit3.setBoolean("UseMaterialColors",true);
-    mat_lit3.setColor("Diffuse", ColorRGBA.Cyan );
-    mat_lit3.setColor("Ambient", ColorRGBA.Cyan );
-    mat_lit3.setTexture("GlowMap", assetManager.
+    sphereNoiseMat.setBoolean("UseMaterialColors",true);
+    sphereNoiseMat.setColor("Diffuse", ColorRGBA.Cyan );
+    sphereNoiseMat.setColor("Ambient", ColorRGBA.Cyan );
+    sphereNoiseMat.setTexture("GlowMap", assetManager.
             loadTexture("Textures/bloom-glow.png"));
-    mat_lit3.setColor("GlowColor", ColorRGBA.White );
-    shiny_sphere3.setMaterial(mat_lit3);
-    shiny_sphere3.move(2.5f, 0, 0);
-    rootNode.attachChild(shiny_sphere3); 
+    sphereNoiseMat.setColor("GlowColor", ColorRGBA.White );
+    sphereNoiseGeo.setMaterial(sphereNoiseMat);
+    sphereNoiseGeo.move(2.5f, 0, 0);
+    rootNode.attachChild(sphereNoiseGeo); 
     
     /** Must add a light to make the lit object visible! */
     DirectionalLight sun = new DirectionalLight();

@@ -19,15 +19,15 @@ public class MaterialColor extends SimpleApplication {
 
   @Override
   public void simpleInitApp() {
-    Sphere sphere_mesh = new Sphere(32,32, 1f);
-    Geometry sphere_geo = new Geometry("Colored lit sphere", sphere_mesh);
-    Material sphere_mat = new Material(assetManager, 
+    Sphere sphereMesh = new Sphere(32,32, 1f);
+    Geometry sphereGeo = new Geometry("Colored lit sphere", sphereMesh);
+    Material sphereMat = new Material(assetManager, 
             "Common/MatDefs/Light/Lighting.j3md");
-    sphere_mat.setBoolean("UseMaterialColors", true);
-    sphere_mat.setColor("Diffuse", ColorRGBA.Blue );
-    //sphere_mat.setColor("Ambient", ColorRGBA.Black );
-    sphere_geo.setMaterial(sphere_mat);
-    rootNode.attachChild(sphere_geo); 
+    sphereMat.setBoolean("UseMaterialColors", true);
+    sphereMat.setColor("Diffuse", ColorRGBA.Blue );
+    //sphereMat.setColor("Ambient", ColorRGBA.Black );
+    sphereGeo.setMaterial(sphereMat);
+    rootNode.attachChild(sphereGeo); 
     
     /** Must add a light to make the lit object visible! */
     DirectionalLight sun = new DirectionalLight();

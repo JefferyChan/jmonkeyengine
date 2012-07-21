@@ -22,42 +22,42 @@ public class MaterialColorShiny extends SimpleApplication {
   @Override
   public void simpleInitApp() {
     
-    Sphere sphere_mesh = new Sphere(32,32, 1f);
+    Sphere sphereMesh = new Sphere(32,32, 1f);
     
-    Geometry sphere1_geo = new Geometry("rough sphere", sphere_mesh);
-    Material sphere1_mat = new Material(assetManager, 
+    Geometry spherePlainGeo = new Geometry("rough sphere", sphereMesh);
+    Material spherePlainMat = new Material(assetManager, 
             "Common/MatDefs/Light/Lighting.j3md");
-    sphere1_mat.setBoolean("UseMaterialColors",true);
-    sphere1_mat.setColor("Ambient", ColorRGBA.Black );
-    sphere1_mat.setColor("Diffuse", ColorRGBA.Cyan );
-    sphere1_mat.setColor("Specular", ColorRGBA.White );
-    sphere1_mat.setFloat("Shininess", 0f); // [1,128]
-    sphere1_geo.setMaterial(sphere1_mat);
-    sphere1_geo.move(-2.5f, 0, 0);
-    rootNode.attachChild(sphere1_geo); 
+    spherePlainMat.setBoolean("UseMaterialColors",true);
+    spherePlainMat.setColor("Ambient", ColorRGBA.Black );
+    spherePlainMat.setColor("Diffuse", ColorRGBA.Cyan );
+    spherePlainMat.setColor("Specular", ColorRGBA.White );
+    spherePlainMat.setFloat("Shininess", 0f); // [1,128]
+    spherePlainGeo.setMaterial(spherePlainMat);
+    spherePlainGeo.move(-2.5f, 0, 0);
+    rootNode.attachChild(spherePlainGeo); 
     
-    Geometry sphere2_geo = new Geometry("normal sphere", sphere_mesh);
-    Material sphere2_mat = new Material(assetManager, 
+    Geometry sphereShinyGeo = new Geometry("normal sphere", sphereMesh);
+    Material sphereShinyMat = new Material(assetManager, 
             "Common/MatDefs/Light/Lighting.j3md");
-    sphere2_mat.setBoolean("UseMaterialColors",true);
-    sphere2_mat.setColor("Ambient", ColorRGBA.Black );
-    sphere2_mat.setColor("Diffuse", ColorRGBA.Cyan );
-    sphere2_mat.setColor("Specular", ColorRGBA.White );
-    sphere2_mat.setFloat("Shininess", 4f); // [1,128]
-    sphere2_geo.setMaterial(sphere2_mat);
-    rootNode.attachChild(sphere2_geo); 
+    sphereShinyMat.setBoolean("UseMaterialColors",true);
+    sphereShinyMat.setColor("Ambient", ColorRGBA.Black );
+    sphereShinyMat.setColor("Diffuse", ColorRGBA.Cyan );
+    sphereShinyMat.setColor("Specular", ColorRGBA.White );
+    sphereShinyMat.setFloat("Shininess", 4f); // [1,128]
+    sphereShinyGeo.setMaterial(sphereShinyMat);
+    rootNode.attachChild(sphereShinyGeo); 
     
-    Geometry sphere3_geo = new Geometry("Smooth sphere", sphere_mesh);
-    Material sphere3_mat = new Material(assetManager, 
+    Geometry sphereVeryShinyGeo = new Geometry("Smooth sphere", sphereMesh);
+    Material sphereVeryShinyMat = new Material(assetManager, 
             "Common/MatDefs/Light/Lighting.j3md");
-    sphere3_mat.setBoolean("UseMaterialColors",true);
-    sphere3_mat.setColor("Ambient", ColorRGBA.Black );
-    sphere3_mat.setColor("Diffuse", ColorRGBA.Cyan );
-    sphere3_mat.setColor("Specular", ColorRGBA.White );
-    sphere3_mat.setFloat("Shininess", 100f); // [1,128]
-    sphere3_geo.setMaterial(sphere3_mat);
-    sphere3_geo.move(2.5f, 0, 0);
-    rootNode.attachChild(sphere3_geo); 
+    sphereVeryShinyMat.setBoolean("UseMaterialColors",true);
+    sphereVeryShinyMat.setColor("Ambient", ColorRGBA.Black );
+    sphereVeryShinyMat.setColor("Diffuse", ColorRGBA.Cyan );
+    sphereVeryShinyMat.setColor("Specular", ColorRGBA.White );
+    sphereVeryShinyMat.setFloat("Shininess", 100f); // [1,128]
+    sphereVeryShinyGeo.setMaterial(sphereVeryShinyMat);
+    sphereVeryShinyGeo.move(2.5f, 0, 0);
+    rootNode.attachChild(sphereVeryShinyGeo); 
     
     /** Must add a light to make the lit object visible! */
     DirectionalLight sun = new DirectionalLight();
