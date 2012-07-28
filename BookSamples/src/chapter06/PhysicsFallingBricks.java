@@ -25,6 +25,7 @@ import com.jme3.scene.shape.Sphere.TextureMode;
  * @author double1984, modified by zathras.
  */
 public class PhysicsFallingBricks extends SimpleApplication {
+    private static final String SHOOT = "shoot";
 
   public static void main(String args[]) {
     PhysicsFallingBricks app = new PhysicsFallingBricks();
@@ -75,8 +76,8 @@ public class PhysicsFallingBricks extends SimpleApplication {
     initBrickwall();
 
     /** Add InputManager action: Left click triggers shooting. */
-    inputManager.addMapping("shoot", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
-    inputManager.addListener(actionListener, "shoot");
+    inputManager.addMapping(SHOOT, new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
+    inputManager.addListener(actionListener, SHOOT);
     
     /** Move camera to look at scene */
     cam.setLocation(new Vector3f(0f,2f,6f));
@@ -88,7 +89,7 @@ public class PhysicsFallingBricks extends SimpleApplication {
    *  Each shot introduces a new cannon ball. */
   private ActionListener actionListener = new ActionListener() {
     public void onAction(String name, boolean keyPressed, float tpf) {
-      if (name.equals("shoot") && !keyPressed) {
+      if (name.equals(SHOOT) && !keyPressed) {
         shootCannonBall();
       }
     }
