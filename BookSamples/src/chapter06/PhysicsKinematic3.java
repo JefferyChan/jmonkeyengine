@@ -2,6 +2,10 @@ package chapter06;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
+import com.jme3.bullet.PhysicsSpace;
+import com.jme3.bullet.PhysicsTickListener;
+import com.jme3.bullet.collision.PhysicsCollisionEvent;
+import com.jme3.bullet.collision.PhysicsCollisionListener;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
@@ -15,17 +19,21 @@ import com.jme3.scene.shape.Sphere;
 import com.jme3.scene.shape.Sphere.TextureMode;
 import com.jme3.util.TangentBinormalGenerator;
 
-
 /**
- * An automated elevator platform.
+ * An automated platform that starts rising when a special dynamic object
+ * arrives as passenger (collision listener).
+ * When the platform is on top, a force is applied to its passenger 
+ * (physics tick listener)
  * @author zathras.
  */
-public class PhysicsKinematic extends SimpleApplication {
+public class PhysicsKinematic3 extends SimpleApplication
+        implements PhysicsCollisionListener, PhysicsTickListener 
+{
 
     /* Constants */
-    private static final String BALL = "Ball";
+    private static final String BALL     = "Ball";
     private static final String ELEVATOR = "Elevator";
-    private static final float TOPFLOOR = 6f;
+    private static final float  TOPFLOOR = 6f;
     /* Materials and geometries. */
     private Material brickMat, stoneMat, woodMat;
     private Geometry platformGeo;
@@ -34,10 +42,11 @@ public class PhysicsKinematic extends SimpleApplication {
     private RigidBodyControl ballPhy;
     private RigidBodyControl scenePhy;
     /*booleans*/
-    private boolean isPlatformOnTop = false;
+    private boolean isBallOnPlatform = false;
+    private boolean isPlatformOnTop  = false;
 
     public static void main(String args[]) {
-        PhysicsKinematic app = new PhysicsKinematic();
+        PhysicsKinematic3 app = new PhysicsKinematic3();
         app.start();
     }
 
@@ -46,6 +55,8 @@ public class PhysicsKinematic extends SimpleApplication {
         /** Make this a jBullet Physics Game */
         bulletAppState = new BulletAppState();
         stateManager.attach(bulletAppState);
+        bulletAppState.getPhysicsSpace().addCollisionListener(this);
+        bulletAppState.getPhysicsSpace().addTickListener(this);
         setDisplayStatView(false);
 
         /** Initialize the scene using helper methods (keeps code readable). */
@@ -57,14 +68,14 @@ public class PhysicsKinematic extends SimpleApplication {
 
         /** Move camera to look at scene */
         cam.setLocation(new Vector3f(0f, 16f, 10f));
-        cam.lookAt(new Vector3f(0, 0, -2), Vector3f.UNIT_Y);
+        cam.lookAt(new Vector3f(0,0,-2), Vector3f.UNIT_Y);
     }
 
     /** The Scene is made up of a solid floor, slope, and wall. */
     public void initFloor() {
         Node sceneNode = new Node("Scene");
-
-        /* Create and attach floor geometry */
+        
+        /* Create and attach floor geometry */        
         Box floorMesh = new Box(Vector3f.ZERO, 10f, 0.5f, 10f);
         TangentBinormalGenerator.generate(floorMesh);
         Geometry floorGeo = new Geometry("Floor", floorMesh);
@@ -72,7 +83,7 @@ public class PhysicsKinematic extends SimpleApplication {
         floorGeo.move(0, -.1f, 0);
         sceneNode.attachChild(floorGeo);
 
-        /* Create and attach slope geometry */
+        /* Create and attach slope geometry */        
         Box slopeMesh = new Box(Vector3f.ZERO, 6f, 0.1f, 5f);
         TangentBinormalGenerator.generate(slopeMesh);
         Geometry slopeGeo = new Geometry("Slope", slopeMesh);
@@ -81,7 +92,7 @@ public class PhysicsKinematic extends SimpleApplication {
         slopeGeo.move(4f, 4f, 0);
         sceneNode.attachChild(slopeGeo);
 
-        /* Create and attach wall geometry */
+        /* Create and attach wall geometry */        
         Box wallMesh = new Box(Vector3f.ZERO, 5f, 0.4f, 5f);
         TangentBinormalGenerator.generate(wallMesh);
         Geometry wallGeo = new Geometry("Wall", wallMesh);
@@ -90,7 +101,7 @@ public class PhysicsKinematic extends SimpleApplication {
         wallGeo.move(-3.5f, 2, 0);
         sceneNode.attachChild(wallGeo);
 
-        /* Make Scene solid and static */
+        /* Make Scene solid and static */        
         scenePhy = new RigidBodyControl(0.0f);
         sceneNode.addControl(scenePhy);
         bulletAppState.getPhysicsSpace().add(scenePhy);
@@ -131,7 +142,7 @@ public class PhysicsKinematic extends SimpleApplication {
     private void initMaterials() {
         brickMat = assetManager.loadMaterial("Materials/brick.j3m");
         stoneMat = assetManager.loadMaterial("Materials/pebbles.j3m");
-        woodMat = assetManager.loadMaterial("Materials/bark.j3m");
+        woodMat  = assetManager.loadMaterial("Materials/bark.j3m");
     }
 
     /** Create light sources. */
@@ -142,20 +153,40 @@ public class PhysicsKinematic extends SimpleApplication {
         rootNode.addLight(new AmbientLight());
     }
 
-    /* without collisionlistener */
+    public void collision(PhysicsCollisionEvent event) {
+        if ((event.getNodeA().getName().equals(BALL)
+                && event.getNodeB().getName().equals(ELEVATOR))
+         || (event.getNodeA().getName().equals(ELEVATOR)
+                && event.getNodeB().getName().equals(BALL))) 
+        {
+            isBallOnPlatform = true;
+        } else {
+            isBallOnPlatform = false;
+        }
+    }
+
+      /* use with collisionlistener */
     @Override
     public void simpleUpdate(float tpf) {
-        if (!isPlatformOnTop && platformGeo.getLocalTranslation().getY() < TOPFLOOR) {
+        if (isBallOnPlatform && platformGeo.getLocalTranslation().getY() < TOPFLOOR) {
             platformGeo.move(0f, tpf, 0f);
         }
-        if (!isPlatformOnTop && platformGeo.getLocalTranslation().getY() >= TOPFLOOR) {
+        if (isBallOnPlatform && platformGeo.getLocalTranslation().getY() >= TOPFLOOR) {
             isPlatformOnTop = true;
         }
-        if (isPlatformOnTop && platformGeo.getLocalTranslation().getY() <= .5f) {
+        if (!isBallOnPlatform && platformGeo.getLocalTranslation().getY() > .5f) {
             isPlatformOnTop = false;
-        }
-        if (isPlatformOnTop && platformGeo.getLocalTranslation().getY() > .5f) {
             platformGeo.move(0f, -tpf * 4, 0f);
         }
+    }
+
+
+    public void prePhysicsTick(PhysicsSpace space, float tpf) {
+        if (isBallOnPlatform && isPlatformOnTop) {
+            ballPhy.applyImpulse(new Vector3f(2, 0, 0), new Vector3f(0, 0, 0));
+        }
+    }
+
+    public void physicsTick(PhysicsSpace space, float tpf) {
     }
 }
