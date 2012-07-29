@@ -8,6 +8,7 @@ import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
 import com.jme3.font.BitmapFont;
 import com.jme3.font.BitmapText;
+import com.jme3.input.InputManager;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
@@ -15,7 +16,6 @@ import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.shape.Box;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,30 +28,28 @@ public class GameRunningState extends AbstractAppState {
     private Node rootNode;
     private Node guiNode;
     private AssetManager assetManager;
+    private SimpleApplication app;
+    private InputManager inputManager;
     private Node localRootNode = new Node("Game Screen RootNode");
     private Node localGuiNode = new Node("Game Screen GuiNode");
     private final ColorRGBA backgroundColor = ColorRGBA.Blue;
-    private List<AppState> appstatelist;
-
-    public GameRunningState(SimpleApplication app) {
-        this.rootNode = app.getRootNode();
-        this.viewPort = app.getViewPort();
-        this.guiNode = app.getGuiNode();
-        this.assetManager = app.getAssetManager();
-        appstatelist = new ArrayList<AppState>();
-    }
 
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
-        super.initialize(stateManager, app);
+        this.app = (SimpleApplication) app;
+        this.rootNode = this.app.getRootNode();
+        this.viewPort = this.app.getViewPort();
+        this.guiNode = this.app.getGuiNode();
+        this.assetManager = this.app.getAssetManager();
+        this.inputManager = this.app.getInputManager();
 
+        inputManager.setCursorVisible(true);
+        this.app.getFlyByCamera().setDragToRotate(false);
+        
         rootNode.attachChild(localRootNode);
         guiNode.attachChild(localGuiNode);
-        
+
         viewPort.setBackgroundColor(backgroundColor);
-        for (AppState appState : appstatelist) {
-            stateManager.attach(appState);
-        }
 
         /** Load this scene */
         viewPort.setBackgroundColor(backgroundColor);
@@ -89,5 +87,4 @@ public class GameRunningState extends AbstractAppState {
         rootNode.detachChild(localRootNode);
         guiNode.detachChild(localGuiNode);
     }
-
 }

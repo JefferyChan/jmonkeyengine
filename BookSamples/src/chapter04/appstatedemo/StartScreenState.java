@@ -7,6 +7,7 @@ import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
 import com.jme3.font.BitmapFont;
 import com.jme3.font.BitmapText;
+import com.jme3.input.InputManager;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
@@ -25,25 +26,27 @@ public class StartScreenState extends AbstractAppState {
     private Node rootNode;
     private Node guiNode;
     private AssetManager assetManager;
+    private SimpleApplication app;
+    private InputManager inputManager;
     private Node localRootNode = new Node("Start Screen RootNode");
     private Node localGuiNode = new Node("Start Screen GuiNode");
     private final ColorRGBA backgroundColor = ColorRGBA.Gray;
 
-    public StartScreenState(SimpleApplication app) {
-        this.rootNode = app.getRootNode();
-        this.viewPort = app.getViewPort();
-        this.guiNode = app.getGuiNode();
-        this.assetManager = app.getAssetManager();
-    }
-
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
         super.initialize(stateManager, app);
+        this.app = (SimpleApplication) app;
+        this.rootNode = this.app.getRootNode();
+        this.viewPort = this.app.getViewPort();
+        this.guiNode = this.app.getGuiNode();
+        this.assetManager = this.app.getAssetManager();
+        this.inputManager = this.app.getInputManager();
 
         rootNode.attachChild(localRootNode);
         guiNode.attachChild(localGuiNode);
         viewPort.setBackgroundColor(backgroundColor);
-
+        inputManager.setCursorVisible(false);
+        this.app.getFlyByCamera().setDragToRotate(true);
 
         /** Init this scene */
         viewPort.setBackgroundColor(backgroundColor);

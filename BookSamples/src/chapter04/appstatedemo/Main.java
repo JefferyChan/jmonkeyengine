@@ -43,9 +43,9 @@ public class Main extends SimpleApplication {
     setDisplayFps(false);
     setDisplayStatView(false);
 
-    gameRunningState    = new GameRunningState(this);
-    startScreenState    = new StartScreenState(this);
-    settingsScreenState = new SettingsScreenState(this);
+    gameRunningState    = new GameRunningState();
+    startScreenState    = new StartScreenState();
+    settingsScreenState = new SettingsScreenState();
 
     stateManager.attach(startScreenState);
 
@@ -55,6 +55,8 @@ public class Main extends SimpleApplication {
     inputManager.addListener(actionListener, new String[]{"Toggle Settings"});
   }
   
+  /** Global inputs. 
+   * You can also activate and deactivate inputs in each app state individually. */
   private ActionListener actionListener = new ActionListener() {
     public void onAction(String name, boolean isPressed, float tpf) {
       System.out.println("key" + name);
