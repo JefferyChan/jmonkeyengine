@@ -146,6 +146,7 @@ public class PhysicsKinematic2 extends SimpleApplication
         rootNode.addLight(new AmbientLight());
     }
 
+    /* collisionlistener with test, action happens in update loop */
     public void collision(PhysicsCollisionEvent event) {
         if ((event.getNodeA().getName().equals(BALL)
                 && event.getNodeB().getName().equals(ELEVATOR))
@@ -158,7 +159,7 @@ public class PhysicsKinematic2 extends SimpleApplication
         }
     }
 
-      /* use with collisionlistener */
+    /* update loop relies on test from collisionlistener and moves platform */
     @Override
     public void simpleUpdate(float tpf) {
         if (isBallOnPlatform && platformGeo.getLocalTranslation().getY() < TOPFLOOR) {

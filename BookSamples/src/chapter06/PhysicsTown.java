@@ -4,10 +4,8 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.asset.plugins.ZipLocator;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
-import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.CharacterControl;
 import com.jme3.bullet.control.RigidBodyControl;
-import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
@@ -15,14 +13,12 @@ import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
-import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
-import com.jme3.scene.Spatial;
 
 /**
- * Example 9 - Using physics to make walls and floors solid.
- * This sample demos two rigid collision shapes and a custom Action Listener.
- * @author Normen, edited by Zathras
+ * Using physics to make walls and floors solid 
+ * for a first-person player to walk around in.
+ * @author Normen, Zathras
  */
 public class PhysicsTown extends SimpleApplication implements ActionListener {
 
@@ -145,7 +141,6 @@ public class PhysicsTown extends SimpleApplication implements ActionListener {
         playerPhy.setWalkDirection(walkDirection);
         
         // Make sure to move the first-person camera with the player.
-        //cam.setLocation(playerPhy.getPhysicsLocation());
-        cam.setLocation(playerPhy.getPhysicsLocation().add(0, 1f, 0));
+        cam.setLocation(playerPhy.getPhysicsLocation());
     }
 }

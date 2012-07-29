@@ -2,7 +2,6 @@ package chapter06;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
-import com.jme3.bullet.collision.shapes.PlaneCollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.font.BitmapText;
 import com.jme3.input.MouseInput;
@@ -11,7 +10,6 @@ import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
-import com.jme3.math.Plane;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
@@ -47,16 +45,16 @@ public class PhysicsFallingBricks extends SimpleApplication {
   private RigidBodyControl ballPhy;
   private RigidBodyControl floorPhy;
   /** The dimensions used for bricks and wall */
-  private static final float brickLength = 0.4f;
-  private static final float brickWidth  = 0.3f;
-  private static final float brickHeight = 0.25f;
-  private static final float wallWidth=12; 
-  private static final float wallHeight=6;
+  private static final float BRICK_LENGTH = 0.4f;
+  private static final float BRICK_WIDTH  = 0.3f;
+  private static final float BRICK_HEIGHT = 0.25f;
+  private static final float WALL_WIDTH=12; 
+  private static final float WALL_HEIGHT=6;
 
   static {
     /** Initialize reusable mesh shapes. */
     floorMesh  = new Box(Vector3f.ZERO, 10f, 0.5f, 5f);
-    brickMesh    = new Box(Vector3f.ZERO, brickLength, brickHeight, brickWidth);
+    brickMesh    = new Box(Vector3f.ZERO, BRICK_LENGTH, BRICK_HEIGHT, BRICK_WIDTH);
     ballMesh = new Sphere(32,32, 0.25f, true, false);
     ballMesh.setTextureMode(TextureMode.Projected);
     floorMesh.scaleTextureCoordinates(new Vector2f(4f,4f));
@@ -100,7 +98,7 @@ public class PhysicsFallingBricks extends SimpleApplication {
     /* Create and attach floor geometry */
     Geometry floorGeo = new Geometry("Floor", floorMesh);
     floorGeo.setMaterial(woodMat);
-    floorGeo.move(0, -brickHeight*2, 0); // don't collide with bricks
+    floorGeo.move(0, -BRICK_HEIGHT*2, 0); // don't collide with bricks
     rootNode.attachChild(floorGeo);
     /* Make the floor physical and static (mass zero!) */
     floorPhy = new RigidBodyControl(0.0f);
@@ -112,18 +110,18 @@ public class PhysicsFallingBricks extends SimpleApplication {
   /** This loop builds a wall out of individual bricks. */
   public void initBrickwall() {
     wallNode=new Node("wall");
-    float offsetH = brickLength / 3;
+    float offsetH = BRICK_LENGTH / 3;
     float offsetV = 0;
-    for (int j = 0; j < wallHeight; j++) { 
-      for (int i = 0; i < wallWidth; i++) {
+    for (int j = 0; j < WALL_HEIGHT; j++) { 
+      for (int i = 0; i < WALL_WIDTH; i++) {
         Vector3f brickPos = new Vector3f(
-                offsetH + brickLength*2.1f*i -(brickLength*wallWidth), 
-                offsetV + brickHeight, 
+                offsetH + BRICK_LENGTH*2.1f*i -(BRICK_LENGTH*WALL_WIDTH), 
+                offsetV + BRICK_HEIGHT, 
                 0f );
         wallNode.attachChild(makeBrick(brickPos));
       }
       offsetH = -offsetH;
-      offsetV += 2 * brickHeight;
+      offsetV += 2 * BRICK_HEIGHT;
     }
     rootNode.attachChild(wallNode);
   }
