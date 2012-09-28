@@ -1,4 +1,4 @@
-package chapter08;
+package chapter07;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.asset.plugins.ZipLocator;
@@ -44,29 +44,29 @@ public class Fade extends SimpleApplication {
      * Add some objects to the scene: A town
      */
     assetManager.registerLocator("town.zip", ZipLocator.class);
-    Spatial scene_geo = assetManager.loadModel("main.scene");
-    scene_geo.setLocalScale(2f);
-    scene_geo.setLocalTranslation(0, -1, 0);
-    rootNode.attachChild(scene_geo);
+    Spatial sceneGeo = assetManager.loadModel("main.scene");
+    sceneGeo.setLocalScale(2f);
+    sceneGeo.setLocalTranslation(0, -1, 0);
+    rootNode.attachChild(sceneGeo);
 
     /**
      * Add some objects to the scene: a tea pot
      */
-    Geometry tea_geo = (Geometry) assetManager.loadModel("Models/Teapot/Teapot.j3o");
-    Material mat = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
-    mat.setBoolean("UseMaterialColors", true);
-    mat.setColor("Diffuse", ColorRGBA.Pink);
-    tea_geo.setMaterial(mat);
+    Geometry teapotGeo = (Geometry) assetManager.loadModel("Models/Teapot/Teapot.j3o");
+    Material teapotMat = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
+    teapotMat.setBoolean("UseMaterialColors", true);
+    teapotMat.setColor("Diffuse", ColorRGBA.Pink);
+    teapotGeo.setMaterial(teapotMat);
 
-    tea_geo.scale(3);
-    tea_geo.setLocalTranslation(32, 3, -24);
-    rootNode.attachChild(tea_geo);
+    teapotGeo.scale(3);
+    teapotGeo.setLocalTranslation(32, 3, -24);
+    rootNode.attachChild(teapotGeo);
 
     /**
      * configure some game properties depending on the scene
      */
     flyCam.setMoveSpeed(30f);
-    cam.lookAt(tea_geo.getLocalTranslation(), Vector3f.UNIT_Y);
+    cam.lookAt(teapotGeo.getLocalTranslation(), Vector3f.UNIT_Y);
   }
 
   private void initKeys() {
