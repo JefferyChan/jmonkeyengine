@@ -1,6 +1,7 @@
-package chapter11;
+package chapter10;
 
 import com.jme3.network.AbstractMessage;
+import com.jme3.network.HostedConnection;
 import com.jme3.network.serializing.Serializable;
 
 /**
@@ -16,4 +17,5 @@ public class GreetingMessage extends AbstractMessage {
      }                  
      public void setGreeting(String s){greeting = s;}
      public String getGreeting(){return greeting;}
+
 }

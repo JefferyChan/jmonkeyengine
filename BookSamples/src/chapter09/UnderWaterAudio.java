@@ -1,4 +1,4 @@
-package chapter10;
+package chapter09;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.audio.AudioNode;
@@ -7,8 +7,6 @@ import com.jme3.light.DirectionalLight;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.post.FilterPostProcessor;
-import com.jme3.post.filters.BloomFilter;
-import com.jme3.post.filters.DepthOfFieldFilter;
 import com.jme3.post.filters.LightScatteringFilter;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
@@ -27,9 +25,9 @@ public class UnderWaterAudio extends SimpleApplication {
     private WaterFilter water;
     private float waterHeight = -1.0f;
     private boolean wasUnderwater = false;
-    AudioNode waves_audio;
-    LowPassFilter underWaterAudioFilter = new LowPassFilter(0.5f, 0.1f);
-    LowPassFilter aboveWaterAudioFilter = new LowPassFilter(1f, 1f);
+    private AudioNode wavesAudio;
+    private LowPassFilter underWaterAudioFilter = new LowPassFilter(0.5f, 0.1f);
+    private LowPassFilter aboveWaterAudioFilter = new LowPassFilter(1f, 1f);
 
     public static void main(String[] args) {
         UnderWaterAudio app = new UnderWaterAudio();
@@ -80,28 +78,32 @@ public class UnderWaterAudio extends SimpleApplication {
         fpp.addFilter(water);
 
         // Create water sound
-        waves_audio = new AudioNode(assetManager,
+        wavesAudio = new AudioNode(assetManager,
                 "Sounds/Environment/Ocean Waves.ogg");
-        waves_audio.setLooping(true);
-        waves_audio.setPositional(false);
-        waves_audio.setReverbEnabled(true);
-        waves_audio.play();
-        rootNode.attachChild(waves_audio);
+        wavesAudio.setLooping(true);
+        wavesAudio.setPositional(false);
+        wavesAudio.setReverbEnabled(true);
+        wavesAudio.play();
+        rootNode.attachChild(wavesAudio);
     }
 
     @Override
     public void simpleUpdate(float tpf) {
-        // whether underwater or not depends on camera position
         listener.setLocation(cam.getLocation());
         listener.setRotation(cam.getRotation());
+        // whether under water or not depends on camera position
         if (water.isUnderWater() && !wasUnderwater ) {
             // activate underwater sound effect
-            waves_audio.setDryFilter(underWaterAudioFilter);
+            wavesAudio.stop();
             wasUnderwater = true;
+            wavesAudio.setDryFilter(underWaterAudioFilter);
+            wavesAudio.play();
         } else if (!water.isUnderWater() && wasUnderwater ) {
             // deactivate underwater sound effect
+            wavesAudio.stop();
             wasUnderwater = false;
-            waves_audio.setDryFilter(aboveWaterAudioFilter);
+            wavesAudio.play();
+            wavesAudio.setDryFilter(aboveWaterAudioFilter);
         }
     }
 }

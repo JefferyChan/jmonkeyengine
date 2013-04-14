@@ -1,4 +1,4 @@
-package chapter11;
+package chapter10;
 
 import com.jme3.network.HostedConnection;
 import com.jme3.network.Message;
@@ -15,7 +15,6 @@ public class ServerListener implements MessageListener<HostedConnection> {
             // prepare and send an answer
             helloMessage.setGreeting("Welcome client #" + source.getId() + "!");
             source.send(helloMessage);
-            
         }
     }
 }

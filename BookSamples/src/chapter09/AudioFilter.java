@@ -1,4 +1,4 @@
-package chapter10;
+package chapter09;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.audio.AudioNode;
@@ -32,7 +32,7 @@ public class AudioFilter extends SimpleApplication {
 
     @Override
     public void simpleUpdate(float tpf) {
-        if (src.getStatus() != AudioNode.Status.Playing) {
+        if (src.getStatus() != src.getStatus().Playing) {
             filterIsOn = !filterIsOn; // toggle
             src = new AudioNode(assetManager,
                     "Sounds/Effects/Foot steps.ogg", true);

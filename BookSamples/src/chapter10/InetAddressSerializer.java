@@ -1,4 +1,4 @@
-package chapter11;
+package chapter10;
 
 import com.jme3.network.serializing.Serializer;
 import java.io.IOException;

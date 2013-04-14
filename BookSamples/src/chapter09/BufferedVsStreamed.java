@@ -1,4 +1,4 @@
-package chapter10;
+package chapter09;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.audio.AudioNode;
@@ -15,7 +15,7 @@ import com.jme3.scene.shape.Box;
  */
 public class BufferedVsStreamed extends SimpleApplication {
 
-  private AudioNode nature_audio, steps_audio;
+  private AudioNode natureAudio, stepsAudio;
 
   public static void main(String[] args) {
     BufferedVsStreamed test = new BufferedVsStreamed();
@@ -28,17 +28,17 @@ public class BufferedVsStreamed extends SimpleApplication {
     initScene();
 
     // load as prebuffered sound (streaming=false)
-    steps_audio = new AudioNode(assetManager,
-            "Sounds/Effects/Foot steps.ogg", false);
-    steps_audio.setVolume(2);
-    steps_audio.setLooping(true);
-    steps_audio.play(); // play as prebuffered instance
+    stepsAudio = new AudioNode(assetManager,
+            "Sounds/Effects/Footsteps.ogg", false);
+    stepsAudio.setVolume(2);
+    stepsAudio.setLooping(true);
+    stepsAudio.play(); // play as prebuffered instance
 
     // load as streamed sound (streaming=true)
-    nature_audio = new AudioNode(assetManager,
+    natureAudio = new AudioNode(assetManager,
             "Sounds/Environment/Nature.ogg", true);
-    nature_audio.setVolume(10);
-    nature_audio.play();
+    natureAudio.setVolume(10);
+    natureAudio.play();
 
   }
 

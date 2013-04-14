@@ -6,14 +6,11 @@ import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
+import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.post.FilterPostProcessor;
-import com.jme3.post.filters.BloomFilter;
-import com.jme3.post.filters.DepthOfFieldFilter;
-import com.jme3.post.filters.LightScatteringFilter;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.terrain.geomipmap.TerrainLodControl;
 import com.jme3.terrain.geomipmap.TerrainQuad;
 import com.jme3.terrain.heightmap.AbstractHeightMap;
 import com.jme3.terrain.heightmap.ImageBasedHeightMap;
@@ -31,14 +28,13 @@ import com.jme3.water.WaterFilter;
  */
 public class WaterTerrainSky extends SimpleApplication {
 
-  private Vector3f lightDir = new Vector3f(-5f, -1f, 6f).normalize();//new Vector3f(-4.9236743f, -1.27054665f, 5.896916f);
+  private Vector3f lightDir = new Vector3f(-2.9f, -1.2f, -5.8f);
   private WaterFilter water;
-  TerrainQuad terrain;
-  Material terrain_mat;
+  private TerrainQuad terrain;
   private float time = 0.0f;
   private float waterHeight = 0.0f;
   private float initialWaterHeight = 0.8f;
-  Node reflectedScene=new Node("Reflected Scene");
+  private Node reflectedScene;
 
   public static void main(String[] args) {
     WaterTerrainSky app = new WaterTerrainSky();
@@ -50,44 +46,35 @@ public class WaterTerrainSky extends SimpleApplication {
     setDisplayFps(false);
     setDisplayStatView(false);
 
-    flyCam.setMoveSpeed(400);
-    cam.setFrustumFar(40000);
+    flyCam.setMoveSpeed(100);
+    cam.setFrustumFar(3000);
+    
+    reflectedScene=new Node("Reflected Scene");
+    rootNode.attachChild(reflectedScene);
 
     FilterPostProcessor fpp = new FilterPostProcessor(assetManager);
     viewPort.addProcessor(fpp);
     // add water
     water = new WaterFilter(reflectedScene, lightDir);
-    water.setWaveScale(0.003f);
-    water.setMaxAmplitude(2f);
-    water.setFoamExistence(new Vector3f(1f, 4, 0.5f));
-    water.setFoamTexture((Texture2D) assetManager.loadTexture(
-            "Common/MatDefs/Water/Textures/foam2.jpg"));
-    water.setRefractionStrength(0.2f);
+    water.setLightColor(ColorRGBA.White);
+    water.setWindDirection(Vector2f.UNIT_XY);
+    water.setLightDirection(lightDir);
+    water.setSunScale(3);
+    water.setWaveScale(0.005f);
+    water.setMaxAmplitude(5);
+    water.setWaterTransparency(.1f);
+    water.setWaterColor(new ColorRGBA(0.1f, 0.3f, 0.5f, 1.0f));
+    water.setDeepWaterColor(new ColorRGBA(0.0f, 0.0f, 0.1f, 1.0f));
     water.setWaterHeight(initialWaterHeight);
     fpp.addFilter(water);
 
-    reflectedScene.attachChild(initScene());
-
-    // add a scene wide glow
-    BloomFilter bloom = new BloomFilter();
-    bloom.setExposurePower(55);
-    bloom.setBloomIntensity(1.0f);
-    fpp.addFilter(bloom);
     
-    // add focal blur
-    DepthOfFieldFilter dof = new DepthOfFieldFilter();
-    dof.setFocusDistance(0);
-    dof.setFocusRange(100);
-    fpp.addFilter(dof);
+    initScene();
   }
 
-  private Spatial initScene() {
-    // mainscene has everything that reflects in water, 
-    // including sky and light, but not the water itself.
-    rootNode.attachChild(reflectedScene);
-
-    reflectedScene.attachChild(createTerrain()); // terrain reflects in water
-
+  private void initScene() {
+    // reflectedScene node groups everything that reflects in water, 
+    // including terrain, sky˛ light, but not the water itself.
     DirectionalLight sun = new DirectionalLight();
     sun.setDirection(lightDir);
     sun.setColor(ColorRGBA.White.clone().multLocal(1.7f));
@@ -99,8 +86,10 @@ public class WaterTerrainSky extends SimpleApplication {
     Spatial sky = SkyFactory.createSky(assetManager, 
             "Textures/Sky/Bright/BrightSky.dds", false);
     reflectedScene.attachChild(sky);
-    return reflectedScene;
-  }
+
+    reflectedScene.attachChild(createTerrain()); 
+
+}
 
   private TerrainQuad createTerrain() {
     Texture heightMapImage = assetManager.loadTexture(
@@ -156,7 +145,7 @@ public class WaterTerrainSky extends SimpleApplication {
     terrain = new TerrainQuad("terrain", 65, 513, heightmap.getHeightMap());
     terrain.setMaterial(terrainMat);
     terrain.scale(4, 4, 4);
-    terrain.move(0,-60,0);
+    terrain.move(0,-110,0);
     
     return terrain;
   }

@@ -1,7 +1,8 @@
-package chapter10;
+package chapter09;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.audio.AudioNode;
+import com.jme3.input.MouseInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.material.Material;
@@ -15,7 +16,7 @@ import com.jme3.scene.shape.Box;
  */
 public class AudioTrigger extends SimpleApplication {
 
-  private AudioNode gun_audio;
+  private AudioNode gunAudio;
 
   public static void main(String[] args) {
     AudioTrigger app = new AudioTrigger();
@@ -47,14 +48,16 @@ public class AudioTrigger extends SimpleApplication {
    * Create the audio object (a gun sound) and configure it. 
    */
   private void initAudio() {
-    gun_audio = new AudioNode(assetManager, "Sounds/Effects/Gun.wav");
+    gunAudio = new AudioNode(assetManager, "Sounds/Effects/Gun.wav");
+        gunAudio.setTimeOffset(.5f);
+
   }
 
   /** 
    * Declare a "Shoot" action and map it to a trigger: Left mouse click "shoots".
    */
   private void initKeys() {
-    inputManager.addMapping("Shoot", new MouseButtonTrigger(0));
+    inputManager.addMapping("Shoot", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
     inputManager.addListener(actionListener, "Shoot");
   }
   /**
@@ -65,7 +68,8 @@ public class AudioTrigger extends SimpleApplication {
     @Override
     public void onAction(String name, boolean keyPressed, float tpf) {
       if (name.equals("Shoot") && !keyPressed) {
-        gun_audio.play(); // play it (once - no looping)
+        gunAudio.play(); // play it once (no looping)
+        gunAudio.setVolume(0.5f);
         // target picking and damage code goes here.
       }
     }
