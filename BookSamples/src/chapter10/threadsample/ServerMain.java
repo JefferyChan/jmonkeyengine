@@ -1,4 +1,4 @@
-package chapter10.test;
+package chapter10.threadsample;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.material.Material;

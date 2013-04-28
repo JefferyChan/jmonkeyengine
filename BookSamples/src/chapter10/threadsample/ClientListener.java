@@ -1,5 +1,6 @@
-package chapter10.test;
+package chapter10.threadsample;
 
+import com.jme3.material.Material;
 import com.jme3.network.Client;
 import com.jme3.network.Message;
 import com.jme3.network.MessageListener;
@@ -16,12 +17,16 @@ public class ClientListener implements MessageListener<Client> {
         if (message instanceof CubeMessage) {
             System.out.println("I received cubemessage from server");
             final CubeMessage cubeMessage = (CubeMessage) message;
-            //app.enqueue(new Callable() {
-            //    public Void call() {
-                    app.changeCubeColor(cubeMessage.getColor());
-            //        return null;
-            //    }
-            //});
+            app.enqueue(new Callable() {
+                public Void call() {
+                    /* change something in the scene graph from here */
+                    Material mat = new Material(app.getAssetManager(),
+                            "Common/MatDefs/Misc/Unshaded.j3md");
+                    mat.setColor("Color", cubeMessage.getColor());
+                    app.getRootNode().getChild(0).setMaterial(mat);
+                    return null;
+                }
+            });
         } 
     }
 

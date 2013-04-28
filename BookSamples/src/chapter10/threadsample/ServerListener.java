@@ -1,4 +1,4 @@
-package chapter10.test;
+package chapter10.threadsample;
 
 import com.jme3.math.ColorRGBA;
 import com.jme3.network.HostedConnection;
@@ -19,8 +19,8 @@ public class ServerListener implements MessageListener<HostedConnection> {
             server.broadcast(new CubeMessage(ColorRGBA.randomColor()));
         }
     }
-    /* A custom contructor to inform our client listener about the app. */
 
+    /* A custom contructor to inform our client listener about the app. */
     public ServerListener(ServerMain app, Server server) {
         this.app = app;
         this.server = server;

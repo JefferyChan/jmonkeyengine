@@ -1,4 +1,4 @@
-package chapter10.test;
+package chapter10.threadsample;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.material.Material;
@@ -39,7 +39,6 @@ public class ClientMain extends SimpleApplication implements ClientStateListener
         myClient.addMessageListener(new ClientListener(this,myClient),CubeMessage.class);
         myClient.addClientStateListener(this);
 
-        // example 1 -- client-server communication that changes the scene graph
         attachCube("One Cube");
     }
 
@@ -53,14 +52,6 @@ public class ClientMain extends SimpleApplication implements ClientStateListener
         geom.setMaterial(mat);
         rootNode.attachChild(geom);
     }
-
-    public void changeCubeColor(ColorRGBA c) {
-        Material mat = new Material(assetManager,
-                "Common/MatDefs/Misc/Unshaded.j3md");
-        mat.setColor("Color", c);
-        rootNode.getChild("One Cube").setMaterial(mat);
-    }
-
     
     @Override
     public void destroy() {
@@ -73,13 +64,12 @@ public class ClientMain extends SimpleApplication implements ClientStateListener
 
     /** Specify what happens when this client connects to server */
     public void clientConnected(Client client) {
+        /* example -- client-server communication that changes the scene graph */
         Message m = new CubeMessage();
         myClient.send(m);        
     }
     
     /** Specify what happens when this client disconnects from server */
     public void clientDisconnected(Client client, DisconnectInfo info) {
-        Message m = new CubeMessage();
-        myClient.send(m);
     }
 }
