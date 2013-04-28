@@ -5,10 +5,11 @@ import com.jme3.network.HostedConnection;
 import com.jme3.network.serializing.Serializable;
 
 /**
- *
+ * Each message has a unique ID number, so they are serialized 
+ * and deserialized in the right order.
  * @author ruth
  */
-@Serializable
+@Serializable(id=0)
 public class GreetingMessage extends AbstractMessage {
      private String greeting = "Hello SpiderMonkey!"; // your message data
      public GreetingMessage() {}                  // empty default constructor

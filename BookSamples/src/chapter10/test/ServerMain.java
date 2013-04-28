@@ -1,15 +1,21 @@
-package chapter10;
+package chapter10.test;
 
 import com.jme3.app.SimpleApplication;
-import com.jme3.network.Client;
+import com.jme3.material.Material;
+import com.jme3.math.ColorRGBA;
+import com.jme3.math.Vector3f;
 import com.jme3.network.ConnectionListener;
 import com.jme3.network.HostedConnection;
 import com.jme3.network.Network;
 import com.jme3.network.Server;
 import com.jme3.network.serializing.Serializer;
+import com.jme3.scene.Geometry;
+import com.jme3.scene.Spatial;
+import com.jme3.scene.shape.Box;
 import com.jme3.system.JmeContext;
 import java.io.IOException;
-import java.net.InetAddress;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,10 +26,9 @@ import java.util.logging.Logger;
 public class ServerMain extends SimpleApplication implements ConnectionListener {
 
     Server myServer;
-    int connections = 0;
-    int connectionsOld = -1;
     private static final Logger logger = Logger.getLogger(ServerMain.class.getName());
-
+    private Map content = new HashMap<HostedConnection,Spatial>();
+        
     public static void main(String[] args) {
         logger.setLevel(Level.SEVERE);
         ServerMain app = new ServerMain();
@@ -38,24 +43,14 @@ public class ServerMain extends SimpleApplication implements ConnectionListener 
         } catch (IOException ex) {
             logger.log(Level.SEVERE, "Could not create network connection.");
         }
-        Serializer.registerClass(GreetingMessage.class);
-        Serializer.registerClass(InetAddressMessage.class);
-        Serializer.registerClass(InetAddress.class, new InetAddressSerializer());
-
-        myServer.addMessageListener(new ServerListener(), GreetingMessage.class);
-        myServer.addConnectionListener(this);
-        myServer.addMessageListener(new ServerListener(), InetAddressMessage.class);
-
-  
+        Serializer.registerClass(CubeMessage.class);
+        myServer.addMessageListener(new ServerListener(this,myServer), 
+                                    CubeMessage.class);
     }
 
     @Override
     public void update() {
-        connections = myServer.getConnections().size();
-        if (connectionsOld != connections) {
-            System.out.println("Server connections: " + connections);
-            connectionsOld = connections;
-        }
+        
     }
 
     @Override
@@ -69,15 +64,12 @@ public class ServerMain extends SimpleApplication implements ConnectionListener 
 
     /** Specify what happens when a client connects to this server */
     public void connectionAdded(Server server, HostedConnection client) {
-        System.out.println("Server knows that client #"
-                + client.getId() + " is ready.");
-        client.close("");
+         
     }
     
     /** Specify what happens when a client disconnects from this server */
     public void connectionRemoved(Server server, HostedConnection client) {
-        System.out.println("Server knows that client #"
-                + client.getId() + " has left.");
+ 
 
     }
 }

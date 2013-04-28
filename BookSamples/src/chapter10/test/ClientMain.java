@@ -1,10 +1,8 @@
-package chapter10;
+package chapter10.test;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
-import com.jme3.math.FastMath;
-import com.jme3.math.Vector3f;
 import com.jme3.network.Client;
 import com.jme3.network.ClientStateListener;
 import com.jme3.network.Message;
@@ -14,8 +12,6 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Box;
 import com.jme3.system.JmeContext;
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.logging.Level;
 
 /**
@@ -39,45 +35,33 @@ public class ClientMain extends SimpleApplication implements ClientStateListener
             myClient.start();
         } catch (IOException ex) {
         }
-        Serializer.registerClass(GreetingMessage.class);
-        Serializer.registerClass(InetAddressMessage.class);
-        Serializer.registerClass(InetAddress.class, new InetAddressSerializer());
-
-        myClient.addMessageListener(new ClientListener(this,myClient),GreetingMessage.class);
-        myClient.addMessageListener(new ClientListener(this,myClient),InetAddressMessage.class);
+        Serializer.registerClass(CubeMessage.class);
+        myClient.addMessageListener(new ClientListener(this,myClient),CubeMessage.class);
         myClient.addClientStateListener(this);
 
-        // example 1 -- client-server communication
-        Message m = new GreetingMessage("Hi server, do you hear me?");
-        myClient.send(m);
-        
-        // example 2 -- transmitting data with a custom serializer
-        try {
-            Message message = new InetAddressMessage(
-                    InetAddress.getByName("jmonkeyengine.org"));
-            myClient.send(message);
-        } catch (UnknownHostException ex) {
-            ex.printStackTrace();
-        }
-
+        // example 1 -- client-server communication that changes the scene graph
+        attachCube("One Cube");
     }
 
-    /* This example of a game action adds a cube at a random position 
-    * and with random color. It's an example of a modification 
-    * of the scenegraph in a networked game. */
-    public void performExampleGameAction() {
-        float x = FastMath.nextRandomFloat() * 10f - 5f;
-        float y = FastMath.nextRandomFloat() * 10f - 5f;
-        float z = FastMath.nextRandomFloat() * 10f - 5f;
-        Box b = new Box(x, y, z);
-        Geometry geom = new Geometry("Box", b);
+        /* add demo content */
+    public void attachCube(String name) {
+        Box box = new Box(1,1,1);
+        Geometry geom = new Geometry(name, box);
         Material mat = new Material(assetManager,
                 "Common/MatDefs/Misc/Unshaded.j3md");
-        mat.setColor("Color", ColorRGBA.randomColor());
+        mat.setColor("Color", ColorRGBA.White);
         geom.setMaterial(mat);
         rootNode.attachChild(geom);
     }
 
+    public void changeCubeColor(ColorRGBA c) {
+        Material mat = new Material(assetManager,
+                "Common/MatDefs/Misc/Unshaded.j3md");
+        mat.setColor("Color", c);
+        rootNode.getChild("One Cube").setMaterial(mat);
+    }
+
+    
     @Override
     public void destroy() {
         try {
@@ -89,11 +73,13 @@ public class ClientMain extends SimpleApplication implements ClientStateListener
 
     /** Specify what happens when this client connects to server */
     public void clientConnected(Client client) {
-        System.out.println("Client #" + client.getId() + " is ready.");
+        Message m = new CubeMessage();
+        myClient.send(m);        
     }
     
     /** Specify what happens when this client disconnects from server */
     public void clientDisconnected(Client client, DisconnectInfo info) {
-        System.out.println("Client #" + client.getId() + " has left.");
+        Message m = new CubeMessage();
+        myClient.send(m);
     }
 }

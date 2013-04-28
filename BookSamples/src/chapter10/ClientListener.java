@@ -30,6 +30,9 @@ public class ClientListener implements MessageListener<Client> {
 //		    return null;
 //		}
 //	});
+        } else if (message instanceof InetAddressMessage) {
+            InetAddressMessage addrMessage = (InetAddressMessage) message;
+            // unused
         }
     }
 

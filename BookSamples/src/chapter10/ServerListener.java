@@ -15,6 +15,10 @@ public class ServerListener implements MessageListener<HostedConnection> {
             // prepare and send an answer
             helloMessage.setGreeting("Welcome client #" + source.getId() + "!");
             source.send(helloMessage);
+        } else if (message instanceof InetAddressMessage) {
+            InetAddressMessage addrMessage = (InetAddressMessage) message;
+            System.out.println("The server received the IP address " 
+                + addrMessage.getAddress() + "from client #" + source.getId());
         }
     }
 }
