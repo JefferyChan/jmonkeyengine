@@ -5,6 +5,13 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.nio.ByteBuffer;
 
+/**
+ * This example package shows a client and a server (ServerMain and ClientMain)
+ * which send messages (GreetingMessage and InetAddressMessage)
+ * via message listeners (ServerListener and ClientListener).
+ * This class is an example of a custom serializer for message data.
+ * @author ruth
+ */
 public class InetAddressSerializer extends Serializer {
 
   @Override

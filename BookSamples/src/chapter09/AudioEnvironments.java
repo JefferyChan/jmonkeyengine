@@ -69,7 +69,7 @@ public class AudioEnvironments extends SimpleApplication {
      * This simple scene is just a blue box floating in space
      */
     private void initScene() {
-        Box boxMesh = new Box(Vector3f.ZERO, 1, 1, 1);
+        Box boxMesh = new Box(1, 1, 1);
         Geometry boxGeo = new Geometry("Player", boxMesh);
         Material boxMat = new Material(assetManager,
                 "Common/MatDefs/Misc/Unshaded.j3md");

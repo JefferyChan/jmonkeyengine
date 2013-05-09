@@ -31,7 +31,7 @@ public class PositionalSound extends SimpleApplication {
     rootNode.attachChild(riverbedNode);
 
     // Attach a geometry to the scene node (just a blue cube)
-    Box riverbedMesh = new Box(Vector3f.ZERO, 1, 1, 1);
+    Box riverbedMesh = new Box(1, 1, 1);
     Geometry riverbedGeo = new Geometry("marks audio source", riverbedMesh);
     Material riverbedMat = new Material(assetManager,
             "Common/MatDefs/Misc/Unshaded.j3md");

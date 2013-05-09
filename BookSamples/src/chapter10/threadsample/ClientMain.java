@@ -14,10 +14,9 @@ import com.jme3.system.JmeContext;
 import java.io.IOException;
 import java.util.logging.Level;
 
-/**
- *
- * @author ruth
- */
+/** This package contains an example that shows 
+ * how you enqueue changes to the scene graph 
+ * correctly from the network thread -- see ClientListener. */
 public class ClientMain extends SimpleApplication implements ClientStateListener {
 
     private Client myClient;
@@ -42,7 +41,7 @@ public class ClientMain extends SimpleApplication implements ClientStateListener
         attachCube("One Cube");
     }
 
-        /* add demo content */
+    /* Add some demo content */
     public void attachCube(String name) {
         Box box = new Box(1,1,1);
         Geometry geom = new Geometry(name, box);
@@ -64,7 +63,7 @@ public class ClientMain extends SimpleApplication implements ClientStateListener
 
     /** Specify what happens when this client connects to server */
     public void clientConnected(Client client) {
-        /* example -- client-server communication that changes the scene graph */
+        /* example for client-server communication that changes the scene graph */
         Message m = new CubeMessage();
         myClient.send(m);        
     }

@@ -1,33 +1,23 @@
 package chapter10.threadsample;
 
 import com.jme3.app.SimpleApplication;
-import com.jme3.material.Material;
-import com.jme3.math.ColorRGBA;
-import com.jme3.math.Vector3f;
 import com.jme3.network.ConnectionListener;
 import com.jme3.network.HostedConnection;
 import com.jme3.network.Network;
 import com.jme3.network.Server;
 import com.jme3.network.serializing.Serializer;
-import com.jme3.scene.Geometry;
-import com.jme3.scene.Spatial;
-import com.jme3.scene.shape.Box;
 import com.jme3.system.JmeContext;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- *
- * @author ruth
- */
+/** This package contains an example that shows 
+ * how you enqueue changes to the scene graph 
+ * correctly from the network thread -- see ClientListener. */
 public class ServerMain extends SimpleApplication implements ConnectionListener {
 
     Server myServer;
     private static final Logger logger = Logger.getLogger(ServerMain.class.getName());
-    private Map content = new HashMap<HostedConnection,Spatial>();
         
     public static void main(String[] args) {
         logger.setLevel(Level.SEVERE);
@@ -49,9 +39,7 @@ public class ServerMain extends SimpleApplication implements ConnectionListener 
     }
 
     @Override
-    public void update() {
-        
-    }
+    public void update() {}
 
     @Override
     public void destroy() {

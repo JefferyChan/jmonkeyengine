@@ -26,13 +26,13 @@ public class SaveAndLoad extends SimpleApplication {
     }
 
     @Override
-    public void stop() {
+    public void stop() { // TODO
         String userHome = System.getProperty("user.home");
         BinaryExporter exporter = BinaryExporter.getInstance();
         File file = new File(userHome + "/mycoolgame/savedgame.j3o");
         try {
             exporter.save(rootNode, file);
-            Logger.getLogger(SaveAndLoad.class.getName()).log(Level.WARNING,
+            Logger.getLogger(SaveAndLoad.class.getName()).log(Level.INFO,
                     "Success: Saved node");
         } catch (IOException ex) {
             Logger.getLogger(SaveAndLoad.class.getName()).log(Level.SEVERE,
@@ -64,10 +64,10 @@ public class SaveAndLoad extends SimpleApplication {
             Node sceneNode = (Node) importer.load(file);
             sceneNode.setName("My restored node");
             rootNode.attachChild(sceneNode);
-            Logger.getLogger(SaveAndLoad.class.getName()).log(Level.WARNING,
+            Logger.getLogger(SaveAndLoad.class.getName()).log(Level.INFO,
                     "Success: Loaded saved node.");
         } catch (IOException ex) {
-            Logger.getLogger(SaveAndLoad.class.getName()).log(Level.WARNING,
+            Logger.getLogger(SaveAndLoad.class.getName()).log(Level.INFO,
                     "Warning: Could not load saved node.", ex);
         }
 

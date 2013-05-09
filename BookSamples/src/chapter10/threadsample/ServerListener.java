@@ -5,8 +5,11 @@ import com.jme3.network.HostedConnection;
 import com.jme3.network.Message;
 import com.jme3.network.MessageListener;
 import com.jme3.network.Server;
-import java.util.concurrent.Callable;
 
+/** This package contains an example that shows 
+ * how you enqueue changes to the scene graph 
+ * correctly from the network thread -- see also ClientListener. 
+ * Here the server broadcasts an update (a color) to all clients. */
 public class ServerListener implements MessageListener<HostedConnection> {
 
     private ServerMain app;

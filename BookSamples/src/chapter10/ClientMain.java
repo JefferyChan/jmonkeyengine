@@ -1,17 +1,11 @@
 package chapter10;
 
 import com.jme3.app.SimpleApplication;
-import com.jme3.material.Material;
-import com.jme3.math.ColorRGBA;
-import com.jme3.math.FastMath;
-import com.jme3.math.Vector3f;
 import com.jme3.network.Client;
 import com.jme3.network.ClientStateListener;
 import com.jme3.network.Message;
 import com.jme3.network.Network;
 import com.jme3.network.serializing.Serializer;
-import com.jme3.scene.Geometry;
-import com.jme3.scene.shape.Box;
 import com.jme3.system.JmeContext;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -19,7 +13,9 @@ import java.net.UnknownHostException;
 import java.util.logging.Level;
 
 /**
- *
+ * This example package shows a client and a server (ServerMain and ClientMain)
+ * which send messages (GreetingMessage and InetAddressMessage)
+ * via message listeners (ServerListener and ClientListener).
  * @author ruth
  */
 public class ClientMain extends SimpleApplication implements ClientStateListener {
@@ -43,8 +39,8 @@ public class ClientMain extends SimpleApplication implements ClientStateListener
         Serializer.registerClass(InetAddressMessage.class);
         Serializer.registerClass(InetAddress.class, new InetAddressSerializer());
 
-        myClient.addMessageListener(new ClientListener(this,myClient),GreetingMessage.class);
-        myClient.addMessageListener(new ClientListener(this,myClient),InetAddressMessage.class);
+        myClient.addMessageListener(new ClientListener(),GreetingMessage.class);
+        myClient.addMessageListener(new ClientListener(),InetAddressMessage.class);
         myClient.addClientStateListener(this);
 
         // example 1 -- client-server communication
@@ -60,22 +56,6 @@ public class ClientMain extends SimpleApplication implements ClientStateListener
             ex.printStackTrace();
         }
 
-    }
-
-    /* This example of a game action adds a cube at a random position 
-    * and with random color. It's an example of a modification 
-    * of the scenegraph in a networked game. */
-    public void performExampleGameAction() {
-        float x = FastMath.nextRandomFloat() * 10f - 5f;
-        float y = FastMath.nextRandomFloat() * 10f - 5f;
-        float z = FastMath.nextRandomFloat() * 10f - 5f;
-        Box b = new Box(x, y, z);
-        Geometry geom = new Geometry("Box", b);
-        Material mat = new Material(assetManager,
-                "Common/MatDefs/Misc/Unshaded.j3md");
-        mat.setColor("Color", ColorRGBA.randomColor());
-        geom.setMaterial(mat);
-        rootNode.attachChild(geom);
     }
 
     @Override

@@ -4,6 +4,12 @@ import com.jme3.network.HostedConnection;
 import com.jme3.network.Message;
 import com.jme3.network.MessageListener;
 
+/**
+ * This example package shows a client and a server (ServerMain and ClientMain)
+ * which send messages (GreetingMessage and InetAddressMessage)
+ * via message listeners (ServerListener and ClientListener).
+ * @author ruth
+ */
 public class ServerListener implements MessageListener<HostedConnection> {
 
     public void messageReceived(HostedConnection source, Message message) {

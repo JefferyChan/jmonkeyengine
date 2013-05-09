@@ -6,8 +6,8 @@ import com.jme3.network.Message;
 import com.jme3.network.MessageListener;
 import java.util.concurrent.Callable;
 
-/** WORK IN PROGRESS */
-
+/** This example shows how you enqueue changes to the scene graph 
+ * correctly from the network thread. */
 public class ClientListener implements MessageListener<Client> {
 
     private ClientMain app;
@@ -15,7 +15,6 @@ public class ClientListener implements MessageListener<Client> {
 
     public void messageReceived(Client source, Message message) {
         if (message instanceof CubeMessage) {
-            System.out.println("I received cubemessage from server");
             final CubeMessage cubeMessage = (CubeMessage) message;
             app.enqueue(new Callable() {
                 public Void call() {
@@ -29,8 +28,6 @@ public class ClientListener implements MessageListener<Client> {
             });
         } 
     }
-
-    
     
     /*A custom contructor to inform our client listener about the app. */
     public ClientListener(ClientMain app, Client client) {

@@ -35,7 +35,7 @@ public class BackgroundSounds extends SimpleApplication {
    * just a blue box floating in space
    */
   private void initScene() {
-    Box box1 = new Box(Vector3f.ZERO, 1, 1, 1);
+    Box box1 = new Box(1, 1, 1);
     Geometry player = new Geometry("Player", box1);
     Material mat1 = new Material(assetManager,
             "Common/MatDefs/Misc/Unshaded.j3md");

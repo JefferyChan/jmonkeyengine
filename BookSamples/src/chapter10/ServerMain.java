@@ -1,7 +1,6 @@
 package chapter10;
 
 import com.jme3.app.SimpleApplication;
-import com.jme3.network.Client;
 import com.jme3.network.ConnectionListener;
 import com.jme3.network.HostedConnection;
 import com.jme3.network.Network;
@@ -14,7 +13,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
+ * This example package shows a client and a server (ServerMain and ClientMain)
+ * which send messages (GreetingMessage and InetAddressMessage)
+ * via message listeners (ServerListener and ClientListener).
  * @author ruth
  */
 public class ServerMain extends SimpleApplication implements ConnectionListener {
