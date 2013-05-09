@@ -8,7 +8,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Sphere;
 
-/** A single-colored lit sphere using material color properties.
+/** This demo shows a single-colored lit sphere using material color properties.
  */
 public class MaterialColor extends SimpleApplication {
 
@@ -25,7 +25,7 @@ public class MaterialColor extends SimpleApplication {
             "Common/MatDefs/Light/Lighting.j3md");
     sphereMat.setBoolean("UseMaterialColors", true);
     sphereMat.setColor("Diffuse", ColorRGBA.Blue );
-    //sphereMat.setColor("Ambient", ColorRGBA.Black );
+    sphereMat.setColor("Ambient", ColorRGBA.Blue );
     sphereGeo.setMaterial(sphereMat);
     rootNode.attachChild(sphereGeo); 
     

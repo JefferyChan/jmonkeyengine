@@ -45,7 +45,7 @@ public class MaterialsUnshaded extends SimpleApplication {
 
         /** This material turns the box into a stained glass window. 
          * The texture uses an alpha channel and is partially transparent. */
-        Box windowMesh = new Box(Vector3f.ZERO, 1f, 1.4f, 0.01f);
+        Box windowMesh = new Box(1f, 1.4f, 0.01f);
         Geometry windowGeo = new Geometry("a transparent window frame", windowMesh);
         windowGeo.move(2f, 0f, 0f);
         Material windowMat = new Material(assetManager,

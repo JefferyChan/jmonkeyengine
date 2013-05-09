@@ -2,10 +2,10 @@ package chapter05;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.light.AmbientLight;
-import com.jme3.light.SpotLight;
+import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
-import com.jme3.math.FastMath;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.post.FilterPostProcessor;
@@ -14,53 +14,34 @@ import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.shape.Box;
-import com.jme3.shadow.PssmShadowRenderer;
+import com.jme3.shadow.DirectionalLightShadowFilter;
+import com.jme3.shadow.DirectionalLightShadowRenderer; 
 import com.jme3.texture.Texture.WrapMode;
 
 /**
- * Loading a multimapped model with UV textures and Phong illumination.
+ * This demo shows loading a tank model with a multimapped material 
+ * using UV textures and Phong illumination.
+ * You also see a floor geometry with multimapped material using seamless tiled textures.
+ * This example includes a directional light source casting drop shadows.
  */
 public class HoverTankDropShadow extends SimpleApplication {
 
-    private SpotLight spot;
-    private PssmShadowRenderer pssmRenderer;
+    private DirectionalLight sun;
 
     @Override
     public void simpleInitApp() {
+        setDisplayFps(false);
+        setDisplayStatView(false);
+        
         flyCam.setMoveSpeed(10);
-
+        cam.setLocation(new Vector3f(4,10,18));
+        cam.setRotation(new Quaternion(-0.03f, 0.95f, -0.27f, -0.10f));
+        
         /** A HoverTank model using a .j3m material. */
         Node tank = (Node) assetManager.loadModel(
-                "Models/HoverTank/Tank.mesh.xml");
-        Material mat = assetManager.loadMaterial("Materials/tank.j3m");
-        tank.setMaterial(mat);
+                "Models/HoverTank/Tank.j3o");
         rootNode.attachChild(tank);
         tank.setShadowMode(ShadowMode.CastAndReceive);
-
-        /** Overall brightness*/
-        AmbientLight ambient = new AmbientLight();
-        ambient.setColor(ColorRGBA.White);
-        rootNode.addLight(ambient);
-
-        /** A cone-shaped spotlight, see also simpleUpdate(). */
-        spot = new SpotLight();
-        spot = new SpotLight();
-        spot.setSpotRange(100);
-        spot.setSpotOuterAngle(20 * FastMath.DEG_TO_RAD);
-        spot.setSpotInnerAngle(15 * FastMath.DEG_TO_RAD);
-        spot.setDirection(cam.getDirection());
-        spot.setPosition(cam.getLocation());
-        rootNode.addLight(spot);
-
-        /* Drop shadows */
-        pssmRenderer = new PssmShadowRenderer(assetManager, 1024, 4);
-        viewPort.addProcessor(pssmRenderer);
-
-        /* Activate the glow effect in the HoverTank's material */
-        FilterPostProcessor fpp = new FilterPostProcessor(assetManager);
-        BloomFilter bf = new BloomFilter(BloomFilter.GlowMode.SceneAndObjects);
-        fpp.addFilter(bf);
-        viewPort.addProcessor(fpp);
 
         /** A floor with a seemless tiled, multimapped texture */
         Box floorMesh = new Box(new Vector3f(-20, -1, -20), new Vector3f(20, -2, 20));
@@ -79,16 +60,41 @@ public class HoverTankDropShadow extends SimpleApplication {
         floorGeo.setMaterial(floorMat);
         floorGeo.setShadowMode(ShadowMode.Receive);
         rootNode.attachChild(floorGeo);
+
+        /** Overall brightness*/
+        AmbientLight ambient = new AmbientLight();
+        ambient.setColor(ColorRGBA.White);
+        rootNode.addLight(ambient);
+        /* directional light source for shadows */
+        sun = new DirectionalLight();
+        sun.setColor(ColorRGBA.White);
+        sun.setDirection(cam.getDirection());
+        rootNode.addLight(sun);
+
+
+        /* Drop shadows */
+        final int SHADOWMAP_SIZE=1024;
+        DirectionalLightShadowRenderer dlsr = new DirectionalLightShadowRenderer(assetManager, SHADOWMAP_SIZE, 3);
+        dlsr.setLight(sun);
+        viewPort.addProcessor(dlsr);
+
+        FilterPostProcessor fpp = new FilterPostProcessor(assetManager);
+
+        DirectionalLightShadowFilter dlsf = new DirectionalLightShadowFilter(assetManager, SHADOWMAP_SIZE, 3);
+        dlsf.setLight(sun);
+        dlsf.setEnabled(true); // try true or false
+        fpp.addFilter(dlsf);
+        viewPort.addProcessor(fpp);
+
+        /* Glow effect */
+        BloomFilter bf = new BloomFilter(BloomFilter.GlowMode.Objects);
+        fpp.addFilter(bf);
+        viewPort.addProcessor(fpp);
+
     }
 
     @Override
-    public void simpleUpdate(float tpf) {
-        /* keep the spotlight moving with the camera */
-        spot.setDirection(cam.getDirection());
-        spot.setPosition(cam.getLocation());
-        /* keep the shadows moving with spotlight/camera */
-        pssmRenderer.setDirection(cam.getDirection());
-    }
+    public void simpleUpdate(float tpf) {    }
 
     public static void main(String[] args) {
         HoverTankDropShadow app = new HoverTankDropShadow();

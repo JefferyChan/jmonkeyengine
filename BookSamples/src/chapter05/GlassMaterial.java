@@ -7,7 +7,6 @@ import com.jme3.material.RenderState.BlendMode;
 import com.jme3.material.RenderState.FaceCullMode;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
-import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.scene.Geometry;
@@ -16,7 +15,7 @@ import com.jme3.scene.shape.Sphere;
 import com.jme3.texture.Texture.WrapMode;
 import com.jme3.util.TangentBinormalGenerator;
 
-/** Materials with simple glass material. */
+/** This demo shows transparent materials - a simple glass sphere. */
 public class GlassMaterial extends SimpleApplication {
 
     public static void main(String[] args) {
@@ -31,7 +30,6 @@ public class GlassMaterial extends SimpleApplication {
         /** A floor with a rough bumpy surface */
         Box floorMesh = new Box(10, 1, 10);
         TangentBinormalGenerator.generate(floorMesh);
-        //box.scaleTextureCoordinates(new Vector2f(5f,5f));
         Geometry floorGeo = new Geometry("floor", floorMesh);
 
         Material floorMat = new Material(assetManager,
@@ -54,8 +52,8 @@ public class GlassMaterial extends SimpleApplication {
         Material glassMat = new Material(assetManager,
                 "Common/MatDefs/Light/Lighting.j3md");
         glassMat.setBoolean("UseMaterialColors", true);
-        glassMat.setColor("Ambient", new ColorRGBA(0, 1, 1, .66f));
-        glassMat.setColor("Diffuse", new ColorRGBA(0, 1, 1, .66f));
+        glassMat.setColor("Ambient", new ColorRGBA(0, 1, 1, .75f));
+        glassMat.setColor("Diffuse", new ColorRGBA(0, 1, 1, .75f));
         glassMat.setColor("Specular", ColorRGBA.White);
         glassMat.setFloat("Shininess", 128f);    // [0,128]
         glassMat.getAdditionalRenderState().setFaceCullMode(FaceCullMode.Off);

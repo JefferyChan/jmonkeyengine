@@ -15,13 +15,16 @@ import com.jme3.post.filters.BloomFilter;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.shape.Box;
+import com.jme3.shadow.SpotLightShadowFilter;
+import com.jme3.shadow.SpotLightShadowRenderer;
 import com.jme3.texture.Texture.WrapMode;
 import com.jme3.util.TangentBinormalGenerator;
 
 /**
- * Loading a model with a multimapped material using UV textures and Phong illumination.
- * Loading a geometry with multimapped material using seamless tiled textures.
- * Testing some light sources.
+ * This demo shows loading a tank model with a multimapped material 
+ * using UV textures and Phong illumination.
+ * You also see a floor geometry with multimapped material using seamless tiled textures.
+ * Also we are testing some light sources. No drop shadows.
  */
 public class HoverTank extends SimpleApplication {
 
@@ -30,13 +33,43 @@ public class HoverTank extends SimpleApplication {
     @Override
     public void simpleInitApp() {
         flyCam.setMoveSpeed(10);
+        initLights();
+        initEffects();
+        initScene();
+    }
 
-        /* Activate the glow effect in the hover tank's material*/
+    @Override
+    public void simpleUpdate(float tpf) {
+        spot.setDirection(cam.getDirection());
+        spot.setPosition(cam.getLocation());
+    }
+
+    public static void main(String[] args) {
+        HoverTank app = new HoverTank();
+        app.start();
+    }
+
+    private void initEffects() {
         FilterPostProcessor fpp = new FilterPostProcessor(assetManager);
+        
+        /* Drop shadow test */
+        final int SHADOWMAP_SIZE=1024;
+        SpotLightShadowRenderer dlsr = new SpotLightShadowRenderer(assetManager, SHADOWMAP_SIZE);
+        dlsr.setLight(spot);
+        viewPort.addProcessor(dlsr);
+        SpotLightShadowFilter dlsf = new SpotLightShadowFilter(assetManager, SHADOWMAP_SIZE);
+        dlsf.setLight(spot);
+        dlsf.setEnabled(true); // try true or false
+        fpp.addFilter(dlsf);
+        viewPort.addProcessor(fpp);
+        
+        /* Activate the glow effect in the hover tank's material*/
         BloomFilter bf = new BloomFilter(BloomFilter.GlowMode.Objects);
         fpp.addFilter(bf);
         viewPort.addProcessor(fpp);
+    }
 
+    private void initScene() {
         /** loading a multimapped hover tank model */
         Node tank = (Node) assetManager.loadModel(
                 "Models/HoverTank/Tank.j3o");
@@ -82,38 +115,28 @@ public class HoverTank extends SimpleApplication {
         floorMat.getTextureParam("DiffuseMap").getTextureValue().setWrap(WrapMode.Repeat);
         floorGeo.setMaterial(floorMat);
         rootNode.attachChild(floorGeo);
+    }
 
+    private void initLights() {
         /** A white, directional light source */
         DirectionalLight sun = new DirectionalLight();
         sun.setDirection(new Vector3f(1.1f, -1.5f, -1.5f));
         sun.setColor(ColorRGBA.White);
-        rootNode.addLight(sun);
+        //rootNode.addLight(sun);
 
         /* A white ambient light, no shading */
         AmbientLight ambient = new AmbientLight();
-        ambient.setColor(ColorRGBA.White);
-        rootNode.addLight(ambient);
+        ambient.setColor(ColorRGBA.Gray);
+       // rootNode.addLight(ambient);
 
-//        /** A cone-shaped spotlight with location, direction, range */
-//        spot = new SpotLight();
-//        spot = new SpotLight();
-//        spot.setSpotRange(100);
-//        spot.setSpotOuterAngle(20 * FastMath.DEG_TO_RAD);
-//        spot.setSpotInnerAngle(15 * FastMath.DEG_TO_RAD);
-//        spot.setDirection(cam.getDirection());
-//        spot.setPosition(cam.getLocation());
-//        rootNode.addLight(spot);
-    }
-
-    @Override
-    public void simpleUpdate(float tpf) {
-//        spot.setDirection(cam.getDirection());
-//        spot.setPosition(cam.getLocation());
-    }
-
-    public static void main(String[] args) {
-        HoverTank app = new HoverTank();
-        app.start();
-
+        /** A cone-shaped spotlight with location, direction, range */
+        spot = new SpotLight();
+        spot = new SpotLight();
+        spot.setSpotRange(100);
+        spot.setSpotOuterAngle(20 * FastMath.DEG_TO_RAD);
+        spot.setSpotInnerAngle(15 * FastMath.DEG_TO_RAD);
+        spot.setDirection(cam.getDirection());
+        spot.setPosition(cam.getLocation());
+        rootNode.addLight(spot);
     }
 }
