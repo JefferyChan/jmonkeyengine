@@ -10,7 +10,8 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 
 /**
- * This demo shows pieces of spinning flying debris.
+ * This demo shows random pieces of spinning flying debris that seem to be
+ * hurled away after an explosion or after a building collapse.
  */
 public class Particle4Debris extends SimpleApplication {
 
@@ -37,7 +38,6 @@ public class Particle4Debris extends SimpleApplication {
     debrisEmitter.getParticleInfluencer().setInitialVelocity(new Vector3f(0, 15, 0));
     debrisEmitter.getParticleInfluencer().setVelocityVariation(.50f);
     debrisEmitter.setShape(new EmitterSphereShape(Vector3f.ZERO, 1f));
-
   }
 
   public static void main(String[] args) {

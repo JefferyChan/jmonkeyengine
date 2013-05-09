@@ -11,7 +11,8 @@ import com.jme3.scene.Spatial;
 import com.jme3.shadow.BasicShadowRenderer;
 
 /**
- * The demo shows a simple way of adding dynamic shadows to a scene
+ * The demo shows a simple way of adding dynamic shadows to a scene.
+ * @deprecated 
  */
 public class ShadowSimple extends SimpleApplication {
 

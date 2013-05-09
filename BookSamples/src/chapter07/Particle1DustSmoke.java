@@ -7,7 +7,7 @@ import com.jme3.material.Material;
 import com.jme3.math.FastMath;
 
 /**
- * This demo shows a moving smoke or dust cloud.
+ * This demo shows a moving smoke or dust particle cloud.
  */
 public class Particle1DustSmoke extends SimpleApplication {
 
@@ -21,14 +21,13 @@ public class Particle1DustSmoke extends SimpleApplication {
 
     @Override
     public void simpleInitApp() {
-        dustEmitter = new ParticleEmitter("dust emitter", Type.Point, 100);
-        //dustEmitter = new ParticleEmitter("dust emitter", Type.Point, 100);
+        dustEmitter = new ParticleEmitter("dust emitter", Type.Triangle, 100);
         Material dustMat = new Material(assetManager,
                 "Common/MatDefs/Misc/Particle.j3md");
         dustEmitter.setMaterial(dustMat);
+
         dustMat.setTexture("Texture",
                 assetManager.loadTexture("Effects/smoke.png")); // 2x2 sprite ani
-        //dustMat.setBoolean("PointSprite",true);
         dustEmitter.setImagesX(2);
         dustEmitter.setImagesY(2);
         dustEmitter.setSelectRandomImage(true);

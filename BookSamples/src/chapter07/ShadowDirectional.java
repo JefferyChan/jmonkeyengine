@@ -2,23 +2,20 @@ package chapter07;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.asset.plugins.ZipLocator;
+import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
+import com.jme3.post.FilterPostProcessor;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Spatial;
-import com.jme3.shadow.PssmShadowRenderer;
-import com.jme3.shadow.PssmShadowRenderer.CompareMode;
-import com.jme3.shadow.PssmShadowRenderer.FilterMode;
+import com.jme3.shadow.DirectionalLightShadowFilter;
+import com.jme3.shadow.DirectionalLightShadowRenderer;
 
-/** This sample demonstrates advanced drop shadows using 
- * parallel-split shadow maps. DEPRECATED; see */
-public class ShadowPSSM extends SimpleApplication {
-
-    private Vector3f lightDir = new Vector3f(.3f, -0.5f, -0.5f);
-    private PssmShadowRenderer pssm;
+/** This sample demonstrates adding drop shadows to an existing scene. */
+public class ShadowDirectional extends SimpleApplication {
 
     @Override
     public void simpleInitApp() {
@@ -28,22 +25,29 @@ public class ShadowPSSM extends SimpleApplication {
 
         initScene();
 
-        DirectionalLight sunLight = new DirectionalLight();
-        sunLight.setDirection(lightDir);
-        rootNode.addLight(sunLight);
+        /* directional light source for shadows */
+        DirectionalLight sun = new DirectionalLight();
+        sun.setDirection(new Vector3f(.3f, -0.5f, -0.5f));
+        rootNode.addLight(sun);
 
-        pssm = new PssmShadowRenderer(assetManager, 1024, 3);
-        pssm.setDirection(lightDir);
-        pssm.setCompareMode(CompareMode.Software);
-        pssm.setFilterMode(FilterMode.Bilinear);
-        //pssm.setLambda(0.65f);
-        //pssm.setShadowIntensity(0.7f);
-        //pssm.displayDebug();
-        viewPort.addProcessor(pssm);
+        /* two ways to cast drop shadows */
+        DirectionalLightShadowRenderer dlsr = 
+                new DirectionalLightShadowRenderer(assetManager, 1024, 2);
+        dlsr.setLight(sun);
+        viewPort.addProcessor(dlsr);
+
+        FilterPostProcessor fpp = new FilterPostProcessor(assetManager);
+
+        DirectionalLightShadowFilter dlsf = 
+                new DirectionalLightShadowFilter(assetManager, 1024, 2);
+        dlsf.setLight(sun);
+        dlsf.setEnabled(false); // try true or false
+        fpp.addFilter(dlsf);
+        viewPort.addProcessor(fpp);
     }
 
     public static void main(String[] args) {
-        ShadowPSSM app = new ShadowPSSM();
+        ShadowDirectional app = new ShadowDirectional();
         app.start();
     }
 

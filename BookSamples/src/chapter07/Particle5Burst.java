@@ -9,8 +9,7 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 
 /**
- * This demo shows a burst of fire, which can be used as the center of an explosion effect.
- * @author ruth
+ * This demo shows a burst of fire that you can use as the center of an explosion effect.
  */
 public class Particle5Burst extends SimpleApplication {
 
@@ -30,8 +29,8 @@ public class Particle5Burst extends SimpleApplication {
     burstEmitter.setStartSize(.1f);
     burstEmitter.setEndSize(5.0f);
     burstEmitter.setGravity(0, 0, 0);
-    burstEmitter.setLowLife(.2f);
-    burstEmitter.setHighLife(.2f);
+    burstEmitter.setLowLife(.3f);
+    burstEmitter.setHighLife(.3f);
     burstEmitter.getParticleInfluencer().setInitialVelocity(new Vector3f(0, 5f, 0));
     burstEmitter.getParticleInfluencer().setVelocityVariation(1);
     burstEmitter.setShape(new EmitterSphereShape(Vector3f.ZERO, .5f));

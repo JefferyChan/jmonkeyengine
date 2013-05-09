@@ -11,7 +11,7 @@ import com.jme3.post.ssao.SSAOFilter;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Spatial;
 
-/** This exampels demos a Screen-Space Ambient Occlusion effect 
+/** This example demos the Screen-Space Ambient Occlusion effect 
  * that makes outdoor scenes look like night or overcast, 
  * and indoor scenes dark and gloomy. */
 public class ShadowSSAO extends SimpleApplication {
@@ -27,6 +27,7 @@ public class ShadowSSAO extends SimpleApplication {
         initScene();
 
         AmbientLight ambientLight = new AmbientLight();
+        ambientLight.setColor(ColorRGBA.White);
         rootNode.addLight(ambientLight);
 
         fpp = new FilterPostProcessor(assetManager);

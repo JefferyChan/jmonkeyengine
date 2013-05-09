@@ -4,13 +4,13 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.asset.plugins.ZipLocator;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
+import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.AnalogListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.light.DirectionalLight;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Ray;
-import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.post.FilterPostProcessor;
 import com.jme3.post.filters.DepthOfFieldFilter;
@@ -38,31 +38,10 @@ public class DepthOfFieldBlur extends SimpleApplication {
         setDisplayStatView(false);
         viewPort.setBackgroundColor(new ColorRGBA(.5f, .7f, .9f, 1));
         flyCam.setMoveSpeed(50);
-
-        DirectionalLight sunLight = new DirectionalLight();
-        sunLight.setDirection(new Vector3f(.3f, -0.5f, -0.5f));
-        rootNode.addLight(sunLight);
-
-        // activate depth of field blur
-        fpp = new FilterPostProcessor(assetManager);
-        dofFilter = new DepthOfFieldFilter();
-        //dofFilter.setFocusDistance(0);
-        //dofFilter.setFocusRange(20);
-        //dofFilter.setBlurScale(4f);
-        fpp.addFilter(dofFilter);
-        viewPort.addProcessor(fpp);
-
-        // configure keys to experiment with focal blur settings
-        inputManager.addMapping("toggle", new KeyTrigger(keyInput.KEY_SPACE));
-        inputManager.addMapping("blurScaleUp", new KeyTrigger(keyInput.KEY_U));
-        inputManager.addMapping("blurScaleDown", new KeyTrigger(keyInput.KEY_J));
-        inputManager.addMapping("focusRangeUp", new KeyTrigger(keyInput.KEY_I));
-        inputManager.addMapping("focusRangeDown", new KeyTrigger(keyInput.KEY_K));
-        inputManager.addMapping("focusDistanceUp", new KeyTrigger(keyInput.KEY_O));
-        inputManager.addMapping("focusDistanceDown", new KeyTrigger(keyInput.KEY_L));
-        inputManager.addListener(analogListener, "blurScaleUp", "blurScaleDown",
-                "focusRangeUp", "focusRangeDown", "focusDistanceUp", "focusDistanceDown");
-        inputManager.addListener(actionListener, "toggle");
+        initLights();
+        initEffects();
+        
+        initKeyInputs();
 
         initScene();
     }
@@ -115,6 +94,8 @@ public class DepthOfFieldBlur extends SimpleApplication {
         }
     };
 
+    /** To improve the depth-of-field blur effect, we change the focus distance
+     *  live depending on what the player is looking at. */
     @Override
     public void simpleUpdate(float tpf) {
         // change the focus depending on where the player looks
@@ -128,5 +109,37 @@ public class DepthOfFieldBlur extends SimpleApplication {
         } else {
             fpsText.setText("Press SPACE, U/J, I/K, O/L. Distance: INF");
         }
+    }
+
+    /** These keys change settings so you can easily experiment */
+    private void initKeyInputs() {
+        // configure keys to experiment with focal blur settings
+        inputManager.addMapping("toggle", new KeyTrigger(KeyInput.KEY_SPACE));
+        inputManager.addMapping("blurScaleUp", new KeyTrigger(KeyInput.KEY_U));
+        inputManager.addMapping("blurScaleDown", new KeyTrigger(KeyInput.KEY_J));
+        inputManager.addMapping("focusRangeUp", new KeyTrigger(KeyInput.KEY_I));
+        inputManager.addMapping("focusRangeDown", new KeyTrigger(KeyInput.KEY_K));
+        inputManager.addMapping("focusDistanceUp", new KeyTrigger(KeyInput.KEY_O));
+        inputManager.addMapping("focusDistanceDown", new KeyTrigger(KeyInput.KEY_L));
+        inputManager.addListener(analogListener, "blurScaleUp", "blurScaleDown",
+                "focusRangeUp", "focusRangeDown", "focusDistanceUp", "focusDistanceDown");
+        inputManager.addListener(actionListener, "toggle");
+    }
+
+    private void initLights() {
+        DirectionalLight sunLight = new DirectionalLight();
+        sunLight.setDirection(new Vector3f(.3f, -0.5f, -0.5f));
+        rootNode.addLight(sunLight);
+    }
+
+    /* activate depth-of-field-blur effect */
+    private void initEffects() {
+        fpp = new FilterPostProcessor(assetManager);
+        dofFilter = new DepthOfFieldFilter();
+        dofFilter.setFocusDistance(0);
+        dofFilter.setFocusRange(20);
+        dofFilter.setBlurScale(2f);
+        fpp.addFilter(dofFilter);
+        viewPort.addProcessor(fpp);
     }
 }

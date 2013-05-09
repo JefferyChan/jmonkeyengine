@@ -16,7 +16,7 @@ import com.jme3.scene.Spatial;
 import com.jme3.util.SkyFactory;
 
 /** Press 1 or 0 to fade the scene in or out */
-public class Fade extends SimpleApplication {
+public class Fade extends SimpleApplication { // TODO
 
   private FilterPostProcessor fpp;
   private FadeFilter fade;

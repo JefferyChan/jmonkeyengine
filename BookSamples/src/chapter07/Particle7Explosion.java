@@ -12,9 +12,9 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 
 /**
- * This demo shows a loop of an explosion with fire, embers, smoke, 
- * debris, sparks, and shockwave. 
- * It includes a simple timer that triggers a series of effects in order.
+ * This demo shows how to create a complex effect by combining several simple effects.
+ * The explosion loop uses a simple timer that triggers a series of effects 
+ * (fire, embers, smoke, debris, sparks, and shockwave) in order.
  */
 public class Particle7Explosion extends SimpleApplication {
 

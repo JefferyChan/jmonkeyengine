@@ -10,7 +10,7 @@ import com.jme3.scene.Spatial;
 /** 
  * Load a j3o scene containing an effect created in the SDK.
  */
-public class LoadEffectFromJ3o extends SimpleApplication {
+public class LoadEffectFromJ3o extends SimpleApplication { // TODO
 
     public static void main(String[] args) {
         LoadEffectFromJ3o app = new LoadEffectFromJ3o();

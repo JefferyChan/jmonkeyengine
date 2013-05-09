@@ -12,7 +12,6 @@ import java.util.List;
 
 /**
  * This demo shows flames and fire.
- * @author ruth
  */
 public class Particle6Fire extends SimpleApplication {
 
@@ -42,15 +41,6 @@ public class Particle6Fire extends SimpleApplication {
             setVelocityVariation(0.2f);
     fireEmitter.getParticleInfluencer().
             setInitialVelocity(new Vector3f(0,3f,0)); 
-    
-    rootNode.attachChild(assetManager.loadModel("Scenes/main.j3o"));
-    Node node = ((Node)(rootNode.getChild("Scenes/main-scene_node")));
-    List<Spatial> na = node.getChildren();
-      for (Spatial n : na) {
-    System.out.println("name "+ n.getName()   );
-         // ((Node)(((Node)n).getChild("Emitter"))).getChild("myEmitter").getName();
-      }
-          
   }
 
   public static void main(String[] args) {

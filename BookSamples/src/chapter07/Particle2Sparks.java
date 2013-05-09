@@ -8,8 +8,8 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 
 /**
- * This demo shows individually flying sparks, 
- * from a short-circuiting electric panel or from welding.
+ * This demo shows flying sparks, like from welding or
+ * from a short-circuiting electric panel.
  */
 public class Particle2Sparks extends SimpleApplication {
 

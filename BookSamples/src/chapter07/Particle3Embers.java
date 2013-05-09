@@ -9,8 +9,7 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 
 /**
- * This demo shows a round swarm of sparkling embers.
- * @author ruth
+ * This demo shows a swarm of tiny sparkling embers, like from a campfire.
  */
 public class Particle3Embers extends SimpleApplication {
 

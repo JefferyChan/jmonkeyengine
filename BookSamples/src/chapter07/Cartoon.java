@@ -19,7 +19,6 @@ import com.jme3.texture.Texture;
  * along the edges, and the reduced gradients, e.g. on the teapot. 
  * Note that the code applies a custom method on the rootNode 
  * that adjust material settings scene-wide. Try this on any scene.
- * @author zathras
  */
 public class Cartoon extends SimpleApplication {
 
