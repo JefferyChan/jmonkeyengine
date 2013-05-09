@@ -17,7 +17,7 @@ import com.jme3.util.TangentBinormalGenerator;
 
 
 /**
- * An automated elevator platform.
+ * An automated elevator platform with a physical dynamic ball.
  * @author zathras.
  */
 public class PhysicsKinematic extends SimpleApplication {
@@ -65,7 +65,7 @@ public class PhysicsKinematic extends SimpleApplication {
         Node sceneNode = new Node("Scene");
 
         /* Create and attach floor geometry */
-        Box floorMesh = new Box(Vector3f.ZERO, 10f, 0.5f, 10f);
+        Box floorMesh = new Box(10f, 0.5f, 10f);
         TangentBinormalGenerator.generate(floorMesh);
         Geometry floorGeo = new Geometry("Floor", floorMesh);
         floorGeo.setMaterial(stoneMat);
@@ -73,7 +73,7 @@ public class PhysicsKinematic extends SimpleApplication {
         sceneNode.attachChild(floorGeo);
 
         /* Create and attach slope geometry */
-        Box slopeMesh = new Box(Vector3f.ZERO, 6f, 0.1f, 5f);
+        Box slopeMesh = new Box(6f, 0.1f, 5f);
         TangentBinormalGenerator.generate(slopeMesh);
         Geometry slopeGeo = new Geometry("Slope", slopeMesh);
         slopeGeo.setMaterial(brickMat);
@@ -82,7 +82,7 @@ public class PhysicsKinematic extends SimpleApplication {
         sceneNode.attachChild(slopeGeo);
 
         /* Create and attach wall geometry */
-        Box wallMesh = new Box(Vector3f.ZERO, 5f, 0.4f, 5f);
+        Box wallMesh = new Box(5f, 0.4f, 5f);
         TangentBinormalGenerator.generate(wallMesh);
         Geometry wallGeo = new Geometry("Wall", wallMesh);
         wallGeo.setMaterial(brickMat);
@@ -99,7 +99,7 @@ public class PhysicsKinematic extends SimpleApplication {
 
     /** Make a kinematic platform and add it to the scene. */
     public void initPlatform() {
-        Box platformMesh = new Box(Vector3f.ZERO, 2f, 0.5f, 5f);
+        Box platformMesh = new Box(2f, 0.5f, 5f);
         TangentBinormalGenerator.generate(platformMesh);
         platformGeo = new Geometry(ELEVATOR, platformMesh);
         platformGeo.setMaterial(woodMat);

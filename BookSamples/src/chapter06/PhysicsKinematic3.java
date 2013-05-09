@@ -22,7 +22,7 @@ import com.jme3.util.TangentBinormalGenerator;
 /**
  * An automated platform that starts rising when a special dynamic object
  * arrives as passenger (collision listener).
- * When the platform is on top, a force is applied to its passenger 
+ * Additionaly, when the platform is on top, a force is applied to its passenger 
  * (physics tick listener)
  * @author zathras.
  */
@@ -75,7 +75,7 @@ public class PhysicsKinematic3 extends SimpleApplication
         Node sceneNode = new Node("Scene");
 
         /* Create and attach floor geometry */
-        Box floorMesh = new Box(Vector3f.ZERO, 10f, 0.5f, 10f);
+        Box floorMesh = new Box(10f, 0.5f, 10f);
         TangentBinormalGenerator.generate(floorMesh);
         Geometry floorGeo = new Geometry("Floor", floorMesh);
         floorGeo.setMaterial(stoneMat);
@@ -83,7 +83,7 @@ public class PhysicsKinematic3 extends SimpleApplication
         sceneNode.attachChild(floorGeo);
 
         /* Create and attach slope geometry */
-        Box slopeMesh = new Box(Vector3f.ZERO, 6f, 0.1f, 5f);
+        Box slopeMesh = new Box(6f, 0.1f, 5f);
         TangentBinormalGenerator.generate(slopeMesh);
         Geometry slopeGeo = new Geometry("Slope", slopeMesh);
         slopeGeo.setMaterial(brickMat);
@@ -92,7 +92,7 @@ public class PhysicsKinematic3 extends SimpleApplication
         sceneNode.attachChild(slopeGeo);
 
         /* Create and attach wall geometry */
-        Box wallMesh = new Box(Vector3f.ZERO, 5f, 0.4f, 5f);
+        Box wallMesh = new Box(5f, 0.4f, 5f);
         TangentBinormalGenerator.generate(wallMesh);
         Geometry wallGeo = new Geometry("Wall", wallMesh);
         wallGeo.setMaterial(brickMat);
@@ -109,7 +109,7 @@ public class PhysicsKinematic3 extends SimpleApplication
 
     /** Make a kinematic platform and add it to the scene. */
     public void initPlatform() {
-        Box platformMesh = new Box(Vector3f.ZERO, 2f, 0.5f, 5f);
+        Box platformMesh = new Box(2f, 0.5f, 5f);
         TangentBinormalGenerator.generate(platformMesh);
         platformGeo = new Geometry(ELEVATOR, platformMesh);
         platformGeo.setMaterial(woodMat);

@@ -53,8 +53,8 @@ public class PhysicsFallingBricks extends SimpleApplication {
 
   static {
     /** Initialize reusable mesh shapes. */
-    floorMesh  = new Box(Vector3f.ZERO, 10f, 0.5f, 5f);
-    brickMesh    = new Box(Vector3f.ZERO, BRICK_LENGTH, BRICK_HEIGHT, BRICK_WIDTH);
+    floorMesh  = new Box(10f, 0.5f, 5f);
+    brickMesh    = new Box(BRICK_LENGTH, BRICK_HEIGHT, BRICK_WIDTH);
     ballMesh = new Sphere(32,32, 0.25f, true, false);
     ballMesh.setTextureMode(TextureMode.Projected);
     floorMesh.scaleTextureCoordinates(new Vector2f(4f,4f));

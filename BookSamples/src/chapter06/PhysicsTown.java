@@ -3,8 +3,7 @@ package chapter06;
 import com.jme3.app.SimpleApplication;
 import com.jme3.asset.plugins.ZipLocator;
 import com.jme3.bullet.BulletAppState;
-import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
-import com.jme3.bullet.control.CharacterControl;
+import com.jme3.bullet.control.BetterCharacterControl;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
@@ -12,22 +11,32 @@ import com.jme3.input.controls.KeyTrigger;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.FastMath;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.CameraNode;
 import com.jme3.scene.Node;
+import com.jme3.scene.control.CameraControl;
 
 /**
- * Using physics to make walls and floors solid 
- * for a first-person player to walk around in.
+ * We use physics to make the walls and floors of a town model solid.
+ * We create a solid first-person player (camera) to walk around in our town.
  * @author Normen, Zathras
  */
 public class PhysicsTown extends SimpleApplication implements ActionListener {
 
-    private Node sceneNode;
     private BulletAppState bulletAppState;
     private RigidBodyControl scenePhy;
-    private CharacterControl playerPhy;
-    private Vector3f walkDirection = new Vector3f();
-    private boolean left = false, right = false, forward = false, back = false;
+    private Node sceneNode;
+    private Node playerNode;
+    private BetterCharacterControl playerControl; 
+    private Vector3f walkDirection = new Vector3f(0,0,0);
+    private Vector3f viewDirection = new Vector3f(0,0,1);
+    private boolean rotateLeft = false, rotateRight = false,
+            strafeLeft = false, strafeRight = false,
+            forward = false, backward = false;
+    private float speed=8;
+    private CameraNode camNode;
 
     public static void main(String[] args) {
         PhysicsTown app = new PhysicsTown();
@@ -35,47 +44,70 @@ public class PhysicsTown extends SimpleApplication implements ActionListener {
     }
 
     public void simpleInitApp() {
-        /** Set up Physics */
-        bulletAppState = new BulletAppState();
-        stateManager.attach(bulletAppState);
-
-        initLight();      
-        initNavigation(); 
+        initPhysics();
+        initLight();
+        initNavigation();
         initScene();
         initCharacter();
+        initCamera();
     }
 
+    /** Initialize the physics simulation */
+    private void initPhysics() {
+        bulletAppState = new BulletAppState();
+        stateManager.attach(bulletAppState);
+        //bulletAppState.setDebugEnabled(true); // collision shapes visible
+    }
+
+    /* Set up collision detection for 1st-person player. 
+     * The player control itself has no visible geometry or location:
+     * for a 3rd-person player, attach a geometry to the playerNode. */
     private void initCharacter() {
-        // Set up collision detection for 1st-person camera. Player has no visible geometry.
-        // 1. Create a Capsule Collision Shape as big as the player (radius, height, axis).
-        CapsuleCollisionShape playerCol = new CapsuleCollisionShape(1f, 2f, 1);
-        // 2. From the Collision Shape, create a Character Physics Control (with stepheight).
-        playerPhy = new CharacterControl(playerCol, 0.5f);
-        // 3. Set properties of Character Physics Control
-        playerPhy.setJumpSpeed(20);
-        playerPhy.setFallSpeed(30);
-        // Move the player in its starting position.
-        playerPhy.setPhysicsLocation(new Vector3f(0, 2, 0));
-        // Add the first-person player to PhysicsSpace
-        bulletAppState.getPhysicsSpace().add(playerPhy);
+        // 1. Create a player node.
+        playerNode = new Node("the player"); 
+        playerNode.setLocalTranslation(new Vector3f(0, 6, 0));
+        rootNode.attachChild(playerNode);
+        // 2. Create a Character Physics Control.
+        playerControl = new BetterCharacterControl(1.5f, 4, 30f);
+        // 3. Set some properties of Character Physics Control
+        playerControl.setJumpForce(new Vector3f(0, 300, 0));
+        playerControl.setGravity(new Vector3f(0, -10, 0));
+        // 4. Add the player control to the PhysicsSpace
+        playerNode.addControl(playerControl);
+        bulletAppState.getPhysicsSpace().add(playerControl);
     }
 
+    /** CameraNode depends on playerNode. The camera follows the player. */
+    private void initCamera() {
+        camNode = new CameraNode("CamNode", cam);
+        camNode.setControlDir(CameraControl.ControlDirection.SpatialToCamera);
+        camNode.setLocalTranslation(new Vector3f(0, 4, -6));
+        Quaternion quat = new Quaternion();
+        quat.lookAt(Vector3f.UNIT_Z, Vector3f.UNIT_Y);
+        camNode.setLocalRotation(quat);
+        playerNode.attachChild(camNode);
+        camNode.setEnabled(true);
+        flyCam.setEnabled(false);
+    }
+
+    /** Load a model with floors and walls and make them solid. */
     private void initScene() {
-        // You load a model with floors and walls and make them solid:
-        viewPort.setBackgroundColor(ColorRGBA.Blue); // set up blue sky
-        // 1. Load the scene
+        // make the sky blue
+        viewPort.setBackgroundColor(ColorRGBA.Blue); 
+        // 1. Load the scene node
         assetManager.registerLocator("town.zip", ZipLocator.class);
-        sceneNode = (Node)assetManager.loadModel("main.scene");
+        sceneNode = (Node) assetManager.loadModel("main.scene");
         sceneNode.scale(1.5f);
         rootNode.attachChild(sceneNode);
-        // 1. Create a RigidBody PhysicsControl with mass zero
-        // 2. Add scene PhysicsControl to the scene geometry
-        // 3. Add scene PhysicsControl to PhysicsSpace
+        // 2. Create a RigidBody PhysicsControl with mass zero
+        // 3. Add the scene's PhysicsControl to the scene's geometry
+        // 4. Add the scene's PhysicsControl to the PhysicsSpace
         scenePhy = new RigidBodyControl(0f);
         sceneNode.addControl(scenePhy);
         bulletAppState.getPhysicsSpace().add(scenePhy);
     }
 
+    /** An ambient light and a directional sun light */
     private void initLight() {
         AmbientLight ambient = new AmbientLight();
         rootNode.addLight(ambient);
@@ -84,63 +116,80 @@ public class PhysicsTown extends SimpleApplication implements ActionListener {
         rootNode.addLight(sun);
     }
 
-    /** Override default navigational key mappings here, so you can
-     *  add physics-controlled walking and jumping to the camera. */
+    /**
+     * We override default fly camera key mappings (WASD), because we want to
+     * use them for physics-controlled walking and jumping of the player.
+     */
     private void initNavigation() {
         flyCam.setMoveSpeed(100);
         inputManager.addMapping("Forward", new KeyTrigger(KeyInput.KEY_W));
-        inputManager.addMapping("Left", new KeyTrigger(KeyInput.KEY_A));
-        inputManager.addMapping("Back", new KeyTrigger(KeyInput.KEY_S));
-        inputManager.addMapping("Right", new KeyTrigger(KeyInput.KEY_D));
+        inputManager.addMapping("Back",    new KeyTrigger(KeyInput.KEY_S));
+        inputManager.addMapping("Rotate Left",  new KeyTrigger(KeyInput.KEY_A));
+        inputManager.addMapping("Rotate Right", new KeyTrigger(KeyInput.KEY_D));
         inputManager.addMapping("Jump", new KeyTrigger(KeyInput.KEY_SPACE));
-        inputManager.addListener(this, "Forward", "Left", "Back", "Right");
-        inputManager.addListener(this, "Jump");
+        inputManager.addMapping("Strafe Left",  new KeyTrigger(KeyInput.KEY_Q));
+        inputManager.addMapping("Strafe Right", new KeyTrigger(KeyInput.KEY_E));
+        inputManager.addListener(this, "Forward", "Rotate Left", "Rotate Right");
+        inputManager.addListener(this, "Back", "Strafe Right", "Strafe Left", "Jump");
     }
 
-    /** These custom navigation actions are triggered by user input.
-     * No walking happens yet -- here you keep track of the direction the user wants to go. */
+    /**
+     * Our  custom navigation actions are triggered by user input (WASD). 
+     * No walking happens here yet -- we only keep track of 
+     * the direction the user wants to go.
+     */
     public void onAction(String binding, boolean isPressed, float tpf) {
-        if (binding.equals("Left")) {
-            left = isPressed;
-        } else if (binding.equals("Right")) {
-            right = isPressed;
-        } else if (binding.equals("Forward")) {
+        if (binding.equals("Rotate Left")) {
+            rotateLeft = isPressed;
+        } else if (binding.equals("Rotate Right")) {
+            rotateRight = isPressed;
+        } else 
+        if (binding.equals("Strafe Left")) {
+            strafeLeft = isPressed;
+        } else if (binding.equals("Strafe Right")) {
+            strafeRight = isPressed;
+        } else  
+        if (binding.equals("Forward")) {
             forward = isPressed;
         } else if (binding.equals("Back")) {
-            back = isPressed;
-        } else if (binding.equals("Jump")) {
-            playerPhy.jump();
+            backward = isPressed;
+        } else
+        if (binding.equals("Jump")) {
+            playerControl.jump();
         }
     }
 
     /**
-     * First-person walking is handled here in the update loop.
+     * First-person walking happens here in the update loop.
      */
     @Override
     public void simpleUpdate(float tpf) {
-        // Check in which direction the player is walking by interpreting
-        // the camera direction forward (camDir) and to the side (camLeft).
-        Vector3f camDir = cam.getDirection();
-        Vector3f camLeft = cam.getLeft();
+        // Get current forward and left vectors of the playerNode: 
+        Vector3f modelForwardDir = playerNode.getWorldRotation().mult(Vector3f.UNIT_Z);
+        Vector3f modelLeftDir    = playerNode.getWorldRotation().mult(Vector3f.UNIT_X);
+        // Depending on which nav keys are pressed, determine the change in direction
 
-        // Calculate final walk direction:
-        walkDirection.set(0, 0, 0); // reset
-        if (left) {
-            walkDirection.addLocal(camLeft);
-        }
-        if (right) {
-            walkDirection.addLocal(camLeft.negate());
+        walkDirection.set(0, 0, 0);
+        if (strafeLeft) {
+            walkDirection.addLocal(modelLeftDir.mult(speed));
+        } else if (strafeRight) {
+            walkDirection.addLocal(modelLeftDir.mult(speed).negate());
         }
         if (forward) {
-            walkDirection.addLocal(camDir);
+            walkDirection.addLocal(modelForwardDir.mult(speed));
+        } else if (backward) {
+            walkDirection.addLocal(modelForwardDir.mult(speed).negate());
         }
-        if (back) {
-            walkDirection.addLocal(camDir.negate().clone().multLocal(0.5f));
+        playerControl.setWalkDirection(walkDirection);
+        // Depending on which nav keys are pressed, determine the change in rotation
+        if (rotateLeft) {
+            Quaternion rotateL = new Quaternion().fromAngleAxis(FastMath.PI * tpf, Vector3f.UNIT_Y);
+            rotateL.multLocal(viewDirection);
+        } else if (rotateRight) {
+            Quaternion rotateR = new Quaternion().fromAngleAxis(-FastMath.PI * tpf, Vector3f.UNIT_Y);
+            rotateR.multLocal(viewDirection);
         }
-        // Use setWalkDirection() to move the physics-controlled player.
-        playerPhy.setWalkDirection(walkDirection);
-        
-        // Make sure to move the first-person camera with the player.
-        cam.setLocation(playerPhy.getPhysicsLocation());
+        playerControl.setViewDirection(viewDirection);
     }
+
 }
