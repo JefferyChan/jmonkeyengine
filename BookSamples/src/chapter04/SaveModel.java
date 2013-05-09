@@ -15,9 +15,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * This example demonstrates save and loading a 3D model using j3o files.
- * Everytime you run this, a new model is loaded.
- * Use this method to save/load the game, by saving/loadin and the rootNode.
+ * This example demonstrates saving and loading models using .j3o files.
+ * Everytime you run this, a new model is loaded into the scene.
+ * When you press ESCAPE (stop() method), the scene is saved and reloaded
+ * until you delete "SavedGames/savedgame.j3o" in your home directory.
+ * Use this method to save/load the game, by saving/loading and the rootNode.
  */
 public class SaveModel extends SimpleApplication {
 
@@ -33,7 +35,7 @@ public class SaveModel extends SimpleApplication {
         }
 
         Spatial mymodel = assetManager.loadModel(
-                "Models/MyModel/mymodel.j3o");
+                "Models/MyModel/MyModel.j3o");
         mymodel.rotate(0, FastMath.nextRandomFloat() * FastMath.PI, 0);
         mymodel.move(
                 FastMath.nextRandomFloat() * 10 - 5,
@@ -48,10 +50,13 @@ public class SaveModel extends SimpleApplication {
         rootNode.addLight(sun);
     }
 
+    /* This method defines what to do when the user presses ESCAPE. 
+     * It saves the scene in the user's home directory. 
+     */
     @Override
     public void stop() {
         String userHome = System.getProperty("user.home");
-        File file = new File(userHome + "/SavedGames/" + "savedgame.j3o");
+        File file = new File(userHome + "/SavedGames/savedgame.j3o");
         BinaryExporter exporter = BinaryExporter.getInstance();
         try {
             exporter.save(rootNode, file);

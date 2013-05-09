@@ -10,12 +10,11 @@ import com.jme3.scene.shape.Box;
 import com.jme3.ui.Picture;
 
 /**
- * A user interface with text and icons. 
- * What happens if we attach a red 3D cube to the 2D user interface?
- * What happens if we transform the red cube in the update loop? 
+ * A user interface that demnos the difference between 2D guiNode and 3D rootNode.
+ * What happens if we attach a 3D cube to the 2D user interface?
+ * And what if we apply 3D transformations (rotation) to this 3D cube? 
  */
 public class SimpleUserInterface3 extends SimpleApplication {
-    private static SimpleUserInterface3 app;   // The application object
     private float distance=0;
     private BitmapText distanceText;
     Geometry minicube;
@@ -24,11 +23,11 @@ public class SimpleUserInterface3 extends SimpleApplication {
     /** initialize the scene here */
     public void simpleInitApp() {
         // deactivate default statistics displays
-        app.setDisplayStatView(false);
-        app.setDisplayFps(false);
+        setDisplayStatView(false);
+        setDisplayFps(false);
         
         // A big blue 3D cube attached to the rootNode
-        Box mesh = new Box(Vector3f.ZERO, 1, 1, 1);   
+        Box mesh = new Box(1, 1, 1);   
         Geometry geom = new Geometry("3D scene box", mesh);
         Material mat = new Material(assetManager, 
                 "Common/MatDefs/Misc/Unshaded.j3md"); 
@@ -36,7 +35,7 @@ public class SimpleUserInterface3 extends SimpleApplication {
         geom.setMaterial(mat);                        
         rootNode.attachChild(geom);
         
-        // Attach second red cube to the 2S guiNode (instead of rootNode)
+        // Attach 3D red cube to the 2D guiNode (instead of rootNode)!
         minicube = new Geometry("2D GUI box", mesh);  
         Material mat2 = new Material(assetManager, 
                 "Common/MatDefs/Misc/Unshaded.j3md"); 
@@ -83,7 +82,7 @@ public class SimpleUserInterface3 extends SimpleApplication {
 
     /** Start the jMonkeyEngine application */
     public static void main(String[] args) {
-        app = new SimpleUserInterface3();
+        SimpleUserInterface3 app = new SimpleUserInterface3();
         app.start();
     }
 }

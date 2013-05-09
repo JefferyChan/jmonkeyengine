@@ -16,19 +16,22 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.shape.Box;
 
-/** An Application state that control interactions 
- * Works together with CubeChaser4 and CubeChaser4Control.
- * The AppState adds cubes, some of whioch are CubeChaser4Control'ed.
- * It identifies the CubeChaser4Control'ed cubes and makes them chaseable.
+/** 
+ * Run this example by running CubeChaser4.
+ * This class works together with the CubeChaser4Control and CubeChaser4. 
+ * This AppState adds some cubes, 
+ * some of which get the CubeChaser4Control attribute (i.e. chasable).
+ * The AppState identifies the CubeChaser4Control'ed cubes 
+ * and makes them behave "chaseable" (they run away).
  */
-public class CubeChaserState extends AbstractAppState {
+public class CubeChaser4State extends AbstractAppState {
 
     private Ray ray = new Ray();
     private Camera cam;
     private Node rootNode;
     private SimpleApplication app;
     private AssetManager assetManager;
-    private static Box mesh = new Box(Vector3f.ZERO, 1, 1, 1);
+    private static Box mesh = new Box(1, 1, 1);
     private int counter = 0;
 
     @Override

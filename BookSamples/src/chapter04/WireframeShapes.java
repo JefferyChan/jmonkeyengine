@@ -3,7 +3,6 @@ package chapter04;
 import com.jme3.app.SimpleApplication;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
-import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Sphere;
@@ -20,11 +19,13 @@ public class WireframeShapes extends SimpleApplication {
     @Override
     /** initialize the scene here */
     public void simpleInitApp() {
-        Box mesh = new Box(Vector3f.ZERO, 1, 1, 1);   // create box mesh OR
+        /* uncomment one of these meshes */
+        //Box mesh = new Box(1, 1, 1);              // create box mesh OR
         //Sphere mesh = new Sphere(16, 16, 1.0f);   // create sphere mesh OR
         //Sphere mesh = new Sphere(32, 16, 1.0f);   // create sphere mesh OR
-        //Sphere mesh = new Sphere(16, 32, 1.0f);   // create sphere mesh OR
+        Sphere mesh = new Sphere(16, 32, 1.0f);   // create sphere mesh OR
         //Sphere mesh = new Sphere(32, 32, 1.0f);   // create sphere mesh
+        
         Geometry geom = new Geometry("Box", mesh);    // create geometry from this mesh
 
         Material mat = new Material(assetManager, 

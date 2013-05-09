@@ -7,18 +7,18 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
-import com.jme3.renderer.RenderManager;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Box;
 
 /**
- * This demo uses the simpleUpdate() loop to change the location 
- * of any cube the player looks at. When the player is closer than
- * 10 wu, the cube moves further away.
+ * This demo uses the simpleUpdate() loop to determine which cube 
+ * the player (the camera) looks at. When the player is closer than 10 wu, 
+ * the cube moves further away.
+ * The loop uses a ray casting algorythm to measure the distance.
  */
 public class CubeChaser2 extends SimpleApplication {
 
-    private static Box mesh = new Box(Vector3f.ZERO, 1, 1, 1);
+    private static Box mesh = new Box(1, 1, 1);
     private Ray ray = new Ray();
 
     @Override
@@ -70,11 +70,6 @@ public class CubeChaser2 extends SimpleApplication {
                 target.move(cam.getDirection());
             }
         }
-    }
-
-    @Override
-    /** (optional) Advanced renderer/frameBuffer modifications */
-    public void simpleRender(RenderManager rm) {
     }
 
     /** Start the jMonkeyEngine application */

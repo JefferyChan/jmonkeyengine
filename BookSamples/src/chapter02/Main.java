@@ -3,14 +3,14 @@ package chapter02;
 import com.jme3.app.SimpleApplication;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
-import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Box;
 
 /**
- * Sample 2.1 
- * Basic jMonkeyEngine game template. This code renders a blue 3D cube.
+ * The Basic jMonkeyEngine game template. Copy and refactor for exercises.
+ * We initialize a SimpleApplication, start the app, and render a blue cube.
+ * Optionally, you can hook code into the update loop and the renderer.
  */
 public class Main extends SimpleApplication {
 
@@ -18,8 +18,8 @@ public class Main extends SimpleApplication {
     /** Initialize the scene here: 
      *  Create Geometries and attach them to the rootNode. */
     public void simpleInitApp() {
-        Box b = new Box(Vector3f.ZERO, 1, 1, 1);   // create box mesh
-        Geometry geom = new Geometry("Box", b);    // create geometry from mesh
+        Box b = new Box(1, 1, 1);                     // create box mesh
+        Geometry geom = new Geometry("Box", b);       // create geometry from mesh
 
         Material mat = new Material(assetManager, 
                 "Common/MatDefs/Misc/Unshaded.j3md"); // create a simple material
@@ -29,8 +29,8 @@ public class Main extends SimpleApplication {
     }
 
     @Override
-    /** (optional) Interact with update loop here. 
-     *  This is where the action will happen in your game. */
+    /** Hook code into the main update loop here. 
+     *  This is where the action happens in your game. */
     public void simpleUpdate(float tpf) {
       /* Nothing yet. */
     } 

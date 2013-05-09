@@ -10,52 +10,45 @@ import com.jme3.scene.shape.Box;
 
 /**
  * Sample 2.2
- * This example shows a blue and a yellow cube. The yellow cube
- * is translated (moved) to a new location (v).
+ * This example shows a blue and a yellow cube. 
+ * and different ways how to translate, that is move, them.
+ * The yellow cube is translated (moved) to a new location v.
  */
 public class Translate extends SimpleApplication {
 
     @Override
-    /** Initialize the scene here: 
-     *  Create Geometries and attach them to the rootNode. */
+    /** Create Geometries and attach them to the rootNode. */
     public void simpleInitApp() {
-        Box b = new Box(Vector3f.ZERO, 1, 1, 1);   // create box mesh
-        Geometry geom = new Geometry("Box", b);    // create geometry from mesh
+
+        /* Cube 1 */
+        Box b = new Box(1, 1, 1);                     // create box mesh
+        Geometry geo1 = new Geometry("Box 1", b);     // create geometry from mesh
 
         Material mat = new Material(assetManager, 
                 "Common/MatDefs/Misc/Unshaded.j3md"); // create a simple material
         mat.setColor("Color", ColorRGBA.Blue);        // color the material blue
-        geom.setMaterial(mat);                        // assign the material to geometry
-        rootNode.attachChild(geom);                   // make geometry appear in scene
+        geo1.setMaterial(mat);                        // assign the material to geometry
+        rootNode.attachChild(geo1);                   // make geometry appear in scene
         
-        Vector3f v = new Vector3f(2.0f , 1.0f , -3.0f);
-        
-        Box b2 = new Box(Vector3f.ZERO, 1, 1, 1);    // create box mesh
-        Geometry geom2 = new Geometry("Box", b2);    // create geometry from mesh
+        /* Cube 2 */
+        Box b2 = new Box(1, 1, 1);                    // create box mesh
+        Geometry geo2 = new Geometry("Box 2", b2);    // create geometry from mesh
 
         Material mat2 = new Material(assetManager, 
-                "Common/MatDefs/Misc/Unshaded.j3md");  // create a simple material
-        mat2.setColor("Color", ColorRGBA.Yellow);      // color the material YELLOW
-        geom2.setMaterial(mat2);                       // assign the material to geometry
+                "Common/MatDefs/Misc/Unshaded.j3md"); // create a simple material
+        mat2.setColor("Color", ColorRGBA.Yellow);     // color the material YELLOW
+        geo2.setMaterial(mat2);                       // assign the material to geometry
+        rootNode.attachChild(geo2);                   // make geometry appear in scene
         
-        geom2.setLocalTranslation(v);                  // test absolute translation
-        //geom2.move(v);                                 // test relative translation 
-        //geom2.move(v);                                 // test relative translation
+        Vector3f v = new Vector3f(2.0f , 1.0f , -3.0f);        
 
-        rootNode.attachChild(geom2);                   // make geometry appear in scene
-    }
+        /* TEST 1  */
+//        geo2.setLocalTranslation(v);                 // test absolute translation
+        
+        /* TEST 2  */
+//        geo2.move(v);                                // test relative translation 
+//        geo2.move(v);                                // test relative translation
 
-    @Override
-    /** (optional) Interact with update loop here. 
-     *  This is where the action will happen in your game. */
-    public void simpleUpdate(float tpf) {
-      /* Nothing yet. */
-    } 
-
-    @Override
-    /** (optional) Advanced renderer/frameBuffer modifications.  */
-    public void simpleRender(RenderManager rm) {
-      /* Not used in this example. */
     }
 
     /** Start the jMonkeyEngine application */

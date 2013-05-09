@@ -5,19 +5,19 @@ import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
-import com.jme3.renderer.RenderManager;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Box;
 
 /**
- * A Control changes the locations of the cubes that the player looks at. 
+ * This example shows how a Control (CubeChaser3Control) 
+ * moves certain cubes that the player looks at. 
  * The control is only attached to some cubes, only they are affected. 
- * Note that the simpleUpdate() method is empty, and
- * all updates happen in the CubeChaserControl's update loop.
+ * Note that the simpleUpdate() method is unused, because
+ * all updates happen in the CubeChaser3Control's update loop!
  */
 public class CubeChaser3 extends SimpleApplication {
 
-    private static Box mesh = new Box(Vector3f.ZERO, 1, 1, 1);
+    private static Box mesh = new Box(1, 1, 1);
     
     @Override
     /** initialize the scene here */
@@ -34,7 +34,7 @@ public class CubeChaser3 extends SimpleApplication {
                     FastMath.nextRandomInt(-20, 20),
                     FastMath.nextRandomInt(-20, 20));
             Geometry geom = myBox("Cube" + i, loc, ColorRGBA.randomColor());
-            // make random cubes chasable
+            // make 25% random cubes chasable by adding the Control
             if (FastMath.nextRandomInt(1, 4) == 4) {
                 geom.addControl(new CubeChaser3Control(cam, rootNode));
             }
@@ -52,20 +52,9 @@ public class CubeChaser3 extends SimpleApplication {
         return geom;
     }
 
-    @Override
-    /** Interact with update loop here */
-    public void simpleUpdate(float tpf) {
-    }
-
-    @Override
-    /** (optional) Advanced renderer/frameBuffer modifications */
-    public void simpleRender(RenderManager rm) {
-    }
-
     /** Start the jMonkeyEngine application */
     public static void main(String[] args) {
         CubeChaser3 app = new CubeChaser3();
         app.start();
-
     }
 }

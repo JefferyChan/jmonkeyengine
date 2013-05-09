@@ -14,9 +14,12 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 
-/** Sample 7 - how to load an animated model and play the animation. 
- * Press the spacebar to start the animation.
- * We use a control with one channel, and an AnimEventListener. */
+/** This example loads an animated model and plays the animation. 
+ * Press the SPACEBAR to start the "Walk" animation.
+ * We use a AnimControl with one AnimChannel for the animation, 
+ * and an AnimEventListener to monitor which state the animation is in.
+ * (idle or walking)
+ */
 public class AnimateModel extends SimpleApplication
         implements AnimEventListener {
 

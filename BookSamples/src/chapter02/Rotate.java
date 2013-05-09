@@ -12,76 +12,66 @@ import com.jme3.scene.Node;
 import com.jme3.scene.shape.Box;
 
 /**
- * Sample 2.4
- * This example shows a blue and a yellow cube. The cubes
- * are both rotated.
+ * This example shows a blue and a yellow cube, 
+ * and different ways how to rotate them:
+ * Rotate each relatively by radians;
+ * Rotate each asbolutely via Quaternions;
+ * Rotate both around a common pivot node.
  */
 public class Rotate extends SimpleApplication {
 
+    /** Create Geometries and attach them to the rootNode. */
     @Override
-    /** Initialize the scene here: 
-     *  Create Geometries and attach them to the rootNode. */
     public void simpleInitApp() {
-        Box b = new Box(Vector3f.ZERO, 1, 1, 1);   // create box mesh
-        Geometry geom = new Geometry("Box", b);    // create geometry from mesh
+        /* Blue cube */
+        Box b = new Box(1, 1, 1);                     // create box mesh
+        Geometry geo1 = new Geometry("Box 1", b);     // create geometry from mesh
 
         Material mat = new Material(assetManager,
                 "Common/MatDefs/Misc/Unshaded.j3md"); // create a simple material
-        mat.setColor("Color", ColorRGBA.Blue);        // color the material blue
-        geom.setMaterial(mat);                        // assign the material to geometry
-        rootNode.attachChild(geom);                   // make geometry appear in scene
-
-        Vector3f v = new Vector3f(2.0f, 1.0f, -3.0f);
-
-        Box b2 = new Box(Vector3f.ZERO, 1, 1, 1);    // create box mesh
-        Geometry geom2 = new Geometry("Box", b2);    // create geometry from mesh
-
+        mat.setColor("Color", ColorRGBA.Blue);        // color the material BLUE
+        geo1.setMaterial(mat);                        // assign the material to geometry
+        rootNode.attachChild(geo1);                   // make geometry appear in scene
+        
+        /* Yellow cube */
+        Box b2 = new Box(1, 1, 1);                    // create box mesh 
+        Geometry geo2 = new Geometry("Box 2", b2);    // create geometry from mesh
+        
         Material mat2 = new Material(assetManager,
-                "Common/MatDefs/Misc/Unshaded.j3md");  // create a simple material
-        mat2.setColor("Color", ColorRGBA.Yellow);      // color the material YELLOW
-        geom2.setMaterial(mat2);                       // assign the material to geometry
-        geom2.setLocalTranslation(v);                  // position it
+                "Common/MatDefs/Misc/Unshaded.j3md"); // create a simple material
+        mat2.setColor("Color", ColorRGBA.Yellow);     // color the material YELLOW
+        geo2.setMaterial(mat2);                       // assign the material to geometry
+        Vector3f v = new Vector3f(2.0f, 1.0f, -3.0f);  
+        geo2.setLocalTranslation(v);                  // position the cube
+        rootNode.attachChild(geo2);                   // make geometry appear in scene
 
-        float r = FastMath.DEG_TO_RAD * 45f;
+        /* Uncomment each test separately */
+        
+        /* TEST 1: relative rotation by radians */
+//        float r = FastMath.DEG_TO_RAD * 45f;          // convert 45 degrees to radians
+//        geo2.rotate(r   , 0.0f, 0.0f);                // relative rotation around x axis
+//        geo1.rotate(0.0f,    r, 0.0f);                // relative rotation around y axis
 
-        //geom2.rotate(r, 0.0f, 0.0f);                      // test relative rotation
-        //geom.rotate(0.0f, r, 0.0f);                       // test relative rotation
-
-        /* test absolute rotation */
+        /* TEST 2: absolute rotation using Quaternion */
 //        Quaternion roll045 = new Quaternion();
 //        roll045.fromAngleAxis(45 * FastMath.DEG_TO_RAD, Vector3f.UNIT_X);
-//        geom2.setLocalRotation(roll045);
+//        geo2.setLocalRotation(roll045);
 
-        /* test absolute rotation with slerp interpolation */
+        /* TEST 3: absolute rotation with Quaternion and slerp interpolation */
 //        Quaternion q1 = new Quaternion();
 //        q1.fromAngleAxis(50 * FastMath.DEG_TO_RAD, Vector3f.UNIT_X);
 //        Quaternion q2 = new Quaternion();
 //        q2.fromAngleAxis(40 * FastMath.DEG_TO_RAD, Vector3f.UNIT_X);
 //        Quaternion q3 = new Quaternion();
-//        q3.slerp(q1, q2, 0.5f);
-//        geom2.setLocalRotation(q3);
+//        q3.slerp(q1, q2, 0.5f);                     // .5f = halfways between 50 and 40 deg
+//        geo2.setLocalRotation(q3);
 
-        rootNode.attachChild(geom2);                   // make geometry appear in scene
-        
-        Node pivot = new Node("pivot node");
-        pivot.attachChild(geom);
-        pivot.attachChild(geom2);
-        pivot.rotate(0, 0, FastMath.DEG_TO_RAD * 45);
-        rootNode.attachChild(pivot);
-
-    }
-
-    @Override
-    /** (optional) Interact with update loop here. 
-     *  This is where the action will happen in your game. */
-    public void simpleUpdate(float tpf) {
-        /* Nothing yet. */
-    }
-
-    @Override
-    /** (optional) Advanced renderer/frameBuffer modifications.  */
-    public void simpleRender(RenderManager rm) {
-        /* Not used in this example. */
+        /* TEST 4: Rotate both 45 deg around z around pivot node at origin */
+//        Node pivot = new Node("pivot node");          // at origin
+//        pivot.attachChild(geo1);
+//        pivot.attachChild(geo2);
+//        pivot.rotate(0, 0, FastMath.DEG_TO_RAD * 45);
+//        rootNode.attachChild(pivot);
     }
 
     /** Start the jMonkeyEngine application */

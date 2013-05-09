@@ -9,22 +9,20 @@ import com.jme3.input.controls.Trigger;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Ray;
-import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
-import com.jme3.renderer.RenderManager;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Box;
 
 /**
- * This example demonstrates responding to user input (clicks), 
+ * This example demonstrates an AnalogListener responding to user input (clicks), 
  * and picking a target using a center mark as "crosshairs".
- * We have two cubes, we use ray casting to select one of them,
- * and make it rotate.
+ * We have two cubes and we use ray casting to select one of them,
+ * and we make the selected cube rotate.
  */
 public class TargetPickCenter extends SimpleApplication {
     private static final String MAPPING_ROTATE = "Rotate";
     private static final Trigger TRIGGER_ROTATE = new MouseButtonTrigger(MouseInput.BUTTON_LEFT);
-    private static Box mesh = new Box(Vector3f.ZERO, 1, 1, 1);
+    private static Box mesh = new Box(1, 1, 1);
 
     @Override
     /** initialize the scene here */
@@ -101,16 +99,6 @@ public class TargetPickCenter extends SimpleApplication {
             }   
         }
     };
-
-    @Override
-    /** (optional) Interact with update loop here */
-    public void simpleUpdate(float tpf) {
-    }
-
-    @Override
-    /** (optional) Advanced renderer/frameBuffer modifications */
-    public void simpleRender(RenderManager rm) {
-    }
 
     /** Start the jMonkeyEngine application */
     public static void main(String[] args) {

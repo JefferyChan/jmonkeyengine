@@ -11,10 +11,10 @@ import com.jme3.ui.Picture;
 
 /**
  * Adding a 2D user interface with text and icons to the screen.
- * The interface has an opaque frame at the bottom, 
- * a partially transparent monkey icon, and text that updates.
- * The Monkey icon is happy if the camera is close, 
- * and sad if further away from the center.
+ * The sample interface demos an opaque image frame at the bottom, 
+ * a partially transparent icon that updates, and text that updates.
+ * The context-sensitive Monkey icon is happy if the camera is close to, 
+ * and sad if further away from the center of the scene.
  */
 public class SimpleUserInterface2 extends SimpleApplication {
 
@@ -30,7 +30,7 @@ public class SimpleUserInterface2 extends SimpleApplication {
         setDisplayFps(false);
 
         // just a blue box
-        Box mesh = new Box(Vector3f.ZERO, 1, 1, 1);   
+        Box mesh = new Box(1, 1, 1);   
         Geometry geom = new Geometry("Box", mesh);    
         Material mat = new Material(assetManager,
                 "Common/MatDefs/Misc/Unshaded.j3md"); 

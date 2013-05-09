@@ -11,8 +11,8 @@ import com.jme3.ui.Picture;
 
 /**
  * Adding a 2D user interface with text and icons to the screen.
- * The interface has an opaque frame at the bottom, 
- * a partially transparent monkey icon, and text that updates.
+ * The example interface demos an opaque image frame at the bottom, 
+ * a partially transparent icon, and text that updates live.
  */
 public class SimpleUserInterface extends SimpleApplication {
 
@@ -26,7 +26,7 @@ public class SimpleUserInterface extends SimpleApplication {
         setDisplayFps(false);
 
         // just a blue box
-        Box mesh = new Box(Vector3f.ZERO, 1, 1, 1);
+        Box mesh = new Box(1, 1, 1);
         Geometry geom = new Geometry("Box", mesh);
         Material mat = new Material(assetManager,
                 "Common/MatDefs/Misc/Unshaded.j3md");
@@ -38,7 +38,7 @@ public class SimpleUserInterface extends SimpleApplication {
         guiFont = assetManager.loadFont("Interface/Fonts/Default.fnt");
         distanceText = new BitmapText(guiFont);
         distanceText.setSize(guiFont.getCharSet().getRenderedSize());
-        distanceText.move( // x/y coordinates and z=depth layer 0
+        distanceText.move( // x/y coordinates and z = depth layer 0
                 settings.getWidth() / 2 + 50,
                 distanceText.getLineHeight() + 20,
                 0);
@@ -51,7 +51,6 @@ public class SimpleUserInterface extends SimpleApplication {
         frame.setWidth(530);
         frame.setHeight(10);
         guiNode.attachChild(frame);
-
 
         // Display a 2D image or icon on depth layer -1
         Picture logo = new Picture("logo");

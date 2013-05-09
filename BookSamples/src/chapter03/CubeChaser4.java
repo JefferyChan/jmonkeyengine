@@ -14,10 +14,8 @@ public class CubeChaser4 extends SimpleApplication {
     public void simpleInitApp() {
         flyCam.setMoveSpeed(100f);
         /** Note: All real code was moved into the AppStates! */
-        CubeChaserState state = new CubeChaserState();
+        CubeChaser4State state = new CubeChaser4State();
         stateManager.attach(state);
-//        MyAppState mas = new MyAppState();
-//        stateManager.attach(mas);
     }
 
     @Override

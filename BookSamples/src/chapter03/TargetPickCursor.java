@@ -11,19 +11,18 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
-import com.jme3.renderer.RenderManager;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Box;
 
 /**
- * This example demonstrates responding to user input, and target picking 
- * with a visible mouse cursor.
- * We added more cubes and we use ray casting to select which cube rotates.
+ * This example demonstrates an AnalogListener responding to user input (clicks), 
+ * and target picking with a visible mouse cursor.
+ * We two cubes and we use ray casting to select which cube rotates.
  */
 public class TargetPickCursor extends SimpleApplication {
 
     private Trigger trigger_rotate = new MouseButtonTrigger(MouseInput.BUTTON_LEFT);
-    private static Box mesh = new Box(Vector3f.ZERO, 1, 1, 1);
+    private static Box mesh = new Box(1, 1, 1);
 
     @Override
     /** initialize the scene here */
@@ -90,16 +89,6 @@ public class TargetPickCursor extends SimpleApplication {
 
         }
     };
-
-    @Override
-    /** (optional) Interact with update loop here */
-    public void simpleUpdate(float tpf) {
-    }
-
-    @Override
-    /** (optional) Advanced renderer/frameBuffer modifications */
-    public void simpleRender(RenderManager rm) {
-    }
 
     /** Start the jMonkeyEngine application */
     public static void main(String[] args) {

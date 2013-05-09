@@ -9,14 +9,15 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Box;
 
 /**
- * This demo uses the simpleUpdate() loop to change the location 
- * of one white cube if the camera is close to it.
+ * This demo uses the simpleUpdate() loop to test repeatedly
+ * if the camera is close to the white cube. 
+ * If yes, we move the white cube away from the camera.
  */
 public class CubeChaser1 extends SimpleApplication {
 
-    private static Box mesh = new Box(Vector3f.ZERO, 1, 1, 1);
+    private static Box mesh = new Box(1, 1, 1);
     private Geometry scaredCube;
- 
+
     /** Fill space with random static cubes. */
     private void makeCubes(int number) {
         for (int i = 0; i < number; i++) {
@@ -52,16 +53,18 @@ public class CubeChaser1 extends SimpleApplication {
     @Override
     /** This update loop controls the game and moves the cube. */
     public void simpleUpdate(float tpf) {
-        System.out.println("Distance: "+
-            cam.getLocation().distance(scaredCube.getLocalTranslation()));
+        System.out.println("Distance: "
+                + cam.getLocation().distance(scaredCube.getLocalTranslation()));
         // If camera is closer than 10 units to myCube...
         if (cam.getLocation().distance(scaredCube.getLocalTranslation()) < 10) {
             // ... then move myCube away, in the direction that camera is facing.
-             scaredCube.move(cam.getDirection());
+            scaredCube.move(cam.getDirection());
         }
     }
 
-    /** Start the jMonkeyEngine application */
+    /**
+     * Start the jMonkeyEngine application
+     */
     public static void main(String[] args) {
         CubeChaser1 app = new CubeChaser1();
         app.start();

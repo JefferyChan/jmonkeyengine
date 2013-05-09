@@ -5,8 +5,8 @@ import com.jme3.app.state.AppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.renderer.RenderManager;
 
-/** A template how to create an AppState 
- * that can also extend another class.
+/** An alternative template how to create an AppState 
+ * that can additionally extend another class.
  */
 public class MyAppState1 implements AppState {
 

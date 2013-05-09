@@ -8,10 +8,15 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.ViewPort;
 
-/** A template how to create an AppState by extending AbstractAppState.
+/** 
+ * A template how to create an AppState by extending AbstractAppState.
  * An AppState responds to and controls a subset of application-wide events:
- * This example state simply changes the background color 
- * depending on the camera position. */
+ * This example simply changes a game state (the background color) 
+ * depending on a changing parameter (the camera position). 
+ * Usage: Attach the state to the stateManager 
+ * of any SimpleApplication's simpleInitApp() method:
+ *    stateManager.attach( new MyAppState() );
+ */
 public class MyAppState extends AbstractAppState {
 
     private ViewPort viewPort;

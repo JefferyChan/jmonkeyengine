@@ -12,8 +12,9 @@ import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.control.Control;
 
 /**
- * This control demo uses the same cube as CubeChaser2's simpleUpdate() loop 
- * to change the location of the cube the player looks at.
+ * Run this example by running CubeChaser3.
+ * This control uses the same code as in CubeChaser2's simpleUpdate() loop 
+ * to manipulate the locations of the cube the player looks at.
  */
 public class CubeChaser3Control extends AbstractControl {
 
@@ -48,13 +49,15 @@ public class CubeChaser3Control extends AbstractControl {
                 }
             }
         }
-        spatial.rotate(tpf, tpf, tpf);
+        spatial.rotate(tpf, tpf, tpf); // affected cubes are marked: they rotate
     }
 
     @Override
-    protected void controlRender(RenderManager rm, ViewPort vp) {}
-
     public Control cloneForSpatial(Spatial spatial) {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    protected void controlRender(RenderManager rm, ViewPort vp) {
     }
 }
