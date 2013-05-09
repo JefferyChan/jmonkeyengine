@@ -1,4 +1,4 @@
-package chapter04.appstatedemo;
+package chapter04.guiappstate;
 
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
@@ -17,8 +17,8 @@ import com.jme3.scene.Node;
 import com.jme3.scene.shape.Box;
 
 /**
- * A template how to create an Application State. This example state simply
- * changes the background color depending on the camera position.
+  * This demo package shows a game UI switcher with three AppStates. 
+  * This state is active while the game is paused and the user changes settings.
  */
 public class SettingsScreenState extends AbstractAppState {
 
