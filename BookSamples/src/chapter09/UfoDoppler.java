@@ -16,9 +16,9 @@ import com.jme3.scene.shape.Sphere;
 public class UfoDoppler extends SimpleApplication {
 
   UfoDoppler app;
-  private AudioNode ufo_audio;
-  private Geometry ufo_geo;
-  private Node ufo_node = new Node("UFO");
+  private AudioNode ufoAudio;
+  private Geometry ufoGeo;
+  private Node ufoNode = new Node("UFO");
   float x = 1, z = 1;
   private float rate = -0.25f;
   private float xDist = 2.5f;
@@ -35,24 +35,24 @@ public class UfoDoppler extends SimpleApplication {
     // position the camera
     cam.setLocation(new Vector3f(-5, 0, 5));
     // configure UFO sound
-    ufo_audio = new AudioNode(assetManager, "Sounds/Effects/Beep.ogg");
-    ufo_audio.setPositional(true);    // moving 3D sound
-    ufo_audio.setLooping(true);       // keep playing
-    ufo_audio.setReverbEnabled(true); // Doppler effect
-    ufo_audio.setRefDistance(6);      // 50% volume fall-off at 6 wu distance
-    ufo_audio.setMaxDistance(100);    // The UFO will be the most quiet at 100 wu away
-    ufo_audio.play();
-    ufo_node.attachChild(ufo_audio);
+    ufoAudio = new AudioNode(assetManager, "Sounds/Effects/Beep.ogg");
+    ufoAudio.setPositional(true);    // moving 3D sound
+    ufoAudio.setLooping(true);       // keep playing
+    ufoAudio.setReverbEnabled(true); // Doppler effect
+    ufoAudio.setRefDistance(6);      // 50% volume fall-off at 6 wu distance
+    ufoAudio.setMaxDistance(100);    // The UFO will be the most quiet at 100 wu away
+    ufoAudio.play();
+    ufoNode.attachChild(ufoAudio);
     // a simple UFO geometry marking the position of the sound
     Sphere sphere = new Sphere(32, 32, .5f);
-    ufo_geo = new Geometry("ufo", sphere);
+    ufoGeo = new Geometry("ufo", sphere);
     Material mat = new Material(assetManager,
             "Common/MatDefs/Misc/Unshaded.j3md");
     mat.setColor("Color", ColorRGBA.LightGray);
-    ufo_geo.setMaterial(mat);
-    ufo_node.attachChild(ufo_geo);
-    // both sound and geometry are attached to one ufo_node
-    rootNode.attachChild(ufo_node);
+    ufoGeo.setMaterial(mat);
+    ufoNode.attachChild(ufoGeo);
+    // both sound and geometry are attached to one ufoNode
+    rootNode.attachChild(ufoNode);
   }
 
   @Override
@@ -71,8 +71,8 @@ public class UfoDoppler extends SimpleApplication {
       rate = -rate;
     }
     // The UFO sound flies in circles and pulls the attached geometry with it
-    ufo_audio.setVelocity(new Vector3f(dx, 0, dz));
-    ufo_node.setLocalTranslation(x, 0, z);
+    ufoAudio.setVelocity(new Vector3f(dx, 0, dz));
+    ufoNode.setLocalTranslation(x, 0, z);
     // print current location and speed
     //System.out.println("LOC: " + (int) x + ", " + (int) z + ", VEL: " + (int) dx + ", " + (int) dz);
     // keep the listener's ear at the camera position!
