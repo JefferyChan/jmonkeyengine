@@ -78,9 +78,9 @@ public class TestMipMaps extends SimpleGame {
      * @param args
      */
     public static void main(String[] args) {
-        TestMipMaps app = new TestMipMaps();
-        app.setConfigShowMode(ConfigShowMode.AlwaysShow);
-        app.start();
+//        TestMipMaps app = new TestMipMaps();
+//        app.setConfigShowMode(ConfigShowMode.AlwaysShow);
+//        app.start();
     }
 
     @Override
@@ -145,97 +145,94 @@ public class TestMipMaps extends SimpleGame {
     }
 
     private void setupModel() {
-        try {
-            ResourceLocatorTool.addResourceLocator(
-                    ResourceLocatorTool.TYPE_TEXTURE,
-                    new SimpleResourceLocator(TestMipMaps.class
-                            .getClassLoader().getResource(
-                                    "jmetest/data/model/collada/")));
-        } catch (URISyntaxException e1) {
-            logger.warning("Unable to add texture directory to RLT: "
-                    + e1.toString());
-        }
-        
-        // Our model is Z up so orient the camera properly.
-        cam.setAxes(new Vector3f(-1, 0, 0), new Vector3f(0, 0, 1),
-                new Vector3f(0, 1, 0));
-        cam.setLocation(new Vector3f(0, -100, 20));
-        input = new FirstPersonHandler(cam, 80, 1);
-
-        // url to the location of the model's textures
-        // this stream points to the model itself.
-        InputStream mobboss = TestMipMaps.class.getClassLoader()
-                .getResourceAsStream("jmetest/data/model/collada/man.dae");
-        // this stream points to the animation file. Note: You don't necessarily
-        // have to split animations out into seperate files, this just helps.
-        InputStream animation = TestMipMaps.class.getClassLoader()
-                .getResourceAsStream("jmetest/data/model/collada/man_walk.dae");
-        if (mobboss == null) {
-            logger.info("Unable to find file, did you include jme-test.jar in classpath?");
-            System.exit(0);
-        }
-        // tell the importer to load the mob boss
-        ColladaImporter.load(mobboss, "model");
-        // we can then retrieve the skin from the importer as well as the
-        // skeleton
-        sn = ColladaImporter.getSkinNode(ColladaImporter.getSkinNodeNames()
-                .get(0));
-        Bone skel = ColladaImporter.getSkeleton(ColladaImporter
-                .getSkeletonNames().get(0));
-        // clean up the importer as we are about to use it again.
-        ColladaImporter.cleanUp();
-
-        // load the animation file.
-        ColladaImporter.load(animation, "anim");
-        // this file might contain multiple animations, (in our case it's one)
-        ArrayList<String> animations = ColladaImporter.getControllerNames();
-        logger.info("Number of animations: " + animations.size());
-        for (int i = 0; i < animations.size(); i++) {
-            logger.info(animations.get(i));
-        }
-        // Obtain the animation from the file by name
-        BoneAnimation anim1 = ColladaImporter.getAnimationController(animations
-                .get(0));
-
-        // set up a new animation controller with our BoneAnimation
-        AnimationController ac = new AnimationController();
-        ac.addAnimation(anim1);
-        ac.setRepeatType(Controller.RT_CYCLE);
-        ac.setActive(true);
-        ac.setActiveAnimation(anim1);
-
-        // assign the animation controller to our skeleton
-        skel.addController(ac);
-
-        // Let's strip out any textures.
-        stripTexturesAndMaterials(sn);
-
-        // Now add our mipmap texture
-        Texture texture = new Texture2D();
-        texture.setMagnificationFilter(Texture.MagnificationFilter.Bilinear);
-        texture.setMinificationFilter(Texture.MinificationFilter.BilinearNearestMipMap);
-        try {
-            texture.setImage(ColorMipMapGenerator.generateColorMipMap(512,
-                    new ColorRGBA[] { ColorRGBA.blue.clone(), ColorRGBA.green.clone(),
-                            ColorRGBA.white.clone() }, ColorRGBA.red.clone()));
-        } catch (JmeException e) {
-            logger.logp(Level.SEVERE, this.getClass().toString(), "setupModel()", "Exception", e);
-        }
-        TextureState ts = display.getRenderer().createTextureState();
-        ts.setTexture(texture);
-        sn.setRenderState(ts);
-        
-        // attach the skeleton and the skin to the rootnode. Skeletons could
-        // possibly be used to update multiple skins, so they are seperate
-        // objects.
-        rootNode.attachChild(sn);
-        rootNode.attachChild(skel);
-
-        // all done clean up.
-        ColladaImporter.cleanUp();
-
-        lightState.detachAll();
-        lightState.setEnabled(false);
+//        try {
+//            ResourceLocatorTool.addResourceLocator(
+//                    ResourceLocatorTool.TYPE_TEXTURE,
+//                    new SimpleResourceLocator(TestMipMaps.class
+//                            .getClassLoader().getResource(
+//                                    "jmetest/data/model/collada/")));
+//        } catch (URISyntaxException e1) {
+//            logger.warning("Unable to add texture directory to RLT: "
+//                    + e1.toString());
+//        }
+//        
+//        // Our model is Z up so orient the camera properly.
+//        cam.setAxes(new Vector3f(-1, 0, 0), new Vector3f(0, 0, 1),
+//                new Vector3f(0, 1, 0));
+//        cam.setLocation(new Vector3f(0, -100, 20));
+//        input = new FirstPersonHandler(cam, 80, 1);
+//
+//        // url to the location of the model's textures
+//        // this stream points to the model itself.
+//        InputStream mobboss = TestMipMaps.class.getClassLoader()
+//                .getResourceAsStream("jmetest/data/model/collada/man.dae");
+//        // this stream points to the animation file. Note: You don't necessarily
+//        // have to split animations out into seperate files, this just helps.
+//        InputStream animation = TestMipMaps.class.getClassLoader()
+//                .getResourceAsStream("jmetest/data/model/collada/man_walk.dae");
+//        if (mobboss == null) {
+//            logger.info("Unable to find file, did you include jme-test.jar in classpath?");
+//            System.exit(0);
+//        }
+//        // tell the importer to load the mob boss
+//        ColladaImporter.load(mobboss, "model");
+//        // we can then retrieve the skin from the importer as well as the
+//        // skeleton
+//        sn = ColladaImporter.getSkinNode(ColladaImporter.getSkinNodeNames().get(0));
+//        Bone skel = ColladaImporter.getSkeleton(ColladaImporter.getSkeletonNames().get(0));
+//        // clean up the importer as we are about to use it again.
+//        ColladaImporter.cleanUp();
+//
+//        // load the animation file.
+//        ColladaImporter.load(animation, "anim");
+//        // this file might contain multiple animations, (in our case it's one)
+//        ArrayList<String> animations = ColladaImporter.getControllerNames();
+//        logger.info("Number of animations: " + animations.size());
+//        for (int i = 0; i < animations.size(); i++) {
+//            logger.info(animations.get(i));
+//        }
+//        // Obtain the animation from the file by name
+//        BoneAnimation anim1 = ColladaImporter.getAnimationController(animations.get(0));
+//
+//        // set up a new animation controller with our BoneAnimation
+//        AnimationController ac = new AnimationController();
+//        ac.addAnimation(anim1);
+//        ac.setRepeatType(Controller.RT_CYCLE);
+//        ac.setActive(true);
+//        ac.setActiveAnimation(anim1);
+//
+//        // assign the animation controller to our skeleton
+//        skel.addController(ac);
+//
+//        // Let's strip out any textures.
+//        stripTexturesAndMaterials(sn);
+//
+//        // Now add our mipmap texture
+//        Texture texture = new Texture2D();
+//        texture.setMagnificationFilter(Texture.MagnificationFilter.Bilinear);
+//        texture.setMinificationFilter(Texture.MinificationFilter.BilinearNearestMipMap);
+//        try {
+//            texture.setImage(ColorMipMapGenerator.generateColorMipMap(512,
+//                    new ColorRGBA[] { ColorRGBA.blue.clone(), ColorRGBA.green.clone(),
+//                            ColorRGBA.white.clone() }, ColorRGBA.red.clone()));
+//        } catch (JmeException e) {
+//            logger.logp(Level.SEVERE, this.getClass().toString(), "setupModel()", "Exception", e);
+//        }
+//        TextureState ts = display.getRenderer().createTextureState();
+//        ts.setTexture(texture);
+//        sn.setRenderState(ts);
+//        
+//        // attach the skeleton and the skin to the rootnode. Skeletons could
+//        // possibly be used to update multiple skins, so they are seperate
+//        // objects.
+//        rootNode.attachChild(sn);
+//        rootNode.attachChild(skel);
+//
+//        // all done clean up.
+//        ColladaImporter.cleanUp();
+//
+//        lightState.detachAll();
+//        lightState.setEnabled(false);
     }
 
     private void stripTexturesAndMaterials(Spatial sp) {

@@ -53,6 +53,7 @@ import com.jme.system.JmeException;
 import com.jme.util.geom.BufferUtils;
 import com.jme.util.shader.ShaderVariable;
 import com.jme.util.shader.uniformtypes.ShaderVariableMatrix4;
+import javax.media.opengl.GL2;
 
 /**
  * Implementation of the GL_ARB_shader_objects extension.
@@ -180,7 +181,7 @@ public class JOGLShaderObjectsState extends GLSLShaderObjectsState {
      */
     protected void sendToGL(ByteBuffer vertexByteBuffer,
             ByteBuffer fragmentByteBuffer) {
-        final GL gl = GLU.getCurrentGL();
+        final GL2 gl = GLU.getCurrentGL().getGL2();
 
         if (vertexByteBuffer == null && fragmentByteBuffer == null) {
             logger.warning("Could not find shader resources!"
@@ -197,7 +198,7 @@ public class JOGLShaderObjectsState extends GLSLShaderObjectsState {
                 removeVertShader();
 
             vertexShaderID = gl.glCreateShaderObjectARB(
-                    GL.GL_VERTEX_SHADER_ARB);
+                    GL2.GL_VERTEX_SHADER);
 
             // Create the sources
             byte array[] = new byte[vertexByteBuffer.limit()];
@@ -209,7 +210,7 @@ public class JOGLShaderObjectsState extends GLSLShaderObjectsState {
             IntBuffer compiled = BufferUtils.createIntBuffer(1);
             gl.glCompileShaderARB(vertexShaderID);
             gl.glGetObjectParameterivARB(vertexShaderID,
-                    GL.GL_OBJECT_COMPILE_STATUS_ARB, compiled); // TODO Check for int
+                    GL2.GL_OBJECT_COMPILE_STATUS_ARB, compiled); // TODO Check for int
             checkProgramError(compiled, vertexShaderID);
 
             // Attach the program
@@ -224,7 +225,7 @@ public class JOGLShaderObjectsState extends GLSLShaderObjectsState {
                 removeFragShader();
 
             fragmentShaderID = gl.glCreateShaderObjectARB(
-                    GL.GL_FRAGMENT_SHADER_ARB);
+                    GL2.GL_FRAGMENT_SHADER);
 
             // Create the sources
             byte array[] = new byte[fragmentByteBuffer.limit()];
@@ -236,7 +237,7 @@ public class JOGLShaderObjectsState extends GLSLShaderObjectsState {
             IntBuffer compiled = BufferUtils.createIntBuffer(1);
             gl.glCompileShaderARB(fragmentShaderID);
             gl.glGetObjectParameterivARB(fragmentShaderID,
-                    GL.GL_OBJECT_COMPILE_STATUS_ARB, compiled); // TODO Check for int
+                    GL2.GL_OBJECT_COMPILE_STATUS_ARB, compiled); // TODO Check for int
             checkProgramError(compiled, fragmentShaderID);
 
             // Attatch the program
@@ -253,7 +254,7 @@ public class JOGLShaderObjectsState extends GLSLShaderObjectsState {
 
     /** Removes the fragment shader */
     private void removeFragShader() {
-        final GL gl = GLU.getCurrentGL();
+        final GL2 gl = GLU.getCurrentGL().getGL2();
 
         if (fragmentShaderID != -1) {
             gl.glDetachObjectARB(programID, fragmentShaderID);
@@ -263,7 +264,7 @@ public class JOGLShaderObjectsState extends GLSLShaderObjectsState {
 
     /** Removes the vertex shader */
     private void removeVertShader() {
-        final GL gl = GLU.getCurrentGL();
+        final GL2 gl = GLU.getCurrentGL().getGL2();
 
         if (vertexShaderID != -1) {
             gl.glDetachObjectARB(programID, vertexShaderID);
@@ -278,12 +279,12 @@ public class JOGLShaderObjectsState extends GLSLShaderObjectsState {
      * @param id shader's id
      */
     private void checkProgramError(IntBuffer compiled, int id) {
-        final GL gl = GLU.getCurrentGL();
+        final GL2 gl = GLU.getCurrentGL().getGL2();
 
         if (compiled.get(0) == 0) {
             IntBuffer iVal = BufferUtils.createIntBuffer(1);
             gl.glGetObjectParameterivARB(id,
-                    GL.GL_OBJECT_INFO_LOG_LENGTH_ARB, iVal); // TODO Check for int
+                    GL2.GL_OBJECT_INFO_LOG_LENGTH_ARB, iVal); // TODO Check for int
             int length = iVal.get();
             String out = null;
 
@@ -312,7 +313,7 @@ public class JOGLShaderObjectsState extends GLSLShaderObjectsState {
      * @see com.jme.scene.state.RenderState#apply()
      */
     public void apply() {
-        final GL gl = GLU.getCurrentGL();
+        final GL2 gl = GLU.getCurrentGL().getGL2();
         boolean forceRefresh = false;
 
         if (isSupported()) {

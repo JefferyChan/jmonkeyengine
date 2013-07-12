@@ -56,7 +56,7 @@ import com.jme.system.jogl.JOGLSystemProvider;
 import com.jme.util.TextureManager;
 import com.jmex.awt.jogl.JOGLAWTCanvasConstructor;
 import com.jmex.swt.lwjgl.LWJGLSWTConstants;
-import com.sun.opengl.util.Animator;
+import com.jogamp.opengl.util.Animator;
 
 /**
  * Test for JOGL AWT Canvas implementation. Based upon {@link JMESWTTest}.

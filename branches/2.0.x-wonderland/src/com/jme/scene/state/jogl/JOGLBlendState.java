@@ -41,6 +41,7 @@ import com.jme.renderer.jogl.JOGLRenderer;
 import com.jme.scene.state.BlendState;
 import com.jme.scene.state.jogl.records.BlendStateRecord;
 import com.jme.system.DisplaySystem;
+import javax.media.opengl.GL2;
 
 /**
  * <code>JOGLBlendState</code> subclasses the BlendState using the JOGL API
@@ -130,7 +131,7 @@ public class JOGLBlendState extends BlendState {
                     int blendEqAlpha = getGLEquationValue(getBlendEquationAlpha());
                     if (record.blendEqRGB != blendEqRGB
                             || record.blendEqAlpha != blendEqAlpha) {
-                        gl.glBlendEquationSeparateEXT(
+                        gl.glBlendEquationSeparate(
                                 blendEqRGB, blendEqAlpha);
                         record.blendEqRGB = blendEqRGB;
                         record.blendEqAlpha = blendEqAlpha;
@@ -153,7 +154,7 @@ public class JOGLBlendState extends BlendState {
                 int blendEqRGB = getGLEquationValue(getBlendEquationRGB());
                 if (supportsSeparateEquations()) {
                     int blendEqAlpha = getGLEquationValue(getBlendEquationAlpha());
-                    gl.glBlendEquationSeparateEXT(
+                    gl.glBlendEquationSeparate(
                             blendEqRGB, blendEqAlpha);
                     record.blendEqRGB = blendEqRGB;
                     record.blendEqAlpha = blendEqAlpha;
@@ -169,7 +170,7 @@ public class JOGLBlendState extends BlendState {
     }
 
     private void applyBlendColor(boolean enabled, BlendStateRecord record) {
-        final GL gl = GLU.getCurrentGL();
+        final GL2 gl = GLU.getCurrentGL().getGL2();
 
         if (record.isValid()) {
             if (enabled) {
@@ -232,7 +233,7 @@ public class JOGLBlendState extends BlendState {
                             || record.dstFactorRGB != glDstRGB
                             || record.srcFactorAlpha != glSrcAlpha
                             || record.dstFactorAlpha != glDstAlpha) {
-                        gl.glBlendFuncSeparateEXT(glSrcRGB,
+                        gl.glBlendFuncSeparate(glSrcRGB,
                                 glDstRGB, glSrcAlpha, glDstAlpha);
                         record.srcFactorRGB = glSrcRGB;
                         record.dstFactorRGB = glDstRGB;
@@ -253,7 +254,7 @@ public class JOGLBlendState extends BlendState {
                 if (supportsSeparateFunctions()) {
                     int glSrcAlpha = getGLSrcValue(getSourceFunctionAlpha());
                     int glDstAlpha = getGLDstValue(getDestinationFunctionAlpha());
-                    gl.glBlendFuncSeparateEXT(glSrcRGB,
+                    gl.glBlendFuncSeparate(glSrcRGB,
                             glDstRGB, glSrcAlpha, glDstAlpha);
                     record.srcFactorRGB = glSrcRGB;
                     record.dstFactorRGB = glDstRGB;
@@ -288,19 +289,19 @@ public class JOGLBlendState extends BlendState {
                 return GL.GL_SRC_ALPHA_SATURATE;
             case ConstantColor:
                 if (supportsConstantColor())
-                    return GL.GL_CONSTANT_COLOR;
+                    return GL2.GL_CONSTANT_COLOR;
                 // FALLS THROUGH
             case OneMinusConstantColor:
                 if (supportsConstantColor())
-                    return GL.GL_ONE_MINUS_CONSTANT_COLOR;
+                    return GL2.GL_ONE_MINUS_CONSTANT_COLOR;
                 // FALLS THROUGH
             case ConstantAlpha:
                 if (supportsConstantColor())
-                    return GL.GL_CONSTANT_ALPHA;
+                    return GL2.GL_CONSTANT_ALPHA;
                 // FALLS THROUGH
             case OneMinusConstantAlpha:
                 if (supportsConstantColor())
-                    return GL.GL_ONE_MINUS_CONSTANT_ALPHA;
+                    return GL2.GL_ONE_MINUS_CONSTANT_ALPHA;
                 // FALLS THROUGH
             case One:
                 return GL.GL_ONE;
@@ -327,19 +328,19 @@ public class JOGLBlendState extends BlendState {
                 return GL.GL_ONE_MINUS_DST_ALPHA;
             case ConstantColor:
                 if (supportsConstantColor())
-                    return GL.GL_CONSTANT_COLOR;
+                    return GL2.GL_CONSTANT_COLOR;
                 // FALLS THROUGH
             case OneMinusConstantColor:
                 if (supportsConstantColor())
-                    return GL.GL_ONE_MINUS_CONSTANT_COLOR;
+                    return GL2.GL_ONE_MINUS_CONSTANT_COLOR;
                 // FALLS THROUGH
             case ConstantAlpha:
                 if (supportsConstantColor())
-                    return GL.GL_CONSTANT_ALPHA;
+                    return GL2.GL_CONSTANT_ALPHA;
                 // FALLS THROUGH
             case OneMinusConstantAlpha:
                 if (supportsConstantColor())
-                    return GL.GL_ONE_MINUS_CONSTANT_ALPHA;
+                    return GL2.GL_ONE_MINUS_CONSTANT_ALPHA;
                 // FALLS THROUGH
             case One:
                 return GL.GL_ONE;
@@ -352,11 +353,11 @@ public class JOGLBlendState extends BlendState {
         switch (eq) {
             case Min:
                 if (supportsMinMax)
-                    return GL.GL_MIN;
+                    return GL2.GL_MIN;
                 // FALLS THROUGH
             case Max:
                 if (supportsMinMax)
-                    return GL.GL_MAX;
+                    return GL2.GL_MAX;
                 else
                     return GL.GL_FUNC_ADD;
             case Subtract:
@@ -374,12 +375,12 @@ public class JOGLBlendState extends BlendState {
     }
 
     private void applyTest(boolean enabled, BlendStateRecord record) {
-        final GL gl = GLU.getCurrentGL();
+        final GL2 gl = GLU.getCurrentGL().getGL2();
 
         if (record.isValid()) {
             if (enabled) {
                 if (!record.testEnabled) {
-                    gl.glEnable(GL.GL_ALPHA_TEST);
+                    gl.glEnable(GL2.GL_ALPHA_TEST);
                     record.testEnabled = true;
                 }
                 int glFunc = getGLFuncValue(getTestFunction());
@@ -390,20 +391,20 @@ public class JOGLBlendState extends BlendState {
                     record.alphaRef = getReference();
                 }
             } else if (record.testEnabled) {
-                gl.glDisable(GL.GL_ALPHA_TEST);
+                gl.glDisable(GL2.GL_ALPHA_TEST);
                 record.testEnabled = false;
             }
 
         } else {
             if (enabled) {
-                gl.glEnable(GL.GL_ALPHA_TEST);
+                gl.glEnable(GL2.GL_ALPHA_TEST);
                 record.testEnabled = true;
                 int glFunc = getGLFuncValue(getTestFunction());
                 gl.glAlphaFunc(glFunc, getReference());
                 record.alphaFunc = glFunc;
                 record.alphaRef = getReference();
             } else {
-                gl.glDisable(GL.GL_ALPHA_TEST);
+                gl.glDisable(GL2.GL_ALPHA_TEST);
                 record.testEnabled = false;
             }
         }

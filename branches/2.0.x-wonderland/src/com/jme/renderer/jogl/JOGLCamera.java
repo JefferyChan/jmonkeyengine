@@ -41,6 +41,7 @@ import com.jme.renderer.AbstractCamera;
 import com.jme.scene.state.jogl.records.RendererRecord;
 import com.jme.system.DisplaySystem;
 import com.jme.util.geom.BufferUtils;
+import javax.media.opengl.GL2;
 
 /**
  * <code>JOGLCamera</code> defines a concrete implementation of a
@@ -190,12 +191,12 @@ public class JOGLCamera extends AbstractCamera {
      */
     protected void doFrustumChange() {
 
-        final GL gl = GLU.getCurrentGL();
+        final GL2 gl = GLU.getCurrentGL().getGL2();
 
         if (!isDataOnly()) {
             // set projection matrix
             RendererRecord matRecord = (RendererRecord) DisplaySystem.getDisplaySystem().getCurrentContext().getRendererRecord();
-            matRecord.switchMode(GL.GL_PROJECTION);
+            matRecord.switchMode(GL2.GL_PROJECTION);
 
             tmp_FloatBuffer.rewind();
             getProjectionMatrix().fillFloatBuffer(tmp_FloatBuffer);
@@ -229,12 +230,12 @@ public class JOGLCamera extends AbstractCamera {
      * @see com.jme.renderer.Camera#onFrameChange()
      */
     protected void doFrameChange() {
-        final GL gl = GLU.getCurrentGL();
+        final GL2 gl = GLU.getCurrentGL().getGL2();
 
         if (!isDataOnly()) {
             // set view matrix
             RendererRecord matRecord = (RendererRecord) DisplaySystem.getDisplaySystem().getCurrentContext().getRendererRecord();
-            matRecord.switchMode(GL.GL_MODELVIEW);
+            matRecord.switchMode(GL2.GL_MODELVIEW);
 
             tmp_FloatBuffer.rewind();
             getModelViewMatrix().fillFloatBuffer(tmp_FloatBuffer);

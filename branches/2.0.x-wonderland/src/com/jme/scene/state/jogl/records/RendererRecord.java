@@ -41,6 +41,7 @@ import javax.media.opengl.glu.GLU;
 import com.jme.renderer.ColorRGBA;
 import com.jme.scene.state.StateRecord;
 import com.jme.util.geom.BufferUtils;
+import javax.media.opengl.GL2;
 
 public class RendererRecord extends StateRecord {
     private int matrixMode = -1;
@@ -53,7 +54,7 @@ public class RendererRecord extends StateRecord {
     private IntBuffer idBuff = BufferUtils.createIntBuffer(16);
 
     public void switchMode(int mode) {
-        final GL gl = GLU.getCurrentGL();
+        final GL2 gl = GLU.getCurrentGL().getGL2();
 
         if (!matrixValid || this.matrixMode != mode) {
             gl.glMatrixMode(mode);
@@ -63,7 +64,7 @@ public class RendererRecord extends StateRecord {
     }
 
     public void setCurrentColor(ColorRGBA setTo) {
-final GL gl = GLU.getCurrentGL();
+        final GL2 gl = GLU.getCurrentGL().getGL2();
 
 //        if (!colorValid || !currentColor.equals(setTo)) {
             gl.glColor4f(setTo.r, setTo.g, setTo.b, setTo.a);
@@ -76,8 +77,8 @@ final GL gl = GLU.getCurrentGL();
         final GL gl = GLU.getCurrentGL();
 
         if (!vboValid || currentVboId != id) {
-            gl.glBindBufferARB(
-                    GL.GL_ARRAY_BUFFER_ARB, id);
+            gl.glBindBuffer(
+                    GL2.GL_ARRAY_BUFFER, id);
             currentVboId = id;
             vboValid = true;
         }
@@ -87,7 +88,7 @@ final GL gl = GLU.getCurrentGL();
         final GL gl = GLU.getCurrentGL();
 
         if (!elementVboValid || currentElementVboId != id) {
-            gl.glBindBufferARB(GL.GL_ELEMENT_ARRAY_BUFFER_ARB, id);
+            gl.glBindBuffer(GL2.GL_ELEMENT_ARRAY_BUFFER, id);
             currentElementVboId = id;
             elementVboValid = true;
         }
@@ -124,7 +125,7 @@ final GL gl = GLU.getCurrentGL();
         final GL gl = GLU.getCurrentGL();
 
         idBuff.rewind();
-        gl.glGenBuffersARB(idBuff.limit(),idBuff); // TODO Check <size>
+        gl.glGenBuffers(idBuff.limit(),idBuff); // TODO Check <size>
         int vboID = idBuff.get(0);
         vboCleanupCache.add(vboID);
         return vboID;
@@ -135,7 +136,7 @@ final GL gl = GLU.getCurrentGL();
 
         idBuff.rewind();
         idBuff.put(id).flip();
-        gl.glDeleteBuffersARB(idBuff.limit(),idBuff); // TODO Check <size>
+        gl.glDeleteBuffers(idBuff.limit(),idBuff); // TODO Check <size>
         vboCleanupCache.remove(Integer.valueOf(id));
     }
 

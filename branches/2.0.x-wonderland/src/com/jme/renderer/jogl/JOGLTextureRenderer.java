@@ -57,6 +57,8 @@ import com.jme.scene.state.jogl.records.TextureStateRecord;
 import com.jme.system.jogl.JOGLDisplaySystem;
 import com.jme.util.TextureManager;
 import com.jme.util.geom.BufferUtils;
+import javax.media.opengl.GL2;
+import javax.media.opengl.GL2ES1;
 
 /**
  * This class is used by JOGL to render textures. Users should <b>not </b>
@@ -102,12 +104,12 @@ public class JOGLTextureRenderer implements TextureRenderer {
             supportsMultiDraw = gl.isExtensionAvailable("GL_ARB_draw_buffers");
             if (supportsMultiDraw) {
                 IntBuffer buf = BufferUtils.createIntBuffer(16);
-                gl.glGetIntegerv(GL.GL_MAX_COLOR_ATTACHMENTS_EXT, buf); // TODO Check for integer
+                gl.glGetIntegerv(GL2.GL_MAX_COLOR_ATTACHMENTS, buf); // TODO Check for integer
                 maxDrawBuffers = buf.get(0);
                 if (maxDrawBuffers > 1) {
                     attachBuffer = BufferUtils.createIntBuffer(maxDrawBuffers);
                     for (int i = 0; i < maxDrawBuffers; i++) {
-                        attachBuffer.put(GL.GL_COLOR_ATTACHMENT0_EXT+i);
+                        attachBuffer.put(GL2.GL_COLOR_ATTACHMENT0 + i);
                     }
 
                 } else {
@@ -148,7 +150,7 @@ public class JOGLTextureRenderer implements TextureRenderer {
         logger.fine("Creating FBO sized: "+width+" x "+height);
 
         IntBuffer buffer = BufferUtils.createIntBuffer(1);
-        gl.glGenFramebuffersEXT(buffer.limit(),buffer); // TODO Check <size> // generate id
+        gl.glGenFramebuffers(buffer.limit(),buffer); // TODO Check <size> // generate id
         fboID = buffer.get(0);
 
         if (fboID <= 0) {
@@ -157,13 +159,10 @@ public class JOGLTextureRenderer implements TextureRenderer {
             return;
         }
 
-        gl.glGenRenderbuffersEXT(buffer.limit(),buffer); // TODO Check <size> // generate id
+        gl.glGenRenderbuffers(buffer.limit(),buffer); // TODO Check <size> // generate id
         depthRBID = buffer.get(0);
-        gl.glBindRenderbufferEXT(
-                GL.GL_RENDERBUFFER_EXT, depthRBID);
-        gl.glRenderbufferStorageEXT(
-                GL.GL_RENDERBUFFER_EXT,
-                GL.GL_DEPTH_COMPONENT, width, height);
+        gl.glBindRenderbuffer(GL2.GL_RENDERBUFFER, depthRBID);
+        gl.glRenderbufferStorage(GL2.GL_RENDERBUFFER, GL2.GL_DEPTH_COMPONENT, width, height);
 
         this.width = width;
         this.height = height;
@@ -276,94 +275,94 @@ public class JOGLTextureRenderer implements TextureRenderer {
 	case Alpha:
 	case Alpha8:
 	    format = GL.GL_ALPHA;
-	    components = GL.GL_ALPHA8;
+	    components = GL2.GL_ALPHA8;
 	    break;
 	case Depth:
-	    format = GL.GL_DEPTH_COMPONENT;
-	    components = GL.GL_DEPTH_COMPONENT;
+	    format = GL2.GL_DEPTH_COMPONENT;
+	    components = GL2.GL_DEPTH_COMPONENT;
 	    break;
 	case Intensity:
 	case Intensity8:
-	    format = GL.GL_INTENSITY;
-	    components = GL.GL_INTENSITY8;
+	    format = GL2.GL_INTENSITY;
+	    components = GL2.GL_INTENSITY8;
 	    break;
 	case Luminance:
 	case Luminance8:
 	    format = GL.GL_LUMINANCE;
-	    components = GL.GL_LUMINANCE8;
+	    components = GL2.GL_LUMINANCE8;
 	    break;
 	case LuminanceAlpha:
 	case Luminance8Alpha8:
 	    format = GL.GL_LUMINANCE_ALPHA;
-	    components = GL.GL_LUMINANCE8_ALPHA8;
+	    components = GL2.GL_LUMINANCE8_ALPHA8;
 	    break;
 	case Alpha4:
 	    format = GL.GL_ALPHA;
-	    components = GL.GL_ALPHA4;
+	    components = GL2.GL_ALPHA4;
 	    break;
 	case Alpha12:
 	    format = GL.GL_ALPHA;
-	    components = GL.GL_ALPHA12;
+	    components = GL2.GL_ALPHA12;
 	    break;
 	case Alpha16:
 	    format = GL.GL_ALPHA;
-	    components = GL.GL_ALPHA16;
+	    components = GL2.GL_ALPHA16;
 	    break;
 	case Luminance4:
 	    format = GL.GL_LUMINANCE;
-	    components = GL.GL_LUMINANCE4;
+	    components = GL2.GL_LUMINANCE4;
 	    break;
 	case Luminance12:
 	    format = GL.GL_LUMINANCE;
-	    components = GL.GL_LUMINANCE12;
+	    components = GL2.GL_LUMINANCE12;
 	    break;
 	case Luminance16:
 	    format = GL.GL_LUMINANCE;
-	    components = GL.GL_LUMINANCE16;
+	    components = GL2.GL_LUMINANCE16;
 	    break;
 	case Luminance4Alpha4:
 	    format = GL.GL_LUMINANCE_ALPHA;
-	    components = GL.GL_LUMINANCE4_ALPHA4;
+	    components = GL2.GL_LUMINANCE4_ALPHA4;
 	    break;
 	case Luminance6Alpha2:
 	    format = GL.GL_LUMINANCE_ALPHA;
-	    components = GL.GL_LUMINANCE6_ALPHA2;
+	    components = GL2.GL_LUMINANCE6_ALPHA2;
 	    break;
 	case Luminance12Alpha4:
 	    format = GL.GL_LUMINANCE_ALPHA;
-	    components = GL.GL_LUMINANCE12_ALPHA4;
+	    components = GL2.GL_LUMINANCE12_ALPHA4;
 	    break;
 	case Luminance12Alpha12:
 	    format = GL.GL_LUMINANCE_ALPHA;
-	    components = GL.GL_LUMINANCE12_ALPHA12;
+	    components = GL2.GL_LUMINANCE12_ALPHA12;
 	    break;
 	case Luminance16Alpha16:
 	    format = GL.GL_LUMINANCE_ALPHA;
-	    components = GL.GL_LUMINANCE16_ALPHA16;
+	    components = GL2.GL_LUMINANCE16_ALPHA16;
 	    break;
 	case Intensity4:
-	    format = GL.GL_INTENSITY;
-	    components = GL.GL_INTENSITY4;
+	    format = GL2.GL_INTENSITY;
+	    components = GL2.GL_INTENSITY4;
 	    break;
 	case Intensity12:
-	    format = GL.GL_INTENSITY;
-	    components = GL.GL_INTENSITY12;
+	    format = GL2.GL_INTENSITY;
+	    components = GL2.GL_INTENSITY12;
 	    break;
 	case Intensity16:
-	    format = GL.GL_INTENSITY;
-	    components = GL.GL_INTENSITY4;
+	    format = GL2.GL_INTENSITY;
+	    components = GL2.GL_INTENSITY4;
 	    break;
 	case R3_G3_B2:
 	    format = GL.GL_RGB;
-	    components = GL.GL_R3_G3_B2;
+	    components = GL2.GL_R3_G3_B2;
 	    break;
 	case RGB4:
 	    format = GL.GL_RGB;
-	    components = GL.GL_RGB4;
+	    components = GL2.GL_RGB4;
 	    break;
 	case RGB5:
 	    format = GL.GL_RGB;
-	    components = GL.GL_RGB5;
+	    components = GL2.GL_RGB5;
 	    break;
 	case RGB10:
 	    format = GL.GL_RGB;
@@ -371,15 +370,15 @@ public class JOGLTextureRenderer implements TextureRenderer {
 	    break;
 	case RGB12:
 	    format = GL.GL_RGB;
-	    components = GL.GL_RGB12;
+	    components = GL2.GL_RGB12;
 	    break;
 	case RGB16:
 	    format = GL.GL_RGB;
-	    components = GL.GL_RGB16;
+	    components = GL2.GL_RGB16;
 	    break;
 	case RGBA2:
 	    format = GL.GL_RGBA;
-	    components = GL.GL_RGBA2;
+	    components = GL2.GL_RGBA2;
 	    break;
 	case RGBA4:
 	    format = GL.GL_RGBA;
@@ -395,20 +394,20 @@ public class JOGLTextureRenderer implements TextureRenderer {
 	    break;
 	case RGBA12:
 	    format = GL.GL_RGBA;
-	    components = GL.GL_RGBA12;
+	    components = GL2.GL_RGBA12;
 	    break;
 	case RGBA16:
 	    format = GL.GL_RGBA;
-	    components = GL.GL_RGBA16;
+	    components = GL2.GL_RGBA16;
 	    break;
 	case RGBA32F:
 	    format = GL.GL_RGBA;
-	    components = GL.GL_RGBA32F_ARB;
+	    components = GL2.GL_RGBA32F;
 	    dataType = GL.GL_FLOAT;
 	    break;
 	case RGB32F:
 	    format = GL.GL_RGB;
-	    components = GL.GL_RGB32F_ARB;
+	    components = GL2.GL_RGB32F;
 	    dataType = GL.GL_FLOAT;
 	    break;
 	case Alpha32F:
@@ -417,8 +416,8 @@ public class JOGLTextureRenderer implements TextureRenderer {
 	    dataType = GL.GL_FLOAT;
 	    break;
 	case Intensity32F:
-	    format = GL.GL_INTENSITY;
-	    components = GL.GL_INTENSITY32F_ARB;
+	    format = GL2.GL_INTENSITY;
+	    components = GL2.GL_INTENSITY32F;
 	    dataType = GL.GL_FLOAT;
 	    break;
 	case Luminance32F:
@@ -433,12 +432,12 @@ public class JOGLTextureRenderer implements TextureRenderer {
 	    break;
 	case RGBA16F:
 	    format = GL.GL_RGBA;
-	    components = GL.GL_RGBA16F_ARB;
+	    components = GL2.GL_RGBA16F;
 	    dataType = GL.GL_FLOAT;
 	    break;
 	case RGB16F:
 	    format = GL.GL_RGB;
-	    components = GL.GL_RGB16F_ARB;
+	    components = GL2ES1.GL_RGB16F;
 	    dataType = GL.GL_FLOAT;
 	    break;
 	case Alpha16F:
@@ -447,8 +446,8 @@ public class JOGLTextureRenderer implements TextureRenderer {
 	    dataType = GL.GL_FLOAT;
 	    break;
 	case Intensity16F:
-	    format = GL.GL_INTENSITY;
-	    components = GL.GL_INTENSITY16F_ARB;
+	    format = GL2.GL_INTENSITY;
+	    components = GL2.GL_INTENSITY16F;
 	    dataType = GL.GL_FLOAT;
 	    break;
 	case Luminance16F:
@@ -469,7 +468,7 @@ public class JOGLTextureRenderer implements TextureRenderer {
 
         // Initialize mipmapping for this texture, if requested
         if (tex.getMinificationFilter().usesMipMapLevels()) {
-            gl.glGenerateMipmapEXT(GL.GL_TEXTURE_2D);
+            gl.glGenerateMipmap(GL.GL_TEXTURE_2D);
         }
 
         // Setup filtering and wrap
@@ -590,9 +589,9 @@ public class JOGLTextureRenderer implements TextureRenderer {
                 int colorsAdded = 0;
                 while (colorsAdded < maxDrawBuffers && !colors.isEmpty()) {
                     Texture tex = colors.removeFirst();
-                    gl.glFramebufferTexture2DEXT(
-                            GL.GL_FRAMEBUFFER_EXT,
-                            GL.GL_COLOR_ATTACHMENT0_EXT + colorsAdded,
+                    gl.glFramebufferTexture2D(
+                            GL.GL_FRAMEBUFFER,
+                            GL.GL_COLOR_ATTACHMENT0 + colorsAdded,
                             GL.GL_TEXTURE_2D, tex.getTextureId(), 0);
                     colorsAdded++;
                 }
@@ -601,22 +600,22 @@ public class JOGLTextureRenderer implements TextureRenderer {
                 if (!depths.isEmpty()) {
                     Texture tex = depths.removeFirst();
                     // Set up our depth texture
-                    gl.glFramebufferTexture2DEXT(
-                            GL.GL_FRAMEBUFFER_EXT,
-                            GL.GL_DEPTH_ATTACHMENT_EXT,
+                    gl.glFramebufferTexture2D(
+                            GL.GL_FRAMEBUFFER,
+                            GL.GL_DEPTH_ATTACHMENT,
                             GL.GL_TEXTURE_2D, tex.getTextureId(), 0);
                     usingDepthRB = false;
                 } else if (!usingDepthRB) {
                     // setup our default depth render buffer if not already set
-                    gl.glFramebufferRenderbufferEXT(
-                            GL.GL_FRAMEBUFFER_EXT,
-                            GL.GL_DEPTH_ATTACHMENT_EXT,
-                            GL.GL_RENDERBUFFER_EXT, depthRBID);
+                    gl.glFramebufferRenderbuffer(
+                            GL.GL_FRAMEBUFFER,
+                            GL.GL_DEPTH_ATTACHMENT,
+                            GL.GL_RENDERBUFFER, depthRBID);
                     usingDepthRB = true;
                 }
 
                 setDrawBuffers(colorsAdded);
-                setReadBuffer(colorsAdded != 0 ? GL.GL_COLOR_ATTACHMENT0_EXT : GL.GL_NONE);
+                setReadBuffer(colorsAdded != 0 ? GL.GL_COLOR_ATTACHMENT0 : GL.GL_NONE);
 
                 // Check FBO complete
                 checkFBOComplete();
@@ -632,7 +631,7 @@ public class JOGLTextureRenderer implements TextureRenderer {
             for (int x = 0, max = texs.size(); x < max; x++) {
                 if (texs.get(x).getMinificationFilter().usesMipMapLevels()) {
                     JOGLTextureState.doTextureBind(texs.get(x).getTextureId(), 0, Texture.Type.TwoDimensional);
-                    gl.glGenerateMipmapEXT(GL.GL_TEXTURE_2D);
+                    gl.glGenerateMipmap(GL.GL_TEXTURE_2D);
                 }
             }
 
@@ -651,28 +650,28 @@ public class JOGLTextureRenderer implements TextureRenderer {
 
         if (tex.getRTTSource() == Texture.RenderToTextureType.Depth) {
             // Setup depth texture into FBO
-            gl.glFramebufferTexture2DEXT(
-                    GL.GL_FRAMEBUFFER_EXT,
-                    GL.GL_DEPTH_ATTACHMENT_EXT,
+            gl.glFramebufferTexture2D(
+                    GL.GL_FRAMEBUFFER,
+                    GL.GL_DEPTH_ATTACHMENT,
                     GL.GL_TEXTURE_2D, tex.getTextureId(), 0);
 
             setDrawBuffer(GL.GL_NONE);
             setReadBuffer(GL.GL_NONE);
         } else {
             // Set textures into FBO
-            gl.glFramebufferTexture2DEXT(
-                    GL.GL_FRAMEBUFFER_EXT,
-                    GL.GL_COLOR_ATTACHMENT0_EXT,
+            gl.glFramebufferTexture2D(
+                    GL.GL_FRAMEBUFFER,
+                    GL.GL_COLOR_ATTACHMENT0,
                     GL.GL_TEXTURE_2D, tex.getTextureId(), 0);
 
             // setup depth RB
-            gl.glFramebufferRenderbufferEXT(
-                    GL.GL_FRAMEBUFFER_EXT,
-                    GL.GL_DEPTH_ATTACHMENT_EXT,
-                    GL.GL_RENDERBUFFER_EXT, depthRBID);
+            gl.glFramebufferRenderbuffer(
+                    GL.GL_FRAMEBUFFER,
+                    GL.GL_DEPTH_ATTACHMENT,
+                    GL.GL_RENDERBUFFER, depthRBID);
 
-            setDrawBuffer(GL.GL_COLOR_ATTACHMENT0_EXT);
-            setReadBuffer(GL.GL_COLOR_ATTACHMENT0_EXT);
+            setDrawBuffer(GL.GL_COLOR_ATTACHMENT0);
+            setReadBuffer(GL.GL_COLOR_ATTACHMENT0);
         }
 
         // Check FBO complete
@@ -682,27 +681,27 @@ public class JOGLTextureRenderer implements TextureRenderer {
     }
 
     private void setReadBuffer(int attachVal) {
-        final GL gl = GLU.getCurrentGL();
+        final GL2 gl = GLU.getCurrentGL().getGL2();
 
         gl.glReadBuffer(attachVal);
     }
 
     private void setDrawBuffer(int attachVal) {
-        final GL gl = GLU.getCurrentGL();
+        final GL2 gl = GLU.getCurrentGL().getGL2();
 
         gl.glDrawBuffer(attachVal);
     }
 
     private void setDrawBuffers(int maxEntry) {
-        final GL gl = GLU.getCurrentGL();
+        final GL2 gl = GLU.getCurrentGL().getGL2();
 
         if (maxEntry <= 1) {
-            setDrawBuffer(maxEntry != 0 ? GL.GL_COLOR_ATTACHMENT0_EXT : GL.GL_NONE);
+            setDrawBuffer(maxEntry != 0 ? GL.GL_COLOR_ATTACHMENT0 : GL.GL_NONE);
         } else {
             // We should only get to this point if we support ARBDrawBuffers.
             attachBuffer.clear();
             attachBuffer.limit(maxEntry);
-            gl.glDrawBuffersARB(attachBuffer.limit(),attachBuffer); // TODO Check <size>
+            gl.glDrawBuffers(attachBuffer.limit(),attachBuffer); // TODO Check <size>
         }
     }
 
@@ -714,7 +713,7 @@ public class JOGLTextureRenderer implements TextureRenderer {
         // automatically generate mipmaps for our texture.
         if (tex.getMinificationFilter().usesMipMapLevels()) {
             JOGLTextureState.doTextureBind(tex.getTextureId(), 0, Texture.Type.TwoDimensional);
-            gl.glGenerateMipmapEXT(GL.GL_TEXTURE_2D);
+            gl.glGenerateMipmap(GL.GL_TEXTURE_2D);
         }
     }
 
@@ -722,42 +721,41 @@ public class JOGLTextureRenderer implements TextureRenderer {
     private void checkFBOComplete() {
         final GL gl = GLU.getCurrentGL();
 
-        int framebuffer = gl
-                .glCheckFramebufferStatusEXT(GL.GL_FRAMEBUFFER_EXT);
+        int framebuffer = gl.glCheckFramebufferStatus(GL.GL_FRAMEBUFFER);
         switch (framebuffer) {
-            case GL.GL_FRAMEBUFFER_COMPLETE_EXT:
+            case GL.GL_FRAMEBUFFER_COMPLETE:
                 break;
-            case GL.GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT_EXT:
+            case GL.GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
                 throw new RuntimeException(
                         "FrameBuffer: "
                                 + fboID
                                 + ", has caused a GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT_EXT exception");
-            case GL.GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT_EXT:
+            case GL.GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
                 throw new RuntimeException(
                         "FrameBuffer: "
                                 + fboID
                                 + ", has caused a GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT_EXT exception");
-            case GL.GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS_EXT:
+            case GL.GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS:
                 throw new RuntimeException(
                         "FrameBuffer: "
                                 + fboID
                                 + ", has caused a GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS_EXT exception");
-            case GL.GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER_EXT:
+            case GL2.GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER:
                 throw new RuntimeException(
                         "FrameBuffer: "
                                 + fboID
                                 + ", has caused a GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER_EXT exception");
-            case GL.GL_FRAMEBUFFER_INCOMPLETE_FORMATS_EXT:
+            case GL.GL_FRAMEBUFFER_INCOMPLETE_FORMATS:
                 throw new RuntimeException(
                         "FrameBuffer: "
                                 + fboID
                                 + ", has caused a GL_FRAMEBUFFER_INCOMPLETE_FORMATS_EXT exception");
-            case GL.GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER_EXT:
+            case GL2.GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER:
                 throw new RuntimeException(
                         "FrameBuffer: "
                                 + fboID
                                 + ", has caused a GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER_EXT exception");
-            case GL.GL_FRAMEBUFFER_UNSUPPORTED_EXT:
+            case GL.GL_FRAMEBUFFER_UNSUPPORTED:
                 throw new RuntimeException(
                         "FrameBuffer: "
                                 + fboID
@@ -800,11 +798,11 @@ public class JOGLTextureRenderer implements TextureRenderer {
 	    source = GL.GL_ALPHA;
 	    break;
 	case Depth:
-	    source = GL.GL_DEPTH_COMPONENT;
+	    source = GL2.GL_DEPTH_COMPONENT;
 	    break;
 	case Intensity:
 	case Intensity8:
-	    source = GL.GL_INTENSITY;
+	    source = GL2.GL_INTENSITY;
 	    break;
 	case Luminance:
 	case Luminance8:
@@ -848,13 +846,13 @@ public class JOGLTextureRenderer implements TextureRenderer {
 	    source = GL.GL_LUMINANCE_ALPHA;
 	    break;
 	case Intensity4:
-	    source = GL.GL_INTENSITY;
+	    source = GL2.GL_INTENSITY;
 	    break;
 	case Intensity12:
-	    source = GL.GL_INTENSITY;
+	    source = GL2.GL_INTENSITY;
 	    break;
 	case Intensity16:
-	    source = GL.GL_INTENSITY;
+	    source = GL2.GL_INTENSITY;
 	    break;
 	case R3_G3_B2:
 	    source = GL.GL_RGB;
@@ -902,7 +900,7 @@ public class JOGLTextureRenderer implements TextureRenderer {
 	    source = GL.GL_ALPHA;
 	    break;
 	case Intensity32F:
-	    source = GL.GL_INTENSITY;
+	    source = GL2.GL_INTENSITY;
 	    break;
 	case Luminance32F:
 	    source = GL.GL_LUMINANCE;
@@ -920,7 +918,7 @@ public class JOGLTextureRenderer implements TextureRenderer {
 	    source = GL.GL_ALPHA;
 	    break;
 	case Intensity16F:
-	    source = GL.GL_INTENSITY;
+	    source = GL2.GL_INTENSITY;
 	    break;
 	case Luminance16F:
 	    source = GL.GL_LUMINANCE;
@@ -998,8 +996,7 @@ public class JOGLTextureRenderer implements TextureRenderer {
         if (active == 0) {
             gl.glClearColor(backgroundColor.r, backgroundColor.g,
                     backgroundColor.b, backgroundColor.a);
-            gl.glBindFramebufferEXT(
-                    GL.GL_FRAMEBUFFER_EXT, fboID);
+            gl.glBindFramebuffer(GL.GL_FRAMEBUFFER, fboID);
         }
         active++;
     }
@@ -1015,8 +1012,8 @@ public class JOGLTextureRenderer implements TextureRenderer {
                     parentRenderer.getBackgroundColor().g, parentRenderer
                             .getBackgroundColor().b, parentRenderer
                             .getBackgroundColor().a);
-            gl.glBindFramebufferEXT(
-                    GL.GL_FRAMEBUFFER_EXT, 0);
+            gl.glBindFramebuffer(
+                    GL.GL_FRAMEBUFFER, 0);
         }
         active--;
     }
@@ -1047,7 +1044,7 @@ public class JOGLTextureRenderer implements TextureRenderer {
             IntBuffer id = BufferUtils.createIntBuffer(1);
             id.put(fboID);
             id.rewind();
-            gl.glDeleteFramebuffersEXT(id.limit(),id); // TODO Check <size>
+            gl.glDeleteFramebuffers(id.limit(),id); // TODO Check <size>
         }
     }
 

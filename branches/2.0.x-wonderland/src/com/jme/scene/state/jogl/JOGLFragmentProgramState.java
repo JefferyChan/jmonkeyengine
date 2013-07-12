@@ -51,6 +51,7 @@ import com.jme.scene.state.StateRecord;
 import com.jme.scene.state.jogl.records.FragmentProgramStateRecord;
 import com.jme.system.DisplaySystem;
 import com.jme.util.geom.BufferUtils;
+import javax.media.opengl.GL2;
 
 /**
  * @author Eric Woroshow
@@ -165,7 +166,7 @@ public final class JOGLFragmentProgramState extends FragmentProgramState {
     }
 
     private void create() {
-        final GL gl = GLU.getCurrentGL();
+        final GL2 gl = GLU.getCurrentGL().getGL2();
 
         //first assert that the program is loaded
         if (program == null) {
@@ -177,14 +178,14 @@ public final class JOGLFragmentProgramState extends FragmentProgramState {
 
         gl.glGenProgramsARB(buf.limit(),buf); // TODO Check <size>
         gl.glBindProgramARB(
-                GL.GL_FRAGMENT_PROGRAM_ARB, buf.get(0));
+                GL2.GL_FRAGMENT_PROGRAM_ARB, buf.get(0));
 
         byte array[] = new byte[program.limit()];
         program.rewind();
         program.get(array);
         gl.glProgramStringARB(
-                GL.GL_FRAGMENT_PROGRAM_ARB,
-                GL.GL_PROGRAM_FORMAT_ASCII_ARB,array.length, new String(array)); // TODO Check cost of using non-buffer
+                GL2.GL_FRAGMENT_PROGRAM_ARB,
+                GL2.GL_PROGRAM_FORMAT_ASCII_ARB,array.length, new String(array)); // TODO Check cost of using non-buffer
 
         checkProgramError();
 
@@ -201,17 +202,17 @@ public final class JOGLFragmentProgramState extends FragmentProgramState {
         if (gl.glGetError() == GL.GL_INVALID_OPERATION) {
             //retrieve the error position
             IntBuffer errorloc = BufferUtils.createIntBuffer(16);
-            gl.glGetIntegerv(GL.GL_PROGRAM_ERROR_POSITION_ARB,
+            gl.glGetIntegerv(GL2.GL_PROGRAM_ERROR_POSITION_ARB,
                     errorloc); // TODO Check for integer
 
             logger.severe("Error "
-                    + gl.glGetString(GL.GL_PROGRAM_ERROR_STRING_ARB)
+                    + gl.glGetString(GL2.GL_PROGRAM_ERROR_STRING_ARB)
                     + " in fragment program on line " + errorloc.get(0));
         }
     }
 
     public void apply() {
-        final GL gl = GLU.getCurrentGL();
+        final GL2 gl = GLU.getCurrentGL().getGL2();
 
         if (isSupported()) {
             RenderContext<?> context = DisplaySystem.getDisplaySystem().getCurrentContext();
@@ -229,9 +230,9 @@ public final class JOGLFragmentProgramState extends FragmentProgramState {
                         else
                             return;
 
-                    gl.glEnable(GL.GL_FRAGMENT_PROGRAM_ARB);
+                    gl.glEnable(GL2.GL_FRAGMENT_PROGRAM_ARB);
                     gl.glBindProgramARB(
-                            GL.GL_FRAGMENT_PROGRAM_ARB, programID);
+                            GL2.GL_FRAGMENT_PROGRAM_ARB, programID);
 
                     //load environmental parameters...
                     //TODO: Reevaluate how this is done.
@@ -250,12 +251,12 @@ public final class JOGLFragmentProgramState extends FragmentProgramState {
                         for (int i = 0; i < parameters.length; i++)
                             if (parameters[i] != null)
                                 gl.glProgramLocalParameter4fARB(
-                                        GL.GL_FRAGMENT_PROGRAM_ARB,
+                                        GL2.GL_FRAGMENT_PROGRAM_ARB,
                                         i, parameters[i][0], parameters[i][1],
                                         parameters[i][2], parameters[i][3]);
 
                 } else {
-                    gl.glDisable(GL.GL_FRAGMENT_PROGRAM_ARB);
+                    gl.glDisable(GL2.GL_FRAGMENT_PROGRAM_ARB);
                 }
             }
 

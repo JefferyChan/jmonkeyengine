@@ -45,8 +45,8 @@ import javax.media.opengl.GLContext;
 
 import com.jme.image.Texture;
 import com.jme.system.DisplaySystem;
-import sun.awt.SunToolkit;
 import java.lang.reflect.Method;
+import javax.media.opengl.glu.gl2.GLUgl2;
 
 
 /**
@@ -124,7 +124,7 @@ class JOGLImageGraphics extends ImageGraphicsBaseImpl {
 
     public void update( Texture texture, boolean clean ) {
         final GL gl = GLU.getCurrentGL();
-        final GLU glu = new GLU();
+        final GLU glu = new GLUgl2();
         boolean updateChildren = false;
 
 	GLContext glContext = null;

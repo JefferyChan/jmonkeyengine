@@ -51,6 +51,7 @@ import com.jme.scene.state.VertexProgramState;
 import com.jme.scene.state.jogl.records.VertexProgramStateRecord;
 import com.jme.system.DisplaySystem;
 import com.jme.util.geom.BufferUtils;
+import javax.media.opengl.GL2;
 
 /**
  * Implementation of the GL_ARB_vertex_program extension.
@@ -170,11 +171,11 @@ public class JOGLVertexProgramState extends VertexProgramState {
         if (gl.glGetError() == GL.GL_INVALID_OPERATION) {
             //retrieve the error position
             IntBuffer errorloc = BufferUtils.createIntBuffer(16);
-            gl.glGetIntegerv(GL.GL_PROGRAM_ERROR_POSITION_ARB,
+            gl.glGetIntegerv(GL2.GL_PROGRAM_ERROR_POSITION_ARB,
                     errorloc); // TODO Check for integer
 
             logger.severe("Error "
-                    + gl.glGetString(GL.GL_PROGRAM_ERROR_STRING_ARB)
+                    + gl.glGetString(GL2.GL_PROGRAM_ERROR_STRING_ARB)
                     + " in vertex program on line " + errorloc.get(0));
         }
     }
@@ -188,7 +189,7 @@ public class JOGLVertexProgramState extends VertexProgramState {
     }
 
     private void create() {
-        final GL gl = GLU.getCurrentGL();
+        final GL2 gl = GLU.getCurrentGL().getGL2();
 
         //first assert that the program is loaded
         if (program == null) {
@@ -200,14 +201,14 @@ public class JOGLVertexProgramState extends VertexProgramState {
 
         gl.glGenProgramsARB(buf.limit(),buf); // TODO Check <size>
         gl.glBindProgramARB(
-                GL.GL_VERTEX_PROGRAM_ARB, buf.get(0));
+                GL2.GL_VERTEX_PROGRAM_ARB, buf.get(0));
 
         byte array[] = new byte[program.limit()];
         program.rewind();
         program.get(array);
         gl.glProgramStringARB(
-                GL.GL_VERTEX_PROGRAM_ARB,
-                GL.GL_PROGRAM_FORMAT_ASCII_ARB,array.length, new String(array)); // TODO Check cost of using non-buffer
+                GL2.GL_VERTEX_PROGRAM_ARB,
+                GL2.GL_PROGRAM_FORMAT_ASCII_ARB,array.length, new String(array)); // TODO Check cost of using non-buffer
 
         checkProgramError();
 
@@ -222,7 +223,7 @@ public class JOGLVertexProgramState extends VertexProgramState {
      * @see com.jme.scene.state.RenderState#apply()
      */
     public void apply() {
-        final GL gl = GLU.getCurrentGL();
+        final GL2 gl = GLU.getCurrentGL().getGL2();
 
         if (isSupported()) {
             //ask for the current state record
@@ -241,15 +242,15 @@ public class JOGLVertexProgramState extends VertexProgramState {
                         else
                             return;
 
-                    gl.glEnable(GL.GL_VERTEX_PROGRAM_ARB);
+                    gl.glEnable(GL2.GL_VERTEX_PROGRAM_ARB);
                     gl.glBindProgramARB(
-                            GL.GL_VERTEX_PROGRAM_ARB, programID);
+                            GL2.GL_VERTEX_PROGRAM_ARB, programID);
 
                     //load environmental parameters...
                     for (int i = 0; i < envparameters.length; i++)
                         if (envparameters[i] != null)
                             gl.glProgramEnvParameter4fARB(
-                                    GL.GL_VERTEX_PROGRAM_ARB, i,
+                                    GL2.GL_VERTEX_PROGRAM_ARB, i,
                                     envparameters[i][0], envparameters[i][1],
                                     envparameters[i][2], envparameters[i][3]);
 
@@ -259,12 +260,12 @@ public class JOGLVertexProgramState extends VertexProgramState {
                         for (int i = 0; i < parameters.length; i++)
                             if (parameters[i] != null)
                                 gl.glProgramLocalParameter4fARB(
-                                        GL.GL_VERTEX_PROGRAM_ARB, i,
+                                        GL2.GL_VERTEX_PROGRAM_ARB, i,
                                         parameters[i][0], parameters[i][1],
                                         parameters[i][2], parameters[i][3]);
 
                 } else {
-                    gl.glDisable(GL.GL_VERTEX_PROGRAM_ARB);
+                    gl.glDisable(GL2.GL_VERTEX_PROGRAM_ARB);
                 }
             }
 

@@ -52,11 +52,11 @@ import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.media.opengl.DebugGL;
-import javax.media.opengl.TraceGL;
+import javax.media.opengl.DebugGL2;
+import javax.media.opengl.TraceGL2;
 import javax.media.opengl.GL;
 import javax.media.opengl.GLAutoDrawable;
-import javax.media.opengl.GLCanvas;
+import javax.media.opengl.awt.GLCanvas;
 import javax.media.opengl.GLCapabilities;
 import javax.media.opengl.GLContext;
 import javax.media.opengl.GLException;
@@ -357,7 +357,8 @@ public class JOGLDisplaySystem extends DisplaySystem {
 
     public static JOGLAWTCanvas createGLCanvas() {
         // Initialize the OpenGL requested capabilities.
-        final GLCapabilities caps = new GLCapabilities();
+        // use null as argument to initialize default profile
+        final GLCapabilities caps = new GLCapabilities(null);
         caps.setHardwareAccelerated(true);
         caps.setDoubleBuffered(true);
         caps.setStencilBits(8);
@@ -540,9 +541,9 @@ public class JOGLDisplaySystem extends DisplaySystem {
         // TODO Can this be centralized in createGLCanvas?
         GL glImpl;
         if (logger.isLoggable(Level.FINEST))
-            glImpl = new TraceGL(autoDrawable.getGL(), System.err);
+            glImpl = new TraceGL2(autoDrawable.getContext().getGL().getGL2(), System.err);
         else if (logger.isLoggable(Level.FINE))
-            glImpl = new DebugGL(autoDrawable.getGL());
+            glImpl = new DebugGL2(autoDrawable.getContext().getGL().getGL2());
         else
             glImpl = autoDrawable.getGL();
         autoDrawable.setGL(glImpl);
@@ -647,7 +648,7 @@ public class JOGLDisplaySystem extends DisplaySystem {
                 } else {
                     // Assume that the single threaded model is in effect, and
                     // request that the context be closed on that thread.
-                    Threading.invokeOnOpenGLThread(new Runnable() {
+                    Threading.invokeOnOpenGLThread(false,new Runnable() {
 
                         public void run() {
                             // Make the context current if necessary

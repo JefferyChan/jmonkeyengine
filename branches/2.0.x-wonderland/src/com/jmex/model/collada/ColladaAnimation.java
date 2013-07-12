@@ -122,6 +122,15 @@ public class ColladaAnimation {
     public ColladaTransform getTargetTransform() {
         return targetTransform;
     }
+
+    /**
+     * Returns key frames for this animation.
+     * 
+     * @return key frames map
+     */
+    public SortedMap<Float, float[]> getKeyFrames() {
+        return keyFrames;
+    }
     
     /**
      * Hook up this animation by connecting the target node and transform

@@ -43,6 +43,7 @@ import com.jme.renderer.Renderer;
 import com.jme.scene.state.jogl.records.RendererRecord;
 import com.jme.system.DisplaySystem;
 import com.jme.util.geom.BufferUtils;
+import javax.media.opengl.GL2;
 
 /**
  * <code>Font2D</code> maintains display lists for each ASCII character
@@ -105,7 +106,7 @@ public class JOGLFont {
      * <code>buildDisplayLists</code> is made.
      */
     public void deleteFont() {
-        final GL gl = GLU.getCurrentGL();
+        final GL2 gl = GLU.getCurrentGL().getGL2();
 
         gl.glDeleteLists(base, 256);
     }
@@ -137,7 +138,7 @@ public class JOGLFont {
      *            the mode of font: NORMAL or ITALICS.
      */
     public void print(Renderer r, float x, float y, Vector3f scale, StringBuffer text, int set) {
-        final GL gl = GLU.getCurrentGL();
+        final GL2 gl = GLU.getCurrentGL().getGL2();
 
         RendererRecord matRecord = (RendererRecord) DisplaySystem.getDisplaySystem().getCurrentContext().getRendererRecord();
         if (set > 1) {
@@ -150,7 +151,7 @@ public class JOGLFont {
         if (!alreadyOrtho)
             r.setOrtho();
         else {
-            matRecord.switchMode(GL.GL_MODELVIEW);
+            matRecord.switchMode(GL2.GL_MODELVIEW);
             gl.glPushMatrix();
             gl.glLoadIdentity();
         }
@@ -178,7 +179,7 @@ public class JOGLFont {
         if (!alreadyOrtho) {
             r.unsetOrtho();
         } else {
-            matRecord.switchMode(GL.GL_MODELVIEW);
+            matRecord.switchMode(GL2.GL_MODELVIEW);
             gl.glPopMatrix();
         }
     }
@@ -189,7 +190,7 @@ public class JOGLFont {
      * by the font image size.
      */
     public void buildDisplayList() {
-        final GL gl = GLU.getCurrentGL();
+        final GL2 gl = GLU.getCurrentGL().getGL2();
 
         float cx;
         float cy;
@@ -200,8 +201,8 @@ public class JOGLFont {
             cx = (loop % 16) / 16.0f;
             cy = (loop / 16) / 16.0f;
 
-            gl.glNewList(base + loop, GL.GL_COMPILE);
-            gl.glBegin(GL.GL_QUADS);
+            gl.glNewList(base + loop, GL2.GL_COMPILE);
+            gl.glBegin(GL2.GL_QUADS);
             gl.glTexCoord2f(cx, 1 - cy - 0.0625f);
             gl.glVertex2i(0, 0);
             gl.glTexCoord2f(cx + 0.0625f, 1 - cy - 0.0625f);

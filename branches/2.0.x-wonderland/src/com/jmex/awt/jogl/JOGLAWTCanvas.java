@@ -38,7 +38,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.media.opengl.GLAutoDrawable;
-import javax.media.opengl.GLCanvas;
+import javax.media.opengl.awt.GLCanvas;
 import javax.media.opengl.GLCapabilities;
 import javax.media.opengl.GLEventListener;
 
@@ -283,5 +283,10 @@ public class JOGLAWTCanvas extends GLCanvas implements JMECanvas,
     public void killGfxContext() {
         glInitialized = false;
         super.removeNotify();
+    }
+
+    @Override
+    public void dispose(GLAutoDrawable drawable) {
+        
     }
 }

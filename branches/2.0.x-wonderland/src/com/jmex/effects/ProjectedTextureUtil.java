@@ -47,6 +47,8 @@ import com.jme.math.Vector3f;
 import com.jme.scene.state.jogl.records.RendererRecord;
 import com.jme.system.DisplaySystem;
 import com.jme.util.geom.BufferUtils;
+import javax.media.opengl.GL2;
+import javax.media.opengl.glu.gl2.GLUgl2;
 
 /**
  * <code>ProjectedTextureUtil</code>
@@ -112,13 +114,13 @@ public class ProjectedTextureUtil {
 
     private static IntBuffer matrixModeBuffer = BufferUtils.createIntBuffer(16);
     private static int savedMatrixMode = 0;
-    private static GLU glu = new GLU();
+    private static GLU glu = new GLUgl2();
 
     private static void saveMatrixMode() {
         GL gl = glu.getCurrentGL();
         
         matrixModeBuffer.rewind();
-        gl.glGetIntegerv(GL.GL_MATRIX_MODE, matrixModeBuffer);
+        gl.glGetIntegerv(GL2.GL_MATRIX_MODE, matrixModeBuffer);
         savedMatrixMode = matrixModeBuffer.get(0);
     }
 
@@ -130,7 +132,7 @@ public class ProjectedTextureUtil {
 
     public static void matrixLookAt(Vector3f location, Vector3f at,
             Vector3f up, Matrix4f result) {
-        GL gl = glu.getCurrentGL();
+        GL2 gl = glu.getCurrentGL().getGL2();
                 
         localDir.set(at).subtractLocal(location).normalizeLocal();
         localDir.cross(up, localLeft);
@@ -141,7 +143,7 @@ public class ProjectedTextureUtil {
         // set view matrix
         RendererRecord matRecord = (RendererRecord) DisplaySystem
                 .getDisplaySystem().getCurrentContext().getRendererRecord();
-        matRecord.switchMode(GL.GL_MODELVIEW);
+        matRecord.switchMode(GL2.GL_MODELVIEW);
         gl.glPushMatrix();
         gl.glLoadIdentity();
         glu.gluLookAt(location.x, location.y, location.z, at.x, at.y, at.z,
@@ -149,7 +151,7 @@ public class ProjectedTextureUtil {
 
         if (result != null) {
             tmp_FloatBuffer.rewind();
-            gl.glGetFloatv(GL.GL_MODELVIEW_MATRIX, tmp_FloatBuffer);
+            gl.glGetFloatv(GL2.GL_MODELVIEW_MATRIX, tmp_FloatBuffer);
             tmp_FloatBuffer.rewind();
             result.readFloatBuffer(tmp_FloatBuffer);
         }
@@ -160,20 +162,20 @@ public class ProjectedTextureUtil {
 
     public static void matrixPerspective(float fovY, float aspect, float near,
             float far, Matrix4f result) {
-        GL gl = glu.getCurrentGL();
+        GL2 gl = glu.getCurrentGL().getGL2();
         saveMatrixMode();
 
         // set view matrix
         RendererRecord matRecord = (RendererRecord) DisplaySystem
                 .getDisplaySystem().getCurrentContext().getRendererRecord();
-        matRecord.switchMode(GL.GL_MODELVIEW);
+        matRecord.switchMode(GL2.GL_MODELVIEW);
         gl.glPushMatrix();
         gl.glLoadIdentity();
         glu.gluPerspective(fovY, aspect, near, far);
 
         if (result != null) {
             tmp_FloatBuffer.rewind();
-            gl.glGetFloatv(GL.GL_MODELVIEW_MATRIX, tmp_FloatBuffer);
+            gl.glGetFloatv(GL2.GL_MODELVIEW_MATRIX, tmp_FloatBuffer);
             tmp_FloatBuffer.rewind();
             result.readFloatBuffer(tmp_FloatBuffer);
         }
@@ -184,7 +186,7 @@ public class ProjectedTextureUtil {
 
     public static void matrixProjection(float fovY, float aspect, float near,
             float far, Matrix4f result) {
-        GL gl = glu.getCurrentGL();
+        GL2 gl = glu.getCurrentGL().getGL2();
         float h = FastMath.tan(fovY * FastMath.DEG_TO_RAD * .5f) * near;
         float w = h * aspect;
         float frustumLeft = -w;
@@ -197,7 +199,7 @@ public class ProjectedTextureUtil {
         saveMatrixMode();
         RendererRecord matRecord = (RendererRecord) DisplaySystem
                 .getDisplaySystem().getCurrentContext().getRendererRecord();
-        matRecord.switchMode(GL.GL_PROJECTION);
+        matRecord.switchMode(GL2.GL_PROJECTION);
         gl.glPushMatrix();
         gl.glLoadIdentity();
         gl.glFrustum(frustumLeft, frustumRight, frustumBottom, frustumTop,
@@ -205,7 +207,7 @@ public class ProjectedTextureUtil {
 
         if (result != null) {
             tmp_FloatBuffer.rewind();
-            gl.glGetFloatv(GL.GL_PROJECTION_MATRIX, tmp_FloatBuffer);
+            gl.glGetFloatv(GL2.GL_PROJECTION_MATRIX, tmp_FloatBuffer);
             tmp_FloatBuffer.rewind();
             result.readFloatBuffer(tmp_FloatBuffer);
         }
@@ -217,11 +219,11 @@ public class ProjectedTextureUtil {
     public static void matrixFrustum(float frustumLeft, float frustumRight,
             float frustumBottom, float frustumTop, float frustumNear,
             float frustumFar, Matrix4f result) {
-        GL gl = glu.getCurrentGL();
+        GL2 gl = glu.getCurrentGL().getGL2();
         saveMatrixMode();
         RendererRecord matRecord = (RendererRecord) DisplaySystem
                 .getDisplaySystem().getCurrentContext().getRendererRecord();
-        matRecord.switchMode(GL.GL_PROJECTION);
+        matRecord.switchMode(GL2.GL_PROJECTION);
         gl.glPushMatrix();
         gl.glLoadIdentity();
         gl.glFrustum(frustumLeft, frustumRight, frustumBottom, frustumTop,
@@ -229,7 +231,7 @@ public class ProjectedTextureUtil {
 
         if (result != null) {
             tmp_FloatBuffer.rewind();
-            gl.glGetFloatv(GL.GL_PROJECTION_MATRIX, tmp_FloatBuffer);
+            gl.glGetFloatv(GL2.GL_PROJECTION_MATRIX, tmp_FloatBuffer);
             tmp_FloatBuffer.rewind();
             result.readFloatBuffer(tmp_FloatBuffer);
         }

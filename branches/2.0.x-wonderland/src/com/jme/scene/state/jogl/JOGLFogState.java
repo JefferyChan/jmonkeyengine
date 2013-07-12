@@ -42,6 +42,7 @@ import com.jme.renderer.jogl.JOGLRenderer;
 import com.jme.scene.state.FogState;
 import com.jme.scene.state.jogl.records.FogStateRecord;
 import com.jme.system.DisplaySystem;
+import javax.media.opengl.GL2;
 
 /**
  * <code>JOGLFogState</code> subclasses the fog state using the JOGL API to
@@ -84,7 +85,7 @@ public class JOGLFogState extends FogState {
      * @see com.jme.scene.state.RenderState#apply()
      */
     public void apply() {
-        final GL gl = GLU.getCurrentGL();
+        final GL2 gl = GLU.getCurrentGL().getGL2();
 
         // ask for the current state record
         RenderContext<?> context = DisplaySystem.getDisplaySystem()
@@ -97,23 +98,23 @@ public class JOGLFogState extends FogState {
 
             if (record.isValid()) {
                 if (record.fogStart != start) {
-                    gl.glFogf(GL.GL_FOG_START, start);
+                    gl.glFogf(GL2.GL_FOG_START, start);
                     record.fogStart = start;
                 }
                 if (record.fogEnd != end) {
-                    gl.glFogf(GL.GL_FOG_END, end);
+                    gl.glFogf(GL2.GL_FOG_END, end);
                     record.fogEnd = end;
                 }
                 if (record.density != density) {
-                    gl.glFogf(GL.GL_FOG_DENSITY, density);
+                    gl.glFogf(GL2.GL_FOG_DENSITY, density);
                     record.density = density;
                 }
             } else {
-                gl.glFogf(GL.GL_FOG_START, start);
+                gl.glFogf(GL2.GL_FOG_START, start);
                 record.fogStart = start;
-                gl.glFogf(GL.GL_FOG_END, end);
+                gl.glFogf(GL2.GL_FOG_END, end);
                 record.fogEnd = end;
-                gl.glFogf(GL.GL_FOG_DENSITY, density);
+                gl.glFogf(GL2.GL_FOG_DENSITY, density);
                 record.density = density;
             }
 
@@ -134,24 +135,24 @@ public class JOGLFogState extends FogState {
 
         if (record.isValid()) {
             if (enable && !record.enabled) {
-                gl.glEnable(GL.GL_FOG);
+                gl.glEnable(GL2.GL_FOG);
                 record.enabled = true;
             } else if (!enable && record.enabled) {
-                gl.glDisable(GL.GL_FOG);
+                gl.glDisable(GL2.GL_FOG);
                 record.enabled = false;
             }
         } else {
             if (enable) {
-                gl.glEnable(GL.GL_FOG);
+                gl.glEnable(GL2.GL_FOG);
             } else {
-                gl.glDisable(GL.GL_FOG);
+                gl.glDisable(GL2.GL_FOG);
             }
             record.enabled = enable;
         }
     }
 
     private void applyFogColor(ColorRGBA color, FogStateRecord record) {
-        final GL gl = GLU.getCurrentGL();
+        final GL2 gl = GLU.getCurrentGL().getGL2();
 
         if (!record.isValid() || !color.equals(record.fogColor)) {
             record.fogColor.set(color);
@@ -159,42 +160,42 @@ public class JOGLFogState extends FogState {
             record.colorBuff.put(record.fogColor.r).put(record.fogColor.g).put(
                     record.fogColor.b).put(record.fogColor.a);
             record.colorBuff.flip();
-            gl.glFogfv(GL.GL_FOG_COLOR, record.colorBuff); // TODO Check for float
+            gl.glFogfv(GL2.GL_FOG_COLOR, record.colorBuff); // TODO Check for float
         }
     }
 
     private void applyFogSource(CoordinateSource source, FogStateRecord record) {
-        final GL gl = GLU.getCurrentGL();
+        final GL2 gl = GLU.getCurrentGL().getGL2();
 
         if (supportsFogCoords) {
             if (!record.isValid() || !source.equals(record.source)) {
                 if (source == CoordinateSource.Depth) {
-                    gl.glFogi(GL.GL_FOG_COORDINATE_SOURCE_EXT, GL.GL_FRAGMENT_DEPTH_EXT);
+                    gl.glFogi(GL2.GL_FOG_COORDINATE_SOURCE, GL2.GL_FRAGMENT_DEPTH);
                 } else {
-                    gl.glFogi(GL.GL_FOG_COORDINATE_SOURCE_EXT, GL.GL_FOG_COORDINATE_EXT);
+                    gl.glFogi(GL2.GL_FOG_COORDINATE_SOURCE, GL2.GL_FOG_COORDINATE);
                 }
             }
         }
     }
 
     private void applyFogMode(DensityFunction densityFunction, FogStateRecord record) {
-        final GL gl = GLU.getCurrentGL();
+        final GL2 gl = GLU.getCurrentGL().getGL2();
 
         int glMode = 0;
         switch (densityFunction) {
             case Exponential:
-                glMode = GL.GL_EXP;
+                glMode = GL2.GL_EXP;
                 break;
             case Linear:
                 glMode = GL.GL_LINEAR;
                 break;
             case ExponentialSquared:
-                glMode = GL.GL_EXP2;
+                glMode = GL2.GL_EXP2;
                 break;
         }
 
         if (!record.isValid() || record.fogMode != glMode) {
-            gl.glFogi(GL.GL_FOG_MODE, glMode);
+            gl.glFogi(GL2.GL_FOG_MODE, glMode);
             record.fogMode = glMode;
         }
     }
@@ -213,7 +214,7 @@ public class JOGLFogState extends FogState {
         }
 
         if (!record.isValid() || record.fogHint != glHint) {
-            gl.glHint(GL.GL_FOG_HINT, glHint);
+            gl.glHint(GL2.GL_FOG_HINT, glHint);
             record.fogHint = glHint;
         }
     }

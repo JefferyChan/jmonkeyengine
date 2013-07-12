@@ -40,7 +40,6 @@ import com.jme.scene.Geometry;
 import com.jme.scene.Spatial;
 import com.jme.scene.state.ColorMaskState;
 import com.jme.scene.state.MaterialState;
-import com.jme.scene.state.CullState;
 import com.jme.scene.state.RenderState;
 import com.jme.scene.state.TextureState;
 import com.jme.scene.state.ZBufferState;
@@ -55,10 +54,10 @@ import com.jme.bounding.BoundingVolume;
 import com.jme.system.DisplaySystem;
 import com.jme.scene.shape.Quad;
 import java.nio.FloatBuffer;
-import javax.media.opengl.GL;
-import javax.media.opengl.glu.GLU;
 import com.jme.system.JmeException;
 import com.jme.util.SortUtil;
+import javax.media.opengl.GL2;
+import javax.media.opengl.glu.GLU;
 
 /**
  * This optional class supports queueing of rendering states that are drawn when
@@ -531,7 +530,7 @@ public class RenderQueue {
     }
 
     private void drawWithGlow(Geometry s) {
-        final GL gl = GLU.getCurrentGL();
+        final GL2 gl = GLU.getCurrentGL().getGL2();
 
         StencilState oss = (StencilState) s.states[RenderState.StateType.Stencil.ordinal()];
         BlendState obs = (BlendState) s.states[RenderState.StateType.Blend.ordinal()];
@@ -612,21 +611,29 @@ public class RenderQueue {
                 Spatial obj = transparentBucket.list[i];
 
                 if (twoPassTransparent && obj instanceof Geometry) {
-                    Geometry geom = (Geometry)obj;
-                    RenderState oldCullState = geom.states[RenderState.StateType.Cull.ordinal()];
-                    geom.states[RenderState.StateType.Cull.ordinal()] = tranCull;
-                    ZBufferState oldZState = (ZBufferState)geom.states[RenderState.StateType.ZBuffer.ordinal()];
-                    geom.states[RenderState.StateType.ZBuffer.ordinal()] = tranZBuff;
+                    /**
+                     * Wishtree Technologies
+                     * Glow effect added to transparent objects
+                     */
+                    if(obj.isGlowEnabled()) {
+                        drawWithGlow((Geometry)obj);
+                    } else {
+                        Geometry geom = (Geometry)obj;
+                        RenderState oldCullState = geom.states[RenderState.StateType.Cull.ordinal()];
+                        geom.states[RenderState.StateType.Cull.ordinal()] = tranCull;
+                        ZBufferState oldZState = (ZBufferState)geom.states[RenderState.StateType.ZBuffer.ordinal()];
+                        geom.states[RenderState.StateType.ZBuffer.ordinal()] = tranZBuff;
 
-                    // first render back-facing tris only
-                    tranCull.setCullFace(CullState.Face.Front);
-                    obj.draw(renderer);
+                        // first render back-facing tris only
+                        tranCull.setCullFace(CullState.Face.Front);
+                        obj.draw(renderer);
 
-                    // then render front-facing tris only
-                    geom.states[RenderState.StateType.ZBuffer.ordinal()] = oldZState;
-                    tranCull.setCullFace(CullState.Face.Back);
-                    obj.draw(renderer);
-                    geom.states[RenderState.StateType.Cull.ordinal()] = oldCullState;
+                        // then render front-facing tris only
+                        geom.states[RenderState.StateType.ZBuffer.ordinal()] = oldZState;
+                        tranCull.setCullFace(CullState.Face.Back);
+                        obj.draw(renderer);
+                        geom.states[RenderState.StateType.Cull.ordinal()] = oldCullState;
+                    }
                 } else {
                     // draw as usual
                     if (obj instanceof Geometry &&

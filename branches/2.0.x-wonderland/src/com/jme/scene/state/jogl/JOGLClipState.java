@@ -39,6 +39,7 @@ import com.jme.renderer.RenderContext;
 import com.jme.scene.state.ClipState;
 import com.jme.scene.state.jogl.records.ClipStateRecord;
 import com.jme.system.DisplaySystem;
+import javax.media.opengl.GL2;
 
 /**
  * <code>JOGLClipState</code>
@@ -79,22 +80,22 @@ public class JOGLClipState extends ClipState {
     }
 
     private void enableClipPlane(int planeIndex, boolean enable, ClipStateRecord record) {
-        final GL gl = GLU.getCurrentGL();
+        final GL2 gl = GLU.getCurrentGL().getGL2();
 
         if (enable) {
             if (!record.isValid() || !record.planeEnabled[planeIndex]) {
-                gl.glEnable(GL.GL_CLIP_PLANE0 + planeIndex);
+                gl.glEnable(GL2.GL_CLIP_PLANE0 + planeIndex);
                 record.planeEnabled[planeIndex] = true;
             }
 
             record.buf.rewind();
             record.buf.put(planeEquations[planeIndex]);
             record.buf.flip();
-            gl.glClipPlane(GL.GL_CLIP_PLANE0 + planeIndex, record.buf);
+            gl.glClipPlane(GL2.GL_CLIP_PLANE0 + planeIndex, record.buf);
 
         } else {
             if (!record.isValid() || record.planeEnabled[planeIndex]) {
-                gl.glDisable(GL.GL_CLIP_PLANE0 + planeIndex);
+                gl.glDisable(GL2.GL_CLIP_PLANE0 + planeIndex);
                 record.planeEnabled[planeIndex] = false;
             }
         }

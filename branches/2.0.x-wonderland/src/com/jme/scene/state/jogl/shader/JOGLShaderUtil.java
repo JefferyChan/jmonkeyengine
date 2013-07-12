@@ -53,6 +53,7 @@ import com.jme.util.shader.uniformtypes.ShaderVariablePointerByte;
 import com.jme.util.shader.uniformtypes.ShaderVariablePointerFloat;
 import com.jme.util.shader.uniformtypes.ShaderVariablePointerInt;
 import com.jme.util.shader.uniformtypes.ShaderVariablePointerShort;
+import javax.media.opengl.GL2;
 
 /** Utility class for updating shadervariables(uniforms and attributes) */
 public class JOGLShaderUtil {
@@ -99,11 +100,10 @@ public class JOGLShaderUtil {
      */
     public static void updateUniformLocation(ShaderVariable variable,
             int programID, boolean forceRefresh) {
-        final GL gl = GLU.getCurrentGL();
+        final GL2 gl = GLU.getCurrentGL().getGL2();
 
         if (variable.variableID == -1 || forceRefresh) {
-            variable.variableID = gl
-                    .glGetUniformLocationARB(programID, variable.name); // TODO Check variable.name
+            variable.variableID = gl.glGetUniformLocationARB(programID, variable.name); // TODO Check variable.name
 
             if (variable.variableID == -1) {
                 logger.severe("Shader uniform [" + variable.name
@@ -113,21 +113,20 @@ public class JOGLShaderUtil {
     }
 
     private static void updateShaderUniform(ShaderVariableInt shaderUniform) {
-        final GL gl = GLU.getCurrentGL();
+        final GL2 gl = GLU.getCurrentGL().getGL2();
 
-        gl
-                .glUniform1iARB(shaderUniform.variableID, shaderUniform.value1);
+        gl.glUniform1iARB(shaderUniform.variableID, shaderUniform.value1);
     }
 
     private static void updateShaderUniform(ShaderVariableInt2 shaderUniform) {
-        final GL gl = GLU.getCurrentGL();
+        final GL2 gl = GLU.getCurrentGL().getGL2();
 
         gl.glUniform2iARB(shaderUniform.variableID,
                 shaderUniform.value1, shaderUniform.value2);
     }
 
     private static void updateShaderUniform(ShaderVariableInt3 shaderUniform) {
-        final GL gl = GLU.getCurrentGL();
+        final GL2 gl = GLU.getCurrentGL().getGL2();
 
         gl.glUniform3iARB(shaderUniform.variableID,
                 shaderUniform.value1, shaderUniform.value2,
@@ -135,7 +134,7 @@ public class JOGLShaderUtil {
     }
 
     private static void updateShaderUniform(ShaderVariableInt4 shaderUniform) {
-        final GL gl = GLU.getCurrentGL();
+        final GL2 gl = GLU.getCurrentGL().getGL2();
 
         gl.glUniform4iARB(shaderUniform.variableID,
                 shaderUniform.value1, shaderUniform.value2,
@@ -143,15 +142,14 @@ public class JOGLShaderUtil {
     }
 
     private static void updateShaderUniform(ShaderVariableFloat shaderUniform) {
-        final GL gl = GLU.getCurrentGL();
+        final GL2 gl = GLU.getCurrentGL().getGL2();
 
-        gl
-                .glUniform1fARB(shaderUniform.variableID, shaderUniform.value1);
+        gl.glUniform1fARB(shaderUniform.variableID, shaderUniform.value1);
     }
 
     private static void updateShaderUniform(
             ShaderVariableFloat2 shaderUniform) {
-        final GL gl = GLU.getCurrentGL();
+        final GL2 gl = GLU.getCurrentGL().getGL2();
 
         gl.glUniform2fARB(shaderUniform.variableID,
                 shaderUniform.value1, shaderUniform.value2);
@@ -159,7 +157,7 @@ public class JOGLShaderUtil {
 
     private static void updateShaderUniform(
             ShaderVariableFloat3 shaderUniform) {
-        final GL gl = GLU.getCurrentGL();
+        final GL2 gl = GLU.getCurrentGL().getGL2();
 
         gl.glUniform3fARB(shaderUniform.variableID,
                 shaderUniform.value1, shaderUniform.value2,
@@ -168,7 +166,7 @@ public class JOGLShaderUtil {
 
     private static void updateShaderUniform(
             ShaderVariableFloat4 shaderUniform) {
-        final GL gl = GLU.getCurrentGL();
+        final GL2 gl = GLU.getCurrentGL().getGL2();
 
         gl.glUniform4fARB(shaderUniform.variableID,
                 shaderUniform.value1, shaderUniform.value2,
@@ -177,7 +175,7 @@ public class JOGLShaderUtil {
 
     private static void updateShaderUniform(
             ShaderVariableMatrix2 shaderUniform) {
-        final GL gl = GLU.getCurrentGL();
+        final GL2 gl = GLU.getCurrentGL().getGL2();
 
         shaderUniform.matrixBuffer.rewind();
         gl.glUniformMatrix2fv(shaderUniform.variableID, 1,
@@ -186,7 +184,7 @@ public class JOGLShaderUtil {
 
     private static void updateShaderUniform(
             ShaderVariableMatrix3 shaderUniform) {
-        final GL gl = GLU.getCurrentGL();
+        final GL2 gl = GLU.getCurrentGL().getGL2();
 
         shaderUniform.matrixBuffer.rewind();
         gl.glUniformMatrix3fv(shaderUniform.variableID, 1,
@@ -195,7 +193,7 @@ public class JOGLShaderUtil {
 
     private static void updateShaderUniform(
             ShaderVariableMatrix4 shaderUniform) {
-        final GL gl = GLU.getCurrentGL();
+        final GL2 gl = GLU.getCurrentGL().getGL2();
 
         shaderUniform.matrixBuffer.rewind();
         gl.glUniformMatrix4fv(shaderUniform.variableID,
@@ -211,11 +209,10 @@ public class JOGLShaderUtil {
      */
     public static void updateAttributeLocation(ShaderVariable variable,
             int programID, boolean forceRefresh) {
-        final GL gl = GLU.getCurrentGL();
+        final GL2 gl = GLU.getCurrentGL().getGL2();
 
         if (variable.variableID == -1 || forceRefresh) {
-            variable.variableID = gl
-                    .glGetAttribLocationARB(programID, variable.name); // TODO Check variable.name
+            variable.variableID = gl.glGetAttribLocation(programID, variable.name); // TODO Check variable.name
 
             if (variable.variableID == -1) {
                 logger.severe("Shader attribute [" + variable.name
@@ -245,7 +242,7 @@ public class JOGLShaderUtil {
 
     private static void updateShaderAttribute(
             ShaderVariablePointerFloat shaderUniform) {
-        final GL gl = GLU.getCurrentGL();
+        final GL2 gl = GLU.getCurrentGL().getGL2();
 
         shaderUniform.data.rewind();
         gl.glEnableVertexAttribArrayARB(shaderUniform.variableID);
@@ -256,7 +253,7 @@ public class JOGLShaderUtil {
 
     private static void updateShaderAttribute(
             ShaderVariablePointerByte shaderUniform) {
-        final GL gl = GLU.getCurrentGL();
+        final GL2 gl = GLU.getCurrentGL().getGL2();
 
         shaderUniform.data.rewind();
         gl.glEnableVertexAttribArrayARB(shaderUniform.variableID);
@@ -268,7 +265,7 @@ public class JOGLShaderUtil {
 
     private static void updateShaderAttribute(
             ShaderVariablePointerInt shaderUniform) {
-        final GL gl = GLU.getCurrentGL();
+        final GL2 gl = GLU.getCurrentGL().getGL2();
 
         shaderUniform.data.rewind();
         gl.glEnableVertexAttribArrayARB(shaderUniform.variableID);
@@ -280,7 +277,7 @@ public class JOGLShaderUtil {
 
     private static void updateShaderAttribute(
             ShaderVariablePointerShort shaderUniform) {
-        final GL gl = GLU.getCurrentGL();
+        final GL2 gl = GLU.getCurrentGL().getGL2();
 
         shaderUniform.data.rewind();
         gl.glEnableVertexAttribArrayARB(shaderUniform.variableID);

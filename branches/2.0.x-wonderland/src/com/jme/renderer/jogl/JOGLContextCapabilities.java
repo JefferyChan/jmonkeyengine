@@ -40,6 +40,7 @@ import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLException;
 
 import com.jme.util.geom.BufferUtils;
+import javax.media.opengl.GL2;
 
 /**
  * This class collects all of the settings for a specific
@@ -196,7 +197,7 @@ public final class JOGLContextCapabilities {
                 .isExtensionAvailable("GL_ARB_shading_language_100");
 
         try {
-            gl.glGetIntegerv(GL.GL_MAX_VERTEX_ATTRIBS_ARB, intBuf);
+            gl.glGetIntegerv(GL2.GL_MAX_VERTEX_ATTRIBS_ARB, intBuf);
             GL_MAX_VERTEX_ATTRIBS_ARB = intBuf.get(0);
         } catch(GLException gle) {
             GL_MAX_VERTEX_ATTRIBS_ARB=0;
@@ -204,28 +205,28 @@ public final class JOGLContextCapabilities {
         
 
         try {
-            gl.glGetIntegerv(GL.GL_MAX_VERTEX_UNIFORM_COMPONENTS_ARB, intBuf);
+            gl.glGetIntegerv(GL2.GL_MAX_VERTEX_UNIFORM_COMPONENTS, intBuf);
             GL_MAX_VERTEX_UNIFORM_COMPONENTS_ARB = intBuf.get(0);
         } catch(GLException gle){
             GL_MAX_VERTEX_UNIFORM_COMPONENTS_ARB=0;
         }
 
         try {
-            gl.glGetIntegerv(GL.GL_MAX_FRAGMENT_UNIFORM_COMPONENTS_ARB, intBuf);
+            gl.glGetIntegerv(GL2.GL_MAX_FRAGMENT_UNIFORM_COMPONENTS, intBuf);
             GL_MAX_FRAGMENT_UNIFORM_COMPONENTS_ARB = intBuf.get(0);
         } catch(GLException gle) {
             GL_MAX_FRAGMENT_UNIFORM_COMPONENTS_ARB=0;
         }
 
         try {
-            gl.glGetIntegerv(GL.GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS_ARB, intBuf);
+            gl.glGetIntegerv(GL2.GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, intBuf);
             GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS_ARB = intBuf.get(0);
         } catch(GLException gle) {
             GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS_ARB=0;
         }
 
         try {
-            gl.glGetIntegerv(GL.GL_MAX_VARYING_FLOATS_ARB, intBuf);
+            gl.glGetIntegerv(GL2.GL_MAX_VARYING_FLOATS, intBuf);
             GL_MAX_VARYING_FLOATS_ARB = intBuf.get(0);
         } catch(GLException gle) {
             GL_MAX_VARYING_FLOATS_ARB=0;
@@ -256,33 +257,32 @@ public final class JOGLContextCapabilities {
         GL_ARB_texture_rectangle = gl
                 .isExtensionAvailable("GL_ARB_texture_rectangle");
 
-        gl.glGetIntegerv(GL.GL_MAX_TEXTURE_UNITS, intBuf);
+        gl.glGetIntegerv(GL2.GL_MAX_TEXTURE_UNITS, intBuf);
         GL_MAX_TEXTURE_UNITS = intBuf.get(0);
 
         try {
-            gl.glGetIntegerv(GL.GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS_ARB, intBuf);
+            gl.glGetIntegerv(GL2.GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS, intBuf);
             GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS_ARB = intBuf.get(0);
         } catch(GLException gle) {
             GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS_ARB=0;
         }
 
         try {
-            gl.glGetIntegerv(GL.GL_MAX_TEXTURE_IMAGE_UNITS_ARB, intBuf);
+            gl.glGetIntegerv(GL2.GL_MAX_TEXTURE_IMAGE_UNITS_ARB, intBuf);
             GL_MAX_TEXTURE_IMAGE_UNITS_ARB = intBuf.get(0);
         } catch(GLException gle) {
             GL_MAX_TEXTURE_IMAGE_UNITS_ARB=0;
         }
 
         try {
-            gl.glGetIntegerv(GL.GL_MAX_TEXTURE_COORDS_ARB, intBuf);
+            gl.glGetIntegerv(GL2.GL_MAX_TEXTURE_COORDS_ARB, intBuf);
             GL_MAX_TEXTURE_COORDS_ARB = intBuf.get(0);
         } catch(GLException gle) {
             GL_MAX_TEXTURE_COORDS_ARB=0;
         }
 
         try {
-            GL_SHADING_LANGUAGE_VERSION_ARB = gl
-            .glGetString(GL.GL_SHADING_LANGUAGE_VERSION_ARB);
+            GL_SHADING_LANGUAGE_VERSION_ARB = gl.glGetString(GL2.GL_SHADING_LANGUAGE_VERSION_ARB);
         } catch(GLException gle) {
             GL_SHADING_LANGUAGE_VERSION_ARB="";
         }
@@ -311,4 +311,3 @@ public final class JOGLContextCapabilities {
     }
 
 }
- 

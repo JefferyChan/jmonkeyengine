@@ -39,6 +39,7 @@ import com.jme.renderer.RenderContext;
 import com.jme.scene.state.ShadeState;
 import com.jme.scene.state.jogl.records.ShadeStateRecord;
 import com.jme.system.DisplaySystem;
+import javax.media.opengl.GL2;
 
 /**
  * <code>JOGLShadeState</code> subclasses the ShadeState class using the
@@ -67,7 +68,7 @@ public class JOGLShadeState extends ShadeState {
      * @see com.jme.scene.state.ShadeState#apply() ()
      */
     public void apply() {
-        final GL gl = GLU.getCurrentGL();
+        final GL2 gl = GLU.getCurrentGL().getGL2();
 
         // ask for the current state record
         RenderContext<?> context = DisplaySystem.getDisplaySystem().getCurrentContext();
@@ -75,7 +76,7 @@ public class JOGLShadeState extends ShadeState {
         context.currentStates[StateType.Shade.ordinal()] = this;
 
         // If not enabled, we'll use smooth
-        int toApply = isEnabled() ? getGLShade() : GL.GL_SMOOTH;
+        int toApply = isEnabled() ? getGLShade() : GL2.GL_SMOOTH;
         // only apply if we're different. Update record to reflect any changes.
         if (!record.isValid() || toApply != record.lastShade) {
             gl.glShadeModel(toApply);
@@ -89,9 +90,9 @@ public class JOGLShadeState extends ShadeState {
     private int getGLShade() {
         switch (shadeMode) {
             case Flat:
-                return GL.GL_FLAT;
+                return GL2.GL_FLAT;
             case Smooth:
-                return GL.GL_SMOOTH;
+                return GL2.GL_SMOOTH;
         }
         throw new IllegalStateException("unknown shade mode: "+shadeMode);
     }

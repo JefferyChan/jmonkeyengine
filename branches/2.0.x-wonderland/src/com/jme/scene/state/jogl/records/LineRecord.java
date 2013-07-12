@@ -35,6 +35,7 @@ import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
 
 import com.jme.scene.state.StateRecord;
+import javax.media.opengl.GL2;
 
 public class LineRecord extends StateRecord {
     public boolean smoothed = false;
@@ -72,11 +73,11 @@ public class LineRecord extends StateRecord {
     }
 
     public void applyLineStipple(int stippleFactor, short stipplePattern) {
-        final GL gl = GLU.getCurrentGL();
+        final GL2 gl = GLU.getCurrentGL().getGL2();
 
         if (stipplePattern != (short)0xFFFF) {
             if (!isValid() || !this.stippled) {
-                gl.glEnable(GL.GL_LINE_STIPPLE);
+                gl.glEnable(GL2.GL_LINE_STIPPLE);
                 this.stippled = true;
             }
 
@@ -86,7 +87,7 @@ public class LineRecord extends StateRecord {
                 this.stipplePattern = stipplePattern;
             }
         } else if (!isValid() || this.stippled) {
-            gl.glDisable(GL.GL_LINE_STIPPLE);
+            gl.glDisable(GL2.GL_LINE_STIPPLE);
             this.stippled = false;
         }
 

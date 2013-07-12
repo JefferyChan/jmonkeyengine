@@ -41,6 +41,7 @@ import com.jme.renderer.jogl.JOGLRenderer;
 import com.jme.scene.state.StencilState;
 import com.jme.scene.state.jogl.records.StencilStateRecord;
 import com.jme.system.DisplaySystem;
+import javax.media.opengl.GL2;
 
 /**
  * <code>JOGLStencilState</code>
@@ -67,7 +68,7 @@ public class JOGLStencilState extends StencilState {
 
     @Override
     public void apply() {
-        final GL gl = GLU.getCurrentGL();
+        final GL2 gl = GLU.getCurrentGL().getGL2();
 
         // ask for the current state record
         RenderContext<?> context = DisplaySystem.getDisplaySystem().getCurrentContext();
@@ -138,13 +139,13 @@ public class JOGLStencilState extends StencilState {
                 return GL.GL_KEEP;
             case DecrementWrap:
                 if (stencilWrapSupport)
-                    return GL.GL_DECR_WRAP_EXT;
+                    return GL2.GL_DECR_WRAP;
                 // FALLS THROUGH
             case Decrement:
                 return GL.GL_DECR;
             case IncrementWrap:
                 if (stencilWrapSupport)
-                    return GL.GL_INCR_WRAP_EXT;
+                    return GL.GL_INCR_WRAP;
                 // FALLS THROUGH
             case Increment:
                 return GL.GL_INCR;
@@ -186,15 +187,15 @@ public class JOGLStencilState extends StencilState {
         if (twoSidedSupport) {
             if (record.isValid()) {
                 if (enable && !record.useTwoSided) {
-                    gl.glEnable(GL.GL_STENCIL_TEST_TWO_SIDE_EXT);
+                    gl.glEnable(GL2.GL_STENCIL_TEST_TWO_SIDE_EXT);
                 } else if (!enable && record.useTwoSided) {
-                    gl.glDisable(GL.GL_STENCIL_TEST_TWO_SIDE_EXT);
+                    gl.glDisable(GL2.GL_STENCIL_TEST_TWO_SIDE_EXT);
                 }
             } else {
                 if (enable) {
-                    gl.glEnable(GL.GL_STENCIL_TEST_TWO_SIDE_EXT);
+                    gl.glEnable(GL2.GL_STENCIL_TEST_TWO_SIDE_EXT);
                 } else {
-                    gl.glDisable(GL.GL_STENCIL_TEST_TWO_SIDE_EXT);
+                    gl.glDisable(GL2.GL_STENCIL_TEST_TWO_SIDE_EXT);
                 }
             }
         }

@@ -53,6 +53,8 @@ import com.jme.renderer.jogl.JOGLContextCapabilities;
 import com.jme.scene.state.StateRecord;
 import com.jme.scene.state.TextureState.CorrectionType;
 import com.jme.util.geom.BufferUtils;
+import javax.media.opengl.GL2;
+import javax.media.opengl.GL2ES1;
 
 public class TextureStateRecord extends StateRecord {
 
@@ -149,33 +151,33 @@ public class TextureStateRecord extends StateRecord {
                 return GL.GL_REPEAT;
             case MirroredRepeat:
                 if (supportsMirroredRepeat)
-                    return GL.GL_MIRRORED_REPEAT_ARB;
+                    return GL.GL_MIRRORED_REPEAT;
                 else
                     return GL.GL_REPEAT;
             case MirrorClamp:
                 if (supportsMirrorClamp)
-                    return GL.GL_MIRROR_CLAMP_EXT;
+                    return GL2.GL_MIRROR_CLAMP_EXT;
                 // FALLS THROUGH
             case Clamp:
-                return GL.GL_CLAMP;
+                return GL2.GL_CLAMP;
             case MirrorBorderClamp:
                 if (supportsMirrorClamp)
-                    return GL.GL_MIRRORED_REPEAT_ARB;
+                    return GL2.GL_MIRRORED_REPEAT;
                 // FALLS THROUGH
             case BorderClamp:
                 if (supportsBorderClamp)
-                    return GL.GL_CLAMP_TO_BORDER;
+                    return GL2.GL_CLAMP_TO_BORDER;
                 else
-                    return GL.GL_CLAMP;
+                    return GL2.GL_CLAMP;
             case MirrorEdgeClamp:
                 if (supportsMirrorClamp)
-                    return GL.GL_MIRRORED_REPEAT_ARB;
+                    return GL2.GL_MIRRORED_REPEAT;
                 // FALLS THROUGH
             case EdgeClamp:
                 if (supportsEdgeClamp)
                     return GL.GL_CLAMP_TO_EDGE;
                 else
-                    return GL.GL_CLAMP;
+                    return GL2.GL_CLAMP;
         }
         throw new IllegalArgumentException("invalid WrapMode type: "+wrap);
     }
@@ -200,7 +202,7 @@ public class TextureStateRecord extends StateRecord {
             case RGB8:
                 return GL.GL_RGB8;
             case Alpha8:
-                return GL.GL_ALPHA8;
+                return GL2.GL_ALPHA8;
             case RGB_TO_DXT1:
             case NativeDXT1:
                 return GL.GL_COMPRESSED_RGB_S3TC_DXT1_EXT;
@@ -216,53 +218,53 @@ public class TextureStateRecord extends StateRecord {
 
             // The rest...
             case Alpha4:
-                return GL.GL_ALPHA4;
+                return GL2.GL_ALPHA4;
             case Alpha12:
-                return GL.GL_ALPHA12;
+                return GL2.GL_ALPHA12;
             case Alpha16:
-                return GL.GL_ALPHA16;
+                return GL2.GL_ALPHA16;
             case Luminance4:
-                return GL.GL_LUMINANCE4;
+                return GL2.GL_LUMINANCE4;
             case Luminance8:
-                return GL.GL_LUMINANCE8;
+                return GL2.GL_LUMINANCE8;
             case Luminance12:
-                return GL.GL_LUMINANCE12;
+                return GL2.GL_LUMINANCE12;
             case Luminance16:
-                return GL.GL_LUMINANCE16;
+                return GL2.GL_LUMINANCE16;
             case Intensity4:
-                return GL.GL_INTENSITY4;
+                return GL2.GL_INTENSITY4;
             case Intensity8:
-                return GL.GL_INTENSITY8;
+                return GL2.GL_INTENSITY8;
             case Intensity12:
-                return GL.GL_INTENSITY12;
+                return GL2.GL_INTENSITY12;
             case Intensity16:
-                return GL.GL_INTENSITY16;
+                return GL2.GL_INTENSITY16;
             case Luminance4Alpha4:
-                return GL.GL_LUMINANCE4_ALPHA4;
+                return GL2.GL_LUMINANCE4_ALPHA4;
             case Luminance6Alpha2:
-                return GL.GL_LUMINANCE6_ALPHA2;
+                return GL2.GL_LUMINANCE6_ALPHA2;
             case Luminance8Alpha8:
-                return GL.GL_LUMINANCE8_ALPHA8;
+                return GL2.GL_LUMINANCE8_ALPHA8;
             case Luminance12Alpha4:
-                return GL.GL_LUMINANCE12_ALPHA4;
+                return GL2.GL_LUMINANCE12_ALPHA4;
             case Luminance12Alpha12:
-                return GL.GL_LUMINANCE12_ALPHA12;
+                return GL2.GL_LUMINANCE12_ALPHA12;
             case Luminance16Alpha16:
-                return GL.GL_LUMINANCE16_ALPHA16;
+                return GL2.GL_LUMINANCE16_ALPHA16;
             case R3G3B2:
-                return GL.GL_R3_G3_B2;
+                return GL2.GL_R3_G3_B2;
             case RGB4:
-                return GL.GL_RGB4;
+                return GL2.GL_RGB4;
             case RGB5:
-                return GL.GL_RGB5;
+                return GL2.GL_RGB5;
             case RGB10:
                 return GL.GL_RGB10;
             case RGB12:
-                return GL.GL_RGB12;
+                return GL2.GL_RGB12;
             case RGB16:
-                return GL.GL_RGB16;
+                return GL2.GL_RGB16;
             case RGBA2:
-                return GL.GL_RGBA2;
+                return GL2.GL_RGBA2;
             case RGBA4:
                 return GL.GL_RGBA4;
             case RGB5A1:
@@ -270,23 +272,23 @@ public class TextureStateRecord extends StateRecord {
             case RGB10A2:
                 return GL.GL_RGB10_A2;
             case RGBA12:
-                return GL.GL_RGBA12;
+                return GL2.GL_RGBA12;
             case RGBA16:
-                return GL.GL_RGBA16;
+                return GL2.GL_RGBA16;
             case Depth16:
-                return GL.GL_DEPTH_COMPONENT16_ARB;
+                return GL2.GL_DEPTH_COMPONENT16;
             case Depth24:
-                return GL.GL_DEPTH_COMPONENT24_ARB;
+                return GL2.GL_DEPTH_COMPONENT24;
             case Depth32:
-                return GL.GL_DEPTH_COMPONENT32_ARB;
+                return GL.GL_DEPTH_COMPONENT32;
             case RGB16F:
-                return GL.GL_RGB16F_ARB;
+                return GL2ES1.GL_RGB16F;
             case RGB32F:
-                return GL.GL_RGB32F_ARB;
+                return GL.GL_RGB32F;
             case RGBA16F:
-                return GL.GL_RGBA16F_ARB;
+                return GL2.GL_RGBA16F;
             case RGBA32F:
-                return GL.GL_RGBA32F_ARB;
+                return GL2.GL_RGBA32F;
             case Alpha16F:
                 return GL.GL_ALPHA16F_ARB;
             case Alpha32F:
@@ -300,9 +302,9 @@ public class TextureStateRecord extends StateRecord {
             case LuminanceAlpha32F:
                 return GL.GL_LUMINANCE_ALPHA32F_ARB;
             case Intensity16F:
-                return GL.GL_INTENSITY16F_ARB;
+                return GL2.GL_INTENSITY16F;
             case Intensity32F:
-                return GL.GL_INTENSITY32F_ARB;
+                return GL2.GL_INTENSITY32F;
         }
         throw new IllegalArgumentException("Incorrect format set: "+format);
     }
@@ -357,7 +359,7 @@ public class TextureStateRecord extends StateRecord {
             case Intensity16:
             case Intensity16F:
             case Intensity32F:
-                return GL.GL_INTENSITY;
+                return GL2.GL_INTENSITY;
             case Luminance4Alpha4:
             case Luminance6Alpha2:
             case Luminance8Alpha8:
@@ -370,7 +372,7 @@ public class TextureStateRecord extends StateRecord {
             case Depth16:
             case Depth24:
             case Depth32:
-                return GL.GL_DEPTH_COMPONENT;
+                return GL2.GL_DEPTH_COMPONENT;
         }
         throw new IllegalArgumentException("Incorrect format set: "+format);
     }
@@ -411,13 +413,13 @@ public class TextureStateRecord extends StateRecord {
             case Blend:
                 return GL.GL_BLEND;
             case Combine:
-                return GL.GL_COMBINE;
+                return GL2.GL_COMBINE;
             case Decal:
-                return GL.GL_DECAL;
+                return GL2.GL_DECAL;
             case Add:
-                return GL.GL_ADD;
+                return GL2.GL_ADD;
             case Modulate:
-                return GL.GL_MODULATE;
+                return GL2.GL_MODULATE;
         }
         throw new IllegalArgumentException("invalid ApplyMode type: "+apply);
     }
@@ -461,11 +463,11 @@ public class TextureStateRecord extends StateRecord {
             case CurrentTexture:
                 return GL.GL_TEXTURE;
             case PrimaryColor:
-                return GL.GL_PRIMARY_COLOR;
+                return GL2.GL_PRIMARY_COLOR;
             case Constant:
-                return GL.GL_CONSTANT;
+                return GL2.GL_CONSTANT;
             case Previous:
-                return GL.GL_PREVIOUS;
+                return GL2.GL_PREVIOUS;
             case TextureUnit0:
                 return GL.GL_TEXTURE0;
             case TextureUnit1:
@@ -537,17 +539,17 @@ public class TextureStateRecord extends StateRecord {
     public static int getGLCombineFuncAlpha(CombinerFunctionAlpha combineFunc) {
         switch (combineFunc) {
             case Modulate:
-                return GL.GL_MODULATE;
+                return GL2.GL_MODULATE;
             case Replace:
                 return GL.GL_REPLACE;
             case Add:
-                return GL.GL_ADD;
+                return GL2.GL_ADD;
             case AddSigned:
-                return GL.GL_ADD_SIGNED;
+                return GL2.GL_ADD_SIGNED;
             case Subtract:
-                return GL.GL_SUBTRACT;
+                return GL2.GL_SUBTRACT;
             case Interpolate:
-                return GL.GL_INTERPOLATE;
+                return GL2.GL_INTERPOLATE;
         }
         throw new IllegalArgumentException("invalid CombinerFunctionAlpha type: "+combineFunc);
     }
@@ -555,21 +557,21 @@ public class TextureStateRecord extends StateRecord {
     public static int getGLCombineFuncRGB(CombinerFunctionRGB combineFunc) {
         switch (combineFunc) {
             case Modulate:
-                return GL.GL_MODULATE;
+                return GL2.GL_MODULATE;
             case Replace:
                 return GL.GL_REPLACE;
             case Add:
-                return GL.GL_ADD;
+                return GL2.GL_ADD;
             case AddSigned:
-                return GL.GL_ADD_SIGNED;
+                return GL2.GL_ADD_SIGNED;
             case Subtract:
-                return GL.GL_SUBTRACT;
+                return GL2.GL_SUBTRACT;
             case Interpolate:
-                return GL.GL_INTERPOLATE;
+                return GL2.GL_INTERPOLATE;
             case Dot3RGB:
-                return GL.GL_DOT3_RGB;
+                return GL2.GL_DOT3_RGB;
             case Dot3RGBA:
-                return GL.GL_DOT3_RGBA;
+                return GL2.GL_DOT3_RGBA;
         }
         throw new IllegalArgumentException("invalid CombinerFunctionRGB type: "+combineFunc);
     }

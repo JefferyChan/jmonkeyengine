@@ -40,6 +40,7 @@ import com.jme.scene.state.WireframeState;
 import com.jme.scene.state.jogl.records.LineRecord;
 import com.jme.scene.state.jogl.records.WireframeStateRecord;
 import com.jme.system.DisplaySystem;
+import javax.media.opengl.GL2;
 
 /**
  * <code>JOGLWireframeState</code> subclasses WireframeState to use the JOGL
@@ -78,18 +79,18 @@ public class JOGLWireframeState extends WireframeState {
 
             switch (face) {
                 case Front:
-                    applyPolyMode(GL.GL_LINE, GL.GL_FILL, record);
+                    applyPolyMode(GL2.GL_LINE, GL2.GL_FILL, record);
                     break;
                 case Back:
-                    applyPolyMode(GL.GL_FILL, GL.GL_LINE, record);
+                    applyPolyMode(GL2.GL_FILL, GL2.GL_LINE, record);
                     break;
                 case FrontAndBack:
                 default:
-                    applyPolyMode(GL.GL_LINE, GL.GL_LINE, record);
+                    applyPolyMode(GL2.GL_LINE, GL2.GL_LINE, record);
                     break;
             }
         } else {
-            applyPolyMode(GL.GL_FILL, GL.GL_FILL, record);
+            applyPolyMode(GL2.GL_FILL, GL2.GL_FILL, record);
         }
 
         if (!record.isValid())
@@ -97,7 +98,7 @@ public class JOGLWireframeState extends WireframeState {
     }
 
     private void applyPolyMode(int frontMode, int backMode, WireframeStateRecord record) {
-        final GL gl = GLU.getCurrentGL();
+        final GL2 gl = GLU.getCurrentGL().getGL2();
 
         if (record.isValid()) {
             if (frontMode == backMode && (record.frontMode != frontMode || record.backMode != backMode)) {

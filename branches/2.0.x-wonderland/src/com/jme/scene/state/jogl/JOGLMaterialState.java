@@ -41,6 +41,7 @@ import com.jme.scene.state.MaterialState;
 import com.jme.scene.state.StateRecord;
 import com.jme.scene.state.jogl.records.MaterialStateRecord;
 import com.jme.system.DisplaySystem;
+import javax.media.opengl.GL2;
 
 /**
  * <code>JOGLMaterialState</code> subclasses MaterialState using the JOGL
@@ -68,7 +69,7 @@ public class JOGLMaterialState extends MaterialState {
      * @see com.jme.scene.state.RenderState#apply()
      */
     public void apply() {
-        final GL gl = GLU.getCurrentGL();
+        final GL2 gl = GLU.getCurrentGL().getGL2();
 
         // ask for the current state record
         RenderContext<?> context = DisplaySystem.getDisplaySystem().getCurrentContext();
@@ -82,14 +83,14 @@ public class JOGLMaterialState extends MaterialState {
 	        applyColorMaterial(getColorMaterial(), face, record);
 	
 	        // apply colors, if needed and not what is currently set.
-	        applyColor(GL.GL_AMBIENT, getAmbient(), face, record);
-	        applyColor(GL.GL_DIFFUSE, getDiffuse(), face, record);
-	        applyColor(GL.GL_EMISSION, getEmissive(), face, record);
-	        applyColor(GL.GL_SPECULAR, getSpecular(), face, record);
+	        applyColor(GL2.GL_AMBIENT, getAmbient(), face, record);
+	        applyColor(GL2.GL_DIFFUSE, getDiffuse(), face, record);
+	        applyColor(GL2.GL_EMISSION, getEmissive(), face, record);
+	        applyColor(GL2.GL_SPECULAR, getSpecular(), face, record);
 	
 	        // set our shine
 	        if (!record.isValid() || face != record.face || record.shininess != shininess) {
-	            gl.glMaterialf(face, GL.GL_SHININESS, shininess);
+	            gl.glMaterialf(face, GL2.GL_SHININESS, shininess);
 	            record.shininess = shininess;
 	        }
 	
@@ -101,14 +102,14 @@ public class JOGLMaterialState extends MaterialState {
         	
 	        applyColorMaterial(defaultColorMaterial, face, record);
 	        
-	        applyColor(GL.GL_AMBIENT, defaultAmbient, face, record);
-	        applyColor(GL.GL_DIFFUSE, defaultDiffuse, face, record);
-	        applyColor(GL.GL_EMISSION, defaultEmissive, face, record);
-	        applyColor(GL.GL_SPECULAR, defaultSpecular, face, record);
+	        applyColor(GL2.GL_AMBIENT, defaultAmbient, face, record);
+	        applyColor(GL2.GL_DIFFUSE, defaultDiffuse, face, record);
+	        applyColor(GL2.GL_EMISSION, defaultEmissive, face, record);
+	        applyColor(GL2.GL_SPECULAR, defaultSpecular, face, record);
 	
 	        // set our shine
 	        if (!record.isValid() || face != record.face || record.shininess != defaultShininess) {
-	            gl.glMaterialf(face, GL.GL_SHININESS, defaultShininess);
+	            gl.glMaterialf(face, GL2.GL_SHININESS, defaultShininess);
 	            record.shininess = defaultShininess;
 	        }
 	        
@@ -120,7 +121,7 @@ public class JOGLMaterialState extends MaterialState {
     }
 
     private static void applyColor(int glMatColor, ColorRGBA color, int face, MaterialStateRecord record) {
-        final GL gl = GLU.getCurrentGL();
+        final GL2 gl = GLU.getCurrentGL().getGL2();
 
         if (!isVertexProvidedColor(glMatColor, record)
                 && (!record.isValid() || face != record.face || !record
@@ -137,30 +138,30 @@ public class JOGLMaterialState extends MaterialState {
 
     private static boolean isVertexProvidedColor(int glMatColor, MaterialStateRecord record) {
         switch (glMatColor) {
-            case GL.GL_AMBIENT:
-                return record.colorMaterial == GL.GL_AMBIENT
-                        || record.colorMaterial == GL.GL_AMBIENT_AND_DIFFUSE;
-            case GL.GL_DIFFUSE:
-                return record.colorMaterial == GL.GL_DIFFUSE
-                        || record.colorMaterial == GL.GL_AMBIENT_AND_DIFFUSE;
-            case GL.GL_SPECULAR:
-                return record.colorMaterial == GL.GL_SPECULAR;
-            case GL.GL_EMISSION:
-                return record.colorMaterial == GL.GL_EMISSION;
+            case GL2.GL_AMBIENT:
+                return record.colorMaterial == GL2.GL_AMBIENT
+                        || record.colorMaterial == GL2.GL_AMBIENT_AND_DIFFUSE;
+            case GL2.GL_DIFFUSE:
+                return record.colorMaterial == GL2.GL_DIFFUSE
+                        || record.colorMaterial == GL2.GL_AMBIENT_AND_DIFFUSE;
+            case GL2.GL_SPECULAR:
+                return record.colorMaterial == GL2.GL_SPECULAR;
+            case GL2.GL_EMISSION:
+                return record.colorMaterial == GL2.GL_EMISSION;
         }
         return false;
     }
 
     private void applyColorMaterial(ColorMaterial colorMaterial, int face, MaterialStateRecord record) {
-        final GL gl = GLU.getCurrentGL();
+        final GL2 gl = GLU.getCurrentGL().getGL2();
 
         int glMat = getGLColorMaterial(colorMaterial);
         if (!record.isValid() || face != record.face || glMat != record.colorMaterial) {
             if (glMat == GL.GL_NONE) {
-                gl.glDisable(GL.GL_COLOR_MATERIAL);
+                gl.glDisable(GL2.GL_COLOR_MATERIAL);
             } else {
                 gl.glColorMaterial(face, glMat);
-                gl.glEnable(GL.GL_COLOR_MATERIAL);
+                gl.glEnable(GL2.GL_COLOR_MATERIAL);
                 record.resetColorsForCM(face, glMat);
             }
             record.colorMaterial = glMat;
@@ -178,15 +179,15 @@ public class JOGLMaterialState extends MaterialState {
             case None:
                 return GL.GL_NONE;
             case Ambient:
-                return GL.GL_AMBIENT;
+                return GL2.GL_AMBIENT;
             case Diffuse:
-                return GL.GL_DIFFUSE;
+                return GL2.GL_DIFFUSE;
             case AmbientAndDiffuse:
-                return GL.GL_AMBIENT_AND_DIFFUSE;
+                return GL2.GL_AMBIENT_AND_DIFFUSE;
             case Emissive:
-                return GL.GL_EMISSION;
+                return GL2.GL_EMISSION;
             case Specular:
-                return GL.GL_SPECULAR;
+                return GL2.GL_SPECULAR;
         }
         throw new IllegalArgumentException("invalid color material setting: "+material);
     }

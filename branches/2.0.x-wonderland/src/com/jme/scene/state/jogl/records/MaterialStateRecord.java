@@ -39,6 +39,7 @@ import javax.media.opengl.GL;
 import com.jme.renderer.ColorRGBA;
 import com.jme.scene.state.StateRecord;
 import com.jme.util.geom.BufferUtils;
+import javax.media.opengl.GL2;
 
 public class MaterialStateRecord extends StateRecord {
     private static final Logger logger = Logger.getLogger(MaterialStateRecord.class.getName());
@@ -61,29 +62,29 @@ public class MaterialStateRecord extends StateRecord {
     public boolean isSetColor(int face, int glMatColor, ColorRGBA color, MaterialStateRecord record) {
         if (face == GL.GL_FRONT) {
             switch (glMatColor) {
-                case GL.GL_AMBIENT:
+                case GL2.GL_AMBIENT:
                     return color.r == frontAmbient.r && color.g == frontAmbient.g && color.b == frontAmbient.b && color.a == frontAmbient.a;
-                case GL.GL_DIFFUSE:
+                case GL2.GL_DIFFUSE:
                     return color.r == frontDiffuse.r && color.g == frontDiffuse.g && color.b == frontDiffuse.b && color.a == frontDiffuse.a;
-                case GL.GL_SPECULAR:
+                case GL2.GL_SPECULAR:
                     return color.r == frontSpecular.r && color.g == frontSpecular.g && color.b == frontSpecular.b && color.a == frontSpecular.a;
-                case GL.GL_EMISSION:
+                case GL2.GL_EMISSION:
                     return color.r == frontEmissive.r && color.g == frontEmissive.g && color.b == frontEmissive.b && color.a == frontEmissive.a;
                 default:
                     logger.warning("bad isSetColor");
             }
         } else if (face == GL.GL_FRONT_AND_BACK) {
             switch (glMatColor) {
-                case GL.GL_AMBIENT:
+                case GL2.GL_AMBIENT:
                     return color.r == frontAmbient.r && color.g == frontAmbient.g && color.b == frontAmbient.b && color.a == frontAmbient.a &&
                            color.r == backAmbient.r && color.g == backAmbient.g && color.b == backAmbient.b && color.a == backAmbient.a;
-                case GL.GL_DIFFUSE:
+                case GL2.GL_DIFFUSE:
                     return color.r == frontDiffuse.r && color.g == frontDiffuse.g && color.b == frontDiffuse.b && color.a == frontDiffuse.a &&
                            color.r == backDiffuse.r && color.g == backDiffuse.g && color.b == backDiffuse.b && color.a == backDiffuse.a;
-                case GL.GL_SPECULAR:
+                case GL2.GL_SPECULAR:
                     return color.r == frontSpecular.r && color.g == frontSpecular.g && color.b == frontSpecular.b && color.a == frontSpecular.a &&
                            color.r == backSpecular.r && color.g == backSpecular.g && color.b == backSpecular.b && color.a == backSpecular.a;
-                case GL.GL_EMISSION:
+                case GL2.GL_EMISSION:
                     return color.r == frontEmissive.r && color.g == frontEmissive.g && color.b == frontEmissive.b && color.a == frontEmissive.a &&
                            color.r == backEmissive.r && color.g == backEmissive.g && color.b == backEmissive.b && color.a == backEmissive.a;
                 default:
@@ -91,13 +92,13 @@ public class MaterialStateRecord extends StateRecord {
             }
         } else if (face == GL.GL_BACK) {
             switch (glMatColor) {
-                case GL.GL_AMBIENT:
+                case GL2.GL_AMBIENT:
                     return color.r == backAmbient.r && color.g == backAmbient.g && color.b == backAmbient.b && color.a == backAmbient.a;
-                case GL.GL_DIFFUSE:
+                case GL2.GL_DIFFUSE:
                     return color.r == backDiffuse.r && color.g == backDiffuse.g && color.b == backDiffuse.b && color.a == backDiffuse.a;
-                case GL.GL_SPECULAR:
+                case GL2.GL_SPECULAR:
                     return color.r == backSpecular.r && color.g == backSpecular.g && color.b == backSpecular.b && color.a == backSpecular.a;
-                case GL.GL_EMISSION:
+                case GL2.GL_EMISSION:
                     return color.r == backEmissive.r && color.g == backEmissive.g && color.b == backEmissive.b && color.a == backEmissive.a;
                 default:
                     logger.warning("bad isSetColor");
@@ -110,16 +111,16 @@ public class MaterialStateRecord extends StateRecord {
     public void setColor(int face, int glMatColor, ColorRGBA color) {
         if (face == GL.GL_FRONT || face == GL.GL_FRONT_AND_BACK) {
             switch (glMatColor) {
-                case GL.GL_AMBIENT:
+                case GL2.GL_AMBIENT:
                     frontAmbient.set(color);
                     break;
-                case GL.GL_DIFFUSE:
+                case GL2.GL_DIFFUSE:
                     frontDiffuse.set(color);
                     break;
-                case GL.GL_SPECULAR:
+                case GL2.GL_SPECULAR:
                     frontSpecular.set(color);
                     break;
-                case GL.GL_EMISSION:
+                case GL2.GL_EMISSION:
                     frontEmissive.set(color);
                     break;
                 default:
@@ -128,16 +129,16 @@ public class MaterialStateRecord extends StateRecord {
         }
         if (face == GL.GL_BACK || face == GL.GL_FRONT_AND_BACK) {
             switch (glMatColor) {
-                case GL.GL_AMBIENT:
+                case GL2.GL_AMBIENT:
                     backAmbient.set(color);
                     break;
-                case GL.GL_DIFFUSE:
+                case GL2.GL_DIFFUSE:
                     backDiffuse.set(color);
                     break;
-                case GL.GL_SPECULAR:
+                case GL2.GL_SPECULAR:
                     backSpecular.set(color);
                     break;
-                case GL.GL_EMISSION:
+                case GL2.GL_EMISSION:
                     backEmissive.set(color);
                     break;
                 default:
@@ -150,40 +151,40 @@ public class MaterialStateRecord extends StateRecord {
     public void resetColorsForCM(int face, int glMat) {
         if (face == GL.GL_FRONT || face == GL.GL_FRONT_AND_BACK) {
             switch (glMat) {
-                case GL.GL_AMBIENT:
+                case GL2.GL_AMBIENT:
                     frontAmbient.set(-1, -1, -1, -1);
                     break;
-                case GL.GL_DIFFUSE:
+                case GL2.GL_DIFFUSE:
                     frontDiffuse.set(-1, -1, -1, -1);
                     break;
-                case GL.GL_AMBIENT_AND_DIFFUSE:
+                case GL2.GL_AMBIENT_AND_DIFFUSE:
                     frontAmbient.set(-1, -1, -1, -1);
                     frontDiffuse.set(-1, -1, -1, -1);
                     break;
-                case GL.GL_EMISSION:
+                case GL2.GL_EMISSION:
                     frontEmissive.set(-1, -1, -1, -1);
                     break;
-                case GL.GL_SPECULAR:
+                case GL2.GL_SPECULAR:
                     frontSpecular.set(-1, -1, -1, -1);
                     break;
             }
         }
         if (face == GL.GL_BACK || face == GL.GL_FRONT_AND_BACK) {
             switch (glMat) {
-                case GL.GL_AMBIENT:
+                case GL2.GL_AMBIENT:
                     backAmbient.set(-1, -1, -1, -1);
                     break;
-                case GL.GL_DIFFUSE:
+                case GL2.GL_DIFFUSE:
                     backDiffuse.set(-1, -1, -1, -1);
                     break;
-                case GL.GL_AMBIENT_AND_DIFFUSE:
+                case GL2.GL_AMBIENT_AND_DIFFUSE:
                     backAmbient.set(-1, -1, -1, -1);
                     backDiffuse.set(-1, -1, -1, -1);
                     break;
-                case GL.GL_EMISSION:
+                case GL2.GL_EMISSION:
                     backEmissive.set(-1, -1, -1, -1);
                     break;
-                case GL.GL_SPECULAR:
+                case GL2.GL_SPECULAR:
                     backSpecular.set(-1, -1, -1, -1);
                     break;
             }

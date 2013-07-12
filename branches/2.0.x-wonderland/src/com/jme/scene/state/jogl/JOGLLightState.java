@@ -55,6 +55,7 @@ import com.jme.scene.state.StateRecord;
 import com.jme.scene.state.jogl.records.LightRecord;
 import com.jme.scene.state.jogl.records.LightStateRecord;
 import com.jme.system.DisplaySystem;
+import javax.media.opengl.GL2;
 
 /**
  * <code>JOGLLightState</code> subclasses the Light class using the JOGL API
@@ -226,9 +227,9 @@ public class JOGLLightState extends LightState {
 
         if (!record.isValid() || lr.isEnabled() != enable) {
             if (enable) {
-                gl.glEnable(GL.GL_LIGHT0 + index);
+                gl.glEnable(GL2.GL_LIGHT0 + index);
             } else {
-                gl.glDisable(GL.GL_LIGHT0 + index);
+                gl.glDisable(GL2.GL_LIGHT0 + index);
             }
 
             lr.setEnabled(enable);
@@ -240,36 +241,36 @@ public class JOGLLightState extends LightState {
 
         if (!record.isValid() || record.isEnabled() != enable) {
             if (enable) {
-                gl.glEnable(GL.GL_LIGHTING);
+                gl.glEnable(GL2.GL_LIGHTING);
             } else {
-                gl.glDisable(GL.GL_LIGHTING);
+                gl.glDisable(GL2.GL_LIGHTING);
             }
             record.setEnabled(enable);
         }
     }
 
     private void setTwoSided(boolean twoSided, LightStateRecord record) {
-        final GL gl = GLU.getCurrentGL();
+        final GL2 gl = GLU.getCurrentGL().getGL2();
 
         if (!record.isValid() || record.isTwoSidedOn() != twoSided) {
             if (twoSided) {
-                gl.glLightModeli(GL.GL_LIGHT_MODEL_TWO_SIDE, GL.GL_TRUE);
+                gl.glLightModeli(GL2.GL_LIGHT_MODEL_TWO_SIDE, GL.GL_TRUE);
             } else {
-                gl.glLightModeli(GL.GL_LIGHT_MODEL_TWO_SIDE, GL.GL_FALSE);
+                gl.glLightModeli(GL2.GL_LIGHT_MODEL_TWO_SIDE, GL.GL_FALSE);
             }
             record.setTwoSidedOn(twoSided);
         }
     }
 
     private void setLocalViewer(boolean localViewer, LightStateRecord record) {
-        final GL gl = GLU.getCurrentGL();
+        final GL2 gl = GLU.getCurrentGL().getGL2();
 
         if (!record.isValid() || record.isLocalViewer() != localViewer) {
             if (localViewer) {
-                gl.glLightModeli(GL.GL_LIGHT_MODEL_LOCAL_VIEWER,
+                gl.glLightModeli(GL2.GL_LIGHT_MODEL_LOCAL_VIEWER,
                         GL.GL_TRUE);
             } else {
-                gl.glLightModeli(GL.GL_LIGHT_MODEL_LOCAL_VIEWER,
+                gl.glLightModeli(GL2.GL_LIGHT_MODEL_LOCAL_VIEWER,
                         GL.GL_FALSE);
             }
             record.setLocalViewer(localViewer);
@@ -278,16 +279,16 @@ public class JOGLLightState extends LightState {
 
     private void setSpecularControl(boolean separateSpecularOn,
             LightStateRecord record) {
-        final GL gl = GLU.getCurrentGL();
+        final GL2 gl = GLU.getCurrentGL().getGL2();
 
         if (!record.isValid()
                 || record.isSeparateSpecular() != separateSpecularOn) {
             if (separateSpecularOn) {
-                gl.glLightModeli(GL.GL_LIGHT_MODEL_COLOR_CONTROL,
-                        GL.GL_SEPARATE_SPECULAR_COLOR);
+                gl.glLightModeli(GL2.GL_LIGHT_MODEL_COLOR_CONTROL,
+                        GL2.GL_SEPARATE_SPECULAR_COLOR);
             } else {
-                gl.glLightModeli(GL.GL_LIGHT_MODEL_COLOR_CONTROL,
-                        GL.GL_SINGLE_COLOR);
+                gl.glLightModeli(GL2.GL_LIGHT_MODEL_COLOR_CONTROL,
+                        GL2.GL_SINGLE_COLOR);
             }
             record.setSeparateSpecular(separateSpecularOn);
         }
@@ -295,7 +296,7 @@ public class JOGLLightState extends LightState {
 
     private void setModelAmbient(LightStateRecord record, float red,
             float green, float blue, float alpha) {
-        final GL gl = GLU.getCurrentGL();
+        final GL2 gl = GLU.getCurrentGL().getGL2();
 
         if (!record.isValid() || record.globalAmbient.r != red
                 || record.globalAmbient.g != green
@@ -307,25 +308,25 @@ public class JOGLLightState extends LightState {
             record.lightBuffer.put(blue);
             record.lightBuffer.put(alpha);
             record.lightBuffer.flip();
-            gl.glLightModelfv(GL.GL_LIGHT_MODEL_AMBIENT, record.lightBuffer); // TODO Check for float
+            gl.glLightModelfv(GL2.GL_LIGHT_MODEL_AMBIENT, record.lightBuffer); // TODO Check for float
             record.globalAmbient.set(red, green, blue, alpha);
         }
     }
 
     private void setDefaultModelAmbient(LightStateRecord record) {
-        final GL gl = GLU.getCurrentGL();
+        final GL2 gl = GLU.getCurrentGL().getGL2();
 
         if (!record.isValid() || record.globalAmbient.r != 0
                 || record.globalAmbient.g != 0 || record.globalAmbient.b != 0
                 || record.globalAmbient.a != 0) {
-            gl.glLightModelfv(GL.GL_LIGHT_MODEL_AMBIENT, zeroBuffer); // TODO Check for float
+            gl.glLightModelfv(GL2.GL_LIGHT_MODEL_AMBIENT, zeroBuffer); // TODO Check for float
             record.globalAmbient.set(0, 0, 0, 0);
         }
     }
 
     private void setAmbient(int index, LightStateRecord record, float red,
             float green, float blue, float alpha, LightRecord lr) {
-        final GL gl = GLU.getCurrentGL();
+        final GL2 gl = GLU.getCurrentGL().getGL2();
 
         if (!record.isValid() || lr.ambient.r != red || lr.ambient.g != green
                 || lr.ambient.b != blue || lr.ambient.a != alpha) {
@@ -335,26 +336,26 @@ public class JOGLLightState extends LightState {
             record.lightBuffer.put(blue);
             record.lightBuffer.put(alpha);
             record.lightBuffer.flip();
-            gl.glLightfv(GL.GL_LIGHT0 + index, GL.GL_AMBIENT,
-                    record.lightBuffer); // TODO Check for float
+            gl.glLightfv(GL2.GL_LIGHT0 + index, GL2.GL_AMBIENT,
+                     record.lightBuffer); // TODO Check for float
             lr.ambient.set(red, green, blue, alpha);
         }
     }
 
     private void setDefaultAmbient(int index, LightStateRecord record,
             LightRecord lr) {
-        final GL gl = GLU.getCurrentGL();
+        final GL2 gl = GLU.getCurrentGL().getGL2();
 
         if (!record.isValid() || lr.ambient.r != 0 || lr.ambient.g != 0
                 || lr.ambient.b != 0 || lr.ambient.a != 0) {
-            gl.glLightfv(GL.GL_LIGHT0 + index, GL.GL_AMBIENT, zeroBuffer); // TODO Check for float
+            gl.glLightfv(GL2.GL_LIGHT0 + index, GL2.GL_AMBIENT, zeroBuffer); // TODO Check for float
             lr.ambient.set(0, 0, 0, 0);
         }
     }
 
     private void setDiffuse(int index, LightStateRecord record, float red,
             float green, float blue, float alpha, LightRecord lr) {
-        final GL gl = GLU.getCurrentGL();
+        final GL2 gl = GLU.getCurrentGL().getGL2();
 
         if (!record.isValid() || lr.diffuse.r != red || lr.diffuse.g != green
                 || lr.diffuse.b != blue || lr.diffuse.a != alpha) {
@@ -364,7 +365,7 @@ public class JOGLLightState extends LightState {
             record.lightBuffer.put(blue);
             record.lightBuffer.put(alpha);
             record.lightBuffer.flip();
-            gl.glLightfv(GL.GL_LIGHT0 + index, GL.GL_DIFFUSE,
+            gl.glLightfv(GL2.GL_LIGHT0 + index, GL2.GL_DIFFUSE,
                     record.lightBuffer); // TODO Check for float
             lr.diffuse.set(red, green, blue, alpha);
         }
@@ -372,18 +373,18 @@ public class JOGLLightState extends LightState {
 
     private void setDefaultDiffuse(int index, LightStateRecord record,
             LightRecord lr) {
-        final GL gl = GLU.getCurrentGL();
+        final GL2 gl = GLU.getCurrentGL().getGL2();
 
         if (!record.isValid() || lr.diffuse.r != 0 || lr.diffuse.g != 0
                 || lr.diffuse.b != 0 || lr.diffuse.a != 0) {
-            gl.glLightfv(GL.GL_LIGHT0 + index, GL.GL_DIFFUSE, zeroBuffer); // TODO Check for float
+            gl.glLightfv(GL2.GL_LIGHT0 + index, GL2.GL_DIFFUSE, zeroBuffer); // TODO Check for float
             lr.diffuse.set(0, 0, 0, 0);
         }
     }
 
     private void setSpecular(int index, LightStateRecord record, float red,
             float green, float blue, float alpha, LightRecord lr) {
-        final GL gl = GLU.getCurrentGL();
+        final GL2 gl = GLU.getCurrentGL().getGL2();
 
         if (!record.isValid() || lr.specular.r != red || lr.specular.g != green
                 || lr.specular.b != blue || lr.specular.a != alpha) {
@@ -393,7 +394,7 @@ public class JOGLLightState extends LightState {
             record.lightBuffer.put(blue);
             record.lightBuffer.put(alpha);
             record.lightBuffer.flip();
-            gl.glLightfv(GL.GL_LIGHT0 + index, GL.GL_SPECULAR,
+            gl.glLightfv(GL2.GL_LIGHT0 + index, GL2.GL_SPECULAR,
                     record.lightBuffer); // TODO Check for float
             lr.specular.set(red, green, blue, alpha);
         }
@@ -401,11 +402,11 @@ public class JOGLLightState extends LightState {
 
     private void setDefaultSpecular(int index, LightStateRecord record,
             LightRecord lr) {
-        final GL gl = GLU.getCurrentGL();
+        final GL2 gl = GLU.getCurrentGL().getGL2();
 
         if (!record.isValid() || lr.specular.r != 0 || lr.specular.g != 0
                 || lr.specular.b != 0 || lr.specular.a != 0) {
-            gl.glLightfv(GL.GL_LIGHT0 + index, GL.GL_SPECULAR, zeroBuffer); // TODO Check for float
+            gl.glLightfv(GL2.GL_LIGHT0 + index, GL2.GL_SPECULAR, zeroBuffer); // TODO Check for float
             lr.specular.set(0, 0, 0, 0);
         }
     }
@@ -413,17 +414,17 @@ public class JOGLLightState extends LightState {
     private void setPosition(int index, LightStateRecord record,
             float positionX, float positionY, float positionZ, float value,
             LightRecord lr) {
-        final GL gl = GLU.getCurrentGL();
+        final GL2 gl = GLU.getCurrentGL().getGL2();
 
         // From OpenGL Docs:
         // The light position is transformed by the contents of the current top
         // of the ModelView matrix stack when you specify the light position
-        // with a call to glLightfv(GL_LIGHT_POSITION,…). If you later change
+        // with a call to glLightfv(GL_LIGHT_POSITION,?). If you later change
         // the ModelView matrix, such as when the view changes for the next
         // frame, the light position isn't automatically retransformed by the
         // new contents of the ModelView matrix. If you want to update the
-        // light’s position, you must again specify the light position with a
-        // call to glLightfv(GL_LIGHT_POSITION,…).
+        // light?s position, you must again specify the light position with a
+        // call to glLightfv(GL_LIGHT_POSITION,?).
 
         //XXX: This is a hack until we get a better lighting model up
         Matrix4f modelViewMatrix = ((AbstractCamera) DisplaySystem
@@ -440,7 +441,7 @@ public class JOGLLightState extends LightState {
             record.lightBuffer.put(positionZ);
             record.lightBuffer.put(value);
             record.lightBuffer.flip();
-            gl.glLightfv(GL.GL_LIGHT0 + index, GL.GL_POSITION,
+            gl.glLightfv(GL2.GL_LIGHT0 + index, GL2.GL_POSITION,
                     record.lightBuffer); // TODO Check for float
 
             lr.position.set(positionX, positionY, positionZ, value);
@@ -450,33 +451,33 @@ public class JOGLLightState extends LightState {
 
     private void setSpotDirection(int index, LightStateRecord record,
             float directionX, float directionY, float directionZ, float value) {
-        final GL gl = GLU.getCurrentGL();
+        final GL2 gl = GLU.getCurrentGL().getGL2();
 
         // From OpenGL Docs:
         // The light position is transformed by the contents of the current top
         // of the ModelView matrix stack when you specify the light position
-        // with a call to glLightfv(GL_LIGHT_POSITION,…). If you later change
+        // with a call to glLightfv(GL_LIGHT_POSITION,?). If you later change
         // the ModelView matrix, such as when the view changes for the next
         // frame, the light position isn't automatically retransformed by the
         // new contents of the ModelView matrix. If you want to update the
-        // light’s position, you must again specify the light position with a
-        // call to glLightfv(GL_LIGHT_POSITION,…).
+        // light?s position, you must again specify the light position with a
+        // call to glLightfv(GL_LIGHT_POSITION,?).
         record.lightBuffer.clear();
         record.lightBuffer.put(directionX);
         record.lightBuffer.put(directionY);
         record.lightBuffer.put(directionZ);
         record.lightBuffer.put(value);
         record.lightBuffer.flip();
-        gl.glLightfv(GL.GL_LIGHT0 + index, GL.GL_SPOT_DIRECTION,
+        gl.glLightfv(GL2.GL_LIGHT0 + index, GL2.GL_SPOT_DIRECTION,
                 record.lightBuffer); // TODO Check for float
     }
 
     private void setConstant(int index, float constant, LightRecord lr,
             boolean force) {
-        final GL gl = GLU.getCurrentGL();
+        final GL2 gl = GLU.getCurrentGL().getGL2();
 
         if (force || constant != lr.getConstant()) {
-            gl.glLightf(GL.GL_LIGHT0 + index, GL.GL_CONSTANT_ATTENUATION,
+            gl.glLightf(GL2.GL_LIGHT0 + index, GL2.GL_CONSTANT_ATTENUATION,
                     constant);
             lr.setConstant(constant);
         }
@@ -484,10 +485,10 @@ public class JOGLLightState extends LightState {
 
     private void setLinear(int index, float linear, LightRecord lr,
             boolean force) {
-        final GL gl = GLU.getCurrentGL();
+        final GL2 gl = GLU.getCurrentGL().getGL2();
 
         if (force || linear != lr.getLinear()) {
-            gl.glLightf(GL.GL_LIGHT0 + index, GL.GL_LINEAR_ATTENUATION,
+            gl.glLightf(GL2.GL_LIGHT0 + index, GL2.GL_LINEAR_ATTENUATION,
                     linear);
             lr.setLinear(linear);
         }
@@ -495,11 +496,11 @@ public class JOGLLightState extends LightState {
 
     private void setQuadratic(int index, float quad, LightRecord lr,
             boolean force) {
-        final GL gl = GLU.getCurrentGL();
+        final GL2 gl = GLU.getCurrentGL().getGL2();
 
         if (force || quad != lr.getQuadratic()) {
-            gl.glLightf(GL.GL_LIGHT0 + index,
-                    GL.GL_QUADRATIC_ATTENUATION, quad);
+            gl.glLightf(GL2.GL_LIGHT0 + index,
+                    GL2.GL_QUADRATIC_ATTENUATION, quad);
             lr.setQuadratic(quad);
         }
     }
@@ -520,10 +521,10 @@ public class JOGLLightState extends LightState {
 
     private void setSpotExponent(int index, LightStateRecord record,
             float exponent, LightRecord lr) {
-        final GL gl = GLU.getCurrentGL();
+        final GL2 gl = GLU.getCurrentGL().getGL2();
 
         if (!record.isValid() || lr.getSpotExponent() != exponent) {
-            gl.glLightf(GL.GL_LIGHT0 + index, GL.GL_SPOT_EXPONENT,
+            gl.glLightf(GL2.GL_LIGHT0 + index, GL2.GL_SPOT_EXPONENT,
                     exponent);
             lr.setSpotExponent(exponent);
         }
@@ -531,10 +532,10 @@ public class JOGLLightState extends LightState {
 
     private void setSpotCutoff(int index, LightStateRecord record,
             float cutoff, LightRecord lr) {
-        final GL gl = GLU.getCurrentGL();
+        final GL2 gl = GLU.getCurrentGL().getGL2();
 
         if (!record.isValid() || lr.getSpotCutoff() != cutoff) {
-            gl.glLightf(GL.GL_LIGHT0 + index, GL.GL_SPOT_CUTOFF, cutoff);
+            gl.glLightf(GL2.GL_LIGHT0 + index, GL2.GL_SPOT_CUTOFF, cutoff);
             lr.setSpotCutoff(cutoff);
         }
     }
