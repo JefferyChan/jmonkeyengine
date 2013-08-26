@@ -16,9 +16,8 @@ import com.jme3.scene.Node;
 public class UIAppState extends AbstractAppState {
 
     private AppStateManager stateManager;
-    private final String infoString = "Click tower to select."
-            + " Press N(uke) / G(atling) / F(reeze) to load charges.";
-    ;
+    private final String infoString = "Click tower to select,"
+            + " press N(uke) / G(atling) / F(reeze) to load charges.";
     private BitmapText hudText;  // HUD displays score
     private BitmapText infoText; // HUD displays instructions
     private Node guiNode;
@@ -68,18 +67,18 @@ public class UIAppState extends AbstractAppState {
 
     public void updateGameStateDisplay(GamePlayAppState game) {
         // Update health/budget display:
-        String score = "(" + game.getLevel()
-                + ") Budget: " + game.getBudget()
-                + ", Health: " + game.getHealth();
+        String score = "Level: " + game.getLevel()
+                + ", Budget: " + game.getBudget()
+                + ", Health: " + game.getHealth() +"\n";
 
         // Test whether player wins or loses
         if (game.getHealth() <= 0) {
-            hudText.setText(score + "      YOU LOSE.");
+            hudText.setText(score + "YOU LOSE.");
         } else if ((game.getCreepNum() == 0) && game.getHealth() > 0) {
-            hudText.setText(score + "      YOU WIN!");
+            hudText.setText(score + "YOU WIN!");
         } else {
             // Otherwise display default text, battle is ongoing.
-            hudText.setText(score + "      GO! GO! GO!");
+            hudText.setText(score + "GO GO GO!");
         }
     }
     

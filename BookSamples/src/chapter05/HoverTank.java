@@ -131,7 +131,6 @@ public class HoverTank extends SimpleApplication {
 
         /** A cone-shaped spotlight with location, direction, range */
         spot = new SpotLight();
-        spot = new SpotLight();
         spot.setSpotRange(100);
         spot.setSpotOuterAngle(20 * FastMath.DEG_TO_RAD);
         spot.setSpotInnerAngle(15 * FastMath.DEG_TO_RAD);

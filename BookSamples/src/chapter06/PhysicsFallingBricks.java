@@ -136,7 +136,7 @@ public class PhysicsFallingBricks extends SimpleApplication {
     brickPhy = new RigidBodyControl(5f);
     brickGeo.addControl(brickPhy);
     bulletAppState.getPhysicsSpace().add(brickPhy);
-    //brickPhy.setFriction(.20f); // try for example .2 versus 20f
+    //brickPhy.setFriction(.2f); // try for example .2 versus 20f
     return brickGeo;
   }
 

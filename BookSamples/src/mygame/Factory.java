@@ -24,9 +24,9 @@ public final class Factory {
     public static final float TOWER_RADIUS = 0.3f;
     public static final float TOWER_HEIGHT = 2.0f;
     // CONFIGURABLE TOWER CHARGES: SpeedDamage, HealthDamage, AmmoNum, BlastRange
-    public static final float[] GATLING = {0.0f, -1f, 5, 0f};
-    public static final float[] FREEZE = {-1f, -2f, 3, 0f};
-    public static final float[] NUKE = {+.5f, -10f, 1, 2f};
+    public static final float[] GATLING = {0.0f, -1f, 6, 0f};
+    public static final float[] FREEZE  = {-1f,  -1f, 3, 0f};
+    public static final float[] NUKE    = {.5f,  -5f, 1, 2f};
     // assetmanager
     private AssetManager assetManager;
     // materials
@@ -47,7 +47,7 @@ public final class Factory {
     public Node makePlayerBase() {
         Node playerbase_node = new Node("PlayerBaseNode");
         // player base geometry
-        Box b2 = new Box(Vector3f.ZERO, 1.5f, .8f, 1f);
+        Box b2 = new Box(1.5f, .8f, 1f);
         Geometry playerbase_geo = new Geometry("Playerbase", b2);
         playerbase_geo.setMaterial(playerbase_mat);
         playerbase_geo.move(0, .8f, -1f);
@@ -55,10 +55,10 @@ public final class Factory {
 
         // floor geometry
         Node floor_node = new Node("Floor");
-        Box b = new Box(Vector3f.ZERO, 33f, 0.1f, 33f);
+        Box b = new Box(33f, 0.1f, 33f);
         Geometry floor = new Geometry("Floor", b);
         floor.setMaterial(floor_mat);
-        //floor.setLocalTranslation(0, 0f, 0);
+        floor.setLocalTranslation(0, -8f, 0);
         floor_node.attachChild(floor);
 
         // Add floor and player base nodes to rootNode
@@ -71,7 +71,6 @@ public final class Factory {
      */
     public Geometry makeTower(int index) {
         Box tower_shape = new Box(
-                Vector3f.ZERO,
                 TOWER_RADIUS,
                 TOWER_HEIGHT * .5f,
                 TOWER_RADIUS);
@@ -152,8 +151,8 @@ public final class Factory {
         // floor material
         floor_mat = new Material(assetManager,
                 "Common/MatDefs/Light/Lighting.j3md");
-        floor_mat.setColor("Diffuse", ColorRGBA.Orange);
-        floor_mat.setColor("Ambient", ColorRGBA.Orange);
+        floor_mat.setColor("Diffuse", ColorRGBA.White);
+        floor_mat.setColor("Ambient", ColorRGBA.White);
         floor_mat.setBoolean("UseMaterialColors", true);
         // player material
         playerbase_mat = new Material(assetManager,
@@ -164,8 +163,8 @@ public final class Factory {
         // tower SelectedMaterial
         tower_sel_mat = new Material(assetManager,
                 "Common/MatDefs/Light/Lighting.j3md");
-        tower_sel_mat.setColor("Diffuse", new ColorRGBA(0.5f, 1, 0.5f, 1f));
-        tower_sel_mat.setColor("Ambient", new ColorRGBA(0.5f, 1, 0.5f, 1f));
+        tower_sel_mat.setColor("Diffuse", ColorRGBA.Green.mult(.75f));
+        tower_sel_mat.setColor("Ambient", ColorRGBA.Green.mult(.75f));
         tower_sel_mat.setBoolean("UseMaterialColors", true);
         //tower StandardMaterial
         tower_std_mat = new Material(assetManager,

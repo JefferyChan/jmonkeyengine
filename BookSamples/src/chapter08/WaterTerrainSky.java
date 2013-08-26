@@ -145,7 +145,7 @@ public class WaterTerrainSky extends SimpleApplication {
     terrain = new TerrainQuad("terrain", 65, 513, heightmap.getHeightMap());
     terrain.setMaterial(terrainMat);
     terrain.scale(4, 4, 4);
-    terrain.move(0,-110,0);
+    terrain.move(0,-110,200);
     
     return terrain;
   }

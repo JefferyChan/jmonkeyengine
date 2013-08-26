@@ -69,7 +69,7 @@ public class CreepControl extends AbstractControl implements Savable, Cloneable 
      * creep's health.
      */
     public void addHealth(float mod) {
-        spatial.setUserData("health", getHealth() + mod);
+        setHealth(getHealth() + mod);
     }
 
     /**
@@ -130,7 +130,8 @@ public class CreepControl extends AbstractControl implements Savable, Cloneable 
     protected void controlRender(RenderManager rm, ViewPort vp) {
     }
 
+    @Override
     public Control cloneForSpatial(Spatial spatial) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return this;
     }
 }

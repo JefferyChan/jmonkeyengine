@@ -46,15 +46,13 @@ public class TowerControl extends AbstractControl implements Savable, Cloneable 
                 if (creep.isAlive()
                         && getTowerTop().distance(creep.getLoc()) < getHeight() * 2f) { // RANGE
                     reachable.add(creep);
-                System.out.println(spatial.getName()+" i can reach something");
                 }
             }
             /* If the loaded tower can reach at least one creep, then... */
             if (reachable.size() > 0 && charge.getAmmoNum() > 0) {
-                                System.out.println(spatial.getName()+" i am attacking something");
                 /* ... shoot once at each reachable creep. */
                 for (CreepControl creep : reachable) {
-                    if (timer > .002f) { // TIMER
+                    if (timer > .01f) { // TIMER
                     /* Show a laser beam from tower to the creep that got hit. 
                          * The laser visuals are slightly random. */
                         Vector3f hit = creep.getLoc();

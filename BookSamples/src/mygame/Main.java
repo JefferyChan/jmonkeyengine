@@ -66,14 +66,15 @@ public class Main extends SimpleApplication {
         java.util.logging.Logger.getLogger("").setLevel(Level.WARNING);
         setDisplayStatView(false); // don't show debugger
         viewPort.setBackgroundColor(ColorRGBA.White);
-        cam.setLocation(new Vector3f(0, 16, 16f));
-        cam.lookAt(new Vector3f(0, 0, 8f), Vector3f.UNIT_Y);
+        // 3rd person camera view from above
+        cam.setLocation(new Vector3f(0, 8, 18f));
+        cam.lookAt(new Vector3f(0, 0, 6f), Vector3f.UNIT_Y);
         flyCam.setEnabled(false);
 
         // add light to scene
         DirectionalLight sun = new DirectionalLight();
-        sun.setDirection(new Vector3f(0.8f, -0.7f, -1).normalizeLocal());
-        sun.setColor(ColorRGBA.White);
+        sun.setDirection(new Vector3f(0.8f, -0.7f, -1));
+        sun.setColor(ColorRGBA.White.mult(1.5f));
         rootNode.addLight(sun);
 
         selected = -1;
